@@ -39,7 +39,7 @@ const TOGGLE_SIZE = {
     width: 30,
     height: 18,
     padding: '0 1px',
-    margin: '0px 6px 0px 6px',
+    margin: '0',
     label: {
         fontSize: 13,
         padding: '0px 0px 1px 0px'
@@ -303,9 +303,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
         };
 
         const toggleComponent = (
-            <div ref={this.toggleRootRef}>
-                <Toggle {...this.props} styles={styles} onChange={this.handleChange}></Toggle>
-            </div>
+            <Toggle {...this.props} styles={styles} ref={this.toggleRootRef} onChange={this.handleChange}></Toggle>
         );
 
         return messageInfo.message ? (
