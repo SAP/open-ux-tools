@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.23.0
+
+### Minor Changes
+
+-   c570683: Unified the size-property in the UIToggle component. Fixed padding issues throughout the component. Fixed icon display issues during component mounting.
+
 ## 1.22.3
 
 ### Patch Changes
