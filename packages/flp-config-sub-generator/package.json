@@ -1,22 +1,24 @@
 {
-    "name": "@sap-ux/abap-deploy-config-sub-generator",
-    "description": "Sub generator for ABAP deployment configuration",
+    "name": "@sap-ux/flp-config-sub-generator",
+    "description": "Generator for creating Fiori Launcpad configuration",
+    "version": "0.0.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/abap-deploy-config-sub-generator"
+        "directory": "packages/flp-config-sub-generator"
     },
-    "version": "0.0.7",
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
+    },
     "license": "Apache-2.0",
     "main": "generators/app/index.js",
     "scripts": {
         "build": "tsc --build",
-        "watch": "tsc --watch",
         "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
-        "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
+        "watch": "tsc --watch",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest --ci --forceExit --detectOpenHandles --colors",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
         "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
@@ -27,32 +29,40 @@
         "!generators/*.map",
         "!generators/**/*.map"
     ],
-    "engines": {
-        "node": ">=18.x"
-    },
     "dependencies": {
-        "@sap-ux/abap-deploy-config-inquirer": "workspace:*",
-        "@sap-ux/abap-deploy-config-writer": "workspace:*",
-        "@sap-ux/btp-utils": "workspace:*",
+        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-ux/app-config-writer": "workspace:*",
         "@sap-ux/deploy-config-generator-shared": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
-        "@sap-ux/logger": "workspace:*",
+        "@sap-ux/flp-config-inquirer": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/telemetry": "workspace:*",
-        "@sap-ux/ui5-config": "workspace:*",
         "i18next": "23.5.1",
-        "@sap-devx/yeoman-ui-types": "1.14.4"
+        "inquirer": "8.2.6",
+        "yeoman-generator": "5.10.0"
     },
     "devDependencies": {
+        "@jest/types": "29.6.3",
+        "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
+        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-test": "4.0.6",
-        "@sap-ux/store": "workspace:*",
-        "@sap-ux/system-access": "workspace:*",
+        "@sap-ux/nodejs-utils": "workspace:*",
+        "@vscode-logging/logger": "2.0.0",
         "memfs": "3.4.13",
         "mem-fs-editor": "9.4.0",
+        "lodash": "4.17.21",
+        "@types/lodash": "4.14.202",
+        "rimraf": "5.0.5",
+        "typescript": "5.3.3",
         "unionfs": "4.4.0",
         "yeoman-test": "6.3.0"
+    },
+    "engines": {
+        "node": ">=18.x"
     }
 }

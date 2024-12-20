@@ -39,7 +39,11 @@ export function getQuestions(
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
         [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys, promptOptions?.[promptNames.inboundId]),
-        [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(inboundKeys, appId),
+        [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(
+            inboundKeys,
+            appId,
+            promptOptions?.[promptNames.emptyInboundsInfo]
+        ),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(
