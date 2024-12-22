@@ -1,5 +1,15 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.0.8
+
+### Patch Changes
+
+-   fe0878d: feat(flp-config): adds new flp config generator
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/deploy-config-generator-shared@0.0.9
+    -   @sap-ux/fiori-generator-shared@0.7.18
+    -   @sap-ux/abap-deploy-config-inquirer@1.1.16
+
 ## 0.0.7
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.8.3
+
+### Patch Changes
+
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+    -   @sap-ux/inquirer-common@0.6.1
+
+## 0.8.2
+
+### Patch Changes
+
+-   2d4fc36: Fix for connection reset when switching system selection
+
 ## 0.8.1
 
 ### Patch Changes
