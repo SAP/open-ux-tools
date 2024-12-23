@@ -10,14 +10,26 @@ import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName } from '@sap-ux/project-access';
-import type { CodeExtChange } from '../types';
+import { DirName, FileName } from '@sap-ux/project-access';
+import { ChangeType, type CodeExtChange } from '../types';
+import { generateChange } from '../writer/editors';
+import { ManifestService } from '../base/abap/manifest-service';
+import { getAdpConfig, getVariant } from '../base/helper';
+import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 interface WriteControllerBody {
     controllerName: string;
     projectId: string;
 }
 
+interface AnnotationFileDetails {
+    fileName?: string;
+    annotationPath?: string;
+    annotationPathFromRoot?: string;
+    annotationExistsInWS: boolean;
+    isRunningInBAS: boolean;
+}
 /**
  * @description Handles API Routes
  */
@@ -244,4 +256,109 @@ export default class RoutesHandler {
             next(e);
         }
     };
+
+    public handleCreateAnnoationFile = async (req: Request, res: Response, next: NextFunction) => {
+        try {
+            const { dataSource, serviceUrl } = req.body as { dataSource: string; serviceUrl: string };
+
+            if (!dataSource) {
+                res.status(HttpStatusCodes.BAD_REQUEST).send('No datasource found in manifest!');
+                this.logger.debug('Bad request. Could not find a datasource in manifest!');
+                return;
+            }
+            const project = this.util.getProject();
+            const projectRoot = project.getRootPath();
+            const manifestService = await this.getManifestService();
+            const metadata = await manifestService.getDataSourceMetadata(dataSource);
+            const namespaces = getAnnotationNamespaces({ metadata });
+            const fsEditor = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
+                projectRoot,
+                ChangeType.ADD_ANNOTATIONS_TO_ODATA,
+                {
+                    annotation: {
+                        dataSource,
+                        namespaces,
+                        serviceUrl: serviceUrl
+                    },
+                    variant: getVariant(projectRoot)
+                }
+            );
+            fsEditor.commit((err) => this.logger.error(err));
+
+            const message = 'Annotation file created!';
+            res.status(HttpStatusCodes.CREATED).send(message);
+        } catch (e) {
+            const sanitizedMsg = sanitize(e.message);
+            this.logger.error(sanitizedMsg);
+            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
+            next(e);
+        }
+    };
+
+    public handleGetAllAnnotationFilesMappedByDataSource = async (_req: Request, res: Response, next: NextFunction) => {
+        try {
+            const isRunningInBAS = isAppStudio();
+
+            const manifestService = await this.getManifestService();
+            const dataSoruces = await manifestService.getManifestDataSources();
+            const apiResponse: {
+                [dataSourceId: string]: {
+                    serviceUrl: string;
+                    annotationDetails: AnnotationFileDetails; // get top most file and check if its in workspace
+                };
+            } = {};
+            const project = this.util.getProject();
+            const getPath = (projectPath: string, relativePath: string) =>
+                path.join(projectPath, DirName.Changes, relativePath).split(path.sep).join(path.posix.sep);
+            for (const dataSourceId in dataSoruces) {
+                if (dataSoruces[dataSourceId].type === 'OData') {
+                    apiResponse[dataSourceId] = {
+                        annotationDetails: {
+                            isRunningInBAS: isRunningInBAS,
+                            annotationExistsInWS: false
+                        },
+                        serviceUrl: dataSoruces[dataSourceId].uri
+                    };
+                }
+                for (const annotation of (dataSoruces[dataSourceId].settings?.annotations ?? [])?.reverse()) {
+                    const annotationSetting = dataSoruces[annotation];
+                    if (annotationSetting.type === 'ODataAnnotation') {
+                        const ui5NamespaceUri = `ui5://${project.getNamespace()}`;
+                        if (annotationSetting.uri.startsWith(ui5NamespaceUri)) {
+                            const localAnnotationUri = annotationSetting.uri.replace(ui5NamespaceUri, '');
+                            const annotationPath = getPath(project.getSourcePath(), localAnnotationUri);
+                            const annotationPathFromRoot = getPath(project.getName(), localAnnotationUri);
+                            const annotationExists = fs.existsSync(annotationPath);
+                            apiResponse[dataSourceId].annotationDetails = {
+                                fileName: path.parse(localAnnotationUri).base,
+                                annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
+                                annotationPathFromRoot,
+                                annotationExistsInWS: annotationExists,
+                                isRunningInBAS
+                            };
+                        }
+                        if (apiResponse[dataSourceId].annotationDetails.annotationExistsInWS) {
+                            break;
+                        }
+                    }
+                }
+            }
+
+            this.sendFilesResponse(res, apiResponse);
+        } catch (e) {
+            this.handleErrorMessage(res, next, e);
+        }
+    };
+
+    private async getManifestService(): Promise<ManifestService> {
+        const project = this.util.getProject();
+        const basePath = project.getRootPath();
+        const variant = getVariant(basePath);
+        const { target, ignoreCertErrors = false } = await getAdpConfig(
+            basePath,
+            path.join(basePath, FileName.Ui5Yaml)
+        );
+        const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, this.logger);
+        return await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
+    }
 }

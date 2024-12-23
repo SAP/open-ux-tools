@@ -6,6 +6,7 @@ export const enum ApiEndpoints {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
     CODE_EXT = '/adp/api/code_ext',
+    ANNOTATION_FILE = '/adp/api/annotation',
     MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
 }
 
@@ -30,6 +31,13 @@ export interface CodeExtResponse {
     controllerExists: boolean;
     controllerPath: string;
     controllerPathFromRoot: string;
+    isRunningInBAS: boolean;
+}
+
+export interface AnnotationFileResponse {
+    annotationExistsInWS: boolean;
+    annotationPath: string;
+    annotationPathFromRoot: string;
     isRunningInBAS: boolean;
 }
 
@@ -137,6 +145,31 @@ export async function readControllers<T>(): Promise<T> {
  */
 export async function writeController<T>(data: T): Promise<T> {
     return request<T>(ApiEndpoints.CONTROLLER, RequestMethod.POST, data);
+}
+
+/**
+ * Writes a new annotation file to the project's workspace
+ *
+ * @param data Data to be send to the server
+ * @returns Generic Promise<T>
+ */
+export async function writeAnnotationFile<T>(data: T): Promise<T> {
+    return request<T>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.POST, data);
+}
+
+/**
+ * Writes a new annotation file to the project's workspace
+ *
+ * @param data Data to be send to the server
+ * @returns Generic Promise<T>
+ */
+export async function getDataSourceAnnotationFileMap(): Promise<{
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileResponse };
+}> {
+    return request<{ [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileResponse } }>(
+        ApiEndpoints.ANNOTATION_FILE,
+        RequestMethod.GET
+    );
 }
 
 /**
