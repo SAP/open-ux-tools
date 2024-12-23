@@ -36,11 +36,8 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
         for (const key in dataSourceAnnotationFileMap) {
             const source = dataSourceAnnotationFileMap[key];
             this.children.push({
-                enabled: !source.annotationFiles.length ? true : false,
-                tooltip: source.annotationFiles.length
-                    ? this.context.resourceBundle.getText('ANNOTATION_FILE_ACTION_NOT_AVAILABLE', [key])
-                    : undefined,
-                label: source.annotationFiles.length
+                enabled: true,
+                label: source.annotationDetails.annotationExistsInWS
                     ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
                     : this.context.resourceBundle.getText('ODATA_SORUCE', [key]),
                 children: []
@@ -56,18 +53,15 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
             // Create annotation file only, if no file exists already for datasource id or if the change file exist and but no annotation file exists in file system.
             if (
                 dataSourceAnnotationFileMap[dataSourceId] &&
-                (!dataSourceAnnotationFileMap[dataSourceId].annotationFiles.length ||
-                    dataSourceAnnotationFileMap[dataSourceId].annotationFiles.every((item) => !item.annotationExists))
+                !dataSourceAnnotationFileMap[dataSourceId].annotationDetails.annotationExistsInWS
             ) {
                 await writeAnnotationFile({
                     dataSource: dataSourceId,
                     serviceUrl: dataSourceAnnotationFileMap[dataSourceId].serviceUrl
                 });
             } else {
-                const annotationFiles = dataSourceAnnotationFileMap[dataSourceId].annotationFiles;
-                const { annotationPath, annotationPathFromRoot, isRunningInBAS } = annotationFiles.find(
-                    (item) => item.annotationFileInUse
-                )!;
+                const annotationFileDetails = dataSourceAnnotationFileMap[dataSourceId].annotationDetails;
+                const { annotationPath, annotationPathFromRoot, isRunningInBAS } = annotationFileDetails;
                 handler(
                     OverlayRegistry.getOverlay(this.context.view), // this passed only because, for method param is required.
                     this.context.rta, // same as above

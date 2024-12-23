@@ -35,10 +35,9 @@ export interface CodeExtResponse {
 }
 
 export interface AnnotationFileResponse {
-    annotationExists: boolean;
+    annotationExistsInWS: boolean;
     annotationPath: string;
     annotationPathFromRoot: string;
-    annotationFileInUse: boolean;
     isRunningInBAS: boolean;
 }
 
@@ -165,9 +164,9 @@ export async function writeAnnotationFile<T>(data: T): Promise<T> {
  * @returns Generic Promise<T>
  */
 export async function getDataSourceAnnotationFileMap(): Promise<{
-    [key: string]: { serviceUrl: string; annotationFiles: AnnotationFileResponse[] };
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileResponse };
 }> {
-    return request<{ [key: string]: { serviceUrl: string; annotationFiles: AnnotationFileResponse[] } }>(
+    return request<{ [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileResponse } }>(
         ApiEndpoints.ANNOTATION_FILE,
         RequestMethod.GET
     );

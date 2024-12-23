@@ -317,12 +317,19 @@ export class ChangeService extends EventTarget {
                                 }
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
+                                const changeType =
+                                    change.changeType !== 'propertyChange' &&
+                                    change.changeType !== 'propertyBindingChange' &&
+                                    change.changeType !== 'appdescr_fe_changePageConfiguration' &&
+                                    change.changeType === 'appdescr_app_addAnnotationsToOData'
+                                        ? 'addedNewAnnotationFile'
+                                        : change.changeType;
                                 if (change.fileName) {
                                     this.changedFiles[change.fileName] = change;
                                     const unknownChange: UnknownSavedChange = {
                                         type: 'saved',
                                         kind: 'unknown',
-                                        changeType: change.changeType,
+                                        changeType: changeType,
                                         fileName: change.fileName,
                                         timestamp: new Date(change.creation).getTime()
                                     };

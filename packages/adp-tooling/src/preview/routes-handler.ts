@@ -10,12 +10,13 @@ import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName } from '@sap-ux/project-access';
-import { ChangeType, type CodeExtChange, type AnnotationFileChange } from '../types';
+import { DirName, FileName } from '@sap-ux/project-access';
+import { ChangeType, type CodeExtChange } from '../types';
 import { generateChange } from '../writer/editors';
 import { ManifestService } from '../base/abap/manifest-service';
 import { getAdpConfig, getVariant } from '../base/helper';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -23,12 +24,11 @@ interface WriteControllerBody {
 }
 
 interface AnnotationFileDetails {
-    fileName: string;
-    annotationPath: string;
-    annotationPathFromRoot: string;
-    annotationExists: boolean;
+    fileName?: string;
+    annotationPath?: string;
+    annotationPathFromRoot?: string;
+    annotationExistsInWS: boolean;
     isRunningInBAS: boolean;
-    annotationFileInUse: boolean;
 }
 /**
  * @description Handles API Routes
@@ -304,48 +304,41 @@ export default class RoutesHandler {
             const apiResponse: {
                 [dataSourceId: string]: {
                     serviceUrl: string;
-                    annotationFiles: AnnotationFileDetails[];
+                    annotationDetails: AnnotationFileDetails; // get top most file and check if its in workspace
                 };
             } = {};
-            Object.keys(dataSoruces).forEach((dataSourceId) => {
+            const project = this.util.getProject();
+            const getPath = (projectPath: string, relativePath: string) =>
+                path.join(projectPath, DirName.Changes, relativePath).split(path.sep).join(path.posix.sep);
+            for (const dataSourceId in dataSoruces) {
                 if (dataSoruces[dataSourceId].type === 'OData') {
                     apiResponse[dataSourceId] = {
-                        annotationFiles: new Array<AnnotationFileDetails>(),
+                        annotationDetails: {
+                            isRunningInBAS: isRunningInBAS,
+                            annotationExistsInWS: false
+                        },
                         serviceUrl: dataSoruces[dataSourceId].uri
                     };
                 }
-            });
-            const project = this.util.getProject();
-            const getPath = (projectPath: string, fileName: string, folder: string = DirName.Annotations) =>
-                path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
-
-            const annotationChangeFiles = await this.readAllFilesByGlob(
-                '/**/changes/**/*_addAnnotationsToOData.change'
-            );
-            // Iterating the changes file over manifest datasoruce as it is not easy to differntiate the file in workspace and file that is part of base project-
-            for (const file of annotationChangeFiles) {
-                const fileStr = await file.getString();
-                const change = JSON.parse(fileStr) as AnnotationFileChange;
-                const dataSourceId = change.content.dataSourceId;
-                if (apiResponse[dataSourceId]) {
-                    const annotations = manifestService.getAnnotationsForDataSourceId(dataSourceId);
-                    // last one in manifest has the highest precidence.
-                    const annotationFileInUse = annotations[annotations.length - 1];
-                    for (const fileName of change.content.annotations) {
-                        const dataSourceInfo = change.content.dataSource[fileName];
-                        const fileNameWithExt = dataSourceInfo.uri.split(path.sep).pop();
-                        if (dataSourceInfo.type === 'ODataAnnotation' && fileNameWithExt) {
-                            const annotationPath = getPath(project.getSourcePath(), fileNameWithExt);
-                            const annotationPathFromRoot = getPath(project.getName(), fileNameWithExt);
+                for (const annotation of (dataSoruces[dataSourceId].settings?.annotations ?? [])?.reverse()) {
+                    const annotationSetting = dataSoruces[annotation];
+                    if (annotationSetting.type === 'ODataAnnotation') {
+                        const ui5NamespaceUri = `ui5://${project.getNamespace()}`;
+                        if (annotationSetting.uri.startsWith(ui5NamespaceUri)) {
+                            const localAnnotationUri = annotationSetting.uri.replace(ui5NamespaceUri, '');
+                            const annotationPath = getPath(project.getSourcePath(), localAnnotationUri);
+                            const annotationPathFromRoot = getPath(project.getName(), localAnnotationUri);
                             const annotationExists = fs.existsSync(annotationPath);
-                            apiResponse[change.content.dataSourceId].annotationFiles.push({
-                                fileName: fileNameWithExt,
+                            apiResponse[dataSourceId].annotationDetails = {
+                                fileName: path.parse(localAnnotationUri).base,
                                 annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
                                 annotationPathFromRoot,
-                                annotationExists,
-                                isRunningInBAS,
-                                annotationFileInUse: annotationFileInUse === fileName ? true : false
-                            });
+                                annotationExistsInWS: annotationExists,
+                                isRunningInBAS
+                            };
+                        }
+                        if (apiResponse[dataSourceId].annotationDetails.annotationExistsInWS) {
+                            break;
                         }
                     }
                 }
@@ -359,10 +352,13 @@ export default class RoutesHandler {
 
     private async getManifestService(): Promise<ManifestService> {
         const project = this.util.getProject();
-        const projectRoot = project.getRootPath();
-        const yamlPath = path.join(projectRoot, 'ui5.yaml');
-        const variant = getVariant(projectRoot);
-        const adpConfig = await getAdpConfig(projectRoot, yamlPath);
-        return await ManifestService.initMergedManifest(projectRoot, variant, adpConfig, this.logger);
+        const basePath = project.getRootPath();
+        const variant = getVariant(basePath);
+        const { target, ignoreCertErrors = false } = await getAdpConfig(
+            basePath,
+            path.join(basePath, FileName.Ui5Yaml)
+        );
+        const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, this.logger);
+        return await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
     }
 }
