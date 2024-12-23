@@ -66,7 +66,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             title: options.title,
             completeView: options.aggregation === undefined
         });
-        this.ui5Version = sap.ui.version;
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 
