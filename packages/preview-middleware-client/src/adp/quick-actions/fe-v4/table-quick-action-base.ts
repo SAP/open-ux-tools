@@ -10,7 +10,7 @@ import { EnablementValidator } from '../enablement-validator';
 import { QuickActionDefinitionBase } from '../quick-action-base';
 
 const ACTION_ID = 'CTX_SETTINGS0';
-const CONTROL_TYPE = 'sap.ui.mdc.Table';
+
 export abstract class TableQuickActionDefinitionBase extends QuickActionDefinitionBase<
     typeof NESTED_QUICK_ACTION_KIND
 > {
@@ -21,6 +21,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
     tableMap: Record<string, number> = {};
     constructor(
         public readonly type: string,
+        protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
         protected readonly isSkipVariantManagementCheck?: boolean,
@@ -31,9 +32,11 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
 
     async initialize(): Promise<void> {
         let index = 0;
-        for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            CONTROL_TYPE
-        ])) {
+        for (const smartTable of getRelevantControlFromActivePage(
+            this.context.controlIndex,
+            this.context.view,
+            this.controlTypes
+        )) {
             if (!this.isSkipVariantManagementCheck) {
                 const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTable });
                 if (!hasVariantManagement) {

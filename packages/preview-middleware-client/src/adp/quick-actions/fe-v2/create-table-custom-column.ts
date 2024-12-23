@@ -15,14 +15,8 @@ import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { DialogNames, DialogFactory } from '../../dialog-factory';
-import {
-    ANALYTICAL_TABLE_TYPE,
-    GRID_TABLE_TYPE,
-    M_TABLE_TYPE,
-    SMART_TABLE_TYPE,
-    TableQuickActionDefinitionBase,
-    TREE_TABLE_TYPE
-} from '../table-quick-action-base';
+import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { notifyUser } from '../../utils';
 import { getTextBundle } from '../../../i18n';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';

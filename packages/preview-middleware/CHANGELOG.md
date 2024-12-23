@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.16.156
+
+### Patch Changes
+
+-   0633837: Added quick action to enable Inline Rows Creation in the Object Page tables
+
+## 0.16.155
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.101
+
 ## 0.16.154
 
 ### Patch Changes

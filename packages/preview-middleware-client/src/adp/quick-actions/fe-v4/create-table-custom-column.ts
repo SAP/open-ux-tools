@@ -3,13 +3,9 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
-import {
-    SMART_TABLE_TYPE,
-    GRID_TABLE_TYPE,
-    MDC_TABLE_TYPE,
-    TableQuickActionDefinitionBase,
-    TREE_TABLE_TYPE
-} from '../table-quick-action-base';
+import { SMART_TABLE_TYPE, GRID_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
+
 import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
