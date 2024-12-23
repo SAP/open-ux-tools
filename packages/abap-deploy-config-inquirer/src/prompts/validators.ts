@@ -9,7 +9,7 @@ import {
     isAppNameValid
 } from '../validator-utils';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { getTransportListFromService } from '../service-provider-utils';
+import { getTransportListFromService, getSystemInfo } from '../service-provider-utils';
 import { t } from '../i18n';
 import { findBackendSystemByUrl, initTransportConfig, getPackageAnswer, queryPackages } from '../utils';
 import { handleTransportConfigError } from '../error-handler';
@@ -24,9 +24,12 @@ import {
     type SystemConfig,
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
-    type BackendTarget
+    type BackendTarget,
+    type PackagePromptOptions
 } from '../types';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
+const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 /**
  * Validates the destination question and sets the destination in the prompt state.
  *
@@ -358,10 +361,31 @@ export async function validatePackage(
     if (!input?.trim()) {
         return t('warnings.providePackage');
     }
+    //valiadtion for special characters
+    if (!/^[A-Za-z0-9$_/]*$/.test(input)) {
+        return t('errors.validators.charactersForbiddenInPackage');
+    }
     if (input === DEFAULT_PACKAGE_ABAP) {
         PromptState.transportAnswers.transportRequired = false;
         return true;
     }
+    //validate package format
+    if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
+        return t('errors.validators.abapPackageInvalidFormat');
+    }
+
+    const startingPrefix = getPackageStartingPrefix(input);
+
+    //validate package starting prefix
+    if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
+        return t('errors.validators.abapPackageStartingPrefix');
+    }
+
+    //appName starting prefix
+    if (answers?.ui5AbapRepo && !answers.ui5AbapRepo.startsWith(startingPrefix)) {
+        return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+    }
+
     const systemConfig: SystemConfig = {
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
@@ -369,7 +393,26 @@ export async function validatePackage(
     };
     // checks if package is a local package and will update prompt state accordingly
     await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
+
     return true;
+}
+
+/**
+ * Determines the starting prefix of a package name.
+ *
+ * - If the package name is in the form `/namespace/PackageName`, it extracts the namespace as the prefix.
+ * - Otherwise, if the package name starts with "SAP" or "$", "Z", "Y", it returns it".
+ * - If none of the above, it uses the first character of the package name.
+ *
+ * @param {string} packageName - The name of the package to analyze.
+ * @returns {string} - The starting prefix of the package name.
+ */
+function getPackageStartingPrefix(packageName: string): string {
+    if (/^\/.*\/\w*$/g.test(packageName)) {
+        const splitNames = packageName.split('/');
+        return `/${splitNames[1]}/`;
+    }
+    return packageName.startsWith('SAP') ? 'SAP' : packageName[0];
 }
 
 /**
@@ -531,5 +574,65 @@ export function validateTransportQuestion(input?: string): boolean | string {
  */
 export function validateConfirmQuestion(overwrite: boolean): boolean {
     PromptState.abapDeployConfig.abort = !overwrite;
+    return true;
+}
+
+/**
+ * Checks if the given package is a cloud-ready package.
+ *
+ * - Fetches system information for the package using the provided system configuration and backend target.
+ * - Validates whether the adaptation project type for the package is "CLOUD_READY".
+ *
+ * @param {string} input - The name of the package to validate.
+ * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
+ * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
+ */
+async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
+    const systemConfig: SystemConfig = {
+        url: PromptState.abapDeployConfig.url,
+        client: PromptState.abapDeployConfig.client,
+        destination: PromptState.abapDeployConfig.destination
+    };
+    const packageType = PromptState.abapDeployConfig.isS4HC
+        ? AdaptationProjectType.CLOUD_READY
+        : AdaptationProjectType.ON_PREMISE;
+    const errorMsg =
+        packageType === AdaptationProjectType.CLOUD_READY
+            ? t('errors.validators.invalidCloudPackage')
+            : t('errors.validators.invalidOnpremPackage');
+    const systemInfo = await getSystemInfo(input, systemConfig, backendTarget);
+    const isValidPackageType =
+        systemInfo != undefined &&
+        systemInfo.adaptationProjectTypes.length === 1 &&
+        systemInfo.adaptationProjectTypes[0] === packageType;
+
+    return isValidPackageType ? true : errorMsg;
+}
+
+/**
+ * Validates a package with extended criteria based on provided options and configurations.
+ *
+ * @param {string} input - The name of the package to validate.
+ * @param {AbapDeployConfigAnswersInternal} answers - Configuration answers for ABAP deployment.
+ * @param {PackagePromptOptions} [promptOption] - Optional settings for additional package validation.
+ * @param {BackendTarget} [backendTarget] - The backend target for validation context.
+ * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
+ *                                        a `string` with an error message if validation fails,
+ *                                        or the result of additional cloud package validation if applicable.
+ */
+export async function validatePackageExtended(
+    input: string,
+    answers: AbapDeployConfigAnswersInternal,
+    promptOption?: PackagePromptOptions,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
+    const baseValidation = await validatePackage(input, answers, backendTarget);
+    if (typeof baseValidation === 'string') {
+        return baseValidation;
+    }
+
+    if (promptOption?.additionalValidation?.shouldValidatePackageType) {
+        return await validatePackageType(input, backendTarget);
+    }
     return true;
 }
