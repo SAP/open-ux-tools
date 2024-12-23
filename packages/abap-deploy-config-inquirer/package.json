@@ -43,7 +43,7 @@
         "inquirer-autocomplete-prompt": "2.0.1"
     },
     "devDependencies": {
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.10",
         "@types/inquirer-autocomplete-prompt": "2.0.1"
     }
 }
