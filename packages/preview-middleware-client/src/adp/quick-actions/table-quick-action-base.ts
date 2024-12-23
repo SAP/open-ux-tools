@@ -15,17 +15,19 @@ import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import ManagedObject from 'sap/ui/base/ManagedObject';
+import {
+    ANALYTICAL_TABLE_TYPE,
+    GRID_TABLE_TYPE,
+    M_TABLE_TYPE,
+    MDC_TABLE_TYPE,
+    SMART_TABLE_TYPE,
+    TREE_TABLE_TYPE
+} from './control-types';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
 const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
-export const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
-export const M_TABLE_TYPE = 'sap.m.Table';
-export const MDC_TABLE_TYPE = 'sap.ui.mdc.Table';
-export const TREE_TABLE_TYPE = 'sap.ui.table.TreeTable';
-export const GRID_TABLE_TYPE = 'sap.ui.table.Table';
-export const ANALYTICAL_TABLE_TYPE = 'sap.ui.table.AnalyticalTable';
 
 async function getActionId(table: UI5Element): Promise<string[]> {
     const { major, minor } = await getUi5Version();
@@ -229,21 +231,25 @@ export abstract class TableQuickActionDefinitionBase {
             if (subSections?.length === 1) {
                 this.processTable(table, { section, subSection: subSections[0], layout });
             } else if (subSections.length > 1) {
-                const sectionChild = this.children.find((val) => val.label === `${section.getTitle()} section`);
-                let tableMapIndex = `${this.children.length - 1}`;
+                const existingChildIdx = this.children.findIndex(
+                    (val) => val.label === `'${section.getTitle()}' section`
+                );
+                let tableMapIndex;
                 const label = this.getTableLabel(table);
                 const child = this.createChild(label, table);
-                if (!sectionChild) {
-                    tableMapIndex = `${tableMapIndex}/0`;
-
+                if (existingChildIdx < 0) {
                     this.children.push({
                         label: `'${section?.getTitle()}' section`,
                         enabled: true,
                         children: [child]
                     });
+
+                    tableMapIndex = `${this.children.length - 1}/0`;
                 } else {
-                    tableMapIndex = `${tableMapIndex}/${sectionChild.children.length - 1}`;
-                    sectionChild.children.push(child);
+                    this.children[existingChildIdx].children.push(child);
+                    tableMapIndex = `${existingChildIdx.toFixed(0)}/${
+                        this.children[existingChildIdx].children.length - 1
+                    }`;
                 }
 
                 this.tableMap[tableMapIndex] = {
@@ -264,7 +270,16 @@ export abstract class TableQuickActionDefinitionBase {
         table: UI5Element,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
-        if ([SMART_TABLE_TYPE, M_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE].some((type) => isA(type, table))) {
+        if (
+            [
+                SMART_TABLE_TYPE,
+                M_TABLE_TYPE,
+                MDC_TABLE_TYPE,
+                TREE_TABLE_TYPE,
+                GRID_TABLE_TYPE,
+                ANALYTICAL_TABLE_TYPE
+            ].some((type) => isA(type, table))
+        ) {
             const label = this.getTableLabel(table);
             const child = this.createChild(label, table);
             this.children.push(child);

@@ -14,6 +14,7 @@ import { AddPageActionQuickAction } from '../common/create-page-action';
 import { AddTableActionQuickAction } from './create-table-action';
 import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering';
 import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
+import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -60,7 +61,8 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         AddCustomSectionQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
-                        AddTableCustomColumnQuickAction
+                        AddTableCustomColumnQuickAction,
+                        EnableTableEmptyRowModeQuickAction
                     ],
                     view,
                     key: name + index

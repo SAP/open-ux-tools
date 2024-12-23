@@ -5,14 +5,8 @@ import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/qu
 import { getControlById, isA } from '../../../utils/core';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { DialogNames, handler } from '../../init-dialogs';
-import {
-    ANALYTICAL_TABLE_TYPE,
-    GRID_TABLE_TYPE,
-    M_TABLE_TYPE,
-    SMART_TABLE_TYPE,
-    TableQuickActionDefinitionBase,
-    TREE_TABLE_TYPE
-} from '../table-quick-action-base';
+import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
 import { notifyUser } from '../../utils';
