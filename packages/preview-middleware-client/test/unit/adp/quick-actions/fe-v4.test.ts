@@ -1,6 +1,7 @@
 import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -12,12 +13,6 @@ import {
     QuickAction
 } from '@sap-ux-private/control-property-editor-common';
 
-jest.mock('../../../../src/adp/init-dialogs', () => {
-    return {
-        ...jest.requireActual('../../../../src/adp/init-dialogs'),
-        handler: jest.fn()
-    };
-});
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
 import { FeatureService } from '../../../../src/cpe/feature-service';
@@ -39,7 +34,7 @@ import ComponentMock from 'mock/sap/ui/core/Component';
 import UIComponent from 'sap/ui/core/UIComponent';
 import AppComponentMock from 'mock/sap/fe/core/AppComponent';
 import FlexRuntimeInfoAPI from 'mock/sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
-import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
+import { DialogFactory, DialogNames } from 'open/ux/preview/client/adp/dialog-factory';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -59,10 +54,17 @@ describe('FE V4 quick actions', () => {
     beforeEach(() => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
+        jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue();
         jest.clearAllMocks();
     });
 
     afterEach(() => {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
+        if (typeof closeDialogFunction === 'function') {
+            // make sure that dialog factory is in clean state after each test
+            closeDialogFunction();
+        }
         fetchMock.mockRestore();
     });
 
@@ -495,11 +497,8 @@ describe('FE V4 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
                 );
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
-                );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
             });
         });
 
@@ -904,14 +903,16 @@ describe('FE V4 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
                 );
 
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    DialogNames.ADD_FRAGMENT,
+                    undefined,
+                    {
+                        aggregation: 'columns',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                    }
                 );
-
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, DialogNames.ADD_FRAGMENT, undefined, {
-                    aggregation: 'columns',
-                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                });
             });
         });
 
@@ -934,6 +935,7 @@ describe('FE V4 quick actions', () => {
                     p13nMode: ['Filter'],
                     expectedIsEnabled: false,
                     expectedTooltip:
+                       
                         'This option is disabled because table filtering for page variants is already enabled'
                 }
             ];
@@ -1425,14 +1427,17 @@ describe('FE V4 quick actions', () => {
                     await subscribeMock.mock.calls[0][0](
                         executeQuickAction({ id: 'objectPage0-op-add-header-field', kind: 'simple' })
                     );
-                    const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                        '../../../../src/adp/init-dialogs'
-                    );
 
-                    expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
-                        aggregation: 'items',
-                        title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-                    });
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        'AddFragment',
+                        undefined,
+                        {
+                            aggregation: 'items',
+                            title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+                        }
+                    );
                 });
             });
 
@@ -1647,14 +1652,17 @@ describe('FE V4 quick actions', () => {
                         })
                     );
 
-                    const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                        '../../../../src/adp/init-dialogs'
+                    
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        testCase.dialog,
+                        undefined,
+                        {
+                            aggregation: 'columns',
+                            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                        }
                     );
-
-                    expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, testCase.dialog, undefined, {
-                        aggregation: 'columns',
-                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    });
                 });
             });
 

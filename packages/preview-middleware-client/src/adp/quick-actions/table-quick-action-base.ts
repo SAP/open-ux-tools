@@ -15,6 +15,8 @@ import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import ManagedObject from 'sap/ui/base/ManagedObject';
+import { EnablementValidator } from './enablement-validator';
+import { QuickActionDefinitionBase } from './quick-action-base';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
@@ -50,19 +52,10 @@ export type TableQuickActionsOptions = {
 /**
  * Base class for table quick actions.
  */
-export abstract class TableQuickActionDefinitionBase {
-    readonly kind = NESTED_QUICK_ACTION_KIND;
-    public get id(): string {
-        return `${this.context.key}-${this.type}`;
-    }
-
+export abstract class TableQuickActionDefinitionBase extends QuickActionDefinitionBase<
+    typeof NESTED_QUICK_ACTION_KIND
+> {
     public isApplicable = false;
-
-    protected isDisabled: boolean | undefined;
-
-    public get tooltip(): string | undefined {
-        return undefined;
-    }
 
     public children: NestedQuickActionChild[] = [];
     public tableMap: Record<
@@ -92,8 +85,11 @@ export abstract class TableQuickActionDefinitionBase {
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
-        protected options: TableQuickActionsOptions = {}
-    ) {}
+        protected options: TableQuickActionsOptions = {},
+        protected readonly enablementValidators: EnablementValidator[] = []
+    ) {
+        super(type, NESTED_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
+    }
 
     /**
      * Initializes action object instance

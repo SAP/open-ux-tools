@@ -1,4 +1,7 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
+
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage, pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
@@ -6,7 +9,7 @@ import { areManifestChangesSupported, prepareManifestChange } from './utils';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { isA } from '../../../utils/core';
-import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
+
 const COMPONENT = 'sap.suite.ui.generic.template.ListReport';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
@@ -21,15 +24,39 @@ export class EnableTableFilteringQuickAction
     implements SimpleQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
+        super(ENABLE_TABLE_FILTERING, CONTROL_TYPES, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context, [
+            {
+                run: () => {
+                    if (this.control) {
+                        const id = (this.control.getProperty('persistencyKey') as unknown) ?? this.control.getId();
+                        if (typeof id !== 'string') {
+                            throw new Error(
+                                'Could not retrieve configuration property because control id is not valid!'
+                            );
+                        }
+                        const value = this.context.changeService.getConfigurationPropertyValue(
+                            id,
+                            'enableTableFilterInPageVariant'
+                        );
+                        const isFilterEnabled: boolean =
+                            value === undefined
+                                ? (this.control.data('p13nDialogSettings')?.filter?.visible as boolean)
+                                : (value as boolean);
+                        if (isFilterEnabled) {
+                            return {
+                                type: 'error',
+                                message: this.context.resourceBundle.getText(
+                                    'TABLE_FILTERING_CHANGE_HAS_ALREADY_BEEN_MADE'
+                                )
+                            };
+                        }
+                    }
+                    return undefined;
+                }
+            }
+        ]);
     }
-    isActive: boolean;
     readonly forceRefreshAfterExecution = true;
-    lsTableMap: Record<string, number> = {};
-    public get tooltip(): string | undefined {
-        return this.isDisabled ? this.context.resourceBundle.getText('TABLE_FILTERING_CHANGE_HAS_ALREADY_BEEN_MADE') : undefined;
-    }
-
     async initialize(): Promise<void> {
         const manifestChangesSupported = await areManifestChangesSupported(this.context.manifest);
         if (!manifestChangesSupported) {
@@ -41,17 +68,13 @@ export class EnableTableFilteringQuickAction
             CONTROL_TYPES
         )) {
             if (table) {
-                const isFilterEnabled = table.data('p13nDialogSettings').filter.visible;
                 const isActionApplicable = pageHasControlId(this.context.view, table.getId());
                 if (isActionApplicable) {
-                    this.isDisabled = isFilterEnabled;
                     this.control = table;
                     break;
                 }
             }
         }
-
-        return Promise.resolve();
     }
 
     async execute(): Promise<FlexCommand[]> {
@@ -70,8 +93,6 @@ export class EnableTableFilteringQuickAction
                 enableTableFilterInPageVariant: !this.isDisabled
             }
         );
-
-        this.isDisabled = !this.isDisabled;
 
         return command;
     }
