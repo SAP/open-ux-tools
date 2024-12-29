@@ -1,10 +1,12 @@
 import React from 'react';
-
+import ReactDOM from 'react-dom';
 import type { IToggleProps, IToggleStyleProps, IToggleStyles } from '@fluentui/react';
 import { Toggle } from '@fluentui/react';
 
 import type { UIComponentMessagesProps } from '../../helper/ValidationMessage';
 import { getMessageInfo, MessageWrapper } from '../../helper/ValidationMessage';
+import { UIIcon } from '../UIIcon';
+import { UiIcons } from '../Icons';
 
 export interface UIToggleProps extends IToggleProps, UIComponentMessagesProps {
     inlineLabelLeft?: boolean;
@@ -19,38 +21,51 @@ export enum UIToggleSize {
 }
 
 interface UIToggleSizeInfo {
-    width: number;
-    height: number;
-    padding: string;
-    margin: string;
+    width?: number;
+    height?: number;
+    padding?: string;
+    margin?: string;
     label: {
-        fontSize: number;
-        padding: string;
+        fontSize?: number;
+        padding?: string;
     };
     circle: {
-        width: number;
-        height: number;
-        borderWidth: number;
+        width?: number;
+        height?: number;
+        borderWidth?: number;
     };
 }
+const TOGGLE_SIZE = {
+    width: 30,
+    height: 18,
+    padding: '0 1px',
+    margin: '0',
+    label: {
+        fontSize: 13,
+        padding: '0px 0px 1px 0px'
+    },
+    circle: {
+        width: 14,
+        height: 14,
+        borderWidth: 1
+    }
+};
 
-const TOGGLE_SIZES = new Map<UIToggleSize, UIToggleSizeInfo>([
+const ICON_STYLE = new Map<boolean, React.CSSProperties>([
     [
-        UIToggleSize.Small,
+        true,
         {
-            width: 30,
-            height: 14,
-            padding: '0 2px',
-            margin: '0',
-            label: {
-                fontSize: 13,
-                padding: '2px 0'
-            },
-            circle: {
-                width: 10,
-                height: 10,
-                borderWidth: 5
-            }
+            position: 'relative',
+            top: -9,
+            left: 0
+        }
+    ],
+    [
+        false,
+        {
+            position: 'relative',
+            top: -11,
+            left: 0
         }
     ]
 ]);
@@ -59,19 +74,20 @@ const DISABLED_OPACITY = 0.4;
 
 const COLORS = {
     pill: {
-        borderColor: 'var(--vscode-contrastBorder, transparent)',
         unchecked: {
-            background: 'var(--vscode-titleBar-inactiveForeground)',
+            background: 'var(--vscode-editorWidget-background)',
+            borderColor: 'var(--vscode-editorWidget-border)',
             hover: {
-                background: 'var(--vscode-editorHint-foreground)',
-                borderColor: 'var(--vscode-contrastActiveBorder, transparent)'
+                background: 'var(--vscode-editorWidget-background)',
+                borderColor: 'var(--vscode-editorWidget-border)'
             }
         },
         checked: {
-            background: 'var(--vscode-button-background)',
+            background: 'var(--vscode-editorWidget-background)',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))',
             hover: {
-                background: 'var(--vscode-button-hoverBackground)',
-                borderColor: 'var(--vscode-contrastActiveBorder, transparent)'
+                background: 'var(--vscode-editorWidget-background)',
+                borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))'
             }
         },
         focus: {
@@ -79,7 +95,22 @@ const COLORS = {
         }
     },
     thumb: {
-        background: 'var(--vscode-button-foreground)'
+        unchecked: {
+            background: 'var(--vscode-button-secondaryBackground)',
+            borderColor: 'var(--vscode-button-border, transparent)',
+            hover: {
+                borderColor: 'var(--vscode-button-border, transparent)',
+                background: 'var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))'
+            }
+        },
+        checked: {
+            background: 'var(--vscode-button-background)',
+            borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
+            hover: {
+                borderColor: 'var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))',
+                background: 'var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))'
+            }
+        }
     }
 };
 
@@ -92,6 +123,7 @@ const COLORS = {
  * @extends {React.Component<IToggleProps, {}>}
  */
 export class UIToggle extends React.Component<UIToggleProps, {}> {
+    private readonly toggleRootRef: React.RefObject<HTMLDivElement>;
     /**
      * Initializes component properties.
      *
@@ -99,6 +131,65 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      */
     public constructor(props: UIToggleProps) {
         super(props);
+        this.toggleRootRef = React.createRef<HTMLDivElement>();
+        this.handleChange = this.handleChange.bind(this);
+        this.replaceThumbWithIcon = this.replaceThumbWithIcon.bind(this);
+    }
+
+    /**
+     * Lifecycle method called immediately after a component is mounted.
+     * Executes initialization logic such as DOM manipulations or fetching data.
+     *
+     * @returns {void} This method does not return a value.
+     */
+    componentDidMount() {
+        this.replaceThumbWithIcon(this.props.checked ?? this.props.defaultChecked);
+    }
+
+    /**
+     * Determines whether the component should update when the new props are received.
+     * This method is typically used for performance optimization.
+     *
+     * @param {UIToggleProps} nextProps - The next props to be received by the component.
+     * @returns {boolean} A boolean value indicating whether the component should update.
+     */
+    shouldComponentUpdate(nextProps: UIToggleProps): boolean {
+        if (nextProps.checked !== this.props.checked) {
+            this.replaceThumbWithIcon(nextProps.checked);
+        }
+        return true;
+    }
+
+    /**
+     * Handles the change event triggered by the user interaction.
+     *
+     * @param {React.MouseEvent<HTMLElement>} event - The mouse event object associated with the interaction.
+     * @param {boolean} [checked] - An optional parameter indicating the current state of the interaction.
+     * @returns {void} This method does not return a value.
+     */
+    handleChange(event: React.MouseEvent<HTMLElement>, checked?: boolean) {
+        this.replaceThumbWithIcon(checked);
+        this.props.onChange?.(event, checked);
+    }
+
+    /**
+     * Replaces the thumb element of a toggle switch with an icon based on the toggle's state.
+     *
+     * @param {boolean} [checked] Optional. Represents the state of the toggle switch. If not provided, it checks `defaultChecked` prop or defaults to `false`.
+     * @returns {void} Does not return a value.
+     */
+    replaceThumbWithIcon(checked = false): void {
+        if (this.toggleRootRef.current) {
+            const thumbElement = (this.toggleRootRef.current as HTMLElement)?.querySelector('.ms-Toggle-thumb');
+
+            if (thumbElement) {
+                const style = ICON_STYLE.get(checked);
+                ReactDOM.render(
+                    <UIIcon iconName={checked ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={style} />,
+                    thumbElement
+                );
+            }
+        }
     }
 
     /**
@@ -119,8 +210,8 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
      * @returns {JSX.Element}
      */
     render(): JSX.Element {
-        const { inlineLabelLeft, labelFlexGrow, size, inlineLabel } = this.props;
-        const sizeInfo: UIToggleSizeInfo | undefined = TOGGLE_SIZES.get(size ?? UIToggleSize.Standard);
+        const { inlineLabelLeft, labelFlexGrow, inlineLabel } = this.props;
+        const sizeInfo: UIToggleSizeInfo | undefined = TOGGLE_SIZE;
         const messageInfo = getMessageInfo(this.props);
 
         const styles = (styleProps: IToggleStyleProps): Partial<IToggleStyles> => {
@@ -153,33 +244,34 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     width: sizeInfo?.width,
                     padding: sizeInfo?.padding,
                     background: COLORS.pill.checked.background,
-                    borderColor: COLORS.pill.borderColor,
+                    borderColor: COLORS.pill.checked.borderColor,
                     borderStyle: 'solid',
                     ':hover': {
                         background: COLORS.pill.checked.hover.background,
                         borderColor: COLORS.pill.checked.hover.borderColor
                     },
-                    [`:hover .ms-Toggle-thumb`]: {
-                        backgroundColor: COLORS.thumb.background
-                    },
                     ':disabled': {
                         background: COLORS.pill.checked.background,
-                        borderColor: COLORS.pill.borderColor,
+                        borderColor: COLORS.pill.checked.borderColor,
                         opacity: DISABLED_OPACITY
                     },
                     ...(!styleProps.checked && {
                         background: COLORS.pill.unchecked.background,
-                        borderStyle: 'dashed',
+                        borderColor: COLORS.pill.unchecked.borderColor,
+                        borderStyle: 'solid',
+                        // This is a bug: the best implementation approach is to set hover styles in the "thumb" section.
+                        // However, the hover styles for the unchecked thumb don't work properly
+                        ':hover .ms-Toggle-thumb': {
+                            background: COLORS.thumb.unchecked.hover.background,
+                            borderColor: COLORS.thumb.unchecked.hover.borderColor
+                        },
                         ':hover': {
                             background: COLORS.pill.unchecked.hover.background,
                             borderColor: COLORS.pill.unchecked.hover.borderColor
                         },
-                        [`:hover .ms-Toggle-thumb`]: {
-                            backgroundColor: COLORS.thumb.background
-                        },
                         ':disabled': {
                             background: COLORS.pill.unchecked.background,
-                            borderColor: COLORS.pill.borderColor,
+                            borderColor: COLORS.pill.unchecked.borderColor,
                             opacity: DISABLED_OPACITY
                         }
                     }),
@@ -195,19 +287,29 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     height: sizeInfo?.circle.height,
                     width: sizeInfo?.circle.width,
                     borderWidth: sizeInfo?.circle.borderWidth,
-                    background: COLORS.thumb.background,
+                    backgroundPosition: 'center',
+                    borderColor: COLORS.thumb.checked.borderColor,
+                    backgroundColor: COLORS.thumb.checked.background,
                     ':hover': {
-                        backgroundColor: COLORS.thumb.background
-                    }
+                        background: COLORS.thumb.checked.hover.background,
+                        borderColor: COLORS.thumb.checked.hover.borderColor
+                    },
+                    ...(!styleProps.checked && {
+                        borderColor: COLORS.thumb.unchecked.borderColor,
+                        backgroundColor: COLORS.thumb.unchecked.background
+                    })
                 }
             };
         };
 
-        const toogleComponent = <Toggle {...this.props} styles={styles} />;
+        const toggleComponent = (
+            <Toggle {...this.props} styles={styles} ref={this.toggleRootRef} onChange={this.handleChange}></Toggle>
+        );
+
         return messageInfo.message ? (
-            <MessageWrapper message={messageInfo}>{toogleComponent}</MessageWrapper>
+            <MessageWrapper message={messageInfo}>{toggleComponent}</MessageWrapper>
         ) : (
-            toogleComponent
+            toggleComponent
         );
     }
 }

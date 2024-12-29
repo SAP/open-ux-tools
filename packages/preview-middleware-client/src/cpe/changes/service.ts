@@ -565,6 +565,50 @@ export class ChangeService extends EventTarget {
         return result;
     }
 
+    private prepareV2ConfigurationChange(
+        command: FlexCommand,
+        fileName: string,
+        index: number,
+        inactiveCommandCount: number
+    ): PendingConfigurationChange {
+        const { entityPropertyChange, page } = command.getProperty('parameters') as {
+            entityPropertyChange: {
+                propertyPath: string;
+                propertyValue: Record<string, string>;
+            };
+            page: string;
+        };
+        const propertyName = Object.keys(entityPropertyChange.propertyValue)[0];
+        const propertyValue = entityPropertyChange.propertyValue[propertyName];
+        const controlId = this.getCommandSelectorId(command) ?? '';
+        const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
+
+        const key = getConfigMapControlIdMap(page, propertyPathSegments);
+
+        const isActive = index >= inactiveCommandCount;
+        const controlIds = this.configPropertyControlIdMap?.get(key) || [controlId];
+
+        const result: PendingConfigurationChange = {
+            type: PENDING_CHANGE_TYPE,
+            kind: CONFIGURATION_CHANGE_KIND,
+            controlIds,
+            propertyPath: getCompactV4ConfigPath(propertyPathSegments) || page,
+            propertyName,
+            isActive,
+            value: propertyValue,
+            fileName
+        };
+        for (const id of result.controlIds) {
+            if (!this.pendingConfigChangeMap.get(id)) {
+                this.pendingConfigChangeMap.set(id, []);
+            }
+            const pendingChanges = this.pendingConfigChangeMap.get(id);
+            pendingChanges?.push(result);
+        }
+
+        return result;
+    }
+
     /**
      * Prepares the type of change based on the command and other parameters.
      *
@@ -620,6 +664,8 @@ export class ChangeService extends EventTarget {
                 command.getProperty('parameters') as { entityPropertyChange: { propertyValue: ConfigurationValue } }
             ).entityPropertyChange.propertyValue;
             return this.prepareV4ConfigurationChange(command, value, fileName, index, inactiveCommandCount);
+        } else if (changeType === 'appdescr_ui_generic_app_changePageConfiguration') {
+            return this.prepareV2ConfigurationChange(command, fileName, index, inactiveCommandCount);
         } else {
             let result: PendingChange = {
                 type: PENDING_CHANGE_TYPE,
