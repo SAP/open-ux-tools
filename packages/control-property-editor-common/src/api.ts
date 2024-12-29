@@ -199,6 +199,7 @@ export interface UnknownSavedChange {
     kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
     changeType: string;
+    title?: string;
     controlId?: string;
     timestamp?: number;
 }

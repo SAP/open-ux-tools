@@ -257,7 +257,7 @@ export default class RoutesHandler {
         }
     };
 
-    public handleCreateAnnoationFile = async (req: Request, res: Response, next: NextFunction) => {
+    public handleCreateAnnotationFile = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { dataSource, serviceUrl } = req.body as { dataSource: string; serviceUrl: string };
 
@@ -300,7 +300,7 @@ export default class RoutesHandler {
             const isRunningInBAS = isAppStudio();
 
             const manifestService = await this.getManifestService();
-            const dataSoruces = await manifestService.getManifestDataSources();
+            const dataSoruces = manifestService.getManifestDataSources();
             const apiResponse: {
                 [dataSourceId: string]: {
                     serviceUrl: string;

@@ -156,7 +156,7 @@ describe('Change Utils', () => {
             );
 
             expect(result).toEqual({
-                fileName: `id_${mockData.timestamp}`,
+                fileName: `id_${mockData.timestamp}_addAnnotationsToOData`,
                 namespace: `${mockData.projectData.namespace}/changes`,
                 layer: mockData.projectData.layer,
                 fileType: 'change',
