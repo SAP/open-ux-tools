@@ -100,7 +100,6 @@ export function deleteChange(
  * @param path path to the folder.
  * @param files all files in the given folder and subfolders.
  */
-
 function readDirectoriesRecursively(path: string, files: string[] = []): void {
     const items = readdirSync(path);
     items.forEach((item) => {

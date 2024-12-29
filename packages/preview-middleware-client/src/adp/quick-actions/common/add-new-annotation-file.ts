@@ -7,15 +7,20 @@ import {
     NestedQuickAction,
     NestedQuickActionChild
 } from '@sap-ux-private/control-property-editor-common';
-import { DialogNames, handler } from '../../init-dialogs';
+import { DialogFactory, DialogNames } from '../../dialog-factory';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import { QuickActionDefinitionBase } from '../quick-action-base';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const ADD_NEW_ANNOTATION_FILE = 'add-new-annotation-file';
 
 /**
  * Add New Annotation File.
  */
-export class AddNewAnnotationFile implements NestedQuickActionDefinition {
+export class AddNewAnnotationFile
+    extends QuickActionDefinitionBase<typeof NESTED_QUICK_ACTION_KIND>
+    implements NestedQuickActionDefinition
+{
     public children: NestedQuickActionChild[] = [];
     readonly kind = NESTED_QUICK_ACTION_KIND;
     readonly type = ADD_NEW_ANNOTATION_FILE;
@@ -23,8 +28,11 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
-
-    constructor(protected readonly context: QuickActionContext) {}
+    constructor(protected readonly context: QuickActionContext) {
+        super(ADD_NEW_ANNOTATION_FILE, NESTED_QUICK_ACTION_KIND, 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE', context, [
+            DIALOG_ENABLEMENT_VALIDATOR
+        ]);
+    }
     public get isApplicable(): boolean {
         return true;
     }
@@ -50,22 +58,14 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
             // Do not cache the result of getDataSourceAnnotationFileMap api , as annotation file or datasource can be added outside using create command/So refresh would be required for the cache to be updated.
             const dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
             const dataSourceId = Object.keys(dataSourceAnnotationFileMap)[index];
-            // Create annotation file only, if no file exists already for datasource id or if the change file exist and but no annotation file exists in file system.
-            if (
-                dataSourceAnnotationFileMap[dataSourceId] &&
-                !dataSourceAnnotationFileMap[dataSourceId].annotationDetails.annotationExistsInWS
-            ) {
-                await writeAnnotationFile({
-                    dataSource: dataSourceId,
-                    serviceUrl: dataSourceAnnotationFileMap[dataSourceId].serviceUrl
-                });
-            } else {
-                const annotationFileDetails = dataSourceAnnotationFileMap[dataSourceId].annotationDetails;
+            const dataSource = dataSourceAnnotationFileMap?.[dataSourceId];
+            if (dataSource?.annotationDetails.annotationExistsInWS) {
+                const annotationFileDetails = dataSource.annotationDetails;
                 const { annotationPath, annotationPathFromRoot, isRunningInBAS } = annotationFileDetails;
-                handler(
+                await DialogFactory.createDialog(
                     OverlayRegistry.getOverlay(this.context.view), // this passed only because, for method param is required.
                     this.context.rta, // same as above
-                    DialogNames.SHOW_FILE_EXIST_DIALOG,
+                    DialogNames.FILE_EXISTS,
                     undefined,
                     {
                         fileName: annotationPathFromRoot,
@@ -73,6 +73,13 @@ export class AddNewAnnotationFile implements NestedQuickActionDefinition {
                         isRunningInBAS
                     }
                 );
+            }
+            // Create annotation file only, if no file exists already for datasource id or if the change file exist and but no annotation file exists in file system.
+            else if (dataSource) {
+                await writeAnnotationFile({
+                    dataSource: dataSourceId,
+                    serviceUrl: dataSource.serviceUrl
+                });
             }
         }
         return [];

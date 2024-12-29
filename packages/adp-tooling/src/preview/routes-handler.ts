@@ -256,7 +256,13 @@ export default class RoutesHandler {
             next(e);
         }
     };
-
+    /**
+     * Handler for writing an annotation file to the workspace.
+     *
+     * @param req Request
+     * @param res Response
+     * @param next Next Function
+     */
     public handleCreateAnnotationFile = async (req: Request, res: Response, next: NextFunction) => {
         try {
             const { dataSource, serviceUrl } = req.body as { dataSource: string; serviceUrl: string };
@@ -295,6 +301,13 @@ export default class RoutesHandler {
         }
     };
 
+    /**
+     * Handler for mapping annotation files with datasoruce.
+     *
+     * @param _req Request
+     * @param res Response
+     * @param next Next Function
+     */
     public handleGetAllAnnotationFilesMappedByDataSource = async (_req: Request, res: Response, next: NextFunction) => {
         try {
             const isRunningInBAS = isAppStudio();
@@ -350,6 +363,11 @@ export default class RoutesHandler {
         }
     };
 
+    /**
+     * Returns manifest service.
+     *
+     * @returns Promise<ManifestService>
+     */
     private async getManifestService(): Promise<ManifestService> {
         const project = this.util.getProject();
         const basePath = project.getRootPath();

@@ -5,7 +5,7 @@ import type Event from 'sap/ui/base/Event';
 
 import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
 
-export interface ShowFileExist {
+export interface FileExistsDialogOptions {
     title: string;
     fileName: string;
     filePath: string;
@@ -16,11 +16,11 @@ export interface ShowFileExist {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ShowFileExistDialog {
-    private options: ShowFileExist;
+    private options: FileExistsDialogOptions;
     private model: JSONModel;
     private dialog: Dialog;
     private _name: string;
-    constructor(name: string, options: ShowFileExist) {
+    constructor(name: string, options: FileExistsDialogOptions) {
         this._name = name;
         this.model = new JSONModel();
         this.options = options;
@@ -31,13 +31,13 @@ export default class ShowFileExistDialog {
      *
      * @param {Dialog} dialog - Dialog instance
      */
-    async setup(dialog: Dialog): Promise<void> {
+    setup(dialog: Dialog): void {
         this.dialog = dialog;
 
         this.model.setProperty('/filePath', this.options.filePath);
         this.model.setProperty('/filePathFromRoot', this.options.fileName);
         this.model.setProperty('/isRunningInBAS', this.options.isRunningInBAS);
-        await this.buildDialogData();
+        this.buildDialogData();
 
         this.dialog.setModel(this.model);
 
@@ -49,14 +49,14 @@ export default class ShowFileExistDialog {
      *
      * @param _event Event
      */
-    async onShowFileInVscodeBtn(_event: Event) {
+    onShowFileInVscodeBtn(_event: Event) {
         const annotationPath = this.model.getProperty('/filePath');
         window.open(`vscode://file${annotationPath}`);
 
         this.handleDialogClose();
     }
 
-    async handleDialogClose() {
+    handleDialogClose() {
         this.dialog.close();
         this.dialog.destroy();
     }
@@ -64,7 +64,7 @@ export default class ShowFileExistDialog {
     /**
      * Builds data that is used in the dialog.
      */
-    async buildDialogData(): Promise<void> {
+    buildDialogData(): void {
         const content = this.dialog.getContent();
 
         const messageForm = content[0] as SimpleForm;
