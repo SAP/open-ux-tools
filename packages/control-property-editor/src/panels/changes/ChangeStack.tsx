@@ -202,6 +202,7 @@ function handleUnknownChange(change: Change): Item {
     return {
         fileName: change.fileName,
         header: true,
+        ...(change?.kind === 'unknown' && change.type === 'saved' && change.title && { title: change.title }),
         timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined,
         isActive: change.type === SAVED_CHANGE_TYPE ? true : change.isActive
     };
