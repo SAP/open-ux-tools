@@ -17,8 +17,8 @@ export interface FileExistsDialogOptions {
  */
 export default class ShowFileExistDialog {
     private options: FileExistsDialogOptions;
-    private model: JSONModel;
-    private dialog: Dialog;
+    public model: JSONModel;
+    public dialog: Dialog;
     private _name: string;
     constructor(name: string, options: FileExistsDialogOptions) {
         this._name = name;
