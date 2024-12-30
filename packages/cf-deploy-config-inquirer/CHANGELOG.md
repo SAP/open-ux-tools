@@ -1,5 +1,58 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.1
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 0.1.12
+
+### Patch Changes
+
+-   2fab480: handle CF router queston not returning service name
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.1.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.14
+
+## 0.1.9
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/inquirer-common@0.5.13
+
+## 0.1.8
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.12
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
 ## 0.1.6
 
 ### Patch Changes

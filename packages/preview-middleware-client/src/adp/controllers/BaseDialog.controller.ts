@@ -48,10 +48,6 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
      */
     public dialog: Dialog;
     /**
-     * UI5 version
-     */
-    public ui5Version: string;
-    /**
      * RTA Command Executor
      */
     protected commandExecutor: CommandExecutor;

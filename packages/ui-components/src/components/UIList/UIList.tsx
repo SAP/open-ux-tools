@@ -14,6 +14,13 @@ import { UiIcons } from '../Icons';
 
 import './UIList.scss';
 
+export {
+    IGroup as UIGroup,
+    IGroupedListProps as UIGroupedListProps,
+    IGroupHeaderProps as UIGroupHeaderProps,
+    IGroupRenderProps as UIGroupRenderProps
+};
+
 export interface ListProps extends IGroupedListProps {
     groups: IGroup[];
     groupProps?: IGroupRenderProps;

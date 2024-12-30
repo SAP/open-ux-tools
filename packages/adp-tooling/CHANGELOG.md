@@ -1,5 +1,62 @@
 # @sap-ux/adp-tooling
 
+## 0.12.101
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.1
+
+## 0.12.100
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 0.12.99
+
+### Patch Changes
+
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.12.98
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/system-access@0.5.24
+    -   @sap-ux/inquirer-common@0.5.14
+
+## 0.12.97
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/inquirer-common@0.5.13
+    -   @sap-ux/system-access@0.5.24
+
+## 0.12.96
+
+### Patch Changes
+
+-   3ebd767: Replace keytar with @zowe/secrets-for-zowe-sdk
+    -   @sap-ux/system-access@0.5.23
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/inquirer-common@0.5.12
+
+## 0.12.95
+
+### Patch Changes
+
+-   0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
 ## 0.12.94
 
 ### Patch Changes

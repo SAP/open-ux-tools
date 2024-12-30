@@ -7,9 +7,10 @@ import { UIToggle, UIToggleSize } from '../../../src/components/UIToggle/UIToggl
 
 describe('<UIToggle />', () => {
     let wrapper: Enzyme.ReactWrapper<UIToggleProps>;
+    const handleChangeMock = jest.fn();
 
     beforeEach(() => {
-        wrapper = Enzyme.mount(<UIToggle />);
+        wrapper = Enzyme.mount(<UIToggle onChange={handleChangeMock} checked={false} />);
     });
 
     afterEach(() => {
@@ -20,17 +21,51 @@ describe('<UIToggle />', () => {
         expect(wrapper.find('.ms-Toggle').length).toEqual(1);
     });
 
+    it('Should toggle the checked state correctly', () => {
+        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(0);
+
+        // Simulate toggle behavior
+        wrapper.find('button').simulate('click');
+        // Assert that handleChange was called once
+        expect(handleChangeMock).toHaveBeenCalledTimes(1);
+        wrapper.setProps({ checked: true }); // Simulating controlled prop change
+        wrapper.update();
+
+        // New state: checked
+        expect(wrapper.find('.ms-Toggle.is-checked').length).toEqual(1);
+    });
+
     describe('Styles', () => {
         const testCases = [
             {
                 name: 'Standard',
                 size: UIToggleSize.Standard,
-                expect: {}
+                expect: {
+                    margin: '0',
+                    fontSize: 13,
+                    padding: '0px 0px 1px 0px',
+                    height: 18,
+                    width: 30,
+                    innerPadding: '0 1px',
+                    thumbHeight: 14,
+                    thumbWidth: 14,
+                    borderWidth: 1
+                }
             },
             {
                 name: 'Default',
                 size: undefined,
-                expect: {}
+                expect: {
+                    margin: '0',
+                    fontSize: 13,
+                    padding: '0px 0px 1px 0px',
+                    height: 18,
+                    width: 30,
+                    innerPadding: '0 1px',
+                    thumbHeight: 14,
+                    thumbWidth: 14,
+                    borderWidth: 1
+                }
             },
             {
                 name: 'Small',
@@ -38,13 +73,13 @@ describe('<UIToggle />', () => {
                 expect: {
                     margin: '0',
                     fontSize: 13,
-                    padding: '2px 0',
-                    height: 14,
+                    padding: '0px 0px 1px 0px',
+                    height: 18,
                     width: 30,
-                    innerPadding: '0 2px',
-                    thumbHeight: 10,
-                    thumbWidth: 10,
-                    borderWidth: 5
+                    innerPadding: '0 1px',
+                    thumbHeight: 14,
+                    thumbWidth: 14,
+                    borderWidth: 1
                 }
             }
         ];
@@ -76,40 +111,44 @@ describe('<UIToggle />', () => {
             expect(styles.pill).toMatchInlineSnapshot(`
                 Object {
                   ":disabled": Object {
-                    "background": "var(--vscode-titleBar-inactiveForeground)",
-                    "borderColor": "var(--vscode-contrastBorder, transparent)",
+                    "background": "var(--vscode-editorWidget-background)",
+                    "borderColor": "var(--vscode-editorWidget-border)",
                     "opacity": 0.4,
                   },
                   ":hover": Object {
-                    "background": "var(--vscode-editorHint-foreground)",
-                    "borderColor": "var(--vscode-contrastActiveBorder, transparent)",
+                    "background": "var(--vscode-editorWidget-background)",
+                    "borderColor": "var(--vscode-editorWidget-border)",
                   },
                   ":hover .ms-Toggle-thumb": Object {
-                    "backgroundColor": "var(--vscode-button-foreground)",
+                    "background": "var(--vscode-contrastBorder, var(--vscode-button-secondaryHoverBackground))",
+                    "borderColor": "var(--vscode-button-border, transparent)",
                   },
-                  "background": "var(--vscode-titleBar-inactiveForeground)",
-                  "borderColor": "var(--vscode-contrastBorder, transparent)",
-                  "borderStyle": "dashed",
-                  "height": undefined,
-                  "padding": undefined,
+                  "background": "var(--vscode-editorWidget-background)",
+                  "borderColor": "var(--vscode-editorWidget-border)",
+                  "borderStyle": "solid",
+                  "height": 18,
+                  "padding": "0 1px",
                   "selectors": Object {
                     ":focus::after": Object {
                       "border": "none !important",
                       "outline": "1px solid var(--vscode-focusBorder) !important",
                     },
                   },
-                  "width": undefined,
+                  "width": 30,
                 }
             `);
             expect(styles.thumb).toMatchInlineSnapshot(`
                 Object {
                   ":hover": Object {
-                    "backgroundColor": "var(--vscode-button-foreground)",
+                    "background": "var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
                   },
-                  "background": "var(--vscode-button-foreground)",
-                  "borderWidth": undefined,
-                  "height": undefined,
-                  "width": undefined,
+                  "backgroundColor": "var(--vscode-button-secondaryBackground)",
+                  "backgroundPosition": "center",
+                  "borderColor": "var(--vscode-button-border, transparent)",
+                  "borderWidth": 1,
+                  "height": 14,
+                  "width": 14,
                 }
             `);
         });
@@ -120,40 +159,40 @@ describe('<UIToggle />', () => {
             expect(styles.pill).toMatchInlineSnapshot(`
                 Object {
                   ":disabled": Object {
-                    "background": "var(--vscode-button-background)",
-                    "borderColor": "var(--vscode-contrastBorder, transparent)",
+                    "background": "var(--vscode-editorWidget-background)",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
                     "opacity": 0.4,
                   },
                   ":hover": Object {
-                    "background": "var(--vscode-button-hoverBackground)",
-                    "borderColor": "var(--vscode-contrastActiveBorder, transparent)",
+                    "background": "var(--vscode-editorWidget-background)",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
                   },
-                  ":hover .ms-Toggle-thumb": Object {
-                    "backgroundColor": "var(--vscode-button-foreground)",
-                  },
-                  "background": "var(--vscode-button-background)",
-                  "borderColor": "var(--vscode-contrastBorder, transparent)",
+                  "background": "var(--vscode-editorWidget-background)",
+                  "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
                   "borderStyle": "solid",
-                  "height": undefined,
-                  "padding": undefined,
+                  "height": 18,
+                  "padding": "0 1px",
                   "selectors": Object {
                     ":focus::after": Object {
                       "border": "none !important",
                       "outline": "1px solid var(--vscode-focusBorder) !important",
                     },
                   },
-                  "width": undefined,
+                  "width": 30,
                 }
             `);
             expect(styles.thumb).toMatchInlineSnapshot(`
                 Object {
                   ":hover": Object {
-                    "backgroundColor": "var(--vscode-button-foreground)",
+                    "background": "var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
                   },
-                  "background": "var(--vscode-button-foreground)",
-                  "borderWidth": undefined,
-                  "height": undefined,
-                  "width": undefined,
+                  "backgroundColor": "var(--vscode-button-background)",
+                  "backgroundPosition": "center",
+                  "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
+                  "borderWidth": 1,
+                  "height": 14,
+                  "width": 14,
                 }
             `);
         });

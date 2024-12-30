@@ -1,5 +1,56 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.9.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.1
+
+## 0.9.0
+
+### Minor Changes
+
+-   112d29a: Include the name label for default UI5 choice
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 0.8.14
+
+### Patch Changes
+
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.8.13
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/inquirer-common@0.5.14
+
+## 0.8.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.13
+
+## 0.8.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.12
+
+## 0.8.10
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
 ## 0.8.9
 
 ### Patch Changes

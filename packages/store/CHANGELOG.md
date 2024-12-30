@@ -1,5 +1,11 @@
 # @sap-ux/store
 
+## 1.0.0
+
+### Major Changes
+
+-   3ebd767: Replace keytar with @zowe/secrets-for-zowe-sdk
+
 ## 0.9.3
 
 ### Patch Changes

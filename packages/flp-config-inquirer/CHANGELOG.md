@@ -1,5 +1,72 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.2.6
+
+### Patch Changes
+
+-   fe0878d: feat(flp-config): adds new flp config generator
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+    -   @sap-ux/inquirer-common@0.6.1
+    -   @sap-ux/adp-tooling@0.12.101
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+    -   @sap-ux/adp-tooling@0.12.100
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+    -   @sap-ux/adp-tooling@0.12.99
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/adp-tooling@0.12.98
+    -   @sap-ux/fiori-generator-shared@0.7.17
+    -   @sap-ux/inquirer-common@0.5.14
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/adp-tooling@0.12.97
+    -   @sap-ux/fiori-generator-shared@0.7.16
+    -   @sap-ux/inquirer-common@0.5.13
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/adp-tooling@0.12.96
+    -   @sap-ux/fiori-generator-shared@0.7.15
+    -   @sap-ux/inquirer-common@0.5.12
+
+## 0.2.0
+
+### Minor Changes
+
+-   0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+    -   @sap-ux/adp-tooling@0.12.95
+
 ## 0.1.6
 
 ### Patch Changes

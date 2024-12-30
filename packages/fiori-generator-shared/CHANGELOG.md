@@ -1,5 +1,33 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.18
+
+### Patch Changes
+
+-   fe0878d: feat(flp-config): adds new flp config generator
+
+## 0.7.17
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/telemetry@0.5.50
+
+## 0.7.16
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/telemetry@0.5.49
+
+## 0.7.15
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.48
+
 ## 0.7.14
 
 ### Patch Changes
