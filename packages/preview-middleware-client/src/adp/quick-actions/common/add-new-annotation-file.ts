@@ -61,7 +61,7 @@ export class AddNewAnnotationFile
             const dataSource = dataSourceAnnotationFileMap?.[dataSourceId];
             if (dataSource?.annotationDetails.annotationExistsInWS) {
                 const annotationFileDetails = dataSource.annotationDetails;
-                const { annotationPath, annotationPathFromRoot, isRunningInBAS } = annotationFileDetails;
+                const { annotationPath, annotationPathFromRoot } = annotationFileDetails;
                 await DialogFactory.createDialog(
                     OverlayRegistry.getOverlay(this.context.view), // this passed only because, for method param is required.
                     this.context.rta, // same as above
@@ -70,7 +70,7 @@ export class AddNewAnnotationFile
                     {
                         fileName: annotationPathFromRoot,
                         filePath: annotationPath,
-                        isRunningInBAS
+                        isRunningInBAS: dataSource.isRunningInBAS
                     }
                 );
             }

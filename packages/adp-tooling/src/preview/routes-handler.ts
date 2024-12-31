@@ -14,6 +14,7 @@ import { DirName, FileName } from '@sap-ux/project-access';
 import { ChangeType, type CodeExtChange } from '../types';
 import { generateChange } from '../writer/editors';
 import { ManifestService } from '../base/abap/manifest-service';
+import type { DataSources } from '../base/abap/manifest-service';
 import { getAdpConfig, getVariant } from '../base/helper';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
@@ -28,8 +29,16 @@ interface AnnotationFileDetails {
     annotationPath?: string;
     annotationPathFromRoot?: string;
     annotationExistsInWS: boolean;
-    isRunningInBAS: boolean;
 }
+
+interface AnnotationDataSourceMap {
+    [key: string]: {
+        serviceUrl: string;
+        isRunningInBAS: boolean;
+        annotationDetails: AnnotationFileDetails;
+    };
+}
+
 /**
  * @description Handles API Routes
  */
@@ -314,57 +323,66 @@ export default class RoutesHandler {
 
             const manifestService = await this.getManifestService();
             const dataSoruces = manifestService.getManifestDataSources();
-            const apiResponse: {
-                [dataSourceId: string]: {
-                    serviceUrl: string;
-                    annotationDetails: AnnotationFileDetails; // get top most file and check if its in workspace
-                };
-            } = {};
-            const project = this.util.getProject();
-            const getPath = (projectPath: string, relativePath: string) =>
-                path.join(projectPath, DirName.Changes, relativePath).split(path.sep).join(path.posix.sep);
+            const apiResponse: AnnotationDataSourceMap = {};
+
             for (const dataSourceId in dataSoruces) {
                 if (dataSoruces[dataSourceId].type === 'OData') {
                     apiResponse[dataSourceId] = {
                         annotationDetails: {
-                            isRunningInBAS: isRunningInBAS,
                             annotationExistsInWS: false
                         },
-                        serviceUrl: dataSoruces[dataSourceId].uri
+                        serviceUrl: dataSoruces[dataSourceId].uri,
+                        isRunningInBAS: isRunningInBAS
                     };
                 }
-                const annotations = dataSoruces[dataSourceId].settings?.annotations
-                    ? [...dataSoruces[dataSourceId].settings.annotations].reverse()
-                    : [];
-                for (const annotation of annotations) {
-                    const annotationSetting = dataSoruces[annotation];
-                    if (annotationSetting.type === 'ODataAnnotation') {
-                        const ui5NamespaceUri = `ui5://${project.getNamespace()}`;
-                        if (annotationSetting.uri.startsWith(ui5NamespaceUri)) {
-                            const localAnnotationUri = annotationSetting.uri.replace(ui5NamespaceUri, '');
-                            const annotationPath = getPath(project.getSourcePath(), localAnnotationUri);
-                            const annotationPathFromRoot = getPath(project.getName(), localAnnotationUri);
-                            const annotationExists = fs.existsSync(annotationPath);
-                            apiResponse[dataSourceId].annotationDetails = {
-                                fileName: path.parse(localAnnotationUri).base,
-                                annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
-                                annotationPathFromRoot,
-                                annotationExistsInWS: annotationExists,
-                                isRunningInBAS
-                            };
-                        }
-                        if (apiResponse[dataSourceId].annotationDetails.annotationExistsInWS) {
-                            break;
-                        }
-                    }
-                }
+                this.fillAnnotationDataSourceMap(dataSoruces, dataSourceId, apiResponse);
             }
-
             this.sendFilesResponse(res, apiResponse);
         } catch (e) {
             this.handleErrorMessage(res, next, e);
         }
     };
+
+    /**
+     * Add local annotation details to api response.
+     *
+     * @param dataSoruces DataSources
+     * @param dataSourceId string
+     * @param apiResponse AnnotationDataSourceMap
+     */
+    private fillAnnotationDataSourceMap(
+        dataSoruces: DataSources,
+        dataSourceId: string,
+        apiResponse: AnnotationDataSourceMap
+    ): void {
+        const project = this.util.getProject();
+        const getPath = (projectPath: string, relativePath: string): string =>
+            path.join(projectPath, DirName.Changes, relativePath).split(path.sep).join(path.posix.sep);
+        const annotations = dataSoruces[dataSourceId].settings?.annotations
+            ? [...dataSoruces[dataSourceId].settings.annotations].reverse()
+            : [];
+        for (const annotation of annotations) {
+            const annotationSetting = dataSoruces[annotation];
+            if (annotationSetting.type === 'ODataAnnotation') {
+                const ui5NamespaceUri = `ui5://${project.getNamespace()}`;
+                if (annotationSetting.uri.startsWith(ui5NamespaceUri)) {
+                    const localAnnotationUri = annotationSetting.uri.replace(ui5NamespaceUri, '');
+                    const annotationPath = getPath(project.getSourcePath(), localAnnotationUri);
+                    const annotationPathFromRoot = getPath(project.getName(), localAnnotationUri);
+                    const annotationExists = fs.existsSync(annotationPath);
+                    apiResponse[dataSourceId].annotationDetails = {
+                        fileName: path.parse(localAnnotationUri).base,
+                        annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
+                        annotationPathFromRoot,
+                        annotationExistsInWS: annotationExists
+                    };
+                }
+                if (apiResponse[dataSourceId].annotationDetails.annotationExistsInWS) {
+                    break;
+                }
+            }
+        }
+    }
 
     /**
      * Returns manifest service.

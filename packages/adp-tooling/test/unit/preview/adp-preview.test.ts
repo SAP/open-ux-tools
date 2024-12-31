@@ -728,7 +728,7 @@ describe('AdaptationProject', () => {
 
             const message = response.text;
             expect(message).toMatchInlineSnapshot(
-                `"{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/changes/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/changes/annotation0.xml\\",\\"isRunningInBAS\\":false},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"isRunningInBAS\\":false,\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}"`
+                `"{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/changes/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/changes/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\",\\"isRunningInBAS\\":false},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\",\\"isRunningInBAS\\":false}}"`
             );
         });
     });

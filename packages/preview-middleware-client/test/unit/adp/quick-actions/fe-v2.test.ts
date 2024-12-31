@@ -1287,18 +1287,18 @@ describe('FE V2 quick actions', () => {
                     json: jest.fn().mockReturnValue({
                         mainService: {
                             serviceUrl: 'main/service/url',
+                            isRunningInBAS: false,
                             annotationDetails: {
-                                annotationExistsInWS: false,
-                                isRunningInBAS: false
+                                annotationExistsInWS: false
                             }
                         },
                         dataService: {
                             serviceUrl: 'data/service/url',
+                            isRunningInBAS: false,
                             annotationDetails: {
                                 annotationExistsInWS: true,
                                 annotationPath: 'mock/adp/project/annotation/path',
-                                annotationPathFromRoot: 'mock/adp.project.annotation/path',
-                                isRunningInBAS: false
+                                annotationPathFromRoot: 'mock/adp.project.annotation/path'
                             }
                         }
                     }),
@@ -1376,112 +1376,6 @@ describe('FE V2 quick actions', () => {
                 });
             });
             test('initialize and execute action', async () => {
-                const pageView = new XMLView();
-                FlexUtils.getViewForControl.mockImplementation(() => {
-                    return {
-                        getId: () => 'MyView',
-                        getController: () => {
-                            return {
-                                getMetadata: () => {
-                                    return {
-                                        getName: () => 'MyController'
-                                    };
-                                }
-                            };
-                        }
-                    };
-                });
-                fetchMock.mockResolvedValue({
-                    json: jest.fn().mockReturnValue({
-                        mainService: {
-                            serviceUrl: 'main/service/url',
-                            annotationDetails: {
-                                annotationExistsInWS: false,
-                                isRunningInBAS: false
-                            }
-                        },
-                        dataService: {
-                            serviceUrl: 'data/service/url',
-                            annotationDetails: {
-                                annotationExistsInWS: true,
-                                annotationPath: 'mock/adp/project/annotation/path',
-                                annotationPathFromRoot: 'mock/adp.project.annotation/path',
-                                isRunningInBAS: false
-                            }
-                        }
-                    }),
-                    text: jest.fn(),
-                    ok: true
-                });
-                sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'DynamicPage') {
-                        return {
-                            getDomRef: () => ({}),
-                            getParent: () => pageView
-                        };
-                    }
-                    if (id == 'NavContainer') {
-                        const container = new NavContainer();
-                        const component = new UIComponentMock();
-                        const view = new XMLView();
-                        pageView.getDomRef.mockImplementation(() => {
-                            return {
-                                contains: () => true
-                            };
-                        });
-                        pageView.getViewName.mockImplementation(
-                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-                        );
-                        const componentContainer = new ComponentContainer();
-                        const spy = jest.spyOn(componentContainer, 'getComponent');
-                        spy.mockImplementation(() => {
-                            return 'component-id';
-                        });
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-                            if (id === 'component-id') {
-                                return component;
-                            }
-                        });
-                        view.getContent.mockImplementation(() => {
-                            return [componentContainer];
-                        });
-                        container.getCurrentPage.mockImplementation(() => {
-                            return view;
-                        });
-                        component.getRootControl.mockImplementation(() => {
-                            return pageView;
-                        });
-                        return container;
-                    }
-                });
-
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const registry = new FEV2QuickActionRegistry();
-                const service = new QuickActionService(
-                    rtaMock,
-                    new OutlineService(rtaMock, mockChangeService),
-                    [registry],
-                    { onStackChange: jest.fn() } as any
-                );
-                await service.init(sendActionMock, subscribeMock);
-
-                await service.reloadQuickActions({
-                    'sap.f.DynamicPage': [
-                        {
-                            controlId: 'DynamicPage'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ],
-                    'sap.ui.core.XMLView': [
-                        {
-                            controlId: 'ListReportView'
-                        } as any
-                    ]
-                });
                 const writeAnnotFileSpy = jest.spyOn(handler, 'writeAnnotationFile');
 
                 expect(sendActionMock).toHaveBeenCalledWith(
@@ -1525,7 +1419,6 @@ describe('FE V2 quick actions', () => {
                     dataSource: 'mainService',
                     serviceUrl: 'main/service/url'
                 });
-                // expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
             });
             test('initialize and execute action - when file exists', async () => {
                 await subscribeMock.mock.calls[0][0](

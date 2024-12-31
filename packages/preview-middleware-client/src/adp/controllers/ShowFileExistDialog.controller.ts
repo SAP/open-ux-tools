@@ -19,7 +19,7 @@ export default class ShowFileExistDialog {
     private options: FileExistsDialogOptions;
     public model: JSONModel;
     public dialog: Dialog;
-    private _name: string;
+    private readonly _name: string;
     constructor(name: string, options: FileExistsDialogOptions) {
         this._name = name;
         this.model = new JSONModel();

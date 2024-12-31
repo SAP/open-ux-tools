@@ -44,7 +44,7 @@ export function UnknownChange(unknownChangeProps: UnknownChangeProps): ReactElem
     const parts = fileName.split('_');
     const changeName = parts[parts.length - 1];
     const name = convertCamelCaseToPascalCase(changeName);
-    const headerText = title ? title : `${name} ${t('CHANGE')}`;
+    const headerText = title ?? `${name} ${t('CHANGE')}`;
     return (
         <>
             <Stack className={styles.item}>
