@@ -333,7 +333,10 @@ export default class RoutesHandler {
                         serviceUrl: dataSoruces[dataSourceId].uri
                     };
                 }
-                for (const annotation of (dataSoruces[dataSourceId].settings?.annotations ?? [])?.reverse()) {
+                const annotations = dataSoruces[dataSourceId].settings?.annotations
+                    ? [...dataSoruces[dataSourceId].settings.annotations].reverse()
+                    : [];
+                for (const annotation of annotations) {
                     const annotationSetting = dataSoruces[annotation];
                     if (annotationSetting.type === 'ODataAnnotation') {
                         const ui5NamespaceUri = `ui5://${project.getNamespace()}`;
