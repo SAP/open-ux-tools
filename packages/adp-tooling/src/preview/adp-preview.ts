@@ -21,7 +21,8 @@ declare global {
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
-    CODE_EXT = '/adp/api/code_ext/:controllerName'
+    CODE_EXT = '/adp/api/code_ext/:controllerName',
+    ANNOTATION = '/adp/api/annotation'
 }
 
 /**
@@ -198,6 +199,11 @@ export class AdpPreview {
         router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+        router.post(ApiRoutes.ANNOTATION, this.routesHandler.handleCreateAnnotationFile as RequestHandler);
+        router.get(
+            ApiRoutes.ANNOTATION,
+            this.routesHandler.handleGetAllAnnotationFilesMappedByDataSource as RequestHandler
+        );
     }
 
     /**

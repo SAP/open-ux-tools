@@ -21,9 +21,9 @@ describe('flex', () => {
         const project = {
             byGlob: byGlobMock
         } as unknown as ReaderCollection;
-        function mockChange(id: string, ext: string = 'change', content?: object) {
+        function mockChange(id: string, subfolderPath: string = '', ext: string = 'change', content?: object) {
             return {
-                getPath: () => `test/changes/${id}.${ext}`,
+                getPath: () => `test/changes/${subfolderPath}/${id}.${ext}`,
                 getName: () => `${id}.${ext}`,
                 getString: () => Promise.resolve(JSON.stringify(content ?? { id }))
             };
@@ -35,19 +35,24 @@ describe('flex', () => {
         });
 
         test('valid changes', async () => {
-            byGlobMock.mockResolvedValueOnce([mockChange('id1'), mockChange('id2', 'ctrl_variant_management_change')]);
+            byGlobMock.mockResolvedValueOnce([
+                mockChange('id1'),
+                mockChange('id2', '', 'ctrl_variant_management_change'),
+                mockChange('id3', 'manifest', 'appdescr_app_addAnnotationsToOData')
+            ]);
             const changes = await readChanges(project, logger);
-            expect(Object.keys(changes)).toHaveLength(2);
+            expect(Object.keys(changes)).toHaveLength(3);
             expect(changes).toEqual({
                 'sap.ui.fl.id1': { id: 'id1' },
-                'sap.ui.fl.id2': { id: 'id2' }
+                'sap.ui.fl.id2': { id: 'id2' },
+                'sap.ui.fl.id3': { id: 'id3' }
             });
         });
 
         test('mix of valid and invalid changes', async () => {
             byGlobMock.mockResolvedValueOnce([
                 mockChange('id1'), // valid
-                mockChange('id2', 'change', { changeType: 'addXML' }), // valid but moduleName cannot be replaced
+                mockChange('id2', '', 'change', { changeType: 'addXML' }), // valid but moduleName cannot be replaced
                 { invalid: 'change' } // invalid
             ]);
             const changes = await readChanges(project, logger);
@@ -63,7 +68,7 @@ describe('flex', () => {
                     codeRef: 'controller/MyExtension.js'
                 }
             };
-            byGlobMock.mockResolvedValueOnce([mockChange('id1', 'change', change)]);
+            byGlobMock.mockResolvedValueOnce([mockChange('id1', '', 'change', change)]);
             const changes = await readChanges(project, logger);
             expect(changes['sap.ui.fl.id1'].changeType).toBe('codeExt');
         });
@@ -76,7 +81,7 @@ describe('flex', () => {
                     fragmentPath: 'fragment/MyFragment.xml'
                 }
             };
-            byGlobMock.mockResolvedValueOnce([mockChange('id1', 'change', change)]);
+            byGlobMock.mockResolvedValueOnce([mockChange('id1', '', 'change', change)]);
             const changes = await readChanges(project, logger);
             expect(changes['sap.ui.fl.id1'].changeType).toBe('addXML');
         });
