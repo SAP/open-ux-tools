@@ -7,6 +7,5 @@ export {
     MiddlewareConfig,
     DefaultFlpPath,
     DefaultIntent,
-    InternalTestConfig,
     TestConfigDefaults
 } from './types';

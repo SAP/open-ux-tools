@@ -9,14 +9,17 @@ import type { Editor } from 'mem-fs-editor';
 import type {
     FlpConfig,
     MiddlewareConfig as PreviewConfig,
-    TestConfig,
     DefaultFlpPath,
     DefaultIntent,
-    InternalTestConfig,
-    TestConfigDefaults
+    TestConfigDefaults as PreviewTestConfigDefaults
 } from '@sap-ux/preview-middleware';
 import type { PreviewConfigOptions } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
+
+type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
+
+type PreviewTestConfig = ArrayElement<Required<PreviewConfig>['test']>;
+
 const DEFAULT_FLP_PATH: DefaultFlpPath = '/test/flp.html';
 
 const DEFAULT_INTENT: DefaultIntent = {
@@ -24,7 +27,7 @@ const DEFAULT_INTENT: DefaultIntent = {
     action: 'preview'
 };
 
-export const TEST_CONFIG_DEFAULTS: Record<string, InternalTestConfig> = {
+export const TEST_CONFIG_DEFAULTS: Record<string, Required<PreviewTestConfig>> = {
     qunit: {
         path: '/test/unitTests.qunit.html',
         framework: 'QUnit'
@@ -38,13 +41,13 @@ export const TEST_CONFIG_DEFAULTS: Record<string, InternalTestConfig> = {
         framework: 'Testsuite'
     }
 } as Omit<
-    TestConfigDefaults,
-    | TestConfigDefaults['testsuite']['init']
-    | TestConfigDefaults['testsuite']['pattern']
-    | TestConfigDefaults['opa5']['init']
-    | TestConfigDefaults['opa5']['pattern']
-    | TestConfigDefaults['qunit']['init']
-    | TestConfigDefaults['qunit']['pattern']
+    PreviewTestConfigDefaults,
+    | PreviewTestConfigDefaults['testsuite']['init']
+    | PreviewTestConfigDefaults['testsuite']['pattern']
+    | PreviewTestConfigDefaults['opa5']['init']
+    | PreviewTestConfigDefaults['opa5']['pattern']
+    | PreviewTestConfigDefaults['qunit']['init']
+    | PreviewTestConfigDefaults['qunit']['pattern']
 >;
 
 /**
@@ -295,7 +298,7 @@ export function updateTestConfig(
 ): PreviewConfig['test'] {
     testConfiguration = testConfiguration ?? [];
 
-    let framework: TestConfig['framework'] | undefined;
+    let framework: PreviewTestConfig['framework'] | undefined;
     if (path?.includes('testsuite.qunit.html')) {
         framework = 'Testsuite';
     } else if (path?.includes('opaTests.qunit.html')) {
