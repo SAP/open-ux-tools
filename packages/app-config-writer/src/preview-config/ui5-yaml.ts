@@ -27,7 +27,7 @@ const DEFAULT_INTENT: DefaultIntent = {
     action: 'preview'
 };
 
-export const TEST_CONFIG_DEFAULTS: Record<string, Required<PreviewTestConfig>> = {
+export const TEST_CONFIG_DEFAULTS: Record<string, Readonly<Required<PreviewTestConfig>>> = {
     qunit: {
         path: '/test/unitTests.qunit.html',
         framework: 'QUnit'
