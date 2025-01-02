@@ -486,6 +486,9 @@ importers:
 
   packages/adp-tooling:
     dependencies:
+      '@sap-ux-private/control-property-editor-common':
+        specifier: workspace:*
+        version: link:../control-property-editor-common
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension

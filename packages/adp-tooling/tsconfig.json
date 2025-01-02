@@ -18,6 +18,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../control-property-editor-common"
+    },
+    {
       "path": "../i18n"
     },
     {

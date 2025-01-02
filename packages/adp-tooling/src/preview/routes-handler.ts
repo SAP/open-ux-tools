@@ -3,15 +3,18 @@ import * as os from 'os';
 import * as path from 'path';
 import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
+import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ToolsLogger } from '@sap-ux/logger';
+import { DirName } from '@sap-ux/project-access';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 
+import { getVariant } from '../base/helper';
 import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName } from '@sap-ux/project-access';
-import type { CodeExtChange } from '../types';
+import type { AdpPreviewConfig, CodeExtChange } from '../types';
+import { ManifestService } from '../base/abap/manifest-service';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -30,6 +33,7 @@ export default class RoutesHandler {
      * @param logger Logger instance
      */
     constructor(
+        private readonly config: AdpPreviewConfig,
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
@@ -241,6 +245,58 @@ export default class RoutesHandler {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);
             res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
+            next(e);
+        }
+    };
+
+    public handleMetadataCheck = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
+        const project = this.util.getProject();
+        const basePath = project.getRootPath();
+        const variant = getVariant(basePath);
+
+        try {
+            const provider = await createAbapServiceProvider(
+                this.config.target,
+                { ignoreCertErrors: this.config.ignoreCertErrors },
+                true,
+                this.logger
+            );
+
+            const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
+            const allDataSources = manifestService.getManifestDataSources();
+            const dataSourceIds = Object.entries(allDataSources);
+
+            const results: Record<string, { success: boolean; metadata?: string; uri: string; message?: string }> = {};
+
+            for (const [id, { uri }] of dataSourceIds) {
+                try {
+                    const metadata = await manifestService.getRemoteMetadata(id);
+                    results[id] = {
+                        success: true,
+                        metadata,
+                        uri
+                    };
+                } catch (e) {
+                    this.logger.error(`Failed to retrieve metadata for '${id}': ${e.message}`);
+                    // Record the failure in the results object
+                    results[id] = {
+                        success: false,
+                        message: e.message,
+                        uri
+                    };
+                }
+            }
+
+            res.status(200).json({
+                success: true,
+                results
+            });
+        } catch (e: any) {
+            this.logger.error(`Failed to retrieve metadata for data sources. Error: ${e.message}`);
+            res.status(500).json({
+                success: false,
+                message: e.message || 'Error retrieving data sources metadata'
+            });
             next(e);
         }
     };
