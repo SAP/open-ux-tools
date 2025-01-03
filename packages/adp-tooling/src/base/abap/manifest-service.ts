@@ -6,6 +6,7 @@ import { isAxiosError, type AbapServiceProvider, type Ui5AppInfoContent } from '
 
 import { getWebappFiles } from '../helper';
 import type { DescriptorVariant } from '../../types';
+import { fetchFallbackMetadata, fetchMetadata } from './metadata-fetchers';
 
 type DataSources = Record<string, ManifestNamespace.DataSource>;
 
@@ -166,6 +167,28 @@ export class ManifestService {
         return dataSources;
     }
 
+    public getDataSourceById(dataSourceId: string) {
+        const dataSource = this.manifest?.['sap.app']?.dataSources?.[dataSourceId];
+
+        if (!dataSource) {
+            throw new Error('No metadata path found in the manifest');
+        }
+
+        return dataSource;
+    }
+
+    public async getRemoteMetadata(dataSourceId: string): Promise<string> {
+        const dataSource = this.getDataSourceById(dataSourceId);
+
+        try {
+            const baseUrl = new URL(this.appInfo.url, this.provider.defaults.baseURL as string);
+
+            return await fetchMetadata(dataSource, baseUrl, this.provider, this.logger);
+        } catch (e) {
+            throw new Error(`Could not fetch metadata for '${dataSource.uri}'. ${e.message}`);
+        }
+    }
+
     /**
      * Returns the metadata of a data source.
      *
@@ -174,32 +197,25 @@ export class ManifestService {
      * @throws Error if no metadata path is found in the manifest or fetching fails.
      */
     public async getDataSourceMetadata(dataSourceId: string): Promise<string> {
-        const dataSource = this.manifest?.['sap.app']?.dataSources?.[dataSourceId];
+        const dataSource = this.getDataSourceById(dataSourceId);
 
-        if (!dataSource) {
-            throw new Error('No metadata path found in the manifest');
-        }
         const baseUrl = new URL(this.appInfo.url, this.provider.defaults.baseURL as string);
-        const metadataUrl = new URL(`${dataSource.uri}$metadata`, baseUrl.toString());
+
         try {
-            const response = await this.provider.get(metadataUrl.toString());
-            return response.data;
+            return await fetchMetadata(dataSource, baseUrl, this.provider, this.logger);
         } catch (error) {
-            if (dataSource?.settings?.localUri) {
-                this.logger.warn('Metadata fetching failed. Fallback to local metadata');
+            this.logger.warn('Metadata fetching failed. Fallback to local metadata');
+
+            if (dataSource.settings?.localUri) {
                 try {
-                    const fallbackUrl = new URL(
-                        dataSource?.settings.localUri,
-                        `${baseUrl.toString().endsWith('/') ? baseUrl.toString() : baseUrl.toString() + '/'}`
-                    );
-                    const response = await this.provider.get(fallbackUrl.toString());
-                    return response.data;
+                    return await fetchFallbackMetadata(dataSource, baseUrl, this.provider, this.logger);
                 } catch (fallbackError) {
-                    this.logger.error('Local metadata fallback fetching failed');
+                    this.logger.error(`Local metadata fallback also failed for '${dataSourceId}'`);
                     throw fallbackError;
                 }
             }
-            this.logger.error('Metadata fetching failed');
+
+            this.logger.error(`Metadata fetching failed, no local fallback available for '${dataSourceId}'`);
             throw error;
         }
     }

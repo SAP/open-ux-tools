@@ -21,7 +21,8 @@ declare global {
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
-    CODE_EXT = '/adp/api/code_ext/:controllerName'
+    CODE_EXT = '/adp/api/code_ext/:controllerName',
+    METADATA = '/adp/api/metadata'
 }
 
 /**
@@ -91,7 +92,7 @@ export class AdpPreview {
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
     ) {
-        this.routesHandler = new RoutesHandler(project, util, logger);
+        this.routesHandler = new RoutesHandler(config, project, util, logger);
     }
 
     /**
@@ -198,6 +199,12 @@ export class AdpPreview {
         router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+
+        router.get(
+            ApiRoutes.METADATA,
+            async (req: Request, res: Response, next: NextFunction) =>
+                await this.routesHandler.handleMetadataCheck(req, res, next)
+        );
     }
 
     /**

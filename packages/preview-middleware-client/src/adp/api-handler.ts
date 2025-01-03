@@ -6,6 +6,7 @@ export const enum ApiEndpoints {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
     CODE_EXT = '/adp/api/code_ext',
+    METADATA = '/adp/api/metadata',
     MANIFEST_APP_DESCRIPTOR = '/manifest.appdescr_variant'
 }
 
@@ -37,6 +38,14 @@ export interface ControllersResponse {
     controllers: Controllers;
     message: string;
 }
+
+export interface MetadataResponse {
+    message: string;
+    success: boolean;
+    results: MetadataResponseResult;
+}
+
+export type MetadataResponseResult = Record<string, { success: boolean; metadata?: any; message?: string }>;
 
 export interface ManifestAppdescr {
     fileName: string;
@@ -157,4 +166,13 @@ export async function getExistingController(controllerName: string): Promise<Cod
  */
 export async function writeChange<T>(data: T): Promise<T> {
     return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, data);
+}
+
+/**
+ * Checks each data source in the manifest.
+ *
+ * @returns {Promise<MetadataResponse>} Returns metadata for each data source.
+ */
+export async function checkMetadata(): Promise<MetadataResponse> {
+    return request<MetadataResponse>(ApiEndpoints.METADATA, RequestMethod.GET);
 }
