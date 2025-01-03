@@ -48,6 +48,8 @@ export default class extends Generator {
      * @param {FlpConfigOptions} opts - The options for the generator.
      */
     constructor(args: string | string[], opts: FlpConfigOptions) {
+        // Force the generator to overwrite existing files without prompting
+        opts.force = true;
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchFlpConfigAsSubGenerator = Boolean(opts.launchFlpConfigAsSubGenerator);
