@@ -5,7 +5,7 @@ import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { DirName } from '@sap-ux/project-access';
+import { DirName, filterDataSourcesByType } from '@sap-ux/project-access';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
@@ -264,7 +264,7 @@ export default class RoutesHandler {
 
             const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
             const allDataSources = manifestService.getManifestDataSources();
-            const dataSourceIds = Object.entries(allDataSources);
+            const dataSourceIds = Object.entries(filterDataSourcesByType(allDataSources, 'OData'));
 
             const results: Record<string, { success: boolean; metadata?: string; uri: string; message?: string }> = {};
 
