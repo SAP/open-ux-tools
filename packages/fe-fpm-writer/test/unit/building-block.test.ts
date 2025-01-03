@@ -750,10 +750,7 @@ describe('Building Blocks', () => {
             metaPath: 'testMetaPath',
             header: '{i18n>test}'
         };
-        const basePath = join(
-            testAppPath,
-            `generate-${tableBuildingBlock.buildingBlockType}-with-optional-params`
-        );
+        const basePath = join(testAppPath, `generate-${tableBuildingBlock.buildingBlockType}-with-optional-params`);
         const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
         fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
         fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
@@ -768,9 +765,7 @@ describe('Building Blocks', () => {
             },
             fs
         );
-        expect(fs.dump(testAppPath)).toMatchSnapshot(
-            `avoid-serealization-of-i18n-binding`
-        );
+        expect(fs.dump(testAppPath)).toMatchSnapshot(`avoid-serealization-of-i18n-binding`);
         await writeFilesForDebugging(fs);
     });
 });
