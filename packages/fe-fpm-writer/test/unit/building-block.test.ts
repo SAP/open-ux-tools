@@ -741,4 +741,36 @@ describe('Building Blocks', () => {
         );
         expect(fs.readJSON(join(basePath, manifestFilePath))).toMatchSnapshot();
     });
+
+    test('Avoid formatting "{i18n>}" into "{i18n&gt;}"', async () => {
+        const tableBuildingBlock: Table = {
+            id: 'testTable',
+            buildingBlockType: BuildingBlockType.Table,
+            contextPath: 'testContextPath',
+            metaPath: 'testMetaPath',
+            header: '{i18n>test}'
+        };
+        const basePath = join(
+            testAppPath,
+            `generate-${tableBuildingBlock.buildingBlockType}-with-optional-params`
+        );
+        const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(join(basePath, xmlViewFilePath), testXmlViewContent);
+
+        // Test generator with valid manifest.json, view.xml files and building block data with optional parameters
+        await generateBuildingBlock(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath,
+                buildingBlockData: tableBuildingBlock
+            },
+            fs
+        );
+        expect(fs.dump(testAppPath)).toMatchSnapshot(
+            `avoid-serealization-of-i18n-binding`
+        );
+        await writeFilesForDebugging(fs);
+    });
 });

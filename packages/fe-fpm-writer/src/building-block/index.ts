@@ -293,7 +293,9 @@ function updateViewFile(
         targetNode.appendChild(sourceNode);
 
         // Serialize and format new view xml document
-        const newXmlContent = new XMLSerializer().serializeToString(viewDocument);
+        let newXmlContent = new XMLSerializer().serializeToString(viewDocument);
+        // Workaround to avoid escaping of '>' to '&gt;' while we do not have new library for XML writing
+        newXmlContent = newXmlContent.replace(/(\w+="[^"]*\{[^}]*?)&gt;([^}]*\}[^"]*")/g, '$1>$2');
         fs.write(join(basePath, viewPath), format(newXmlContent));
     } else {
         throw new Error(`Aggregation control not found ${aggregationPath}.`);
