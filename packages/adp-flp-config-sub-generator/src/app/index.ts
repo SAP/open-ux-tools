@@ -34,7 +34,7 @@ import { SystemService, BackendSystemKey } from '@sap-ux/store';
 export default class extends Generator {
     setPromptsCallback: (fn: object) => void;
     prompts: Prompts;
-    existingProject: boolean; // Are we adding to an existing app or will a new app be generated in the writing phase of a parent generator
+    launchFlpConfigAsSubGenerator: boolean;
     appWizard: AppWizard;
     manifest: Manifest;
     projectRootPath: string = '';
@@ -50,13 +50,19 @@ export default class extends Generator {
     constructor(args: string | string[], opts: FlpConfigOptions) {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
+        this.launchFlpConfigAsSubGenerator = Boolean(opts.launchFlpConfigAsSubGenerator);
+        this.manifest = opts.manifest as Manifest;
         this.logger = new ToolsLogger();
 
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
 
         // If launched standalone add nav steps
-        if (!opts.launchFlpConfigAsSubGenerator) {
+        if (!this.launchFlpConfigAsSubGenerator) {
             this.prompts = new Prompts([
+                {
+                    name: 'System Selection',
+                    description: 'Select the system to use for the FLP Configuration'
+                },
                 {
                     name: 'FLP Configuration',
                     description: `FLP Configuration for ${path.basename(this.projectRootPath)}`
@@ -67,15 +73,13 @@ export default class extends Generator {
                     this.prompts.setCallback(fn);
                 }
             };
-            this.existingProject = true; // If this generator is composedWith Adaptation Project generator we assume the project is not written yet
         }
     }
 
     async initializing(): Promise<void> {
         // Generator does not support CF projects
         if (isCFEnvironment(this.projectRootPath)) {
-            //TODO: Throw error in the UI
-            //handleErrorMessage(this.appWizard, t('ERROR_CF_PROJECT_NOT_SUPPORTED'));
+            this.appWizard.showError('FLP Configuration is not supported for CF projects', MessageType.notification);
             return;
         }
         // Add telemetry to be sent once adp-flp-config is generated
@@ -90,23 +94,23 @@ export default class extends Generator {
     }
 
     public async prompting(): Promise<void> {
-        await this._fetchManifest();
+        if (!this.launchFlpConfigAsSubGenerator) {
+            await this._fetchManifest();
+        }
         const inbounds = getInboundsFromManifest(this.manifest);
         const appId = getRegistrationIdFromManifest(this.manifest);
-        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(inbounds, appId, { overwrite: { hide: true } });
+
+        const prompts: Question<FLPConfigAnswers>[] = await getPrompts(inbounds, appId, {
+            overwrite: { hide: true },
+            createAnotherInbound: { hide: true }
+        });
         this.answers = (await this.prompt(prompts)) as FLPConfigAnswers;
     }
 
     async writing(): Promise<void> {
-        if (this.existingProject) {
-            const fs = await generateInboundConfig(this.projectRootPath, this.answers as InternalInboundNavigation);
-            fs.commit(() => this.appWizard?.showInformation('FLP Configuration complete', MessageType.notification));
-        }
-    }
-
-    public async end(): Promise<void> {
-        // if (this.existingProject) {
-        //     generateInboundConfig(this.projectRootPath, this.answers as InternalInboundNavigation);
+        // if (!this.launchFlpConfigAsSubGenerator) {
+        await generateInboundConfig(this.projectRootPath, this.answers as InternalInboundNavigation, this.fs);
+        // fs.commit(() => this.appWizard?.showInformation('FLP Configuration complete', MessageType.notification));
         // }
     }
 
@@ -127,8 +131,8 @@ export default class extends Generator {
         }
 
         if (!configuredSystem) {
-            //TODO: Throw error in the UI
-            throw new Error("Couldn't find the configured system.");
+            this.appWizard.showError('Couldn not find the configured system', MessageType.notification);
+            throw new Error('Could not find the configured system.');
         }
 
         return configuredSystem;
@@ -142,7 +146,7 @@ export default class extends Generator {
             systemSelection: { onlyShowDefaultChoice: true, defaultChoice: configuredSystem },
             serviceSelection: { hide: true }
         });
-
+        await this.prompt(systemSelectionQuestions.prompts);
         const variant = getVariant(this.projectRootPath);
         const manifestService = await ManifestService.initMergedManifest(
             systemSelectionQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,

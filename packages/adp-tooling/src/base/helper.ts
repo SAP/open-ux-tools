@@ -10,9 +10,13 @@ import type { DescriptorVariant, AdpPreviewConfig } from '../types';
  * Get the app descriptor variant.
  *
  * @param {string} basePath - The path to the adaptation project.
+ * @param {Editor} fs - The mem-fs editor instance.
  * @returns {DescriptorVariant} The app descriptor variant.
  */
-export function getVariant(basePath: string): DescriptorVariant {
+export function getVariant(basePath: string, fs?: Editor): DescriptorVariant {
+    if (fs) {
+        return fs.readJSON(join(basePath, 'webapp', 'manifest.appdescr_variant')) as unknown as DescriptorVariant;
+    }
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
 }
 
@@ -24,7 +28,7 @@ export function getVariant(basePath: string): DescriptorVariant {
  * @param {Editor} fs - The mem-fs editor instance.
  */
 export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
-    fs.writeJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
+    fs.extendJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), { content: variant.content });
 }
 
 /**
