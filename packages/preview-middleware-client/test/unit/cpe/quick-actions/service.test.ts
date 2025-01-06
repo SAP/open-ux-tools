@@ -46,6 +46,8 @@ class MockDefinition implements SimpleQuickActionDefinition {
             } as unknown as FlexCommand
         ];
     }
+
+    runEnablementValidators(): void | Promise<void> {}
 }
 
 class MockRegistry extends QuickActionDefinitionRegistry<string> {
