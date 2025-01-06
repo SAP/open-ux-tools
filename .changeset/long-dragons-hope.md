@@ -6,4 +6,4 @@
 '@sap-ux/types': patch
 ---
 
-Quick Action For Add New Annotation File
+feat: Quick Action For Add New Annotation File

@@ -160,6 +160,7 @@ export interface PendingOtherChange {
     type: typeof PENDING_CHANGE_TYPE;
     kind: typeof UNKNOWN_CHANGE_KIND;
     isActive: boolean;
+    title?: string;
     changeType: string;
     fileName: string;
 }
@@ -171,6 +172,7 @@ export interface PendingControlChange {
     changeType: string;
     controlId: string;
     fileName: string;
+    title?: string;
 }
 
 export type PendingChange =
@@ -210,6 +212,7 @@ export interface SavedControlChange {
     controlId: string;
     fileName: string;
     changeType: string;
+    title?: string;
     timestamp?: number;
 }
 

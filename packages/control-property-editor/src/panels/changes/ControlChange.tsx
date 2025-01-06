@@ -23,6 +23,7 @@ export interface ControlItemProps {
     controlId: string;
     isActive: boolean;
     type: typeof SAVED_CHANGE_TYPE | typeof PENDING_CHANGE_TYPE;
+    title?: string;
 }
 
 /**
@@ -41,7 +42,8 @@ export function ControlChange({
     fileName,
     timestamp,
     type,
-    isActive
+    isActive,
+    title
 }: Readonly<ControlItemProps>): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
@@ -63,7 +65,7 @@ export function ControlChange({
     const onCancelDelete = (): void => {
         setDialogState(undefined);
     };
-
+    const headerTitle = title ?? `${name} ${t('CHANGE')}`;
     return (
         <>
             <Stack className={styles.item}>
@@ -85,7 +87,7 @@ export function ControlChange({
                                     overflowX: 'hidden',
                                     lineHeight: '18px'
                                 }}>
-                                {name} {t('CHANGE')}
+                                {headerTitle}
                             </Link>
 
                             <Stack horizontal style={{ opacity: isActive ? 1 : 0.4 }}>

@@ -52,11 +52,11 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
      */
     protected commandExecutor: CommandExecutor;
 
-    abstract setup(dialog: Dialog): Promise<void>;
+    abstract setup(dialog: Dialog): Promise<void> | void;
 
     abstract onCreateBtnPress(event: Event): Promise<void> | void;
 
-    abstract buildDialogData(): Promise<void>;
+    abstract buildDialogData(): Promise<void> | void;
 
     /**
      * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog
@@ -246,5 +246,4 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
             this.model.setProperty('/specialIndexHandlingIconPressed', false);
         }
     }
-
 }

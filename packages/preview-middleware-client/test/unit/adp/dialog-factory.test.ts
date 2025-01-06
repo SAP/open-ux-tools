@@ -11,7 +11,7 @@ import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
 import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
 import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
 import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
-import ShowFileExistDialog from 'open/ux/preview/client/adp/controllers/ShowFileExistDialog.controller';
+import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.controller';
 
 describe('DialogFactory', () => {
     afterEach(() => {
@@ -143,7 +143,7 @@ describe('DialogFactory', () => {
         Controller.create.mockResolvedValue(controller);
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
-        ShowFileExistDialog.prototype.setup = jest.fn();
+        FileExistsDialog.prototype.setup = jest.fn();
 
         await DialogFactory.createDialog(
             {} as unknown as UI5Element,
@@ -151,10 +151,10 @@ describe('DialogFactory', () => {
             DialogNames.FILE_EXISTS
         );
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.FileExists');
+        expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.FileExistsDialog');
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
-        expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(ShowFileExistDialog);
+        expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(FileExistsDialog);
     });
 });

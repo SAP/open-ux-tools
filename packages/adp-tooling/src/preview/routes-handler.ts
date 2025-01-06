@@ -295,7 +295,8 @@ export default class RoutesHandler {
                         namespaces,
                         serviceUrl: serviceUrl
                     },
-                    variant: getVariant(projectRoot)
+                    variant: getVariant(projectRoot),
+                    isCommand: false
                 }
             );
             fsEditor.commit((err) => this.logger.error(err));
@@ -322,20 +323,20 @@ export default class RoutesHandler {
             const isRunningInBAS = isAppStudio();
 
             const manifestService = await this.getManifestService();
-            const dataSoruces = manifestService.getManifestDataSources();
+            const dataSources = manifestService.getManifestDataSources();
             const apiResponse: AnnotationDataSourceMap = {};
 
-            for (const dataSourceId in dataSoruces) {
-                if (dataSoruces[dataSourceId].type === 'OData') {
+            for (const dataSourceId in dataSources) {
+                if (dataSources[dataSourceId].type === 'OData') {
                     apiResponse[dataSourceId] = {
                         annotationDetails: {
                             annotationExistsInWS: false
                         },
-                        serviceUrl: dataSoruces[dataSourceId].uri,
+                        serviceUrl: dataSources[dataSourceId].uri,
                         isRunningInBAS: isRunningInBAS
                     };
                 }
-                this.fillAnnotationDataSourceMap(dataSoruces, dataSourceId, apiResponse);
+                this.fillAnnotationDataSourceMap(dataSources, dataSourceId, apiResponse);
             }
             this.sendFilesResponse(res, apiResponse);
         } catch (e) {
@@ -346,23 +347,23 @@ export default class RoutesHandler {
     /**
      * Add local annotation details to api response.
      *
-     * @param dataSoruces DataSources
+     * @param dataSources DataSources
      * @param dataSourceId string
      * @param apiResponse AnnotationDataSourceMap
      */
     private fillAnnotationDataSourceMap(
-        dataSoruces: DataSources,
+        dataSources: DataSources,
         dataSourceId: string,
         apiResponse: AnnotationDataSourceMap
     ): void {
         const project = this.util.getProject();
         const getPath = (projectPath: string, relativePath: string): string =>
             path.join(projectPath, DirName.Changes, relativePath).split(path.sep).join(path.posix.sep);
-        const annotations = dataSoruces[dataSourceId].settings?.annotations
-            ? [...dataSoruces[dataSourceId].settings.annotations].reverse()
+        const annotations = dataSources[dataSourceId].settings?.annotations
+            ? [...dataSources[dataSourceId].settings.annotations].reverse()
             : [];
         for (const annotation of annotations) {
-            const annotationSetting = dataSoruces[annotation];
+            const annotationSetting = dataSources[annotation];
             if (annotationSetting.type === 'ODataAnnotation') {
                 const ui5NamespaceUri = `ui5://${project.getNamespace()}`;
                 if (annotationSetting.uri.startsWith(ui5NamespaceUri)) {

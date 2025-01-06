@@ -4,6 +4,7 @@ import type Dialog from 'sap/m/Dialog';
 import type Event from 'sap/ui/base/Event';
 
 import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
+import BaseDialog from './BaseDialog.controller';
 
 export interface FileExistsDialogOptions {
     title: string;
@@ -12,16 +13,21 @@ export interface FileExistsDialogOptions {
     isRunningInBAS: boolean;
 }
 
+type FileExistModel = JSONModel & {
+    getProperty(sPath: '/filePath'): string;
+    getProperty(sPath: '/filePathFromRoot'): string;
+    getProperty(sPath: '/isRunningInBAS'): boolean;
+};
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
-export default class ShowFileExistDialog {
+export default class FileExistsDialog extends BaseDialog<FileExistModel> {
     private options: FileExistsDialogOptions;
     public model: JSONModel;
-    public dialog: Dialog;
     private readonly _name: string;
     constructor(name: string, options: FileExistsDialogOptions) {
-        this._name = name;
+        super(name);
         this.model = new JSONModel();
         this.options = options;
     }
@@ -78,4 +84,11 @@ export default class ShowFileExistDialog {
         }
         this.dialog.getEndButton().setText('Close');
     }
+
+    /**
+     * Handles create button press
+     *
+     * @param _event Event
+     */
+    onCreateBtnPress(_event: Event): Promise<void> | void {}
 }

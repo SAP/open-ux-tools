@@ -36,17 +36,19 @@ export function writeAnnotationChange(
     projectPath: string,
     timestamp: number,
     annotation: AnnotationsData['annotation'],
-    change: ManifestChangeProperties,
+    change: ManifestChangeProperties | undefined,
     fs: Editor
 ): void {
     try {
-        const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
-        const changeFilePath = path.join(changesFolderPath, changeFileName);
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
-        change.fileName = `${change.fileName}_addAnnotationsToOData`;
+        if (change) {
+            const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
+            const changeFilePath = path.join(changesFolderPath, changeFileName);
+            change.fileName = `${change.fileName}_addAnnotationsToOData`;
+            writeChangeToFile(changeFilePath, change, fs);
+        }
 
-        writeChangeToFile(changeFilePath, change, fs);
         if (!annotation.filePath) {
             const annotationsTemplate = path.join(
                 __dirname,

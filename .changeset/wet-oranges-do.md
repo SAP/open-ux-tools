@@ -2,4 +2,4 @@
 '@sap-ux/control-property-editor': patch
 ---
 
-Quick Action For Add New Annotation File
+feat: Quick Action For Add New Annotation File

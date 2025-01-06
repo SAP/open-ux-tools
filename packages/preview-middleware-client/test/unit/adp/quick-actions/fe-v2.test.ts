@@ -38,7 +38,6 @@ import { DialogFactory, DialogNames } from 'open/ux/preview/client/adp/dialog-fa
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
-import * as handler from '../../../../src/adp/api-handler';
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -1376,8 +1375,7 @@ describe('FE V2 quick actions', () => {
                 });
             });
             test('initialize and execute action', async () => {
-                const writeAnnotFileSpy = jest.spyOn(handler, 'writeAnnotationFile');
-
+                jest.spyOn(Date, 'now').mockReturnValue(1736143853603);
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -1415,20 +1413,44 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '0' })
                 );
-                expect(writeAnnotFileSpy).toHaveBeenCalledWith({
-                    dataSource: 'mainService',
-                    serviceUrl: 'main/service/url'
+                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                    settings: {},
+                    type: 'annotation',
+                    value: {
+                        changeType: 'appdescr_app_addAnnotationsToOData',
+                        content: {
+                            annotations: ['annotation.annotation_1736143853603'],
+                            annotationsInsertPosition: 'END',
+                            dataSource: {
+                                'annotation.annotation_1736143853603': {
+                                    type: 'ODataAnnotation',
+                                    uri: '../annotations/annotation_1736143853603.xml'
+                                }
+                            },
+                            dataSourceId: 'mainService',
+                            reference: undefined
+                        },
+                        fileName: 'id_1736143853603_addAnnotationsToOData',
+                        generator: undefined,
+                        serviceUrl: 'main/service/url'
+                    }
                 });
             });
             test('initialize and execute action - when file exists', async () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '1' })
                 );
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'FileExists', undefined, {
-                    fileName: 'mock/adp.project.annotation/path',
-                    filePath: 'mock/adp/project/annotation/path',
-                    isRunningInBAS: false
-                });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'FileExistsDialog',
+                    undefined,
+                    {
+                        fileName: 'mock/adp.project.annotation/path',
+                        filePath: 'mock/adp/project/annotation/path',
+                        isRunningInBAS: false
+                    }
+                );
             });
         });
     });

@@ -11,17 +11,17 @@ import ControllerExtension from './controllers/ControllerExtension.controller';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
 import { ExtensionPointData } from './extension-point';
-import ShowFileExistDialog, { FileExistsDialogOptions } from './controllers/ShowFileExistDialog.controller';
+import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
     ADD_TABLE_COLUMN_FRAGMENTS = 'AddTableColumnFragments',
     CONTROLLER_EXTENSION = 'ControllerExtension',
     ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint',
-    FILE_EXISTS = 'FileExists'
+    FILE_EXISTS = 'FileExistsDialog'
 }
 
-type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | ExtensionPoint | ShowFileExistDialog;
+type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | ExtensionPoint | FileExistsDialog;
 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
@@ -92,7 +92,7 @@ export class DialogFactory {
                 );
                 break;
             case DialogNames.FILE_EXISTS:
-                controller = new ShowFileExistDialog(
+                controller = new FileExistsDialog(
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     options as FileExistsDialogOptions
                 );

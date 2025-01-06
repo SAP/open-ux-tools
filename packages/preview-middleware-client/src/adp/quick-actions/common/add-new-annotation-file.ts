@@ -1,7 +1,7 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getDataSourceAnnotationFileMap, writeAnnotationFile } from '../../api-handler';
+import { getDataSourceAnnotationFileMap } from '../../api-handler';
 import {
     NESTED_QUICK_ACTION_KIND,
     NestedQuickAction,
@@ -11,6 +11,7 @@ import { DialogFactory, DialogNames } from '../../dialog-factory';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { QuickActionDefinitionBase } from '../quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
 export const ADD_NEW_ANNOTATION_FILE = 'add-new-annotation-file';
 
@@ -47,7 +48,7 @@ export class AddNewAnnotationFile
                 enabled: true,
                 label: source.annotationDetails.annotationExistsInWS
                     ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
-                    : this.context.resourceBundle.getText('ODATA_SORUCE', [key]),
+                    : this.context.resourceBundle.getText('ODATA_SOURCE', [key]),
                 children: []
             });
         }
@@ -76,10 +77,41 @@ export class AddNewAnnotationFile
             }
             // Create annotation file only, if no file exists already for datasource id or if the change file exist and but no annotation file exists in file system.
             else if (dataSource) {
-                await writeAnnotationFile({
-                    dataSource: dataSourceId,
+                const timestamp = Date.now();
+                // const fileName = `id_${timestamp}_addAnnotationsToOData.change`;
+                const annotationFileName = `annotation_${timestamp}.xml`;
+                const annotationFileNameWithoutExtension = annotationFileName?.toLocaleLowerCase().replace('.xml', '');
+                const annotationNameSpace =
+                    this.context.flexSettings.layer === 'CUSTOMER_BASE'
+                        ? `customer.annotation.${annotationFileNameWithoutExtension}`
+                        : `annotation.${annotationFileNameWithoutExtension}`;
+                const content = {
+                    dataSourceId: dataSourceId,
+                    annotations: [annotationNameSpace],
+                    annotationsInsertPosition: 'END',
+                    dataSource: {
+                        [annotationNameSpace]: {
+                            uri: `../annotations/${annotationFileName}`,
+                            type: 'ODataAnnotation'
+                        }
+                    }
+                };
+                const modifiedValue = {
+                    changeType: 'appdescr_app_addAnnotationsToOData',
+                    generator: this.context.flexSettings.generator,
+                    reference: this.context.flexSettings.projectId,
+                    fileName: `id_${timestamp}_addAnnotationsToOData`,
+                    content: content,
                     serviceUrl: dataSource.serviceUrl
-                });
+                };
+                const command = await CommandFactory.getCommandFor<FlexCommand>(
+                    this.context.view,
+                    'annotation',
+                    modifiedValue,
+                    null,
+                    this.context.flexSettings
+                );
+                return [command];
             }
         }
         return [];

@@ -373,6 +373,8 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
 
 export interface AnnotationsData {
     variant: DescriptorVariant;
+    /** Flag for differentiating the annotation creation call from CLI and from CPE */
+    isCommand: boolean;
     annotation: {
         /** Optional name of the annotation file. */
         fileName?: string;

@@ -2,10 +2,10 @@ import ControlUtils from '../../../../src/adp/control-utils';
 import { fetchMock, sapCoreMock } from 'mock/window';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type Dialog from 'sap/m/Dialog';
-import ShowFileExistDialog from '../../../../src/adp/controllers/ShowFileExistDialog.controller';
+import FileExistsDialog from '../../../../src/adp/controllers/FileExistsDialog.controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 
-describe('AddFragment', () => {
+describe('FileExistsDialog', () => {
     beforeAll(() => {
         fetchMock.mockResolvedValue({
             json: jest.fn().mockReturnValue({ fragments: [] }),
@@ -60,7 +60,7 @@ describe('AddFragment', () => {
                 })
             });
 
-            const fileExistDialog = new ShowFileExistDialog('adp.extension.controllers.FileExists', {
+            const fileExistDialog = new FileExistsDialog('adp.extension.controllers.FileExists', {
                 fileName: 'annotation_123434343.xml',
                 filePath: 'adp.demo.app/changes/annnotation/annotation_123434343.xml',
                 isRunningInBAS: false,
@@ -115,10 +115,6 @@ describe('AddFragment', () => {
                 })
             });
 
-            // ControlUtils.getControlAggregationByName = jest
-            //     .fn()
-            //     .mockReturnValue({ 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} });
-
             const overlayControl = {
                 getDesignTimeMetadata: jest.fn().mockReturnValue({
                     getData: jest.fn().mockReturnValue({
@@ -136,7 +132,7 @@ describe('AddFragment', () => {
                 })
             });
 
-            const fileExistDialog = new ShowFileExistDialog('adp.extension.controllers.FileExists', {
+            const fileExistDialog = new FileExistsDialog('adp.extension.controllers.FileExists', {
                 fileName: 'annotation_123434343.xml',
                 filePath: 'adp.demo.app/changes/annnotation/annotation_123434343.xml',
                 isRunningInBAS: false,

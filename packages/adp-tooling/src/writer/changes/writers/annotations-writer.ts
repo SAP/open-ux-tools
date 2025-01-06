@@ -70,7 +70,11 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
         }
         const content = this.constructContent(data);
         const timestamp = Date.now();
-        const change = getChange(variant, timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
+        let change;
+        // When created via command change need to be created else change is created via RTA.
+        if (data.isCommand) {
+            change = getChange(variant, timestamp, content, ChangeType.ADD_ANNOTATIONS_TO_ODATA);
+        }
         writeAnnotationChange(this.projectPath, timestamp, data.annotation, change, this.fs);
     }
 }

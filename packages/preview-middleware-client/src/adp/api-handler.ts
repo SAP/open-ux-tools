@@ -41,6 +41,10 @@ export interface AnnotationFileResponse {
     isRunningInBAS: boolean;
 }
 
+interface DataSoruceAnnotationMap {
+    [key: string]: { serviceUrl: string; isRunningInBAS: boolean; annotationDetails: AnnotationFileResponse };
+}
+
 export interface ControllersResponse {
     controllers: Controllers;
     message: string;
@@ -160,15 +164,10 @@ export async function writeAnnotationFile<T>(data: T): Promise<T> {
 /**
  * Writes a new annotation file to the project's workspace
  *
- * @param data Data to be send to the server
- * @returns Generic Promise<T>
+ * @returns Generic Promise<DataSoruceAnnotationMap>
  */
-export async function getDataSourceAnnotationFileMap(): Promise<{
-    [key: string]: { serviceUrl: string; isRunningInBAS: boolean; annotationDetails: AnnotationFileResponse };
-}> {
-    return request<{
-        [key: string]: { serviceUrl: string; isRunningInBAS: boolean; annotationDetails: AnnotationFileResponse };
-    }>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.GET);
+export async function getDataSourceAnnotationFileMap(): Promise<DataSoruceAnnotationMap> {
+    return request<DataSoruceAnnotationMap>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.GET);
 }
 
 /**
