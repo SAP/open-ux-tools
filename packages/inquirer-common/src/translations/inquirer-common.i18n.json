@@ -26,7 +26,7 @@
         "serverReturnedAnError": "The server returned an error. {{- errorDesc}}",
         "serverUnableToCompleteRequest": "The server was unable to complete the request",
         "catalogServiceNotActive": "Catalog service is not active",
-        "urlNotFound": "URL not found. {{- errorDesc}}",
+        "urlNotFound": "URL not found",
         "odataServiceUrlNotFound": "The service URL you have provided is not a valid OData Service. SAP Fiori applications require an OData service as the data source.",
         "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
         "redirectError": "A redirect response was received from the server",
