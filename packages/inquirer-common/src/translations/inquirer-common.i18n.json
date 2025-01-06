@@ -8,7 +8,7 @@
     "errors": {
         "destination": {
             "unavailable": "The selected destination references an instance that is not available. Please check your destination configuration and try again.",
-            "notFound": "The destination is misconfigured, HTTP Error 404 returned, the requested resource could not be found.",
+            "notFound": "The destination target URL cannot be found. The request failed with status code 404. Please check the destination target URL connectivity in your BTP cockpit.",
             "notReachable": "The selected system is not reachable. System name: {{systemName}}, error: {{- error}}",
             "misconfigured": "The destination is misconfigured. $t(errors.destination.missingPropMsg, {\"destinationProperty\": \"{{destinationProperty}}\" })",
             "missingPropMsg": "The property: `{{destinationProperty}}` is missing.",
@@ -26,7 +26,7 @@
         "serverReturnedAnError": "The server returned an error. {{- errorDesc}}",
         "serverUnableToCompleteRequest": "The server was unable to complete the request",
         "catalogServiceNotActive": "Catalog service is not active",
-        "urlNotFound": "URL not found",
+        "urlNotFound": "URL not found. {{- errorDesc}}",
         "odataServiceUrlNotFound": "The service URL you have provided is not a valid OData Service. SAP Fiori applications require an OData service as the data source.",
         "noServicesAvailable": "There are no V{{version}} OData services available from the selected system and the template you have chosen supports V{{version}} OData services only",
         "redirectError": "A redirect response was received from the server",
