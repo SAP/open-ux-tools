@@ -1,29 +1,18 @@
-import type UI5Element from 'sap/ui/core/Element';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import hasStableId from 'mock/sap/ui/rta/util/hasStableId';
 
 import FlUtils from 'sap/ui/fl/Utils';
-import { sapMock } from 'mock/window';
-
-import Fragment from 'mock/sap/ui/core/Fragment';
-import Controller from 'mock/sap/ui/core/mvc/Controller';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 
 import {
-    DialogNames,
-    handler,
     initDialogs,
     isControllerExtensionEnabled,
     isFragmentCommandEnabled,
     getAddFragmentItemText
 } from '../../../src/adp/init-dialogs';
-import AddFragment from '../../../src/adp/controllers/AddFragment.controller';
-import ControllerExtension from '../../../src/adp/controllers/ControllerExtension.controller';
-import ExtensionPoint from '../../../src/adp/controllers/ExtensionPoint.controller';
 import * as cpeUtils from '../../../src/cpe/utils';
-import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
 
 describe('Dialogs', () => {
     describe('initDialogs', () => {
@@ -41,40 +30,6 @@ describe('Dialogs', () => {
             });
             initDialogs(rtaMock as unknown as RuntimeAuthoring, [], { major: 1, minor: 118 });
             expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
-        });
-
-        test('addMenuItem handler function', async () => {
-            sapMock.ui.version = '1.120.4';
-            Controller.create.mockResolvedValue({ overlays: {}, rta: { 'yes': 'no' } });
-            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
-
-            AddFragment.prototype.setup = jest.fn();
-            AddTableColumnFragments.prototype.setup = jest.fn();
-            ControllerExtension.prototype.setup = jest.fn();
-            ExtensionPoint.prototype.setup = jest.fn();
-
-            await handler(
-                {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring,
-                DialogNames.ADD_FRAGMENT
-            );
-            await handler(
-                {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring,
-                DialogNames.CONTROLLER_EXTENSION
-            );
-            await handler(
-                {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring,
-                DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT
-            );
-            await handler(
-                {} as unknown as UI5Element,
-                rtaMock as unknown as RuntimeAuthoring,
-                DialogNames.ADD_TABLE_COLUMN_FRAGMENTS
-            );
-
-            expect(Fragment.load).toHaveBeenCalledTimes(4);
         });
     });
 

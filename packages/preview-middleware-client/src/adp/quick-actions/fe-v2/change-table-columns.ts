@@ -6,6 +6,7 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
@@ -18,9 +19,16 @@ export class ChangeTableColumnsQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(CHANGE_TABLE_COLUMNS, CONTROL_TYPES, 'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context, {
-            includeServiceAction: true
-        });
+        super(
+            CHANGE_TABLE_COLUMNS,
+            CONTROL_TYPES,
+            'V2_QUICK_ACTION_CHANGE_TABLE_COLUMNS',
+            context,
+            {
+                includeServiceAction: true
+            },
+            [DIALOG_ENABLEMENT_VALIDATOR]
+        );
     }
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, changeColumnActionId, sectionInfo } = this.tableMap[path];

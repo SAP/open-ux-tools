@@ -120,6 +120,9 @@
       "path": "packages/flp-config-inquirer"
     },
     {
+      "path": "packages/flp-config-sub-generator"
+    },
+    {
       "path": "packages/guided-answers-helper"
     },
     {
