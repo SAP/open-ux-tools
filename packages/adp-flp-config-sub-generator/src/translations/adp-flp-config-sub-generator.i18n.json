@@ -9,6 +9,7 @@
         "flpConfigAdded": "FLP Configuration added successfully"
     },
     "error": {
+        "cfNotSupported": "FLP Configuration is not supported for CF projects",
         "fetchingManifest": "Error fetching merged manifest for app: {{- error}}",
         "destinationNotFound": "Missing destination configuration in ui5.yaml",
         "systemNotFound": "Missing system configuration in ui5.yaml",

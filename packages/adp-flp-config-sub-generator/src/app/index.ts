@@ -83,7 +83,7 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         // Generator does not support CF projects
         if (isCFEnvironment(this.projectRootPath)) {
-            this.appWizard.showError('FLP Configuration is not supported for CF projects', MessageType.notification);
+            this.appWizard.showError(t('error.cfNotSupported'), MessageType.notification);
             return;
         }
         // Add telemetry to be sent once adp-flp-config is generated
