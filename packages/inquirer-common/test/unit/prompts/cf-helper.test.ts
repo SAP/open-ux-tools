@@ -41,7 +41,7 @@ describe('cf-helper', () => {
         expect(logErrorMsgsSpy).toHaveBeenCalledWith(ERROR_TYPE.NO_ABAP_ENVS, t('errors.abapEnvsCFDiscoveryFailed'));
     });
 
-    test('should append ABAP instance read from env', async () => {
+    test('should append ABAP service types when loading ABAP instances', async () => {
         // Reset
         cfAbapServices = [];
         // Pass instances

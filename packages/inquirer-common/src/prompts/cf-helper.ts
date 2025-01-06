@@ -4,7 +4,6 @@ import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE, type ErrorHandler } from '../error-handler/error-handler';
 import { t } from '../i18n';
 import { AbapEnvType } from '@sap-ux/btp-utils';
-import { isFeatureEnabled } from '@sap-ux/feature-toggle';
 
 /**
  * Get the name sorted list of ABAP instance choices from an active CF login. If not logged in, an error message is logged.
