@@ -28,7 +28,7 @@ export function getVariant(basePath: string, fs?: Editor): DescriptorVariant {
  * @param {Editor} fs - The mem-fs editor instance.
  */
 export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
-    fs.extendJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), { content: variant.content });
+    fs.writeJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
 }
 
 /**
