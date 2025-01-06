@@ -1,0 +1,21 @@
+{
+    "yuiNavSteps": {
+        "sysConfirmName": "System confirmation",
+        "sysConfirmDesc": "Confirm the system to use for FLP configuration",
+        "flpConfigName": "FLP Configuration",
+        "flpConfigDesc": "FLP Configuration for {{- projectName}}"
+    },
+    "info": {
+        "flpConfigAdded": "FLP Configuration added successfully"
+    },
+    "error": {
+        "fetchingManifest": "Error fetching merged manifest for app: {{- error}}",
+        "destinationNotFound": "Missing destination configuration in ui5.yaml",
+        "systemNotFound": "Missing system configuration in ui5.yaml",
+        "systemNotFoundInStore" : "System not found in the system store: {{- systemUrl}}",
+        "endPhase": "Error in end phase of the adaptation project FLP configuration: {{- error}}",
+        "writingPhase": "Error in writing phase of the adaptation project FLP configuration: {{- error}}",
+        "telemetry": "Error sending telemetry data: {{- error}}",
+        "updatingApp": "Error updating app with FLP configuration. Inspect the logs for full error."
+    }
+}
