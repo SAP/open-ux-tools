@@ -21,13 +21,10 @@ describe('Test readIntegrityData()', () => {
 
     test('Read integrity data, set content should not be possible', async () => {
         const integrityFilePath = join(__dirname, '../../test-input/valid-project/.integrity.json');
-        try {
-            const integrityData = await readIntegrityData(integrityFilePath);
-            integrityData.fileIntegrity[0].content = 'set to readonly property should throw error';
-            expect(false).toBe('setting readonly content should have thrown error but did not.');
-        } catch (error) {
-            expect(error.message).toBe('Content of integrity object is read-only');
-        }
+        const integrityData = await readIntegrityData(integrityFilePath);
+        expect(integrityData.fileIntegrity[0].content).toBe('Just a test file.');
+        integrityData.fileIntegrity[0].content = 'set to readonly property should not do anything';
+        expect(integrityData.fileIntegrity[0].content).toBe('Just a test file.');
     });
 
     // Other, valid cases, are tested in project.test.ts

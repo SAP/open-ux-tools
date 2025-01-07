@@ -73,7 +73,7 @@ function getifyContent(integrityObject: FileIntegrity | ContentIntegrity): void 
                 return content;
             },
             set: () => {
-                throw new Error('Content of integrity object is read-only');
+                // Read-only property, ignore content changes
             }
         });
     }
