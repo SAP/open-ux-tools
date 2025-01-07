@@ -15,6 +15,7 @@ import { getVariant } from '../base/helper';
 import { TemplateFileName, HttpStatusCodes } from '../types';
 import type { AdpPreviewConfig, CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
+import { ODataService, getDataSources } from '../base/abap/odata-service';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -263,14 +264,16 @@ export default class RoutesHandler {
             );
 
             const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
-            const allDataSources = manifestService.getManifestDataSources();
+            const manifest = manifestService.getManifest();
+            const metadataService = new ODataService(manifest, manifestService.getAppInfo(), provider, this.logger);
+            const allDataSources = getDataSources(manifest);
             const dataSourceIds = Object.entries(filterDataSourcesByType(allDataSources, 'OData'));
 
             const results: Record<string, { success: boolean; metadata?: string; uri: string; message?: string }> = {};
 
             for (const [id, { uri }] of dataSourceIds) {
                 try {
-                    const metadata = await manifestService.getRemoteMetadata(id);
+                    const metadata = await metadataService.getMetadata(id);
                     results[id] = {
                         success: true,
                         metadata,
