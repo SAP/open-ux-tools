@@ -934,11 +934,17 @@ describe('FE V2 quick actions', () => {
                                 return false;
                             }),
                             getDomRef: () => ({}),
+
                             getId: jest
                                 .fn()
                                 .mockImplementation(
                                     () => 's2p.template.ListReport.view.ListReport::testEntity--listReportFilter'
-                                )
+                                ),
+                            data: (key: string) => {
+                                if (key === 'useDateRangeType') {
+                                    return false;
+                                }
+                            }
                         };
                     }
                     if (id == 'NavContainer') {
