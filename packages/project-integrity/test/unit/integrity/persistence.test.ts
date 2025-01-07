@@ -3,7 +3,11 @@ import { join } from 'path';
 import { readIntegrityData, writeIntegrityData } from '../../../src/integrity/persistence';
 import type { Integrity } from '../../../src/types';
 
-jest.mock('fs/promises');
+jest.mock('fs/promises', () => ({
+    ...jest.requireActual('fs/promises'),
+    mkdir: jest.fn(),
+    writeFile: jest.fn()
+}));
 
 describe('Test readIntegrityData()', () => {
     test('Read integrity data, integrity file does not exist', async () => {
@@ -12,6 +16,17 @@ describe('Test readIntegrityData()', () => {
             expect(false).toBe('readIntegrityData() should have thrown error but did not.');
         } catch (error) {
             expect(error.message).toBe('Integrity file not found at none-existing-file');
+        }
+    });
+
+    test('Read integrity data, set content should not be possible', async () => {
+        const integrityFilePath = join(__dirname, '../../test-input/valid-project/.integrity.json');
+        try {
+            const integrityData = await readIntegrityData(integrityFilePath);
+            integrityData.fileIntegrity[0].content = 'set to readonly property should throw error';
+            expect(false).toBe('setting readonly content should have thrown error but did not.');
+        } catch (error) {
+            expect(error.message).toBe('Content of integrity object is read-only');
         }
     });
 

@@ -71,6 +71,9 @@ function getifyContent(integrityObject: FileIntegrity | ContentIntegrity): void 
                     content = decompressFromBase64(compressedContent);
                 }
                 return content;
+            },
+            set: () => {
+                throw new Error('Content of integrity object is read-only');
             }
         });
     }
