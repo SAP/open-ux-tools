@@ -10,10 +10,15 @@ import type {
     FlpConfig,
     MiddlewareConfig as PreviewConfig,
     DefaultFlpPath,
-    DefaultIntent
+    DefaultIntent,
+    TestConfigDefaults as PreviewTestConfigDefaults
 } from '@sap-ux/preview-middleware';
 import type { PreviewConfigOptions } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
+
+type ArrayElement<ArrayType extends readonly unknown[]> = ArrayType[number];
+
+type PreviewTestConfig = ArrayElement<Required<PreviewConfig>['test']>;
 
 const DEFAULT_FLP_PATH: DefaultFlpPath = '/test/flp.html';
 
@@ -21,6 +26,29 @@ const DEFAULT_INTENT: DefaultIntent = {
     object: 'app',
     action: 'preview'
 };
+
+export const TEST_CONFIG_DEFAULTS: Record<string, Readonly<Required<PreviewTestConfig>>> = {
+    qunit: {
+        path: '/test/unitTests.qunit.html',
+        framework: 'QUnit'
+    },
+    opa5: {
+        path: '/test/opaTests.qunit.html',
+        framework: 'OPA5'
+    },
+    testsuite: {
+        path: '/test/testsuite.qunit.html',
+        framework: 'Testsuite'
+    }
+} as Omit<
+    PreviewTestConfigDefaults,
+    | PreviewTestConfigDefaults['testsuite']['init']
+    | PreviewTestConfigDefaults['testsuite']['pattern']
+    | PreviewTestConfigDefaults['opa5']['init']
+    | PreviewTestConfigDefaults['opa5']['pattern']
+    | PreviewTestConfigDefaults['qunit']['init']
+    | PreviewTestConfigDefaults['qunit']['pattern']
+>;
 
 /**
  * Checks if a script can be converted based on the used UI5 yaml configuration file.
@@ -58,41 +86,37 @@ function isUi5YamlToBeConverted(
  * @param ui5Yaml - the name of the UI5 yaml configuration file
  * @param scriptName - the name of the script from the package.json file
  * @param script - the content of the script from the package.json file
+ * @param convertTests - indicator if test suite and test runner should be included in the conversion
  * @param logger logger to report info to the user
  * @returns indicator if the UI5 yaml configuration file has already been converted
  */
-async function isUi5YamlAlreadyConverted(
+async function isUi5YamlFlpPathAlreadyConverted(
     fs: Editor,
     basePath: string,
     ui5Yaml: string,
     scriptName: string,
     script: string,
+    convertTests: boolean,
     logger?: ToolsLogger
 ): Promise<boolean> {
-    if (
+    const yamlConfigAlreadyAdjusted =
         Object.keys(
             fs.dump(basePath, (file) => {
                 return file.basename === ui5Yaml && file.state === 'modified';
             })
-        ).length === 0
-    ) {
-        return false;
-    }
+        ).length > 0;
     const flpPath = ((await getPreviewMiddleware(undefined, basePath, ui5Yaml, fs)) as CustomMiddleware<PreviewConfig>)
         ?.configuration?.flp?.path;
     const { path: scriptPath } = extractUrlDetails(script);
-    if (flpPath != scriptPath) {
+    if (yamlConfigAlreadyAdjusted && flpPath != scriptPath && (convertTests ? !isTestPath(scriptPath) : true)) {
         logger?.warn(
-            `Skipping script'${scriptName}', because another script also refers to UI5 YAML configuration file, '${ui5Yaml}'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script '${scriptName}'. ${ui5Yaml} currently uses ${
+            `Skipping script '${scriptName}', because another script also refers to UI5 YAML configuration file, '${ui5Yaml}'. Adjust the 'flp.path' property in the UI5 YAML configuration file to the correct endpoint or create a separate UI5 YAML configuration file for script '${scriptName}'. ${ui5Yaml} currently uses ${
                 flpPath ?? DEFAULT_FLP_PATH
             } whereas script '${scriptName}' uses '${scriptPath}'.`
         );
-    } else {
-        logger?.info(
-            `Skipping script '${scriptName}', because the UI5 YAML configuration file '${ui5Yaml}' has already been adjusted based on another script.`
-        );
+        return true;
     }
-    return true;
+    return false;
 }
 
 /**
@@ -102,14 +126,31 @@ async function isUi5YamlAlreadyConverted(
  * @param configuration - the preview configuration
  * @returns indicator if the path is an FLP path
  */
-function pathIsFlpPath(path: string | undefined, configuration: PreviewConfig): boolean {
+function isFlpPath(path: string | undefined, configuration: PreviewConfig): boolean {
     if (!path) {
         return false;
     }
-    const isNotRtaEditorPath = configuration.rta?.editors?.every((editor) => editor.path !== path) ?? true;
-    const isNotTestPath = configuration.test?.every((test) => test.path !== path) ?? true;
+    const isRtaEditorPath = configuration.rta?.editors?.some((editor) => editor.path === path) ?? false;
+    return !isRtaEditorPath && !isTestPath(path, configuration);
+}
 
-    return isNotRtaEditorPath && isNotTestPath;
+/**
+ * Check if the path is a test path.
+ * 1) path matches pattern '**.qunit.html'
+ * 2) path is being used as test configuration path in yaml configuration.
+ *
+ * @param path - the path
+ * @param configuration - the preview configuration
+ * @returns indicator if the path is a test path
+ */
+export function isTestPath(path: string | undefined, configuration?: PreviewConfig): boolean {
+    if (!path) {
+        return false;
+    }
+    if (path.includes('.qunit.html')) {
+        return true;
+    }
+    return configuration?.test?.some((testConfig) => testConfig.path === path) ?? false;
 }
 
 /**
@@ -214,20 +255,26 @@ export function updatePreviewMiddlewareConfig(
 
     //copy of configuration to avoid ending up with an empty configuration object in some cases
     const configuration = { ...newMiddlewareConfig.configuration };
-    configuration.flp = configuration.flp ?? {};
 
     let writeConfig = false;
-    //check path and respect defaults
-    if (pathIsFlpPath(path, configuration) && !path?.includes(DEFAULT_FLP_PATH)) {
-        configuration.flp.path = path;
-        writeConfig = true;
-    }
-    //check intent and respect defaults
-    if (intent && `${intent?.object}-${intent?.action}` !== defaultIntent) {
-        configuration.flp.intent = {
-            object: intent.object,
-            action: intent.action
-        };
+    if (isFlpPath(path, configuration)) {
+        //adjust path but respect defaults
+        if (!path?.includes(DEFAULT_FLP_PATH)) {
+            configuration.flp = configuration.flp ?? {};
+            configuration.flp.path = path;
+            writeConfig = true;
+        }
+        //adjust intent but respect defaults
+        if (intent && `${intent?.object}-${intent?.action}` !== defaultIntent) {
+            configuration.flp = configuration.flp ?? {};
+            configuration.flp.intent = {
+                object: intent.object,
+                action: intent.action
+            };
+            writeConfig = true;
+        }
+    } else if (isTestPath(path, configuration)) {
+        configuration.test = updateTestConfig(configuration.test, path);
         writeConfig = true;
     }
 
@@ -239,6 +286,97 @@ export function updatePreviewMiddlewareConfig(
 }
 
 /**
+ * Update the test configuration.
+ *
+ * @param testConfiguration - the test configuration
+ * @param path - the path
+ * @returns the updated test configuration
+ */
+export function updateTestConfig(
+    testConfiguration: PreviewConfig['test'],
+    path: string | undefined
+): PreviewConfig['test'] {
+    testConfiguration = testConfiguration ?? [];
+
+    let framework: PreviewTestConfig['framework'] | undefined;
+    if (path?.includes('testsuite.qunit.html')) {
+        framework = 'Testsuite';
+    } else if (path?.includes('opaTests.qunit.html')) {
+        framework = 'OPA5';
+    } else if (path?.includes('unitTests.qunit.html')) {
+        framework = 'QUnit';
+    }
+
+    if (!framework) {
+        return testConfiguration;
+    }
+
+    const defaultPath = TEST_CONFIG_DEFAULTS[framework.toLowerCase()].path;
+    const testConfig = testConfiguration.find((test) => test.framework === framework);
+    if (testConfig) {
+        testConfig.path = path;
+        if (testConfig.path === defaultPath) {
+            //sanitize default path
+            delete testConfig.path;
+        }
+    } else if (path?.includes(defaultPath)) {
+        testConfiguration.push({ framework });
+    } else {
+        testConfiguration.push({ framework, path });
+    }
+    return testConfiguration;
+}
+
+/**
+ * Updates the default test configurations in the 'ui5.yaml' in case no test config exists in any UI5 configuration file.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used for the conversion
+ * @param logger logger to report info to the user
+ */
+export async function updateDefaultTestConfig(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+    const ui5YamlFileNames = await getAllUi5YamlFileNames(basePath, fs);
+    for (const ui5Yaml of ui5YamlFileNames.filter((ui5Yaml) => ui5Yaml !== FileName.Ui5Yaml)) {
+        const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs);
+        const previewMiddleware = (await getPreviewMiddleware(ui5YamlConfig)) as CustomMiddleware<PreviewConfig>;
+        if (previewMiddleware.configuration.test) {
+            return;
+        }
+    }
+    let ui5YamlConfig: UI5Config;
+    try {
+        ui5YamlConfig = await readUi5Yaml(basePath, FileName.Ui5Yaml, fs);
+    } catch (error) {
+        logger?.warn(
+            `The UI5 YAML configuration file 'ui5.yaml', can't be updated to support test frameworks: '${error}'. Please manually add the test configuration to the UI5 YAML configuration file used for testing according to https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#configuration-option-test.`
+        );
+        return;
+    }
+    const previewMiddleware = (await getPreviewMiddleware(ui5YamlConfig)) as CustomMiddleware<PreviewConfig>;
+
+    for (const defaultConfig of Object.values(TEST_CONFIG_DEFAULTS)) {
+        if (
+            previewMiddleware.configuration?.test?.some(
+                (testConfig) => testConfig.framework.toLowerCase() === defaultConfig.framework.toLowerCase()
+            )
+        ) {
+            //do not touch existing test config
+            break;
+        }
+        previewMiddleware.configuration.test = updateTestConfig(
+            previewMiddleware.configuration.test,
+            defaultConfig.path
+        );
+        logger?.info(
+            `The UI5 YAML configuration file 'ui5.yaml', has been updated to support the test framework '${defaultConfig.framework}'. Please consider transferring the test configuration to the UI5 YAML configuration file used for testing.`
+        );
+    }
+    ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
+    const yamlPath = join(basePath, FileName.Ui5Yaml);
+    fs.write(yamlPath, ui5YamlConfig.toString());
+}
+
+/**
  * Updates the preview middleware configurations according to the scripts they are being used in package.json.
  *
  * It will process all given UI5 configuration yaml files and check if the preview middleware configuration must be updated based on a given script.
@@ -247,11 +385,13 @@ export function updatePreviewMiddlewareConfig(
  *
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
+ * @param convertTests - indicator if test suite and test runner should be included in the conversion
  * @param logger logger to report info to the user
  */
 export async function updatePreviewMiddlewareConfigs(
     fs: Editor,
     basePath: string,
+    convertTests: boolean,
     logger?: ToolsLogger
 ): Promise<void> {
     const ui5YamlFileNames = await getAllUi5YamlFileNames(basePath, fs);
@@ -259,7 +399,7 @@ export async function updatePreviewMiddlewareConfigs(
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     for (const [scriptName, script] of Object.entries(packageJson?.scripts ?? {})) {
-        if (!script || !isValidPreviewScript(scriptName, script)) {
+        if (!script || !isValidPreviewScript(scriptName, script, convertTests)) {
             continue;
         }
 
@@ -268,7 +408,7 @@ export async function updatePreviewMiddlewareConfigs(
 
         if (
             !isUi5YamlToBeConverted(ui5Yaml, scriptName, ui5YamlFileNames, logger) ||
-            (await isUi5YamlAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, logger))
+            (await isUi5YamlFlpPathAlreadyConverted(fs, basePath, ui5Yaml, scriptName, script, convertTests, logger))
         ) {
             continue;
         }

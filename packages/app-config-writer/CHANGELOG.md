@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.5.10
+
+### Patch Changes
+
+-   d964a24: feat: add option to convert test runners to preview-config command
+
 ## 0.5.9
 
 ### Patch Changes
