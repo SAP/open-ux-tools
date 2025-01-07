@@ -6,8 +6,7 @@ import cloneDeep from 'lodash/cloneDeep';
 import type { UI5LibConfig } from './types';
 import { enableTypescript } from './options';
 import { mergeWithDefaults } from './data';
-import type { UI5 } from '@sap-ux/ui5-application-writer';
-import { getTemplateVersionPath } from '@sap-ux/ui5-application-writer';
+import { getTemplateVersionPath } from './utils';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -30,9 +29,7 @@ async function generate(basePath: string, ui5LibConfig: UI5LibConfig, fs?: Edito
     const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [reuseLib.typescript ? '**/*.js' : '**/*.ts'];
 
-    const templateVersionPath = getTemplateVersionPath({
-        version: reuseLib.frameworkVersion
-    } as UI5);
+    const templateVersionPath = getTemplateVersionPath(reuseLib.frameworkVersion);
 
     fs.copyTpl(join(tmplPath, 'common', templateVersionPath, '**/*.*'), basePath, libInput, undefined, {
         globOptions: { dot: true, ignore },

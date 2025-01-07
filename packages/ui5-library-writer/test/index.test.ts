@@ -58,6 +58,15 @@ describe('Reuse lib templates', () => {
                 frameworkVersion: V1_121_0,
                 typescript: true
             }
+        },
+        {
+            name: 'lib-js-latest',
+            config: {
+                ...ui5LibConfig,
+                libraryName: 'myui5jsliblatest',
+                frameworkVersion: '',
+                typescript: false
+            }
         }
     ];
 
