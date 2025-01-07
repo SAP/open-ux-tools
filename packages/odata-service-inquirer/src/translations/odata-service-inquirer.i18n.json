@@ -151,6 +151,7 @@
         "serviceTypeRequestError": "Error retrieving service type: {{- error}}",
         "abapServiceAuthenticationFailed": "ABAP environment authentication using UAA failed.",
         "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}. {{error}}",
+        "storeSystemReadingError": "An error occurred while reading the stored system credentials. System name: {{-systemName}}, error: {{- error}}",
         "storedSystemConnectionError": "An error occurred while validating the stored system connection info. System name: {{-systemName}}, error: {{- error}}",
         "noCatalogOrServiceAvailable": "No active system or OData service endpoint connection available to retrieve service(s).",
         "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version(s): V{{version}}."

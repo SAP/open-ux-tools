@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
-import { SystemService } from '@sap-ux/store';
+import { BackendSystemKey, getFilesystemStore, SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
@@ -31,18 +31,28 @@ export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
  * Connects to the specified backend system and validates the connection.
  * Note this will return true in the case of basic auth validation failure to defer validation to the credentials prompt.
  *
- * @param backendSystem the backend system to connect to
+ * @param backend the backend system to connect to
  * @param connectionValidator the connection validator to use for the connection
  * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
  * @returns the validation result of the backend system connection
  */
 export async function connectWithBackendSystem(
-    backendSystem: BackendSystem,
+    backend: BackendSystem,
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
     // Create a new connection with the selected system
     let connectValResult: ValidationResult = false;
+    let backendSystem: BackendSystem | undefined;
+    // Fetch the credentials for the system
+    try {
+        backendSystem = await new SystemService(LoggerHelper.logger).read(
+            BackendSystemKey.from(backend) as BackendSystemKey
+        );
+    } catch (error) {
+        LoggerHelper.logger.error(t('errors.storedSystemReError', { systemName: backend.name, error }));
+    }
+
     if (backendSystem) {
         // Assumption: non-BAS systems are BackendSystems
         if (backendSystem.authenticationType === 'reentranceTicket') {
@@ -229,7 +239,8 @@ export async function createSystemChoices(
             };
         }
     } else {
-        const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
+        const fileSystemStore = getFilesystemStore<BackendSystem>(LoggerHelper.logger);
+        const backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
         systemChoices = backendSystems.map((system) => {
             return {
                 name: getBackendSystemDisplayName(system),

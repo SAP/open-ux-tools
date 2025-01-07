@@ -44,6 +44,7 @@ export * from './entities/api-hub';
 // @todo: change notification needs to be more generic and not tied to filesystems
 // Support any filesystem watchers
 export { getFilesystemWatcherFor } from './data-access';
+export { getFilesystemStore } from './data-access/filesystem';
 export { ServiceOptions };
 export { Entity };
 
