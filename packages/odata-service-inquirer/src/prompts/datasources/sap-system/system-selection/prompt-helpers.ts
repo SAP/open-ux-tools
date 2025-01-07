@@ -31,7 +31,7 @@ export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
  * Connects to the specified backend system and validates the connection.
  * Note this will return true in the case of basic auth validation failure to defer validation to the credentials prompt.
  *
- * @param backend the backend system to connect to
+ * @param backendSystem the backend system to connect to
  * @param connectionValidator the connection validator to use for the connection
  * @param requiredOdataVersion the required OData version for the service, this will be used to narrow the catalog service connections
  * @returns the validation result of the backend system connection
