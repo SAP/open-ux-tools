@@ -239,6 +239,7 @@ export async function createSystemChoices(
             };
         }
     } else {
+        // Fetch backend systems from systems.json file, credential are fetched once the system is selected
         const fileSystemStore = getFilesystemStore<BackendSystem>(LoggerHelper.logger);
         const backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
         systemChoices = backendSystems.map((system) => {
