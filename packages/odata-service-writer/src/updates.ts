@@ -234,8 +234,9 @@ function updateExistingService(
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {Manifest} manifest - the manifest.json of the application
  * @param {Editor} fs - the memfs editor instance
+ * @returns modified manifest object.
  */
-async function updateExistingServices(webappPath: string, manifest: Manifest, fs: Editor): Promise<void> {
+async function updateExistingServices(webappPath: string, manifest: Manifest, fs: Editor): Promise<Manifest> {
     const dataSources = manifest?.['sap.app']?.dataSources;
     for (const dataSourceKey in dataSources) {
         const dataSource = dataSources[dataSourceKey];
@@ -250,7 +251,7 @@ async function updateExistingServices(webappPath: string, manifest: Manifest, fs
             }
         }
     }
-    fs.writeJSON(join(webappPath, 'manifest.json'), manifest);
+    return manifest;
 }
 
 /**
@@ -267,15 +268,14 @@ export async function updateManifest(basePath: string, service: OdataService, fs
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
     const appProp = 'sap.app';
     const appid = manifest?.[appProp]?.id;
-    // Check and update existing services
-    await updateExistingServices(webappPath, manifest, fs);
-    const modifiedManifest = fs.readJSON(manifestPath) as unknown as Manifest;
     // Throw if required property is not found manifest.json
     if (!appid) {
         throw new Error(
             t('error.requiredProjectPropertyNotFound', { property: `'${appProp}'.id`, path: manifestPath })
         );
     }
+    // Check and update existing services
+    const modifiedManifest = await updateExistingServices(webappPath, manifest, fs);
     // Add or update manifest.json with service
     enhanceManifest(service, modifiedManifest);
     fs.writeJSON(manifestPath, modifiedManifest);
