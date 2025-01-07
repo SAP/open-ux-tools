@@ -98,7 +98,7 @@ export async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
         name: 'approval',
         initial: false,
         message:
-            'The converter will rename the HTML files and delete the JS and TS files used for the existing preview functionality and configure virtual files instead. Do you want to proceed with the conversion?'
+            'The converter will rename the HTML files and delete the JS and TS files used for the existing preview functionality and configure virtual endpoints instead. Do you want to proceed with the conversion?'
     };
     return Boolean((await prompt([question])).approval);
 }
