@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.16.157
+
+### Patch Changes
+
+-   d529c38: Fixed Quick Actions not working after trying to open multiple dialogs and Quick Actions that create manifest changes in SAP Fiori Elements for OData V2 applications not showing correct state when there are unsaved manifest changes.
+
+## 0.16.156
+
+### Patch Changes
+
+-   0633837: Added quick action to enable Inline Rows Creation in the Object Page tables
+
+## 0.16.155
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.101
+
+## 0.16.154
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.100
+
 ## 0.16.153
 
 ### Patch Changes

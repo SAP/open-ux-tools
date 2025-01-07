@@ -31,7 +31,7 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, TREE_TABLE_TYPE } from '../quick-actions/table-quick-action-base';
+import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, TREE_TABLE_TYPE } from '../quick-actions/control-types';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -66,7 +66,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             title: options.title,
             completeView: options.aggregation === undefined
         });
-        this.ui5Version = sap.ui.version;
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 

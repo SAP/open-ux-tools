@@ -1,21 +1,20 @@
 import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import * as versionUtils from 'open/ux/preview/client/utils/version';
 
-import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
-
-jest.mock('../../../../src/adp/init-dialogs', () => {
-    return {
-        ...jest.requireActual('../../../../src/adp/init-dialogs'),
-        handler: jest.fn()
-    };
-});
+import {
+    quickActionListChanged,
+    executeQuickAction,
+    QuickAction
+} from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
 import { FeatureService } from '../../../../src/cpe/feature-service';
 
 import FEV2QuickActionRegistry from '../../../../src/adp/quick-actions/fe-v2/registry';
+import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import { sapCoreMock } from 'mock/window';
 import NavContainer from 'mock/sap/m/NavContainer';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
@@ -34,8 +33,8 @@ import {
     M_TABLE_TYPE,
     SMART_TABLE_TYPE,
     TREE_TABLE_TYPE
-} from 'open/ux/preview/client/adp/quick-actions/table-quick-action-base';
-import { DialogNames } from 'open/ux/preview/client/adp/init-dialogs';
+} from 'open/ux/preview/client/adp/quick-actions/control-types';
+import { DialogFactory, DialogNames } from 'open/ux/preview/client/adp/dialog-factory';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
@@ -49,6 +48,7 @@ describe('FE V2 quick actions', () => {
     beforeEach(() => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
+        jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue();
         jest.clearAllMocks();
     });
 
@@ -66,6 +66,12 @@ describe('FE V2 quick actions', () => {
             });
         });
         afterEach(() => {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+            const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
+            if (typeof closeDialogFunction === 'function') {
+                // make sure that dialog factory is in clean state after each test
+                closeDialogFunction();
+            }
             jest.clearAllMocks();
         });
         describe('clear filter bar button', () => {
@@ -285,11 +291,8 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
                 );
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
-                );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
             });
         });
 
@@ -570,14 +573,16 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
 
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'content',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                    }
                 );
-
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
-                    aggregation: 'content',
-                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                });
             });
         });
 
@@ -697,14 +702,17 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-page-action', kind: 'simple' })
                 );
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
-                );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
-                    aggregation: 'actions',
-                    title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
-                });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'actions',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
+                    }
+                );
             });
         });
 
@@ -853,62 +861,64 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
                 );
 
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    testCase.dialog,
+                    undefined,
+                    {
+                        aggregation: 'columns',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                    }
                 );
-
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, testCase.dialog, undefined, {
-                    aggregation: 'columns',
-                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                });
             });
         });
 
-        describe('enable table filtering for different valid UI5 versions', () => {
+        describe('Enable Semantic Date Range', () => {
             const testCases: {
                 validVersion: boolean;
                 versionInfo: string;
-                isManifestPageSettingInArrayStructred: boolean;
+                isManifestPagesAsArray: boolean;
             }[] = [
                 {
                     validVersion: true,
                     versionInfo: '1.96.37',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.108.38',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.96.38',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.120.23',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.128',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.130',
-                    isManifestPageSettingInArrayStructred: false
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: false,
-                    versionInfo: '1.96.36',
-                    isManifestPageSettingInArrayStructred: false
+                    versionInfo: '1.96.34',
+                    isManifestPagesAsArray: false
                 },
                 {
                     validVersion: true,
                     versionInfo: '1.130',
-                    isManifestPageSettingInArrayStructred: true
+                    isManifestPagesAsArray: true
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
@@ -917,7 +927,12 @@ describe('FE V2 quick actions', () => {
                     if (id == 'SmartFilterBar') {
                         return {
                             isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
-                            getProperty: jest.fn().mockImplementation(() => false),
+                            getProperty: jest.fn().mockImplementation((name) => {
+                                if (name === 'persistencyKey') {
+                                    return 'filterbar';
+                                }
+                                return false;
+                            }),
                             getDomRef: () => ({}),
                             getId: jest
                                 .fn()
@@ -966,7 +981,7 @@ describe('FE V2 quick actions', () => {
                 });
 
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const pages = testCase.isManifestPageSettingInArrayStructred
+                const pages = testCase.isManifestPagesAsArray
                     ? [{ name: 'test', id: 'test' }]
                     : { name: 'test', id: 'test' };
                 jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
@@ -979,7 +994,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -999,7 +1014,7 @@ describe('FE V2 quick actions', () => {
                         {
                             title: 'LIST REPORT',
                             actions:
-                                testCase.validVersion && !testCase.isManifestPageSettingInArrayStructred
+                                testCase.validVersion && !testCase.isManifestPagesAsArray
                                     ? [
                                           {
                                               'kind': 'simple',
@@ -1012,7 +1027,7 @@ describe('FE V2 quick actions', () => {
                         }
                     ])
                 );
-                if (testCase.validVersion && !testCase.isManifestPageSettingInArrayStructred) {
+                if (testCase.validVersion && !testCase.isManifestPagesAsArray) {
                     await subscribeMock.mock.calls[0][0](
                         executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
                     );
@@ -1038,6 +1053,212 @@ describe('FE V2 quick actions', () => {
                         }
                     });
                 }
+            });
+        });
+
+        describe('Enable Table Filtering', () => {
+            const testCases: {
+                visible: boolean;
+                ui5version: string;
+                expectedIsEnabled: boolean;
+                isValidUI5Version: boolean;
+                expectedTooltip?: string;
+            }[] = [
+                {
+                    visible: false,
+                    ui5version: '1.124.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: false
+                },
+                {
+                    visible: false,
+                    ui5version: '1.96.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: false
+                },
+                {
+                    visible: false,
+                    ui5version: '1.96.37',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: true
+                },
+                {
+                    visible: false,
+                    ui5version: '1.130.0',
+                    expectedIsEnabled: true,
+                    isValidUI5Version: true
+                },
+                {
+                    visible: true,
+                    ui5version: '1.108.38',
+                    expectedIsEnabled: false,
+                    isValidUI5Version: true,
+                    expectedTooltip:
+                        'This option is disabled because table filtering for page variants is already enabled'
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.ui5version });
+                const scrollIntoView = jest.fn();
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'mTable') {
+                        return {
+                            isA: (type: string) => type === 'sap.m.Table',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getProperty: jest.fn().mockImplementation((name) => {
+                                if (name === 'persistencyKey') {
+                                    return 'table';
+                                }
+                            }),
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
+                            getAggregation: () => 'headerToolbar',
+                            getParent: () => pageView,
+                            getHeaderToolbar: () => {
+                                return {
+                                    getTitleControl: () => {
+                                        return {
+                                            getText: () => 'MyTable'
+                                        };
+                                    }
+                                };
+                            },
+                            data: jest.fn().mockImplementation((key) => {
+                                if (key === 'p13nDialogSettings') {
+                                    return {
+                                        filter: {
+                                            visible: testCase.visible
+                                        }
+                                    };
+                                }
+                            })
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+
+                const pages = { name: 'test', id: 'test' };
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui.generic.app': {
+                        pages
+                    }
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest.fn().mockReturnValue(undefined)
+                    } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.m.Table': [
+                        {
+                            controlId: 'mTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                const isActionExpected = testCase.isValidUI5Version;
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    tooltip: undefined,
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: true,
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'tooltip': undefined,
+                                    'title': 'Add Custom Table Column'
+                                },
+                                ...(isActionExpected
+                                    ? [
+                                          {
+                                              'enabled': testCase.expectedIsEnabled,
+                                              'id': 'listReport0-enable-table-filtering',
+                                              'kind': 'simple',
+                                              'title': 'Enable Table Filtering for Page Variants',
+                                              'tooltip': testCase.expectedTooltip
+                                          } as any
+                                      ]
+                                    : [])
+                            ],
+                            'title': 'LIST REPORT'
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'simple' })
+                );
             });
         });
     });
@@ -1172,14 +1393,17 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'objectPage0-op-add-header-field', kind: 'simple' })
                 );
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
-                );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
-                    aggregation: 'items',
-                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-                });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'items',
+                        title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+                    }
+                );
             });
         });
         describe('add custom section', () => {
@@ -1312,14 +1536,17 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'objectPage0-op-add-custom-section', kind: 'simple' })
                 );
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
-                );
 
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
-                    aggregation: 'sections',
-                    title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
-                });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'sections',
+                        title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
+                    }
+                );
             });
         });
         describe('create table action', () => {
@@ -1471,17 +1698,19 @@ describe('FE V2 quick actions', () => {
                 );
 
                 await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '-1/0' })
+                    executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '0/0' })
                 );
 
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'content',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                    }
                 );
-
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddFragment', undefined, {
-                    aggregation: 'content',
-                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                });
             });
         });
 
@@ -1614,24 +1843,19 @@ describe('FE V2 quick actions', () => {
                     ]
                 });
 
+                // filter out irrelevant actions
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Add Custom Table Column') {
+                        actions.splice(i, 1);
+                    }
+                }
+
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
                             'title': 'OBJECT PAGE',
                             'actions': [
-                                {
-                                    'children': [
-                                        {
-                                            enabled: true,
-                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
-                                            'label': `'section 01' section`
-                                        }
-                                    ],
-                                    'enabled': true,
-                                    'id': 'objectPage0-create-table-action',
-                                    'kind': 'nested',
-                                    'title': 'Add Custom Table Action'
-                                },
                                 {
                                     'children': [
                                         {
@@ -1661,18 +1885,20 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({
                         id: 'objectPage0-create-table-custom-column',
                         kind: 'nested',
-                        path: '-1/0'
+                        path: '0/0'
                     })
                 );
 
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    testCase.dialog,
+                    undefined,
+                    {
+                        aggregation: 'columns',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                    }
                 );
-
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, testCase.dialog, undefined, {
-                    aggregation: 'columns',
-                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                });
             });
             test('displays warning when no rows loaded', async () => {
                 const pageView = new XMLView();
@@ -1782,7 +2008,7 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({
                         id: 'objectPage0-create-table-custom-column',
                         kind: 'nested',
-                        path: '-1/0'
+                        path: '0/0'
                     })
                 );
 
@@ -1792,10 +2018,306 @@ describe('FE V2 quick actions', () => {
                 );
             });
         });
+
+        describe('enable creation table rows', () => {
+            const testCases: {
+                innerTableType: string;
+                toString: () => string;
+                ui5version?: versionUtils.Ui5VersionInfo;
+                value?: string;
+                parentEntitySet?: string;
+                tableSectionId?: string;
+                expectDisabledReason?: string;
+                expectUnsupported?: boolean;
+                expectToThrow?: string;
+                manifestPages?: Object;
+            }[] = [
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => SMART_TABLE_TYPE + ', supported version',
+                    ui5version: { major: 1, minor: 120, patch: 23 }
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'row creation already enabled',
+                    value: 'creationRows',
+                    expectDisabledReason:
+                        'This option has been disabled because empty row mode is already enabled for this table'
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'unsupported UI5 version',
+                    ui5version: { major: 1, minor: 120, patch: 22 },
+                    expectUnsupported: true
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'empty entity set',
+                    parentEntitySet: '',
+                    expectToThrow: 'Internal error. Object Page entity set not found'
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'empty table section id',
+                    tableSectionId: '',
+                    expectToThrow: 'Internal error. Table sectionId property not found'
+                },
+                {
+                    innerTableType: M_TABLE_TYPE,
+                    toString: () => 'unsupported pages array manifest structure',
+                    manifestPages: [],
+                    expectUnsupported: true
+                },
+                {
+                    innerTableType: GRID_TABLE_TYPE,
+                    toString: () => GRID_TABLE_TYPE
+                },
+                {
+                    innerTableType: TREE_TABLE_TYPE,
+                    toString: () => TREE_TABLE_TYPE,
+                    expectDisabledReason:
+                        'This action is disabled because empty row mode is not supported for analytical and tree tables'
+                },
+                {
+                    innerTableType: ANALYTICAL_TABLE_TYPE,
+                    toString: () => ANALYTICAL_TABLE_TYPE,
+                    expectDisabledReason:
+                        'This action is disabled because empty row mode is not supported for analytical and tree tables'
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                    testCase.ui5version ?? { major: 1, minor: 131 }
+                );
+
+                const pageView = new XMLView();
+                pageView.getParent.mockReturnValue({
+                    getProperty: (propName: string) => {
+                        if (propName === 'entitySet') {
+                            return testCase.parentEntitySet ?? 'DummyEntitySet';
+                        } else {
+                            return undefined;
+                        }
+                    }
+                });
+                const scrollIntoView = jest.fn();
+                const actionId = 'objectPage0-enable-table-empty-row-mode';
+
+                const setSelectedSubSectionMock = jest.fn();
+                const fakeSubSection = new ManagedObject() as any;
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: setSelectedSubSectionMock
+                        };
+                    }
+
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return fakeSubSection;
+                    }
+
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.innerTableType,
+                                            getAggregation: () => 'item'
+                                        }
+                                    ];
+                                }
+
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({}),
+                            data: (key: string) => {
+                                if (key === 'creationMode') {
+                                    return testCase.value ?? 'inline';
+                                }
+                                if (key === 'sectionId') {
+                                    return testCase.tableSectionId ?? 'DummyTableSectionID';
+                                }
+                            }
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                rtaMock.getRootControlInstance = jest.fn().mockReturnValue({
+                    getManifest: jest.fn().mockReturnValue({
+                        ['sap.ui.generic.app']: {
+                            pages: testCase.manifestPages ?? {}
+                        }
+                    })
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
+
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
+
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                // filter out irrelevant actions
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Enable Empty Row Mode for Tables') {
+                        actions.splice(i, 1);
+                    }
+                }
+
+                let thrown;
+                try {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: actionId,
+                            kind: 'nested',
+                            path: '0/0'
+                        })
+                    );
+                } catch (e) {
+                    thrown = (e as Error).message;
+                }
+
+                expect(thrown).toBe(testCase.expectToThrow);
+
+                expect(sendActionMock).toHaveBeenNthCalledWith(
+                    1,
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: testCase.expectUnsupported
+                                ? []
+                                : [
+                                      {
+                                          kind: 'nested',
+                                          id: actionId,
+                                          enabled: true,
+                                          tooltip: undefined,
+                                          title: 'Enable Empty Row Mode for Tables',
+                                          children: [
+                                              {
+                                                  'children': [
+                                                      {
+                                                          'children': [],
+                                                          'enabled': !testCase.expectDisabledReason,
+                                                          'label': `'MyTable' table`,
+                                                          tooltip: testCase.expectDisabledReason
+                                                      }
+                                                  ],
+                                                  'enabled': true,
+                                                  'label': `'section 01' section`
+                                              }
+                                          ]
+                                      }
+                                  ]
+                        }
+                    ])
+                );
+
+                if (testCase.expectUnsupported || testCase.expectToThrow) {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
+                } else {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledWith(true);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledWith(fakeSubSection);
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        'settings': {},
+                        'type': 'appDescriptor',
+                        'value': {
+                            'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                            'parameters': {
+                                'entityPropertyChange': {
+                                    'operation': 'UPSERT',
+                                    'propertyPath': 'component/settings/sections/DummyTableSectionID/createMode',
+                                    'propertyValue': 'creationRows'
+                                },
+                                'parentPage': {
+                                    'component': 'sap.suite.ui.generic.template.ObjectPage',
+                                    'entitySet': 'DummyEntitySet'
+                                }
+                            },
+                            'reference': undefined
+                        }
+                    });
+                }
+            });
+        });
     });
+
     describe('AnalyticalListPage', () => {
         describe('create table custom column', () => {
-            test('initialize and execute action (%s)', async () => {
+            test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -1914,14 +2436,16 @@ describe('FE V2 quick actions', () => {
                     })
                 );
 
-                const { handler } = jest.requireMock<{ handler: () => Promise<void> }>(
-                    '../../../../src/adp/init-dialogs'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    DialogNames.ADD_FRAGMENT,
+                    undefined,
+                    {
+                        aggregation: 'columns',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                    }
                 );
-
-                expect(handler).toHaveBeenCalledWith(mockOverlay, rtaMock, DialogNames.ADD_FRAGMENT, undefined, {
-                    aggregation: 'columns',
-                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                });
             });
         });
     });
