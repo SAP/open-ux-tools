@@ -46,10 +46,8 @@ export class ToggleSemanticDateRangeFilterBar
 
     async execute(): Promise<FlexCommand[]> {
         // Use a regex to match the part after the last "::" and before "--"
-        const match = this.control?.getId().match(/::([^:]+)--/);
-
-        const entitySet = match ? match[1] : undefined;
-
+        const entitySet = this.control?.getId()?.match(/::([^:]+)--/)?.[1];
+       
         const command = await prepareManifestChange(
             this.context,
             'component/settings/filterSettings/dateSettings',
