@@ -42,7 +42,7 @@ export default async function (rta: RuntimeAuthoring) {
 
     await init(rta, quickActionRegistries);
 
-    await checkAllMetadata();
+    checkAllMetadata();
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         CommunicationService.sendAction(
