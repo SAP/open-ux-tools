@@ -188,6 +188,7 @@ export async function getSystemConnectionQuestions(
                 if (promptOptions?.systemSelection?.useAutoComplete && (selectedSystem as ListChoiceOptions).value) {
                     selectedSystemAnswer = (selectedSystem as ListChoiceOptions).value;
                 }
+                // TODO: Show message when connection is successful
                 return (
                     validateSystemSelection(selectedSystemAnswer, connectionValidator, requiredOdataVersion) ?? false
                 );
