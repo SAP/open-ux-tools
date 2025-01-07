@@ -647,7 +647,7 @@ function convertCollection(
 
 function convertApply(namespaceMap: NamespaceMap, currentNamespace: string, element: Element): ApplyExpression {
     // use internal representation (without alias) to represent Apply value
-    const clone: Element = JSON.parse(JSON.stringify(element));
+    const clone = structuredClone(element);
     replaceAliasInElement(namespaceMap, currentNamespace, clone);
     const functionName = getElementAttributeValue(element, Edm.Function);
     return {

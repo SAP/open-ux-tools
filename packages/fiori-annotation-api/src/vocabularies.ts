@@ -12,7 +12,7 @@ export function addAllVocabulariesToAliasInformation(
     aliasInfo: AliasInformation,
     vocabularies: Map<string, Vocabulary>
 ): AliasInformation {
-    const aliasInfoWithDefaults = JSON.parse(JSON.stringify(aliasInfo));
+    const aliasInfoWithDefaults = structuredClone(aliasInfo);
     for (const [namespace, vocabulary] of vocabularies) {
         if (!aliasInfo.aliasMapVocabulary[namespace]) {
             // add vocabulary with it's default alias
