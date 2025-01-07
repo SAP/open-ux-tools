@@ -6,7 +6,8 @@ import cloneDeep from 'lodash/cloneDeep';
 import type { UI5LibConfig } from './types';
 import { enableTypescript } from './options';
 import { mergeWithDefaults } from './data';
-import { getTemplateVersionPath, UI5 } from '@sap-ux/ui5-application-writer';
+import type { UI5 } from '@sap-ux/ui5-application-writer';
+import { getTemplateVersionPath } from '@sap-ux/ui5-application-writer';
 
 /**
  * Writes the template to the memfs editor instance.
