@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.11.18
+
+### Patch Changes
+
+-   20ab455: fix: prerequisites check for preview conversion
+-   Updated dependencies [20ab455]
+    -   @sap-ux/app-config-writer@0.5.12
+
 ## 0.11.17
 
 ### Patch Changes
