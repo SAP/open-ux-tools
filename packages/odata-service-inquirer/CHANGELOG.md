@@ -1,5 +1,12 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [40ba546]
+    -   @sap-ux/inquirer-common@0.6.3
+
 ## 0.8.5
 
 ### Patch Changes
