@@ -30,7 +30,7 @@ function isLowerThanMinimalVersion(
         // In case of a valid version we add a prefix to make it a range
         versionInfo = `<=${versionInfo}`;
     }
-    return !satisfies(`${minVersionInfo}`, versionInfo);
+    return !satisfies(minVersionInfo, versionInfo);
 }
 
 /**
