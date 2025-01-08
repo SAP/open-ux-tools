@@ -63,30 +63,36 @@ export function isCapNodeJsProject(packageJson: Package): boolean {
  *
  * @param projectRoot - the root path of the project
  * @param [capCustomPaths] - optional, relative CAP paths like app, db, srv
+ * @param memFs - optional mem-fs-editor instance
  * @returns - true if the project is a CAP project
  */
-export async function isCapJavaProject(projectRoot: string, capCustomPaths?: CapCustomPaths): Promise<boolean> {
+export async function isCapJavaProject(
+    projectRoot: string,
+    capCustomPaths?: CapCustomPaths,
+    memFs?: Editor
+): Promise<boolean> {
     const srv = capCustomPaths?.srv ?? (await getCapCustomPaths(projectRoot)).srv;
-    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml));
+    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml), memFs);
 }
 
 /**
  * Returns the CAP project type, undefined if it is not a CAP project.
  *
  * @param projectRoot - root of the project, where the package.json resides.
+ * @param memFs
  * @returns - CAPJava for Java based CAP projects; CAPNodejs for node.js based CAP projects; undefined if it is no CAP project
  */
-export async function getCapProjectType(projectRoot: string): Promise<CapProjectType | undefined> {
+export async function getCapProjectType(projectRoot: string, memFs?: Editor): Promise<CapProjectType | undefined> {
     const capCustomPaths = await getCapCustomPaths(projectRoot);
-    if (!(await fileExists(join(projectRoot, capCustomPaths.srv)))) {
+    if (!(await fileExists(join(projectRoot, capCustomPaths.srv), memFs))) {
         return undefined;
     }
-    if (await isCapJavaProject(projectRoot, capCustomPaths)) {
+    if (await isCapJavaProject(projectRoot, capCustomPaths, memFs)) {
         return 'CAPJava';
     }
     let packageJson;
     try {
-        packageJson = await readJSON<Package>(join(projectRoot, FileName.Package));
+        packageJson = await readJSON<Package>(join(projectRoot, FileName.Package), memFs);
     } catch {
         // Ignore errors while reading the package.json file
     }
