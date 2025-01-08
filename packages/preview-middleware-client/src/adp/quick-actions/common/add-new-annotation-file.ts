@@ -36,7 +36,7 @@ export class AddNewAnnotationFile
             DIALOG_ENABLEMENT_VALIDATOR
         ]);
     }
-    
+
     async initialize(): Promise<void> {
         const version = await getUi5Version();
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 132, patch: 0 })) {
@@ -48,20 +48,24 @@ export class AddNewAnnotationFile
             throw new Error('No data sources found in the manifest');
         }
         for (const key in dataSourceAnnotationFileMap) {
-            const source = dataSourceAnnotationFileMap[key];
-            this.children.push({
-                enabled: true,
-                label: source.annotationDetails.annotationExistsInWS
-                    ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
-                    : this.context.resourceBundle.getText('ODATA_SOURCE', [key]),
-                children: []
-            });
+            if (Object.prototype.hasOwnProperty.call(dataSourceAnnotationFileMap, key)) {
+                const source = dataSourceAnnotationFileMap[key];
+                this.children.push({
+                    enabled: true,
+                    label: source.annotationDetails.annotationExistsInWS
+                        ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
+                        : this.context.resourceBundle.getText('ODATA_SOURCE', [key]),
+                    children: []
+                });
+            }
         }
     }
     async execute(path: string): Promise<FlexCommand[]> {
         const index = Number(path);
         if (index >= 0) {
-            // Do not cache the result of getDataSourceAnnotationFileMap api , as annotation file or datasource can be added outside using create command/So refresh would be required for the cache to be updated.
+            // Do not cache the result of getDataSourceAnnotationFileMap api,
+            // as annotation file or datasource can be added outside using create command.
+            // So refresh would be required for the cache to be updated.
             const dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
             const dataSourceId = Object.keys(dataSourceAnnotationFileMap)[index];
             const dataSource = dataSourceAnnotationFileMap?.[dataSourceId];
@@ -83,9 +87,8 @@ export class AddNewAnnotationFile
             // Create annotation file only, if no file exists already for datasource id or if the change file exist and but no annotation file exists in file system.
             else if (dataSource) {
                 const timestamp = Date.now();
-                // const fileName = `id_${timestamp}_addAnnotationsToOData.change`;
-                const annotationFileName = `annotation_${timestamp}.xml`;
-                const annotationFileNameWithoutExtension = annotationFileName?.toLocaleLowerCase().replace('.xml', '');
+                const annotationFileNameWithoutExtension = `annotation_${timestamp}`;
+                const annotationFileName = `${annotationFileNameWithoutExtension}.xml`;
                 const annotationNameSpace =
                     this.context.flexSettings.layer === 'CUSTOMER_BASE'
                         ? `customer.annotation.${annotationFileNameWithoutExtension}`

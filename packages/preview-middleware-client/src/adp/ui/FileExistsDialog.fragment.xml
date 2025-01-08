@@ -4,7 +4,7 @@
     xmlns="sap.m"
     xmlns:core="sap.ui.core"
     xmlns:f="sap.ui.layout.form"
-    title="Annotation File Exists"
+    title="{i18n>ANNOTATION_FILE_EXISTS}"
     contentWidth="450px"
     class="sapUiRTABorder"
 >
@@ -17,7 +17,7 @@
             singleContainerFullSize="true"
         >
             <f:content>
-                <Label text="An Annotation file has been found." />
+                <Label text="{i18n>ANNOTATION_FILE_HAS_BEEN_FOUND}" />
                 <Text text="{/filePathFromRoot}" />
             </f:content>
         </f:SimpleForm>
@@ -25,7 +25,7 @@
     <beginButton>
         <Button
             id="showFileInVscodeBtn"
-            text="Show File in VSCode"
+            text="{i18n>SHOW_FILE_IN_VSCODE}"
             press="onShowFileInVscodeBtn"
             enabled="true"
             type="Emphasized"
@@ -34,7 +34,7 @@
     <endButton>
         <Button
             id="closeShowFileInVsCodeBtn"
-            text="Cancel"
+            text="{i18n>CANCEL_BUTTON_LABEL}"
             press="handleDialogClose"
             type="Reject"
         />

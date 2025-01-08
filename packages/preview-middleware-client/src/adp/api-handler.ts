@@ -41,7 +41,7 @@ export interface AnnotationFileResponse {
     isRunningInBAS: boolean;
 }
 
-interface DataSoruceAnnotationMap {
+interface DataSourceAnnotationMap {
     [key: string]: { serviceUrl: string; isRunningInBAS: boolean; annotationDetails: AnnotationFileResponse };
 }
 
@@ -164,10 +164,10 @@ export async function writeAnnotationFile<T>(data: T): Promise<T> {
 /**
  * Writes a new annotation file to the project's workspace
  *
- * @returns Generic Promise<DataSoruceAnnotationMap>
+ * @returns Generic Promise<DataSourceAnnotationMap>
  */
-export async function getDataSourceAnnotationFileMap(): Promise<DataSoruceAnnotationMap> {
-    return request<DataSoruceAnnotationMap>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.GET);
+export async function getDataSourceAnnotationFileMap(): Promise<DataSourceAnnotationMap> {
+    return request<DataSourceAnnotationMap>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.GET);
 }
 
 /**
