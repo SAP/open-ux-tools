@@ -95,7 +95,7 @@ describe('AbapServiceProvider', () => {
                 .get(AdtServices.ATO_SETTINGS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
             const abapSrvProvider = await createForAbap(config);
-            expect(await abapSrvProvider.isS4Cloud()).toBe(true);
+            expect(await abapSrvProvider.isAbapCloud()).toBe(true);
             expect(await abapSrvProvider.getAtoInfo()).toStrictEqual(ato);
         });
 
@@ -105,7 +105,7 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .get(AdtServices.ATO_SETTINGS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsNotS4C.xml'));
-            expect(await createForAbap(config).isS4Cloud()).toBe(false);
+            expect(await createForAbap(config).isAbapCloud()).toBe(false);
         });
 
         test('No request if known', async () => {
@@ -115,8 +115,8 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .get(AdtServices.ATO_SETTINGS)
                 .replyWithFile(200, join(__dirname, 'mockResponses/atoSettingsS4C.xml'));
-            await provider.isS4Cloud();
-            expect(await provider.isS4Cloud()).toBe(true);
+            await provider.isAbapCloud();
+            expect(await provider.isAbapCloud()).toBe(true);
         });
 
         test('Request failed', async () => {
@@ -125,7 +125,7 @@ describe('AbapServiceProvider', () => {
                 .replyWithFile(200, join(__dirname, 'mockResponses/discovery-1.xml'))
                 .get(AdtServices.ATO_SETTINGS)
                 .replyWithError('Something went wrong');
-            expect(await createForAbap(config).isS4Cloud()).toBe(false);
+            expect(await createForAbap(config).isAbapCloud()).toBe(false);
         });
     });
 
