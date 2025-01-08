@@ -3,8 +3,8 @@ import * as os from 'os';
 import * as path from 'path';
 import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
-import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
@@ -29,9 +29,10 @@ export default class RoutesHandler {
     /**
      * Constructor taking project as input.
      *
-     * @param project Reference to the root of the project
-     * @param util middleware utilities provided by the UI5 CLI
-     * @param logger Logger instance
+     * @param config - The adaptation project's configuration.
+     * @param project - Reference to the root of the project.
+     * @param util - middleware utilities provided by the UI5 CLI.
+     * @param logger - Logger instance.
      */
     constructor(
         private readonly config: AdpPreviewConfig,

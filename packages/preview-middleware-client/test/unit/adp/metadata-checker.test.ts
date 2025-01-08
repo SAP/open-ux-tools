@@ -9,7 +9,7 @@ jest.mock('../../../src/adp/api-handler', () => ({
 
 const checkMetadataMock = checkMetadata as jest.Mock;
 
-describe('Metadata Handler', () => {
+describe('metadata-checker', () => {
     const sendActionSpy = jest.spyOn(CommunicationService, 'sendAction');
 
     afterEach(() => {
@@ -32,8 +32,8 @@ describe('Metadata Handler', () => {
                 type: '[ext] show-info-center-message',
                 payload: {
                     message: {
-                        description: "Metadata available for 'dataSource1'.",
-                        title: "Metadata for Data Source 'dataSource1'"
+                        description: `Metadata available for 'dataSource1'.`,
+                        title: `Metadata for Data Source 'dataSource1'`
                     },
                     type: 0
                 }
@@ -43,7 +43,7 @@ describe('Metadata Handler', () => {
                 payload: {
                     message: {
                         description: 'Request failed with status code 500',
-                        title: "Metadata for Data Source 'dataSource2'"
+                        title: `Metadata for Data Source 'dataSource2'`
                     },
                     type: 1
                 }

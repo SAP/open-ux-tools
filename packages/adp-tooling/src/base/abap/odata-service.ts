@@ -43,11 +43,12 @@ export function getDataSourceById(manifest: Manifest, dataSourceId: string): Man
  */
 export class ODataService {
     /**
-     * The constructor requires all objects needed for metadata fetching:
-     * - An already-loaded manifest (or partial manifest focusing on dataSources).
-     * - The AbapServiceProvider for making requests.
-     * - appInfo containing the base URL.
-     * - The logger.
+     * The constructor needed for initializing ODataService.
+     *
+     * @param manifest - The application's manifest object.
+     * @param appInfo - The UI5 application information content.
+     * @param provider - The ABAP service provider.
+     * @param logger - The logger instance.
      */
     constructor(
         private readonly manifest: Manifest,

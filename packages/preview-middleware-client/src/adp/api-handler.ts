@@ -45,7 +45,7 @@ export interface MetadataResponse {
     results: MetadataResponseResult;
 }
 
-export type MetadataResponseResult = Record<string, { success: boolean; metadata?: any; message?: string }>;
+export type MetadataResponseResult = Record<string, { success: boolean; metadata?: string; message?: string }>;
 
 export interface ManifestAppdescr {
     fileName: string;

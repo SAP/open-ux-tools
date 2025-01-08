@@ -15,11 +15,10 @@ import init from '../cpe/init';
 import { getApplicationType } from '../utils/application';
 import { getTextBundle } from '../i18n';
 
-import { loadDefinitions } from './quick-actions/load';
 import { getAllSyncViewsIds } from './utils';
 import { initDialogs } from './init-dialogs';
-import { checkMetadata } from './api-handler';
 import { checkAllMetadata } from './metadata-checker';
+import { loadDefinitions } from './quick-actions/load';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
@@ -42,7 +41,7 @@ export default async function (rta: RuntimeAuthoring) {
 
     await init(rta, quickActionRegistries);
 
-    checkAllMetadata();
+    void checkAllMetadata();
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         CommunicationService.sendAction(

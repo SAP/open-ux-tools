@@ -1,4 +1,4 @@
-import { Logger } from '@sap-ux/logger';
+import type { Logger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ManifestNamespace } from '@sap-ux/project-access';
 
