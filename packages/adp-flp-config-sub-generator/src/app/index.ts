@@ -20,7 +20,7 @@ import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
 import { getPrompts, type FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
-import { TelemetryHelper, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName } from '@sap-ux/project-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -42,7 +42,8 @@ export default class extends Generator {
     manifest: Manifest;
     projectRootPath: string = '';
     answers: FLPConfigAnswers;
-    logger: ToolsLogger;
+    toolsLogger: ToolsLogger;
+    logger: ILogWrapper;
 
     /**
      * Creates an instance of the generator.
@@ -57,7 +58,8 @@ export default class extends Generator {
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
         this.manifest = opts.manifest as Manifest;
-        this.logger = new ToolsLogger();
+        this.toolsLogger = new ToolsLogger();
+        this.logger = AdpFlpConfigLogger.logger;
 
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
 
@@ -116,7 +118,7 @@ export default class extends Generator {
         try {
             await generateInboundConfig(this.projectRootPath, this.answers as InternalInboundNavigation, this.fs);
         } catch (error) {
-            AdpFlpConfigLogger.logger.error(t('error.writingPhase', { error }));
+            this.logger.error(t('error.writingPhase', { error }));
             throw new Error(t('error.updatingApp'));
         }
     }
@@ -129,11 +131,11 @@ export default class extends Generator {
             const telemetryData = TelemetryHelper.createTelemetryData();
             if (telemetryData) {
                 sendTelemetry(EventName.ADP_FLP_CONFIG_ADDED, telemetryData, this.projectRootPath).catch((error) => {
-                    AdpFlpConfigLogger.logger.error(t('error.telemetry', { error }));
+                    this.logger.error(t('error.telemetry', { error }));
                 });
             }
         } catch (error) {
-            AdpFlpConfigLogger.logger.error(t('error.endPhase', { error }));
+            this.logger.error(t('error.endPhase', { error }));
         }
     }
 
@@ -156,7 +158,7 @@ export default class extends Generator {
             if (!url) {
                 throw new Error(t('error.systemNotFound'));
             }
-            const systemService = new SystemService(this.logger);
+            const systemService = new SystemService(this.toolsLogger);
             const backendSystem = new BackendSystemKey({ url: url as string, client: client ?? '' });
             configuredSystem = (await systemService.read(backendSystem))?.name;
             if (!configuredSystem) {
@@ -187,11 +189,11 @@ export default class extends Generator {
                 systemSelectionQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
                 this.projectRootPath,
                 variant,
-                this.logger
+                this.toolsLogger
             );
             this.manifest = manifestService.getManifest();
         } catch (error) {
-            AdpFlpConfigLogger.logger.error(t('error.fetchingManifest', { error }));
+            this.logger.error(t('error.fetchingManifest', { error }));
             throw new Error(t('error.fetchingManifest'));
         }
     }
