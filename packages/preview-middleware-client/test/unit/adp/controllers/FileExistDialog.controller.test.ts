@@ -68,8 +68,6 @@ describe('FileExistsDialog', () => {
             });
             fileExistDialog.model = testModel;
             const openSpy = jest.fn();
-            const beginButtonSetTextSpy = jest.fn();
-            const endButtonSetTextSpy = jest.fn();
 
             await fileExistDialog.setup({
                 setEscapeHandler: jest.fn(),
@@ -81,18 +79,10 @@ describe('FileExistsDialog', () => {
                     {
                         setVisible: jest.fn()
                     }
-                ]),
-                getBeginButton: jest.fn().mockReturnValue({
-                    setText: beginButtonSetTextSpy.mockReturnValue({
-                        setEnabled: jest.fn()
-                    })
-                }),
-                getEndButton: jest.fn().mockReturnValue({ setText: endButtonSetTextSpy })
+                ])
             } as unknown as Dialog);
-            
+
             expect(openSpy).toHaveBeenCalledTimes(1);
-            expect(beginButtonSetTextSpy).toHaveBeenCalledWith('Open in VS Code');
-            expect(endButtonSetTextSpy).toHaveBeenCalledWith('Close');
         });
 
         test('fills json model with data - hide file in vscode button in SBAS', async () => {
@@ -161,10 +151,9 @@ describe('FileExistsDialog', () => {
                 }),
                 getEndButton: jest.fn().mockReturnValue({ setText: endButtonSetTextSpy })
             } as unknown as Dialog);
-            
+
             expect(openSpy).toHaveBeenCalledTimes(1);
             expect(showInVsCodeSetVisibleSpy).toHaveBeenCalledWith(false);
-            expect(endButtonSetTextSpy).toHaveBeenCalledWith('Close');
         });
     });
 });

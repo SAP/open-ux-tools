@@ -5,6 +5,7 @@ import type Event from 'sap/ui/base/Event';
 
 import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
 import BaseDialog from './BaseDialog.controller';
+import { getResourceModel } from '../../i18n';
 
 export interface FileExistsDialogOptions {
     title: string;
@@ -37,16 +38,16 @@ export default class FileExistsDialog extends BaseDialog<FileExistModel> {
      *
      * @param {Dialog} dialog - Dialog instance
      */
-    setup(dialog: Dialog): void {
+    async setup(dialog: Dialog): Promise<void> {
         this.dialog = dialog;
 
         this.model.setProperty('/filePath', this.options.filePath);
         this.model.setProperty('/filePathFromRoot', this.options.fileName);
         this.model.setProperty('/isRunningInBAS', this.options.isRunningInBAS);
         this.buildDialogData();
-
+        const resourceModel = await getResourceModel();
         this.dialog.setModel(this.model);
-
+        this.dialog.setModel(resourceModel, 'i18n');
         this.dialog.open();
     }
 
@@ -79,10 +80,7 @@ export default class FileExistsDialog extends BaseDialog<FileExistModel> {
         const isRunningInBAS = this.model.getProperty('/isRunningInBAS');
         if (isRunningInBAS) {
             this.dialog.getBeginButton().setVisible(false);
-        } else {
-            this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
         }
-        this.dialog.getEndButton().setText('Close');
     }
 
     /**

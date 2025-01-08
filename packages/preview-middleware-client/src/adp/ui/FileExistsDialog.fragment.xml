@@ -7,20 +7,11 @@
     title="{i18n>ANNOTATION_FILE_EXISTS}"
     contentWidth="450px"
     class="sapUiRTABorder"
+    type="Message"
 >
     <content>
-        <f:SimpleForm
-            editable="true"
-            layout="ResponsiveGridLayout"
-            labelSpanS="12"
-            visible="true"
-            singleContainerFullSize="true"
-        >
-            <f:content>
-                <Label text="{i18n>ANNOTATION_FILE_HAS_BEEN_FOUND}" />
-                <Text text="{/filePathFromRoot}" />
-            </f:content>
-        </f:SimpleForm>
+        <Text text="{i18n>ANNOTATION_FILE_HAS_BEEN_FOUND}" />
+        <Text text="{/filePathFromRoot}" />
     </content>
     <beginButton>
         <Button

@@ -321,9 +321,7 @@ export class ChangeService extends EventTarget {
                                 }
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
-                                const title = ['appdescr_app_addAnnotationsToOData'].includes(change.changeType)
-                                    ? TITLE_MAP[change.changeType]
-                                    : '';
+                                const title = TITLE_MAP[change.changeType] ?? '';
                                 if (change.fileName) {
                                     this.changedFiles[change.fileName] = change;
                                     const unknownChange: UnknownSavedChange = {
@@ -671,7 +669,7 @@ export class ChangeService extends EventTarget {
         } else if (changeType === 'appdescr_ui_generic_app_changePageConfiguration') {
             return this.prepareV2ConfigurationChange(command, fileName, index, inactiveCommandCount);
         } else {
-            const title = changeType === 'appdescr_app_addAnnotationsToOData' ? TITLE_MAP[changeType] : '';
+            const title = TITLE_MAP[changeType] ?? '';
             let result: PendingChange = {
                 type: PENDING_CHANGE_TYPE,
                 kind: UNKNOWN_CHANGE_KIND,

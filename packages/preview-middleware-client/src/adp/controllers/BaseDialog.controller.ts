@@ -52,7 +52,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
      */
     protected commandExecutor: CommandExecutor;
 
-    abstract setup(dialog: Dialog): Promise<void> | void;
+    abstract setup(dialog: Dialog): Promise<void>;
 
     abstract onCreateBtnPress(event: Event): Promise<void> | void;
 
