@@ -188,12 +188,21 @@ export async function getSystemConnectionQuestions(
                 if (promptOptions?.systemSelection?.useAutoComplete && (selectedSystem as ListChoiceOptions).value) {
                     selectedSystemAnswer = (selectedSystem as ListChoiceOptions).value;
                 }
-                // TODO: Show message when connection is successful
                 return (
                     validateSystemSelection(selectedSystemAnswer, connectionValidator, requiredOdataVersion) ?? false
                 );
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
+                // Show message if connection to selected system is successful and showConnectionSuccessMessage is enabled
+                if (
+                    promptOptions?.systemSelection?.showConnectionSuccessMessage &&
+                    (connectionValidator.validity.authenticated || connectionValidator.validity.authRequired === false)
+                ) {
+                    return {
+                        message: t('prompts.systemSelection.connectionSuccessMessage'),
+                        severity: Severity.information
+                    };
+                }
                 // Backend systems credentials may need to be updated
                 if (
                     selectedSystem.type === 'backendSystem' &&
