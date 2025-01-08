@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.6.3
+
+### Patch Changes
+
+-   40ba546: Add support to read additional ABAP service types
+
 ## 0.6.2
 
 ### Patch Changes
