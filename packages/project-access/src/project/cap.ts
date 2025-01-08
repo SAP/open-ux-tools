@@ -79,7 +79,7 @@ export async function isCapJavaProject(
  * Returns the CAP project type, undefined if it is not a CAP project.
  *
  * @param projectRoot - root of the project, where the package.json resides.
- * @param memFs
+ * @param memFs - optional mem-fs-editor instance
  * @returns - CAPJava for Java based CAP projects; CAPNodejs for node.js based CAP projects; undefined if it is no CAP project
  */
 export async function getCapProjectType(projectRoot: string, memFs?: Editor): Promise<CapProjectType | undefined> {
