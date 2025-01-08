@@ -59,7 +59,8 @@ describe('AnnotationsWriter', () => {
                 fileName: '',
                 dataSource: '/sap/opu/odata/source',
                 filePath: '/mock/path/to/annotation/file.xml'
-            }
+            },
+            isCommand: true
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
@@ -87,7 +88,8 @@ describe('AnnotationsWriter', () => {
                 fileName: '',
                 dataSource: '/sap/opu/odata/source',
                 filePath: ''
-            }
+            },
+            isCommand: true
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
@@ -115,7 +117,8 @@ describe('AnnotationsWriter', () => {
                 fileName: '',
                 dataSource: '/sap/opu/odata/source',
                 filePath: 'file.xml'
-            }
+            },
+            isCommand: true
         };
 
         const writer = new AnnotationsWriter({} as Editor, mockProjectPath);
