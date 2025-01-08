@@ -1,4 +1,5 @@
 import { showInfoCenterMessage, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+
 import { CommunicationService } from '../cpe/communication-service';
 import { MetadataResponseResult, checkMetadata } from './api-handler';
 
@@ -44,10 +45,6 @@ export async function checkAllMetadata(): Promise<void> {
 
         processMetadataResults(response.results);
     } catch (error) {
-        sendInfoCenterMessage(
-            'Metadata Retrieval Failed',
-            'No data sources could be fetched. Please try again later.',
-            MessageBarType.warning
-        );
+        sendInfoCenterMessage('Metadata Retrieval Failed', 'No data sources could be fetched.', MessageBarType.warning);
     }
 }
