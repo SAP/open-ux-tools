@@ -1,4 +1,4 @@
-# @sap-ux/adp-flp-config-s
+# @sap-ux/adp-flp-config-sub-generator
 
 ## Features
 
