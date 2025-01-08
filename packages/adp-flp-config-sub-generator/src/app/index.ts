@@ -36,7 +36,8 @@ import { t } from '../utils/i18n';
 export default class extends Generator {
     setPromptsCallback: (fn: object) => void;
     prompts: Prompts;
-    launchFlpConfigAsSubGenerator: boolean;
+    // Flag to determine if the generator was launched as a sub-generator or standalone
+    launchAsSubGen: boolean;
     appWizard: AppWizard;
     manifest: Manifest;
     projectRootPath: string = '';
@@ -54,14 +55,14 @@ export default class extends Generator {
         opts.force = true;
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
-        this.launchFlpConfigAsSubGenerator = Boolean(opts.launchFlpConfigAsSubGenerator);
+        this.launchAsSubGen = !!opts.launchAsSubGen;
         this.manifest = opts.manifest as Manifest;
         this.logger = new ToolsLogger();
 
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
 
         // If launched standalone add navigation steps
-        if (!this.launchFlpConfigAsSubGenerator) {
+        if (!this.launchAsSubGen) {
             this.prompts = new Prompts([
                 {
                     name: t('yuiNavSteps.sysConfirmName'),
@@ -121,7 +122,7 @@ export default class extends Generator {
     }
 
     end(): void {
-        if (!this.launchFlpConfigAsSubGenerator) {
+        if (!this.launchAsSubGen) {
             this.appWizard.showInformation(t('info.flpConfigAdded'), MessageType.notification);
         }
         try {
