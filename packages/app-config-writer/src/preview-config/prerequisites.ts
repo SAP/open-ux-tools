@@ -26,6 +26,10 @@ function isLowerThanMinimalVersion(
         // In case no dependency is found we assume the minimal version is not met depending on the mandatory flag
         return mandatory;
     }
+    if (versionInfo === 'latest') {
+        // In case of 'latest' we know the minimal version is met
+        return false;
+    }
     if (valid(versionInfo)) {
         // In case of a valid version we add a prefix to make it a range
         versionInfo = `<=${versionInfo}`;

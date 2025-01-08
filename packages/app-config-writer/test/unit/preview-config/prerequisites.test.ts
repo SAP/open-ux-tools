@@ -83,6 +83,17 @@ describe('prerequisites', () => {
         expect(await checkPrerequisites(basePath, fs, logger)).toBeTruthy();
     });
 
+    test("check prerequisites with UI5 ux-ui5-tooling 'latest' dependency", async () => {
+        fs.write(
+            join(basePath, 'package.json'),
+            JSON.stringify({
+                devDependencies: { '@sap/ux-ui5-tooling': 'latest', '@ui5/cli': '^3', 'cds-plugin-ui5': '6.6.6' }
+            })
+        );
+
+        expect(await checkPrerequisites(basePath, fs, logger)).toBeTruthy();
+    });
+
     test('check prerequisites with UI5 ux-ui5-tooling 1.15.0 dependency', async () => {
         fs.write(
             join(basePath, 'package.json'),
