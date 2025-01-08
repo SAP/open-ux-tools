@@ -1,4 +1,5 @@
 import ZipFile from 'adm-zip';
+import type { Editor } from 'mem-fs-editor';
 import type { ReaderCollection } from '@ui5/fs';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
@@ -9,9 +10,8 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
-import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
+import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var

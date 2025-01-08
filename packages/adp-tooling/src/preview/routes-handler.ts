@@ -5,11 +5,11 @@ import { renderFile } from 'ejs';
 import sanitize from 'sanitize-filename';
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { DirName, filterDataSourcesByType } from '@sap-ux/project-access';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { DirName, filterDataSourcesByType } from '@sap-ux/project-access';
 
 import { getVariant } from '../base/helper';
 import { TemplateFileName, HttpStatusCodes } from '../types';
@@ -296,11 +296,7 @@ export default class RoutesHandler {
             });
         } catch (e: any) {
             this.logger.error(`Failed to retrieve metadata for data sources. Error: ${e.message}`);
-            res.status(500).json({
-                success: false,
-                message: e.message || 'Error retrieving data sources metadata'
-            });
-            next(e);
+            this.handleErrorMessage(res, next, e);
         }
     };
 }
