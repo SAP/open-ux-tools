@@ -1,5 +1,12 @@
 # @sap-ux/create
 
+## 0.11.15
+
+### Patch Changes
+
+-   Updated dependencies [0f1b457]
+    -   @sap-ux/odata-service-writer@0.25.1
+
 ## 0.11.14
 
 ### Patch Changes
