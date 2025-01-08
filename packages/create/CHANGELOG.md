@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.11.22
+
+### Patch Changes
+
+-   04f0547: fix: preview config update default configs
+-   Updated dependencies [04f0547]
+    -   @sap-ux/app-config-writer@0.5.13
+
 ## 0.11.21
 
 ### Patch Changes
