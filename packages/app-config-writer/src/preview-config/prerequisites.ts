@@ -23,7 +23,7 @@ function isLowerThanMinimalVersion(
 ): boolean {
     let versionInfo = packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName];
     if (!versionInfo) {
-        // In case no dependency is found we assume the minimal version is not met
+        // In case no dependency is found we assume the minimal version is not met depending on the mandatory flag
         return mandatory;
     }
     if (valid(versionInfo)) {
