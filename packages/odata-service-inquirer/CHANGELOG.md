@@ -1,5 +1,83 @@
 # @sap-ux/odata-service-inquirer
 
+## 0.8.5
+
+### Patch Changes
+
+-   Updated dependencies [dac696a]
+    -   @sap-ux/guided-answers-helper@0.2.0
+    -   @sap-ux/inquirer-common@0.6.2
+
+## 0.8.4
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+
+## 0.8.3
+
+### Patch Changes
+
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+    -   @sap-ux/inquirer-common@0.6.1
+
+## 0.8.2
+
+### Patch Changes
+
+-   2d4fc36: Fix for connection reset when switching system selection
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 0.8.0
+
+### Minor Changes
+
+-   46b9357: Provide onlyShowDefault option and expose getSystemSelectionQuestions
+
+## 0.7.14
+
+### Patch Changes
+
+-   77cff66: Fix for CF selection not resetting connection
+
+## 0.7.13
+
+### Patch Changes
+
+-   f8dda3b: Fix for multiple issues relating to prompt validations
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/fiori-generator-shared@0.7.17
+    -   @sap-ux/telemetry@0.5.50
+    -   @sap-ux/inquirer-common@0.5.14
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/fiori-generator-shared@0.7.16
+    -   @sap-ux/inquirer-common@0.5.13
+    -   @sap-ux/telemetry@0.5.49
+
 ## 0.7.10
 
 ### Patch Changes

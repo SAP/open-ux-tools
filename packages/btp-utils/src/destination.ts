@@ -1,4 +1,22 @@
 /**
+ * Support different Token Service URL Types
+ */
+export enum DestinationType {
+    HTTP = 'HTTP',
+    LDAP = 'LDAP',
+    MAIL = 'MAIL',
+    RFC = 'RFC'
+}
+
+/**
+ * Support different Token Service URL Types
+ */
+export enum OAuthUrlType {
+    DEDICATED = 'Dedicated',
+    COMMON = 'Common'
+}
+
+/**
  * Support destination authentication types
  */
 export enum Authentication {
@@ -67,14 +85,6 @@ export type DestinationProperty =
     | 'HTML5.DynamicDestination';
 export type AdditionalDestinationProperties = { [property in DestinationProperty]: string };
 
-export interface TokenExchangeDestination extends Destination, Partial<AdditionalDestinationProperties> {
-    URL: string;
-    TokenServiceURLType: 'Dedicated' | 'Common';
-    TokenServiceURL: string;
-    ClientSecret: string;
-    ClientId: string;
-}
-
 /**
  * Mandatory destination properties combined with the known/relevant optional properties.
  */
@@ -84,6 +94,7 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
     Authentication: string;
     ProxyType: string;
     Description: string;
+
     /**
      * N.B. Not the host but the full destination URL property!
      */
@@ -245,10 +256,65 @@ export function isS4HC(destination: Destination): boolean {
  * This is a non-strict check, as we want to maintain existing destinations, perhaps accidentally configured with other conflicting configurations.
  *
  * @param destination destination configuration properties
- * @returns true, if this destination has the the 'odata_abap' attribute set
+ * @returns true, if this destination has the 'odata_abap' attribute set
  */
 export function isAbapODataDestination(destination: Destination): boolean {
     return !!destination.WebIDEUsage?.includes(WebIDEUsage.ODATA_ABAP);
+}
+
+/**
+ * Cloud Foundry instance types
+ */
+export const AbapEnvType = {
+    /**
+     * ABAP instance type
+     */
+    ABAP: 'abap',
+    /**
+     * ABAP trial instance type
+     */
+    ABAP_TRIAL: 'abap-trial',
+    /**
+     * ABAP CANARY trial instance type
+     */
+    ABAP_CANARY: 'abap-canary',
+    /**
+     * ABAP OEM instance type
+     */
+    ABAP_OEM: 'abap-oem',
+    /**
+     * ABAP OEM CANARY instance type
+     */
+    ABAP_OEM_CANARY: 'abap-oem-canary',
+    /**
+     * ABAP HAAS instance type
+     */
+    ABAP_HAAS: 'abap-haas',
+    /**
+     * Destination service instance type
+     */
+    DESTINATION: 'destination',
+    /**
+     * ABAP Staging service instance type
+     */
+    ABAP_STAGING: 'abap-staging',
+    /**
+     * ABAP Internal Staging service instance type
+     */
+    ABAP_INTERNAL_STAGING: 'abap-internal-staging'
+} as const;
+
+export type AbapEnvType = (typeof AbapEnvType)[keyof typeof AbapEnvType];
+
+/**
+ * OAuth destination properties.
+ */
+export interface OAuth2Destination extends Destination, Partial<AdditionalDestinationProperties> {
+    URL: string; // Required for creation flow
+    ClientSecret: string;
+    ClientId: string;
+    TokenServiceURL: string;
+    TokenServiceURLType?: 'Dedicated'; // Optional for OAuth2Password destinations
 }
 
 export interface CloudFoundryServiceInfo {

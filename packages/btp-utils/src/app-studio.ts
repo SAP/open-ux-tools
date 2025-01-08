@@ -1,8 +1,29 @@
-import axios from 'axios';
-import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
+import axios, { AxiosRequestConfig } from 'axios';
+import {
+    apiCreateServiceInstance,
+    apiGetInstanceCredentials,
+    apiGetServicesInstancesFilteredByType,
+    cfGetInstanceKeyParameters,
+    cfGetTarget
+} from '@sap/cf-tools';
 import type { Logger } from '@sap-ux/logger';
 import { ENV } from './app-studio.env';
-import { isS4HC, type Destination, type ListDestinationOpts } from './destination';
+import {
+    Authentication,
+    CloudFoundryServiceInfo,
+    type Destination,
+    DestinationType,
+    isS4HC,
+    type ListDestinationOpts,
+    OAuth2Destination,
+    OAuthUrlType
+} from './destination';
+import { ServiceInfo } from './service-info';
+
+/**
+ * ABAP Cloud destination instance name.
+ */
+const DESTINATION_INSTANCE_NAME: string = 'abap-cloud-destination-instance';
 
 /**
  * HTTP header that is to be used for encoded credentials when communicating with a destination service instance.
@@ -10,7 +31,7 @@ import { isS4HC, type Destination, type ListDestinationOpts } from './destinatio
 export const BAS_DEST_INSTANCE_CRED_HEADER = 'bas-destination-instance-cred';
 
 /**
- * Check if this is exectued in SAP Business Application Studio.
+ * Check if this is executed in SAP Business Application Studio.
  *
  * @returns true if yes
  */
@@ -125,5 +146,128 @@ export async function exposePort(port: number, logger?: Logger): Promise<string>
     } catch (error) {
         logger?.error(`Port ${port} was not exposed!`);
         return '';
+    }
+}
+
+/**
+ * Transform a destination object into a TokenExchangeDestination destination, appended with UAA properties.
+ *
+ * @param destination destination info
+ * @param credentials object representing the Client ID and Client Secret and token endpoint
+ */
+export function transformToOAuthUserTokenExchange(
+    destination: Destination,
+    credentials: ServiceInfo['uaa']
+): OAuth2Destination {
+    return {
+        ...destination,
+        Type: DestinationType.HTTP,
+        Authentication: Authentication.OAUTH2_USER_TOKEN_EXCHANGE,
+        URL: credentials.url,
+        WebIDEEnabled: 'true',
+        WebIDEUsage: 'odata_abap,dev_abap,abap_cloud',
+        'HTML5.Timeout': '60000',
+        'HTML5.DynamicDestination': 'true',
+        TokenServiceURLType: OAuthUrlType.DEDICATED,
+        TokenServiceURL: `${credentials.url}/oauth/token`,
+        ClientSecret: credentials.clientsecret,
+        ClientId: credentials.clientid
+    } as OAuth2Destination;
+}
+
+/**
+ * Generate a destination name representing the CF target the user is logged into i.e. abap-cloud-mydestination-myorg-mydevspace.
+ *
+ * @param instanceName
+ */
+export async function generateABAPCloudDestinationName(instanceName: string): Promise<string> {
+    if (instanceName) {
+        try {
+            const target = await cfGetTarget(true);
+            if (!target.space) {
+                throw new Error(`Could not generate destination name.`);
+            }
+            const formattedInstanceName = `${instanceName}-${target.org}-${target.space}`
+                .replace(/\W/gi, '-')
+                .toLowerCase();
+            return `abap-cloud-${formattedInstanceName}`.substring(0, 199);
+        } catch (err) {
+            throw new Error(`Could not generate destination name, error found ${err.message}`);
+        }
+    }
+    throw new Error(`Could not generate destination name.`);
+}
+
+async function createOAuthTokenExchangeDestination(
+    destination: Destination,
+    logger?: Logger
+): Promise<OAuth2Destination> {
+    const destinationName: string = await generateABAPCloudDestinationName(destination.Name);
+    const instances: CloudFoundryServiceInfo[] = await apiGetServicesInstancesFilteredByType(['destination']);
+    const destinationInstance = instances.find(
+        (instance: CloudFoundryServiceInfo) => instance.label === DESTINATION_INSTANCE_NAME
+    );
+
+    // Create a new abap-cloud destination instance on the target CF subaccount
+    if (!destinationInstance) {
+        await apiCreateServiceInstance('destination', 'lite', DESTINATION_INSTANCE_NAME, null).then(function (res) {
+            // If there is an error it is returned in the result
+            if (res && res.stderr) {
+                throw new Error(`Failed to create destination instance ${res.stderr}`);
+            }
+        });
+        logger?.info(`New ABAP destination instance created ${DESTINATION_INSTANCE_NAME}`);
+    }
+
+    const destinationInstanceCredentials: any = await apiGetInstanceCredentials(DESTINATION_INSTANCE_NAME);
+    return transformToOAuthUserTokenExchange(
+        { ...destination, Name: destinationName },
+        destinationInstanceCredentials.credentials
+    );
+}
+
+/**
+ *  Create a new SAP BTP subaccount destination of type 'OAuth2UserTokenExchange' using cf-tools to populate the UAA properties.
+ *  This will overwrite the existing destination its associated properties, if already present on the CF subaccount.
+ *
+ * @param destination destination info
+ * @param logger Logger
+ */
+export async function createBTPABAPCloudDestination(destination: Destination, logger?: Logger): Promise<void> {
+    if (!isAppStudio()) {
+        throw new Error(`Creating SAP BTP destinations is only supported on SAP Business Application Studio`);
+    }
+    const btpDestination = await createOAuthTokenExchangeDestination(destination);
+    await createDestination(btpDestination);
+    logger?.debug(`Subaccount destination created ${btpDestination.Name}`);
+}
+
+/**
+ * Create new subaccount destination.
+ *
+ * @param destination
+ * @param logger Logger
+ */
+async function createDestination(destination: Destination, logger?: Logger) {
+    try {
+        /* Axios exposes the version in the user-agent header, creating a security issue.
+        To address this, we override the header for enhanced security.*/
+        const headers: Record<string, string> = {
+            'Content-Type': 'application/json',
+            'User-Agent': 'Bas'
+        };
+
+        const reqConfig: AxiosRequestConfig = {
+            method: 'post',
+            url: `${getAppStudioBaseURL()}/api/createDestination`,
+            headers,
+            data: destination
+        };
+        await axios.request(reqConfig);
+    } catch (err: any) {
+        logger?.error(
+            `Couldn't create the destination from following error: ${err.message}. Error code=${err.response?.status}`
+        );
+        throw err;
     }
 }

@@ -1,5 +1,26 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.40
+
+### Patch Changes
+
+-   9bfbd73: add versioning to ui5 lib templates, update deprecated code
+
+## 0.5.39
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/ui5-application-writer@1.2.8
+
+## 0.5.38
+
+### Patch Changes
+
+-   Updated dependencies [21f0b20]
+    -   @sap-ux/ui5-application-writer@1.2.8
+
 ## 0.5.37
 
 ### Patch Changes

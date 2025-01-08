@@ -1,5 +1,18 @@
 # @sap-ux/axios-extension
 
+## 1.18.0
+
+### Minor Changes
+
+-   2e3c15e: Proper check for cloud ABAP systems
+
+## 1.17.8
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+
 ## 1.17.7
 
 ### Patch Changes
