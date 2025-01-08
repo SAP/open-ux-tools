@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.16.160
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.103
+
+## 0.16.159
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.102
+
+## 0.16.158
+
+### Patch Changes
+
+-   d964a24: feat: add option to convert test runners to preview-config command
+
 ## 0.16.157
 
 ### Patch Changes

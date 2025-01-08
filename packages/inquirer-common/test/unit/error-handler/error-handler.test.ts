@@ -303,7 +303,7 @@ describe('Test ErrorHandler', () => {
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_V4_SERVICES)).toEqual(
             t('errors.noServicesAvailable', { version: '4' })
         );
-        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.DESTINATION_BAD_GATEWAY_503)).toEqual(
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.DESTINATION_SERVICE_UNAVAILABLE)).toEqual(
             t('errors.destination.unavailable')
         );
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.REDIRECT)).toEqual(t('errors.redirectError'));
