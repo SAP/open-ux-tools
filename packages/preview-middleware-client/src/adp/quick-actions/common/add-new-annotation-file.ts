@@ -12,6 +12,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { QuickActionDefinitionBase } from '../quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 
 export const ADD_NEW_ANNOTATION_FILE = 'add-new-annotation-file';
 
@@ -26,6 +27,7 @@ export class AddNewAnnotationFile
     readonly kind = NESTED_QUICK_ACTION_KIND;
     readonly type = ADD_NEW_ANNOTATION_FILE;
     readonly forceRefreshAfterExecution = true;
+    public isApplicable = true;
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
@@ -34,10 +36,13 @@ export class AddNewAnnotationFile
             DIALOG_ENABLEMENT_VALIDATOR
         ]);
     }
-    public get isApplicable(): boolean {
-        return true;
-    }
+    
     async initialize(): Promise<void> {
+        const version = await getUi5Version();
+        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 132, patch: 0 })) {
+            this.isApplicable = false;
+            return;
+        }
         const dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
         if (!dataSourceAnnotationFileMap) {
             throw new Error('No data sources found in the manifest');

@@ -1268,6 +1268,7 @@ describe('FE V2 quick actions', () => {
             let rtaMock: RuntimeAuthoring;
             beforeEach(async () => {
                 jest.clearAllMocks();
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({ major: 1, minor: 132, patch: 0 });
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
                         getId: () => 'MyView',
