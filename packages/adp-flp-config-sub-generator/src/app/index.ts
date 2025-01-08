@@ -2,7 +2,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { AbapTarget } from '@sap-ux/system-access';
+import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import Generator from 'yeoman-generator';
 import path, { join } from 'path';
@@ -24,7 +24,7 @@ import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName } from '@sap-ux/project-access';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { SystemService, BackendSystemKey } from '@sap-ux/store';
+import { getCredentialsFromStore } from '@sap-ux/system-access';
 import AdpFlpConfigLogger from '../utils/logger';
 import { t } from '../utils/i18n';
 
@@ -131,7 +131,7 @@ export default class extends Generator {
      * @param {AbapTarget} target - The target ABAP system.
      * @returns {Promise<string>} The configured system.
      */
-    private async _findConfiguredSystem(target: AbapTarget): Promise<string> {
+    private async _findConfiguredSystem(target: AbapTarget): Promise<string | undefined> {
         let configuredSystem: string | undefined;
 
         if (isAppStudio()) {
@@ -140,13 +140,12 @@ export default class extends Generator {
                 throw new Error(t('error.destinationNotFound'));
             }
         } else {
-            const { url, client } = target;
+            const { url } = target;
             if (!url) {
                 throw new Error(t('error.systemNotFound'));
             }
-            const systemService = new SystemService(this.toolsLogger);
-            const backendSystem = new BackendSystemKey({ url: url as string, client: client ?? '' });
-            configuredSystem = (await systemService.read(backendSystem))?.name;
+
+            const configuredSystem = (await getCredentialsFromStore(target as UrlAbapTarget, this.toolsLogger))?.name;
             if (!configuredSystem) {
                 throw new Error(t('error.systemNotFoundInStore', { url }));
             }
