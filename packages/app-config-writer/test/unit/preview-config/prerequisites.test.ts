@@ -61,6 +61,28 @@ describe('prerequisites', () => {
         );
     });
 
+    test('check prerequisites with UI5 ux-ui5-tooling 1.16.0 dependency', async () => {
+        fs.write(
+            join(basePath, 'package.json'),
+            JSON.stringify({
+                devDependencies: { '@sap/ux-ui5-tooling': '1.16.0', '@ui5/cli': '^3', 'cds-plugin-ui5': '6.6.6' }
+            })
+        );
+
+        expect(await checkPrerequisites(basePath, fs, logger)).toBeTruthy();
+    });
+
+    test('check prerequisites with UI5 ux-ui5-tooling 1 dependency', async () => {
+        fs.write(
+            join(basePath, 'package.json'),
+            JSON.stringify({
+                devDependencies: { '@sap/ux-ui5-tooling': '1', '@ui5/cli': '^3', 'cds-plugin-ui5': '6.6.6' }
+            })
+        );
+
+        expect(await checkPrerequisites(basePath, fs, logger)).toBeTruthy();
+    });
+
     test('check prerequisites with UI5 ux-ui5-tooling 1.15.0 dependency', async () => {
         fs.write(
             join(basePath, 'package.json'),
