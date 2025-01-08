@@ -64,10 +64,11 @@ describe('add/annotations', () => {
         fetchBaseManifest: jest.fn(),
         fetchMergedManifest: jest.fn(),
         getManifest: jest.fn(),
-        fetchAppInfo: jest.fn(),
-        getManifestDataSources: jest.fn().mockReturnValue(mockDataSources),
-        getDataSourceMetadata: jest.fn().mockResolvedValue('<>metadata</>')
+        getAppInfo: jest.fn(),
+        fetchAppInfo: jest.fn()
     } as unknown as adp.ManifestService);
+    jest.spyOn(adp.ODataService.prototype, 'getMetadata').mockResolvedValue('<>metadata</>');
+    jest.spyOn(adp, 'getDataSources').mockReturnValue(mockDataSources);
     jest.spyOn(oDataWriter, 'getAnnotationNamespaces').mockReturnValue([
         {
             alias: 'alias',
@@ -196,10 +197,11 @@ describe('add/annotations', () => {
     });
 
     test('should fail when no data sources found in base application manifest', async () => {
-        jest.spyOn(adp.ManifestService, 'initMergedManifest').mockResolvedValueOnce({
-            getManifestDataSources: jest.fn().mockImplementation(() => {
-                throw new Error('No data sources found in the manifest');
-            })
+        jest.spyOn(adp, 'getDataSources').mockImplementationOnce((_) => {
+            throw new Error('No data sources found in the manifest');
+        });
+        jest.spyOn(adp.ManifestService, 'initBaseManifest').mockResolvedValue({
+            getManifest: jest.fn().mockReturnValue({})
         } as unknown as adp.ManifestService);
 
         const command = new Command('annotations');
