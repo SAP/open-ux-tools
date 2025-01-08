@@ -1,0 +1,40 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../app-config-writer"
+    },
+    {
+      "path": "../deploy-config-generator-shared"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../flp-config-inquirer"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../nodejs-utils"
+    },
+    {
+      "path": "../project-access"
+    }
+  ]
+}
