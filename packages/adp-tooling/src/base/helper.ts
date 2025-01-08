@@ -1,6 +1,9 @@
+import type { Editor } from 'mem-fs-editor';
 import { readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative } from 'path';
+
 import { UI5Config } from '@sap-ux/ui5-config';
+
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
 /**
@@ -11,6 +14,39 @@ import type { DescriptorVariant, AdpPreviewConfig } from '../types';
  */
 export function getVariant(basePath: string): DescriptorVariant {
     return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
+}
+
+/**
+ * Writes the updated variant content to the manifest.appdescr_variant file.
+ *
+ * @param {string} basePath - The base path of the project.
+ * @param {DescriptorVariant} variant - The descriptor variant object.
+ * @param {Editor} fs - The mem-fs editor instance.
+ */
+export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
+    fs.writeJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
+}
+
+/**
+ * Checks if FLP configuration changes exist in the manifest.appdescr_variant.
+ *
+ * This function determines whether there are changes of type `appdescr_app_changeInbound`
+ * or `appdescr_app_addNewInbound` present in the content of the descriptor variant.
+ *
+ * @param {string} basePath - The base path of the project where the manifest.appdescr_variant is located.
+ * @returns {boolean} Returns `true` if FLP configuration changes exist, otherwise `false`.
+ * @throws {Error} Throws an error if the variant could not be retrieved.
+ */
+export function flpConfigurationExists(basePath: string): boolean {
+    try {
+        const variant = getVariant(basePath);
+        return variant.content?.some(
+            ({ changeType }) =>
+                changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
+        );
+    } catch (error) {
+        throw new Error(`Failed to check if FLP configuration exists: ${(error as Error).message}`);
+    }
 }
 
 /**

@@ -5,6 +5,8 @@ import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/qu
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { MDC_TABLE_TYPE } from '../control-types';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const ACTION_ID = 'CTX_SETTINGS0';
@@ -18,7 +20,9 @@ export class ChangeTableColumnsQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(CHANGE_TABLE_COLUMNS, 'V4_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context);
+        super(CHANGE_TABLE_COLUMNS, [MDC_TABLE_TYPE], 'V4_QUICK_ACTION_CHANGE_TABLE_COLUMNS', context, undefined, [
+            DIALOG_ENABLEMENT_VALIDATOR
+        ]);
     }
 
     async execute(path: string): Promise<FlexCommand[]> {

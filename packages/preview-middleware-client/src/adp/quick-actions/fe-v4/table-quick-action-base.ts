@@ -6,38 +6,37 @@ import { NESTED_QUICK_ACTION_KIND } from '@sap-ux-private/control-property-edito
 
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import { EnablementValidator } from '../enablement-validator';
+import { QuickActionDefinitionBase } from '../quick-action-base';
 
 const ACTION_ID = 'CTX_SETTINGS0';
-const CONTROL_TYPE = 'sap.ui.mdc.Table';
-export abstract class TableQuickActionDefinitionBase {
-    readonly kind = NESTED_QUICK_ACTION_KIND;
-    public get id(): string {
-        return `${this.context.key}-${this.type}`;
-    }
-    protected get textKey(): string {
-        return this.defaultTextKey;
-    }
+
+export abstract class TableQuickActionDefinitionBase extends QuickActionDefinitionBase<
+    typeof NESTED_QUICK_ACTION_KIND
+> {
     isApplicable = false;
-    protected isDisabled = false;
-    public get tooltip(): string | undefined {
-        return undefined;
-    }
 
     isClearButtonEnabled = false;
     children: NestedQuickActionChild[] = [];
     tableMap: Record<string, number> = {};
     constructor(
         public readonly type: string,
+        protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
-        protected readonly isSkipVariantManagementCheck?: boolean
-    ) {}
+        protected readonly isSkipVariantManagementCheck?: boolean,
+        protected readonly enablementValidators: EnablementValidator[] = []
+    ) {
+        super(type, NESTED_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
+    }
 
     async initialize(): Promise<void> {
         let index = 0;
-        for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            CONTROL_TYPE
-        ])) {
+        for (const smartTable of getRelevantControlFromActivePage(
+            this.context.controlIndex,
+            this.context.view,
+            this.controlTypes
+        )) {
             if (!this.isSkipVariantManagementCheck) {
                 const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTable });
                 if (!hasVariantManagement) {

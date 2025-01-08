@@ -1,5 +1,41 @@
 # @sap-ux/app-config-writer
 
+## 0.5.10
+
+### Patch Changes
+
+-   d964a24: feat: add option to convert test runners to preview-config command
+
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/axios-extension@1.17.8
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/axios-extension@1.17.8
+
+## 0.5.7
+
+### Patch Changes
+
+-   29cdac8: fix: add missing logger parameter to convert preview-config
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/store@1.0.0
+    -   @sap-ux/ui5-config@0.26.0
+
 ## 0.5.5
 
 ### Patch Changes
