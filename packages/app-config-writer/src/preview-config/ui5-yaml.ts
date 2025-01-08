@@ -338,8 +338,10 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string, logg
     const ui5YamlFileNames = await getAllUi5YamlFileNames(basePath, fs);
     for (const ui5Yaml of ui5YamlFileNames.filter((ui5Yaml) => ui5Yaml !== FileName.Ui5Yaml)) {
         const ui5YamlConfig = await readUi5Yaml(basePath, ui5Yaml, fs);
-        const previewMiddleware = (await getPreviewMiddleware(ui5YamlConfig)) as CustomMiddleware<PreviewConfig>;
-        if (previewMiddleware.configuration.test) {
+        const previewMiddleware = (await getPreviewMiddleware(ui5YamlConfig)) as Partial<
+            CustomMiddleware<PreviewConfig>
+        >;
+        if (previewMiddleware?.configuration?.test) {
             return;
         }
     }
