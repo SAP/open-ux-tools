@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.162
+
+### Patch Changes
+
+-   8b7ed76: Fixed outline not being displayed in SAP Fiori Elements for OData V4 applications with multiple views.
+
 ## 0.16.161
 
 ### Patch Changes
