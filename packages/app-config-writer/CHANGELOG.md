@@ -1,5 +1,18 @@
 # @sap-ux/app-config-writer
 
+## 0.5.12
+
+### Patch Changes
+
+-   20ab455: fix: prerequisites check for preview conversion
+
+## 0.5.11
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+
 ## 0.5.10
 
 ### Patch Changes

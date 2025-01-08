@@ -23,7 +23,7 @@ export const HELP_NODES = {
     DESTINATION_UNAVAILABLE: 51208, // Launchpad service is not subscribed to
     DESTINATION_NOT_FOUND: 51208, // Destination URL is returning an empty response
     BAD_GATEWAY: 48366, // Bad gateway 502
-    DESTINATION_BAD_GATEWAY_503: 52526, // Destination Service Unavailable 503
+    DESTINATION_SERVICE_UNAVAILBLE: 52526, // Destination Service Unavailable 503
     NO_V4_SERVICES: 57573, // No V4 OData services available
     NO_ADT_SERVICE_AUTH: 57266, //Users does not have authorizations to use ADT services
     DESTINATION_CONNECTION_ERRORS: 48366, // Non specific destination connection error help page, currently this is mapped to the same node as BAS_CATALOG_SERVICES_REQUEST_FAILED which will be updated in the future (and the entry here removed)
