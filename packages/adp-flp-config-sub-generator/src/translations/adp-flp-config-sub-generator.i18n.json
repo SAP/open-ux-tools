@@ -1,7 +1,7 @@
 {
     "yuiNavSteps": {
-        "sysConfirmName": "System confirmation",
-        "sysConfirmDesc": "Confirm the system to use for FLP configuration",
+        "sysConfirmName": "System connection validation",
+        "sysConfirmDesc": "Validates connection to configured system",
         "flpConfigName": "FLP Configuration",
         "flpConfigDesc": "FLP Configuration for {{- projectName}}"
     },
