@@ -56,7 +56,6 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
         window.NewObject = Object;
         [
             'sap',
-            'navigator',
             'location',
             'top',
             'self',
