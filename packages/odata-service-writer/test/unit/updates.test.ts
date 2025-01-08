@@ -8,6 +8,7 @@ import { OdataVersion, ServiceType } from '../../src';
 import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
 import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations';
 import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services';
+import { expectedEdmxManifestOlderServices } from '../test-data/manifest-json/edmx-manifest-older-services';
 import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
 import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation'; // single local annotation
 import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations'; // multiple local annotations
@@ -303,6 +304,51 @@ describe('updates', () => {
             await updateManifest('./', service, fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleServices);
+        });
+
+        test('Ensure manifest updates are updated as expected as in edmx projects with older services', async () => {
+            // Test to basically check whether existing service definitions are updated (localUri attribute is modified)
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        mainService: {
+                            type: 'OData',
+                            settings: {
+                                annotations: ['SEPMRA_OVW_ANNO_MDL']
+                            }
+                        },
+                        SEPMRA_OVW_ANNO_MDL: {
+                            type: 'ODataAnnotation',
+                            settings: {
+                                localUri: 'localService/SEPMRA_OVW_ANNO_MDL.xml' // localUri defined in localService folder - should be updated
+                            }
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: []
+            };
+
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            await updateManifest('./', service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json');
+            expect(manifestJson).toEqual(expectedEdmxManifestOlderServices);
         });
 
         test('Ensure manifest updates are updated as expected as in cds projects', async () => {
