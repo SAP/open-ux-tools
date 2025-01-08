@@ -3,9 +3,10 @@ import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import path, { join } from 'path';
 import type { CdsUi5PluginInfo, CapServiceCdsInfo } from '../cap-config/types';
-import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion, minCdsVersion } from '../cap-config';
+import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, minCdsVersion } from '../cap-config';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
+import { hasCdsPlugin } from '../cap-config/package-json';
 
 /**
  * Retrieves the CDS watch script for the CAP app.
@@ -62,23 +63,18 @@ async function updateScripts(
 ): Promise<void> {
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
-    // Determine whether to add cds watch scripts for the app based on the availability of minimum CDS version information.
-    // If 'cdsUi5PluginInfo' contains version information and it satisfies the minimum required CDS version,
-    // or if 'cdsUi5PluginInfo' is not available and the version specified in 'package.json' satisfies the minimum required version,
-    // then set 'addScripts' to true. Otherwise, set it to false.
-    const addScripts = cdsUi5PluginInfo?.hasMinCdsVersion
-        ? cdsUi5PluginInfo.hasMinCdsVersion
-        : satisfiesMinCdsVersion(packageJson);
     let cdsScript;
-    if (addScripts) {
-        if (enableNPMWorkspaces ?? hasNPMworkspaces) {
-            // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
-            cdsScript = getCDSWatchScript(projectName, appId);
-        } else {
-            cdsScript = getCDSWatchScript(projectName);
-        }
-        updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
+    const cdsPluginEnabled = cdsUi5PluginInfo?.hasCdsPlugin ? cdsUi5PluginInfo.hasCdsPlugin : hasCdsPlugin(packageJson);
+
+    if (enableNPMWorkspaces ?? hasNPMworkspaces) {
+        // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
+        cdsScript = getCDSWatchScript(projectName, appId);
     } else {
+        cdsScript = getCDSWatchScript(projectName);
+    }
+
+    updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
+    if (!cdsPluginEnabled) {
         log?.warn(t('warn.cdsDKNotInstalled', { minCdsVersion: minCdsVersion }));
     }
 }
