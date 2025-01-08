@@ -1,5 +1,37 @@
 # @sap-ux/create
 
+## 0.11.18
+
+### Patch Changes
+
+-   20ab455: fix: prerequisites check for preview conversion
+-   Updated dependencies [20ab455]
+    -   @sap-ux/app-config-writer@0.5.12
+
+## 0.11.17
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.1.18
+-   @sap-ux/adp-tooling@0.12.103
+-   @sap-ux/flp-config-inquirer@0.2.8
+-   @sap-ux/cap-config-writer@0.7.68
+-   @sap-ux/preview-middleware@0.16.160
+-   @sap-ux/app-config-writer@0.5.11
+
+## 0.11.16
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.1.17
+-   @sap-ux/adp-tooling@0.12.102
+-   @sap-ux/app-config-writer@0.5.11
+-   @sap-ux/preview-middleware@0.16.159
+-   @sap-ux/system-access@0.5.25
+-   @sap-ux/flp-config-inquirer@0.2.7
+-   @sap-ux/cap-config-writer@0.7.68
+-   @sap-ux/abap-deploy-config-writer@0.0.72
+
 ## 0.11.15
 
 ### Patch Changes
