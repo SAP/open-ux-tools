@@ -21,9 +21,9 @@ export function RightPanel(): ReactElement {
     const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
     const infoCenterMessagesCount = useSelector<RootState, number>((state) => state.infoCenter.length);
 
-    if (scenario !== 'ADAPTATION_PROJECT' || actionsCount === 0) {
-        return <PropertiesList />;
-    }
+    // if (scenario !== 'ADAPTATION_PROJECT' || actionsCount === 0) {
+    //     return <PropertiesList />;
+    // }
 
     const rowSize = 100;
     const header = 50;

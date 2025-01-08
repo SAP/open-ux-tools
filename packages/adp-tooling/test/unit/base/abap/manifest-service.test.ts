@@ -81,6 +81,7 @@ describe('ManifestService', () => {
 
             expect(manifestService.getManifest()).toEqual(mockManifest);
             expect(provider.getAppIndex().getAppInfo).toHaveBeenCalledWith('appId');
+            expect(manifestService.getAppInfo()?.manifestUrl).toEqual(mockAppInfoContent.appId.manifestUrl);
         });
 
         it('should throw an error if the manifest URL is not found', async () => {
@@ -123,102 +124,6 @@ describe('ManifestService', () => {
             );
 
             expect(manifestService.getManifest()).toEqual(mockManifest);
-        });
-    });
-
-    describe('getManifestDataSources', () => {
-        it('should return the data sources from the manifest', async () => {
-            manifestService = await ManifestService.initBaseManifest(provider, 'appId', logger);
-            const dataSources = manifestService.getManifestDataSources();
-            expect(dataSources).toEqual(mockManifest['sap.app'].dataSources);
-        });
-
-        it('should throw an error when no data sources are found in the manifest', async () => {
-            provider.get.mockResolvedValue({ data: JSON.stringify({ 'sap.app': {} }) });
-            manifestService = await ManifestService.initBaseManifest(provider, 'appId', logger);
-
-            expect(() => manifestService.getManifestDataSources()).toThrow('No data sources found in the manifest');
-        });
-    });
-
-    describe('getDataSourceMetadata', () => {
-        it('should return metadata of the data source', async () => {
-            const mockManifest = {
-                'sap.app': {
-                    dataSources: {
-                        someDataSource: {
-                            uri: '/some/uri',
-                            type: 'OData',
-                            settings: {
-                                localUri: 'metadata.xml',
-                                annotations: ['annotation1']
-                            }
-                        }
-                    }
-                }
-            };
-            provider.get
-                .mockResolvedValueOnce({ data: JSON.stringify(mockManifest) })
-                .mockResolvedValueOnce({ data: 'metadata' });
-            manifestService = await ManifestService.initBaseManifest(provider, 'appId', logger);
-            const metadata = await manifestService.getDataSourceMetadata('someDataSource');
-
-            expect(metadata).toEqual('metadata');
-        });
-
-        it('should fallback to local metadata if fetching metadata fails', async () => {
-            provider.get
-                .mockResolvedValueOnce({ data: JSON.stringify(mockManifest) })
-                .mockRejectedValueOnce('fetching failed')
-                .mockResolvedValueOnce({ data: 'local metadata' });
-            manifestService = await ManifestService.initBaseManifest(provider, 'appId', logger);
-            const metadata = await manifestService.getDataSourceMetadata('someDataSource');
-
-            expect(metadata).toEqual('local metadata');
-            expect(logger.warn).toHaveBeenCalledWith('Metadata fetching failed. Fallback to local metadata');
-        });
-
-        it('should throw an error if local URI is not provided for a fallback', async () => {
-            const mockManifest = {
-                'sap.app': {
-                    dataSources: {
-                        someDataSource: {
-                            uri: '/some/uri',
-                            settings: {}
-                        }
-                    }
-                }
-            };
-            provider.get
-                .mockResolvedValueOnce({ data: JSON.stringify(mockManifest) })
-                .mockRejectedValueOnce('fetching failed');
-            manifestService = await ManifestService.initBaseManifest(provider, 'appId', logger);
-
-            try {
-                await manifestService.getDataSourceMetadata('someDataSource');
-            } catch (e) {
-                expect(e).toEqual('fetching failed');
-            }
-            expect(logger.error).toHaveBeenCalledWith('Metadata fetching failed');
-        });
-
-        it('should throw an error if local metadata fallback also fails', async () => {
-            const error = new Error('fetching failed');
-            provider.get
-                .mockResolvedValueOnce({ data: JSON.stringify(mockManifest) })
-                .mockRejectedValue(error)
-                .mockRejectedValue(error);
-            manifestService = await ManifestService.initBaseManifest(provider, 'appId', logger);
-            await expect(manifestService.getDataSourceMetadata('someDataSource')).rejects.toThrow(error);
-            expect(logger.warn).toHaveBeenCalledWith('Metadata fetching failed. Fallback to local metadata');
-            expect(logger.error).toHaveBeenCalledWith('Local metadata fallback fetching failed');
-        });
-
-        it('should throw an error if data source is not found', async () => {
-            manifestService = await ManifestService.initBaseManifest(provider, 'appId', logger);
-            await expect(manifestService.getDataSourceMetadata('nonExistentDataSource')).rejects.toThrow(
-                'No metadata path found in the manifest'
-            );
         });
     });
 

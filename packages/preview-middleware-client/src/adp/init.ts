@@ -1,7 +1,12 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import { showMessage, enableTelemetry, showInfoCenterMessage, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import {
+    showMessage,
+    enableTelemetry,
+    showInfoCenterMessage,
+    MessageBarType
+} from '@sap-ux-private/control-property-editor-common';
 
 import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
 
@@ -10,16 +15,16 @@ import init from '../cpe/init';
 import { getApplicationType } from '../utils/application';
 import { getTextBundle } from '../i18n';
 
-import { loadDefinitions } from './quick-actions/load';
 import { getAllSyncViewsIds } from './utils';
 import { initDialogs } from './init-dialogs';
+import { checkAllMetadata } from './metadata-checker';
+import { loadDefinitions } from './quick-actions/load';
 
 export default async function (rta: RuntimeAuthoring) {
     const flexSettings = rta.getFlexSettings();
     if (flexSettings.telemetry === true) {
         enableTelemetry();
     }
-
 
     const ui5VersionInfo = await getUi5Version();
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
@@ -36,12 +41,20 @@ export default async function (rta: RuntimeAuthoring) {
 
     await init(rta, quickActionRegistries);
 
+    void checkAllMetadata();
+
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         CommunicationService.sendAction(
             showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true })
         );
         CommunicationService.sendAction(
-            showInfoCenterMessage({ message: {title: 'UI5 Validation message',description: getUI5VersionValidationMessage(ui5VersionInfo)}, type: MessageBarType.info })
+            showInfoCenterMessage({
+                message: {
+                    title: 'UI5 Validation message',
+                    description: getUI5VersionValidationMessage(ui5VersionInfo)
+                },
+                type: MessageBarType.info
+            })
         );
         return;
     }

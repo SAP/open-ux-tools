@@ -8,10 +8,14 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { DirName, filterDataSourcesByType } from '@sap-ux/project-access';
 
+import { getVariant } from '../base/helper';
 import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName } from '@sap-ux/project-access';
-import type { CodeExtChange } from '../types';
+import type { AdpPreviewConfig, CodeExtChange } from '../types';
+import { ManifestService } from '../base/abap/manifest-service';
+import { ODataService, getDataSources } from '../base/abap/odata-service';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -25,11 +29,13 @@ export default class RoutesHandler {
     /**
      * Constructor taking project as input.
      *
-     * @param project Reference to the root of the project
-     * @param util middleware utilities provided by the UI5 CLI
-     * @param logger Logger instance
+     * @param config - The adaptation project's configuration.
+     * @param project - Reference to the root of the project.
+     * @param util - middleware utilities provided by the UI5 CLI.
+     * @param logger - Logger instance.
      */
     constructor(
+        private readonly config: AdpPreviewConfig,
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
@@ -242,6 +248,56 @@ export default class RoutesHandler {
             this.logger.error(sanitizedMsg);
             res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
             next(e);
+        }
+    };
+
+    public handleMetadataCheck = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
+        const project = this.util.getProject();
+        const basePath = project.getRootPath();
+        const variant = getVariant(basePath);
+
+        try {
+            const provider = await createAbapServiceProvider(
+                this.config.target,
+                { ignoreCertErrors: this.config.ignoreCertErrors },
+                true,
+                this.logger
+            );
+
+            const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
+            const manifest = manifestService.getManifest();
+            const metadataService = new ODataService(manifest, manifestService.getAppInfo(), provider, this.logger);
+            const allDataSources = getDataSources(manifest);
+            const dataSourceIds = Object.entries(filterDataSourcesByType(allDataSources, 'OData'));
+
+            const results: Record<string, { success: boolean; metadata?: string; uri: string; message?: string }> = {};
+
+            for (const [id, { uri }] of dataSourceIds) {
+                try {
+                    const metadata = await metadataService.getMetadata(id);
+                    results[id] = {
+                        success: true,
+                        metadata,
+                        uri
+                    };
+                } catch (e) {
+                    this.logger.error(`Failed to retrieve metadata for '${id}': ${e.message}`);
+                    // Record the failure in the results object
+                    results[id] = {
+                        success: false,
+                        message: e.message,
+                        uri
+                    };
+                }
+            }
+
+            res.status(200).json({
+                success: true,
+                results
+            });
+        } catch (e: any) {
+            this.logger.error(`Failed to retrieve metadata for data sources. Error: ${e.message}`);
+            this.handleErrorMessage(res, next, e);
         }
     };
 }

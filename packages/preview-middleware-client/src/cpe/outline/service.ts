@@ -3,7 +3,13 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
-import { outlineChanged, SCENARIO, showMessage, showInfoCenterMessage, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import {
+    outlineChanged,
+    SCENARIO,
+    showMessage,
+    showInfoCenterMessage,
+    MessageBarType
+} from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../../utils/error';
 import { getTextBundle } from '../../i18n';
@@ -69,7 +75,7 @@ export class OutlineService extends EventTarget {
                     sendAction(
                         showInfoCenterMessage({
                             message: {
-                                title: "Reuse components detected",
+                                title: 'Reuse components detected',
                                 description: message
                             },
                             type: MessageBarType.info

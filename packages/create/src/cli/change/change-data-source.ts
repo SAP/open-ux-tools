@@ -1,16 +1,19 @@
 import type { Command } from 'commander';
+
 import {
     generateChange,
     ChangeType,
     getPromptsForChangeDataSource,
     getAdpConfig,
     ManifestService,
-    getVariant
+    getVariant,
+    getDataSources
 } from '@sap-ux/adp-tooling';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+
 import { getLogger, traceChanges } from '../../tracing';
 import { promptYUIQuestions } from '../../common';
 import { validateAdpProject } from '../../validation/validation';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 let loginAttempts = 3;
 
@@ -52,8 +55,11 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
             true,
             logger
         );
+
         const manifestService = await ManifestService.initBaseManifest(provider, variant.reference, logger);
-        const dataSources = manifestService.getManifestDataSources();
+        const manifest = manifestService.getManifest();
+        const dataSources = getDataSources(manifest);
+
         const answers = await promptYUIQuestions(getPromptsForChangeDataSource(dataSources), false);
 
         const fs = await generateChange<ChangeType.CHANGE_DATA_SOURCE>(basePath, ChangeType.CHANGE_DATA_SOURCE, {

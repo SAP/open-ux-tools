@@ -1,4 +1,5 @@
 import ZipFile from 'adm-zip';
+import type { Editor } from 'mem-fs-editor';
 import type { ReaderCollection } from '@ui5/fs';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
@@ -9,9 +10,8 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
-import type { Editor } from 'mem-fs-editor';
 import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
+import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var
@@ -21,7 +21,8 @@ declare global {
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
-    CODE_EXT = '/adp/api/code_ext/:controllerName'
+    CODE_EXT = '/adp/api/code_ext/:controllerName',
+    METADATA = '/adp/api/metadata'
 }
 
 /**
@@ -91,7 +92,7 @@ export class AdpPreview {
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
     ) {
-        this.routesHandler = new RoutesHandler(project, util, logger);
+        this.routesHandler = new RoutesHandler(config, project, util, logger);
     }
 
     /**
@@ -198,6 +199,12 @@ export class AdpPreview {
         router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
+
+        router.get(
+            ApiRoutes.METADATA,
+            async (req: Request, res: Response, next: NextFunction) =>
+                await this.routesHandler.handleMetadataCheck(req, res, next)
+        );
     }
 
     /**

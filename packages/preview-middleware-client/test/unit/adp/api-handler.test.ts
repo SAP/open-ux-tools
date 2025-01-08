@@ -1,6 +1,8 @@
 import {
     ApiEndpoints,
+    MetadataResponse,
     RequestMethod,
+    checkMetadata,
     getFragments,
     getManifestAppdescr,
     request,
@@ -120,6 +122,27 @@ describe('API Handler', () => {
             const data = await getManifestAppdescr();
 
             expect(data.layer).toBe('VENDOR');
+        });
+    });
+
+    describe('checkMetadata', () => {
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        test('request is called and correct data is returned', async () => {
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({
+                    results: { dataSource1: { metadata: '<xml>data</xml>', success: true } },
+                    success: true,
+                    message: ''
+                } as MetadataResponse),
+                ok: true
+            });
+
+            const data = await checkMetadata();
+
+            expect(Object.values(data.results)?.[0]?.metadata).toBe('<xml>data</xml>');
         });
     });
 });
