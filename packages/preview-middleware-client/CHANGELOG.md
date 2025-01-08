@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.47
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
 ## 0.11.46
 
 ### Patch Changes

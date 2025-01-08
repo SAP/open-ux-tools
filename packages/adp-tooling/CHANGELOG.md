@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.105
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
 ## 0.12.104
 
 ### Patch Changes

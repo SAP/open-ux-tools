@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.5.9
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
 ## 0.5.8
 
 ### Patch Changes

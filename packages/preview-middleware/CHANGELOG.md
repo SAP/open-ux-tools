@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.16.163
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+-   Updated dependencies [19d51f3]
+    -   @sap-ux/adp-tooling@0.12.105
+
 ## 0.16.162
 
 ### Patch Changes
