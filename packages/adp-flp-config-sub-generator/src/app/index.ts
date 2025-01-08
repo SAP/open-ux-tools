@@ -65,21 +65,7 @@ export default class extends Generator {
 
         // If launched standalone add navigation steps
         if (!this.launchAsSubGen) {
-            this.prompts = new Prompts([
-                {
-                    name: t('yuiNavSteps.sysConfirmName'),
-                    description: t('yuiNavSteps.sysConfirmDesc')
-                },
-                {
-                    name: t('yuiNavSteps.flpConfigName'),
-                    description: t('yuiNavSteps.flpConfigDesc', { projectName: path.basename(this.projectRootPath) })
-                }
-            ]);
-            this.setPromptsCallback = (fn) => {
-                if (this.prompts) {
-                    this.prompts.setCallback(fn);
-                }
-            };
+            this._setupPrompts();
         }
     }
 
@@ -196,5 +182,26 @@ export default class extends Generator {
             this.logger.error(t('error.fetchingManifest', { error }));
             throw new Error(t('error.fetchingManifest'));
         }
+    }
+
+    /**
+     * Adds navigations steps and callback function for the generator prompts.
+     */
+    private _setupPrompts(): void {
+        this.prompts = new Prompts([
+            {
+                name: t('yuiNavSteps.sysConfirmName'),
+                description: t('yuiNavSteps.sysConfirmDesc')
+            },
+            {
+                name: t('yuiNavSteps.flpConfigName'),
+                description: t('yuiNavSteps.flpConfigDesc', { projectName: path.basename(this.projectRootPath) })
+            }
+        ]);
+        this.setPromptsCallback = (fn) => {
+            if (this.prompts) {
+                this.prompts.setCallback(fn);
+            }
+        };
     }
 }
