@@ -64,7 +64,7 @@ async function updateScripts(
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
     let cdsScript;
-    const cdsPluginEnabled = cdsUi5PluginInfo?.hasCdsPlugin ? cdsUi5PluginInfo.hasCdsPlugin : hasCdsModule(packageJson);
+    const cdsPluginEnabled = cdsUi5PluginInfo?.hasCdsModule ? cdsUi5PluginInfo.hasCdsModule : hasCdsModule(packageJson);
 
     if (enableNPMWorkspaces ?? hasNPMworkspaces) {
         // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId

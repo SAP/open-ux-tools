@@ -1,9 +1,11 @@
 {
-    "name": "test_cap",
-    "version": "0",
-    "description": "Test file",
-    "dependencies": {},
-    "scripts": {
-        "test-script": "Run some scripts here"
-    }
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {
+    "@sap/cds": "4.4.2"
+  },
+  "scripts": {
+    "test-script": "Run some scripts here"
+  }
 }
