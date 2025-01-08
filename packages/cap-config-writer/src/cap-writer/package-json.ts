@@ -6,7 +6,7 @@ import type { CdsUi5PluginInfo, CapServiceCdsInfo } from '../cap-config/types';
 import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, minCdsVersion } from '../cap-config';
 import type { Logger } from '@sap-ux/logger';
 import { t } from '../i18n';
-import { hasCdsPlugin } from '../cap-config/package-json';
+import { hasCdsModule } from '../cap-config/package-json';
 
 /**
  * Retrieves the CDS watch script for the CAP app.
@@ -64,7 +64,7 @@ async function updateScripts(
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
     let cdsScript;
-    const cdsPluginEnabled = cdsUi5PluginInfo?.hasCdsPlugin ? cdsUi5PluginInfo.hasCdsPlugin : hasCdsPlugin(packageJson);
+    const cdsPluginEnabled = cdsUi5PluginInfo?.hasCdsPlugin ? cdsUi5PluginInfo.hasCdsPlugin : hasCdsModule(packageJson);
 
     if (enableNPMWorkspaces ?? hasNPMworkspaces) {
         // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId

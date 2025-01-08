@@ -121,11 +121,11 @@ export function hasCdsPluginUi5(packageJson: Package): boolean {
 }
 
 /**
- * Check if devDependency to '@sap/cds' is present in package.json.
+ * Check if dependency to '@sap/cds' is present in package.json.
  *
  * @param packageJson - the parsed package.json
- * @returns true: devDependency to '@sap/cds' exists; false: devDependency to '@sap/cds' does not exist
+ * @returns true: dependency to '@sap/cds' exists; false: dependency to '@sap/cds' does not exist
  */
-export function hasCdsPlugin(packageJson: Package): boolean {
-    return !!packageJson.devDependencies?.['@sap/cds'];
+export function hasCdsModule(packageJson: Package): boolean {
+    return !!packageJson.dependencies?.['@sap/cds'];
 }

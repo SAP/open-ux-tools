@@ -21,7 +21,7 @@ export type CdsUi5PluginInfo = {
     /**
      * True if the @sap/cds is specified as a dependency
      */
-    hasCdsPlugin?: boolean;
+    hasCdsModule?: boolean;
 };
 
 export interface CapServiceCdsInfo extends CapService {
