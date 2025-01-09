@@ -119,13 +119,3 @@ function getWorkspacePackages(packageJson: Package): string[] | undefined {
 export function hasCdsPluginUi5(packageJson: Package): boolean {
     return !!packageJson.devDependencies?.['cds-plugin-ui5'];
 }
-
-/**
- * Check if dependency to '@sap/cds' is present in package.json.
- *
- * @param packageJson - the parsed package.json
- * @returns true: dependency to '@sap/cds' exists; false: dependency to '@sap/cds' does not exist
- */
-export function hasCdsModule(packageJson: Package): boolean {
-    return !!packageJson.dependencies?.['@sap/cds'];
-}

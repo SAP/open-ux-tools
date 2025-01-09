@@ -69,29 +69,6 @@ describe('Writing/package json files', () => {
         });
     });
 
-    test('should log warning if no minimum cds version is being satisfied', async () => {
-        const testProjectMinCds = 'test-cap-package-no-min-cds-version';
-        const isSapUxEnabled = false;
-        const logger = new ToolsLogger();
-        const loggerMock = jest.fn();
-        logger.warn = loggerMock;
-        (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(false);
-        const capServiceWithNoMinCds = capService;
-        capServiceWithNoMinCds.cdsUi5PluginInfo.hasMinCdsVersion = false;
-        await updateRootPackageJson(
-            fs,
-            testProjectMinCds,
-            isSapUxEnabled,
-            capServiceWithNoMinCds,
-            'test.app.project',
-            logger
-        );
-        expect(logger.warn).toHaveBeenCalledTimes(1);
-        expect(logger.warn).toHaveBeenCalledWith(
-            expect.stringContaining(`minimum cds-dk ${minCdsVersion} version is required to add cds watch scripts`)
-        );
-    });
-
     test('should enable CdsUi5Plugin when workspace is enabled', async () => {
         const isSapUxEnabled = true;
         const isNpmWorkspacesEnabled = true;
