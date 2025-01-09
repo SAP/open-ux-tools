@@ -57,11 +57,11 @@ export default class extends Generator {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
-        this.manifest = opts.manifest as Manifest;
+        this.manifest = opts.manifest;
         this.toolsLogger = new ToolsLogger();
-        this.logger = AdpFlpConfigLogger.logger;
-
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
+
+        this._configureLogging();
 
         // If launched standalone add navigation steps
         if (!this.launchAsSubGen) {
@@ -103,7 +103,7 @@ export default class extends Generator {
         try {
             await generateInboundConfig(this.projectRootPath, this.answers as InternalInboundNavigation, this.fs);
         } catch (error) {
-            this.logger.error(t('error.writingPhase', { error }));
+            this.logger.error(`Writing phase failed: ${error}`);
             throw new Error(t('error.updatingApp'));
         }
     }
@@ -140,7 +140,7 @@ export default class extends Generator {
                 throw new Error(t('error.systemNotFound'));
             }
 
-            const configuredSystem = (await getCredentialsFromStore(target as UrlAbapTarget, this.toolsLogger))?.name;
+            configuredSystem = (await getCredentialsFromStore(target as UrlAbapTarget, this.toolsLogger))?.name;
             if (!configuredSystem) {
                 throw new Error(t('error.systemNotFoundInStore', { url }));
             }
@@ -159,7 +159,11 @@ export default class extends Generator {
         const configuredSystem = await this._findConfiguredSystem(target);
         try {
             const systemSelectionQuestions = await getSystemSelectionQuestions({
-                systemSelection: { onlyShowDefaultChoice: true, defaultChoice: configuredSystem },
+                systemSelection: {
+                    onlyShowDefaultChoice: true,
+                    defaultChoice: configuredSystem,
+                    showConnectionSuccessMessage: true
+                },
                 serviceSelection: { hide: true }
             });
             await this.prompt(systemSelectionQuestions.prompts);
@@ -172,7 +176,7 @@ export default class extends Generator {
             );
             this.manifest = manifestService.getManifest();
         } catch (error) {
-            this.logger.error(t('error.fetchingManifest', { error }));
+            this.logger.error(`Manifest fetching failed: ${error}`);
             throw new Error(t('error.fetchingManifest'));
         }
     }
@@ -196,6 +200,20 @@ export default class extends Generator {
                 this.prompts.setCallback(fn);
             }
         };
+    }
+
+    /**
+     * Configures logging for the generator.
+     */
+    private _configureLogging(): void {
+        AdpFlpConfigLogger.configureLogging(
+            this.options.logger,
+            this.rootGeneratorName(),
+            this.log,
+            this.options.vscode,
+            this.options.logLevel
+        );
+        this.logger = AdpFlpConfigLogger.logger;
     }
 }
 

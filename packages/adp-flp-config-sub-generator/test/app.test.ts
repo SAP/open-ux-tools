@@ -27,12 +27,6 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     generateInboundConfig: jest.fn()
 }));
 
-jest.mock('../src/utils/logger', () => ({
-    logger: {
-        error: jest.fn()
-    }
-}));
-
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),

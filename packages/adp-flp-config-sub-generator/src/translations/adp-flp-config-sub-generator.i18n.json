@@ -10,12 +10,11 @@
     },
     "error": {
         "cfNotSupported": "FLP Configuration is not supported for CF projects",
-        "fetchingManifest": "Error fetching merged manifest for app: {{- error}}",
+        "fetchingManifest": "Error fetching merged manifest for base application",
         "destinationNotFound": "Missing destination configuration in ui5.yaml",
         "systemNotFound": "Missing system configuration in ui5.yaml",
         "systemNotFoundInStore" : "System not found in the system store: {{- systemUrl}}",
-        "endPhase": "Error in end phase of the adaptation project FLP configuration: {{- error}}",
-        "writingPhase": "Error in writing phase of the adaptation project FLP configuration: {{- error}}",
+        "writingPhase": "Error in writing phase of the adaptation project FLP configuration",
         "telemetry": "Error sending telemetry data: {{- error}}",
         "updatingApp": "Error updating app with FLP configuration. Inspect the logs for full error."
     }
