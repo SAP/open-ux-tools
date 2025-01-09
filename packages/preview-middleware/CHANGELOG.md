@@ -1,5 +1,43 @@
 # @sap-ux/preview-middleware
 
+## 0.16.163
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+-   Updated dependencies [19d51f3]
+    -   @sap-ux/adp-tooling@0.12.105
+
+## 0.16.162
+
+### Patch Changes
+
+-   8b7ed76: Fixed outline not being displayed in SAP Fiori Elements for OData V4 applications with multiple views.
+
+## 0.16.161
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.104
+
+## 0.16.160
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.103
+
+## 0.16.159
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.102
+
+## 0.16.158
+
+### Patch Changes
+
+-   d964a24: feat: add option to convert test runners to preview-config command
+
 ## 0.16.157
 
 ### Patch Changes

@@ -1,5 +1,19 @@
 # @sap-ux/inquirer-common
 
+## 0.6.3
+
+### Patch Changes
+
+-   40ba546: Add support to read additional ABAP service types
+
+## 0.6.2
+
+### Patch Changes
+
+-   dac696a: Fix for incorrect error messsages connecting to destinations. Correct incorrect GA node name.
+-   Updated dependencies [dac696a]
+    -   @sap-ux/guided-answers-helper@0.2.0
+
 ## 0.6.1
 
 ### Patch Changes
