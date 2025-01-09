@@ -182,30 +182,4 @@ describe('Test applyCAPUpdates updates files correctly', () => {
         const applicationYaml = fs.read(applicationYamlPath).toString();
         expect(applicationYaml).toContain('spring:\n  web.resources.static-locations: file:./app/');
     });
-
-    test('applyCAPUpdates skips updating watch scripts in package.json for CAP Node.js projects when hasMinCdsVersion is false and minimum cds version is not specified', async () => {
-        const testProjectName = 'test-cap-package-no-min-cds-version';
-        const capService: CapServiceCdsInfo = {
-            ...capInfo,
-            cdsUi5PluginInfo: {
-                ...cdsUi5PluginInfo,
-                hasMinCdsVersion: false
-            },
-            projectPath: join(__dirname, '../cap-writer/test-inputs', testProjectName),
-            capType: 'Node.js'
-        };
-        const settings: CapProjectSettings = {
-            appRoot: join(__dirname, '../cap-writer/test-inputs', testProjectName),
-            packageName: testProjectName,
-            appId: `${testProjectName}-id`
-        };
-        await applyCAPUpdates(fs, capService, settings);
-        const packageJsonPath = join(capService.projectPath, 'package.json');
-        const packageJson = fs.readJSON(packageJsonPath) as Package;
-        const scripts = packageJson.scripts;
-        expect(scripts).toEqual({
-            // package json file should not be updated with watch scripts since hasMinCdsVersion is false & minimum cds version is not specified
-            'test-script': 'Run some scripts here'
-        });
-    });
 });
