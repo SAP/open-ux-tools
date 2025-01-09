@@ -5,7 +5,7 @@ import type Generator from 'yeoman-generator';
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     force?: boolean;
     appWizard?: AppWizard;
-    launchFlpConfigAsSubGenerator?: boolean;
+    launchAsSubGen?: boolean;
     manifest: Manifest;
     data?: {
         projectRootPath: string;

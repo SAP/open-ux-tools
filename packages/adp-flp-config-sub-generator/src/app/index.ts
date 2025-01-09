@@ -72,8 +72,7 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         // Generator does not support CF projects
         if (isCFEnvironment(this.projectRootPath)) {
-            this.appWizard.showError(t('error.cfNotSupported'), MessageType.notification);
-            return;
+            throw new Error(t('error.cfNotSupported'));
         }
         // Add telemetry to be sent once adp-flp-config is generated
         await TelemetryHelper.initTelemetrySettings({
@@ -111,17 +110,13 @@ export default class extends Generator {
 
     end(): void {
         if (!this.launchAsSubGen) {
-            this.appWizard.showInformation(t('info.flpConfigAdded'), MessageType.notification);
+            this.appWizard?.showInformation(t('info.flpConfigAdded'), MessageType.notification);
         }
-        try {
-            const telemetryData = TelemetryHelper.createTelemetryData();
-            if (telemetryData) {
-                sendTelemetry(EventName.ADP_FLP_CONFIG_ADDED, telemetryData, this.projectRootPath).catch((error) => {
-                    this.logger.error(t('error.telemetry', { error }));
-                });
-            }
-        } catch (error) {
-            this.logger.error(t('error.endPhase', { error }));
+        const telemetryData = TelemetryHelper.createTelemetryData() ?? {};
+        if (telemetryData) {
+            sendTelemetry(EventName.ADP_FLP_CONFIG_ADDED, telemetryData, this.projectRootPath).catch((error) => {
+                this.logger.error(t('error.telemetry', { error }));
+            });
         }
     }
 
@@ -160,10 +155,9 @@ export default class extends Generator {
      * @returns {Promise<void>} A promise that resolves when the manifest has been fetched.
      */
     private async _fetchManifest(): Promise<void> {
+        const { target } = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
+        const configuredSystem = await this._findConfiguredSystem(target);
         try {
-            const { target } = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
-
-            const configuredSystem = await this._findConfiguredSystem(target);
             const systemSelectionQuestions = await getSystemSelectionQuestions({
                 systemSelection: { onlyShowDefaultChoice: true, defaultChoice: configuredSystem },
                 serviceSelection: { hide: true }
@@ -204,3 +198,5 @@ export default class extends Generator {
         };
     }
 }
+
+export type { FlpConfigOptions };
