@@ -42,7 +42,8 @@ describe('basic prompts', () => {
                 message: t('prompts.semanticObject'),
                 default: 'DefaultSemanticObject',
                 filter: expect.any(Function),
-                validate: expect.any(Function)
+                validate: expect.any(Function),
+                when: expect.any(Function)
             });
         });
 
@@ -106,7 +107,8 @@ describe('basic prompts', () => {
                 message: t('prompts.action'),
                 default: 'defaultAction',
                 filter: expect.any(Function),
-                validate: expect.any(Function)
+                validate: expect.any(Function),
+                when: expect.any(Function)
             });
         });
 
