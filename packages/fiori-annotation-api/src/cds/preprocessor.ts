@@ -113,7 +113,6 @@ class ChangePreprocessor {
                 continue;
             }
             const newChange = structuredClone(change);
-            newChange.index = 0;
             this.commands.set(i, {
                 type: 'replace',
                 changes: [newChange]
