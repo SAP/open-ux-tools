@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.5
+
+### Patch Changes
+
+-   264458a: Do not reassign global.navigator
+
 ## 5.3.4
 
 ### Patch Changes

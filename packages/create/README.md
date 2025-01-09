@@ -155,8 +155,9 @@ Executing `sap-ux convert` converts an app to a new feature.
 ### preview
 Executing `sap-ux convert preview-config` in the root folder of an app will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.
 ```sh
-sap-ux convert preview [path]
+sap-ux convert preview-config [path]
 ```
+- `-t | --tests` include test suite and test runners in the conversion to virtual files
 
 ## sap-ux remove
 Calling `sap-ux remove` allows removing a feature from a project.

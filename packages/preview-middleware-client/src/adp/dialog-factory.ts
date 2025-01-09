@@ -11,15 +11,17 @@ import ControllerExtension from './controllers/ControllerExtension.controller';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
 import { ExtensionPointData } from './extension-point';
+import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
     ADD_TABLE_COLUMN_FRAGMENTS = 'AddTableColumnFragments',
     CONTROLLER_EXTENSION = 'ControllerExtension',
-    ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint'
+    ADD_FRAGMENT_AT_EXTENSION_POINT = 'ExtensionPoint',
+    FILE_EXISTS = 'FileExistsDialog'
 }
 
-type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | ExtensionPoint;
+type Controller = AddFragment | AddTableColumnFragments | ControllerExtension | ExtensionPoint | FileExistsDialog;
 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
@@ -48,7 +50,7 @@ export class DialogFactory {
         rta: RuntimeAuthoring,
         dialogName: DialogNames,
         extensionPointData?: ExtensionPointData,
-        options: Partial<AddFragmentOptions> = {}
+        options: Partial<AddFragmentOptions> | Partial<FileExistsDialogOptions> = {}
     ): Promise<void> {
         if (this.isDialogOpen) {
             return;
@@ -59,7 +61,7 @@ export class DialogFactory {
         switch (dialogName) {
             case DialogNames.ADD_FRAGMENT:
                 controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, {
-                    aggregation: options.aggregation,
+                    ...('aggregation' in options && { aggregation: options.aggregation }),
                     title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                 });
                 break;
@@ -69,7 +71,7 @@ export class DialogFactory {
                     overlay,
                     rta,
                     {
-                        aggregation: options.aggregation,
+                        ...('aggregation' in options && { aggregation: options.aggregation }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                     }
                 );
@@ -87,6 +89,12 @@ export class DialogFactory {
                     overlay,
                     rta,
                     extensionPointData!
+                );
+                break;
+            case DialogNames.FILE_EXISTS:
+                controller = new FileExistsDialog(
+                    `open.ux.preview.client.adp.controllers.${dialogName}`,
+                    options as FileExistsDialogOptions
                 );
                 break;
         }
@@ -110,7 +118,7 @@ export class DialogFactory {
 
     /**
      * Updates open dialog status.
-     * 
+     *
      * @param isDialogOpen Flag indicating if there is an open dialog.
      */
     private static updateStatus(isDialogOpen: boolean) {
@@ -121,7 +129,7 @@ export class DialogFactory {
 
     /**
      * Attach event handler for OPEN_DIALOG_STATUS_CHANGED event.
-     * 
+     *
      * @param handler Event handler.
      * @returns Function that removes listener.
      */

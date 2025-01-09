@@ -1,10 +1,16 @@
 import type { Editor } from 'mem-fs-editor';
-import type { AddXMLChange, CommonChangeProperties, CodeExtChange } from '../types';
-import { join } from 'path';
-import { DirName } from '@sap-ux/project-access';
-import type { Logger } from '@sap-ux/logger';
+import type { AddXMLChange, CommonChangeProperties, CodeExtChange, AnnotationFileChange } from '../types';
+import { ChangeType } from '../types';
+import { basename, join } from 'path';
+import { DirName, FileName } from '@sap-ux/project-access';
+import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'crypto';
+import { ManifestService } from '../base/abap/manifest-service';
+import { getAdpConfig, getVariant } from '../base/helper';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
+import { generateChange } from '../writer/editors';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
@@ -168,6 +174,17 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 }
 
 /**
+ * Determines whether a given change is of type `AnnotationFileChange`.
+ *
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is either 'appdescr_app_addAnnotationsToOData',
+ *          indicating the change is of type `AnnotationFileChange`.
+ */
+export function isAddAnnotationChange(change: CommonChangeProperties): change is AnnotationFileChange {
+    return change.changeType === 'appdescr_app_addAnnotationsToOData';
+}
+
+/**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
  * @param {string} basePath - The base path of the project.
@@ -195,4 +212,64 @@ export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Edito
     } catch (error) {
         logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);
     }
+}
+
+/**
+ * Asynchronously adds an XML fragment to the project if it doesn't already exist.
+ *
+ * @param {string} basePath - The base path of the project.
+ * @param {string} projectRoot - The root path of the project.
+ * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {Editor} fs - The mem-fs-editor instance.
+ * @param {Logger} logger - The logging instance.
+ */
+export async function addAnnotationFile(
+    basePath: string,
+    projectRoot: string,
+    change: AnnotationFileChange,
+    fs: Editor,
+    logger: Logger
+): Promise<void> {
+    const { dataSourceId, annotations, dataSource } = change.content;
+    const annotationDataSourceKey = annotations[0];
+    const annotationUriSegments = dataSource[annotationDataSourceKey].uri.split('/');
+    annotationUriSegments.shift();
+    const fullPath = join(basePath, DirName.Changes, ...annotationUriSegments);
+    try {
+        const manifestService = await getManifestService(projectRoot, logger);
+        const metadata = await manifestService.getDataSourceMetadata(dataSourceId);
+        const datasoruces = await manifestService.getManifestDataSources();
+        const namespaces = getAnnotationNamespaces({ metadata });
+        await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
+            projectRoot,
+            ChangeType.ADD_ANNOTATIONS_TO_ODATA,
+            {
+                annotation: {
+                    dataSource: dataSourceId,
+                    namespaces,
+                    serviceUrl: datasoruces[dataSourceId].uri,
+                    fileName: basename(dataSource[annotationDataSourceKey].uri)
+                },
+                variant: getVariant(projectRoot),
+                isCommand: false
+            },
+            fs
+        );
+    } catch (error) {
+        logger.error(`Failed to create Local Annotation File "${fullPath}": ${error}`);
+    }
+}
+
+/**
+ * Returns manifest service.
+ *
+ * @param {string} basePath - The base path of the project.
+ * @param {Logger} logger - The logging instance.
+ * @returns Promise<ManifestService>
+ */
+async function getManifestService(basePath: string, logger: Logger): Promise<ManifestService> {
+    const variant = getVariant(basePath);
+    const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
+    const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
+    return await ManifestService.initMergedManifest(provider, basePath, variant, logger as unknown as ToolsLogger);
 }

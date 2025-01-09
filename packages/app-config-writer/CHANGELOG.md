@@ -1,5 +1,30 @@
 # @sap-ux/app-config-writer
 
+## 0.5.13
+
+### Patch Changes
+
+-   04f0547: fix: preview config update default configs
+
+## 0.5.12
+
+### Patch Changes
+
+-   20ab455: fix: prerequisites check for preview conversion
+
+## 0.5.11
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+
+## 0.5.10
+
+### Patch Changes
+
+-   d964a24: feat: add option to convert test runners to preview-config command
+
 ## 0.5.9
 
 ### Patch Changes
