@@ -699,9 +699,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@sap/cf-tools':
-        specifier: 3.2.2
-        version: 3.2.2
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
