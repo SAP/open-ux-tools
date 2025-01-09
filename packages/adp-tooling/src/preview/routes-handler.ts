@@ -11,12 +11,10 @@ import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
 import { DirName, FileName } from '@sap-ux/project-access';
-import { ChangeType, type CodeExtChange } from '../types';
-import { generateChange } from '../writer/editors';
+import { type CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
 import type { DataSources } from '../base/abap/manifest-service';
 import { getAdpConfig, getVariant } from '../base/helper';
-import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 interface WriteControllerBody {
@@ -34,9 +32,12 @@ interface AnnotationFileDetails {
 interface AnnotationDataSourceMap {
     [key: string]: {
         serviceUrl: string;
-        isRunningInBAS: boolean;
         annotationDetails: AnnotationFileDetails;
     };
+}
+export interface AnnotationDataSourceResponse {
+    isRunningInBAS: boolean;
+    annotationDataSourceMap: AnnotationDataSourceMap;
 }
 
 /**
@@ -265,51 +266,6 @@ export default class RoutesHandler {
             next(e);
         }
     };
-    /**
-     * Handler for writing an annotation file to the workspace.
-     *
-     * @param req Request
-     * @param res Response
-     * @param next Next Function
-     */
-    public handleCreateAnnotationFile = async (req: Request, res: Response, next: NextFunction) => {
-        try {
-            const { dataSource, serviceUrl } = req.body as { dataSource: string; serviceUrl: string };
-
-            if (!dataSource) {
-                res.status(HttpStatusCodes.BAD_REQUEST).send('No datasource found in manifest!');
-                this.logger.debug('Bad request. Could not find a datasource in manifest!');
-                return;
-            }
-            const project = this.util.getProject();
-            const projectRoot = project.getRootPath();
-            const manifestService = await this.getManifestService();
-            const metadata = await manifestService.getDataSourceMetadata(dataSource);
-            const namespaces = getAnnotationNamespaces({ metadata });
-            const fsEditor = await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
-                projectRoot,
-                ChangeType.ADD_ANNOTATIONS_TO_ODATA,
-                {
-                    annotation: {
-                        dataSource,
-                        namespaces,
-                        serviceUrl: serviceUrl
-                    },
-                    variant: getVariant(projectRoot),
-                    isCommand: false
-                }
-            );
-            fsEditor.commit((err) => this.logger.error(err));
-
-            const message = 'Annotation file created!';
-            res.status(HttpStatusCodes.CREATED).send(message);
-        } catch (e) {
-            const sanitizedMsg = sanitize(e.message);
-            this.logger.error(sanitizedMsg);
-            res.status(HttpStatusCodes.INTERNAL_SERVER_ERROR).send(sanitizedMsg);
-            next(e);
-        }
-    };
 
     /**
      * Handler for mapping annotation files with datasoruce.
@@ -324,19 +280,21 @@ export default class RoutesHandler {
 
             const manifestService = await this.getManifestService();
             const dataSources = manifestService.getManifestDataSources();
-            const apiResponse: AnnotationDataSourceMap = {};
+            const apiResponse: AnnotationDataSourceResponse = {
+                isRunningInBAS,
+                annotationDataSourceMap: {}
+            };
 
             for (const dataSourceId in dataSources) {
                 if (dataSources[dataSourceId].type === 'OData') {
-                    apiResponse[dataSourceId] = {
+                    apiResponse.annotationDataSourceMap[dataSourceId] = {
                         annotationDetails: {
                             annotationExistsInWS: false
                         },
-                        serviceUrl: dataSources[dataSourceId].uri,
-                        isRunningInBAS: isRunningInBAS
+                        serviceUrl: dataSources[dataSourceId].uri
                     };
                 }
-                this.fillAnnotationDataSourceMap(dataSources, dataSourceId, apiResponse);
+                this.fillAnnotationDataSourceMap(dataSources, dataSourceId, apiResponse.annotationDataSourceMap);
             }
             this.sendFilesResponse(res, apiResponse);
         } catch (e) {

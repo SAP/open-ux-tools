@@ -157,16 +157,6 @@ export async function writeController<T>(data: T): Promise<T> {
 /**
  * Writes a new annotation file to the project's workspace
  *
- * @param data Data to be send to the server
- * @returns Generic Promise<T>
- */
-export async function writeAnnotationFile<T>(data: T): Promise<T> {
-    return request<T>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.POST, data);
-}
-
-/**
- * Writes a new annotation file to the project's workspace
- *
  * @returns Generic Promise<DataSourceAnnotationMap>
  */
 export async function getDataSourceAnnotationFileMap(): Promise<AnnotationDataSourceResponse> {
