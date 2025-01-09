@@ -84,6 +84,19 @@ describe('basic prompts', () => {
             expect(mockValidateText).toHaveBeenCalledWith('invalidValue', true, 30, ['_']);
             expect(result).toBe(false);
         });
+
+        it('should evaluate "when" to true if no inboundId is provided', () => {
+            const prompt = getSemanticObjectPrompt(false);
+
+            expect((prompt.when as Function)({})).toBe(true);
+        });
+
+        it('should evaluate "when" to false if no inboundId is provided', () => {
+            const answers = { inboundId: 'display' };
+            const prompt = getSemanticObjectPrompt(false);
+
+            expect((prompt.when as Function)(answers)).toBe(false);
+        });
     });
 
     describe('getActionPrompt', () => {
@@ -148,6 +161,20 @@ describe('basic prompts', () => {
             const prompt = getActionPrompt(true);
 
             expect(prompt.default).toBeUndefined();
+        });
+
+        it('should evaluate "when" to true if no inboundId is provided', () => {
+            const answers = {};
+            const prompt = getActionPrompt(false);
+
+            expect((prompt.when as Function)(answers)).toBe(true);
+        });
+
+        it('should evaluate "when" to false if no inboundId is provided', () => {
+            const answers = { inboundId: 'display' };
+            const prompt = getActionPrompt(false);
+
+            expect((prompt.when as Function)(answers)).toBe(false);
         });
     });
 
