@@ -1,6 +1,6 @@
 import nock from 'nock';
 import { join } from 'path';
-import { Destination, ServiceInfo } from '../src';
+import { Destination } from '../src';
 import {
     getAppStudioProxyURL,
     getAppStudioBaseURL,
@@ -222,12 +222,11 @@ describe('App Studio', () => {
         beforeAll(() => {
             nock(server).get('/reload').reply(200).persist();
             process.env[ENV.H2O_URL] = server;
-            process.env[ENV.PROXY_URL] = server;
         });
 
         afterAll(() => {
             delete process.env[ENV.H2O_URL];
-            delete process.env[ENV.PROXY_URL];
+            jest.resetAllMocks();
         });
 
         test('creation is only supported on BAS', async () => {
