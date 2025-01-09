@@ -73,7 +73,8 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
                     filePath: answers.filePath,
                     namespaces,
                     serviceUrl: dataSources[answers.id].uri
-                }
+                },
+                isCommand: true
             }
         );
 

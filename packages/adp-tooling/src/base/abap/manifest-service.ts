@@ -7,7 +7,7 @@ import { isAxiosError, type AbapServiceProvider, type Ui5AppInfoContent } from '
 import { getWebappFiles } from '../helper';
 import type { DescriptorVariant } from '../../types';
 
-type DataSources = Record<string, ManifestNamespace.DataSource>;
+export type DataSources = Record<string, ManifestNamespace.DataSource>;
 
 /**
  * Retrieves the inbound navigation configurations from the project's manifest.

@@ -1,5 +1,25 @@
 # @sap-ux/adp-tooling
 
+## 0.12.106
+
+### Patch Changes
+
+-   Updated dependencies [326cd59]
+    -   @sap-ux/odata-service-writer@0.25.2
+
+## 0.12.105
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
+## 0.12.104
+
+### Patch Changes
+
+-   Updated dependencies [40ba546]
+    -   @sap-ux/inquirer-common@0.6.3
+
 ## 0.12.103
 
 ### Patch Changes

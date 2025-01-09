@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.8.0
+
+### Minor Changes
+
+-   45c01b0: Remove cds version check when adding a cds watch sciprt to root package.json
+
 ## 0.7.68
 
 ### Patch Changes

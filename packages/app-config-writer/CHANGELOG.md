@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.5.13
+
+### Patch Changes
+
+-   04f0547: fix: preview config update default configs
+
 ## 0.5.12
 
 ### Patch Changes
