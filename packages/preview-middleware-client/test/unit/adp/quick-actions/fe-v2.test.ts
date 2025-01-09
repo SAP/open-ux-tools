@@ -1285,20 +1285,23 @@ describe('FE V2 quick actions', () => {
                 });
                 fetchMock.mockResolvedValue({
                     json: jest.fn().mockReturnValue({
-                        mainService: {
-                            serviceUrl: 'main/service/url',
-                            isRunningInBAS: false,
-                            annotationDetails: {
-                                annotationExistsInWS: false
-                            }
-                        },
-                        dataService: {
-                            serviceUrl: 'data/service/url',
-                            isRunningInBAS: false,
-                            annotationDetails: {
-                                annotationExistsInWS: true,
-                                annotationPath: 'mock/adp/project/annotation/path',
-                                annotationPathFromRoot: 'mock/adp.project.annotation/path'
+                        isRunningInBAS: false,
+                        annotationDataSourceMap: {
+                            mainService: {
+                                serviceUrl: 'main/service/url',
+                                isRunningInBAS: false,
+                                annotationDetails: {
+                                    annotationExistsInWS: false
+                                }
+                            },
+                            dataService: {
+                                serviceUrl: 'data/service/url',
+                                isRunningInBAS: false,
+                                annotationDetails: {
+                                    annotationExistsInWS: true,
+                                    annotationPath: 'mock/adp/project/annotation/path',
+                                    annotationPathFromRoot: 'mock/adp.project.annotation/path'
+                                }
                             }
                         }
                     }),
@@ -1383,26 +1386,27 @@ describe('FE V2 quick actions', () => {
                             title: 'LIST REPORT',
                             actions: [
                                 {
-                                    'kind': 'simple',
+                                    kind: 'simple',
                                     id: 'listReport0-add-controller-to-page',
                                     title: 'Add Controller to Page',
-                                    enabled: true
+                                    enabled: true,
+                                    tooltip: undefined
                                 },
                                 {
-                                    'kind': 'nested',
+                                    kind: 'nested',
                                     id: 'listReport0-add-new-annotation-file',
-                                    title: 'Add New Annotation File',
+                                    title: 'Add Local Annotation File',
                                     enabled: true,
                                     children: [
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: '\'\'{0}\'\' datasource'
+                                            label: 'Add Annotation File for \'\'{0}\'\''
                                         },
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: 'Show \'\'{0}\'\' annotation file'
+                                            label: 'Show Annotation File for \'\'{0}\'\''
                                         }
                                     ]
                                 }

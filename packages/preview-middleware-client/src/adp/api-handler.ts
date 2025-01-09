@@ -34,17 +34,20 @@ export interface CodeExtResponse {
     isRunningInBAS: boolean;
 }
 
-export interface AnnotationFileResponse {
+export interface AnnotationFileDetails {
     annotationExistsInWS: boolean;
     annotationPath: string;
     annotationPathFromRoot: string;
+}
+
+export interface AnnotationDataSourceMap {
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails };
+}
+
+export interface AnnotationDataSourceResponse {
     isRunningInBAS: boolean;
+    annotationDataSourceMap: AnnotationDataSourceMap;
 }
-
-export interface DataSourceAnnotationMap {
-    [key: string]: { serviceUrl: string; isRunningInBAS: boolean; annotationDetails: AnnotationFileResponse };
-}
-
 export interface ControllersResponse {
     controllers: Controllers;
     message: string;
@@ -166,8 +169,8 @@ export async function writeAnnotationFile<T>(data: T): Promise<T> {
  *
  * @returns Generic Promise<DataSourceAnnotationMap>
  */
-export async function getDataSourceAnnotationFileMap(): Promise<DataSourceAnnotationMap> {
-    return request<DataSourceAnnotationMap>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.GET);
+export async function getDataSourceAnnotationFileMap(): Promise<AnnotationDataSourceResponse> {
+    return request<AnnotationDataSourceResponse>(ApiEndpoints.ANNOTATION_FILE, RequestMethod.GET);
 }
 
 /**
