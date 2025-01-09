@@ -550,9 +550,6 @@ importers:
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0
-      memfs:
-        specifier: 3.4.13
-        version: 3.4.13
       rimraf:
         specifier: 5.0.5
         version: 5.0.5
