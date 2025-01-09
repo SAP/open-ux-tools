@@ -238,13 +238,18 @@ async function generateOAuthTokenExchangeDestination(
  *
  * @param destination destination info
  * @param logger Logger
+ * @returns Newly generated OAuth destination
  */
-export async function createBTPOAuthExchangeDestination(destination: Destination, logger?: Logger): Promise<void> {
+export async function createBTPOAuthExchangeDestination(
+    destination: Destination,
+    logger?: Logger
+): Promise<OAuth2Destination> {
     if (!isAppStudio()) {
         throw new Error(`Creating SAP BTP destinations is only supported on SAP Business Application Studio.`);
     }
     const btpDestination = await generateOAuthTokenExchangeDestination(destination, logger);
     await createBTPDestination(btpDestination);
+    return btpDestination;
 }
 
 /**
