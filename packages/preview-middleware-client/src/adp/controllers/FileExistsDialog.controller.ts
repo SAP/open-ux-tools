@@ -26,7 +26,7 @@ type FileExistModel = JSONModel & {
 export default class FileExistsDialog extends BaseDialog<FileExistModel> {
     private options: FileExistsDialogOptions;
     public model: JSONModel;
-    private readonly _name: string;
+    private readonly name: string;
     constructor(name: string, options: FileExistsDialogOptions) {
         super(name);
         this.model = new JSONModel();

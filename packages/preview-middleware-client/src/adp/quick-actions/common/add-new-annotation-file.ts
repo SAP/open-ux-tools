@@ -1,6 +1,7 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type { DataSourceAnnotationMap } from '../../api-handler';
 import { getDataSourceAnnotationFileMap } from '../../api-handler';
 import {
     NESTED_QUICK_ACTION_KIND,
@@ -31,6 +32,7 @@ export class AddNewAnnotationFile
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
+    private dataSourceAnnotationFileMap: DataSourceAnnotationMap;
     constructor(protected readonly context: QuickActionContext) {
         super(ADD_NEW_ANNOTATION_FILE, NESTED_QUICK_ACTION_KIND, 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE', context, [
             DIALOG_ENABLEMENT_VALIDATOR
@@ -43,13 +45,13 @@ export class AddNewAnnotationFile
             this.isApplicable = false;
             return;
         }
-        const dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
-        if (!dataSourceAnnotationFileMap) {
+        this.dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
+        if (!this.dataSourceAnnotationFileMap) {
             throw new Error('No data sources found in the manifest');
         }
-        for (const key in dataSourceAnnotationFileMap) {
-            if (Object.prototype.hasOwnProperty.call(dataSourceAnnotationFileMap, key)) {
-                const source = dataSourceAnnotationFileMap[key];
+        for (const key in this.dataSourceAnnotationFileMap) {
+            if (Object.prototype.hasOwnProperty.call(this.dataSourceAnnotationFileMap, key)) {
+                const source = this.dataSourceAnnotationFileMap[key];
                 this.children.push({
                     enabled: true,
                     label: source.annotationDetails.annotationExistsInWS
@@ -63,12 +65,8 @@ export class AddNewAnnotationFile
     async execute(path: string): Promise<FlexCommand[]> {
         const index = Number(path);
         if (index >= 0) {
-            // Do not cache the result of getDataSourceAnnotationFileMap api,
-            // as annotation file or datasource can be added outside using create command.
-            // So refresh would be required for the cache to be updated.
-            const dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
-            const dataSourceId = Object.keys(dataSourceAnnotationFileMap)[index];
-            const dataSource = dataSourceAnnotationFileMap?.[dataSourceId];
+            const dataSourceId = Object.keys(this.dataSourceAnnotationFileMap)[index];
+            const dataSource = this.dataSourceAnnotationFileMap?.[dataSourceId];
             if (dataSource?.annotationDetails.annotationExistsInWS) {
                 const annotationFileDetails = dataSource.annotationDetails;
                 const { annotationPath, annotationPathFromRoot } = annotationFileDetails;
