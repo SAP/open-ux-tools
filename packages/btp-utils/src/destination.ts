@@ -309,12 +309,12 @@ export type AbapEnvType = (typeof AbapEnvType)[keyof typeof AbapEnvType];
 /**
  * OAuth destination properties.
  */
-export interface OAuth2Destination extends Destination, Partial<AdditionalDestinationProperties> {
+export interface OAuth2Destination extends Omit<Destination, 'Host'>, Partial<AdditionalDestinationProperties> {
     URL: string; // Required for creation flow
-    ClientSecret: string;
-    ClientId: string;
-    TokenServiceURL: string;
-    TokenServiceURLType?: 'Dedicated'; // Optional for OAuth2Password destinations
+    clientSecret: string;
+    clientId: string;
+    tokenServiceURL: string;
+    tokenServiceURLType?: 'Dedicated'; // Optional for OAuth2Password destinations
 }
 
 export interface CloudFoundryServiceInfo {
