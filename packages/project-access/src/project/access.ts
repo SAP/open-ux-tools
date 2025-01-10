@@ -322,7 +322,15 @@ export async function createApplicationAccess(
         if (!app) {
             throw new Error(`Could not find app with root ${appRoot}`);
         }
-        const project = await getProject(app.projectRoot);
+        let memFs: Editor | undefined;
+        // If fs is defined and has the 'fs' property, extract fs from ApplicationAccessOptions
+        if (fs && 'fs' in fs) {
+            const { fs: fsFromOptions } = fs as ApplicationAccessOptions;
+            memFs = fsFromOptions;
+        } else if (fs) {
+            memFs = fs as Editor;
+        }
+        const project = await getProject(app.projectRoot, memFs);
         const appId = relative(project.root, appRoot);
         let options: ApplicationAccessOptions | undefined;
         if (fs) {
@@ -343,7 +351,7 @@ export async function createApplicationAccess(
  */
 export async function createProjectAccess(root: string, options?: ProjectAccessOptions): Promise<ProjectAccess> {
     try {
-        const project = await getProject(root);
+        const project = await getProject(root, options?.memFs);
         const projectAccess = new ProjectAccessImp(project, options);
         return projectAccess;
     } catch (error) {
