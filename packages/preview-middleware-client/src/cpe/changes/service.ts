@@ -438,6 +438,7 @@ export class ChangeService extends EventTarget {
                     (sum, change) =>
                         change.kind === CONFIGURATION_CHANGE_KIND ||
                         change.changeType === 'appdescr_ui_generic_app_changePageConfiguration' ||
+                        change.changeType === 'appdescr_ui_gen_app_changePageConfig' ||
                         change.changeType === 'appdescr_app_addAnnotationsToOData'
                             ? sum + 1
                             : sum,
@@ -635,9 +636,7 @@ export class ChangeService extends EventTarget {
             return undefined;
         }
 
-        const { fileName } = change.getDefinition
-            ? change.getDefinition()
-            : (change.getJson() as { fileName: string });
+        const { fileName } = change.getDefinition ? change.getDefinition() : (change.getJson() as { fileName: string });
         if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {
             let value = '';
             switch (changeType) {
@@ -666,7 +665,10 @@ export class ChangeService extends EventTarget {
                 command.getProperty('parameters') as { entityPropertyChange: { propertyValue: ConfigurationValue } }
             ).entityPropertyChange.propertyValue;
             return this.prepareV4ConfigurationChange(command, value, fileName, index, inactiveCommandCount);
-        } else if (changeType === 'appdescr_ui_generic_app_changePageConfiguration') {
+        } else if (
+            changeType === 'appdescr_ui_generic_app_changePageConfiguration' ||
+            changeType === 'appdescr_ui_gen_app_changePageConfig'
+        ) {
             return this.prepareV2ConfigurationChange(command, fileName, index, inactiveCommandCount);
         } else {
             const title = TITLE_MAP[changeType] ?? '';
