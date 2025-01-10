@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.107
+
+### Patch Changes
+
+-   030857d: fix: Hide semantic object & action FLP prompts when there are inbounds for an Adaptation Project
+
 ## 0.12.106
 
 ### Patch Changes
