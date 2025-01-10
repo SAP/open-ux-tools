@@ -3,7 +3,7 @@ import { createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
 import { ensurePreviewMiddlewareDependency, extractUrlDetails, isValidPreviewScript } from './package-json';
 import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml, type Package } from '@sap-ux/project-access';
 import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
-import { renameSandbox } from './preview-files';
+import { renameSandbox, deleteFiles } from './preview-files';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
 import type {
@@ -228,7 +228,7 @@ export async function processUi5YamlConfig(
     }
 
     const { path, intent } = extractUrlDetails(script);
-    previewMiddleware = updatePreviewMiddlewareConfig(previewMiddleware, intent, path);
+    previewMiddleware = await updatePreviewMiddlewareConfig(previewMiddleware, intent, path, basePath, fs);
 
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     const yamlPath = join(basePath, ui5Yaml);
@@ -243,13 +243,17 @@ export async function processUi5YamlConfig(
  * @param previewMiddleware - the preview middleware configuration
  * @param intent - the intent
  * @param path - the flp path
+ * @param basePath - the base path
+ * @param fs - file system reference
  * @returns the preview middleware configuration
  */
-export function updatePreviewMiddlewareConfig(
+export async function updatePreviewMiddlewareConfig(
     previewMiddleware: CustomMiddleware<PreviewConfigOptions>,
     intent: FlpConfig['intent'] | undefined,
-    path: string | undefined
-): CustomMiddleware<PreviewConfigOptions> {
+    path: string | undefined,
+    basePath: string,
+    fs: Editor
+): Promise<CustomMiddleware<PreviewConfigOptions>> {
     const defaultIntent = `${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`;
     const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware);
 
@@ -274,7 +278,7 @@ export function updatePreviewMiddlewareConfig(
             writeConfig = true;
         }
     } else if (isTestPath(path, configuration)) {
-        configuration.test = updateTestConfig(configuration.test, path);
+        configuration.test = await updateTestConfig(configuration.test, path, basePath, fs);
         writeConfig = true;
     }
 
@@ -290,12 +294,16 @@ export function updatePreviewMiddlewareConfig(
  *
  * @param testConfiguration - the test configuration
  * @param path - the path
+ * @param basePath - the base path
+ * @param fs - file system reference
  * @returns the updated test configuration
  */
-export function updateTestConfig(
+export async function updateTestConfig(
     testConfiguration: PreviewConfig['test'],
-    path: string | undefined
-): PreviewConfig['test'] {
+    path: string | undefined,
+    basePath: string,
+    fs: Editor
+): Promise<PreviewConfig['test']> {
     testConfiguration = testConfiguration ?? [];
 
     let framework: PreviewTestConfig['framework'] | undefined;
@@ -321,8 +329,16 @@ export function updateTestConfig(
         }
     } else if (path?.includes(defaultPath)) {
         testConfiguration.push({ framework });
-    } else {
+        //delete respective .js|.ts file
+        await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.js'))]);
+        await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.ts'))]);
+    } else if (path) {
         testConfiguration.push({ framework, path });
+        //delete respective .js|.ts file
+        await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.js'))]);
+        await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.ts'))]);
+    } else {
+        testConfiguration.push({ framework });
     }
     return testConfiguration;
 }
@@ -365,9 +381,11 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string, logg
             //do not touch existing test config
             break;
         }
-        previewMiddleware.configuration.test = updateTestConfig(
+        previewMiddleware.configuration.test = await updateTestConfig(
             previewMiddleware.configuration.test,
-            defaultConfig.path
+            defaultConfig.path,
+            basePath,
+            fs
         );
         logger?.info(
             `The UI5 YAML configuration file 'ui5.yaml', has been updated to support the test framework '${defaultConfig.framework}'. Please consider transferring the test configuration to the UI5 YAML configuration file used for testing.`
