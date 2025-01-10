@@ -1,5 +1,11 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.0.10
+
+### Patch Changes
+
+-   9346d78: tidy up
+
 ## 0.0.9
 
 ### Patch Changes
