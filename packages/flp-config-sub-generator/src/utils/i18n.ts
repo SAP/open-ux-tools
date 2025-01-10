@@ -2,14 +2,14 @@ import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from '../translations/flp-config-sub-generator.i18n.json';
 
-const ui5LibGeneratorNs = 'ui5-lib-generator';
+const flpConfigGeneratorNs = 'flp-config-generator';
 
 /**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
     await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', ui5LibGeneratorNs, translations)
+        i18next.addResourceBundle('en', flpConfigGeneratorNs, translations)
     );
 }
 
@@ -22,7 +22,7 @@ export async function initI18n(): Promise<void> {
  */
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
-        options = Object.assign(options ?? {}, { ns: ui5LibGeneratorNs });
+        options = Object.assign(options ?? {}, { ns: flpConfigGeneratorNs });
     }
     return i18next.t(key, options);
 }
