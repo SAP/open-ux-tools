@@ -34,15 +34,17 @@ export default class AdpFlpConfigLogger {
      * @param yoLogger - the yeoman logger
      * @param vscode - the vscode instance
      * @param logLevel - the log level
+     * @param logWrapper - log wrapper instance
      */
     static configureLogging(
         vscLogger: IVSCodeExtLogger,
         loggerName: string,
         yoLogger: Logger,
         vscode?: unknown,
-        logLevel?: LogLevel
+        logLevel?: LogLevel,
+        logWrapper?: LogWrapper
     ): void {
-        const logWrapper = new LogWrapper(loggerName, yoLogger, logLevel, vscLogger, vscode);
-        AdpFlpConfigLogger.logger = logWrapper;
+        const logger = logWrapper ?? new LogWrapper(loggerName, yoLogger, logLevel, vscLogger, vscode);
+        AdpFlpConfigLogger.logger = logger;
     }
 }

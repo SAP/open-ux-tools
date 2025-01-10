@@ -44,6 +44,7 @@ export default class extends Generator {
     answers: FLPConfigAnswers;
     toolsLogger: ToolsLogger;
     logger: ILogWrapper;
+    public options: FlpConfigOptions;
 
     /**
      * Creates an instance of the generator.
@@ -60,6 +61,7 @@ export default class extends Generator {
         this.manifest = opts.manifest;
         this.toolsLogger = new ToolsLogger();
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
+        this.options = opts;
 
         this._configureLogging();
 
@@ -112,7 +114,11 @@ export default class extends Generator {
         if (!this.launchAsSubGen) {
             this.appWizard?.showInformation(t('info.flpConfigAdded'), MessageType.notification);
         }
-        const telemetryData = TelemetryHelper.createTelemetryData() ?? {};
+        const telemetryData =
+            TelemetryHelper.createTelemetryData({
+                appType: 'adp-flp-config',
+                ...this.options.telemetryData
+            }) ?? {};
         if (telemetryData) {
             sendTelemetry(EventName.ADP_FLP_CONFIG_ADDED, telemetryData, this.projectRootPath).catch((error) => {
                 this.logger.error(t('error.telemetry', { error }));
@@ -211,7 +217,8 @@ export default class extends Generator {
             this.rootGeneratorName(),
             this.log,
             this.options.vscode,
-            this.options.logLevel
+            this.options.logLevel,
+            this.options.logWrapper
         );
         this.logger = AdpFlpConfigLogger.logger;
     }
