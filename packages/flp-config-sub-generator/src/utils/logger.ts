@@ -27,22 +27,24 @@ export default class FlpGenLogger {
     }
 
     /**
-     * Configures the vscode logger.
+     * Configures the logger.
      *
-     * @param vscLogger - the vscode logger
      * @param loggerName - the logger name
      * @param yoLogger - the yeoman logger
-     * @param vscode - the vscode instance
+     * @param logWrapper - log wrapper instance
      * @param logLevel - the log level
+     * @param vscLogger - the vscode logger
+     * @param vscode - the vscode instance
      */
     static configureLogging(
-        vscLogger: IVSCodeExtLogger,
         loggerName: string,
         yoLogger: Logger,
-        vscode?: unknown,
-        logLevel?: LogLevel
+        logWrapper?: LogWrapper,
+        logLevel?: LogLevel,
+        vscLogger?: IVSCodeExtLogger,
+        vscode?: unknown
     ): void {
-        const logWrapper = new LogWrapper(loggerName, yoLogger, logLevel, vscLogger, vscode);
-        FlpGenLogger.logger = logWrapper;
+        const logger = logWrapper ?? new LogWrapper(loggerName, yoLogger, logLevel, vscLogger, vscode);
+        FlpGenLogger.logger = logger;
     }
 }
