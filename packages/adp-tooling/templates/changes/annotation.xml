@@ -12,7 +12,7 @@
         <edmx:Include Namespace="<%- namespace.namespace %>"<% if (namespace.alias) { %> Alias="<%- namespace.alias %>"<% } %>/><% }); %>
     </edmx:Reference>
     <edmx:DataServices>
-        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="local">
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="<%- schemaNamespace %>">
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>
