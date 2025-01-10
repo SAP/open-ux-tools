@@ -91,7 +91,7 @@ describe('basic prompts', () => {
             expect((prompt.when as Function)({})).toBe(true);
         });
 
-        it('should evaluate "when" to false if no inboundId is provided', () => {
+        it('should evaluate "when" to false if inboundId is provided', () => {
             const answers = { inboundId: 'display' };
             const prompt = getSemanticObjectPrompt(false);
 
@@ -170,7 +170,7 @@ describe('basic prompts', () => {
             expect((prompt.when as Function)(answers)).toBe(true);
         });
 
-        it('should evaluate "when" to false if no inboundId is provided', () => {
+        it('should evaluate "when" to false if inboundId is provided', () => {
             const answers = { inboundId: 'display' };
             const prompt = getActionPrompt(false);
 
