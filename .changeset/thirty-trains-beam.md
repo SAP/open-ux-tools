@@ -1,5 +1,5 @@
 ---
-'@sap-ux/btp-utils': patch
+'@sap-ux/btp-utils': minor
 ---
 
-new functionality to generate OAuth2TokenExechange BTP destination using cf-tools
+new functionality to generate OAuth2TokenExchange BTP destination using cf-tools
