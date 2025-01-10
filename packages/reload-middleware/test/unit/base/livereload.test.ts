@@ -160,4 +160,14 @@ describe('adp backend sync', () => {
 
         expect(global.__SAP_UX_MANIFEST_SYNC_REQUIRED__).toBe(true);
     });
+
+    test('sync on manifest change', async () => {
+        const server = await getLivereloadServer({});
+
+        watchManifestChanges(server);
+
+        onSpy.mock.calls[0][1]('add', '123_appdescr_ui_gen_app_changePageConfig.change');
+
+        expect(global.__SAP_UX_MANIFEST_SYNC_REQUIRED__).toBe(true);
+    });
 });
