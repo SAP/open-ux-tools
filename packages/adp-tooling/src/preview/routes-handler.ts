@@ -316,7 +316,7 @@ export default class RoutesHandler {
     ): void {
         const project = this.util.getProject();
         const getPath = (projectPath: string, relativePath: string): string =>
-            path.join(projectPath, DirName.Changes, relativePath).split(path.sep).join(path.posix.sep);
+            path.join(projectPath, relativePath).split(path.sep).join(path.posix.sep);
         const annotations = dataSources[dataSourceId].settings?.annotations
             ? [...dataSources[dataSourceId].settings.annotations].reverse()
             : [];
