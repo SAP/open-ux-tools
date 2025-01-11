@@ -7,6 +7,7 @@
 
 Adds support for entity related prompting. Update some exported types `fiori-elements-writer`, `fiori-freestyle-writer` to remove problematic enum usage.
 The major version updates for modules `@sap-ux/fiori-elements-writer` and `@sap-ux/fiori-freestyle-writer` indicates a breaking change of type definitions:
+
 `@sap-ux/fiori-elements-writer`:
  `TemplateType`
  `TableType`
