@@ -52,7 +52,6 @@ export const TableSelectionMode = {
 } as const;
 export type TableSelectionMode = (typeof TableSelectionMode)[keyof typeof TableSelectionMode];
 
-
 export interface TableSettings {
     tableType?: TableType;
     qualifier?: string;
