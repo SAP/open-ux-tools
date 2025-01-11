@@ -222,7 +222,7 @@
         "unparseableXML": "Unparseable XML was specified: {{-error}}"
     },
     "warnings": {
-        "largeMetadataDocument": "The metadata for this OData service is significantly large. It may take some time before this operation completes.",
+        "largeMetadataDocument": "The metadata for this OData service is significantly large. It may take some time before this operation completes."
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
