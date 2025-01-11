@@ -16,7 +16,7 @@ The major version updates for modules `@sap-ux/fiori-elements-writer` and `@sap-
  `TemplateType`
 
 These changes are required to reduce the impact of importing these types by consumers. Previously defined as enums, requiring full dependencies and bloating 
-consumer code where only these types are reuired. The new type defintions still allow both uses (type or value) but the `enums` are now defined as `const`.
+consumer code where only these types are required. The new type defintions still allow both uses (type or value) but the `enums` are now defined as `const`.
 This change requires updates to consuming code where the type is imported and referenced.  
 Example where a single enum was used as a value type:
 
