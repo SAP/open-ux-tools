@@ -2310,8 +2310,8 @@ importers:
   packages/odata-service-inquirer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.10.0
-        version: 0.10.0
+        specifier: 0.9.10
+        version: 0.9.10
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -2383,8 +2383,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@sap-ux/vocabularies-types':
-        specifier: 0.12.1
-        version: 0.12.1
+        specifier: 0.11.7
+        version: 0.11.7
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -8187,12 +8187,6 @@ packages:
   /@sap-devx/yeoman-ui-types@1.14.4:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
 
-  /@sap-ux/annotation-converter@0.10.0:
-    resolution: {integrity: sha512-fBcYuaebQgsV5fMruwbKtUOfEBo9IozLxe4snxjYQpjF+L/lA7WDsAbPt+hymG8YaZxQSHGdukm2SslkUHryaA==}
-    dependencies:
-      '@sap-ux/vocabularies-types': 0.12.1
-    dev: false
-
   /@sap-ux/annotation-converter@0.9.10:
     resolution: {integrity: sha512-lZNcTLMoGUSGooYfKYLNy0SO0Ma6Z7kdGODPkbph6ur83+C6s+rJJ96jzziZT9gjVK8UoVy8qmZyjEZzEJgkeg==}
     dependencies:
@@ -8207,11 +8201,6 @@ packages:
 
   /@sap-ux/vocabularies-types@0.11.7:
     resolution: {integrity: sha512-rqRhmPW97dQ8K6nYjL1aP0a4THsUSGK6F5LSOOkSkyTQrBOGu5LNdqi90V2EYKSdIARTvgOnaz1mU+nmkzrsOA==}
-    engines: {node: '>=18.x'}
-    dev: false
-
-  /@sap-ux/vocabularies-types@0.12.1:
-    resolution: {integrity: sha512-9xb+z8IZ/EPLEWdH1IhFcg3KwHP8Anc9dzp9pfNhoBN/WLACfeXugGQ6CxyHNoT6cydVXKDSqhQyd7VtCL1W2Q==}
     engines: {node: '>=18.x'}
 
   /@sap/bas-sdk@3.8.9:
