@@ -21,7 +21,7 @@ export function getUI5ThemesChoices(ui5Version?: string): ListChoiceOptions[] {
 }
 
 /**
- * Finds the search value in the provided list using `fuzzy` search to match the choice name.
+ * Finds the search value in the provided list using `fuzzy` search.
  *
  * @param searchVal - the string to search for
  * @param searchList - the list in which to search by fuzzy matching the choice name
