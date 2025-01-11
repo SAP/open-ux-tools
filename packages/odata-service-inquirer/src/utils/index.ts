@@ -28,6 +28,23 @@ export function getPromptHostEnvironment(): { name: string; technical: HostEnvir
  * @returns the odata version of the specified metadata, throws an error if the metadata is invalid
  */
 export function parseOdataVersion(metadata: string): OdataVersion {
+    try {
+        const parsed = xmlToJson(metadata);
+        const odataVersion: OdataVersion = parsed['Edmx']['Version'] === 1 ? OdataVersion.v2 : OdataVersion.v4;
+        return odataVersion;
+    } catch (error) {
+        LoggerHelper.logger.error(error);
+        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+    }
+}
+
+/**
+ * Convert specified xml string to JSON.
+ *
+ * @param xml - the schema to parse
+ * @returns parsed object representation of passed XML
+ */
+export function xmlToJson(xml: string): any | void {
     const options = {
         attributeNamePrefix: '',
         ignoreAttributes: false,
@@ -35,14 +52,12 @@ export function parseOdataVersion(metadata: string): OdataVersion {
         parseAttributeValue: true,
         removeNSPrefix: true
     };
-    const parser: XMLParser = new XMLParser(options);
+
     try {
-        const parsed = parser.parse(metadata, true);
-        const odataVersion: OdataVersion = parsed['Edmx']['Version'] === 1 ? OdataVersion.v2 : OdataVersion.v4;
-        return odataVersion;
+        const parser = new XMLParser(options);
+        return parser.parse(xml, true);
     } catch (error) {
-        LoggerHelper.logger.error(error);
-        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+        throw new Error(t('error.unparseableXML', { error }));
     }
 }
 

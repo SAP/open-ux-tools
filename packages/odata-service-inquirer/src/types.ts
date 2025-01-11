@@ -5,6 +5,8 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
+import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
+import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -142,6 +144,56 @@ export enum promptNames {
      */
     systemSelection = 'systemSelection'
 }
+
+export const EntityPromptNames = {
+    mainEntity: 'mainEntity',
+    navigationEntity: 'navigationEntity',
+    filterEntityType: 'filterEntityType',
+    tableType: 'tableType',
+    hierarchyQualifier: 'hierarchyQualifier',
+    generateFEOPAnnotations: 'generateFEOPAnnotations',
+    generateLROPAnnotations: 'generateLROPAnnotations',
+    presentationQualifier: 'presentationQualifier',
+    tableSelectionMode: 'tableSelectionMode',
+    tableMultiSelect: 'tableMultiSelect',
+    tableAutoHide: 'tableAutoHide',
+    smartVariantManagement: 'smartVariantManagement'
+} as const;
+export type EntityPromptNames = (typeof EntityPromptNames)[keyof typeof EntityPromptNames];
+
+export interface EntitySelectionAnswers {
+    mainEntity?: EntityAnswer;
+    navigationEntity?: NavigationEntityAnswer;
+    filterEntityType?: EntityAnswer;
+}
+
+export interface TableConfigAnswers {
+    tableType: TableType;
+    hierarchyQualifier: string;
+}
+
+export interface AnnotationGenerationAnswers {
+    // todo: consolidate, it cant be both
+    addFEOPAnnotations?: boolean;
+    addLROPAnnotations?: boolean;
+}
+
+export interface AlpTableConfigAnswers {
+    qualifier: string;
+    multiSelect: boolean;
+    autoHide: boolean;
+    smartVariantManagement: boolean;
+    selectionMode: TableSelectionMode;
+}
+
+/**
+ * Convienience type for the entity related answers
+ *
+ */
+export type EntityRelatedAnswers = EntitySelectionAnswers &
+    TableConfigAnswers &
+    AnnotationGenerationAnswers &
+    AlpTableConfigAnswers;
 
 export type CapRuntime = 'Node.js' | 'Java';
 
@@ -327,5 +379,22 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
 export type OdataServicePromptOptions = Partial<odataServiceInquirerPromptOptions>;
+
+// todo: add implementation
+export type EntityPromptOptions = {
+    /**
+     * Determines if entity related prompts should use auto complete on user input.
+     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     */
+    useAutoComplete?: boolean;
+    /**
+     * Provide an entity name that will be preselected as the default option for the prompt.
+     */
+    defaultMainEntityName?: string;
+    /**
+     * Hides the table layout related prompts when true, default is false.
+     */
+    hideTableLayoutPrompts?: boolean;
+};
 
 export const SAP_CLIENT_KEY = 'sap-client';

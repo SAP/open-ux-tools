@@ -1,14 +1,16 @@
 import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 
-export enum TemplateType {
-    Worklist = 'worklist',
-    ListReportObjectPage = 'lrop',
-    AnalyticalListPage = 'alp',
-    OverviewPage = 'ovp',
-    FormEntryObjectPage = 'feop',
-    FlexibleProgrammingModel = 'fpm'
-}
+export const TemplateType = {
+    Worklist: 'worklist',
+    ListReportObjectPage: 'lrop',
+    AnalyticalListPage: 'alp',
+    OverviewPage: 'ovp',
+    FormEntryObjectPage: 'feop',
+    FlexibleProgrammingModel: 'fpm'
+} as const;
+
+export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType];
 
 /**
  * General validation error thrown if app config options contain invalid combinations
@@ -33,19 +35,24 @@ export interface EntityConfig {
     };
 }
 
-export enum TableType {
-    GRID = 'GridTable',
-    ANALYTICAL = 'AnalyticalTable',
-    RESPONSIVE = 'ResponsiveTable',
-    TREE = 'TreeTable'
-}
+export const TableType = {
+    GRID: 'GridTable',
+    ANALYTICAL: 'AnalyticalTable',
+    RESPONSIVE: 'ResponsiveTable',
+    TREE: 'TreeTable'
+} as const;
 
-export enum TableSelectionMode {
-    NONE = 'None',
-    AUTO = 'Auto',
-    MULTI = 'Multi',
-    SINGLE = 'Single'
-}
+export type TableType = (typeof TableType)[keyof typeof TableType];
+
+export const TableSelectionMode = {
+    NONE: 'None',
+    AUTO: 'Auto',
+    MULTI: 'Multi',
+    SINGLE: 'Single'
+} as const;
+export type TableSelectionMode = (typeof TableSelectionMode)[keyof typeof TableSelectionMode];
+
+
 export interface TableSettings {
     tableType?: TableType;
     qualifier?: string;
