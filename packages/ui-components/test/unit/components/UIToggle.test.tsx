@@ -167,6 +167,10 @@ describe('<UIToggle />', () => {
                     "background": "var(--vscode-editorWidget-background)",
                     "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
                   },
+                  ":hover .ms-Toggle-thumb": Object {
+                    "background": "var(--vscode-contrastActiveBorder, var(--vscode-button-hoverBackground))",
+                    "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
+                  },
                   "background": "var(--vscode-editorWidget-background)",
                   "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-editorWidget-border))",
                   "borderStyle": "solid",
