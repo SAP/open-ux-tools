@@ -37,7 +37,7 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
             annotationsInsertPosition: 'END',
             dataSource: {
                 [annotationNameSpace]: {
-                    uri: `../changes/annotations/${fileName}`,
+                    uri: `./annotations/${fileName}`,
                     type: 'ODataAnnotation'
                 }
             }

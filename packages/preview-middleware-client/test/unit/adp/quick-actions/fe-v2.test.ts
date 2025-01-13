@@ -1429,7 +1429,7 @@ describe('FE V2 quick actions', () => {
                             dataSource: {
                                 'annotation.annotation_1736143853603': {
                                     type: 'ODataAnnotation',
-                                    uri: '../changes/annotations/annotation_1736143853603.xml'
+                                    uri: './annotations/annotation_1736143853603.xml'
                                 }
                             },
                             dataSourceId: 'mainService',
