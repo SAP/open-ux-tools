@@ -110,7 +110,7 @@ export class AddNewAnnotationFile
                     annotationsInsertPosition: 'END',
                     dataSource: {
                         [annotationNameSpace]: {
-                            uri: `./annotations/${annotationFileName}`,
+                            uri: `annotations/${annotationFileName}`,
                             type: 'ODataAnnotation'
                         }
                     }
