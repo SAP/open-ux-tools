@@ -377,6 +377,7 @@ export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
+export const externalFileChange = createExternalAction<string>('external-file-change');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -403,4 +404,5 @@ export type ExternalAction =
     | ReturnType<typeof quickActionListChanged>
     | ReturnType<typeof setApplicationRequiresReload>
     | ReturnType<typeof updateQuickAction>
-    | ReturnType<typeof executeQuickAction>;
+    | ReturnType<typeof executeQuickAction>
+    | ReturnType<typeof externalFileChange>;
