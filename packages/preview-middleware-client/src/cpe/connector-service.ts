@@ -45,11 +45,9 @@ export class WorkspaceConnectorService {
         };
         if (
             (changeType &&
-                ![
-                    'appdescr_fe_changePageConfiguration',
-                    'appdescr_ui_generic_app_changePageConfiguration',
-                    'appdescr_ui_gen_app_changePageConfig'
-                ].includes(changeType)) ||
+                !['appdescr_fe_changePageConfiguration', 'appdescr_ui_generic_app_changePageConfiguration'].includes(
+                    changeType
+                )) ||
             kind === 'delete' ||
             this.isReloadPending
         ) {
