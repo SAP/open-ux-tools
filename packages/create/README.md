@@ -133,17 +133,17 @@ sap-ux add variants-config [path]
 ```
 - `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
-## [sap-ux change](#add-sap-ux-change)<a id="add-sap-ux-change"></a>
+## [sap-ux change](#sap-ux-change)
 Calling `sap-ux change` allows changing a feature of a project.
 
-### [data-source](#add-data-source)<a id="add-data-source"></a>
+### [data-source](#change-data-source)<a id="change-data-source"></a>
 Calling `sap-ux change data-source` allows replacing the OData Source of the base application in an adaptation project.  
 ```sh
 sap-ux change data-source [path]
 ```
 - `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
-### [inbound](#add-inbound)<a id="add-inbound"></a>
+### [inbound](#change-inbound)<a id="change-inbound"></a>
 Calling `sap-ux change inbound` allows replacing the Inbound FLP configurations of the base application in an adaptation project.  
 ```sh
 sap-ux change inbound [path]
