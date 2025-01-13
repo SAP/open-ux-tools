@@ -165,8 +165,11 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     }
 
     /**
+     * React lifecycle method that is invoked immediately after updating occurs.
+     * This method is used to determine if the section sizes need to be recalculated
+     * when the external prop sizes have changed.
      *
-     * @param prevProps
+     * @param prevProps The previous props of the component before the update.
      */
     componentDidUpdate(prevProps: UISectionsProps): void {
         this.ignoreAnimation = false;
