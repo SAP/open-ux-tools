@@ -53,7 +53,7 @@ The `@sap-ux/create` modules provides commands for the following cases:
 Calling `sap-ux add` allows adding a feature to a project.
 
 
-### [annotations](#add-annotations)
+### [annotations](#add-annotations)<a id="add-annotations"></a>
 Calling `sap-ux add annotations` allows adding an annotation to the OData Source of the base application in an adaptation project.
 ```sh
 sap-ux add annotations [path]
