@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.2.12
+
+### Patch Changes
+
+-   261cf6e: Detect annotation changes in CPE.
+
 ## 0.2.11
 
 ### Patch Changes

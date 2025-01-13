@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.24.0
+
+### Minor Changes
+
+-   f48bfa0: This update introduces hover styles for the UIToggle component's thumb when in a checked state. It improves the visual feedback for users interacting with the toggle.
+
 ## 1.23.0
 
 ### Minor Changes

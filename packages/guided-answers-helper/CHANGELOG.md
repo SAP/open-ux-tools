@@ -1,5 +1,11 @@
 # @sap-ux/guided-answers-helper
 
+## 0.2.0
+
+### Minor Changes
+
+-   dac696a: Fix for incorrect error messsages connecting to destinations. Correct incorrect GA node name.
+
 ## 0.1.1
 
 ### Patch Changes

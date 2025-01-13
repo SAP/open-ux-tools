@@ -26,7 +26,14 @@ export async function getCFAbapInstanceChoices(
             AbapEnvType.ABAP_STAGING,
             AbapEnvType.ABAP_INTERNAL_STAGING
         ];
-        const serviceInstanceInfo: ServiceInstanceInfo[] = await getServicesInstances(filteredInstances);
+        // Load additional ABAP service types to extend the filtered instance list
+        const envFilteredInstances = process.env.ABAPEnvServiceTypes
+            ? process.env.ABAPEnvServiceTypes.split(',').map((item) => item.trim())
+            : [];
+        const serviceInstanceInfo: ServiceInstanceInfo[] = await getServicesInstances([
+            ...filteredInstances,
+            ...envFilteredInstances
+        ]);
         if (serviceInstanceInfo.length > 0) {
             serviceInstanceInfo.forEach((service) => {
                 choices.push({ name: service['label'], value: service });
