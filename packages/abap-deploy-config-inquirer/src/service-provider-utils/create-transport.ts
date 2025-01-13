@@ -1,9 +1,9 @@
 import { TransportRequestService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
-import { getOrCreateServiceProvider } from './abap-service-provider';
+import { AbapServiceProviderManager } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
 import type { NewUi5ObjectRequestParams } from '@sap-ux/axios-extension';
-import type { BackendTarget, SystemConfig } from '../types';
+import type { BackendTarget } from '../types';
 
 /**
  * Create a transport number from the service.
@@ -15,12 +15,11 @@ import type { BackendTarget, SystemConfig } from '../types';
  */
 export async function createTransportNumberFromService(
     createTransportParams: NewUi5ObjectRequestParams,
-    systemConfig: SystemConfig,
     backendTarget?: BackendTarget
 ): Promise<string | undefined> {
     let transportReqNumber: string | undefined;
     try {
-        const provider = await getOrCreateServiceProvider(systemConfig, backendTarget);
+        const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget);
         const adtService = await provider.getAdtService<TransportRequestService>(TransportRequestService);
         if (adtService) {
             transportReqNumber = await adtService.createTransportRequest(createTransportParams);

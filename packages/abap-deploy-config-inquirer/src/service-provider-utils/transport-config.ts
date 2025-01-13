@@ -1,6 +1,6 @@
 import { AtoService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
-import { deleteCachedServiceProvider, getOrCreateServiceProvider } from './abap-service-provider';
+import { AbapServiceProviderManager } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
 import type { TransportConfig, InitTransportConfigResult, SystemConfig, Credentials, BackendTarget } from '../types';
@@ -126,7 +126,7 @@ class DefaultTransportConfig implements TransportConfig {
     }): Promise<InitTransportConfigResult> {
         const result: InitTransportConfigResult = {};
         try {
-            const provider = await getOrCreateServiceProvider(systemConfig, backendTarget, credentials);
+            const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget, credentials);
             const atoService = await provider.getAdtService<AtoService>(AtoService);
             const atoSettings = await atoService?.getAtoInfo();
 
@@ -134,7 +134,7 @@ class DefaultTransportConfig implements TransportConfig {
                 result.error = this.handleAtoResponse(atoSettings);
             }
         } catch (err) {
-            deleteCachedServiceProvider();
+            AbapServiceProviderManager.deleteExistingServiceProvider();
             if (err.response?.status === 401) {
                 const auth: string = err.response.headers?.['www-authenticate'];
                 result.transportConfigNeedsCreds = !!auth?.toLowerCase()?.startsWith('basic');

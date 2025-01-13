@@ -1,5 +1,5 @@
 import { t } from '../../../i18n';
-
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     defaultOrShowManualTransportQuestion,
     defaultOrShowTransportCreatedQuestion,
@@ -30,6 +30,7 @@ export function getTransportRequestPrompts(
     options: AbapDeployConfigPromptOptions
 ): Question<AbapDeployConfigAnswersInternal>[] {
     let transportInputChoice: TransportChoices;
+    const isCli = getHostEnvironment() == hostEnvironment.cli;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
@@ -59,7 +60,7 @@ export function getTransportRequestPrompts(
             // Validate is not triggered in CLI mode for transportInputChoice.
             // Use this hidden question for calling ADT services.
             when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
-                if (!PromptState.isYUI) {
+                if (isCli) {
                     const result = await validateTransportChoiceInput(
                         previousAnswers.transportInputChoice,
                         previousAnswers,

@@ -60,7 +60,7 @@ export async function listPackages(
         return [];
     }
 
-    return listPackagesFromService(input, systemConfig, backendTarget);
+    return listPackagesFromService(input, backendTarget);
 }
 
 /**
@@ -181,6 +181,5 @@ export async function createTransportNumber(
     if (!systemConfig.url && !systemConfig.destination) {
         return undefined;
     }
-
-    return createTransportNumberFromService(createTransportParams, systemConfig, backendTarget);
+    return createTransportNumberFromService(createTransportParams, backendTarget);
 }

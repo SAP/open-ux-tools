@@ -14,7 +14,7 @@ import type { AbapDeployConfigQuestion, AbapDeployConfigPromptOptions } from '..
  * @param options - abap deploy config prompt options
  * @returns the abap deployment config questions
  */
-export async function getAbapDeployConfigQuestions(
+async function getAbapDeployConfigQuestions(
     options?: AbapDeployConfigPromptOptions
 ): Promise<AbapDeployConfigQuestion[]> {
     options = options ?? {};
@@ -35,3 +35,5 @@ export async function getAbapDeployConfigQuestions(
 
     return questions as AbapDeployConfigQuestion[];
 }
+
+export { getAbapDeployConfigQuestions, getPackagePrompts, getTransportRequestPrompts };

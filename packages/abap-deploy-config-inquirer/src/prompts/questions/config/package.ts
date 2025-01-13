@@ -1,4 +1,5 @@
 import { PromptState } from '../../prompt-state';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     defaultOrShowManualPackageQuestion,
     defaultOrShowSearchPackageQuestion,
@@ -26,7 +27,7 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
     let packageInputChoiceValid: boolean | string;
     let morePackageResultsMsg = '';
-    const isCli = !PromptState.isYUI;
+    const isCli = getHostEnvironment() == hostEnvironment.cli;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {

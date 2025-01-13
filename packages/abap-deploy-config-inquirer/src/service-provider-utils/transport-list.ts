@@ -1,6 +1,6 @@
 import { TransportChecksService } from '@sap-ux/axios-extension';
 import { t } from '../i18n';
-import { getOrCreateServiceProvider } from './abap-service-provider';
+import { AbapServiceProviderManager } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
 import { PromptState } from '../prompts/prompt-state';
 import type { BackendTarget, SystemConfig, TransportListItem } from '../types';
@@ -23,7 +23,7 @@ export async function getTransportListFromService(
 ): Promise<TransportListItem[] | undefined> {
     let transportListItems: TransportListItem[] | undefined;
     try {
-        const provider = await getOrCreateServiceProvider(systemConfig, backendTarget);
+        const provider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget);
         const adtService = await provider.getAdtService<TransportChecksService>(TransportChecksService);
         const transportReqList = await adtService?.getTransportRequests(packageName, appName);
 
