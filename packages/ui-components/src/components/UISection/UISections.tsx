@@ -164,8 +164,20 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         }
     }
 
-    componentDidUpdate(): void {
+    componentDidUpdate(prevProps: UISectionsProps): void {
         this.ignoreAnimation = false;
+        const sizes = this.props.sizes ?? [];
+        const prevSizes = prevProps.sizes ?? [];
+        if (
+            sizes !== prevSizes &&
+            (sizes.length !== prevSizes.length || sizes.some((size, index) => size !== prevSizes[index]))
+        ) {
+            console.log('size changed!!!');
+            // Calculate state
+            this.setState({
+                sizes: this.updateStateSizes(this.rootSize, sizes)
+            });
+        }
     }
 
     /**
