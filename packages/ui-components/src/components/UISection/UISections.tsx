@@ -172,7 +172,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             sizes !== prevSizes &&
             (sizes.length !== prevSizes.length || sizes.some((size, index) => size !== prevSizes[index]))
         ) {
-            console.log('size changed!!!');
             // Calculate state
             this.setState({
                 sizes: this.updateStateSizes(this.rootSize, sizes)
