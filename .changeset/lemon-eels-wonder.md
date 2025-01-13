@@ -5,4 +5,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-Update quick action list on external changes
+fix: update quick action list on external changes

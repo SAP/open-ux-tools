@@ -31,6 +31,10 @@ describe('webSocketMiddleware', () => {
         global.WebSocket = jest.fn(() => mockWebSocket) as any;
     });
 
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
     it('should pass the action to the next middleware', () => {
         const action = { type: 'app/initialize-livereload', payload: { port: 35000 } };
         invoke(action);
