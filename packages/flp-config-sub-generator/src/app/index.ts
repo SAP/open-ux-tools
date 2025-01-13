@@ -62,11 +62,12 @@ export default class extends Generator {
         this.options = opts;
 
         FlpGenLogger.configureLogging(
-            this.options.logger,
             this.rootGeneratorName(),
             this.log,
             this.options.logWrapper,
-            this.options.logLevel
+            this.options.logLevel,
+            this.options.logger,
+            this.vscode
         );
 
         // If launched standalone, set the header, title and description

@@ -1,5 +1,13 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.2.12
+
+### Patch Changes
+
+-   030857d: fix: Hide semantic object & action FLP prompts when there are inbounds for an Adaptation Project
+-   Updated dependencies [030857d]
+    -   @sap-ux/adp-tooling@0.12.107
+
 ## 0.2.11
 
 ### Patch Changes

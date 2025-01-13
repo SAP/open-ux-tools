@@ -317,9 +317,7 @@ export default class RoutesHandler {
         const project = this.util.getProject();
         const getPath = (projectPath: string, relativePath: string): string =>
             path.join(projectPath, relativePath).split(path.sep).join(path.posix.sep);
-        const annotations = dataSources[dataSourceId].settings?.annotations
-            ? [...dataSources[dataSourceId].settings.annotations].reverse()
-            : [];
+        const annotations = [...(dataSources[dataSourceId].settings?.annotations ?? [])].reverse();
         for (const annotation of annotations) {
             const annotationSetting = dataSources[annotation];
             if (annotationSetting.type === 'ODataAnnotation') {
