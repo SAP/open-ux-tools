@@ -4,7 +4,6 @@ import { webSocketMiddleware } from '../../src/ws-middleware';
 import { fileChanged } from '../../src/slice';
 import { externalFileChange } from '@sap-ux-private/control-property-editor-common';
 
-
 const globalWebsocketOriginal = global.WebSocket;
 
 describe('webSocketMiddleware', () => {
