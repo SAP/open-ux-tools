@@ -4,6 +4,9 @@ import { webSocketMiddleware } from '../../src/ws-middleware';
 import { fileChanged } from '../../src/slice';
 import { externalFileChange } from '@sap-ux-private/control-property-editor-common';
 
+
+const globalWebsocketOriginal = global.WebSocket;
+
 describe('webSocketMiddleware', () => {
     let mockStore: MiddlewareAPI<Dispatch<AnyAction>, any>;
     let next: jest.Mock;
@@ -33,6 +36,7 @@ describe('webSocketMiddleware', () => {
 
     afterEach(() => {
         jest.restoreAllMocks();
+        global.WebSocket = globalWebsocketOriginal;
     });
 
     it('should pass the action to the next middleware', () => {
