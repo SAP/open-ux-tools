@@ -164,6 +164,10 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         }
     }
 
+    /**
+     *
+     * @param prevProps
+     */
     componentDidUpdate(prevProps: UISectionsProps): void {
         this.ignoreAnimation = false;
         const sizes = this.props.sizes ?? [];
