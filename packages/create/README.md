@@ -61,21 +61,21 @@ sap-ux add annotations [path]
 - `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
 
-### [cards-editor](#add-cards-editor)
+### [cards-editor](#add-cards-editor)<a id="add-cards-editor"></a>
 Calling `sap-ux add cards-editor` adds a cards editor configuration to a project. To prevent overwriting, existing inbounds will be checked.
 ```sh
 sap-ux add cards-editor [path]
 ```
 - `-n | --skip-install` skip npm install step
 
-### [component-usages](#add-component-usages)
+### [component-usages](#add-component-usages)<a id="add-component-usages"></a>
 Calling `sap-ux add component-usages` adds the component usages to an adaptation project.
 ```sh
 sap-ux add component-usages [path]
 ```
 
 
-### [cds-plugin-ui5](#add-cds-plugin-ui5)
+### [cds-plugin-ui5](#add-cds-plugin-ui5)<a id="add-cds-plugin-ui5"></a>
 Calling `sap-ux add cds-plugin-ui5` adds the cds-plugin-ui5 and all prerequisites to a CAP project.
 ```sh
 sap-ux add cds-plugin-ui5 [path]
@@ -83,7 +83,7 @@ sap-ux add cds-plugin-ui5 [path]
 - `-n | --skip-install` skip npm install step
 
 
-### [deploy-config](#add-deploy-config)
+### [deploy-config](#add-deploy-config)<a id="add-deploy-config"></a>
 Calling `sap-ux add deploy-config` will prompt for ABAP deployment configuration details and add/update the project files accordingly.
 ```sh
 sap-ux add deploy-config [path]
@@ -93,20 +93,20 @@ sap-ux add deploy-config [path]
 - `-d | --deploy-file` the name of the deploy config file to be written; default: ui5-deploy.yaml
 
 
-### [html](#add-html)
+### [html](#add-html)<a id="add-html"></a>
 Calling `sap-ux add html` will add html files for local preview and testing to the project. It will use the configuration from the `ui5.yaml` as default, as provided by the `fiori-tools-preview` or `preview-middleware`.
 ```sh
 sap-ux add html [path]
 ```
 - `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
-### [model](#add-model)
+### [model](#add-model)<a id="add-model"></a>
 Calling `sap-ux add model` allows to add new OData Service and SAPUI5 Model to an existing adaptation project.
 ```sh
 sap-ux add model [path]
 ```
 
-### [mockserver-config](#add-mockserver-config)
+### [mockserver-config](#add-mockserver-config)<a id="add-mockserver-config"></a>
 Calling `sap-ux add mockserver-config` adds the necessary configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver. 
 ```sh
 sap-ux add mockserver-config [path]
@@ -114,36 +114,36 @@ sap-ux add mockserver-config [path]
 - `-i | --interactive` ask for config options, otherwise use defaults'
 - `-n | --skip-install` skip npm install step
 
-### [smartlinks-config](#add-smartlinks-config)
+### [smartlinks-config](#add-smartlinks-config)<a id="add-smartlinks-config"></a>
 Calling `sap-ux add smartlinks-config` adds a smartLinks configuration to a project 
 ```sh
 sap-ux add smartlinks-config [path]
 ```
 
-### [add inbound-navigation](#add-inbound-navigation)
+### [add inbound-navigation](#add-inbound-navigation)<a id="add-inbound-navigation"></a>
 Calling `sap-ux add inbound-navigation` adds a Fiori Launchpad configuration to a project.
 ```sh
 sap-ux add inbound-navigation [path]
 ```
 
-### [variants-config](#add-variants-config)
+### [variants-config](#add-variants-config)<a id="add-variants-config"></a>
 Calling `sap-ux add variants-config` will add the necessary configuration to an existing yaml file and the script to package.json for variants creation. It will use the configuration from the yaml file passed by cli or default to `ui5.yaml`, as provided by the `fiori-tools-preview` or `preview-middleware`.
 ```sh
 sap-ux add variants-config [path]
 ```
 - `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
-## [sap-ux change](#add-sap-ux-change)
+## [sap-ux change](#add-sap-ux-change)<a id="add-sap-ux-change"></a>
 Calling `sap-ux change` allows changing a feature of a project.
 
-### [data-source](#add-data-source)
+### [data-source](#add-data-source)<a id="add-data-source"></a>
 Calling `sap-ux change data-source` allows replacing the OData Source of the base application in an adaptation project.  
 ```sh
 sap-ux change data-source [path]
 ```
 - `-c | --config` path to project configuration file in YAML format, e.g.: `-c ui5Custom.yaml`
 
-### [inbound](#add-inbound)
+### [inbound](#add-inbound)<a id="add-inbound"></a>
 Calling `sap-ux change inbound` allows replacing the Inbound FLP configurations of the base application in an adaptation project.  
 ```sh
 sap-ux change inbound [path]
@@ -152,7 +152,7 @@ sap-ux change inbound [path]
 ## [sap-ux convert](#sap-ux-convert)
 Executing `sap-ux convert` converts an app to a new feature.
 
-### [preview-config](#convert-preview-config)
+### [preview-config](#convert-preview-config)<a id="convert-preview-config"></a>
 Executing `sap-ux convert preview-config` in the root folder of an app will convert the respective app to the preview with virtual files. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.
 ```sh
 sap-ux convert preview-config [path]
@@ -162,7 +162,7 @@ sap-ux convert preview-config [path]
 ## [sap-ux remove](#sap-ux-remove)
 Calling `sap-ux remove` allows removing a feature from a project.
 
-### [mockserver-config](#remove-mockserver-config)
+### [mockserver-config](#remove-mockserver-config)<a id="remove-mockserver-config"></a>
 Calling `sap-ux remove mockserver-config` removes the configuration for mockserver module @sap-ux/ui5-middleware-fe-mockserver. 
 ```sh
 sap-ux remove mockserver-config [path]
