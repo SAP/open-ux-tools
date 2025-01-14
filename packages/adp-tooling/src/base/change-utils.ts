@@ -59,7 +59,8 @@ export function writeAnnotationChange(
                 TemplateFileName.Annotation
             );
             const { namespaces, serviceUrl } = annotation;
-            renderFile(annotationsTemplate, { namespaces, path: serviceUrl }, {}, (err, str) => {
+            const schemaNamespace = `local_${timestamp}`;
+            renderFile(annotationsTemplate, { namespaces, path: serviceUrl, schemaNamespace }, {}, (err, str) => {
                 if (err) {
                     throw new Error('Error rendering template: ' + err.message);
                 }

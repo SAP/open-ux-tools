@@ -26,7 +26,6 @@ type FileExistModel = JSONModel & {
 export default class FileExistsDialog extends BaseDialog<FileExistModel> {
     private options: FileExistsDialogOptions;
     public model: JSONModel;
-    private readonly _name: string;
     constructor(name: string, options: FileExistsDialogOptions) {
         super(name);
         this.model = new JSONModel();
@@ -40,7 +39,7 @@ export default class FileExistsDialog extends BaseDialog<FileExistModel> {
      */
     async setup(dialog: Dialog): Promise<void> {
         this.dialog = dialog;
-
+        this.setEscapeHandler();
         this.model.setProperty('/filePath', this.options.filePath);
         this.model.setProperty('/filePathFromRoot', this.options.fileName);
         this.model.setProperty('/isRunningInBAS', this.options.isRunningInBAS);
@@ -61,11 +60,6 @@ export default class FileExistsDialog extends BaseDialog<FileExistModel> {
         window.open(`vscode://file${annotationPath}`);
 
         this.handleDialogClose();
-    }
-
-    handleDialogClose() {
-        this.dialog.close();
-        this.dialog.destroy();
     }
 
     /**

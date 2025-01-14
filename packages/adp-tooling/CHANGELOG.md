@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.108
+
+### Patch Changes
+
+-   f115bfa: fix: remove unused api routes and implementation for annotation file creation
+
 ## 0.12.107
 
 ### Patch Changes
