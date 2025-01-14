@@ -322,7 +322,10 @@ export async function createApplicationAccess(
         if (!app) {
             throw new Error(`Could not find app with root ${appRoot}`);
         }
-        const options: ApplicationAccessOptions | undefined = fs ? (isEditor(fs) ? { fs } : fs) : undefined;
+        let options: ApplicationAccessOptions | undefined;
+        if (fs) {
+            options = isEditor(fs) ? { fs } : fs;
+        }
         const project = await getProject(app.projectRoot, options?.fs);
         const appId = relative(project.root, appRoot);
         return new ApplicationAccessImp(project, appId, options);

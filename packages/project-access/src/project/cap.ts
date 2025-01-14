@@ -26,7 +26,6 @@ import {
 } from '../file';
 import { loadModuleFromProject } from './module-loader';
 import { findCapProjectRoot } from './search';
-import fs from 'fs';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
