@@ -90,15 +90,15 @@ async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Pro
     // Load the srv folder and its files into mem-fs
     // This is necessary as mem-fs operates in-memory and doesn't automatically include files from disk.
     // By loading the files, we ensure they are available within mem-fs.
-    if (fs.existsSync(srvFolderPath)) {
-        const fileSystemFiles = fs.readdirSync(srvFolderPath);
-        fileSystemFiles.forEach((file) => {
+    if (await fileExists(srvFolderPath)) {
+        const fileSystemFiles = await readDirectory(srvFolderPath);
+        for (const file of fileSystemFiles) {
             const filePath = join(srvFolderPath, file);
-            if (fs.statSync(filePath).isFile()) {
-                const fileContent = fs.readFileSync(filePath, 'utf-8');
+            if (await fileExists(filePath)) {
+                const fileContent = await readFile(filePath);
                 memFs.write(filePath, fileContent);
             }
-        });
+        }
     }
     // Dump the mem-fs state
     const memFsDump = memFs.dump();

@@ -322,19 +322,9 @@ export async function createApplicationAccess(
         if (!app) {
             throw new Error(`Could not find app with root ${appRoot}`);
         }
-        let memFs: Editor | undefined;
-        if (fs && 'fs' in fs) {
-            const { fs: fsFromOptions } = fs;
-            memFs = fsFromOptions;
-        } else if (fs) {
-            memFs = fs as Editor;
-        }
-        const project = await getProject(app.projectRoot, memFs);
+        const options: ApplicationAccessOptions | undefined = fs ? (isEditor(fs) ? { fs } : fs) : undefined;
+        const project = await getProject(app.projectRoot, options?.fs);
         const appId = relative(project.root, appRoot);
-        let options: ApplicationAccessOptions | undefined;
-        if (fs) {
-            options = isEditor(fs) ? { fs } : fs;
-        }
         return new ApplicationAccessImp(project, appId, options);
     } catch (error) {
         throw Error(`Error when creating application access for ${appRoot}: ${error}`);
