@@ -105,6 +105,10 @@
             "message": "System",
             "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
         },
+        "systemLabel": {
+            "message": "System: {{systemName}}",
+            "connectionSuccessMessage": "Connection successful"
+        },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
             "choiceReentranceTicket": "Use Reentrance Ticket",

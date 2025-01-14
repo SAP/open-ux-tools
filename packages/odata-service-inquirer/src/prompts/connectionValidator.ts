@@ -28,7 +28,7 @@ import {
 import https from 'https';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
-import { SAP_CLIENT_KEY } from '../types';
+import { SAP_CLIENT_KEY, type SelectedSystemType } from '../types';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
 
@@ -88,6 +88,7 @@ export class ConnectionValidator {
     private _connectedUserName: string | undefined;
     private _connectedSystemName: string | undefined;
     private _refreshToken: string | undefined;
+    private _selectedSystem: SelectedSystemType | undefined;
 
     /**
      * Getter for the axios configuration.
@@ -237,6 +238,24 @@ export class ConnectionValidator {
      */
     public set connectedSystemName(value: string | undefined) {
         this._connectedSystemName = value;
+    }
+
+    /**
+     * Get the selected system type.
+     *
+     * @returns the selected system type
+     */
+    public get selectedSystem(): SelectedSystemType {
+        return this._selectedSystem;
+    }
+
+    /**
+     * Set the selected system type.
+     *
+     * @param value the selected system type
+     */
+    public set selectedSystem(value: SelectedSystemType) {
+        this._selectedSystem = value;
     }
 
     /**

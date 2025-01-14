@@ -14,18 +14,11 @@ import { SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
-import { type DestinationFilters } from '../../../../types';
+import { type DestinationFilters, NewSystemChoice, CfAbapEnvServiceChoice } from '../../../../types';
 import { convertODataVersionType, PromptState } from '../../../../utils';
 import type { ConnectionValidator, ValidationResult } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { type SystemSelectionAnswerType } from './questions';
-
-// New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
-// since it will be used as a new system value in the system selection prompt.
-export const NewSystemChoice = '!@£*&937newSystem*X~qy^';
-export type NewSystemChoice = typeof NewSystemChoice;
-export const CfAbapEnvServiceChoice = 'cfAbapEnvService';
-export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
 
 /**
  * Connects to the specified backend system and validates the connection.

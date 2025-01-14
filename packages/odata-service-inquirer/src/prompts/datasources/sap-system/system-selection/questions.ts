@@ -7,7 +7,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import { type OdataServicePromptOptions, promptNames } from '../../../../types';
+import { type OdataServicePromptOptions, promptNames, type SelectedSystemType } from '../../../../types';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ValidationResult } from '../../../connectionValidator';
 import { ConnectionValidator } from '../../../connectionValidator';
@@ -18,8 +18,6 @@ import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
 import { validateServiceUrl } from '../validators';
 import {
-    type CfAbapEnvServiceChoice,
-    type NewSystemChoice,
     connectWithBackendSystem,
     connectWithDestination,
     createSystemChoices,
@@ -36,34 +34,28 @@ const systemSelectionPromptNames = {
     destinationServicePath: 'destinationServicePath'
 } as const;
 
-export type SystemSelectionAnswerType = {
-    type: 'destination' | 'backendSystem' | 'newSystemChoice' | CfAbapEnvServiceChoice;
-    system: Destination | BackendSystem | NewSystemChoice | CfAbapEnvServiceChoice;
-};
-
 interface SystemSelectionCredentialsAnswers {
     [usernamePromptName]?: string;
     [passwordPromptName]?: string;
 }
 
 export interface SystemSelectionAnswers extends SystemSelectionCredentialsAnswers {
-    [promptNames.systemSelection]?: SystemSelectionAnswerType;
+    [promptNames.systemSelection]?: SelectedSystemType;
 }
 
 /**
  * Validates the system selection, connecting to the selected system and validating the connection.
  *
- * @param systemSelection the selected system to validate
  * @param connectionValidator the active connection validator to use for the connection attempt
  * @param requiredOdataVersion the required OData version for the selected system, only the specified version will be used to request a service catalog
  * @returns the validation result of the selected system connection attempt
  */
 async function validateSystemSelection(
-    systemSelection: SystemSelectionAnswerType,
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
     PromptState.reset();
+    const systemSelection = connectionValidator.selectedSystem;
     if (systemSelection.type === 'newSystemChoice' || systemSelection.type === 'cfAbapEnvService') {
         // Reset the connection state
         connectionValidator.resetConnectionState(true);
@@ -162,11 +154,15 @@ export async function getSystemConnectionQuestions(
         promptOptions?.systemSelection?.defaultChoice
     );
 
-    const shouldOnlyShowDefaultChoice =
-        promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice;
+    const shouldOnlyShowDefaultChoice = !!(
+        promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice
+    );
 
-    const questions: Question[] = [
-        {
+    let systemPrompt: ListQuestion<SystemSelectionAnswers> | InputQuestion<SystemSelectionAnswers>;
+    if (shouldOnlyShowDefaultChoice) {
+        systemPrompt = getSystemPromptAsLabel(systemChoices[defaultChoiceIndex], connectionValidator);
+    } else {
+        systemPrompt = {
             type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
             name: promptNames.systemSelection,
             message: t('prompts.systemSelection.message'),
@@ -178,21 +174,20 @@ export async function getSystemConnectionQuestions(
             choices: shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices,
             default: shouldOnlyShowDefaultChoice ? 0 : defaultChoiceIndex,
             validate: async (
-                selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
+                selectedSystem: SelectedSystemType | ListChoiceOptions<SelectedSystemType>
             ): Promise<ValidationResult> => {
                 if (!selectedSystem) {
                     return false;
                 }
-                let selectedSystemAnswer = selectedSystem as SystemSelectionAnswerType;
+                let selectedSystemAnswer = selectedSystem as SelectedSystemType;
                 // Autocomplete passes the entire choice object as the answer, so we need to extract the value
                 if (promptOptions?.systemSelection?.useAutoComplete && (selectedSystem as ListChoiceOptions).value) {
                     selectedSystemAnswer = (selectedSystem as ListChoiceOptions).value;
                 }
-                return (
-                    validateSystemSelection(selectedSystemAnswer, connectionValidator, requiredOdataVersion) ?? false
-                );
+                connectionValidator.selectedSystem = selectedSystemAnswer;
+                return validateSystemSelection(connectionValidator, requiredOdataVersion) ?? false;
             },
-            additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
+            additionalMessages: async (selectedSystem: SelectedSystemType) => {
                 // Backend systems credentials may need to be updated
                 if (
                     selectedSystem.type === 'backendSystem' &&
@@ -205,8 +200,10 @@ export async function getSystemConnectionQuestions(
                     };
                 }
             }
-        } as ListQuestion<SystemSelectionAnswers>
-    ];
+        } as ListQuestion<SystemSelectionAnswers>;
+    }
+
+    const questions: Question[] = [systemPrompt];
 
     if (isAppStudio()) {
         // Additional service path prompt for partial URL destinations
@@ -263,11 +260,7 @@ export async function getSystemConnectionQuestions(
                 if (!selectedSystem) {
                     return false;
                 }
-                const connectValResult = await validateSystemSelection(
-                    selectedSystem,
-                    connectionValidator,
-                    requiredOdataVersion
-                );
+                const connectValResult = await validateSystemSelection(connectionValidator, requiredOdataVersion);
                 // An issue occurred with the selected system, there is no need to continue on the CLI, log and exit
                 // Note that for connection authentication errors, the result will be true, the user will be prompted to update their credentials in the next prompt
                 if (connectValResult !== true) {
@@ -282,4 +275,52 @@ export async function getSystemConnectionQuestions(
     questions.push(...getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace));
 
     return questions;
+}
+
+/**
+ * Returns a system prompt as a label when only one option should be displayed.
+ *
+ * @param systemChoice the selected system choice
+ * @param connectionValidator the active connection validator to use for the connection attempt
+ * @param promptOptions prompt options that may be used to customize the questions
+ * @returns the system prompt as a label
+ */
+function getSystemPromptAsLabel(
+    systemChoice: SelectedSystemType | ListChoiceOptions<SelectedSystemType>,
+    connectionValidator: ConnectionValidator,
+    promptOptions?: OdataServicePromptOptions
+): InputQuestion<SystemSelectionAnswers> {
+    const selectedSystem = systemChoice as SelectedSystemType;
+    let systemName: string;
+    if (selectedSystem.type === 'destination') {
+        systemName = (selectedSystem.system as Destination).Name;
+    } else {
+        systemName = (selectedSystem.system as BackendSystem).name;
+    }
+    return {
+        type: 'input',
+        name: promptNames.systemSelection,
+        message: t('prompts.systemLabel.message', { system: systemName }),
+        guiOptions: {
+            type: 'label'
+        },
+        validate: async (): Promise<ValidationResult> => {
+            return (
+                validateSystemSelection(connectionValidator, promptOptions?.serviceSelection?.requiredOdataVersion) ??
+                false
+            );
+        },
+        additionalMessages: async () => {
+            // Show message if connection to selected system is successful and showConnectionSuccessMessage is enabled
+            if (
+                promptOptions?.systemSelection?.showConnectionSuccessMessage &&
+                (connectionValidator.validity.authenticated || connectionValidator.validity.authRequired === false)
+            ) {
+                return {
+                    message: t('prompts.systemLabel.connectionSuccessMessage'),
+                    severity: Severity.information
+                };
+            }
+        }
+    } as InputQuestion<SystemSelectionAnswers>;
 }
