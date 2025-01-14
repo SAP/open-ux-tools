@@ -843,34 +843,6 @@ ANY_TEXT=AnyText
 ",
     "state": "modified",
   },
-  "com.sap.myui5jslib121/src/com/sap/myui5jslib121/themes/sap_belize/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5jslib121/src/com/sap/myui5jslib121/themes/sap_belize_hcb/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5jslib121/src/com/sap/myui5jslib121/themes/sap_belize_hcw/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5jslib121/src/com/sap/myui5jslib121/themes/sap_belize_plus/library.source.less": Object {
-    "contents": "@import \\"../sap_belize/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
-",
-    "state": "modified",
-  },
   "com.sap.myui5jslib121/src/com/sap/myui5jslib121/themes/sap_fiori_3/library.source.less": Object {
     "contents": "@import \\"../base/library.source.less\\";
 @import \\"/resources/sap/ui/core/themes/sap_fiori_3/base.less\\";
@@ -1388,34 +1360,6 @@ ANY_TEXT=AnyText
 @import \\"/resources/sap/ui/core/themes/base/global.less\\";
 
 @import \\"Example.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5jsliblatest/src/com/sap/myui5jsliblatest/themes/sap_belize/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5jsliblatest/src/com/sap/myui5jsliblatest/themes/sap_belize_hcb/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5jsliblatest/src/com/sap/myui5jsliblatest/themes/sap_belize_hcw/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5jsliblatest/src/com/sap/myui5jsliblatest/themes/sap_belize_plus/library.source.less": Object {
-    "contents": "@import \\"../sap_belize/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
 ",
     "state": "modified",
   },
@@ -3212,34 +3156,6 @@ ANY_TEXT=AnyText
 @import \\"/resources/sap/ui/core/themes/base/global.less\\";
 
 @import \\"Example.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5tslib121/src/com/sap/myui5tslib121/themes/sap_belize/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5tslib121/src/com/sap/myui5tslib121/themes/sap_belize_hcb/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcb/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5tslib121/src/com/sap/myui5tslib121/themes/sap_belize_hcw/library.source.less": Object {
-    "contents": "@import \\"../base/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_hcw/global.less\\";
-",
-    "state": "modified",
-  },
-  "com.sap.myui5tslib121/src/com/sap/myui5tslib121/themes/sap_belize_plus/library.source.less": Object {
-    "contents": "@import \\"../sap_belize/library.source.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_plus/base.less\\";
-@import \\"/resources/sap/ui/core/themes/sap_belize_plus/global.less\\";
 ",
     "state": "modified",
   },
