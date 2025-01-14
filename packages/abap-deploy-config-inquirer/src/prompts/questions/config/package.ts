@@ -5,6 +5,7 @@ import {
     showPackageInputChoiceQuestion
 } from '../../conditions';
 import { t } from '../../../i18n';
+import { getSystemConfig } from '../../../utils';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
 import { validatePackage, validatePackageChoiceInput, validatePackageChoiceInputForCli } from '../../validators';
@@ -16,7 +17,6 @@ import {
 } from '../../../types';
 import type { InputQuestion, ListChoiceOptions, ListQuestion, Question } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import { getSystemConfig } from '../../../utils';
 
 /**
  * Returns the package prompts.

@@ -43,6 +43,12 @@ export class AbapServiceProviderManager {
         return this.abapServiceProvider;
     }
 
+    /**
+     * Returns the system config from the prompt state or the backend target.
+     *
+     * @param backendTarget - backend target from prompt options
+     * @returns - system config
+     */
     private static getSystemConfig(backendTarget?: BackendTarget): SystemConfig {
         return {
             url: PromptState.abapDeployConfig.url ?? backendTarget?.abapTarget.url,

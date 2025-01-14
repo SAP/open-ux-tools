@@ -316,7 +316,6 @@ export async function validatePackageChoiceInput(
 ): Promise<boolean | string> {
     if (input === PackageInputChoices.ListExistingChoice) {
         const retrievedPackageList = await queryPackages('', systemConfig, backendTarget);
-
         if (retrievedPackageList && retrievedPackageList.length > 0) {
             return true;
         } else {
@@ -342,7 +341,6 @@ export async function validatePackageChoiceInputForCli(
 ): Promise<void> {
     if (inputChoice) {
         const result = await validatePackageChoiceInput(inputChoice, systemConfig, backendTarget);
-
         if (result !== true) {
             throw new Error(result as string);
         }
