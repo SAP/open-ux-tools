@@ -1,9 +1,11 @@
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
 import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
+import Log from 'sap/base/Log';
 
 import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
 import { getControlById } from '../../utils/core';
+import { getError } from '../../utils/error';
 
 import type { ControlTreeIndex } from '../types';
 import { getOverlay, isReuseComponent } from '../utils';
@@ -81,7 +83,7 @@ function addChildToExtensionPoint(id: string, children: OutlineNode[], changeSer
     });
 }
 /**
- * Creates conrol index for all controls in the app.
+ * Creates control index for all controls in the app.
  *
  * @param {ControlTreeIndex} controlIndex - Control index for the ui5 app.
  * @param {OutlineNode} node - control node added to the outline.
@@ -127,8 +129,8 @@ function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string
  * @param scenario type of project
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
- * @param changeService ChanegService for change stack event handling.
- * @param propertyIdMap ChanegService for change stack event handling.
+ * @param changeService ChangeService for change stack event handling.
+ * @param propertyIdMap ChangeService for change stack event handling.
  * @returns transformed outline tree nodes
  */
 export async function transformNodes(
@@ -143,70 +145,74 @@ export async function transformNodes(
     const items: OutlineNode[] = [];
     const ui5VersionInfo = await getUi5Version();
     while (stack.length) {
-        const current = stack.shift();
-        const editable = isEditable(changeService, current?.id);
-        const isAdp = scenario === 'ADAPTATION_PROJECT';
-        const isExtPoint = current?.type === 'extensionPoint';
+        try {
+            const current = stack.shift();
+            const editable = isEditable(changeService, current?.id);
+            const isAdp = scenario === 'ADAPTATION_PROJECT';
+            const isExtPoint = current?.type === 'extensionPoint';
 
-        if (current?.type === 'element') {
-            const children = getChildren(current);
-            const { text } = getAdditionalData(current.id);
-            const technicalName = current.technicalName.split('.').slice(-1)[0];
+            if (current?.type === 'element') {
+                const children = getChildren(current);
+                const { text } = getAdditionalData(current.id);
+                const technicalName = current.technicalName.split('.').slice(-1)[0];
 
-            const transformedChildren = isAdp
-                ? await handleDuplicateNodes(
-                      children,
-                      scenario,
-                      reuseComponentsIds,
-                      controlIndex,
-                      changeService,
-                      propertyIdMap
-                  )
-                : await transformNodes(
-                      children,
-                      scenario,
-                      reuseComponentsIds,
-                      controlIndex,
-                      changeService,
-                      propertyIdMap
-                  );
+                const transformedChildren = isAdp
+                    ? await handleDuplicateNodes(
+                          children,
+                          scenario,
+                          reuseComponentsIds,
+                          controlIndex,
+                          changeService,
+                          propertyIdMap
+                      )
+                    : await transformNodes(
+                          children,
+                          scenario,
+                          reuseComponentsIds,
+                          controlIndex,
+                          changeService,
+                          propertyIdMap
+                      );
 
-            const node: OutlineNode = {
-                controlId: current.id,
-                controlType: current.technicalName,
-                name: text ?? technicalName,
-                editable,
-                visible: current.visible ?? true,
-                children: transformedChildren
-            };
+                const node: OutlineNode = {
+                    controlId: current.id,
+                    controlType: current.technicalName,
+                    name: text ?? technicalName,
+                    editable,
+                    visible: current.visible ?? true,
+                    children: transformedChildren
+                };
 
-            indexNode(controlIndex, node);
-            addToPropertyIdMap(node, propertyIdMap);
-            fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
+                indexNode(controlIndex, node);
+                addToPropertyIdMap(node, propertyIdMap);
+                fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
 
-            items.push(node);
-        }
+                items.push(node);
+            }
 
-        if (isAdp && isExtPoint) {
-            const { defaultContent = [], createdControls = [] } = current.extensionPointInfo;
+            if (isAdp && isExtPoint) {
+                const { defaultContent = [], createdControls = [] } = current.extensionPointInfo;
 
-            let children: OutlineNode[] = [];
-            // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
-            [...defaultContent, ...createdControls].forEach((id: string) => {
-                addChildToExtensionPoint(id, children, changeService);
-            });
+                let children: OutlineNode[] = [];
+                // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
+                [...defaultContent, ...createdControls].forEach((id: string) => {
+                    addChildToExtensionPoint(id, children, changeService);
+                });
 
-            const node: OutlineNode = {
-                controlId: current.id,
-                controlType: current.technicalName,
-                name: current.name ?? '',
-                editable,
-                visible: current.visible ?? true,
-                children,
-                hasDefaultContent: defaultContent.length > 0
-            };
+                const node: OutlineNode = {
+                    controlId: current.id,
+                    controlType: current.technicalName,
+                    name: current.name ?? '',
+                    editable,
+                    visible: current.visible ?? true,
+                    children,
+                    hasDefaultContent: defaultContent.length > 0
+                };
 
-            items.push(node);
+                items.push(node);
+            }
+        } catch (error) {
+            Log.error('Failed to transform outline node!', getError(error));
         }
     }
     return items;
