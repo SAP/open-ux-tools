@@ -48,7 +48,7 @@ describe('Test getCapProjectType() & isCapProject()', () => {
     beforeAll(() => {
         const store = createStorage();
         memFs = create(store);
-    })
+    });
 
     test('Test if valid CAP Node.js project is recognized', async () => {
         const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix');
@@ -82,7 +82,6 @@ describe('Test getCapProjectType() & isCapProject()', () => {
         const capPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project');
         expect(await getCapProjectType(capPath, memFs)).toBe(undefined);
     });
-        
 });
 
 describe('Test isCapNodeJsProject()', () => {
