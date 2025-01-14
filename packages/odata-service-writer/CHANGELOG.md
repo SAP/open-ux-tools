@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.2
+
+### Patch Changes
+
+-   326cd59: Uses "" model for mainService during generation if model for mainService already exists.
+
 ## 0.25.1
 
 ### Patch Changes

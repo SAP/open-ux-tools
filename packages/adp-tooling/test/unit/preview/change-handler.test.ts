@@ -7,12 +7,19 @@ import type { Editor } from 'mem-fs-editor';
 import * as crypto from 'crypto';
 
 import {
+    addAnnotationFile,
     addXmlFragment,
+    isAddAnnotationChange,
     isAddXMLChange,
     moduleNameContentMap,
     tryFixChange
 } from '../../../src/preview/change-handler';
-import type { AddXMLChange, CommonChangeProperties } from '../../../src';
+import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange } from '../../../src';
+import * as manifestService from '../../../src/base/abap/manifest-service';
+import * as helper from '../../../src/base/helper';
+import * as editors from '../../../src/writer/editors';
+import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
+import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
 
 describe('change-handler', () => {
     describe('moduleNameContentMap', () => {
@@ -465,6 +472,144 @@ id=\\"btn-30303030\\""
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
+        });
+    });
+
+    describe('isAddAnnotationChange', () => {
+        it('should return true for change objects with changeType "addXML"', () => {
+            const addAnnotationChange = {
+                changeType: 'appdescr_app_addAnnotationsToOData',
+                content: {
+                    serviceUrl: 'test/service/mainService'
+                }
+            } as unknown as CommonChangeProperties;
+
+            expect(isAddAnnotationChange(addAnnotationChange)).toBe(true);
+        });
+
+        it('should return false for change objects with a different changeType', () => {
+            const addXMLChange = {
+                changeType: 'addXML',
+                content: {
+                    fragmentPath: 'fragments/share.fragment.xml'
+                }
+            } as unknown as CommonChangeProperties;
+
+            expect(isAddAnnotationChange(addXMLChange)).toBe(false);
+        });
+
+        it('should return false for change objects without a changeType', () => {
+            const unknownChange = {
+                content: {}
+            } as unknown as CommonChangeProperties;
+
+            expect(isAddAnnotationChange(unknownChange as any)).toBe(false);
+        });
+    });
+
+    describe('addAnnotationFile', () => {
+        jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
+            {
+                namespace: 'com.sap.test.serviceorder.v0001',
+                alias: 'test'
+            }
+        ]);
+        jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
+        jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
+            getDataSourceMetadata: jest.fn().mockResolvedValue(`
+                    <?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+    <edmx:DataServices>
+        <Schema Namespace="com.sap.gateway.srvd.c_salesordermanage_sd.v0001" Alias="SAP__self">
+         </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`),
+            getManifestDataSources: jest.fn().mockReturnValue({
+                mainService: {
+                    type: 'OData',
+                    uri: 'main/service/uri',
+                    settings: {
+                        annotations: ['annotation0']
+                    }
+                },
+                annotation0: {
+                    type: 'ODataAnnotation',
+                    uri: `ui5://adp/project/annotation0.xml`
+                },
+                secondaryService: {
+                    type: 'OData',
+                    uri: 'secondary/service/uri',
+                    settings: {
+                        annotations: []
+                    }
+                }
+            })
+        } as any);
+        jest.spyOn(helper, 'getVariant').mockReturnValue({
+            content: [],
+            id: 'adp/project',
+            layer: 'VENDOR',
+            namespace: 'test',
+            reference: 'adp/project'
+        });
+        jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            },
+            ignoreCertErrors: false
+        });
+        const generateChangeSpy = jest.spyOn(editors, 'generateChange').mockResolvedValue({
+            commit: jest.fn().mockResolvedValue('commited')
+        } as any);
+        const mockFs = {
+            exists: jest.fn(),
+            copy: jest.fn(),
+            read: jest.fn(),
+            write: jest.fn()
+        };
+
+        const mockLogger = {
+            info: jest.fn(),
+            error: jest.fn()
+        };
+
+        const fragmentName = 'Share';
+        const change = {
+            changeType: 'appdescr_app_addAnnotationsToOData',
+            content: {
+                annotationsInsertPosition: `END`,
+                annotations: ['annotations.annotation13434343'],
+                dataSource: {
+                    'annotations.annotation13434343': {
+                        type: 'ODataAnnotation',
+                        uri: 'test/mainService/$metadata'
+                    }
+                },
+                dataSourceId: 'mainService'
+            }
+        } as unknown as AnnotationFileChange;
+
+        beforeEach(() => {
+            mockFs.exists.mockClear();
+            mockFs.copy.mockClear();
+            mockFs.read.mockClear();
+            mockFs.write.mockClear();
+            mockLogger.info.mockClear();
+            mockLogger.error.mockClear();
+        });
+
+        it('should call the geneate change', async () => {
+            mockFs.exists.mockReturnValue(false);
+
+            await addAnnotationFile(
+                'projectRoot/webapp',
+                'projectRoot',
+                change,
+                mockFs as unknown as Editor,
+                mockLogger as unknown as Logger
+            );
+
+            expect(generateChangeSpy).toHaveBeenCalled();
         });
     });
 });
