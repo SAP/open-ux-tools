@@ -63,6 +63,7 @@ export interface SliceState {
     changes: ChangesSlice;
     dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
+    lastExternalFileChangeTimestamp?: number;
     appMode: 'navigation' | 'adaptation';
     changeStack: {
         canUndo: boolean;
@@ -365,6 +366,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     }
                     return idx < 0;
                 });
+                if (newFileChanges.length) {
+                    state.lastExternalFileChangeTimestamp = Date.now();
+                }
                 if (!state.fileChanges) {
                     state.fileChanges = newFileChanges;
                 } else {
