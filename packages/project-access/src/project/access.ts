@@ -324,7 +324,7 @@ export async function createApplicationAccess(
         }
         let memFs: Editor | undefined;
         if (fs && 'fs' in fs) {
-            const { fs: fsFromOptions } = fs as ApplicationAccessOptions;
+            const { fs: fsFromOptions } = fs;
             memFs = fsFromOptions;
         } else if (fs) {
             memFs = fs as Editor;
