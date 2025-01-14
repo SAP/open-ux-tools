@@ -13,8 +13,8 @@ import type { AbapTarget } from '@sap-ux/ui5-config';
  * Class to manage the ABAP service provider used during prompting.
  */
 export class AbapServiceProviderManager {
-    public static abapServiceProvider: AbapServiceProvider | undefined;
-    private static system?: SystemConfig;
+    private static abapServiceProvider: AbapServiceProvider | undefined;
+    private static system: SystemConfig;
 
     /**
      * Get or create an ABAP service provider.

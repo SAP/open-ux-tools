@@ -377,26 +377,36 @@ export async function validatePackage(
 /**
  * Handler for creating new transport choices.
  *
- * @param packageAnswer - package name
- * @param systemConfig - system configuration
- * @param input - transport choice input
- * @param previousAnswers - previous answers
- * @param validateInputChanged - if the input has changed
- * @param prevTransportInputChoice - previous transport input choice
- * @param backendTarget - backend target
- * @param ui5AbapRepoName - ui5 app repository name derived from AbapDeployConfigPromptOptions[ui5AbapRepo]
+ * @param params - parameters for creating new transports
+ * @param params.packageAnswer - package name
+ * @param params.systemConfig - system configuration
+ * @param params.input - transport choice input
+ * @param params.previousAnswers - previous answers
+ * @param params.validateInputChanged - if the input has changed
+ * @param params.prevTransportInputChoice - previous transport input choice
+ * @param params.backendTarget - backend target
+ * @param params.ui5AbapRepoName - ui5 app repository name derived from AbapDeployConfigPromptOptions[ui5AbapRepo]
  * @returns - boolean or error message as a string
  */
-async function handleCreateNewTransportChoice(
-    packageAnswer: string,
-    systemConfig: SystemConfig,
-    input?: TransportChoices,
-    previousAnswers?: AbapDeployConfigAnswersInternal,
-    validateInputChanged?: boolean,
-    prevTransportInputChoice?: TransportChoices,
-    backendTarget?: BackendTarget,
-    ui5AbapRepoName?: string
-): Promise<boolean | string> {
+async function handleCreateNewTransportChoice({
+    packageAnswer,
+    systemConfig,
+    input,
+    previousAnswers,
+    validateInputChanged,
+    prevTransportInputChoice,
+    backendTarget,
+    ui5AbapRepoName
+}: {
+    packageAnswer: string;
+    systemConfig: SystemConfig;
+    input?: TransportChoices;
+    previousAnswers?: AbapDeployConfigAnswersInternal;
+    validateInputChanged?: boolean;
+    prevTransportInputChoice?: TransportChoices;
+    backendTarget?: BackendTarget;
+    ui5AbapRepoName?: string;
+}): Promise<boolean | string> {
     // Question is re-evaluated triggered by other user changes,
     // no need to create a new transport number
     if (validateInputChanged) {
@@ -508,7 +518,7 @@ export async function validateTransportChoiceInput(
             );
         }
         case TransportChoices.CreateNewChoice: {
-            return handleCreateNewTransportChoice(
+            return handleCreateNewTransportChoice({
                 packageAnswer,
                 systemConfig,
                 input,
@@ -517,7 +527,7 @@ export async function validateTransportChoiceInput(
                 prevTransportInputChoice,
                 backendTarget,
                 ui5AbapRepoName
-            );
+            });
         }
         case TransportChoices.EnterManualChoice:
         default:
