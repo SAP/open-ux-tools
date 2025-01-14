@@ -205,11 +205,37 @@ export async function getSystemConnectionQuestions(
 
     const questions: Question[] = [systemPrompt];
 
+    // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
+    if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.systemSelection?.useAutoComplete) {
+        questions.push({
+            when: async (answers: SystemSelectionAnswers): Promise<boolean> => {
+                const selectedSystem = shouldOnlyShowDefaultChoice
+                    ? connectionValidator.selectedSystem
+                    : answers?.[promptNames.systemSelection];
+                if (!selectedSystem) {
+                    return false;
+                }
+                connectionValidator.selectedSystem = selectedSystem;
+                const connectValResult = await validateSystemSelection(connectionValidator, requiredOdataVersion);
+                // An issue occurred with the selected system, there is no need to continue on the CLI, log and exit
+                // Note that for connection authentication errors, the result will be true, the user will be prompted to update their credentials in the next prompt
+                if (connectValResult !== true) {
+                    LoggerHelper.logger.error(connectValResult.toString);
+                    throw new Error(connectValResult.toString());
+                }
+                return false;
+            },
+            name: `${systemSelectionPromptNames.systemSelectionCli}`
+        });
+    }
+
     if (isAppStudio()) {
         // Additional service path prompt for partial URL destinations
         const servicePathPrompt = {
             when: (answers: SystemSelectionAnswers): boolean => {
-                const selectedSystem = answers?.[promptNames.systemSelection];
+                const selectedSystem = shouldOnlyShowDefaultChoice
+                    ? connectionValidator.selectedSystem
+                    : answers?.[promptNames.systemSelection];
                 if (selectedSystem?.type === 'destination') {
                     return isPartialUrlDestination(selectedSystem.system as Destination);
                 }
@@ -252,26 +278,6 @@ export async function getSystemConnectionQuestions(
         questions.push(servicePathPrompt);
     }
 
-    // Only for CLI use as `list` prompt validation does not run on CLI unless autocomplete plugin is used
-    if (getPromptHostEnvironment() === hostEnvironment.cli && !promptOptions?.systemSelection?.useAutoComplete) {
-        questions.push({
-            when: async (answers: Answers): Promise<boolean> => {
-                const selectedSystem = answers?.[promptNames.systemSelection];
-                if (!selectedSystem) {
-                    return false;
-                }
-                const connectValResult = await validateSystemSelection(connectionValidator, requiredOdataVersion);
-                // An issue occurred with the selected system, there is no need to continue on the CLI, log and exit
-                // Note that for connection authentication errors, the result will be true, the user will be prompted to update their credentials in the next prompt
-                if (connectValResult !== true) {
-                    LoggerHelper.logger.error(connectValResult.toString);
-                    throw new Error(connectValResult.toString());
-                }
-                return false;
-            },
-            name: `${systemSelectionPromptNames.systemSelectionCli}`
-        });
-    }
     questions.push(...getCredentialsPrompts(connectionValidator, systemSelectionPromptNamespace));
 
     return questions;
@@ -299,12 +305,16 @@ function getSystemPromptAsLabel(
     }
     return {
         type: 'input',
-        name: promptNames.systemSelection,
+        name: promptNames.systemLabel,
         message: t('prompts.systemLabel.message', { system: systemName }),
         guiOptions: {
             type: 'label'
         },
         validate: async (): Promise<ValidationResult> => {
+            if (!selectedSystem) {
+                return false;
+            }
+            connectionValidator.selectedSystem = selectedSystem;
             return (
                 validateSystemSelection(connectionValidator, promptOptions?.serviceSelection?.requiredOdataVersion) ??
                 false
