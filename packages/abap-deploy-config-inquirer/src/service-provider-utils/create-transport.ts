@@ -9,7 +9,6 @@ import type { BackendTarget } from '../types';
  * Create a transport number from the service.
  *
  * @param createTransportParams - input parameters for creating a new transport request for an UI5 app object
- * @param systemConfig - system configuration
  * @param backendTarget - backend target
  * @returns transport number if created successfully, otherwise undefined
  */

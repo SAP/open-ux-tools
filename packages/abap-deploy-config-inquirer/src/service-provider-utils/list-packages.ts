@@ -3,7 +3,7 @@ import { AbapServiceProviderManager } from './abap-service-provider';
 import { ABAP_PACKAGE_SEARCH_MAX_RESULTS } from '../constants';
 import { t } from '../i18n';
 import LoggerHelper from '../logger-helper';
-import type { BackendTarget, SystemConfig } from '../types';
+import type { BackendTarget } from '../types';
 
 /**
  * List packages from the service.

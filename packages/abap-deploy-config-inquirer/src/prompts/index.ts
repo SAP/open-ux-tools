@@ -6,6 +6,7 @@ import {
     getTransportRequestPrompts,
     getConfirmPrompts
 } from './questions';
+import { PromptState } from './prompt-state';
 import type { AbapDeployConfigQuestion, AbapDeployConfigPromptOptions } from '../types';
 
 /**
@@ -27,8 +28,8 @@ async function getAbapDeployConfigQuestions(
         questions.push(...getAppConfigPrompts(options));
     }
 
-    const packagePrompts = getPackagePrompts(options);
-    const transportRequestPrompts = getTransportRequestPrompts(options);
+    const packagePrompts = getPackagePrompts(options, false, PromptState.isYUI);
+    const transportRequestPrompts = getTransportRequestPrompts(options, false, PromptState.isYUI);
     const confirmPrompts = getConfirmPrompts(options);
 
     questions.push(...packagePrompts, ...transportRequestPrompts, ...confirmPrompts);

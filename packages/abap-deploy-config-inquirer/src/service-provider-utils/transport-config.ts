@@ -3,7 +3,7 @@ import { t } from '../i18n';
 import { AbapServiceProviderManager } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
 import type { AtoSettings } from '@sap-ux/axios-extension';
-import type { TransportConfig, InitTransportConfigResult, SystemConfig, Credentials, BackendTarget } from '../types';
+import type { TransportConfig, InitTransportConfigResult, Credentials, BackendTarget } from '../types';
 
 /**
  * Dummy transport configuration.
@@ -111,17 +111,14 @@ class DefaultTransportConfig implements TransportConfig {
      *
      * @param initParams - init transport config parameters
      * @param initParams.backendTarget - backend target from prompt options
-     * @param initParams.systemConfig - system configuration
      * @param initParams.credentials - user credentials
      * @returns init transport config result
      */
     public async init({
         backendTarget,
-        systemConfig,
         credentials
     }: {
         backendTarget?: BackendTarget;
-        systemConfig: SystemConfig;
         credentials?: Credentials;
     }): Promise<InitTransportConfigResult> {
         const result: InitTransportConfigResult = {};
@@ -220,24 +217,21 @@ class DefaultTransportConfig implements TransportConfig {
  * @param transportConfigOptions - transport configuration options
  * @param transportConfigOptions.backendTarget - backend target from prompt options
  * @param transportConfigOptions.scp - scp
- * @param transportConfigOptions.systemConfig - system configuration
  * @param transportConfigOptions.credentials - user credentials
  * @returns transport configuration instance
  */
 export async function getTransportConfigInstance({
     backendTarget,
     scp,
-    credentials,
-    systemConfig
+    credentials
 }: {
     backendTarget?: BackendTarget;
     scp?: boolean;
     credentials?: Credentials;
-    systemConfig: SystemConfig;
 }): Promise<InitTransportConfigResult> {
     if (scp) {
         return { transportConfig: new DummyTransportConfig() };
     }
 
-    return new DefaultTransportConfig().init({ backendTarget, systemConfig, credentials });
+    return new DefaultTransportConfig().init({ backendTarget, credentials });
 }

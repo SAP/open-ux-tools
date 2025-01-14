@@ -3,7 +3,7 @@ import { t } from '../i18n';
 import { AbapServiceProviderManager } from './abap-service-provider';
 import LoggerHelper from '../logger-helper';
 import { PromptState } from '../prompts/prompt-state';
-import type { BackendTarget, SystemConfig, TransportListItem } from '../types';
+import type { BackendTarget, TransportListItem } from '../types';
 import type { ListChoiceOptions } from 'inquirer';
 
 /**
@@ -11,14 +11,12 @@ import type { ListChoiceOptions } from 'inquirer';
  *
  * @param packageName - package name
  * @param appName - app name
- * @param systemConfig - system configuration
  * @param backendTarget - backend target
  * @returns list of transport numbers.
  */
 export async function getTransportListFromService(
     packageName: string,
     appName: string,
-    systemConfig: SystemConfig,
     backendTarget?: BackendTarget
 ): Promise<TransportListItem[] | undefined> {
     let transportListItems: TransportListItem[] | undefined;

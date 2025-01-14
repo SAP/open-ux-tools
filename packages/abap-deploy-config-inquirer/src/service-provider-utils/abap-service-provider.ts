@@ -28,7 +28,7 @@ export class AbapServiceProviderManager {
         credentials?: Credentials
     ): Promise<AbapServiceProvider> {
         // 1. Use existing service provider
-        if (this.isExistingServiceProviderValid()) {
+        if (this.isExistingServiceProviderValid(backendTarget)) {
             return this.abapServiceProvider as AbapServiceProvider;
         }
 
@@ -39,34 +39,31 @@ export class AbapServiceProviderManager {
         }
 
         // 3. Create a new service provider
-        this.abapServiceProvider = await this.createNewServiceProvider(credentials);
+        this.abapServiceProvider = await this.createNewServiceProvider(credentials, backendTarget);
         return this.abapServiceProvider;
+    }
+
+    private static getSystemConfig(backendTarget?: BackendTarget): SystemConfig {
+        return {
+            url: PromptState.abapDeployConfig.url ?? backendTarget?.abapTarget.url,
+            client: PromptState.abapDeployConfig.client ?? backendTarget?.abapTarget.client,
+            destination: PromptState.abapDeployConfig.destination ?? backendTarget?.abapTarget.destination
+        };
     }
 
     /**
      * Ensures if there is existing service provider, that it matches with the system configuration used when it was created.
      *
+     * @param backendTarget - backend target from prompt options
      * @returns true if existing service provider is valid, otherwise false
      */
-    private static isExistingServiceProviderValid(): boolean {
+    private static isExistingServiceProviderValid(backendTarget?: BackendTarget): boolean {
+        const systemConfig = this.getSystemConfig(backendTarget);
         if (
             this.abapServiceProvider &&
-            isSameSystem(
-                {
-                    url: PromptState.abapDeployConfig.url,
-                    client: PromptState.abapDeployConfig.client,
-                    destination: PromptState.abapDeployConfig.destination
-                },
-                this.system?.url,
-                this.system?.client,
-                this.system?.destination
-            )
+            isSameSystem(systemConfig, this.system?.url, this.system?.client, this.system?.destination)
         ) {
-            this.system = {
-                url: PromptState.abapDeployConfig.url,
-                client: PromptState.abapDeployConfig.client,
-                destination: PromptState.abapDeployConfig.destination
-            };
+            this.system = systemConfig;
             return true;
         }
         return false;
@@ -77,7 +74,7 @@ export class AbapServiceProviderManager {
      * 1. If the service provider (created during system selection) is connected to the same system as the backend target.
      * 2. The prompt state system configuration is empty, meaning the system prompts have not been used, then the backend target must be deemed valid.
      *
-     * @param backendTarget
+     * @param backendTarget - backend target from prompt options
      * @returns true if service provider passed with the backend target is valid, otherwise false
      */
     private static isBackendTargetServiceProviderValid(backendTarget?: BackendTarget): boolean {
@@ -105,18 +102,18 @@ export class AbapServiceProviderManager {
      * Create a new ABAP service provider using @sap-ux/system-access.
      *
      * @param credentials - user credentials
+     * @param backendTarget - backend target from prompt options
      * @returns abap service provider
      */
-    private static async createNewServiceProvider(credentials?: Credentials): Promise<AbapServiceProvider> {
-        const abapTarget: AbapTarget = this.buildAbapTarget();
+    private static async createNewServiceProvider(
+        credentials?: Credentials,
+        backendTarget?: BackendTarget
+    ): Promise<AbapServiceProvider> {
+        const abapTarget: AbapTarget = this.buildAbapTarget(backendTarget);
         const requestOptions = this.buildRequestOptions(credentials);
         const serviceProvider = await createAbapServiceProvider(abapTarget, requestOptions, false, LoggerHelper.logger);
 
-        this.system = {
-            url: PromptState.abapDeployConfig.url,
-            client: PromptState.abapDeployConfig.client,
-            destination: PromptState.abapDeployConfig.destination
-        };
+        this.system = this.getSystemConfig(backendTarget);
 
         return serviceProvider;
     }
@@ -124,20 +121,26 @@ export class AbapServiceProviderManager {
     /**
      * Build the ABAP target using the prompt state, containing the config assigned during system selection.
      *
+     * @param backendTarget - backend target from prompt options
      * @returns abap target
      */
-    private static buildAbapTarget(): AbapTarget {
+    private static buildAbapTarget(backendTarget?: BackendTarget): AbapTarget {
         let abapTarget: AbapTarget;
         if (isAppStudio()) {
-            abapTarget = { destination: PromptState.abapDeployConfig.destination } as DestinationAbapTarget;
+            abapTarget = {
+                destination: PromptState.abapDeployConfig.destination ?? backendTarget?.abapTarget.destination
+            } as DestinationAbapTarget;
         } else {
             abapTarget = {
-                url: PromptState.abapDeployConfig.url,
-                client: PromptState.abapDeployConfig.client,
-                scp: PromptState.abapDeployConfig.scp
+                url: PromptState.abapDeployConfig.url ?? backendTarget?.abapTarget.url,
+                client: PromptState.abapDeployConfig.client ?? backendTarget?.abapTarget.client,
+                scp: PromptState.abapDeployConfig.scp ?? backendTarget?.abapTarget.scp
             } as UrlAbapTarget;
 
-            if (PromptState.abapDeployConfig.isS4HC) {
+            if (
+                PromptState.abapDeployConfig.isS4HC ??
+                backendTarget?.abapTarget.authenticationType === AuthenticationType.ReentranceTicket
+            ) {
                 abapTarget.authenticationType = AuthenticationType.ReentranceTicket;
             }
         }

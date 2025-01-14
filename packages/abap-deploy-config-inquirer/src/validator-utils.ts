@@ -154,7 +154,7 @@ export async function getTransportList(
         return undefined;
     }
 
-    const transportList = await getTransportListFromService(packageName, appName, systemConfig, backendTarget);
+    const transportList = await getTransportListFromService(packageName, appName, backendTarget);
     return transportList?.length === 1 && transportList[0].transportReqNumber === '' ? [] : transportList;
 }
 
