@@ -323,7 +323,6 @@ export async function createApplicationAccess(
             throw new Error(`Could not find app with root ${appRoot}`);
         }
         let memFs: Editor | undefined;
-        // If fs is defined and has the 'fs' property, extract fs from ApplicationAccessOptions
         if (fs && 'fs' in fs) {
             const { fs: fsFromOptions } = fs as ApplicationAccessOptions;
             memFs = fsFromOptions;
