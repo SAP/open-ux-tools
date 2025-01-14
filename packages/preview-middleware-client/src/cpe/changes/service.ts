@@ -635,9 +635,7 @@ export class ChangeService extends EventTarget {
             return undefined;
         }
 
-        const { fileName } = change.getDefinition
-            ? change.getDefinition()
-            : (change.getJson() as { fileName: string });
+        const { fileName } = change.getDefinition ? change.getDefinition() : (change.getJson() as { fileName: string });
         if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {
             let value = '';
             switch (changeType) {
