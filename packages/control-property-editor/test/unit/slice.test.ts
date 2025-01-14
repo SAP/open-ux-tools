@@ -21,11 +21,9 @@ import reducer, {
     changeDeviceType,
     setProjectScenario,
     fileChanged,
-    initialState,
     setFeatureToggles
 } from '../../src/slice';
 import { DeviceType } from '../../src/devices';
-import { features } from 'process';
 
 describe('main redux slice', () => {
     describe('property changed', () => {
@@ -534,6 +532,7 @@ describe('main redux slice', () => {
         });
 
         test('external changes (scenario 1)', () => {
+            jest.spyOn(Date, 'now').mockReturnValue(1736392383604);
             expect(
                 reducer(
                     {
@@ -548,11 +547,13 @@ describe('main redux slice', () => {
                 )
             ).toStrictEqual({
                 'changes': { 'controls': [], 'pending': [], 'pendingChangeIds': ['testFile1'], 'saved': [] },
-                'fileChanges': ['testFile2']
+                'fileChanges': ['testFile2'],
+                'lastExternalFileChangeTimestamp': 1736392383604
             });
         });
 
         test('external changes (scenario 2)', () => {
+            jest.spyOn(Date, 'now').mockReturnValue(12333434312);
             expect(
                 reducer(
                     {
@@ -568,7 +569,8 @@ describe('main redux slice', () => {
                 )
             ).toStrictEqual({
                 'changes': { 'controls': [], 'pending': [], 'pendingChangeIds': ['testFile1'], 'saved': [] },
-                'fileChanges': ['testFile3', 'testFile2']
+                'fileChanges': ['testFile3', 'testFile2'],
+                'lastExternalFileChangeTimestamp': 12333434312
             });
         });
     });
