@@ -206,7 +206,6 @@ export class AdpPreview {
         router.post(ApiRoutes.CONTROLLER, this.routesHandler.handleWriteControllerExt as RequestHandler);
 
         router.get(ApiRoutes.CODE_EXT, this.routesHandler.handleGetControllerExtensionData as RequestHandler);
-        router.post(ApiRoutes.ANNOTATION, this.routesHandler.handleCreateAnnotationFile as RequestHandler);
         router.get(
             ApiRoutes.ANNOTATION,
             this.routesHandler.handleGetAllAnnotationFilesMappedByDataSource as RequestHandler
