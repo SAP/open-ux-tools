@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.167
+
+### Patch Changes
+
+-   1358041: fix: Manifest change for enabling semantic date range has no effect on running app with UI5 latest snapshot (=>1.132)
+
 ## 0.16.166
 
 ### Patch Changes
