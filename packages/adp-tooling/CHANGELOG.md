@@ -1,5 +1,25 @@
 # @sap-ux/adp-tooling
 
+## 0.12.109
+
+### Patch Changes
+
+-   Updated dependencies [1559aee]
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/system-access@0.5.26
+
+## 0.12.108
+
+### Patch Changes
+
+-   f115bfa: fix: remove unused api routes and implementation for annotation file creation
+
+## 0.12.107
+
+### Patch Changes
+
+-   030857d: fix: Hide semantic object & action FLP prompts when there are inbounds for an Adaptation Project
+
 ## 0.12.106
 
 ### Patch Changes

@@ -1,6 +1,7 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type { AnnotationDataSourceResponse } from '../../api-handler';
 import { getDataSourceAnnotationFileMap } from '../../api-handler';
 import {
     NESTED_QUICK_ACTION_KIND,
@@ -15,6 +16,7 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 
 export const ADD_NEW_ANNOTATION_FILE = 'add-new-annotation-file';
+const ADD_NEW_ANNOTATION_FILE_TITLE = 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE';
 
 /**
  * Add New Annotation File.
@@ -31,10 +33,9 @@ export class AddNewAnnotationFile
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
+    private annotationDataSourceData: AnnotationDataSourceResponse;
     constructor(protected readonly context: QuickActionContext) {
-        super(ADD_NEW_ANNOTATION_FILE, NESTED_QUICK_ACTION_KIND, 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE', context, [
-            DIALOG_ENABLEMENT_VALIDATOR
-        ]);
+        super(ADD_NEW_ANNOTATION_FILE, NESTED_QUICK_ACTION_KIND, '', context, [DIALOG_ENABLEMENT_VALIDATOR]);
     }
 
     async initialize(): Promise<void> {
@@ -43,32 +44,42 @@ export class AddNewAnnotationFile
             this.isApplicable = false;
             return;
         }
-        const dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
-        if (!dataSourceAnnotationFileMap) {
+        this.annotationDataSourceData = await getDataSourceAnnotationFileMap();
+        const { annotationDataSourceMap } = this.annotationDataSourceData;
+        if (!Object.keys(this.annotationDataSourceData.annotationDataSourceMap).length) {
             throw new Error('No data sources found in the manifest');
         }
-        for (const key in dataSourceAnnotationFileMap) {
-            if (Object.prototype.hasOwnProperty.call(dataSourceAnnotationFileMap, key)) {
-                const source = dataSourceAnnotationFileMap[key];
+        for (const key in annotationDataSourceMap) {
+            if (Object.prototype.hasOwnProperty.call(annotationDataSourceMap, key)) {
+                const source = annotationDataSourceMap[key];
+                const { annotationExistsInWS } = source.annotationDetails;
                 this.children.push({
                     enabled: true,
-                    label: source.annotationDetails.annotationExistsInWS
+                    label: annotationExistsInWS
                         ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
-                        : this.context.resourceBundle.getText('ODATA_SOURCE', [key]),
+                        : this.context.resourceBundle.getText('ADD_ANNOTATION_FILE', [key]),
                     children: []
                 });
             }
         }
     }
+    protected get textKey() {
+        let result = ADD_NEW_ANNOTATION_FILE_TITLE;
+        const dataSourceIds = Object.keys(this.annotationDataSourceData.annotationDataSourceMap);
+        if (dataSourceIds.length === 1) {
+            const details = this.annotationDataSourceData.annotationDataSourceMap[dataSourceIds[0]];
+            if (details.annotationDetails.annotationExistsInWS) {
+                result = 'QUICK_ACTION_SHOW_ANNOTATION_FILE';
+            }
+        }
+        return result;
+    }
     async execute(path: string): Promise<FlexCommand[]> {
+        const { annotationDataSourceMap, isRunningInBAS } = this.annotationDataSourceData;
         const index = Number(path);
         if (index >= 0) {
-            // Do not cache the result of getDataSourceAnnotationFileMap api,
-            // as annotation file or datasource can be added outside using create command.
-            // So refresh would be required for the cache to be updated.
-            const dataSourceAnnotationFileMap = await getDataSourceAnnotationFileMap();
-            const dataSourceId = Object.keys(dataSourceAnnotationFileMap)[index];
-            const dataSource = dataSourceAnnotationFileMap?.[dataSourceId];
+            const dataSourceId = Object.keys(annotationDataSourceMap)[index];
+            const dataSource = annotationDataSourceMap[dataSourceId];
             if (dataSource?.annotationDetails.annotationExistsInWS) {
                 const annotationFileDetails = dataSource.annotationDetails;
                 const { annotationPath, annotationPathFromRoot } = annotationFileDetails;
@@ -80,7 +91,7 @@ export class AddNewAnnotationFile
                     {
                         fileName: annotationPathFromRoot,
                         filePath: annotationPath,
-                        isRunningInBAS: dataSource.isRunningInBAS
+                        isRunningInBAS: isRunningInBAS
                     }
                 );
             }
@@ -99,7 +110,7 @@ export class AddNewAnnotationFile
                     annotationsInsertPosition: 'END',
                     dataSource: {
                         [annotationNameSpace]: {
-                            uri: `../annotations/${annotationFileName}`,
+                            uri: `annotations/${annotationFileName}`,
                             type: 'ODataAnnotation'
                         }
                     }
@@ -134,7 +145,7 @@ export class AddNewAnnotationFile
             kind: NESTED_QUICK_ACTION_KIND,
             id: this.id,
             enabled: this.isApplicable,
-            title: this.context.resourceBundle.getText('QUICK_ACTION_ADD_NEW_ANNOTATION_FILE'),
+            title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };
     }
