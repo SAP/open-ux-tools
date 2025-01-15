@@ -1,0 +1,351 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`FLPConfigGenerator Integration Tests should generate FLP configuration successfully - Application Studio 1`] = `
+"{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "mockReference",
+  "id": "customer.app.variant1",
+  "namespace": "apps/mockReference/appVariants/customer.app.variant1/",
+  "version": "0.1.0",
+  "content": [
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "i18n"
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "@i18n"
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "mockModel"
+      },
+      "texts": {
+        "i18n": "mockI18n"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "mockModel"
+      },
+      "texts": {
+        "i18n": "mockI18n"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_setMinUI5Version",
+      "content": {
+        "minUI5Version": "1.120.25"
+      }
+    },
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_app_addNewInbound",
+      "content": {
+        "inbound": {
+          "customer.app.variant1.InboundID": {
+            "action": "testAction",
+            "semanticObject": "testSemanticObject",
+            "title": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.customer.app.variant1.InboundID.title}}",
+            "signature": {
+              "additionalParameters": "allowed",
+              "parameters": {
+                "param1": {
+                  "required": true,
+                  "defaultValue": {
+                    "value": "test1",
+                    "format": "plain"
+                  }
+                },
+                "param2": {
+                  "required": true,
+                  "defaultValue": {
+                    "value": "test2",
+                    "format": "plain"
+                  }
+                },
+                "sap-appvar-id": {
+                  "required": true,
+                  "filter": {
+                    "value": "customer.app.variant1",
+                    "format": "plain"
+                  },
+                  "launcherValue": {
+                    "value": "customer.app.variant1"
+                  }
+                }
+              }
+            },
+            "subTitle": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.customer.app.variant1.InboundID.subTitle}}"
+          }
+        }
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_app_removeAllInboundsExceptOne",
+      "content": {
+        "inboundId": "customer.app.variant1.InboundID"
+      },
+      "texts": {}
+    },
+    {
+      "changeType": "appdescr_app_addNewInbound",
+      "content": {
+        "inbound": {
+          "customer.app.variant1.InboundID": {
+            "action": "testAction",
+            "semanticObject": "testSemanticObject",
+            "title": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.customer.app.variant1.InboundID.title}}",
+            "signature": {
+              "additionalParameters": "allowed",
+              "parameters": {
+                "param1": {
+                  "required": true,
+                  "defaultValue": {
+                    "value": "test1",
+                    "format": "plain"
+                  }
+                },
+                "param2": {
+                  "required": true,
+                  "defaultValue": {
+                    "value": "test2",
+                    "format": "plain"
+                  }
+                },
+                "sap-appvar-id": {
+                  "required": true,
+                  "filter": {
+                    "value": "customer.app.variant1",
+                    "format": "plain"
+                  },
+                  "launcherValue": {
+                    "value": "customer.app.variant1"
+                  }
+                }
+              }
+            },
+            "subTitle": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.customer.app.variant1.InboundID.subTitle}}"
+          }
+        }
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_app_removeAllInboundsExceptOne",
+      "content": {
+        "inboundId": "customer.app.variant1.InboundID"
+      },
+      "texts": {}
+    }
+  ]
+}
+"
+`;
+
+exports[`FLPConfigGenerator Integration Tests should generate FLP configuration successfully - Application Studio 2`] = `
+"#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
+
+#XTIT: Application name
+customer.app.variant1_sap.app.title=App Variant Title"
+`;
+
+exports[`FLPConfigGenerator Integration Tests should generate FLP configuration successfully - VS Code 1`] = `
+"{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "mockReference",
+  "id": "customer.app.variant1",
+  "namespace": "apps/mockReference/appVariants/customer.app.variant1/",
+  "version": "0.1.0",
+  "content": [
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "i18n"
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "@i18n"
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "mockModel"
+      },
+      "texts": {
+        "i18n": "mockI18n"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+      "content": {
+        "modelId": "mockModel"
+      },
+      "texts": {
+        "i18n": "mockI18n"
+      }
+    },
+    {
+      "changeType": "appdescr_ui5_setMinUI5Version",
+      "content": {
+        "minUI5Version": "1.120.25"
+      }
+    },
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_app_addNewInbound",
+      "content": {
+        "inbound": {
+          "customer.app.variant1.InboundID": {
+            "action": "testAction",
+            "semanticObject": "testSemanticObject",
+            "title": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.customer.app.variant1.InboundID.title}}",
+            "signature": {
+              "additionalParameters": "allowed",
+              "parameters": {
+                "param1": {
+                  "required": true,
+                  "defaultValue": {
+                    "value": "test1",
+                    "format": "plain"
+                  }
+                },
+                "param2": {
+                  "required": true,
+                  "defaultValue": {
+                    "value": "test2",
+                    "format": "plain"
+                  }
+                },
+                "sap-appvar-id": {
+                  "required": true,
+                  "filter": {
+                    "value": "customer.app.variant1",
+                    "format": "plain"
+                  },
+                  "launcherValue": {
+                    "value": "customer.app.variant1"
+                  }
+                }
+              }
+            },
+            "subTitle": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.customer.app.variant1.InboundID.subTitle}}"
+          }
+        }
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_app_removeAllInboundsExceptOne",
+      "content": {
+        "inboundId": "customer.app.variant1.InboundID"
+      },
+      "texts": {}
+    },
+    {
+      "changeType": "appdescr_app_addNewInbound",
+      "content": {
+        "inbound": {
+          "customer.app.variant1.InboundID": {
+            "action": "testAction",
+            "semanticObject": "testSemanticObject",
+            "title": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.customer.app.variant1.InboundID.title}}",
+            "signature": {
+              "additionalParameters": "allowed",
+              "parameters": {
+                "param1": {
+                  "required": true,
+                  "defaultValue": {
+                    "value": "test1",
+                    "format": "plain"
+                  }
+                },
+                "param2": {
+                  "required": true,
+                  "defaultValue": {
+                    "value": "test2",
+                    "format": "plain"
+                  }
+                },
+                "sap-appvar-id": {
+                  "required": true,
+                  "filter": {
+                    "value": "customer.app.variant1",
+                    "format": "plain"
+                  },
+                  "launcherValue": {
+                    "value": "customer.app.variant1"
+                  }
+                }
+              }
+            },
+            "subTitle": "{{customer.app.variant1_sap.app.crossNavigation.inbounds.customer.app.variant1.InboundID.subTitle}}"
+          }
+        }
+      },
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    },
+    {
+      "changeType": "appdescr_app_removeAllInboundsExceptOne",
+      "content": {
+        "inboundId": "customer.app.variant1.InboundID"
+      },
+      "texts": {}
+    }
+  ]
+}
+"
+`;
+
+exports[`FLPConfigGenerator Integration Tests should generate FLP configuration successfully - VS Code 2`] = `
+"#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
+
+#XTIT: Application name
+customer.app.variant1_sap.app.title=App Variant Title"
+`;
