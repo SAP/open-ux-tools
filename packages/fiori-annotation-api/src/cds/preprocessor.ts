@@ -112,8 +112,7 @@ class ChangePreprocessor {
             ) {
                 continue;
             }
-            const newChange = JSON.parse(JSON.stringify(change));
-            newChange.index = 0;
+            const newChange = structuredClone(change);
             this.commands.set(i, {
                 type: 'replace',
                 changes: [newChange]

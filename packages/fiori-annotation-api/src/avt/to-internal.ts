@@ -251,7 +251,7 @@ export function convertExpressionToInternal(
  */
 export function convertDynamicExpressionToInternal(aliasInfo: AliasInformation, expression: Element): Element {
     // Apply value is regular internal representation (without alias)
-    const clone: Element = JSON.parse(JSON.stringify(expression));
+    const clone = structuredClone(expression);
     return replaceAliasInElement(clone, aliasInfo, true);
 }
 
