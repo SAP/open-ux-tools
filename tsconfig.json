@@ -69,6 +69,9 @@
       "path": "packages/cf-deploy-config-inquirer"
     },
     {
+      "path": "packages/cf-deploy-config-sub-generator"
+    },
+    {
       "path": "packages/cf-deploy-config-writer"
     },
     {

@@ -102,10 +102,10 @@ export default class extends Generator {
             this.manifest = this.fs.readJSON(this.manifestPath) as Partial<Manifest> as Manifest;
 
             if (!this.manifest) {
-                handleErrorMessage(this.appWizard, t('error.noManifest', { path: this.manifestPath }));
+                handleErrorMessage(this.appWizard, { errorMsg: t('error.noManifest', { path: this.manifestPath }) });
             }
             if (!this.manifest['sap.app']) {
-                handleErrorMessage(this.appWizard, t('error.sapNotDefined'));
+                handleErrorMessage(this.appWizard, { errorMsg: t('error.sapNotDefined') });
             }
         }
     }
