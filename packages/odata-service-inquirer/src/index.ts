@@ -9,25 +9,23 @@ import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
 import {
     type SystemSelectionAnswers,
-    SystemSelectionAnswerType,
     getSystemSelectionQuestions as getSystemSelectionQuestionsBase
 } from './prompts/datasources/sap-system/system-selection';
 import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection';
-import type {
-    NewSystemChoice,
-    CfAbapEnvServiceChoice
-} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
 import LoggerHelper from './prompts/logger-helper';
 import {
     DatasourceType,
     promptNames,
+    type NewSystemChoice,
+    type CfAbapEnvServiceChoice,
     type CapRuntime,
     type CapService,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
-    type SapSystemType
+    type SapSystemType,
+    type SelectedSystemType
 } from './types';
 import { getPromptHostEnvironment, PromptState } from './utils';
 
@@ -131,7 +129,7 @@ export {
     prompt,
     promptNames,
     // @deprecated - temp export to support to support open source migration
-    SystemSelectionAnswerType,
+    SelectedSystemType,
     type CapRuntime,
     type CapService,
     type InquirerAdapter,

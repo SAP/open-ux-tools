@@ -245,7 +245,7 @@ export class ConnectionValidator {
      *
      * @returns the selected system type
      */
-    public get selectedSystem(): SelectedSystemType {
+    public get selectedSystem(): SelectedSystemType | undefined {
         return this._selectedSystem;
     }
 

@@ -140,7 +140,11 @@ export enum promptNames {
     /**
      * System selection
      */
-    systemSelection = 'systemSelection'
+    systemSelection = 'systemSelection',
+    /**
+     * Prompt for preselected system
+     */
+    systemLabel = 'systemLabel'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -326,7 +330,8 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
     Record<promptNames.userSystemName, SystemNamePromptOptions> &
-    Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
+    Record<promptNames.systemSelection, SystemSelectionPromptOptions> &
+    Record<promptNames.systemLabel, CommonPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 

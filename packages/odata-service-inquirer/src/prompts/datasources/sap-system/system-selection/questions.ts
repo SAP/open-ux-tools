@@ -54,6 +54,9 @@ async function validateSystemSelection(
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
+    if (connectionValidator.selectedSystem === undefined) {
+        return false;
+    }
     PromptState.reset();
     const systemSelection = connectionValidator.selectedSystem;
     if (systemSelection.type === 'newSystemChoice' || systemSelection.type === 'cfAbapEnvService') {
@@ -176,9 +179,6 @@ export async function getSystemConnectionQuestions(
             validate: async (
                 selectedSystem: SelectedSystemType | ListChoiceOptions<SelectedSystemType>
             ): Promise<ValidationResult> => {
-                if (!selectedSystem) {
-                    return false;
-                }
                 let selectedSystemAnswer = selectedSystem as SelectedSystemType;
                 // Autocomplete passes the entire choice object as the answer, so we need to extract the value
                 if (promptOptions?.systemSelection?.useAutoComplete && (selectedSystem as ListChoiceOptions).value) {
@@ -232,10 +232,8 @@ export async function getSystemConnectionQuestions(
     if (isAppStudio()) {
         // Additional service path prompt for partial URL destinations
         const servicePathPrompt = {
-            when: (answers: SystemSelectionAnswers): boolean => {
-                const selectedSystem = shouldOnlyShowDefaultChoice
-                    ? connectionValidator.selectedSystem
-                    : answers?.[promptNames.systemSelection];
+            when: (): boolean => {
+                const selectedSystem = connectionValidator.selectedSystem;
                 if (selectedSystem?.type === 'destination') {
                     return isPartialUrlDestination(selectedSystem.system as Destination);
                 }
@@ -251,7 +249,7 @@ export async function getSystemConnectionQuestions(
                 applyDefaultWhenDirty: true
             },
             default: '',
-            validate: async (servicePath: string, answers: SystemSelectionAnswers) => {
+            validate: async (servicePath: string) => {
                 // @sap-ux/btp-utils getDestinationUrlForAppStudio() enforces a path length of > 1, even though it could be a valid path
                 // Double slashes are not allowed at the start of the path as they break URL construction
                 if (!servicePath || servicePath.trim().length < 2 || servicePath.startsWith('//')) {
@@ -259,7 +257,7 @@ export async function getSystemConnectionQuestions(
                     return t('prompts.destinationServicePath.invalidServicePathWarning');
                 }
                 // Validate format of the service path, note this relies on the assumption that the destination is correctly configured with a valid URL
-                const selectedDestination = answers?.[promptNames.systemSelection]?.system as Destination;
+                const selectedDestination = connectionValidator.selectedSystem?.system as Destination;
                 const valUrlResult = validateServiceUrl(selectedDestination.Host, servicePath);
                 if (valUrlResult !== true) {
                     connectionValidator.resetConnectionState(true);
@@ -311,9 +309,6 @@ function getSystemPromptAsLabel(
             type: 'label'
         },
         validate: async (): Promise<ValidationResult> => {
-            if (!selectedSystem) {
-                return false;
-            }
             connectionValidator.selectedSystem = selectedSystem;
             return (
                 validateSystemSelection(connectionValidator, promptOptions?.serviceSelection?.requiredOdataVersion) ??
