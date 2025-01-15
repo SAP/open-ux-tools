@@ -168,7 +168,7 @@ importers:
         version: link:../../packages/system-access
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
@@ -238,8 +238,8 @@ importers:
         specifier: 8.4.2
         version: 8.4.2(esbuild@0.19.2)(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.6.2)
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -359,8 +359,8 @@ importers:
         version: 2.0.1(inquirer@8.2.6)
     devDependencies:
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -551,8 +551,8 @@ importers:
         specifier: 4.17.21
         version: 4.17.21
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1003,8 +1003,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -1296,8 +1296,8 @@ importers:
         specifier: 5.0.9
         version: 5.0.9
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1327,7 +1327,7 @@ importers:
         version: 20.6.1
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -1339,8 +1339,8 @@ importers:
         specifier: workspace:*
         version: link:../store
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/vscode':
         specifier: 1.73.1
         version: 1.73.1
@@ -1535,8 +1535,8 @@ importers:
         specifier: 1.0.0
         version: 1.0.0
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1859,8 +1859,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -1914,8 +1914,8 @@ importers:
         specifier: workspace:*
         version: link:../nodejs-utils
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -2047,8 +2047,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202
@@ -2371,8 +2371,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -3062,8 +3062,8 @@ importers:
         specifier: 12.1.5
         version: 12.1.5(react-dom@16.14.0)(react@16.14.0)
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/react':
         specifier: 16.14.55
         version: 16.14.55
@@ -3162,8 +3162,8 @@ importers:
         specifier: workspace:*
         version: link:../cap-config-writer
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -3307,8 +3307,8 @@ importers:
         version: 2.0.1(inquirer@8.2.6)
     devDependencies:
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       '@types/inquirer-autocomplete-prompt':
         specifier: 2.0.1
         version: 2.0.1
@@ -3332,8 +3332,8 @@ importers:
         specifier: 1.14.4
         version: 1.14.4
       '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
+        specifier: 8.2.10
+        version: 8.2.10
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
@@ -9087,7 +9087,14 @@ packages:
   /@types/inquirer-autocomplete-prompt@2.0.1:
     resolution: {integrity: sha512-y/IFCMwNnxliCUxc7q1fwYUDkekP0Q+niL1YR9dvD1jKnIq8irirfsPCRXKN1jem82fNGT/91IPOufQTEi8STQ==}
     dependencies:
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.10
+    dev: true
+
+  /@types/inquirer@8.2.10:
+    resolution: {integrity: sha512-IdD5NmHyVjWM8SHWo/kPBgtzXatwPkfwzyP3fN1jF2g9BWt5WO+8hL2F4o2GKIYsU40PpqeevuUWvkS/roXJkA==}
+    dependencies:
+      '@types/through': 0.0.30
+      rxjs: 7.8.1
     dev: true
 
   /@types/inquirer@8.2.6:
@@ -9503,7 +9510,7 @@ packages:
     resolution: {integrity: sha512-kIDgoiuPnL9HGHwa2t6h4FiUgYFb411/okY0nKhRKw+IMsRxMOWzQUFhZ/CKQvwXvKoCjFTj+MZI2KXAKxVmug==}
     dependencies:
       '@types/diff': 5.0.9
-      '@types/inquirer': 8.2.6
+      '@types/inquirer': 8.2.10
       '@types/mem-fs': 1.1.2
       '@types/node': 18.11.9
       '@types/text-table': 0.2.2
@@ -22739,37 +22746,6 @@ packages:
       - bluebird
       - supports-color
 
-  /yeoman-generator@5.10.0:
-    resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
-    engines: {node: '>=12.10.0'}
-    peerDependencies:
-      yeoman-environment: ^3.2.0
-    peerDependenciesMeta:
-      yeoman-environment:
-        optional: true
-    dependencies:
-      chalk: 4.1.2
-      dargs: 7.0.0
-      debug: 4.3.7
-      execa: 5.1.1
-      github-username: 6.0.0
-      lodash: 4.17.21
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      minimist: 1.2.8
-      pacote: 15.2.0
-      read-pkg-up: 7.0.1
-      run-async: 2.4.1
-      semver: 7.5.4
-      shelljs: 0.8.5
-      sort-keys: 4.2.0
-      text-table: 0.2.0
-    transitivePeerDependencies:
-      - bluebird
-      - encoding
-      - mem-fs
-      - supports-color
-    dev: false
-
   /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3):
     resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
     engines: {node: '>=12.10.0'}
@@ -22790,7 +22766,7 @@ packages:
       pacote: 15.2.0
       read-pkg-up: 7.0.1
       run-async: 2.4.1
-      semver: 7.6.3
+      semver: 7.5.4
       shelljs: 0.8.5
       sort-keys: 4.2.0
       text-table: 0.2.0

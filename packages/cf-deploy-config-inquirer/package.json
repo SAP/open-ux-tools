@@ -39,7 +39,7 @@
     "devDependencies": {
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@types/inquirer-autocomplete-prompt": "2.0.1",
-        "@types/inquirer": "8.2.6",
+        "@types/inquirer": "8.2.10",
         "inquirer": "8.2.6"
     },
     "engines": {
