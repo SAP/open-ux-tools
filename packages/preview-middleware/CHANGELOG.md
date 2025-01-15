@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.169
+
+### Patch Changes
+
+-   2a9c788: Fixed wrong initial state for "Disable Semantic Date Range in Filter Bar" Quick Action.
+
 ## 0.16.168
 
 ### Patch Changes
