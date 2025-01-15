@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.41
+
+### Patch Changes
+
+-   b0e70e8: remove belize theme files for 1.120.0
+
 ## 0.5.40
 
 ### Patch Changes
