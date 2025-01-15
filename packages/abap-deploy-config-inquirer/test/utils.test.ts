@@ -129,12 +129,7 @@ describe('Test utils', () => {
         expect(mockGetTransportConfigInstance).toBeCalledWith({
             backendTarget: undefined,
             scp: false,
-            credentials: undefined,
-            systemConfig: {
-                url: 'https://mocktarget.url',
-                client: '100',
-                destination: undefined
-            }
+            credentials: undefined
         });
         expect(initTransportConfigResult.transportConfigNeedsCreds).toBe(true);
     });
@@ -159,12 +154,7 @@ describe('Test utils', () => {
         expect(mockGetTransportConfigInstance).toBeCalledWith({
             backendTarget: undefined,
             scp: false,
-            credentials: undefined,
-            systemConfig: {
-                url: 'https://mocktarget.url',
-                client: '100',
-                destination: undefined
-            }
+            credentials: undefined
         });
         expect(initTransportConfigResult.error).toStrictEqual(errorObj);
         expect(errorHandler).toBeCalledWith(errorObj);

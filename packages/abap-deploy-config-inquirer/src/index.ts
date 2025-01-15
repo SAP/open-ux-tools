@@ -1,7 +1,7 @@
 import { ToolsLogger, type Logger } from '@sap-ux/logger';
 import { initI18n } from './i18n';
 import { PromptState } from './prompts/prompt-state';
-import { getAbapDeployConfigQuestions } from './prompts';
+import { getAbapDeployConfigQuestions, getPackagePrompts, getTransportRequestPrompts } from './prompts';
 import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from './utils';
 import LoggerHelper from './logger-helper';
 import type { InquirerAdapter } from '@sap-ux/inquirer-common';
@@ -70,6 +70,8 @@ export {
     getPackageAnswer,
     getTransportAnswer,
     reconcileAnswers,
+    getPackagePrompts,
+    getTransportRequestPrompts,
     TargetSystemType,
     PackageInputChoices,
     TransportChoices,
