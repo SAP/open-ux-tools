@@ -4,9 +4,9 @@ import { platform } from 'os';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import {
     DeploymentGenerator,
-    ErrorMessages,
-    mtaExecutable,
-    handleErrorMessage
+    ERROR_TYPE,
+    handleErrorMessage,
+    mtaExecutable
 } from '@sap-ux/deploy-config-generator-shared';
 import { getAppRouterPrompts, appRouterPromptNames } from '@sap-ux/cf-deploy-config-inquirer';
 import { generateBaseConfig } from '@sap-ux/cf-deploy-config-writer';
@@ -27,8 +27,8 @@ import type {
  */
 export default class extends DeploymentGenerator {
     private readonly appWizard: AppWizard;
+    private readonly prompts: Prompts;
     private answers: CfAppRouterDeployConfigAnswers;
-    private prompts: Prompts;
     private abort = false;
 
     setPromptsCallback: (fn: any) => void;
@@ -62,8 +62,8 @@ export default class extends DeploymentGenerator {
     private _initFromProjectConfig(): void {
         // mta executable is required as mta-lib is used
         if (!hasbin.sync(mtaExecutable)) {
+            handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.NO_MTA });
             this.abort = true;
-            handleErrorMessage(this.appWizard, ErrorMessages.noMtaBin);
         }
     }
 
@@ -123,7 +123,7 @@ export default class extends DeploymentGenerator {
     }
 
     private _install(): void {
-        if (!this.options.skipInstall) {
+        if (!this.abort && !this.options.skipInstall) {
             const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
 
             // install dependencies in project root

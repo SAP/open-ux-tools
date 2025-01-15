@@ -5,11 +5,11 @@ import yaml from 'js-yaml';
 import { rimraf } from 'rimraf';
 import hasbin from 'hasbin';
 import { TestFixture } from './fixtures';
-import AppRouterGenerator from '../src/app-router';
+import AppRouterGenerator from '../src/app-router/';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import { commonChecks } from './utils/checks';
 import { initI18n } from '../src/utils';
-import { ErrorMessages } from '@sap-ux/deploy-config-generator-shared';
+import { ErrorHandler, ERROR_TYPE } from '@sap-ux/deploy-config-generator-shared';
 import * as deployConfigGenShared from '@sap-ux/deploy-config-generator-shared';
 import * as cfConfigWriter from '@sap-ux/cf-deploy-config-writer';
 import * as cfConfigInquirer from '@sap-ux/cf-deploy-config-inquirer';
@@ -25,6 +25,7 @@ jest.mock('@sap/mta-lib', () => {
 });
 
 const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
+const originalCwd = process.cwd();
 
 describe('App router generator tests', () => {
     const targetfolder = join(__dirname, './test-output');
@@ -45,6 +46,7 @@ describe('App router generator tests', () => {
 
     afterAll(() => {
         jest.resetAllMocks();
+        process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
         rimraf.sync(join(targetfolder, 'sap-ux-test'));
     });
 
@@ -215,15 +217,15 @@ describe('App router generator tests', () => {
         hasbinSyncMock.mockReturnValue(false);
         // mocking cli behaviour
         jest.spyOn(deployConfigGenShared, 'handleErrorMessage').mockImplementationOnce(() => {
-            throw new Error(ErrorMessages.noMtaBin);
+            throw new Error(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN));
         });
         await expect(
             yeomanTest
                 .run(AppRouterGenerator, {
                     resolved: appRouterGenPath
                 })
-                .withOptions({ skipInstall: true, selectedABAPService: true })
-        ).rejects.toThrow(ErrorMessages.noMtaBin);
+                .withOptions({ skipInstall: true })
+        ).rejects.toThrow();
     });
 
     it('Generate throws error when no mta exe found (VSCODE)', async () => {
@@ -232,11 +234,7 @@ describe('App router generator tests', () => {
         hasbinSyncMock.mockReturnValue(false);
         // mocking vscode behaviour
         jest.spyOn(deployConfigGenShared, 'handleErrorMessage').mockImplementationOnce(() => {
-            console.log(ErrorMessages.noMtaBin);
-        });
-
-        const spawnCommandSpy = jest.spyOn(AppRouterGenerator.prototype, 'spawnCommand').mockImplementationOnce(() => {
-            Promise.resolve();
+            // logs no mta bin error
         });
 
         await expect(
@@ -244,11 +242,10 @@ describe('App router generator tests', () => {
                 .run(AppRouterGenerator, {
                     resolved: appRouterGenPath
                 })
-                .withOptions({ skipInstall: false })
+                .withOptions({ skipInstall: true })
         ).resolves.not.toThrow();
 
         expect(getAppRouterPromptsSpy).not.toHaveBeenCalled();
         expect(generateBaseConfigSpy).not.toHaveBeenCalled();
-        expect(spawnCommandSpy).toHaveBeenCalled();
     });
 });

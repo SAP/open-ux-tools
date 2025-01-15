@@ -4,7 +4,8 @@ export {
     bail,
     handleErrorMessage,
     showOverwriteQuestion,
-    ErrorMessages,
+    ErrorHandler,
+    ERROR_TYPE,
     ConnectedSystem,
     mtaExecutable
 } from './utils';
