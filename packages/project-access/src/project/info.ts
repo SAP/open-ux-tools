@@ -23,16 +23,17 @@ import { gte, valid } from 'semver';
  * Returns the project structure for a given Fiori project.
  *
  * @param root - project root folder
+ * @param memFs - optional mem-fs-editor instance
  * @returns - project structure with project info like project type, apps, root folder
  */
-export async function getProject(root: string): Promise<Project> {
-    if (!(await fileExists(join(root, FileName.Package)))) {
+export async function getProject(root: string, memFs?: Editor): Promise<Project> {
+    if (!(await fileExists(join(root, FileName.Package), memFs))) {
         throw new Error(`The project root folder '${root}' is not a Fiori project. No 'package.json' found.`);
     }
     const capProjectType = await getCapProjectType(root);
     const projectType = capProjectType ?? 'EDMXBackend';
-    const appFolders = await getAppFolders(root);
-    const apps = await getApps(root, appFolders);
+    const appFolders = await getAppFolders(root, memFs);
+    const apps = await getApps(root, appFolders, memFs);
     return {
         root,
         projectType,
@@ -46,10 +47,11 @@ export async function getProject(root: string): Promise<Project> {
  * array of operating system specific relative paths to the apps.
  *
  * @param root - project root folder
+ * @param memFs - optional mem-fs-editor instance
  * @returns - array of operating specific application folders
  */
-async function getAppFolders(root: string): Promise<string[]> {
-    const apps = await findAllApps([root]);
+async function getAppFolders(root: string, memFs?: Editor): Promise<string[]> {
+    const apps = await findAllApps([root], memFs);
     return apps.length > 0 ? apps.map((app) => relative(root, app.appRoot)) : [''];
 }
 
@@ -58,12 +60,17 @@ async function getAppFolders(root: string): Promise<string[]> {
  *
  * @param root - project root folder
  * @param appFolders - array of relative application folders
+ * @param memFs - optional mem-fs-editor instance
  * @returns - map of application structures
  */
-async function getApps(root: string, appFolders: string[]): Promise<{ [index: string]: ApplicationStructure }> {
+async function getApps(
+    root: string,
+    appFolders: string[],
+    memFs?: Editor
+): Promise<{ [index: string]: ApplicationStructure }> {
     const apps: { [index: string]: ApplicationStructure } = {};
     for (const appFolder of appFolders) {
-        const applicationStructure = await getApplicationStructure(root, appFolder);
+        const applicationStructure = await getApplicationStructure(root, appFolder, memFs);
         if (applicationStructure) {
             apps[appFolder] = applicationStructure;
         }
@@ -76,21 +83,26 @@ async function getApps(root: string, appFolders: string[]): Promise<{ [index: st
  *
  * @param root - project root folder
  * @param appFolder - relative application folder
+ * @param memFs - optional mem-fs-editor instance
  * @returns - application structure with application info like manifest, changes, main service, services, annotations
  */
-async function getApplicationStructure(root: string, appFolder: string): Promise<ApplicationStructure | undefined> {
+async function getApplicationStructure(
+    root: string,
+    appFolder: string,
+    memFs?: Editor
+): Promise<ApplicationStructure | undefined> {
     const appRoot = join(root, appFolder);
-    const absoluteWebappPath = await getWebappPath(appRoot);
-    const appType = (await getAppType(appRoot)) as AppType;
+    const absoluteWebappPath = await getWebappPath(appRoot, memFs);
+    const appType = (await getAppType(appRoot, memFs)) as AppType;
     const manifest = join(absoluteWebappPath, FileName.Manifest);
-    if (!(await fileExists(manifest))) {
+    if (!(await fileExists(manifest, memFs))) {
         return undefined;
     }
-    const manifestObject = await readJSON<Manifest>(manifest);
+    const manifestObject = await readJSON<Manifest>(manifest, memFs);
     const changes = join(absoluteWebappPath, DirName.Changes);
-    const i18n = await getI18nPropertiesPaths(manifest, manifestObject);
+    const i18n = await getI18nPropertiesPaths(manifest, manifestObject, memFs);
     const mainService = getMainService(manifestObject);
-    const services = await getServicesAndAnnotations(manifest, manifestObject);
+    const services = await getServicesAndAnnotations(manifest, manifestObject, memFs);
     return {
         appRoot,
         appType,
@@ -134,14 +146,16 @@ export async function getAppProgrammingLanguage(appRoot: string, memFs?: Editor)
  * Get the type of application or Fiori artifact.
  *
  * @param appRoot - path to application root
+ * @param memFs - optional mem-fs-editor instance
  * @returns - type of application, e.g. SAP Fiori elements, SAPUI5 freestyle, SAPUI5 Extension, ... see AppType.
  */
-export async function getAppType(appRoot: string): Promise<AppType | undefined> {
+export async function getAppType(appRoot: string, memFs?: Editor): Promise<AppType | undefined> {
     let appType: AppType | undefined;
     try {
         const artifacts = await findFioriArtifacts({
             wsFolders: [appRoot],
-            artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
+            artifacts: ['adaptations', 'applications', 'extensions', 'libraries'],
+            memFs
         });
         if (
             (artifacts.applications?.length ?? 0) +
@@ -151,7 +165,7 @@ export async function getAppType(appRoot: string): Promise<AppType | undefined> 
             1
         ) {
             if (artifacts.applications?.length === 1) {
-                appType = await getApplicationType(artifacts.applications[0]);
+                appType = await getApplicationType(artifacts.applications[0], memFs);
             } else if (artifacts.adaptations?.length === 1) {
                 appType = 'Fiori Adaptation';
             } else if (artifacts.extensions?.length === 1) {
@@ -170,12 +184,18 @@ export async function getAppType(appRoot: string): Promise<AppType | undefined> 
  * Get the application type from search results.
  *
  * @param application - application from findFioriArtifacts() results
+ * @param memFs - optional mem-fs-editor instance
  * @returns - type of application: 'SAP Fiori elements' or 'SAPUI5 freestyle'
  */
-async function getApplicationType(application: AllAppResults): Promise<'SAP Fiori elements' | 'SAPUI5 freestyle'> {
+async function getApplicationType(
+    application: AllAppResults,
+    memFs?: Editor
+): Promise<'SAP Fiori elements' | 'SAPUI5 freestyle'> {
     let appType: 'SAP Fiori elements' | 'SAPUI5 freestyle';
     const rootPackageJsonPath = join(application.projectRoot, FileName.Package);
-    const packageJson = (await fileExists(rootPackageJsonPath)) ? await readJSON<Package>(rootPackageJsonPath) : null;
+    const packageJson = (await fileExists(rootPackageJsonPath, memFs))
+        ? await readJSON<Package>(rootPackageJsonPath, memFs)
+        : null;
 
     if (application.projectRoot === application.appRoot) {
         appType = packageJson?.sapux ? 'SAP Fiori elements' : 'SAPUI5 freestyle';

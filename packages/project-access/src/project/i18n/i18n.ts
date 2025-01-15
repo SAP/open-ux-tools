@@ -1,16 +1,22 @@
 import { dirname, join } from 'path';
 import type { I18nPropertiesPaths, Manifest } from '../../types';
 import { readJSON } from '../../file';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * Return absolute paths to i18n.properties files from manifest.
  *
  * @param manifestPath - path to manifest.json; used to parse manifest.json if not provided as second argument and to resolve absolute paths
  * @param manifest - optionally, parsed content of manifest.json, pass to avoid reading it again.
+ * @param memFs - optional mem-fs-editor instance
  * @returns - absolute paths to i18n.properties
  */
-export async function getI18nPropertiesPaths(manifestPath: string, manifest?: Manifest): Promise<I18nPropertiesPaths> {
-    const parsedManifest = manifest ?? (await readJSON<Manifest>(manifestPath));
+export async function getI18nPropertiesPaths(
+    manifestPath: string,
+    manifest?: Manifest,
+    memFs?: Editor
+): Promise<I18nPropertiesPaths> {
+    const parsedManifest = manifest ?? (await readJSON<Manifest>(manifestPath, memFs));
     const manifestFolder = dirname(manifestPath);
     const relativeI18nPropertiesPaths = getRelativeI18nPropertiesPaths(parsedManifest);
     const i18nPropertiesPaths: I18nPropertiesPaths = {

@@ -43,9 +43,22 @@ const jestMockEnv = {
 };
 
 describe('Test getCapProjectType() & isCapProject()', () => {
+    let memFs: Editor;
+
+    beforeAll(() => {
+        const store = createStorage();
+        memFs = create(store);
+    });
+
     test('Test if valid CAP Node.js project is recognized', async () => {
         const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix');
         expect(await getCapProjectType(capPath)).toBe('CAPNodejs');
+        expect(await isCapProject(capPath)).toBe(true);
+    });
+
+    test('Test if valid CAP Node.js project is recognized using mem-fs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'find-all-apps', 'CAP', 'CAPnode_mix');
+        expect(await getCapProjectType(capPath, memFs)).toBe('CAPNodejs');
         expect(await isCapProject(capPath)).toBe(true);
     });
 
@@ -58,6 +71,16 @@ describe('Test getCapProjectType() & isCapProject()', () => {
     test('Test if invalid CAP project is recognized', async () => {
         expect(await getCapProjectType('INVALID_PROJECT')).toBeUndefined();
         expect(await isCapProject('INVALID_PROJECT')).toBe(false);
+    });
+
+    test('Test if undefined is retuned for empty project', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project');
+        expect(await getCapProjectType(capPath)).toBe(undefined);
+    });
+
+    test('Test if undefined is retuned for empty project using mem-fs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project');
+        expect(await getCapProjectType(capPath, memFs)).toBe(undefined);
     });
 });
 
