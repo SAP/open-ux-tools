@@ -1,0 +1,28 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../cf-deploy-config-inquirer"
+    },
+    {
+      "path": "../cf-deploy-config-writer"
+    },
+    {
+      "path": "../deploy-config-generator-shared"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
+      "path": "../logger"
+    }
+  ]
+}
