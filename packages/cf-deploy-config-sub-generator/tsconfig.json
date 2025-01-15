@@ -22,6 +22,9 @@
       "path": "../i18n"
     },
     {
+      "path": "../inquirer-common"
+    },
+    {
       "path": "../logger"
     }
   ]

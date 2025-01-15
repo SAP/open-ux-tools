@@ -9,11 +9,12 @@ import {
     handleErrorMessage
 } from '@sap-ux/deploy-config-generator-shared';
 import { getAppRouterPrompts, appRouterPromptNames } from '@sap-ux/cf-deploy-config-inquirer';
-import { CFBaseConfig, generateBaseConfig, RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
+import { generateBaseConfig } from '@sap-ux/cf-deploy-config-writer';
 import { t, initI18n } from '../utils';
 import { defaultMtaVersion, generatorTitle, prompts } from './constants';
 import type { Logger } from '@sap-ux/logger';
 import type { CfApprouterGenOptions } from './types';
+import type { CFBaseConfig, RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import type {
     CfAppRouterDeployConfigPromptOptions,
     CfAppRouterDeployConfigAnswers
@@ -40,7 +41,7 @@ export default class extends DeploymentGenerator {
      */
     constructor(args: string | string[], opts: CfApprouterGenOptions) {
         super(args, opts);
-        this.appWizard = opts.appWizard || AppWizard.create(opts);
+        this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.options = opts;
 
         this.appWizard.setHeaderTitle(generatorTitle);
@@ -76,7 +77,7 @@ export default class extends DeploymentGenerator {
             [appRouterPromptNames.mtaPath]: this.destinationRoot() ?? process.cwd(),
             [appRouterPromptNames.mtaId]: true,
             [appRouterPromptNames.mtaDescription]: true,
-            [appRouterPromptNames.mtaVersion]: false, // prompt switched off as we are writing the default - 0.0.1
+            [appRouterPromptNames.mtaVersion]: false, // prompt switched off as 0.0.1 is written by default
             [appRouterPromptNames.routerType]: true,
             [appRouterPromptNames.addConnectivityService]: true,
             [appRouterPromptNames.addABAPServiceBinding]: true

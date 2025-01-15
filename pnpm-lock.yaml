@@ -1029,6 +1029,9 @@ importers:
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       hasbin:
         specifier: 1.2.3
         version: 1.2.3

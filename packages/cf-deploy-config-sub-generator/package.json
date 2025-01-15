@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cf-deploy-config-sub-generator",
-    "description": "Generator for configuring a Cloud Foundry application router",
+    "description": "Generators for configuring Cloud Foundry deployment configuration",
     "version": "0.0.0",
     "repository": {
         "type": "git",
@@ -35,6 +35,7 @@
         "@sap-ux/cf-deploy-config-inquirer": "workspace:*",
         "@sap-ux/deploy-config-generator-shared": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
         "hasbin": "1.2.3",
         "i18next": "23.5.1",
         "yeoman-generator": "5.10.0"
