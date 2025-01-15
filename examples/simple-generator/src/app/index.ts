@@ -20,7 +20,7 @@ export default class extends Generator {
     private app!: Ui5App & { app: { flpAppId: string } };
     private service!: OdataService;
     private template: {
-        type: TemplateType | FreestyleTemplateType.Basic;
+        type: TemplateType | typeof FreestyleTemplateType.Basic;
         settings?: LROPSettings | OVPSettings | {};
     };
 

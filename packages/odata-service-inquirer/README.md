@@ -1,9 +1,6 @@
 # @sap-ux/odata-service-inquirer
 
-Provides Inquirer based end-user prompting to allow selection of a service from multiple data source types. This involves acquiring a connection to backend systems and retrieving edmx metadata for services provided by the catalog, from a local file or CAP project.
-
-**Note:**
-Current implementation is limited to metadata file and Local Cap projects as datasources only.
+Provides Inquirer based end-user prompting to allow selection of a service from multiple data source types. This involves acquiring a connection to backend systems and retrieving edmx metadata for services provided by the catalog, from a local file or CAP project. This module also provides prompts that may be used to gather user selections to define the main and navigation entities and related prompts relating to application layout and annotation generation when creating a UI5 application using the `@sap-ux/fiori-freestyle-writer` and `@sap-ux/fiori-elements-writer` modules.
 
 ## Installation
 Npm
