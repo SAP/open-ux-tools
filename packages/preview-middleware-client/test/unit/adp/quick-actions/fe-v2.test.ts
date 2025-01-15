@@ -934,7 +934,12 @@ describe('FE V2 quick actions', () => {
                                 return false;
                             }),
                             getDomRef: () => ({}),
-                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
+
+                            getId: jest
+                                .fn()
+                                .mockImplementation(
+                                    () => 's2p.template.ListReport.view.ListReport::testEntity--listReportFilter'
+                                ),
                             data: (key: string) => {
                                 if (key === 'useDateRangeType') {
                                     return false;
