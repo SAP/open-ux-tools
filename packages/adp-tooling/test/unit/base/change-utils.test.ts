@@ -373,7 +373,8 @@ describe('Change Utils', () => {
                             alias: 'mockAlias'
                         }
                     ],
-                    path: '/path/to/odata'
+                    path: '/path/to/odata',
+                    schemaNamespace: `local_123456789`
                 }),
                 expect.objectContaining({}),
                 expect.any(Function)

@@ -5,7 +5,6 @@ import {
     getFragments,
     getManifestAppdescr,
     request,
-    writeAnnotationFile,
     writeFragment
 } from '../../../src/adp/api-handler';
 import { fetchMock } from 'mock/window';
@@ -122,26 +121,6 @@ describe('API Handler', () => {
             const data = await getManifestAppdescr();
 
             expect(data.layer).toBe('VENDOR');
-        });
-    });
-
-    describe('writeAnnotationFile', () => {
-        afterEach(() => {
-            fetchMock.mockRestore();
-        });
-
-        test('request is called and message is recieved from the backend', async () => {
-            fetchMock.mockResolvedValue({
-                text: jest.fn().mockReturnValue('Annotation File Created'),
-                ok: true
-            });
-
-            const data = await writeAnnotationFile<unknown>({
-                dataSource: 'mainService',
-                serviceUrl: 'main/service/url'
-            });
-
-            expect(data).toBe('Annotation File Created');
         });
     });
 

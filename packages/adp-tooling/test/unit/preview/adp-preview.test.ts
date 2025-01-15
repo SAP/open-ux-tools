@@ -709,26 +709,12 @@ describe('AdaptationProject', () => {
                 expect(e.message).toEqual(errorMsg);
             }
         });
-        test('POST /adp/api/annotation - throws error when controller name is undefined', async () => {
-            const response = await server.post('/adp/api/annotation').send({}).expect(400);
-            const message = response.text;
-            expect(message).toBe('No datasource found in manifest!');
-        });
-        test('POST /adp/api/annotation', async () => {
-            const response = await server
-                .post('/adp/api/annotation')
-                .send({ dataSource: 'exampleDataSource', serviceUrl: 'sap/opu/data' })
-                .expect(201);
-
-            const message = response.text;
-            expect(message).toBe('Annotation file created!');
-        });
         test('GET /adp/api/annotation', async () => {
             const response = await server.get('/adp/api/annotation').send().expect(200);
 
             const message = response.text;
             expect(message).toMatchInlineSnapshot(
-                `"{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/changes/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/changes/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\",\\"isRunningInBAS\\":false},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\",\\"isRunningInBAS\\":false}}"`
+                `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`
             );
         });
     });
