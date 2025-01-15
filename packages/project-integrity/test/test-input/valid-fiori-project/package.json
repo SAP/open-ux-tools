@@ -6,13 +6,8 @@
   "license": "UNLICENSED",
   "private": true,
   "dependencies": {
-    "@sap/cds": "^8",
-    "express": "^4"
   },
   "devDependencies": {
-    "@cap-js/sqlite": "^1",
-    "@cap-js/cds-types": "^0.6",
-    "@sap/ux-specification": "UI5-1.126"
   },
   "scripts": {
     "start": "cds-serve",
