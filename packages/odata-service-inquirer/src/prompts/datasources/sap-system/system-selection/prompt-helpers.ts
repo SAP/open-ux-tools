@@ -14,18 +14,15 @@ import { SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
-import { type DestinationFilters } from '../../../../types';
+import {
+    type DestinationFilters,
+    type SelectedSystemType,
+    NewSystemChoice,
+    CfAbapEnvServiceChoice
+} from '../../../../types';
 import { convertODataVersionType, PromptState } from '../../../../utils';
 import type { ConnectionValidator, ValidationResult } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
-import { type SystemSelectionAnswerType } from './questions';
-
-// New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
-// since it will be used as a new system value in the system selection prompt.
-export const NewSystemChoice = '!@£*&937newSystem*X~qy^';
-export type NewSystemChoice = typeof NewSystemChoice;
-export const CfAbapEnvServiceChoice = 'cfAbapEnvService';
-export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
 
 /**
  * Connects to the specified backend system and validates the connection.
@@ -199,9 +196,9 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
 export async function createSystemChoices(
     destinationFilters?: Partial<DestinationFilters>,
     includeCloudFoundryAbapEnvChoice = false
-): Promise<ListChoiceOptions<SystemSelectionAnswerType>[]> {
-    let systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[] = [];
-    let newSystemChoice: ListChoiceOptions<SystemSelectionAnswerType> | undefined;
+): Promise<ListChoiceOptions<SelectedSystemType>[]> {
+    let systemChoices: ListChoiceOptions<SelectedSystemType>[] = [];
+    let newSystemChoice: ListChoiceOptions<SelectedSystemType> | undefined;
 
     // If this is BAS, return destinations, otherwise return stored backend systems
     if (isAppStudio()) {
@@ -216,7 +213,7 @@ export async function createSystemChoices(
                     value: {
                         type: 'destination',
                         system: destination
-                    } as SystemSelectionAnswerType
+                    } as SelectedSystemType
                 };
             });
         if (includeCloudFoundryAbapEnvChoice) {
@@ -225,7 +222,7 @@ export async function createSystemChoices(
                 value: {
                     type: CfAbapEnvServiceChoice,
                     system: CfAbapEnvServiceChoice
-                } as SystemSelectionAnswerType
+                } as SelectedSystemType
             };
         }
     } else {
@@ -236,12 +233,12 @@ export async function createSystemChoices(
                 value: {
                     system,
                     type: 'backendSystem'
-                } as SystemSelectionAnswerType
+                } as SelectedSystemType
             };
         });
         newSystemChoice = {
             name: t('prompts.systemSelection.newSystemChoiceLabel'),
-            value: { type: 'newSystemChoice', system: NewSystemChoice } as SystemSelectionAnswerType
+            value: { type: 'newSystemChoice', system: NewSystemChoice } as SelectedSystemType
         };
     }
     systemChoices.sort(({ name: nameA }, { name: nameB }) =>
@@ -261,14 +258,14 @@ export async function createSystemChoices(
  * @returns the index of the default choice in the system choices list
  */
 export function findDefaultSystemSelectionIndex(
-    systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[],
+    systemChoices: ListChoiceOptions<SelectedSystemType>[],
     defaultChoice: string | undefined
 ): number {
     if (!defaultChoice) {
         return -1;
     }
     const defaultChoiceIndex = systemChoices.findIndex((choice) => {
-        const { type: systemType, system } = choice.value as SystemSelectionAnswerType;
+        const { type: systemType, system } = choice.value as SelectedSystemType;
         if (systemType === 'destination') {
             return (system as Destination).Name === defaultChoice;
         }

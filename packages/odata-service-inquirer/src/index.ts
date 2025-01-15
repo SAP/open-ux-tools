@@ -9,25 +9,23 @@ import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
 import {
     type SystemSelectionAnswers,
-    SystemSelectionAnswerType,
     getSystemSelectionQuestions as getSystemSelectionQuestionsBase
 } from './prompts/datasources/sap-system/system-selection';
 import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection';
-import type {
-    NewSystemChoice,
-    CfAbapEnvServiceChoice
-} from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
 import LoggerHelper from './prompts/logger-helper';
 import {
     DatasourceType,
     promptNames,
+    type NewSystemChoice,
+    type CfAbapEnvServiceChoice,
     type CapRuntime,
     type CapService,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
-    type SapSystemType
+    type SapSystemType,
+    type SelectedSystemType
 } from './types';
 import { getPromptHostEnvironment, PromptState } from './utils';
 
@@ -73,11 +71,14 @@ async function getPrompts(
  * Get the system selection questions.
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns the prompts used to provide input for system selection and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
 async function getSystemSelectionQuestions(
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: OdataServicePromptOptions,
+    isYUI = false
 ): Promise<{ prompts: Question<SystemSelectionAnswers & ServiceAnswer>[]; answers: Partial<OdataServiceAnswers> }> {
+    PromptState.isYUI = isYUI;
     return {
         prompts: await getSystemSelectionQuestionsBase(promptOptions),
         answers: PromptState.odataService
@@ -128,7 +129,7 @@ export {
     prompt,
     promptNames,
     // @deprecated - temp export to support to support open source migration
-    SystemSelectionAnswerType,
+    SelectedSystemType,
     type CapRuntime,
     type CapService,
     type InquirerAdapter,

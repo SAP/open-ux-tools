@@ -3,10 +3,9 @@ import { isFullUrlDestination, isPartialUrlDestination, type Destination } from 
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, InputQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import { promptNames } from '../../../../types';
+import type { SelectedSystemType } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
-import type { SystemSelectionAnswerType } from '../system-selection';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',
@@ -76,7 +75,7 @@ export function getCredentialsPrompts<T extends Answers>(
                     return false;
                 }
                 // We may have a previously selected system
-                const selectedSystem = answers?.[promptNames.systemSelection] as SystemSelectionAnswerType;
+                const selectedSystem = connectionValidator.selectedSystem as SelectedSystemType;
                 let selectedSystemClient;
                 let isSystem = true;
                 if (selectedSystem?.type === 'backendSystem') {
@@ -122,7 +121,7 @@ export function getCredentialsPrompts<T extends Answers>(
  */
 function updatePromptStateWithConnectedSystem(
     serviceProvider: ServiceProvider,
-    selectedSystem: SystemSelectionAnswerType,
+    selectedSystem: SelectedSystemType,
     { username, password }: { username: string; password: string }
 ): void {
     PromptState.odataService.connectedSystem = {

@@ -70,7 +70,7 @@ export function getSystemServiceQuestion(
         },
         source: (prevAnswers: unknown, input: string) => searchChoices(input, serviceChoices as ListChoiceOptions[]),
         // SystemSelectionAnswers should not be needed here in the interest of keeping these prompts decoupled but TelemetryHelper is used here and it requires the previously selected destination
-        choices: async (answers: SystemSelectionAnswers) => {
+        choices: async () => {
             if (
                 serviceChoices.length === 0 ||
                 previousSystemUrl !== connectValidator.validatedUrl ||
@@ -86,9 +86,9 @@ export function getSystemServiceQuestion(
                     previousClient = connectValidator.validatedClient;
 
                     // Telemetry event for successful service listing using a destination
-                    if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
+                    if (connectValidator.selectedSystem?.type === 'destination') {
                         sendDestinationServiceSuccessTelemetryEvent(
-                            answers?.[`${promptNames.systemSelection}`]?.system as Destination
+                            connectValidator.selectedSystem?.system as Destination
                         );
                     }
                 } else if (
@@ -107,9 +107,9 @@ export function getSystemServiceQuestion(
                         }
                     ];
                     // Telemetry event for successful service listing using a destination
-                    if (answers?.[`${promptNames.systemSelection}`]?.type === 'destination') {
+                    if (connectValidator.selectedSystem?.type === 'destination') {
                         sendDestinationServiceSuccessTelemetryEvent(
-                            answers?.[`${promptNames.systemSelection}`]?.system as Destination
+                            connectValidator.selectedSystem?.system as Destination
                         );
                     }
                 } else {

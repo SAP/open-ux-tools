@@ -140,7 +140,11 @@ export enum promptNames {
     /**
      * System selection
      */
-    systemSelection = 'systemSelection'
+    systemSelection = 'systemSelection',
+    /**
+     * Prompt for preselected system
+     */
+    systemLabel = 'systemLabel'
 }
 
 export type CapRuntime = 'Node.js' | 'Java';
@@ -268,6 +272,10 @@ export type SystemSelectionPromptOptions = {
      * this option will not be applied and the full list of choices will be presented to the user.
      */
     onlyShowDefaultChoice?: boolean;
+    /**
+     * Shows a message when the connection to the system is successful.
+     */
+    showConnectionSuccessMessage?: boolean;
 };
 
 export type MetadataPromptOptions = {
@@ -322,10 +330,23 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
     Record<promptNames.userSystemName, SystemNamePromptOptions> &
-    Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
+    Record<promptNames.systemSelection, SystemSelectionPromptOptions> &
+    Record<promptNames.systemLabel, CommonPromptOptions>;
 
 export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
 export type OdataServicePromptOptions = Partial<odataServiceInquirerPromptOptions>;
 
 export const SAP_CLIENT_KEY = 'sap-client';
+
+// New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
+// since it will be used as a new system value in the system selection prompt.
+export const NewSystemChoice = '!@£*&937newSystem*X~qy^';
+export type NewSystemChoice = typeof NewSystemChoice;
+export const CfAbapEnvServiceChoice = 'cfAbapEnvService';
+export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
+
+export type SelectedSystemType = {
+    type: 'destination' | 'backendSystem' | 'newSystemChoice' | CfAbapEnvServiceChoice;
+    system: Destination | BackendSystem | NewSystemChoice | CfAbapEnvServiceChoice;
+};
