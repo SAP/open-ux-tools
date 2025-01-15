@@ -1,9 +1,10 @@
-import { FileName } from '@sap-ux/project-access';
+import { type AppType, FileName, getAppType } from '@sap-ux/project-access';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import {
     type AbapDeployConfigAnswers,
+    type AbapDeployConfigPromptOptions,
     getPrompts as getAbapDeployConfigPrompts,
     reconcileAnswers
 } from '@sap-ux/abap-deploy-config-inquirer';
@@ -11,6 +12,8 @@ import { prompt, type PromptObject } from 'prompts';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common';
+import { getAdpConfig } from '@sap-ux/adp-tooling';
+import { join } from 'path';
 
 /**
  * Add the "add deploy config" command to a passed command.
@@ -82,7 +85,13 @@ async function addDeployConfig(
 ): Promise<void> {
     const logger = getLogger();
     try {
-        target = await getTarget(target);
+        const appType = await getAppType(basePath);
+        const isAdp = isAdpProject(appType);
+        target = 'abap';
+
+        if (!isAdp) {
+            target = await getTarget(target);
+        }
 
         if (target === 'cf') {
             logger.info('Cloud Foundry deployment is not yet implemented.');
@@ -92,14 +101,35 @@ async function addDeployConfig(
 
             await validateBasePath(basePath);
 
+            let promptOptions: AbapDeployConfigPromptOptions = {
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: { shouldValidatePackageType: isAdp }
+                },
+                targetSystem: { hide: isAdp },
+                packageManual: { additionalValidation: { shouldValidatePackageType: isAdp } },
+                appType: appType
+            };
+            if (isAdp) {
+                const config = await getAdpConfig(basePath, join(basePath, 'ui5.yaml'));
+                promptOptions = {
+                    ...promptOptions,
+                    backendTarget: {
+                        abapTarget: config.target
+                    }
+                };
+            }
+
             const { prompts: abapPrompts, answers: abapAnswers } = await getAbapDeployConfigPrompts(
-                { packageAutocomplete: { useAutocomplete: true } },
+                promptOptions,
                 logger,
                 false
             );
 
+            const filterredPrompts = abapPrompts.filter((prompt) => prompt?.guiOptions?.type !== 'label');
+
             const answers = reconcileAnswers(
-                await promptYUIQuestions<AbapDeployConfigAnswers>(abapPrompts, false),
+                await promptYUIQuestions<AbapDeployConfigAnswers>(filterredPrompts, false),
                 abapAnswers
             );
 
@@ -136,4 +166,8 @@ async function addDeployConfig(
         logger.error(`Error while executing add deploy-config '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
+}
+
+function isAdpProject(appType?: AppType): boolean {
+    return appType === 'Fiori Adaptation';
 }
