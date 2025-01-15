@@ -141,12 +141,12 @@ interface Context {
     ignoreChangedFileInitialContent: boolean;
 }
 
-async function adaptProject(projectOrRoot: string | Project): Promise<Project> {
+async function adaptProject(projectOrRoot: string | Project, fs?: Editor): Promise<Project> {
     if (typeof projectOrRoot === 'string') {
         // On Windows platform when called from the Application Wizard the root path may contain lowercase drive letter
         // This causes annotation generation error in Fiori annotation API, thus needs adaptation
         const root = adaptFilePath(projectOrRoot);
-        return await getProject(root);
+        return await getProject(root, fs);
     } else {
         return projectOrRoot;
     }
@@ -159,7 +159,7 @@ async function getContext(
     annotationServiceParams: AnnotationServiceParameters
 ): Promise<Context> {
     const { project, serviceName, appName, writeSapAnnotations = false } = annotationServiceParams;
-    const projectInstance = await adaptProject(project);
+    const projectInstance = await adaptProject(project, fs);
     const annotationService = await FioriAnnotationService.createService(
         projectInstance,
         serviceName,
