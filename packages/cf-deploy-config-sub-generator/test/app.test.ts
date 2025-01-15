@@ -29,7 +29,7 @@ const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
 describe('App router generator tests', () => {
     const targetfolder = join(__dirname, './test-output');
     const testFixture = new TestFixture();
-    const serverGenPath = join(__dirname, '../../src/server');
+    const appRouterGenPath = join(__dirname, '../src/app-router');
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -48,19 +48,15 @@ describe('App router generator tests', () => {
         rimraf.sync(join(targetfolder, 'sap-ux-test'));
     });
 
-    it('Generate server project with minimum configuration', async () => {
+    it('Generate app router project with minimum configuration', async () => {
         const projectPrefix = 'sap-ux-test';
         const appDir = join(targetfolder, projectPrefix);
         hasbinSyncMock.mockReturnValue(true);
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: serverGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .run(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -70,7 +66,6 @@ describe('App router generator tests', () => {
                     addConnectivityService: false,
                     abapServiceProvider: { label: 'ZZZ_00.0035', service: 'abap-haas' }
                 })
-                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -82,20 +77,16 @@ describe('App router generator tests', () => {
         commonChecks(testFixture, appDir);
     });
 
-    it('Generate server project with connectivity config', async () => {
+    it('Generate app router project with connectivity config', async () => {
         hasbinSyncMock.mockReturnValue(true);
         const projectPrefix = 'sap-ux-test';
         const appDir = join(targetfolder, projectPrefix);
 
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: serverGenPath
-                    },
-                    { cwd: appDir }
-                )
+                .run(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -105,7 +96,6 @@ describe('App router generator tests', () => {
                     addConnectivityService: true,
                     addABAPServiceBinding: false
                 })
-                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -123,19 +113,15 @@ describe('App router generator tests', () => {
         commonChecks(testFixture, appDir);
     });
 
-    it('Generate server project with direct abap service config', async () => {
+    it('Generate app router project with direct abap service config', async () => {
         hasbinSyncMock.mockReturnValue(true);
         const projectPrefix = 'sap-ux-test';
         const appDir = join(targetfolder, projectPrefix);
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: serverGenPath
-                    },
-                    { cwd: appDir }
-                )
+                .run(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -146,7 +132,6 @@ describe('App router generator tests', () => {
                     addABAPServiceBinding: true,
                     abapServiceProvider: { label: 'ZZZ_00.0035', service: 'abap-haas' }
                 })
-                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -164,19 +149,15 @@ describe('App router generator tests', () => {
         commonChecks(testFixture, appDir);
     });
 
-    it('Generate server project with maximum mta config', async () => {
+    it('Generate app router project with maximum mta config', async () => {
         const projectPrefix = 'sap-ux-test';
         const appDir = join(targetfolder, projectPrefix);
 
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: serverGenPath
-                    },
-                    { cwd: appDir }
-                )
+                .run(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -187,7 +168,6 @@ describe('App router generator tests', () => {
                     addABAPServiceBinding: true,
                     abapServiceProvider: { label: 'ZZZ_00.0035', service: 'abap-haas' }
                 })
-                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -204,18 +184,14 @@ describe('App router generator tests', () => {
         commonChecks(testFixture, appDir);
     });
 
-    it('Generate server project with managed app router', async () => {
+    it('Generate app router project with managed app router', async () => {
         const projectPrefix = 'sap-ux-test';
         const appDir = join(targetfolder, projectPrefix);
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: serverGenPath
-                    },
-                    { cwd: appDir }
-                )
+                .run(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -226,7 +202,6 @@ describe('App router generator tests', () => {
                     addConnectivityService: false,
                     addABAPServiceBinding: false
                 })
-                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -244,15 +219,10 @@ describe('App router generator tests', () => {
         });
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: serverGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .run(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true, selectedABAPService: true })
-                .run()
         ).rejects.toThrow(ErrorMessages.noMtaBin);
     });
 
@@ -271,15 +241,10 @@ describe('App router generator tests', () => {
 
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: serverGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .run(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: false })
-                .run()
         ).resolves.not.toThrow();
 
         expect(getAppRouterPromptsSpy).not.toHaveBeenCalled();
