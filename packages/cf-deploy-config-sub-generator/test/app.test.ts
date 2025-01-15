@@ -7,7 +7,7 @@ import hasbin from 'hasbin';
 import { TestFixture } from './fixtures';
 import AppRouterGenerator from '../src/app-router';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
-import { commonChecks } from './test-utils/checks';
+import { commonChecks } from './utils/checks';
 import { initI18n } from '../src/utils';
 import { ErrorMessages } from '@sap-ux/deploy-config-generator-shared';
 import * as deployConfigGenShared from '@sap-ux/deploy-config-generator-shared';
@@ -17,6 +17,12 @@ import * as cfConfigInquirer from '@sap-ux/cf-deploy-config-inquirer';
 jest.mock('hasbin', () => ({
     sync: jest.fn()
 }));
+
+jest.mock('@sap/mta-lib', () => {
+    return {
+        Mta: require('./utils/mock-mta').MockMta
+    };
+});
 
 const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
 
@@ -232,6 +238,10 @@ describe('App router generator tests', () => {
 
     it('Generate throws error when no mta exe found (CLI)', async () => {
         hasbinSyncMock.mockReturnValue(false);
+        // mocking cli behaviour
+        jest.spyOn(deployConfigGenShared, 'handleErrorMessage').mockImplementationOnce(() => {
+            throw new Error(ErrorMessages.noMtaBin);
+        });
         await expect(
             yeomanTest
                 .create(

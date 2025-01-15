@@ -1048,6 +1048,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap/mta-lib':
+        specifier: 1.7.4
+        version: 1.7.4
       '@types/hasbin':
         specifier: 1.2.2
         version: 1.2.2
@@ -8290,7 +8293,6 @@ packages:
       mta-local: 1.0.0
       temp-dir: 2.0.0
       which: 2.0.2
-    dev: false
 
   /@sap/ux-cds-compiler-facade@1.15.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
     resolution: {integrity: sha512-WfKLjNFZa6hfXu7+JUmvbCn110lLyddmBN4n1tpV7sH279bue8JF48ZPSqe70+Gric6YdY7jRoiVEALWRkzZ7w==}
@@ -17576,7 +17578,6 @@ packages:
 
   /mta-local@1.0.0:
     resolution: {integrity: sha512-+pL8q5wJMyyVUj0gGFwceq7utIjwt744GBmBqYMARK6I4CzPvSv/0akRNTOxcsffXsu8EVyH2NJZ4XS9WcHzZA==}
-    dev: false
 
   /mta@1.0.8:
     resolution: {integrity: sha512-Be/+H9p58qVJRou8lthyWT4VSyifBdh/SnbVuZ7NNQQDvmOk/cKLnFeaPIel1Vk2FdojNLlTsCAlO+BElXcWDg==}

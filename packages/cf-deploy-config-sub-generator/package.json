@@ -49,6 +49,7 @@
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/logger": "workspace:*",
+        "@sap/mta-lib": "1.7.4",
         "js-yaml": "4.1.0",
         "rimraf": "5.0.5",
         "typescript": "5.3.3",
