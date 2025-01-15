@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.24.1
+
+### Patch Changes
+
+-   7b5e3b9: UISections: Recalculate section sizes when external prop sizes change.
+
+## 1.24.0
+
+### Minor Changes
+
+-   f48bfa0: This update introduces hover styles for the UIToggle component's thumb when in a checked state. It improves the visual feedback for users interacting with the toggle.
+
 ## 1.23.0
 
 ### Minor Changes

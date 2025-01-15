@@ -246,6 +246,10 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     background: COLORS.pill.checked.background,
                     borderColor: COLORS.pill.checked.borderColor,
                     borderStyle: 'solid',
+                    ':hover .ms-Toggle-thumb': {
+                        background: COLORS.thumb.checked.hover.background,
+                        borderColor: COLORS.thumb.checked.hover.borderColor
+                    },
                     ':hover': {
                         background: COLORS.pill.checked.hover.background,
                         borderColor: COLORS.pill.checked.hover.borderColor

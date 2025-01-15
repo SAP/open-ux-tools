@@ -1,5 +1,23 @@
 # @sap-ux/odata-cli
 
+## 0.16.1
+
+### Patch Changes
+
+-   Updated dependencies [1559aee]
+    -   @sap-ux/axios-extension@1.18.1
+
+## 0.16.0
+
+### Minor Changes
+
+-   2e3c15e: Proper check for cloud ABAP systems
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+
 ## 0.15.16
 
 ### Patch Changes
