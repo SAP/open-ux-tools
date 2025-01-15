@@ -43,7 +43,7 @@ export async function convertToVirtualPreview(
         await renameDefaultTestFiles(fs, basePath, logger);
         await updateDefaultTestConfig(fs, basePath, logger);
     }
-    await deleteNoLongerUsedFiles(fs, basePath, logger);
+    await deleteNoLongerUsedFiles(fs, basePath, convertTests, logger);
     await updateVariantsCreationScript(fs, basePath, logger);
 
     return fs;

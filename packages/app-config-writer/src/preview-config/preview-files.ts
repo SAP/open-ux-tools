@@ -8,7 +8,7 @@ const renameMessage = (filename: string): string =>
     `Renamed '${filename}' to '${filename.slice(
         0,
         -5
-    )}_old.html'. This file is no longer needed for the preview functionality. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`;
+    )}_old.html'. This file is no longer needed for the virtual endpoints. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`;
 
 /**
  * Renames the sandbox file which is used in a given script.
@@ -74,11 +74,17 @@ export async function renameDefaultTestFiles(fs: Editor, basePath: string, logge
  *
  * @param fs - file system reference
  * @param basePath - base path to be used for the conversion
+ * @param convertTests - indicator if test suite and test runner should be included in the conversion
  * @param logger logger to report info to the user
  */
-export async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
+export async function deleteNoLongerUsedFiles(
+    fs: Editor,
+    basePath: string,
+    convertTests: boolean,
+    logger?: ToolsLogger
+): Promise<void> {
     const webappTestPath = join(await getWebappPath(basePath), 'test');
-    [
+    const files = [
         join(webappTestPath, 'locate-reuse-libs.js'),
         join(webappTestPath, 'changes_loader.js'),
         join(webappTestPath, 'changes_loader.ts'),
@@ -88,15 +94,31 @@ export async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logg
         join(webappTestPath, 'flpSandbox.ts'),
         join(webappTestPath, 'initFlpSandbox.js'),
         join(webappTestPath, 'initFlpSandbox.ts')
-    ].forEach((path: string): void => {
+    ];
+    if (convertTests) {
+        files.push(join(webappTestPath, 'testsuite.qunit.js'));
+        files.push(join(webappTestPath, 'testsuite.qunit.ts'));
+        files.push(join(webappTestPath, 'integration', 'opaTests.qunit.js'));
+        files.push(join(webappTestPath, 'integration', 'opaTests.qunit.ts'));
+        files.push(join(webappTestPath, 'unit', 'unitTests.qunit.js'));
+        files.push(join(webappTestPath, 'unit', 'unitTests.qunit.ts'));
+    }
+    await deleteFiles(fs, files, logger);
+}
+
+/**
+ * Deletes the given file.
+ *
+ * @param fs - file system reference
+ * @param files - files to be deleted
+ * @param logger logger to report info to the user
+ */
+export async function deleteFiles(fs: Editor, files: string[], logger?: ToolsLogger): Promise<void> {
+    files.forEach((path: string): void => {
         if (fs.exists(path)) {
             fs.delete(path);
             logger?.info(
-                `Deleted the '${join(
-                    'webapp',
-                    'test',
-                    basename(path)
-                )}' file. This file is no longer needed for the preview functionality.`
+                `Deleted the '${basename(path)}' file. This file is no longer needed for the virtual endpoints.`
             );
         }
     });

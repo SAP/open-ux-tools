@@ -40,7 +40,9 @@ describe('update preview middleware config', () => {
                 }
             }
         } as CustomMiddleware<PreviewConfigOptions>;
-        expect(updatePreviewMiddlewareConfig(previewMiddleware, undefined, undefined)).toMatchSnapshot();
+        expect(
+            await updatePreviewMiddlewareConfig(previewMiddleware, undefined, undefined, basePath, fs)
+        ).toMatchSnapshot();
     });
 
     test('skip yaml configurations not used in any script', async () => {
@@ -143,10 +145,14 @@ describe('update preview middleware config', () => {
             }
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+        fs.write(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'), 'dummy content');
+        fs.write(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'), 'dummy content');
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'))).toBeFalsy();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'))).toBeFalsy();
     });
 
     test('deprecated tools preview with theme', async () => {
