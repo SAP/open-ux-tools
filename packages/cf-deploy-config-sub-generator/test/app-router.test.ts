@@ -34,10 +34,9 @@ jest.mock('@sap/mta-lib', () => {
 
 const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
 const sapUxTest = 'sap-ux-test';
+const originalCwd: string = process.cwd();
 
 describe('App router generator tests', () => {
-    let cwd: string;
-    const originalCwd: string = process.cwd();
     const targetfolder = join('/output');
     const testFixture = new TestFixture();
     const appRouterGenPath = join(__dirname, '../src/app-router');
@@ -45,10 +44,6 @@ describe('App router generator tests', () => {
     beforeEach(() => {
         memfs.vol.reset();
         jest.clearAllMocks();
-        const mockChdir = jest.spyOn(process, 'chdir');
-        mockChdir.mockImplementation((dir): void => {
-            cwd = dir;
-        });
     });
 
     beforeAll(async () => {
@@ -57,11 +52,11 @@ describe('App router generator tests', () => {
     });
 
     afterEach(() => {
-        process.chdir(originalCwd);
+        jest.resetAllMocks();
     });
 
     afterAll(() => {
-        jest.resetAllMocks();
+        process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
     });
 
     it('Generate app router project with minimum configuration', async () => {
@@ -70,13 +65,9 @@ describe('App router generator tests', () => {
         hasbinSyncMock.mockReturnValue(true);
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: appRouterGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .create(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -105,13 +96,9 @@ describe('App router generator tests', () => {
 
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: appRouterGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .create(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -145,13 +132,9 @@ describe('App router generator tests', () => {
         const appDir = join(targetfolder, projectPrefix);
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: appRouterGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .create(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -181,18 +164,15 @@ describe('App router generator tests', () => {
     });
 
     it('Generate app router project with maximum mta config', async () => {
+        hasbinSyncMock.mockReturnValue(true);
         const projectPrefix = sapUxTest;
         const appDir = join(targetfolder, projectPrefix);
 
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: appRouterGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .create(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -221,17 +201,14 @@ describe('App router generator tests', () => {
     });
 
     it('Generate app router project with managed app router', async () => {
+        hasbinSyncMock.mockReturnValue(true);
         const projectPrefix = sapUxTest;
         const appDir = join(targetfolder, projectPrefix);
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: appRouterGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .create(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
@@ -260,13 +237,9 @@ describe('App router generator tests', () => {
         });
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: appRouterGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .create(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .run()
         ).rejects.toThrow();
@@ -283,13 +256,9 @@ describe('App router generator tests', () => {
 
         await expect(
             yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: appRouterGenPath
-                    },
-                    { cwd: targetfolder }
-                )
+                .create(AppRouterGenerator, {
+                    resolved: appRouterGenPath
+                })
                 .withOptions({ skipInstall: true })
                 .run()
         ).resolves.not.toThrow();
