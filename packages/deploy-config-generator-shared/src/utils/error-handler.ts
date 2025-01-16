@@ -22,7 +22,7 @@ export enum ERROR_TYPE {
  * Error messages for the deploy configuration generator.
  */
 export class ErrorHandler {
-    static cannotFindBinary = (bin: string, pkg: string): string => t('errors.noBinary', { bin, pkg });
+    private static readonly cannotFindBinary = (bin: string, pkg: string): string => t('errors.noBinary', { bin, pkg });
 
     /**
      * Get the error message for the specified error type.

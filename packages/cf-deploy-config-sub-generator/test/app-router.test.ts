@@ -1,13 +1,13 @@
 import * as fs from 'fs';
 import { join } from 'path';
+import AppRouterGenerator from '../src/app-router';
+import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import yeomanTest from 'yeoman-test';
 import yaml from 'js-yaml';
 import { rimraf } from 'rimraf';
 import * as memfs from 'memfs';
 import hasbin from 'hasbin';
 import { TestFixture } from './fixtures';
-import AppRouterGenerator from '../src/app-router/';
-import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import { initI18n } from '../src/utils';
 import { ErrorHandler, ERROR_TYPE } from '@sap-ux/deploy-config-generator-shared';
 import * as deployConfigGenShared from '@sap-ux/deploy-config-generator-shared';
@@ -37,22 +37,24 @@ const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
 const sapUxTest = 'sap-ux-test';
 
 describe('App router generator tests', () => {
-    const originalCwd = process.cwd();
-    const targetfolder = join(__dirname, './test-output');
+    let cwd: string;
+    const originalCwd: string = process.cwd();
+    const targetfolder = join('/test-output');
     const testFixture = new TestFixture();
     const appRouterGenPath = join(__dirname, '../src/app-router');
 
     beforeEach(() => {
         memfs.vol.reset();
         jest.clearAllMocks();
+        const mockChdir = jest.spyOn(process, 'chdir');
+        mockChdir.mockImplementation((dir): void => {
+            cwd = dir;
+        });
     });
 
     beforeAll(async () => {
         jest.clearAllMocks();
         await initI18n();
-        try {
-            fs.mkdirSync(targetfolder);
-        } catch {}
     });
 
     afterEach(() => {
@@ -61,7 +63,6 @@ describe('App router generator tests', () => {
 
     afterAll(() => {
         jest.resetAllMocks();
-        rimraf.sync(join(targetfolder, sapUxTest));
     });
 
     it('Generate app router project with minimum configuration', async () => {
