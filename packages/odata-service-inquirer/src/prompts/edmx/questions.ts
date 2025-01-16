@@ -31,28 +31,30 @@ import {
  * @param templateType
  * @param odataVersion
  * @param isCapService
+ * @returns true is validation passes, otherwise a string with the validation message
  */
 function validateEntityChoices(
     entityChoiceOptions: ListChoiceOptions<EntityAnswer>[],
     templateType: TemplateType,
     odataVersion: OdataVersion,
     isCapService: boolean
-): string | void {
+): string | boolean {
     let validationMsg;
     if (entityChoiceOptions.length === 0) {
         if (templateType === 'feop' && isCapService) {
             validationMsg = t('prompts.mainEntitySelection.noDraftEnabledEntitiesError');
+        } else if (templateType === 'alp' && odataVersion === OdataVersion.v4) {
+            validationMsg = t('prompts.mainEntitySelection.noEntitiesAlpV4Error');
+        } else {
+            validationMsg = t('prompts.mainEntitySelection.noEntitiesError');
         }
-        validationMsg =
-            templateType === 'alp' && odataVersion === OdataVersion.v4
-                ? t('prompts.mainEntitySelection.noEntitiesAlpV4Error')
-                : t('prompts.mainEntitySelection.noEntitiesError');
     }
 
-    if (PromptState.isYUI && validationMsg) {
+    if (!PromptState.isYUI && validationMsg) {
         LoggerHelper.logger.debug(`Exiting due to validation error: ${validationMsg}`);
         throw new Error(t('errors.exitingGeneration', { exitReason: validationMsg }));
     }
+    return validationMsg || true;
 }
 
 /**
@@ -213,7 +215,7 @@ function getTableLayoutQuestions(
                 hint: t('prompts.tableType.hint'),
                 breadcrumb: true
             },
-            choices: (): ListChoiceOptions[] => tableTypeChoices,
+            choices: tableTypeChoices,
             default: tableTypeDefault
         } as ListQuestion<TableConfigAnswers>);
 

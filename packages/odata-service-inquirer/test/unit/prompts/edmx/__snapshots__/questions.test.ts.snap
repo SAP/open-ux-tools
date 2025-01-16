@@ -205,7 +205,24 @@ exports[`Test entity prompts getEntityQuestions should return the questions when
     "when": [Function],
   },
   {
-    "choices": [Function],
+    "choices": [
+      {
+        "name": "Analytical",
+        "value": "AnalyticalTable",
+      },
+      {
+        "name": "Grid",
+        "value": "GridTable",
+      },
+      {
+        "name": "Responsive",
+        "value": "ResponsiveTable",
+      },
+      {
+        "name": "Tree",
+        "value": "TreeTable",
+      },
+    ],
     "default": "ResponsiveTable",
     "guiOptions": {
       "breadcrumb": true,
