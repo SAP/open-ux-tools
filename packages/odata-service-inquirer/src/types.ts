@@ -30,6 +30,12 @@ export const SapSystemTypes = {
 
 export type SapSystemType = keyof typeof SapSystemTypes;
 
+export const SAP_CLIENT_KEY = 'sap-client' as const;
+/**
+ * The limit for the metadata file size in KB above which a warning will be displayed to the user regarding processing time.
+ */
+export const MetadataSizeWarningLimitKb = 1000;
+
 /**
  * Answers returned by the OdataServiceInquirer prompt API.
  * These values may be used to write an OData service and may be derived from the user's input rather than direct answers.
@@ -145,14 +151,17 @@ export enum promptNames {
     systemSelection = 'systemSelection'
 }
 
+/**
+ * Prompt names for entity related prompts. These indirectly define the properties of the answers object returned by the entity related prompts.
+ */
 export const EntityPromptNames = {
     mainEntity: 'mainEntity',
     navigationEntity: 'navigationEntity',
     filterEntityType: 'filterEntityType',
     tableType: 'tableType',
     hierarchyQualifier: 'hierarchyQualifier',
-    generateFEOPAnnotations: 'generateFEOPAnnotations',
-    generateLROPAnnotations: 'generateLROPAnnotations',
+    addFEOPAnnotations: 'addFEOPAnnotations',
+    addLineItemAnnotations: 'addLineItemAnnotations',
     presentationQualifier: 'presentationQualifier',
     tableSelectionMode: 'tableSelectionMode',
     tableMultiSelect: 'tableMultiSelect',
@@ -162,33 +171,31 @@ export const EntityPromptNames = {
 export type EntityPromptNames = (typeof EntityPromptNames)[keyof typeof EntityPromptNames];
 
 export interface EntitySelectionAnswers {
-    mainEntity?: EntityAnswer;
-    navigationEntity?: NavigationEntityAnswer;
-    filterEntityType?: EntityAnswer;
+    [EntityPromptNames.mainEntity]?: EntityAnswer;
+    [EntityPromptNames.navigationEntity]?: NavigationEntityAnswer;
+    [EntityPromptNames.filterEntityType]?: EntityAnswer;
 }
 
 export interface TableConfigAnswers {
-    tableType: TableType;
-    hierarchyQualifier: string;
+    [EntityPromptNames.tableType]: TableType;
+    [EntityPromptNames.hierarchyQualifier]: string;
 }
 
 export interface AnnotationGenerationAnswers {
-    // todo: consolidate, it cant be both
-    addFEOPAnnotations?: boolean;
-    addLROPAnnotations?: boolean;
+    [EntityPromptNames.addFEOPAnnotations]?: boolean;
+    [EntityPromptNames.addLineItemAnnotations]?: boolean;
 }
 
 export interface AlpTableConfigAnswers {
-    qualifier: string;
-    multiSelect: boolean;
-    autoHide: boolean;
-    smartVariantManagement: boolean;
-    selectionMode: TableSelectionMode;
+    [EntityPromptNames.tableAutoHide]: boolean;
+    [EntityPromptNames.tableMultiSelect]: boolean;
+    [EntityPromptNames.tableSelectionMode]: TableSelectionMode;
+    [EntityPromptNames.presentationQualifier]: string;
+    [EntityPromptNames.smartVariantManagement]: boolean;
 }
 
 /**
- * Convienience type for the entity related answers
- *
+ * Convienience alias type for the entity related answers
  */
 export type EntityRelatedAnswers = EntitySelectionAnswers &
     TableConfigAnswers &
@@ -380,7 +387,9 @@ export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
 export type OdataServicePromptOptions = Partial<odataServiceInquirerPromptOptions>;
 
-// todo: add implementation
+/**
+ * The entity related prompt options. These options are used to configure the entity related prompts.
+ */
 export type EntityPromptOptions = {
     /**
      * Determines if entity related prompts should use auto complete on user input.
@@ -396,5 +405,3 @@ export type EntityPromptOptions = {
      */
     hideTableLayoutPrompts?: boolean;
 };
-
-export const SAP_CLIENT_KEY = 'sap-client';

@@ -95,8 +95,8 @@ async function getSystemSelectionQuestions(
  * @param metadata
  * @param templateType
  * @param isCapService
- * @param annotations
  * @param promptOptions - options that can control some of the prompt behavior. See {@link EntityPromptOptions} for details
+ * @param annotations - annotations to be used for entity selection, only used for analytical list page presentation variant qualifier choices when the edmx odata version is `2`
  * @param logger
  * @param isYUI
  * @returns the prompts
@@ -105,8 +105,8 @@ function getEntityRelatedPrompts(
     metadata: string,
     templateType: TemplateType,
     isCapService = false,
-    annotations?: Annotations,
     promptOptions?: EntityPromptOptions,
+    annotations?: Annotations,
     logger?: Logger,
     isYUI = false
 ): Question<EntityRelatedAnswers>[] {
@@ -114,7 +114,7 @@ function getEntityRelatedPrompts(
         LoggerHelper.logger = logger;
     }
     PromptState.isYUI = isYUI;
-    return getEntitySelectionQuestions(metadata, templateType, isCapService, annotations, promptOptions);
+    return getEntitySelectionQuestions(metadata, templateType, isCapService, promptOptions, annotations);
 }
 
 /**

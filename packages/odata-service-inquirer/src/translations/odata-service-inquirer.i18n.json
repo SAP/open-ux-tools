@@ -130,7 +130,7 @@
             "message": "Main entity",
             "defaultEntityNameNotFoundWarning": "The supplied entity cannot be found in the service. Please choose from the list above.",
             "noDraftEnabledEntitiesError": "The CAP service you have chosen does not have any entities that are draft enabled. In order to generate a V4 Fiori application using this floor plan for a CAP project, the entity selected must be draft enabled.",
-            "noEntitiesError": "The template and service selected have no relevant entities that you can use.",
+            "noEntitiesError": "$t(errors.noRelevantEntities)",
             "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an Analytical List Page application. The service must contain aggregate based entity sets for this template."
         },
         "navigationEntitySelection": {
@@ -138,7 +138,8 @@
             "choiceNone": "$t(texts.choiceNameNone)"
         },
         "filterEntityType": {
-            "message": "Filter entity"
+            "message": "Filter entity",
+            "noEntitiesError": "$t(errors.noRelevantEntities)"
         },
         "tableType": {
             "message": "Table type",
@@ -159,7 +160,7 @@
             "hint": "Choose the annotation generation method.",
             "breadcrumb": "Generate Annotations"
         },
-        "addLROPAnnotations": {
+        "addLineItemAnnotations": {
             "message": "Automatically add table columns to the list page and a section to the object page if none already exists?",
             "hint": "Choose the annotation generation method.",
             "breadcrumb": "Generate Annotations",
@@ -219,7 +220,8 @@
         "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version(s): V{{version}}.",
         "unparseableMetadata": "Unable to parse entities from metadata document. {{-error}}",
         "unparseableOdataVersion": "Unable to parse the odata version from the metadata.",
-        "unparseableXML": "Unparseable XML was specified: {{-error}}"
+        "unparseableXML": "Unparseable XML was specified: {{-error}}",
+        "noRelevantEntities": "The template and service selected have no relevant entities that you can use."
     },
     "warnings": {
         "largeMetadataDocument": "The metadata for this OData service is significantly large. It may take some time before this operation completes."

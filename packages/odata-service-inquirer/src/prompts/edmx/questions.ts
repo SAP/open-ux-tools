@@ -13,14 +13,15 @@ import type {
     EntitySelectionAnswers,
     TableConfigAnswers
 } from '../../types';
-import { EntityPromptNames } from '../../types';
+import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types';
 import { PromptState } from '../../utils';
 import LoggerHelper from '../logger-helper';
 import { getAnalyticListPageQuestions } from './alp-questions';
+import type { EntitySetFilter } from './entity-helper';
 import {
     type EntityAnswer,
     type NavigationEntityAnswer,
-    getEntityChoiceOptions,
+    getEntityChoices,
     getNavigationEntityChoices
 } from './entity-helper';
 
@@ -31,7 +32,7 @@ import {
  * @param odataVersion
  * @param isCapService
  */
-function validateEntitySelection(
+function validateEntityChoices(
     entityChoiceOptions: ListChoiceOptions<EntityAnswer>[],
     templateType: TemplateType,
     odataVersion: OdataVersion,
@@ -55,27 +56,34 @@ function validateEntitySelection(
 }
 
 /**
- * Get the questions that may be used to prompt for entity selection.
+ * Get the questions that may be used to prompt for entity selection and related information, table types, layout options and annotation generation.
  *
  * @param metadata
  * @param templateType
  * @param isCapService
- * @param annotations
  * @param promptOptions - options that can control some of the prompt behavior. See {@link EntityPromptOptions} for details
+ * @param annotations - annotations should be provided when the specified template type is analytic list page, and the metadata odata version is '2', in order to determine the presentation variant qualifiers.
+ *  If none are provided, or the odata version is not '2', the presentation variant qualifier prompt will not be shown.
  * @returns the prompts used to provide input for system selection and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
 export function getEntitySelectionQuestions(
     metadata: string,
     templateType: TemplateType,
-    isCapService: boolean,
-    annotations?: Annotations,
-    promptOptions?: EntityPromptOptions
+    isCapService = false,
+    promptOptions?: EntityPromptOptions,
+    annotations?: Annotations
 ): Question<EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers>[] {
-    const entityChoices = getEntityChoiceOptions(metadata, {
+    let entitySetFilter: EntitySetFilter | undefined;
+    if (templateType === 'feop' && !!isCapService) {
+        entitySetFilter = 'filterDraftEnabled';
+    } else if (templateType === 'alp') {
+        entitySetFilter = 'filterAggregateTransformationsOnly';
+    }
+
+    const entityChoices = getEntityChoices(metadata, {
         useEntityTypeAsName: templateType === 'ovp',
         defaultMainEntityName: promptOptions?.defaultMainEntityName,
-        filterDraftEnabledOnly: templateType === 'feop' && !!isCapService,
-        filterAggregateTransformationsOnly: templateType === 'alp'
+        entitySetFilter
     });
 
     if (!entityChoices.convertedMetadata || !entityChoices.odataVersion) {
@@ -97,11 +105,11 @@ export function getEntitySelectionQuestions(
             guiOptions: {
                 breadcrumb: true
             },
-            choices: () => entityChoices.choices,
+            choices: entityChoices.choices,
             source: (preAnswers: EntitySelectionAnswers, input: string) =>
                 searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
-            validate: () =>
-                entityChoices.choices.length === 0 ? t('prompts.mainEntitySelection.noEntitiesError') : true
+            default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
+            validate: () => (entityChoices.choices.length === 0 ? t('prompts.filterEntityType.noEntitiesError') : true)
         } as ListQuestion<EntitySelectionAnswers>);
     } else {
         entityQuestions.push({
@@ -115,7 +123,7 @@ export function getEntitySelectionQuestions(
             source: (prevAnswers: unknown, input: string) =>
                 searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
             default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
-            validate: validateEntitySelection(entityChoices.choices, templateType, odataVersion, isCapService),
+            validate: () => validateEntityChoices(entityChoices.choices, templateType, odataVersion, isCapService),
             additionalMessages: () => {
                 if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
                     return {
@@ -247,6 +255,7 @@ function getEdmxSizeInKb(edmx: string): number {
 }
 
 /**
+ * Get the questions that may be used to prompt for adding annotations. Only a subset of the questions will be returned based on the template type and OData version.
  *
  * @param metadata
  * @param templateType
@@ -260,14 +269,13 @@ function getAddAnnotationQuestions(
     odataVersion: OdataVersion,
     isCapService: boolean
 ): ConfirmQuestion<AnnotationGenerationAnswers>[] {
-    const metadataSizeWarningLimitKb = 1000;
-    const largeEdmxDataset = getEdmxSizeInKb(metadata) > metadataSizeWarningLimitKb;
+    const largeEdmxDataset = getEdmxSizeInKb(metadata) > MetadataSizeWarningLimitKb;
     const annotationQuestions: ConfirmQuestion<AnnotationGenerationAnswers>[] = [];
 
     if (templateType === 'feop') {
         annotationQuestions.push({
             type: 'confirm',
-            name: EntityPromptNames.generateFEOPAnnotations,
+            name: EntityPromptNames.addFEOPAnnotations,
             guiOptions: {
                 breadcrumb: t('prompts.addFEOPAnnotations.breadcrumb')
             },
@@ -282,15 +290,18 @@ function getAddAnnotationQuestions(
             },
             default: !largeEdmxDataset
         } as ConfirmQuestion<AnnotationGenerationAnswers>);
+        // Return early since FEOP does not have line item annotations
+        return annotationQuestions;
     }
+
     if ((templateType === 'lrop' || templateType === 'worklist') && odataVersion === OdataVersion.v4) {
         annotationQuestions.push({
             type: 'confirm',
-            name: EntityPromptNames.generateLROPAnnotations,
+            name: EntityPromptNames.addLineItemAnnotations,
             guiOptions: {
-                breadcrumb: t('prompts.addLROPAnnotations.breadcrumb')
+                breadcrumb: t('prompts.addLineItemAnnotations.breadcrumb')
             },
-            message: t('prompts.addLROPAnnotations.message'),
+            message: t('prompts.addLineItemAnnotations.message'),
             additionalMessages: (answer: boolean) => {
                 if (answer) {
                     if (largeEdmxDataset) {
@@ -300,7 +311,7 @@ function getAddAnnotationQuestions(
                         };
                     } else if (isCapService) {
                         return {
-                            message: t('prompts.addLROPAnnotations.valueHelpsAnnotationsInfoMessage'),
+                            message: t('prompts.addLineItemAnnotations.valueHelpsAnnotationsInfoMessage'),
                             severity: Severity.information
                         };
                     }

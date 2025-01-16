@@ -24,72 +24,30 @@ interface EntityChoiceOptions {
     odataVersion?: OdataVersion;
 }
 
-/**
- * Filters entities that have a type property of 'HasDraftEnabled'.
- *
- * @param entitySets
- * @returns
- */
-function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[] | undefined {
-    return entitySets.filter((entitySet) => {
-        const entitySetTypeProperties = entitySet.entityType.entityProperties;
-        return !!entitySetTypeProperties.find((property) => property.name === 'HasDraftEntity');
-    });
-}
-
-/**
- * If any of the draft root annotated entity sets have the share action property, then collaborative draft is enabled.
- *
- * @param draftEnabledEntitySets ]
- * @returns
- */
-function hasCollaborativeDraft(draftEnabledEntitySets: EntitySet[]): boolean {
-    const entitySetWithDraftRootAndShareAction = draftEnabledEntitySets.find((entitySet) =>
-        entitySet.annotations?.Common?.DraftRoot ? !!entitySet.annotations.Common.DraftRoot.ShareAction : false
-    );
-    return !!entitySetWithDraftRootAndShareAction;
-}
-
-/**
- * Determines if the collaborative draft warning should be shown.
- *
- * @param edmx metadata string
- * @returns true if the warning should be shown
- */
-export function showCollabDraftWarning(edmx: string): boolean {
-    let showWarning = false;
-    const convertedMetadata = convert(parse(edmx));
-    const draftEnabledEntitySets = filterDraftEnabledEntities(convertedMetadata.entitySets);
-
-    if (Array.isArray(draftEnabledEntitySets) && draftEnabledEntitySets.length > 0) {
-        showWarning = !hasCollaborativeDraft(draftEnabledEntitySets);
-    }
-    return showWarning;
-}
-
+export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformationsOnly';
 /**
  * Returns the entity choice options for use in a list inquirer prompt.
  *
  * @param edmx metadata string
  * @param options
- * @param options.useEntityTypeAsName Choice options will use the non-namepspaced entity set type as the choice name (label) when true, otherwise the entity set name will be used
- * @param options.filterDraftEnabledOnly Only draft enabled entities wil be returned when true, useful for Form Object Page app generation
+ * @param options.useEntityTypeAsName Choice options will use the non-namepspaced entity set type as the choice name (label) and value property `entitySetName` when true, otherwise the entity set name will be used.
+ * @param options.entitySetFilter
+ *     `filterDraftEnabled` : Only draft enabled entities wil be returned when true, useful for Form Object Page app generation.
+ *     `filterAggregateTransformationsOnly` : Only return entity choices that have an aggregate annotation (Aggregation.ApplySupported) with the `Transformations` property set,
+ *  specifically used for ALP V4 app generation.
  * @param options.defaultMainEntityName The default selected entity set name
- * @param options.filterAggregateTransformationsOnly Only return entity choices that have an aggregate annotation (Aggregation.ApplySupported) with the `Transformations` property set, specifically used for ALP V4 app generation
  * @returns entity options
  */
-export function getEntityChoiceOptions(
+export function getEntityChoices(
     edmx: string,
     {
         useEntityTypeAsName = false,
-        filterDraftEnabledOnly = false,
-        defaultMainEntityName,
-        filterAggregateTransformationsOnly = false
+        entitySetFilter,
+        defaultMainEntityName
     }: {
         useEntityTypeAsName?: boolean;
-        filterDraftEnabledOnly?: boolean;
+        entitySetFilter?: EntitySetFilter;
         defaultMainEntityName?: string;
-        filterAggregateTransformationsOnly?: boolean;
     } = {}
 ): EntityChoiceOptions {
     const choices: ListChoiceOptions<EntityAnswer>[] = [];
@@ -100,17 +58,19 @@ export function getEntityChoiceOptions(
     try {
         convertedMetadata = convert(parse(edmx));
         const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+
         if (Number.isNaN(parsedOdataVersion)) {
             LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
             throw new Error(t('errors.unparseableOdataVersion'));
         }
         // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
         odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
+
         let entitySets: EntitySet[] = [];
 
-        if (filterDraftEnabledOnly) {
+        if (entitySetFilter === 'filterDraftEnabled') {
             entitySets = filterDraftEnabledEntities(convertedMetadata.entitySets) ?? [];
-        } else if (filterAggregateTransformationsOnly && odataVersion === OdataVersion.v4) {
+        } else if (entitySetFilter === 'filterAggregateTransformationsOnly') {
             entitySets = filterAggregateTransformations(convertedMetadata.entitySets);
         } else {
             entitySets = convertedMetadata.entitySets;
@@ -205,7 +165,7 @@ export function getNavigationEntityChoices(
 }
 
 /**
- * Filter entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
+ * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
  *
  * @param entitySets
  * @returns
@@ -213,5 +173,18 @@ export function getNavigationEntityChoices(
 function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
     return entitySets.filter((entitySet) => {
         return !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations;
+    });
+}
+
+/**
+ * Returns only entities that have a type property of 'HasDraftEnabled'.
+ *
+ * @param entitySets
+ * @returns
+ */
+function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[] | undefined {
+    return entitySets.filter((entitySet) => {
+        const entitySetTypeProperties = entitySet.entityType.entityProperties;
+        return !!entitySetTypeProperties.find((property) => property.name === 'HasDraftEntity');
     });
 }

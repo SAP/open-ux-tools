@@ -63,7 +63,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "default": -1,
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "Select a system configuration",
+      "hint": "Select a system configuration.",
     },
     "message": "System",
     "name": "systemSelection",
@@ -241,7 +241,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
   },
   {
     "guiOptions": {
-      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
       "mandatory": true,
     },
     "guiType": "file-browser",
