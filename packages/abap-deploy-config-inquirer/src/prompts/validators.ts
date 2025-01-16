@@ -486,7 +486,7 @@ async function handleListExistingTransportChoice(
 /**
  * Validates the transport choice input.
  *
- * @param useStadalone - if the transport prompts are used standalone
+ * @param useStandalone - if the transport prompts are used standalone
  * @param input - transport choice input
  * @param previousAnswers - previous answers
  * @param validateInputChanged - if the input has changed
@@ -496,7 +496,7 @@ async function handleListExistingTransportChoice(
  * @returns boolean or error message as a string
  */
 export async function validateTransportChoiceInput(
-    useStadalone: boolean,
+    useStandalone: boolean,
     input?: TransportChoices,
     previousAnswers?: AbapDeployConfigAnswersInternal,
     validateInputChanged?: boolean,
@@ -505,7 +505,7 @@ export async function validateTransportChoiceInput(
     ui5AbapRepoName?: string
 ): Promise<boolean | string> {
     const packageAnswer = getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package);
-    const systemConfig = getSystemConfig(useStadalone, PromptState.abapDeployConfig, backendTarget);
+    const systemConfig = getSystemConfig(useStandalone, PromptState.abapDeployConfig, backendTarget);
 
     switch (input) {
         case TransportChoices.ListExistingChoice: {
