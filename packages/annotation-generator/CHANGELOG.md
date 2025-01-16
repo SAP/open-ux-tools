@@ -1,5 +1,11 @@
 # @sap-ux/annotation-generator
 
+## 0.2.25
+
+### Patch Changes
+
+-   5fff6e1: Pass optional mem-fs editor to get project information in annotation generator
+
 ## 0.2.24
 
 ### Patch Changes
