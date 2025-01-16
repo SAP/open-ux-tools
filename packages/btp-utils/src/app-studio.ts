@@ -13,8 +13,7 @@ import {
     type Destination,
     isS4HC,
     type ListDestinationOpts,
-    type CloudFoundryServiceInfo,
-    type OAuth2Destination
+    type CloudFoundryServiceInfo
 } from './destination';
 import type { ServiceInfo } from './service-info';
 import { destinations } from '@sap/bas-sdk';
