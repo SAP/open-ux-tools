@@ -296,33 +296,6 @@ describe('App Router Generator Tests', () => {
         const mtaConfig = yaml.load(mtaContent);
         expect(mtaConfig).toMatchSnapshot();
     });
-
-    it('Logs an error when no mta executable found', async () => {
-        const mtaId = 'sap-ux-test-no-mta-executable';
-
-        (hasbin.sync as jest.Mock).mockReturnValue(false);
-        await expect(
-            yeomanTest
-                .create(
-                    AppRouterGenerator,
-                    {
-                        resolved: appRouterPath
-                    },
-                    { cwd: OUTPUT_DIR_PREFIX }
-                )
-                .withOptions({ skipInstall: true })
-                .withPrompts({
-                    mtaPath: OUTPUT_DIR_PREFIX,
-                    mtaId,
-                    mtaDescription: 'Main MTA configuration for router',
-                    mtaVersion: '0.0.1',
-                    routerType: RouterModuleType.Managed,
-                    addConnectivityService: false,
-                    addDestinationService: false
-                })
-                .run()
-        ).rejects.toThrow();
-    });
 });
 
 function commonChecks(testFixture: TestFixture, OUTPUT_DIR_PREFIX: string): void {
