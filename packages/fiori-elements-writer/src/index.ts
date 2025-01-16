@@ -3,12 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import {
-    generate as addOdataService,
-    OdataVersion,
-    ServiceType,
-    type OdataService
-} from '@sap-ux/odata-service-writer';
+import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp } from './types';
@@ -74,6 +69,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     validateRequiredProperties(feApp);
 
     setAppDefaults(feApp);
+    
     fs = await generateUi5Project(basePath, feApp, fs);
 
     feApp.template.settings = setDefaultTemplateSettings(feApp.template, feApp.service.version);
