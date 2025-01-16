@@ -19,6 +19,7 @@ import LoggerHelper from '../logger-helper';
 import { getAnalyticListPageQuestions } from './alp-questions';
 import {
     type EntityAnswer,
+    type EntityChoiceOptions,
     type EntitySetFilter,
     getEntityChoices,
     getNavigationEntityChoices,
@@ -101,19 +102,7 @@ export function getEntitySelectionQuestions(
 
     // OVP only has filter entity, does not use tables and we do not add annotations
     if (templateType === 'ovp') {
-        entityQuestions.push({
-            type: useAutoComplete ? 'autocomplete' : 'list',
-            name: EntityPromptNames.filterEntityType,
-            message: t('prompts.filterEntityType.message'),
-            guiOptions: {
-                breadcrumb: true
-            },
-            choices: entityChoices.choices,
-            source: (preAnswers: EntitySelectionAnswers, input: string) =>
-                searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
-            default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
-            validate: () => (entityChoices.choices.length === 0 ? t('prompts.filterEntityType.noEntitiesError') : true)
-        } as ListQuestion<EntitySelectionAnswers>);
+        entityQuestions.push(getFilterEntityTypeQuestions(entityChoices, useAutoComplete));
         // Return early since OVP does not have table layout prompts
         return entityQuestions;
     }
@@ -326,4 +315,31 @@ function getAddAnnotationQuestions(
         } as ConfirmQuestion<AnnotationGenerationAnswers>);
     }
     return annotationQuestions;
+}
+
+/**
+ * Get the questions that may be used to prompt for filter entity selection for the OVP template type.
+ *
+ * @param entityChoices Filter entity type prompt choices
+ * @param useAutoComplete Determines if entity related prompts should use auto complete on user input
+ * @returns the ovp specific filter entity type selection question
+ */
+
+function getFilterEntityTypeQuestions(
+    entityChoices: EntityChoiceOptions,
+    useAutoComplete = false
+): Question<EntitySelectionAnswers> {
+    return {
+        type: useAutoComplete ? 'autocomplete' : 'list',
+        name: EntityPromptNames.filterEntityType,
+        message: t('prompts.filterEntityType.message'),
+        guiOptions: {
+            breadcrumb: true
+        },
+        choices: entityChoices.choices,
+        source: (preAnswers: EntitySelectionAnswers, input: string) =>
+            searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
+        default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
+        validate: () => (entityChoices.choices.length === 0 ? t('prompts.filterEntityType.noEntitiesError') : true)
+    } as ListQuestion<EntitySelectionAnswers>;
 }

@@ -16,7 +16,7 @@ export type NavigationEntityAnswer = {
     entitySetName: string;
 };
 
-interface EntityChoiceOptions {
+export interface EntityChoiceOptions {
     choices: ListChoiceOptions<EntityAnswer>[];
     draftRootIndex?: number;
     defaultMainEntityIndex?: number;
