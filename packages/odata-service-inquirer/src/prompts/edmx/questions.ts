@@ -27,11 +27,12 @@ import {
 } from './entity-helper';
 
 /**
+ * Validate the entity choice options. If the entity choice options are empty, a validation message will be returned.
  *
- * @param entityChoiceOptions
- * @param templateType
- * @param odataVersion
- * @param isCapService
+ * @param entityChoiceOptions the entity choice options to validate
+ * @param templateType the template type, the validation message may vary based on the template type
+ * @param odataVersion the OData version, used to generate a specific validation message for ALP V4
+ * @param isCapService whether the service is a CAP service or not
  * @returns true is validation passes, otherwise a string with the validation message
  */
 function validateEntityChoices(
@@ -61,11 +62,11 @@ function validateEntityChoices(
 /**
  * Get the questions that may be used to prompt for entity selection and related information, table types, layout options and annotation generation.
  *
- * @param metadata
- * @param templateType
- * @param isCapService
- * @param promptOptions - options that can control some of the prompt behavior. See {@link EntityPromptOptions} for details
- * @param annotations - annotations should be provided when the specified template type is analytic list page, and the metadata odata version is '2', in order to determine the presentation variant qualifiers.
+ * @param metadata the metadata (edmx) string of the service
+ * @param templateType the template type of the application to be generated from the prompt answers
+ * @param isCapService whether the service is a CAP service or not
+ * @param promptOptions options that can control some of the prompt behavior. See {@link EntityPromptOptions} for details
+ * @param annotations annotations should be provided when the specified template type is analytic list page, and the metadata odata version is '2', in order to determine the presentation variant qualifiers.
  *  If none are provided, or the odata version is not '2', the presentation variant qualifier prompt will not be shown.
  * @returns the prompts used to provide input for system selection and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
@@ -174,11 +175,12 @@ export function getEntitySelectionQuestions(
 }
 
 /**
+ * Get the questions that may be used to prompt for table layout options.
  *
- * @param templateType
- * @param odataVersion
- * @param isCapService
- * @returns
+ * @param templateType used to determine if the tree table option should be included
+ * @param odataVersion used to determine if the hierarchy qualifier is required when the selected table type is TreeTable
+ * @param isCapService used to determine if the tree table option should be included
+ * @returns the table layout questions
  */
 function getTableLayoutQuestions(
     templateType: TemplateType,
@@ -237,7 +239,7 @@ function getTableLayoutQuestions(
 /**
  * Returns the size of an EDMX string in kilobytes.
  *
- * @param {string} edmx - The EDMX string to measure.
+ * @param {string} edmx The EDMX string to measure.
  * @returns {number} The size of the EDMX string in kilobytes. Returns 0 if the input is null, undefined, or an empty string.
  */
 function getEdmxSizeInKb(edmx: string): number {
@@ -324,7 +326,6 @@ function getAddAnnotationQuestions(
  * @param useAutoComplete Determines if entity related prompts should use auto complete on user input
  * @returns the ovp specific filter entity type selection question
  */
-
 function getFilterEntityTypeQuestions(
     entityChoices: EntityChoiceOptions,
     useAutoComplete = false

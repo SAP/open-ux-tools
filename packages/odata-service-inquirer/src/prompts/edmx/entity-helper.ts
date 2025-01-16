@@ -116,9 +116,9 @@ export function getEntityChoices(
 /**
  * Get the entity set name from its type name.
  *
- * @param entitySets
- * @param entityType
- * @returns
+ * @param entitySets the entity sets to search
+ * @param entityType the entity type name to search for
+ * @returns the entity set name if found, otherwise undefined
  */
 function findEntitySetName(entitySets: EntitySet[], entityType: string): string | undefined {
     const foundEntitySet = entitySets.find((entitySet) => {
@@ -128,11 +128,12 @@ function findEntitySetName(entitySets: EntitySet[], entityType: string): string 
 }
 
 /**
+ * Get the navigation entity choices for a main entity.
  *
- * @param metadata
- * @param odataVersion
- * @param mainEntityName
- * @returns
+ * @param metadata the converted metadata (edmx)
+ * @param odataVersion the odata version, which will determine the navigation properties to return
+ * @param mainEntityName the main entity name to get the navigation properties for
+ * @returns the navigation entity choices
  */
 export function getNavigationEntityChoices(
     metadata: ConvertedMetadata,
