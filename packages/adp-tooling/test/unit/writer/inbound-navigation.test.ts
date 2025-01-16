@@ -91,7 +91,10 @@ describe('FLP Configuration Functions', () => {
 
             expect(keys).toEqual([
                 { key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`, value: config.title },
-                { key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle`, value: config.title }
+                {
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle`,
+                    value: config.subTitle
+                }
             ]);
         });
 
@@ -110,7 +113,10 @@ describe('FLP Configuration Functions', () => {
             const i18nPath = join(basePath, 'webapp', 'i18n', 'i18n.properties');
             const expectedEntries = [
                 { key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.title`, value: config.title },
-                { key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle`, value: config.title }
+                {
+                    key: `${appId}_sap.app.crossNavigation.inbounds.${config.inboundId}.subTitle`,
+                    value: config.subTitle
+                }
             ];
 
             await updateI18n(basePath, appId, config, fs);
