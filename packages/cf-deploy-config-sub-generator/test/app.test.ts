@@ -1,4 +1,4 @@
-import fs from 'fs';
+import * as fs from 'fs';
 import { join } from 'path';
 import yeomanTest from 'yeoman-test';
 import yaml from 'js-yaml';
@@ -13,6 +13,15 @@ import { ErrorHandler, ERROR_TYPE } from '@sap-ux/deploy-config-generator-shared
 import * as deployConfigGenShared from '@sap-ux/deploy-config-generator-shared';
 import * as cfConfigWriter from '@sap-ux/cf-deploy-config-writer';
 import * as cfConfigInquirer from '@sap-ux/cf-deploy-config-inquirer';
+
+jest.mock('fs', () => {
+    const fsLib = jest.requireActual('fs');
+    const Union = require('unionfs').Union;
+    const vol = require('memfs').vol;
+    const _fs = new Union().use(fsLib);
+    _fs.constants = fsLib.constants;
+    return _fs.use(vol as unknown as typeof fs);
+});
 
 jest.mock('hasbin', () => ({
     sync: jest.fn()
@@ -44,9 +53,12 @@ describe('App router generator tests', () => {
         } catch {}
     });
 
+    afterEach(() => {
+        process.chdir(originalCwd);
+    });
+
     afterAll(() => {
         jest.resetAllMocks();
-        process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
         rimraf.sync(join(targetfolder, 'sap-ux-test'));
     });
 
