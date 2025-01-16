@@ -1,5 +1,4 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA } from '../../../utils/core';
@@ -14,7 +13,7 @@ const COMPONENT = 'sap.suite.ui.generic.template.ListReport';
  * Quick Action for toggling the visibility of "semantic date range" for filterbar fields.
  */
 export class ToggleSemanticDateRangeFilterBar
-    extends SimpleQuickActionDefinitionBase
+    extends SimpleQuickActionDefinitionBase<SmartFilterBar>
     implements SimpleQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
@@ -31,7 +30,7 @@ export class ToggleSemanticDateRangeFilterBar
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
-            const modifiedControl = getControlById<FilterBar>(control.controlId);
+            const modifiedControl = getControlById<SmartFilterBar>(control.controlId);
             if (isActionApplicable && modifiedControl) {
                 this.control = modifiedControl;
 
@@ -41,7 +40,7 @@ export class ToggleSemanticDateRangeFilterBar
                 }
                 const value = this.context.changeService.getConfigurationPropertyValue(id, 'useDateRange');
                 this.isUseDateRangeTypeEnabled =
-                    value === undefined ? (this.control.data('useDateRangeType') as boolean) : (value as boolean);
+                    value === undefined ? this.control.getUseDateRangeType() : (value as boolean);
             }
         }
     }
