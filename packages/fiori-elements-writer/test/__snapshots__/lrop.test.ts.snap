@@ -99,8 +99,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -149,8 +147,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -3726,8 +3722,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -3776,8 +3770,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -7408,8 +7400,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -7474,8 +7464,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -10851,9 +10839,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -10898,9 +10884,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -14535,9 +14519,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -14582,9 +14564,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -18220,9 +18200,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -18267,9 +18245,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -23797,9 +23773,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -23844,9 +23818,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -25144,9 +25116,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -25191,9 +25161,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -28828,9 +28796,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -28875,9 +28841,7 @@ server:
             metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -32520,8 +32484,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -32570,8 +32532,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -36149,8 +36109,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -36199,8 +36157,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -39537,8 +39493,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -39587,8 +39541,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -43165,8 +43117,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -43215,8 +43165,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -46848,8 +46796,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -46914,8 +46860,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -50342,8 +50286,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -50408,8 +50350,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -53836,8 +53776,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -53902,8 +53840,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -57726,8 +57662,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -57776,8 +57710,6 @@ server:
         annotations:
           - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
