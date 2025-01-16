@@ -10,7 +10,8 @@ import {
     NESTED_QUICK_ACTION_KIND,
     QuickActionExecutionPayload,
     QuickActionGroup,
-    updateQuickAction
+    updateQuickAction,
+    externalFileChange
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -76,6 +77,10 @@ export class QuickActionService implements Service {
                     this.sendAction(updateQuickAction(actionInstance.getActionObject()));
                 }
             }
+            if (externalFileChange.match(action)) {
+                await this.reloadQuickActions(this.controlTreeIndex);
+             }
+
         });
 
         this.outlineService.onOutlineChange(async (event) => {

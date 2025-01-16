@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.5.10
+
+### Patch Changes
+
+-   f115bfa: fix: update quick action list on external changes
+
 ## 0.5.9
 
 ### Patch Changes
