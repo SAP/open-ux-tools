@@ -1,17 +1,17 @@
 {
-    "name": "@sap-ux/cf-deploy-config-sub-generator",
+    "name": "@sap-ux/cf-app-router-sub-generator",
     "description": "Generators for configuring Cloud Foundry deployment configuration",
     "version": "0.0.0",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
-        "directory": "packages/cf-deploy-config-sub-generator"
+        "directory": "packages/cf-app-router-sub-generator"
     },
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
     },
     "license": "Apache-2.0",
-    "main": "generators/app-router/index.js",
+    "main": "generators/app/index.js",
     "scripts": {
         "build": "tsc --build",
         "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",

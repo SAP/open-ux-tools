@@ -66,10 +66,10 @@
       "path": "packages/cds-odata-annotation-converter"
     },
     {
-      "path": "packages/cf-deploy-config-inquirer"
+      "path": "packages/cf-app-router-sub-generator"
     },
     {
-      "path": "packages/cf-deploy-config-sub-generator"
+      "path": "packages/cf-deploy-config-inquirer"
     },
     {
       "path": "packages/cf-deploy-config-writer"

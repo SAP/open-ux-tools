@@ -4,7 +4,7 @@ import yeomanTest from 'yeoman-test';
 import { mtaExecutable } from '@sap-ux/deploy-config-generator-shared';
 import yaml from 'js-yaml';
 import { TestFixture } from './fixtures';
-import AppRouterGenerator from '../src/app-router';
+import AppRouterGenerator from '../src/app';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import * as memfs from 'memfs';
 import { mkdirSync, readdirSync } from 'fs';
@@ -91,7 +91,7 @@ describe('App Router Generator Tests', () => {
                     },
                     { cwd: targetfolder }
                 )
-                .withOptions({ skipInstall: true, selectedABAPService: true })
+                .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: `${targetfolder}${path.sep}`,
                     mtaId: 'sap-ux-test',
@@ -166,7 +166,7 @@ describe('App Router Generator Tests', () => {
                     },
                     { cwd: appDir }
                 )
-                .withOptions({ skipInstall: true, selectedABAPService: true })
+                .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: `${targetfolder}${path.sep}`,
                     mtaId: 'sap-ux-test',

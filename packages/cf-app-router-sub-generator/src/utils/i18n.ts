@@ -1,9 +1,9 @@
 import i18next from 'i18next';
-import translations from '../translations/cf-deploy-config-sub-generator.i18n.json';
+import translations from '../translations/cf-app-router-sub-generator.i18n.json';
 import { addi18nResourceBundle as addInquirerCommonTexts } from '@sap-ux/inquirer-common';
 import type { TOptions } from 'i18next';
 
-const cfAppRouterGenNs = 'cf-deploy-config-generator';
+const cfAppRouterGenNs = 'cf-app-router-sub-generator';
 
 /**
  * Initialize i18next with the translations for this module.

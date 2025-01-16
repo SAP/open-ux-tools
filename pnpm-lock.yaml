@@ -981,38 +981,7 @@ importers:
         specifier: 5.6.2
         version: 5.6.2
 
-  packages/cf-deploy-config-inquirer:
-    dependencies:
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
-      '@sap-ux/inquirer-common':
-        specifier: workspace:*
-        version: link:../inquirer-common
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
-      i18next:
-        specifier: 23.5.1
-        version: 23.5.1
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
-    devDependencies:
-      '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.1
-        version: 2.0.1
-      inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
-
-  packages/cf-deploy-config-sub-generator:
+  packages/cf-app-router-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
@@ -1087,6 +1056,37 @@ importers:
       yeoman-test:
         specifier: 6.3.0
         version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+
+  packages/cf-deploy-config-inquirer:
+    dependencies:
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
 
   packages/cf-deploy-config-writer:
     dependencies:
