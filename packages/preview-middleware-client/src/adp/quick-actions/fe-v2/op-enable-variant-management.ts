@@ -59,6 +59,7 @@ export class EnableObjectPageVariantManagementQuickAction
             if (table) {
                 if (table) {
                     if ((table as SmartTableExtended).getVariantManagement() !== undefined) {
+                        //TODO : enable it once testing done...
                         // child.enabled = false;
                         child.tooltip = alreadyEnabledTooltip;
                     }
@@ -70,6 +71,7 @@ export class EnableObjectPageVariantManagementQuickAction
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
+        let lineItem = 'com.sap.vocabularies.UI.v1.LineItem';
         const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
         if (!table) {
             throw Error('Internal error. Table element not found');
@@ -83,8 +85,11 @@ export class EnableObjectPageVariantManagementQuickAction
         preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
         this.selectOverlay(table);
 
+        if (table.data().lineItemQualifier) {
+            lineItem = `${lineItem}#${table.data().lineItemQualifier}`;
+        }
         const navSegment = (table as SmartTable).getTable().getBindingInfo('items').path ?? '';
-        const sectionId = `${navSegment ? navSegment + '::' : ''}com.sap.vocabularies.UI.v1.LineItem`; // TODO: qualifier?
+        const sectionId = `${navSegment ? navSegment + '::' : ''} ${lineItem}`;
 
         const commands = await prepareManifestChange(
             this.context,

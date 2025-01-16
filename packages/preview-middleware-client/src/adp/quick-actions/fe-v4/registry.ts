@@ -16,7 +16,7 @@ import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering';
 import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
 import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
 import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
-import { EnableListReportVariantManagementQuickAction } from '../fe-v4/lr-enable-variant-management';
+import { EnableVariantManagementQuickAction } from './enable-variant-management';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -45,7 +45,7 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         AddPageActionQuickAction,
                         ToggleClearFilterBarQuickAction,
                         ToggleSemanticDateRangeFilterBar,
-                        EnableListReportVariantManagementQuickAction,
+                        EnableVariantManagementQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
@@ -64,6 +64,7 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         AddHeaderFieldQuickAction,
                         AddCustomSectionQuickAction,
                         ChangeTableColumnsQuickAction,
+                        EnableVariantManagementQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
                         EnableTableEmptyRowModeQuickAction,

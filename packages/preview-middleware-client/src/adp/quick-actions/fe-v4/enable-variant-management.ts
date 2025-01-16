@@ -9,16 +9,17 @@ import { createManifestPropertyChange } from '../../../utils/fe-v4';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
-const CONTROL_TYPES = ['sap.f.DynamicPage']; //, 'sap.uxap.ObjectPageLayout','sap.f.DynamicPage'
+// sap.f.DynamicPage for list report and sap.uxap.ObjectPageLayout for object page.
+const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
 
-type ListReportComponent = Component & {
+type LayoutPageComponent = Component & {
     getVariantManagement: () => string;
 };
 
 /**
  * Quick Action for enabling table filtering using table personalization settings.
  */
-export class EnableListReportVariantManagementQuickAction
+export class EnableVariantManagementQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
@@ -35,7 +36,7 @@ export class EnableListReportVariantManagementQuickAction
                         if (this.control) {
                             const ownerComponent = Component.getOwnerComponentFor(this.control);
                             this.pageSmartVariantManagementMode = (
-                                ownerComponent as unknown as ListReportComponent
+                                ownerComponent as unknown as LayoutPageComponent
                             ).getVariantManagement();
                             if (this.pageSmartVariantManagementMode === 'Control') {
                                 return {
@@ -52,6 +53,7 @@ export class EnableListReportVariantManagementQuickAction
             ]
         );
     }
+
     readonly forceRefreshAfterExecution = true;
     async initialize(): Promise<void> {
         const version = await getUi5Version();
@@ -66,19 +68,6 @@ export class EnableListReportVariantManagementQuickAction
             return [];
         }
         const { flexSettings } = this.context;
-        // const ownerComponent = Component.getOwnerComponentFor(this.control);
-        // const entitySet = (ownerComponent as unknown as ListReportComponent).getEntitySet();
-        // const command = await prepareManifestChange(
-        //     this.context,
-        //     'component/settings',
-        //     this.control,
-        //     COMPONENT,
-        //     entitySet,
-        //     {
-        //         smartVariantManagement: true,
-        //         variantManagementHidden: this.pageSmartVariantManagementMode
-        //     }
-        // );
 
         const command = await createManifestPropertyChange(this.control, flexSettings, {
             variantManagement: 'Control'
