@@ -160,6 +160,7 @@ export interface PendingOtherChange {
     type: typeof PENDING_CHANGE_TYPE;
     kind: typeof UNKNOWN_CHANGE_KIND;
     isActive: boolean;
+    title?: string;
     changeType: string;
     fileName: string;
 }
@@ -171,6 +172,7 @@ export interface PendingControlChange {
     changeType: string;
     controlId: string;
     fileName: string;
+    title?: string;
 }
 
 export type PendingChange =
@@ -199,6 +201,7 @@ export interface UnknownSavedChange {
     kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
     changeType: string;
+    title?: string;
     controlId?: string;
     timestamp?: number;
 }
@@ -209,6 +212,7 @@ export interface SavedControlChange {
     controlId: string;
     fileName: string;
     changeType: string;
+    title?: string;
     timestamp?: number;
 }
 
@@ -393,6 +397,8 @@ export const setApplicationRequiresReload = createExternalAction<boolean>('set-a
 export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
 export const clearInfoCenterMessage = createExternalAction<number>('clear-info-center-message');
 export const clearAllInfoCenterMessages = createExternalAction<void>('clear-all-info-center-message');
+export const externalFileChange = createExternalAction<string>('external-file-change');
+export const toggleExpandMessage = createExternalAction<number>('toggle-expand-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -422,4 +428,6 @@ export type ExternalAction =
     | ReturnType<typeof executeQuickAction>
     | ReturnType<typeof showInfoCenterMessage>
     | ReturnType<typeof clearInfoCenterMessage>
-    | ReturnType<typeof clearAllInfoCenterMessages>;
+    | ReturnType<typeof clearAllInfoCenterMessages>
+    | ReturnType<typeof externalFileChange>
+    | ReturnType<typeof toggleExpandMessage>

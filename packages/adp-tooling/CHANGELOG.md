@@ -1,5 +1,52 @@
 # @sap-ux/adp-tooling
 
+## 0.12.108
+
+### Patch Changes
+
+-   f115bfa: fix: remove unused api routes and implementation for annotation file creation
+
+## 0.12.107
+
+### Patch Changes
+
+-   030857d: fix: Hide semantic object & action FLP prompts when there are inbounds for an Adaptation Project
+
+## 0.12.106
+
+### Patch Changes
+
+-   Updated dependencies [326cd59]
+    -   @sap-ux/odata-service-writer@0.25.2
+
+## 0.12.105
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
+## 0.12.104
+
+### Patch Changes
+
+-   Updated dependencies [40ba546]
+    -   @sap-ux/inquirer-common@0.6.3
+
+## 0.12.103
+
+### Patch Changes
+
+-   Updated dependencies [dac696a]
+    -   @sap-ux/inquirer-common@0.6.2
+
+## 0.12.102
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+    -   @sap-ux/system-access@0.5.25
+
 ## 0.12.101
 
 ### Patch Changes

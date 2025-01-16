@@ -18,6 +18,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../control-property-editor-common"
+    },
+    {
       "path": "../i18n"
     },
     {
@@ -25,6 +28,9 @@
     },
     {
       "path": "../logger"
+    },
+    {
+      "path": "../odata-service-writer"
     },
     {
       "path": "../project-access"

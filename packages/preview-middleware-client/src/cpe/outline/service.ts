@@ -60,21 +60,46 @@ export class OutlineService extends EventTarget {
                 this.dispatchEvent(event);
                 sendAction(outlineChanged(outlineNodes));
                 if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning) {
-                    sendAction(
-                        showMessage({
-                            message,
-                            shouldHideIframe: false
-                        })
-                    );
-                    sendAction(
-                        showInfoCenterMessage({
-                            message: {
-                                title: "Reuse components detected",
-                                description: message
-                            },
-                            type: MessageBarType.info
-                        })
-                    );
+                    // sendAction(
+                    //     showMessage({
+                    //         message,
+                    //         shouldHideIframe: false
+                    //     })
+                    // );
+                    setTimeout(() => {
+                        sendAction(
+                            showInfoCenterMessage({
+                                message: {
+                                    title: "Reuse components detected",
+                                    description: message
+                                },
+                                type: MessageBarType.info
+                            })
+                        );
+                    }, 20000);
+                    setTimeout(() => {
+                        sendAction(
+                            showInfoCenterMessage({
+                                message: {
+                                    title: "Reuse components detected",
+                                    description: message
+                                },
+                                type: MessageBarType.info
+                            })
+                        );
+                    }, 40000);
+                    setTimeout(() => {
+                        sendAction(
+                            showInfoCenterMessage({
+                                message: {
+                                    title: "Reuse components detected",
+                                    description: message
+                                },
+                                type: MessageBarType.info
+                            })
+                        );
+                    }, 60000);
+
                     hasSentWarning = true;
                 }
                 await this.changeService.updateConfigurationProps(configPropertyIdMap);

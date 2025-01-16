@@ -16,7 +16,9 @@ import {
     executeQuickAction,
     clearInfoCenterMessage,
     clearAllInfoCenterMessages,
-    appLoaded
+    appLoaded,
+    externalFileChange,
+    toggleExpandMessage
 } from '@sap-ux-private/control-property-editor-common';
 
 import type reducer from './slice';
@@ -64,6 +66,7 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>, Retur
                 }
                 case clearInfoCenterMessage.type:
                 case clearAllInfoCenterMessages.type:
+                case toggleExpandMessage.type:    
                 case executeQuickAction.type:
                 case reloadApplication.type:
                 case deletePropertyChanges.type:
@@ -72,7 +75,8 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>, Retur
                 case redo.type:
                 case save.type:
                 case selectControl.type:
-                case addExtensionPoint.type: {
+                case addExtensionPoint.type:
+                case externalFileChange.type: {
                     sendAction(action);
                     break;
                 }

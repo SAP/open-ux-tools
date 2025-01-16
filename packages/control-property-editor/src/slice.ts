@@ -41,6 +41,7 @@ import {
     showInfoCenterMessage,
     clearInfoCenterMessage,
     clearAllInfoCenterMessages,
+    toggleExpandMessage,
     MessageBarType,
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
@@ -68,6 +69,7 @@ export interface SliceState {
     changes: ChangesSlice;
     dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
+    lastExternalFileChangeTimestamp?: number;
     appMode: 'navigation' | 'adaptation';
     changeStack: {
         canUndo: boolean;
@@ -78,6 +80,7 @@ export interface SliceState {
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
     infoCenter: InfoCenterMessage[];
+    expandedStates: boolean[];
 }
 
 export interface ChangesSlice {
@@ -168,7 +171,9 @@ export const initialState: SliceState = {
     applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: [],
-    infoCenter: [{message: {title: 'Error message', description: "this is the error message"},  type: MessageBarType.error}, {message: {title: 'Warning message', description: "this is the warning message"}, type: MessageBarType.warning}, {message: {title: 'Info message', description: "this is the info message"}, type: MessageBarType.info}]
+    expandedStates: [],
+    // infoCenter: []
+    infoCenter: [{message: {title: 'Error message', description: `Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32. The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.`},  type: MessageBarType.error}, {message: {title: 'Warning message', description: "this is the warning message"}, type: MessageBarType.warning}, {message: {title: 'Info message', description: "this is the info message"}, type: MessageBarType.info}]
 };
 
 /**
@@ -372,6 +377,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     }
                     return idx < 0;
                 });
+                if (newFileChanges.length) {
+                    state.lastExternalFileChangeTimestamp = Date.now();
+                }
                 if (!state.fileChanges) {
                     state.fileChanges = newFileChanges;
                 } else {
@@ -448,18 +456,28 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 showInfoCenterMessage.match,
                 (state: SliceState, action: ReturnType<typeof showInfoCenterMessage>): void => {
                     state.infoCenter.unshift(action.payload);
+                    state.expandedStates.unshift(false);
                 }
             )
             .addMatcher(
                 clearInfoCenterMessage.match,
                 (state: SliceState, action: ReturnType<typeof clearInfoCenterMessage>): void => {
                     state.infoCenter = state.infoCenter.filter((_, index) => index !== action.payload);
+                    state.expandedStates = state.expandedStates.filter((_, index) => index !== action.payload);
                 }
             )
             .addMatcher(
                 clearAllInfoCenterMessages.match,
                 (state: SliceState): void => {
                     state.infoCenter = state.infoCenter.filter((info) => info.type === MessageBarType.error);
+                    state.expandedStates = state.expandedStates.slice(0, state.infoCenter.length);
+                }
+            )
+            .addMatcher(
+                toggleExpandMessage.match,
+                (state: SliceState, action: ReturnType<typeof toggleExpandMessage>): void => {
+                    const index = action.payload;
+                    state.expandedStates[index] = !state.expandedStates[index];
                 }
             )
 });

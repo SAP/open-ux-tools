@@ -202,6 +202,7 @@ function handleUnknownChange(change: Change): Item {
     return {
         fileName: change.fileName,
         header: true,
+        ...(change?.kind === 'unknown' && change.type === 'saved' && change.title && { title: change.title }),
         timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined,
         isActive: change.type === SAVED_CHANGE_TYPE ? true : change.isActive
     };
@@ -214,12 +215,14 @@ function handleUnknownChange(change: Change): Item {
  * @returns {Item} An item object containing the filename, controlId, type, and optional timestamp.
  */
 function handleControlChange(change: SavedControlChange | PendingControlChange): Item {
+    const title = change.title;
     return {
         fileName: change.fileName,
         controlId: change.controlId,
         timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined,
         isActive: change.type === SAVED_CHANGE_TYPE ? true : change.isActive,
-        type: change.type
+        type: change.type,
+        ...(title && { title })
     };
 }
 
