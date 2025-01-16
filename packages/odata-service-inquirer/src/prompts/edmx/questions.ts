@@ -75,6 +75,7 @@ export function getEntitySelectionQuestions(
     promptOptions?: EntityPromptOptions,
     annotations?: Annotations
 ): Question<EntitySelectionAnswers & TableConfigAnswers & AnnotationGenerationAnswers & AlpTableConfigAnswers>[] {
+    const useAutoComplete = promptOptions?.useAutoComplete;
     let entitySetFilter: EntitySetFilter | undefined;
     if (templateType === 'feop' && !!isCapService) {
         entitySetFilter = 'filterDraftEnabled';
@@ -101,7 +102,7 @@ export function getEntitySelectionQuestions(
     // OVP only has filter entity, does not use tables and we do not add annotations
     if (templateType === 'ovp') {
         entityQuestions.push({
-            type: promptOptions?.useAutoComplete ? 'autocomplete' : 'list',
+            type: useAutoComplete ? 'autocomplete' : 'list',
             name: EntityPromptNames.filterEntityType,
             message: t('prompts.filterEntityType.message'),
             guiOptions: {
@@ -113,70 +114,72 @@ export function getEntitySelectionQuestions(
             default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
             validate: () => (entityChoices.choices.length === 0 ? t('prompts.filterEntityType.noEntitiesError') : true)
         } as ListQuestion<EntitySelectionAnswers>);
-    } else {
+        // Return early since OVP does not have table layout prompts
+        return entityQuestions;
+    }
+
+    entityQuestions.push({
+        type: useAutoComplete ? 'autocomplete' : 'list',
+        name: EntityPromptNames.mainEntity,
+        message: t('prompts.mainEntitySelection.message'),
+        guiOptions: {
+            breadcrumb: true
+        },
+        choices: entityChoices.choices,
+        source: (prevAnswers: unknown, input: string) =>
+            searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
+        default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
+        validate: () => validateEntityChoices(entityChoices.choices, templateType, odataVersion, isCapService),
+        additionalMessages: () => {
+            if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
+                return {
+                    message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
+                    severity: Severity.warning
+                };
+            }
+        }
+    } as ListQuestion<EntitySelectionAnswers>);
+
+    const convertedMetadata = entityChoices.convertedMetadata;
+    // No nav entity for FPM
+    if (templateType !== 'fpm') {
+        let navigationEntityChoices: ListChoiceOptions<NavigationEntityAnswer>[];
         entityQuestions.push({
-            type: promptOptions?.useAutoComplete ? 'autocomplete' : 'list',
-            name: EntityPromptNames.mainEntity,
-            message: t('prompts.mainEntitySelection.message'),
+            when: (answers: EntitySelectionAnswers) => {
+                if (answers.mainEntity) {
+                    navigationEntityChoices = getNavigationEntityChoices(
+                        convertedMetadata,
+                        odataVersion,
+                        answers.mainEntity.entitySetName
+                    );
+                    return navigationEntityChoices.length > 0;
+                }
+                return false;
+            },
+            type: useAutoComplete ? 'autocomplete' : 'list',
+            name: EntityPromptNames.navigationEntity,
+            message: t('prompts.navigationEntitySelection.message'),
             guiOptions: {
+                applyDefaultWhenDirty: true, // Selected nav entity may no longer be present if main entity changes
                 breadcrumb: true
             },
-            choices: entityChoices.choices,
-            source: (prevAnswers: unknown, input: string) =>
-                searchChoices(input, entityChoices.choices as ListChoiceOptions[]),
-            default: entityChoices.defaultMainEntityIndex ?? entityChoices.draftRootIndex ?? 0,
-            validate: () => validateEntityChoices(entityChoices.choices, templateType, odataVersion, isCapService),
-            additionalMessages: () => {
-                if (promptOptions?.defaultMainEntityName && entityChoices.defaultMainEntityIndex === undefined) {
-                    return {
-                        message: t('prompts.mainEntitySelection.defaultEntityNameNotFoundWarning'),
-                        severity: Severity.warning
-                    };
-                }
-            }
+            choices: () => navigationEntityChoices,
+            source: (preAnswers: EntitySelectionAnswers, input: string) =>
+                searchChoices(input, navigationEntityChoices as ListChoiceOptions[]),
+            default: 0
         } as ListQuestion<EntitySelectionAnswers>);
+    }
 
-        const convertedMetadata = entityChoices.convertedMetadata;
-        // No nav entity for FPM
-        if (templateType !== 'fpm') {
-            let navigationEntityChoices: ListChoiceOptions<NavigationEntityAnswer>[];
-            entityQuestions.push({
-                when: (answers: EntitySelectionAnswers) => {
-                    if (answers.mainEntity) {
-                        navigationEntityChoices = getNavigationEntityChoices(
-                            convertedMetadata,
-                            odataVersion,
-                            answers.mainEntity.entitySetName
-                        );
-                        return navigationEntityChoices.length > 0;
-                    }
-                    return false;
-                },
-                type: promptOptions?.useAutoComplete ? 'autocomplete' : 'list',
-                name: EntityPromptNames.navigationEntity,
-                message: t('prompts.navigationEntitySelection.message'),
-                guiOptions: {
-                    applyDefaultWhenDirty: true, // Selected nav entity may no longer be present if main entity changes
-                    breadcrumb: true
-                },
-                choices: () => navigationEntityChoices,
-                source: (preAnswers: EntitySelectionAnswers, input: string) =>
-                    searchChoices(input, navigationEntityChoices as ListChoiceOptions[]),
-                default: 0
-            } as ListQuestion<EntitySelectionAnswers>);
-        }
+    entityQuestions.push(...getAddAnnotationQuestions(metadata, templateType, odataVersion, isCapService));
 
-        entityQuestions.push(...getAddAnnotationQuestions(metadata, templateType, odataVersion, isCapService));
+    if (!promptOptions?.hideTableLayoutPrompts) {
+        entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService));
+    }
 
-        if (!promptOptions?.hideTableLayoutPrompts) {
-            entityQuestions.push(...getTableLayoutQuestions(templateType, odataVersion, isCapService));
-        }
-
-        if (templateType === 'alp') {
-            entityQuestions.push(
-                ...getAnalyticListPageQuestions(odataVersion, annotations, promptOptions?.hideTableLayoutPrompts)
-            );
-        }
+    if (templateType === 'alp') {
+        entityQuestions.push(
+            ...getAnalyticListPageQuestions(odataVersion, annotations, promptOptions?.hideTableLayoutPrompts)
+        );
     }
     return entityQuestions;
 }
