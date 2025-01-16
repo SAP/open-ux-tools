@@ -315,6 +315,12 @@ export async function getSelectedServiceMessage(
                 selectedService.serviceType,
                 connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
             );
+            if (PromptState.odataService.annotations?.length === 0) {
+                return {
+                    message: t('prompts.warnings.noAnnotations'),
+                    severity: Severity.warning
+                };
+            }
         }
         if (serviceType && serviceType !== ServiceType.UI) {
             return {

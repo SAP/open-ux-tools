@@ -320,6 +320,38 @@ describe('Test new system prompt', () => {
         });
     });
 
+    test('should show additional messages in service selection prompt selected V2 service has no annotations', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
+        PromptState.odataService.annotations = [];
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+
+        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
+        const serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+        let choices: { name: string; value: ServiceAnswer }[] = await (
+            (serviceSelectionPrompt as ListQuestion)?.choices as Function
+        )();
+        expect(choices.length).toBe(2);
+
+        let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
+            choices[1].value
+        );
+
+        expect(message).toMatchObject({
+            message: t('prompts.warnings.noAnnotations'),
+            severity: Severity.warning
+        });
+    });
+
     test('should pre-select service if only one', async () => {
         const connectValidator = new ConnectionValidator();
         connectionValidatorMock.catalogs = {
