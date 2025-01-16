@@ -9,7 +9,7 @@ import {
     listDestinations,
     getCredentialsForDestinationService,
     exposePort,
-    createBTPOAuthExchangeDestination
+    createOAuth2UserTokenExchangeDest
 } from '../src';
 import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
@@ -53,10 +53,18 @@ jest.mock('@sap/cf-tools', () => {
         }),
         cfGetTarget: jest.fn(() => Promise.resolve(cfTargetMock)),
         apiGetServicesInstancesFilteredByType: jest.fn().mockImplementation(() => cfDiscoveredAbapEnvsMock),
-        apiCreateServiceInstance: jest.fn().mockImplementation((name?) => {}),
+        apiCreateServiceInstance: jest.fn().mockImplementation(() => {}),
         apiGetInstanceCredentials: jest.fn(() => Promise.resolve(uaaCredentialsMock))
     };
 });
+
+// jest.mock('@sap/bas-sdk', () => {
+//     const original = jest.requireActual('@sap/bas-sdk');
+//     return {
+//         ...original,
+//         destinations: { ...original.destinations, createDestination: jest.fn(() => Promise.resolve()) }
+//     };
+// });
 
 describe('App Studio', () => {
     describe('isAppStudio', () => {
@@ -231,12 +239,12 @@ describe('App Studio', () => {
 
         test('creation is only supported on BAS', async () => {
             delete process.env[ENV.H2O_URL];
-            await expect(createBTPOAuthExchangeDestination(destination)).rejects.toThrow(
+            await expect(createOAuth2UserTokenExchangeDest(destination)).rejects.toThrow(
                 /SAP Business Application Studio/
             );
         });
 
-        test('generate new SAP BTP destination', async () => {
+        test('generate new OAuth2UserTokenExchange SAP BTP destination', async () => {
             process.env[ENV.H2O_URL] = server;
             const result = `
                 Object {
@@ -263,14 +271,14 @@ describe('App Studio', () => {
                     return true;
                 })
                 .reply(200);
-            await expect(createBTPOAuthExchangeDestination(destination)).resolves.toMatchInlineSnapshot(result);
+            await expect(createOAuth2UserTokenExchangeDest(destination)).resolves.toMatchInlineSnapshot(result);
             expect(bodyParam).toMatchInlineSnapshot(result);
         });
 
         test('throw exception if no UAA credentials found', async () => {
             process.env[ENV.H2O_URL] = server;
             uaaCredentialsMock = {} as any;
-            await expect(createBTPOAuthExchangeDestination(destination)).rejects.toThrow(
+            await expect(createOAuth2UserTokenExchangeDest(destination)).rejects.toThrow(
                 /Could not retrieve SAP BTP credentials./
             );
         });
@@ -278,7 +286,7 @@ describe('App Studio', () => {
         test('throw exception if no dev space is created for the respective subaccount', async () => {
             process.env[ENV.H2O_URL] = server;
             cfTargetMock = {} as any;
-            await expect(createBTPOAuthExchangeDestination(destination)).rejects.toThrow(
+            await expect(createOAuth2UserTokenExchangeDest(destination)).rejects.toThrow(
                 /No Dev Space has been created for the subaccount./
             );
         });

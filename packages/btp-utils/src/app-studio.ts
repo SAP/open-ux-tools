@@ -1,4 +1,3 @@
-import type { AxiosRequestConfig } from 'axios';
 import axios from 'axios';
 import {
     apiCreateServiceInstance,
@@ -12,14 +11,13 @@ import { ENV } from './app-studio.env';
 import {
     Authentication,
     type Destination,
-    DestinationType,
     isS4HC,
     type ListDestinationOpts,
-    OAuthUrlType,
     type CloudFoundryServiceInfo,
     type OAuth2Destination
 } from './destination';
 import type { ServiceInfo } from './service-info';
+import { destinations } from '@sap/bas-sdk';
 
 /**
  * ABAP Cloud destination instance name.
@@ -160,21 +158,25 @@ export async function exposePort(port: number, logger?: Logger): Promise<string>
 export function transformToOAuthUserTokenExchange(
     destination: Destination,
     credentials: ServiceInfo['uaa']
-): OAuth2Destination {
+): destinations.DestinationInfo {
+    const BASProperties = {
+        usage: 'odata_abap,dev_abap,abap_cloud',
+        html5DynamicDestination: 'true',
+        html5Timeout: '60000'
+    } as destinations.BASProperties;
+
     const oauthDestination = {
-        ...destination,
-        Type: DestinationType.HTTP,
-        Authentication: Authentication.OAUTH2_USER_TOKEN_EXCHANGE,
-        URL: credentials.url,
-        WebIDEEnabled: 'true',
-        WebIDEUsage: 'odata_abap,dev_abap,abap_cloud',
-        'HTML5.Timeout': '60000',
-        'HTML5.DynamicDestination': 'true',
-        tokenServiceURLType: OAuthUrlType.DEDICATED,
-        tokenServiceURL: `${credentials.url}/oauth/token`,
-        clientSecret: credentials.clientsecret,
-        clientId: credentials.clientid
-    } as OAuth2Destination;
+        name: destination.Name,
+        type: destination.Type,
+        proxyType: destination.ProxyType,
+        description: destination.Description,
+        url: new URL(credentials.url),
+        basProperties: BASProperties,
+        credentials: {
+            authentication: Authentication.OAUTH2_USER_TOKEN_EXCHANGE as destinations.AuthenticationType,
+            oauth2UserTokenExchange: credentials as unknown as destinations.OAuth2ClientCredentials
+        }
+    } as destinations.DestinationInfo;
     // Will be added as an additional property in BTP if not removed
     delete (oauthDestination as { Host?: string }).Host;
     return oauthDestination;
@@ -202,10 +204,10 @@ export async function generateABAPCloudDestinationName(name: string): Promise<st
  * @param logger Logger
  * @returns Preconfigured OAuth destination
  */
-async function generateOAuthTokenExchangeDestination(
+async function generateOAuth2UserTokenExchangeDestination(
     destination: Destination,
     logger?: Logger
-): Promise<OAuth2Destination> {
+): Promise<destinations.DestinationInfo> {
     const destinationName: string = await generateABAPCloudDestinationName(destination.Name);
     const instances: CloudFoundryServiceInfo[] = await apiGetServicesInstancesFilteredByType(['destination']);
     const destinationInstance = instances.find(
@@ -234,40 +236,22 @@ async function generateOAuthTokenExchangeDestination(
 
 /**
  *  Create a new SAP BTP subaccount destination of type 'OAuth2UserTokenExchange' using cf-tools to populate the UAA properties.
- *  This will overwrite the existing destination its associated properties, if already present on the CF subaccount.
+ *  If the destination already exists, only new or missing properties will be added.
+ *
+ *  For example: If an existing SAP BTP destination already contains `WebIDEEnabled` and the value is set as `false`, the value will remain `false` even after the update.
  *
  * @param destination destination info
  * @param logger Logger
  * @returns Newly generated OAuth destination
  */
-export async function createBTPOAuthExchangeDestination(
+export async function createOAuth2UserTokenExchangeDest(
     destination: Destination,
     logger?: Logger
 ): Promise<OAuth2Destination> {
     if (!isAppStudio()) {
-        throw new Error(`Creating SAP BTP destinations is only supported on SAP Business Application Studio.`);
+        throw new Error(`Creating a SAP BTP destinations is only supported on SAP Business Application Studio.`);
     }
-    const btpDestination = await generateOAuthTokenExchangeDestination(destination, logger);
-    await createBTPDestination(btpDestination);
-    return btpDestination;
-}
-
-/**
- * Create or update a SAP BTP subaccount destination.
- * If the destination already exists, there is no exception thrown and the existing properties defined in the destination are not updated nor removed by this request.
- *
- * @param destination destination info
- */
-async function createBTPDestination(destination: Destination | OAuth2Destination): Promise<void> {
-    const headers: Record<string, string> = {
-        'Content-Type': 'application/json',
-        'User-Agent': 'Bas'
-    };
-    const reqConfig: AxiosRequestConfig = {
-        method: 'post',
-        url: `${getAppStudioBaseURL()}/api/createDestination`,
-        headers,
-        data: destination
-    };
-    await axios.request(reqConfig);
+    const btpDestination = await generateOAuth2UserTokenExchangeDestination(destination, logger);
+    await destinations.createDestination(btpDestination);
+    return btpDestination as unknown as OAuth2Destination;
 }
