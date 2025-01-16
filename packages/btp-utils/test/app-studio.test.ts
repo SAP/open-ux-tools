@@ -234,6 +234,7 @@ describe('App Studio', () => {
 
         afterAll(() => {
             delete process.env[ENV.H2O_URL];
+            delete process.env['WS_BASE_URL'];
             jest.resetAllMocks();
         });
 
@@ -246,6 +247,7 @@ describe('App Studio', () => {
 
         test('generate new OAuth2UserTokenExchange SAP BTP destination', async () => {
             process.env[ENV.H2O_URL] = server;
+            process.env['WS_BASE_URL'] = server; // Required for bas-sdk to ensure isAppStudio is true
             const result = `
                 Object {
                   "Authentication": "OAuth2UserTokenExchange",
@@ -271,7 +273,7 @@ describe('App Studio', () => {
                     return true;
                 })
                 .reply(200);
-            await expect(createOAuth2UserTokenExchangeDest(destination)).resolves.toMatchInlineSnapshot(result);
+            await expect(createOAuth2UserTokenExchangeDest(destination)).resolves.toBe(undefined);
             expect(bodyParam).toMatchInlineSnapshot(result);
         });
 
