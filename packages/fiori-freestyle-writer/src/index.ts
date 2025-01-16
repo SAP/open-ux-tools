@@ -12,6 +12,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
+import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -22,6 +23,7 @@ import { getTemplateVersionPath, processDestinationPath } from './utils';
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
+    console.log(' ---- generate with FF cap service ---');
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
@@ -164,6 +166,19 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addFioriToolsProxydMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    }
+
+    if (ffApp.service?.capService) {
+        const settings: CapProjectSettings = {
+            appRoot: basePath,
+            packageName: ffApp.package.name ?? '',
+            appId: ffApp.app.id,
+            sapux: ffApp.appOptions?.sapux,
+            enableNPMWorkspaces: ffApp.appOptions?.enableNPMWorkspaces,
+            enableTypescript: ffApp.appOptions?.typescript,
+            enableCdsUi5Plugin: ffApp.service.capService.cdsUi5PluginInfo ? true : false
+        };
+        await applyCAPUpdates(fs, ffApp.service.capService, settings);
     }
 
     return fs;

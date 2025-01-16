@@ -3,7 +3,12 @@ import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
-import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
+import {
+    generate as addOdataService,
+    OdataVersion,
+    ServiceType,
+    type OdataService
+} from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp } from './types';
@@ -21,6 +26,7 @@ import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
+import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -58,6 +64,7 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
+    console.log(' ---- generate with FE lates cap service ---');
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
@@ -68,7 +75,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     validateRequiredProperties(feApp);
 
     setAppDefaults(feApp);
-
+    debugger;
     fs = await generateUi5Project(basePath, feApp, fs);
 
     feApp.template.settings = setDefaultTemplateSettings(feApp.template, feApp.service.version);
@@ -205,6 +212,18 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             },
             fs
         );
+    }
+    if (feApp.service.capService) {
+        const settings: CapProjectSettings = {
+            appRoot: basePath,
+            packageName: feApp.package.name ?? '',
+            appId: feApp.app.id,
+            sapux: feApp.appOptions?.sapux,
+            enableNPMWorkspaces: feApp.appOptions?.enableNPMWorkspaces,
+            enableTypescript: feApp.appOptions?.typescript,
+            enableCdsUi5Plugin: feApp.service.capService.cdsUi5PluginInfo ? true : false
+        };
+        await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
 
     return fs;
