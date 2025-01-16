@@ -337,12 +337,12 @@ describe('Test new system prompt', () => {
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
-        let choices: { name: string; value: ServiceAnswer }[] = await (
+        const choices: { name: string; value: ServiceAnswer }[] = await (
             (serviceSelectionPrompt as ListQuestion)?.choices as Function
         )();
         expect(choices.length).toBe(2);
 
-        let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
+        const message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
             choices[1].value
         );
 
