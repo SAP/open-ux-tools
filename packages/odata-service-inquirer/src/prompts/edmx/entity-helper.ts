@@ -34,7 +34,7 @@ export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformat
  * @param options.entitySetFilter
  *     `filterDraftEnabled` : Only draft enabled entities wil be returned when true, useful for Form Object Page app generation.
  *     `filterAggregateTransformationsOnly` : Only return entity choices that have an aggregate annotation (Aggregation.ApplySupported) with the `Transformations` property set,
- *  specifically used for ALP V4 app generation.
+ *  specifically used for ALP V4 app generation. If this option is set and the specified metadata is not V4, the option will be ignored.
  * @param options.defaultMainEntityName The default selected entity set name
  * @returns entity options
  */
@@ -70,7 +70,8 @@ export function getEntityChoices(
 
         if (entitySetFilter === 'filterDraftEnabled') {
             entitySets = filterDraftEnabledEntities(convertedMetadata.entitySets) ?? [];
-        } else if (entitySetFilter === 'filterAggregateTransformationsOnly') {
+        } else if (entitySetFilter === 'filterAggregateTransformationsOnly' && odataVersion === OdataVersion.v4) {
+            // Only for v4 odata version, if a v2 metadata is passed, this will be ignored
             entitySets = filterAggregateTransformations(convertedMetadata.entitySets);
         } else {
             entitySets = convertedMetadata.entitySets;

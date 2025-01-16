@@ -82,12 +82,11 @@ describe('Test entity helper functions', () => {
             });
             expect(filteredEntities.choices).toEqual(fitleredChoices);
 
-            // Metadata is odata v2 instead of v4
+            // Metadata is odata v2 instead of v4, `filterAggregateTransformationsOnly` is ignored
             const filteredEntitiesNoEdmx = getEntityChoices(metadataV2, {
-                useEntityTypeAsName: true,
                 entitySetFilter: 'filterAggregateTransformationsOnly'
             });
-            expect(filteredEntitiesNoEdmx.choices).toEqual([]);
+            expect(filteredEntitiesNoEdmx.choices).toMatchSnapshot();
         });
     });
 
