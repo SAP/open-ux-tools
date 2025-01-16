@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.0
+
+### Minor Changes
+
+-   88bf030: Add optional mem-fs editor to function in project-access
+
 ## 1.28.10
 
 ### Patch Changes
