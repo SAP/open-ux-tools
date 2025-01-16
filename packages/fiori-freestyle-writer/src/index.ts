@@ -23,7 +23,6 @@ import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-wri
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
-    console.log(' ---- generate with FF cap service ---');
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
