@@ -21,7 +21,6 @@ import type { Annotations } from '@sap-ux/axios-extension';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { getEntitySelectionQuestions } from './prompts/edmx/questions';
 import LoggerHelper from './prompts/logger-helper';
-import type { EntityPromptOptions } from './types';
 import {
     type CapRuntime,
     type CapService,
@@ -29,6 +28,7 @@ import {
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
     type SapSystemType,
+    type EntityPromptOptions,
     DatasourceType,
     EntityRelatedAnswers,
     promptNames

@@ -30,7 +30,7 @@ export const SapSystemTypes = {
 
 export type SapSystemType = keyof typeof SapSystemTypes;
 
-export const SAP_CLIENT_KEY = 'sap-client' as const;
+export const SAP_CLIENT_KEY = 'sap-client';
 /**
  * The limit for the metadata file size in KB above which a warning will be displayed to the user regarding processing time.
  */

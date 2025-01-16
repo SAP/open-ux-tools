@@ -35,9 +35,9 @@ function getQualifierChoices(annotations: Annotations, entityType: string): Choi
         const selectionPresentationTerm = 'UI.SelectionPresentationVariant';
         let filterQualifiers = filteredAnnotations[0]?.Annotation;
         if (Array.isArray(filterQualifiers)) {
-            filterQualifiers = filterQualifiers
+            filterQualifiers
                 .filter((a) => a.Term === selectionPresentationTerm)
-                .map((a) => {
+                .forEach((a) => {
                     if (a.Qualifier) {
                         qualifierChoices.push({ name: a.Qualifier, value: a.Qualifier });
                     }

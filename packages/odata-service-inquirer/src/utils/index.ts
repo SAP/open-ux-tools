@@ -1,12 +1,12 @@
 import { ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { XMLParser } from 'fast-xml-parser';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import LoggerHelper from '../prompts/logger-helper';
 import { PromptState } from './prompt-state';
-import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -44,7 +44,7 @@ export function parseOdataVersion(metadata: string): OdataVersion {
  * @param xml - the schema to parse
  * @returns parsed object representation of passed XML
  */
-export function xmlToJson(xml: string): any | void {
+export function xmlToJson(xml: string): any {
     const options = {
         attributeNamePrefix: '',
         ignoreAttributes: false,

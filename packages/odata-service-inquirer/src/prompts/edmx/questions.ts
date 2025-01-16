@@ -17,12 +17,12 @@ import { EntityPromptNames, MetadataSizeWarningLimitKb } from '../../types';
 import { PromptState } from '../../utils';
 import LoggerHelper from '../logger-helper';
 import { getAnalyticListPageQuestions } from './alp-questions';
-import type { EntitySetFilter } from './entity-helper';
 import {
     type EntityAnswer,
-    type NavigationEntityAnswer,
+    type EntitySetFilter,
     getEntityChoices,
-    getNavigationEntityChoices
+    getNavigationEntityChoices,
+    type NavigationEntityAnswer
 } from './entity-helper';
 
 /**
@@ -54,7 +54,7 @@ function validateEntityChoices(
         LoggerHelper.logger.debug(`Exiting due to validation error: ${validationMsg}`);
         throw new Error(t('errors.exitingGeneration', { exitReason: validationMsg }));
     }
-    return validationMsg || true;
+    return validationMsg ?? true;
 }
 
 /**
