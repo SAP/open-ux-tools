@@ -3,11 +3,11 @@ import { join } from 'path';
 import yeomanTest from 'yeoman-test';
 import yaml from 'js-yaml';
 import { rimraf } from 'rimraf';
+import * as memfs from 'memfs';
 import hasbin from 'hasbin';
 import { TestFixture } from './fixtures';
 import AppRouterGenerator from '../src/app-router/';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
-import { commonChecks } from './utils/checks';
 import { initI18n } from '../src/utils';
 import { ErrorHandler, ERROR_TYPE } from '@sap-ux/deploy-config-generator-shared';
 import * as deployConfigGenShared from '@sap-ux/deploy-config-generator-shared';
@@ -34,14 +34,16 @@ jest.mock('@sap/mta-lib', () => {
 });
 
 const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
-const originalCwd = process.cwd();
+const sapUxTest = 'sap-ux-test';
 
 describe('App router generator tests', () => {
+    const originalCwd = process.cwd();
     const targetfolder = join(__dirname, './test-output');
     const testFixture = new TestFixture();
     const appRouterGenPath = join(__dirname, '../src/app-router');
 
     beforeEach(() => {
+        memfs.vol.reset();
         jest.clearAllMocks();
     });
 
@@ -59,27 +61,32 @@ describe('App router generator tests', () => {
 
     afterAll(() => {
         jest.resetAllMocks();
-        rimraf.sync(join(targetfolder, 'sap-ux-test'));
+        rimraf.sync(join(targetfolder, sapUxTest));
     });
 
     it('Generate app router project with minimum configuration', async () => {
-        const projectPrefix = 'sap-ux-test';
+        const projectPrefix = sapUxTest;
         const appDir = join(targetfolder, projectPrefix);
         hasbinSyncMock.mockReturnValue(true);
         await expect(
             yeomanTest
-                .run(AppRouterGenerator, {
-                    resolved: appRouterGenPath
-                })
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    { cwd: targetfolder }
+                )
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
-                    mtaId: 'sap-ux-test',
+                    mtaId: sapUxTest,
                     mtaDescription: 'Main MTA configuration for router',
                     routerType: RouterModuleType.Standard,
                     addConnectivityService: false,
                     abapServiceProvider: { label: 'ZZZ_00.0035', service: 'abap-haas' }
                 })
+                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -93,23 +100,28 @@ describe('App router generator tests', () => {
 
     it('Generate app router project with connectivity config', async () => {
         hasbinSyncMock.mockReturnValue(true);
-        const projectPrefix = 'sap-ux-test';
+        const projectPrefix = sapUxTest;
         const appDir = join(targetfolder, projectPrefix);
 
         await expect(
             yeomanTest
-                .run(AppRouterGenerator, {
-                    resolved: appRouterGenPath
-                })
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    { cwd: targetfolder }
+                )
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
-                    mtaId: 'sap-ux-test',
+                    mtaId: sapUxTest,
                     mtaDescription: 'Main MTA configuration for router',
                     routerType: RouterModuleType.Standard,
                     addConnectivityService: true,
                     addABAPServiceBinding: false
                 })
+                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -129,23 +141,28 @@ describe('App router generator tests', () => {
 
     it('Generate app router project with direct abap service config', async () => {
         hasbinSyncMock.mockReturnValue(true);
-        const projectPrefix = 'sap-ux-test';
+        const projectPrefix = sapUxTest;
         const appDir = join(targetfolder, projectPrefix);
         await expect(
             yeomanTest
-                .run(AppRouterGenerator, {
-                    resolved: appRouterGenPath
-                })
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    { cwd: targetfolder }
+                )
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
-                    mtaId: 'sap-ux-test',
+                    mtaId: sapUxTest,
                     mtaDescription: 'Main MTA configuration for router',
                     routerType: RouterModuleType.Standard,
                     addConnectivityService: false,
                     addABAPServiceBinding: true,
                     abapServiceProvider: { label: 'ZZZ_00.0035', service: 'abap-haas' }
                 })
+                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -164,24 +181,29 @@ describe('App router generator tests', () => {
     });
 
     it('Generate app router project with maximum mta config', async () => {
-        const projectPrefix = 'sap-ux-test';
+        const projectPrefix = sapUxTest;
         const appDir = join(targetfolder, projectPrefix);
 
         await expect(
             yeomanTest
-                .run(AppRouterGenerator, {
-                    resolved: appRouterGenPath
-                })
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    { cwd: targetfolder }
+                )
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
-                    mtaId: 'sap-ux-test',
+                    mtaId: sapUxTest,
                     mtaDescription: 'Main MTA configuration for router',
                     routerType: RouterModuleType.Standard,
                     addConnectivityService: true,
                     addABAPServiceBinding: true,
                     abapServiceProvider: { label: 'ZZZ_00.0035', service: 'abap-haas' }
                 })
+                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -199,23 +221,28 @@ describe('App router generator tests', () => {
     });
 
     it('Generate app router project with managed app router', async () => {
-        const projectPrefix = 'sap-ux-test';
+        const projectPrefix = sapUxTest;
         const appDir = join(targetfolder, projectPrefix);
         await expect(
             yeomanTest
-                .run(AppRouterGenerator, {
-                    resolved: appRouterGenPath
-                })
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    { cwd: targetfolder }
+                )
                 .withOptions({ skipInstall: true })
                 .withPrompts({
                     mtaPath: join(targetfolder, '/'),
-                    mtaId: 'sap-ux-test',
+                    mtaId: sapUxTest,
                     mtaDescription: 'Main MTA configuration for router',
                     mtaVersion: '0.0.1',
                     routerType: RouterModuleType.Managed,
                     addConnectivityService: false,
                     addABAPServiceBinding: false
                 })
+                .run()
         ).resolves.not.toThrow();
 
         const mtaContent = fs.readFileSync(`${appDir}/mta.yaml`, 'utf-8');
@@ -233,10 +260,15 @@ describe('App router generator tests', () => {
         });
         await expect(
             yeomanTest
-                .run(AppRouterGenerator, {
-                    resolved: appRouterGenPath
-                })
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    { cwd: targetfolder }
+                )
                 .withOptions({ skipInstall: true })
+                .run()
         ).rejects.toThrow();
     });
 
@@ -251,13 +283,32 @@ describe('App router generator tests', () => {
 
         await expect(
             yeomanTest
-                .run(AppRouterGenerator, {
-                    resolved: appRouterGenPath
-                })
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    { cwd: targetfolder }
+                )
                 .withOptions({ skipInstall: true })
+                .run()
         ).resolves.not.toThrow();
 
         expect(getAppRouterPromptsSpy).not.toHaveBeenCalled();
         expect(generateBaseConfigSpy).not.toHaveBeenCalled();
     });
 });
+
+function commonChecks(testFixture: TestFixture, OUTPUT_DIR_PREFIX: string): void {
+    const rootPackageJsonContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/package.json`, 'utf-8');
+    const rootPackageJson = JSON.parse(rootPackageJsonContent);
+    const expectRootPackageJsonContent = testFixture.getContents('sap-ux-test/package.json');
+    const expectRootPackageJson = JSON.parse(expectRootPackageJsonContent);
+    expect(rootPackageJson).toEqual(expectRootPackageJson);
+
+    const routerPackageJsonContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/router/package.json`, 'utf-8');
+    const routerPackageJson = JSON.parse(routerPackageJsonContent);
+    const expectRouterPackageJsonContent = testFixture.getContents('sap-ux-test/router/package.json');
+    const expectRouterPackageJson = JSON.parse(expectRouterPackageJsonContent);
+    expect(routerPackageJson).toEqual(expectRouterPackageJson);
+}
