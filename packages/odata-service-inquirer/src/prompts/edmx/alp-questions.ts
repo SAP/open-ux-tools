@@ -9,11 +9,11 @@ import { EntityPromptNames } from '../../types';
 import { xmlToJson } from '../../utils';
 
 /**
- * Return the annotation `selectionPresentationVariant.qualifier` properties as prompt choices for the specified annotations and entityType.
+ * Return the annotation `UI.selectionPresentationVariant.qualifier` properties as prompt choices for the specified annotations and entityType.
  *
- * @param annotations
- * @param entityType
- * @returns
+ * @param annotations the annotations in which to search for the annotation: `UI.selectionPresentationVariant.qualifier`
+ * @param entityType the entityType of the annotations target in which to search for the annotation: `UI.selectionPresentationVariant.qualifier`
+ * @returns the matching `UI.selectionPresentationVariant` qualifers as prompt choices
  */
 function getQualifierChoices(annotations: Annotations, entityType: string): ChoiceOptions[] {
     const qualifierChoices: ChoiceOptions[] = [{ name: t('texts.choiceNameNone'), value: undefined }];
@@ -53,10 +53,10 @@ function getQualifierChoices(annotations: Annotations, entityType: string): Choi
 /**
  * Get questions that related to generation of Analytical List Page type applications.
  *
- * @param odataVersion
- * @param annotations
- * @param hideTableLayoutPrompts
- * @returns
+ * @param odataVersion odata version '2' or '4' will the table layout prompts to be shown
+ * @param annotations used to determine if the select presentation qualifier prompt should be shown
+ * @param hideTableLayoutPrompts hide the table layout prompts, certain consumers do not need these prompts
+ * @returns alp specific questions
  */
 export function getAnalyticListPageQuestions(
     odataVersion: OdataVersion,

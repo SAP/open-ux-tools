@@ -169,8 +169,8 @@ export function getNavigationEntityChoices(
 /**
  * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
  *
- * @param entitySets
- * @returns
+ * @param entitySets the entity sets to filter
+ * @returns the filtered entity sets
  */
 function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
     return entitySets.filter((entitySet) => {
@@ -181,8 +181,8 @@ function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
 /**
  * Returns only entities that have a type property of 'HasDraftEnabled'.
  *
- * @param entitySets
- * @returns
+ * @param entitySets the entity sets to filter by draft enabled entities
+ * @returns the filtered entity sets
  */
 function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[] | undefined {
     return entitySets.filter((entitySet) => {

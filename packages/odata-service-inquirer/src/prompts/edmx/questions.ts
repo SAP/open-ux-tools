@@ -253,11 +253,11 @@ function getEdmxSizeInKb(edmx: string): number {
 /**
  * Get the questions that may be used to prompt for adding annotations. Only a subset of the questions will be returned based on the template type and OData version.
  *
- * @param metadata
- * @param templateType
- * @param odataVersion
- * @param isCapService
- * @returns
+ * @param metadata the metadata (edmx) string of the service, used to determine if the metadata is large and the user should be warned about processing time
+ * @param templateType only specific template types will have line item annotations
+ * @param odataVersion only specific OData versions will have line item annotations
+ * @param isCapService whether the service is a CAP service or not
+ * @returns the annotation generation questions
  */
 function getAddAnnotationQuestions(
     metadata: string,

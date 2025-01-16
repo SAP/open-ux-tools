@@ -92,14 +92,14 @@ async function getSystemSelectionQuestions(
  * Get the questions that may be used to prompt for entity selection, table configuration, annotation generation, and ALP specific table configuration.
  * Since these are releated to service metadata processing and entity selection, they are grouped together.
  *
- * @param metadata
- * @param templateType
- * @param isCapService
- * @param promptOptions - options that can control some of the prompt behavior. See {@link EntityPromptOptions} for details
- * @param annotations - annotations to be used for entity selection, only used for analytical list page presentation variant qualifier choices when the edmx odata version is `2`
- * @param logger
- * @param isYUI
- * @returns the prompts
+ * @param metadata the metadata (edmx) string from which to extract entity choices
+ * @param templateType the template type which will define the type of prompts and their choices
+ * @param isCapService if true, the service is a CAP service, some prompts will be adjusted accordingly
+ * @param promptOptions options that can control some of the prompt behavior. See {@link EntityPromptOptions} for details
+ * @param annotations annotations to be used for entity selection, only used for analytical list page presentation variant qualifier choices when the edmx odata version is `2`
+ * @param logger a logger compatible with the {@link Logger} interface
+ * @param isYUI if true, the prompt is being called from the Yeoman UI extension host
+ * @returns the prompts which may be used to prompt for entity selection, table configuration, annotation generation, and ALP specific table configuration
  */
 function getEntityRelatedPrompts(
     metadata: string,
