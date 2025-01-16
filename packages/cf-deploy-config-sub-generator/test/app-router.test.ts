@@ -4,7 +4,6 @@ import AppRouterGenerator from '../src/app-router';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
 import yeomanTest from 'yeoman-test';
 import yaml from 'js-yaml';
-import { rimraf } from 'rimraf';
 import * as memfs from 'memfs';
 import hasbin from 'hasbin';
 import { TestFixture } from './fixtures';
@@ -39,7 +38,7 @@ const sapUxTest = 'sap-ux-test';
 describe('App router generator tests', () => {
     let cwd: string;
     const originalCwd: string = process.cwd();
-    const targetfolder = join('/test-output');
+    const targetfolder = join('/output');
     const testFixture = new TestFixture();
     const appRouterGenPath = join(__dirname, '../src/app-router');
 
