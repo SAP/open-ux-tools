@@ -175,7 +175,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             sapux: ffApp.appOptions?.sapux,
             enableNPMWorkspaces: ffApp.appOptions?.enableNPMWorkspaces,
             enableTypescript: ffApp.appOptions?.typescript,
-            enableCdsUi5Plugin: ffApp.service.capService.cdsUi5PluginInfo ? true : false
+            enableCdsUi5Plugin: !!ffApp.service.capService.cdsUi5PluginInfo
         };
         await applyCAPUpdates(fs, ffApp.service.capService, settings);
     }

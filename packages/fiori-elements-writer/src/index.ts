@@ -215,7 +215,7 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             sapux: feApp.appOptions?.sapux,
             enableNPMWorkspaces: feApp.appOptions?.enableNPMWorkspaces,
             enableTypescript: feApp.appOptions?.typescript,
-            enableCdsUi5Plugin: feApp.service.capService.cdsUi5PluginInfo ? true : false
+            enableCdsUi5Plugin: !!feApp.service.capService.cdsUi5PluginInfo
         };
         await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
