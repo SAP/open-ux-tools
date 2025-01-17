@@ -6,6 +6,10 @@ import { testOutputDir, debug, updatePackageJSONDependencyToUseLocalPath } from 
 import { OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import type { BasicAppSettings } from '../src/types';
 import { projectChecks } from './common';
+import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { create as createStorage } from 'mem-fs';
+import { create, type Editor } from 'mem-fs-editor';
+import { types } from 'util';
 
 const TEST_NAME = 'basicTemplate';
 jest.setTimeout(240000); // Needed when debug.enabled
@@ -17,6 +21,11 @@ jest.mock('read-pkg-up', () => ({
             version: '9.9.9-mocked'
         }
     })
+}));
+
+jest.mock('@sap-ux/cap-config-writer', () => ({
+    ...jest.requireActual('@sap-ux/cap-config-writer'),
+    applyCAPUpdates: jest.fn()
 }));
 
 describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
@@ -362,6 +371,140 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                     manifest.json['sap.ui5'].routing.targets[`Target${viewPrefix}`].viewName
                 ].every((entry) => entry.includes(viewPrefix))
             ).toBeTruthy();
+        });
+    });
+
+    describe('CAP updates', () => {
+        const capService: CapServiceCdsInfo = {
+            cdsUi5PluginInfo: {
+                isCdsUi5PluginEnabled: true,
+                hasMinCdsVersion: true,
+                isWorkspaceEnabled: true,
+                hasCdsUi5Plugin: true
+            },
+            projectPath: 'test/path',
+            serviceName: 'test-service',
+            capType: 'Node.js'
+        };
+
+        const getFreestyleApp = (options: {
+            enableNPMWorkspaces: boolean,
+            typescript: boolean,
+            sapux: boolean, 
+            capService?: CapServiceCdsInfo
+        }) => {
+            const { enableNPMWorkspaces, typescript, sapux, capService } = options;
+            return {
+                app: {
+                    id: 'ff-basic-id'
+                },
+                template: {
+                    type: TemplateType.Basic,
+                    settings: {}
+                },
+                service: {
+                    version: OdataVersion.v4,
+                    capService
+                },
+                package: {
+                    name: 'ff-basic-id'
+                },
+                appOptions: {
+                    enableNPMWorkspaces: enableNPMWorkspaces,
+                    sapux,
+                    typescript
+                }
+            } as FreestyleApp<BasicAppSettings>;
+        };
+
+        const capProjectSettings = {
+            appRoot: curTestOutPath,
+            packageName: 'ff-basic-id',
+            appId: 'ff-basic-id',
+            sapux: true,
+            enableNPMWorkspaces: false,
+            enableTypescript: false,
+            enableCdsUi5Plugin: true
+        };
+
+        afterEach(() => {
+            jest.clearAllMocks();
+            jest.resetAllMocks();
+        });
+
+        test('should perform CAP updates when CAP service is available and enableNPMWorkspaces is true', async () => {
+            const fs = create(createStorage());
+
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                enableNPMWorkspaces: true, 
+                sapux: false,
+                typescript: false,
+                capService
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capService, {
+                ...capProjectSettings,
+                enableNPMWorkspaces: true, 
+                sapux: false
+            });
+        });
+
+        test('should perform CAP updates when CAP service is available, enableNPMWorkspaces is false', async () => {
+            const fs = create(createStorage());
+
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                enableNPMWorkspaces: false, 
+                sapux: false,
+                typescript: false,
+                capService
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capService, {
+                ...capProjectSettings,
+                sapux: false
+            });
+        });
+
+        test('should perform CAP updates correctly, when no cdsUi5PluginInfo available and enabled typescript', async () => {
+            const fs = create(createStorage());
+            const capServiceWithNocdsUi5PluginInfo = {
+                ...capService,
+                cdsUi5PluginInfo: {
+                    ...capService.cdsUi5PluginInfo,
+                    hasCdsUi5Plugin: false
+                }
+            };
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                enableNPMWorkspaces: false, 
+                sapux: true,
+                typescript: true,
+                capService: capServiceWithNocdsUi5PluginInfo
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(
+                fs,
+                capServiceWithNocdsUi5PluginInfo,
+                {
+                    ...capProjectSettings,
+                    enableTypescript: true
+                }
+            );
+        });
+
+        test('should not perform CAP updates, when no cap service provided', async () => {
+            const fs = create(createStorage());
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                enableNPMWorkspaces: false, 
+                sapux: false,
+                typescript: false
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+            expect(applyCAPUpdates).toBeCalledTimes(0);
         });
     });
 });
