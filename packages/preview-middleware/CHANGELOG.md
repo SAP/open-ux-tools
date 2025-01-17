@@ -1,5 +1,37 @@
 # @sap-ux/preview-middleware
 
+## 0.16.171
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.111
+
+## 0.16.170
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/adp-tooling@0.12.110
+
+## 0.16.169
+
+### Patch Changes
+
+-   2a9c788: Fixed wrong initial state for "Disable Semantic Date Range in Filter Bar" Quick Action.
+
+## 0.16.168
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.109
+
+## 0.16.167
+
+### Patch Changes
+
+-   1358041: fix: Manifest change for enabling semantic date range has no effect on running app with UI5 latest snapshot (=>1.132)
+
 ## 0.16.166
 
 ### Patch Changes

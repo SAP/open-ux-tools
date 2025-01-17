@@ -408,6 +408,10 @@ describe('Ui5AbapRepositoryService', () => {
             expect(xmlPayload).toContain(`<id>${publicUrl}/Repositories('special&amp;name')</id>`);
             // ABAP frontend reflects
             expect(service.getAbapFrontendUrl()).toEqual(publicUrl);
+
+            const publicS4HanaCloudUrl = 'https://my12345-api.lab.s4hana.cloud.sap';
+            const s4HanaCloudService = new ServiceForTesting({ publicUrl: publicS4HanaCloudUrl });
+            expect(s4HanaCloudService.getAbapFrontendUrl()).toEqual('https://my12345.lab.s4hana.cloud.sap');
         });
     });
 });

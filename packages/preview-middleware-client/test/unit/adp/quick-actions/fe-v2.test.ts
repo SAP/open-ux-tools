@@ -933,13 +933,9 @@ describe('FE V2 quick actions', () => {
                                 }
                                 return false;
                             }),
+                            getUseDateRangeType: () => false,
                             getDomRef: () => ({}),
-                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
-                            data: (key: string) => {
-                                if (key === 'useDateRangeType') {
-                                    return false;
-                                }
-                            }
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity')
                         };
                     }
                     if (id == 'NavContainer') {
