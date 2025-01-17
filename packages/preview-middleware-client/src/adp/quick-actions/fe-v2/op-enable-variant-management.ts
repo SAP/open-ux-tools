@@ -9,11 +9,12 @@ import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { preprocessActionExecution } from './create-table-custom-column';
 import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
+import UI5Element from 'sap/ui/core/Element';
 
-export const ENABLE_TABLE_EMPTY_ROW_MODE = 'enable-table-empty-row-mode';
+export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE];
-// const UNSUPPORTED_TABLES = [ANALYTICAL_TABLE_TYPE, TREE_TABLE_TYPE];
+
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
 
 type SmartTableExtended = SmartTable & {
@@ -26,11 +27,10 @@ export class EnableObjectPageVariantManagementQuickAction
     implements NestedQuickActionDefinition
 {
     readonly forceRefreshAfterExecution = true;
-    private targetType: 'Table' | 'Chart' = 'Table';
 
     constructor(context: QuickActionContext) {
         super(
-            ENABLE_TABLE_EMPTY_ROW_MODE,
+            ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
             CONTROL_TYPES,
             'QUICK_ACTION_ENABLE_TABLES_AND_CHARTS_VARIANT_MANAGEMENT',
             context
@@ -51,18 +51,17 @@ export class EnableObjectPageVariantManagementQuickAction
 
         await super.initialize();
 
-        const alreadyEnabledTooltip = this.context.resourceBundle.getText(
-            'VARIANT_MANAGEMENT_FOR_PAGE_CONTROLS_IS_ALREADY_ENABLED'
-        );
         const processChild = (child: NestedQuickActionChild, mapKey: string) => {
+            const alreadyEnabledTooltip = this.context.resourceBundle.getText(
+                'VARIANT_MANAGEMENT_FOR_TABLE_CONTROLS_IS_ALREADY_ENABLED',
+                [child.label]
+            );
             const table = this.tableMap[mapKey]?.table;
+
             if (table) {
-                if (table) {
-                    if ((table as SmartTableExtended).getVariantManagement() !== undefined) {
-                        //TODO : enable it once testing done...
-                        // child.enabled = false;
-                        child.tooltip = alreadyEnabledTooltip;
-                    }
+                if ((table as SmartTableExtended).getVariantManagement() !== undefined) {
+                    child.enabled = false;
+                    child.tooltip = alreadyEnabledTooltip;
                 }
             }
             child.children.forEach((nestedChild, idx) => processChild(nestedChild, `${mapKey}/${idx.toFixed(0)}`));
@@ -71,7 +70,6 @@ export class EnableObjectPageVariantManagementQuickAction
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
-        let lineItem = 'com.sap.vocabularies.UI.v1.LineItem';
         const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
         if (!table) {
             throw Error('Internal error. Table element not found');
@@ -85,23 +83,26 @@ export class EnableObjectPageVariantManagementQuickAction
         preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
         this.selectOverlay(table);
 
-        if (table.data().lineItemQualifier) {
-            lineItem = `${lineItem}#${table.data().lineItemQualifier}`;
-        }
-        const navSegment = (table as SmartTable).getTable().getBindingInfo('items').path ?? '';
-        const sectionId = `${navSegment ? navSegment + '::' : ''} ${lineItem}`;
-
         const commands = await prepareManifestChange(
             this.context,
-            `component/settings/sections/${sectionId}/tableSettings`,
+            `component/settings/sections/${this.getSectionID(table)}/tableSettings`,
             table,
             OBJECT_PAGE_COMPONENT_NAME,
             entitySet,
             {
-                'variantManagement': false
+                'variantManagement': true
             }
         );
 
         return commands ?? [];
+    }
+
+    getSectionID(table: UI5Element): string {
+        let lineItem = 'com.sap.vocabularies.UI.v1.LineItem';
+        if (table.data().lineItemQualifier) {
+            lineItem = `${lineItem}#${table.data().lineItemQualifier}`;
+        }
+        const navSegment = (table as SmartTable).getTable().getBindingInfo('items').path ?? '';
+        return `${navSegment ? navSegment + '::' : ''}${lineItem}`;
     }
 }
