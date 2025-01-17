@@ -5,7 +5,6 @@ import { areManifestChangesSupported, prepareManifestChange } from './utils';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import Component from 'sap/ui/core/Component';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
@@ -57,12 +56,8 @@ export class EnableListReportVariantManagementQuickAction
     }
 
     async initialize(): Promise<void> {
-        const version = await getUi5Version();
         const manifestChangesSupported = await areManifestChangesSupported(this.context.manifest);
         if (!manifestChangesSupported) {
-            return;
-        }
-        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120, patch: 23 })) {
             return;
         }
         super.initialize();

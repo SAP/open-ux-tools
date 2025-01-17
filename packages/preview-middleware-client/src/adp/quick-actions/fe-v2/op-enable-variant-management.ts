@@ -6,7 +6,6 @@ import { SMART_TABLE_TYPE } from '../control-types';
 
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
-import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { preprocessActionExecution } from './create-table-custom-column';
 import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import UI5Element from 'sap/ui/core/Element';
@@ -38,13 +37,7 @@ export class EnableObjectPageVariantManagementQuickAction
     }
 
     async initialize(): Promise<void> {
-        const version = await getUi5Version();
         if (!(await areManifestChangesSupported(this.context.manifest))) {
-            this.isApplicable = false;
-            return;
-        }
-
-        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 120, patch: 23 })) {
             this.isApplicable = false;
             return;
         }
