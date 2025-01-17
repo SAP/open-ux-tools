@@ -62,7 +62,7 @@ export default class extends DeploymentGenerator {
     private _initFromProjectConfig(): void {
         // mta executable is required as mta-lib is used
         if (!hasbin.sync(mtaExecutable)) {
-            handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.NO_MTA });
+            handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.NO_MTA_BIN });
             this.abort = true;
         }
     }

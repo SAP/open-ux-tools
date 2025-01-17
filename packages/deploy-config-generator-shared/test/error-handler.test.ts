@@ -1,8 +1,8 @@
-import { DeploymentGenerator } from '../src/base/generator';
-import { bail, handleErrorMessage, ErrorHandler, ERROR_TYPE } from '../src/utils/error-handler';
+import { DeploymentGenerator, bail, handleErrorMessage, ErrorHandler, ERROR_TYPE } from '../src';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
 import { t } from '../src/utils/i18n';
+import { cdsExecutable, cdsPkg, mtaExecutable, mtaPkg } from '../src/utils/constants';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...jest.requireActual('@sap-ux/fiori-generator-shared'),
@@ -17,29 +17,10 @@ describe('bail', () => {
 });
 
 describe('Error Message Methods', () => {
-    it('mtaIdAlreadyExist should return the correct error message', () => {
-        const destinationRoot = '/path/to/destination';
-        const result = ErrorHandler.mtaIdAlreadyExist(destinationRoot);
-        expect(result).toBe(t('errors.mtaIdAlreadyExists', { destinationRoot }));
-    });
-
-    it('noMtaInRoot should return the correct error message', () => {
-        const root = '/path/to/root';
-        const mtaYaml = 'mta.yaml';
-        const result = ErrorHandler.noMtaInRoot(root);
-        expect(result).toBe(t('errors.noMtaInRoot', { mtaFileName: mtaYaml, root }));
-    });
-
     it('unrecognizedTarget should return the correct error message', () => {
         const target = 'unknownTarget';
         const result = ErrorHandler.unrecognizedTarget(target);
         expect(result).toBe(t('errors.unrecognizedTarget', { target }));
-    });
-
-    it('cannotReadUi5Config should return the correct error message', () => {
-        const reason = 'Permission denied';
-        const result = ErrorHandler.cannotReadUi5Config(reason);
-        expect(result).toBe(t('errors.cannotReadUi5Config', { reason }));
     });
 
     it('fileDoesNotExist should return the correct error message', () => {
@@ -54,18 +35,21 @@ describe('Error Message Methods', () => {
         expect(result).toBe(t('errors.folderDoesNotExist', { filePath }));
     });
 
-    it('invalidClient should return the correct error message', () => {
-        const client = '12345';
-        const result = ErrorHandler.invalidClient(client);
-        expect(result).toBe(t('errors.invalidClient', { client }));
-    });
-
-    it('invalidURL should return the correct error message', () => {
-        const input = 'http://invalid.url';
-        const result = ErrorHandler.invalidURL(input);
-        expect(result).toBe(t('errors.invalidURL', { input }));
+    it('should return correct error message for each error type', () => {
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ABORT_SIGNAL)).toBe(t('errors.abortSignal'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MANIFEST)).toBe(t('errors.noManifest'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_APP_NAME)).toBe(t('errors.noAppName'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_UI5_CONFIG)).toBe(t('errors.noUi5Config'));
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_CDS_BIN)).toBe(
+            t('errors.noBinary', { bin: cdsExecutable, pkg: cdsPkg })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN)).toBe(
+            t('errors.noBinary', { bin: mtaExecutable, pkg: mtaPkg })
+        );
+        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CAP_DEPLOYMENT_NO_MTA)).toBe(t('errors.capDeploymentNoMta'));
     });
 });
+
 describe('handleErrorMessage', () => {
     let appWizardMock: AppWizard;
 
