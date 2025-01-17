@@ -7,33 +7,29 @@ import type { Editor } from 'mem-fs-editor';
 describe('utils', () => {
     const basePath = join(__dirname, '../../fixtures/variants-config');
 
-    describe('getSapClientFromPackageJson', () => {
-        test('scripts with no sap client', () => {
-            expect(utils.getSapClientFromPackageJson({ start: 'fiori run --open preview.html' })).toStrictEqual(
-                undefined
-            );
-        });
-
-        test('scripts with sap client', () => {
-            expect(
-                utils.getSapClientFromPackageJson({ start: 'fiori run --open preview.html?sap-client=000' })
-            ).toStrictEqual('000');
-        });
-    });
-
     describe('getUI5UrlParameters', () => {
-        test('defaults', () => {
+        test('parameters for ux-ui5-tooling 1.15.3', () => {
             const packageJson = { devDependencies: { '@sap/ux-ui5-tooling': '1.15.3' } };
-            expect(utils.enhanceUrlParametersWithRta(packageJson)).toStrictEqual(
+            expect(utils.getRtaUrlParameters(packageJson)).toStrictEqual(
                 'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false'
             );
         });
 
-        test('parameters overwrite with sap-client', () => {
+        test('parameters for ux-ui5-tooling 1.15.3', () => {
+            const packageJson = { devDependencies: { '@sap/ux-ui5-tooling': '1.15.4' } };
+            expect(utils.getRtaUrlParameters(packageJson)).toStrictEqual('');
+        });
+
+        test('parameters for preview-middleware 0.16.88', () => {
             const packageJson = { devDependencies: { '@sap-ux/preview-middleware': '0.16.88' } };
-            expect(utils.enhanceUrlParametersWithRta(packageJson, { 'sap-client': '500' })).toStrictEqual(
-                'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false&sap-client=500'
+            expect(utils.getRtaUrlParameters(packageJson)).toStrictEqual(
+                'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false'
             );
+        });
+
+        test('parameters for preview-middleware 0.16.90', () => {
+            const packageJson = { devDependencies: { '@sap-ux/preview-middleware': '0.16.90' } };
+            expect(utils.getRtaUrlParameters(packageJson)).toStrictEqual('');
         });
     });
 
