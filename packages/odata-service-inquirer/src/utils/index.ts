@@ -1,12 +1,12 @@
 import { ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { XMLParser } from 'fast-xml-parser';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import LoggerHelper from '../prompts/logger-helper';
 import { PromptState } from './prompt-state';
-import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -28,6 +28,23 @@ export function getPromptHostEnvironment(): { name: string; technical: HostEnvir
  * @returns the odata version of the specified metadata, throws an error if the metadata is invalid
  */
 export function parseOdataVersion(metadata: string): OdataVersion {
+    try {
+        const parsed = xmlToJson(metadata);
+        const odataVersion: OdataVersion = parsed['Edmx']['Version'] === 1 ? OdataVersion.v2 : OdataVersion.v4;
+        return odataVersion;
+    } catch (error) {
+        LoggerHelper.logger.error(error);
+        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+    }
+}
+
+/**
+ * Convert specified xml string to JSON.
+ *
+ * @param xml - the schema to parse
+ * @returns parsed object representation of passed XML
+ */
+export function xmlToJson(xml: string): any {
     const options = {
         attributeNamePrefix: '',
         ignoreAttributes: false,
@@ -35,14 +52,12 @@ export function parseOdataVersion(metadata: string): OdataVersion {
         parseAttributeValue: true,
         removeNSPrefix: true
     };
-    const parser: XMLParser = new XMLParser(options);
+
     try {
-        const parsed = parser.parse(metadata, true);
-        const odataVersion: OdataVersion = parsed['Edmx']['Version'] === 1 ? OdataVersion.v2 : OdataVersion.v4;
-        return odataVersion;
+        const parser = new XMLParser(options);
+        return parser.parse(xml, true);
     } catch (error) {
-        LoggerHelper.logger.error(error);
-        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+        throw new Error(t('error.unparseableXML', { error }));
     }
 }
 
