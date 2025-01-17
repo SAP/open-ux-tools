@@ -310,17 +310,17 @@ export async function getSelectedServiceMessage(
     if (selectedService) {
         let serviceType = selectedService.serviceType;
         if (selectedService.serviceODataVersion === ODataVersion.v2) {
-            serviceType = await getServiceType(
-                selectedService.servicePath,
-                selectedService.serviceType,
-                connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
-            );
             if (PromptState.odataService.annotations?.length === 0) {
                 return {
                     message: t('prompts.warnings.noAnnotations'),
                     severity: Severity.warning
                 };
             }
+            serviceType = await getServiceType(
+                selectedService.servicePath,
+                selectedService.serviceType,
+                connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
+            );
         }
         if (serviceType && serviceType !== ServiceType.UI) {
             return {
