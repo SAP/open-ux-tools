@@ -2,7 +2,7 @@ import { join } from 'path';
 import type { OdataService, EdmxAnnotationsInfo } from '../types';
 import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
-import type { Manifest } from '@sap-ux/project-access';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 
@@ -57,13 +57,23 @@ async function setDefaultServiceModel(basePath: string, service: OdataService, f
     // Check if manifest has already any dataSource models defined, empty string '' should be used for the first service
     const models = manifest?.['sap.ui5']?.models;
     if (models) {
-        // Filter dataSource models by dataSource property
-        const servicesModels = Object.values(models).filter((model) => model.dataSource);
-        service.model =
-            servicesModels.length === 0 ||
-            servicesModels.find((serviceModel) => serviceModel.dataSource === 'mainService') // model for mainService is ""
-                ? ''
-                : service.model ?? service.name;
+        const dataSourceModels: ManifestNamespace.Model[] = [];
+        // Search through existing services
+        for (const modelKey in models) {
+            const model = models[modelKey];
+            if (model.dataSource) {
+                dataSourceModels.push(model);
+            }
+            // Use model name of the existing service with matching dataSource
+            if (model.dataSource === service.name) {
+                service.model = modelKey;
+                break;
+            }
+        }
+        if (service.model === undefined) {
+            // '' for first model service
+            service.model = dataSourceModels.length === 0 ? '' : service.model ?? service.name;
+        }
     }
     // No models defined, that means first one is being added, set model to ''
     service.model ??= '';
