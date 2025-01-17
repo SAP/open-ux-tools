@@ -12,7 +12,8 @@ import {
     TransportChoices,
     type AbapSystemChoice,
     type AbapDeployConfigAnswersInternal,
-    type BackendTarget
+    type BackendTarget,
+    type SystemConfig
 } from '../types';
 import { AuthenticationType, type BackendSystem } from '@sap-ux/store';
 import type { ChoiceOptions, ListChoiceOptions } from 'inquirer';
@@ -248,6 +249,7 @@ export function updatePromptStateUrl(
  *
  * @param isCli - is running in CLI
  * @param input - package input
+ * @param systemConfig - system configuration
  * @param previousAnswers - previous answers
  * @param backendTarget - backend target from abap deploy config prompt options
  * @returns results of query and message based on number of results
@@ -255,22 +257,16 @@ export function updatePromptStateUrl(
 export async function getPackageChoices(
     isCli: boolean,
     input: string,
+    systemConfig: SystemConfig,
     previousAnswers: AbapDeployConfigAnswersInternal,
     backendTarget?: BackendTarget
 ): Promise<{ packages: string[]; morePackageResultsMsg: string }> {
     let packages;
     let morePackageResultsMsg = '';
+
     // For YUI we need to ensure input is provided so the prompt is not re-rendered with no input
     if (isCli || input) {
-        packages = await queryPackages(
-            input,
-            {
-                url: PromptState.abapDeployConfig.url,
-                client: PromptState.abapDeployConfig.client,
-                destination: PromptState.abapDeployConfig.destination
-            },
-            backendTarget
-        );
+        packages = await queryPackages(input, systemConfig, backendTarget);
 
         morePackageResultsMsg =
             packages && packages.length === ABAP_PACKAGE_SEARCH_MAX_RESULTS
