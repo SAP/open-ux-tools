@@ -3,7 +3,6 @@ import { generate, TableType, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { Package } from '@sap-ux/project-access';
 import {
     testOutputDir,
     debug,
