@@ -150,7 +150,7 @@ async function prompt(
 
 export {
     CfAbapEnvServiceChoice,
-    // @derecated - temp export to support to support open source migration
+    // @deprecated - temp export to support to support open source migration
     DatasourceType,
     EntityRelatedAnswers,
     // @deprecated - temp export to support to support open source migration
