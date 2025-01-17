@@ -625,7 +625,6 @@ describe('Test new system prompt', () => {
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
-        // todo: No check for GA link here???
         const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
         expect(choices).toEqual([]);
         const valResult = await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)();
