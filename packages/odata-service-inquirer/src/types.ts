@@ -177,8 +177,8 @@ export interface EntitySelectionAnswers {
 }
 
 export interface TableConfigAnswers {
-    [EntityPromptNames.tableType]: TableType;
-    [EntityPromptNames.hierarchyQualifier]: string;
+    [EntityPromptNames.tableType]?: TableType;
+    [EntityPromptNames.hierarchyQualifier]?: string;
 }
 
 export interface AnnotationGenerationAnswers {
@@ -187,11 +187,11 @@ export interface AnnotationGenerationAnswers {
 }
 
 export interface AlpTableConfigAnswers {
-    [EntityPromptNames.tableAutoHide]: boolean;
-    [EntityPromptNames.tableMultiSelect]: boolean;
-    [EntityPromptNames.tableSelectionMode]: TableSelectionMode;
-    [EntityPromptNames.presentationQualifier]: string;
-    [EntityPromptNames.smartVariantManagement]: boolean;
+    [EntityPromptNames.tableAutoHide]?: boolean;
+    [EntityPromptNames.tableMultiSelect]?: boolean;
+    [EntityPromptNames.tableSelectionMode]?: TableSelectionMode;
+    [EntityPromptNames.presentationQualifier]?: string;
+    [EntityPromptNames.smartVariantManagement]?: boolean;
 }
 
 /**
