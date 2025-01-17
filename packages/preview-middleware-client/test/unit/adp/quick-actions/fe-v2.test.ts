@@ -1399,12 +1399,12 @@ describe('FE V2 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: "Add Annotation File for ''{0}''"
+                                            label: 'Add Annotation File for \'\'{0}\'\''
                                         },
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: "Show Annotation File for ''{0}''"
+                                            label: 'Show Annotation File for \'\'{0}\'\''
                                         }
                                     ]
                                 }
@@ -2868,18 +2868,13 @@ describe('FE V2 quick actions', () => {
                     }
                 }
 
-                let thrown;
-                try {
-                    await subscribeMock.mock.calls[0][0](
-                        executeQuickAction({
-                            id: actionId,
-                            kind: 'nested',
-                            path: '0/0'
-                        })
-                    );
-                } catch (e) {
-                    thrown = (e as Error).message;
-                }
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({
+                        id: actionId,
+                        kind: 'nested',
+                        path: '0/0'
+                    })
+                );
 
                 expect(sendActionMock).toHaveBeenNthCalledWith(
                     1,
