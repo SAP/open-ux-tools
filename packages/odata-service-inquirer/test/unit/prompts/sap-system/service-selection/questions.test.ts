@@ -257,11 +257,13 @@ describe('Test new system prompt', () => {
                 Uri: 'http://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
             }
         ];
+        PromptState.odataService.annotations = annotations;
+        PromptState.odataService.servicePath = '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002';
+
         // Should show service type warning if service is not classified as UI
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
-                listServices: jest.fn().mockResolvedValue([serviceV2a]),
-                getAnnotations: jest.fn().mockResolvedValue(annotations)
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
             },
             [ODataVersion.v4]: {
                 listServices: jest.fn().mockResolvedValue([serviceV4a])
