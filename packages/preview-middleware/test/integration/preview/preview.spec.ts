@@ -110,7 +110,7 @@ const check = async (param: { page: Page }) => {
     const { page } = param;
     await page.goto(`${getUrl()}/my/custom/path/preview.html#app-preview`);
     await page.getByRole('button', { name: 'Go', exact: true }).click();
-    await expect(page.getByText('ProductForEdit_0', { exact: true })).not.toBeVisible();
+    await expect(page.getByText('abc', { exact: true })).toBeVisible();
 };
 
 const UI5Versions = JSON.parse(process.env.UI5Versions ?? '[]') as UI5Version[];
