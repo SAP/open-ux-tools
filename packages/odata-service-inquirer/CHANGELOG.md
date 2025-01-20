@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 1.1.0
+
+### Minor Changes
+
+-   7ecd4ec: Makes all properties of types `AlpTableConfigAnswers` and `TableConfigAnswers` optional
+
 ## 1.0.0
 
 ### Major Changes
