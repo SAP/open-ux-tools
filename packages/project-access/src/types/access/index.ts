@@ -122,6 +122,7 @@ export interface ApplicationAccess extends BaseAccess {
 
 export interface ProjectAccessOptions {
     logger?: Logger;
+    memFs?: Editor;
 }
 
 export interface ProjectAccess extends BaseAccess {

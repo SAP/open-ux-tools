@@ -1,0 +1,250 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test entity prompts getEntityQuestions should return the questions when no options specified 1`] = `
+[
+  {
+    "additionalMessages": [Function],
+    "choices": [
+      {
+        "name": "I_Currency",
+        "value": {
+          "entitySetName": "I_Currency",
+          "entitySetType": "SEPMRA_PROD_MAN.I_CurrencyType",
+        },
+      },
+      {
+        "name": "I_DraftAdministrativeData",
+        "value": {
+          "entitySetName": "I_DraftAdministrativeData",
+          "entitySetType": "SEPMRA_PROD_MAN.I_DraftAdministrativeDataType",
+        },
+      },
+      {
+        "name": "I_Language",
+        "value": {
+          "entitySetName": "I_Language",
+          "entitySetType": "SEPMRA_PROD_MAN.I_LanguageType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_CurrencyValueHelp",
+        "value": {
+          "entitySetName": "SEPMRA_C_CurrencyValueHelp",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_CurrencyValueHelpType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_ContactPerson",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_ContactPerson",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ContactPersonType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_PoItmCube",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_PoItmCube",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_PoItmCubeType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_Product",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_Product",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_ProductImage",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_ProductImage",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductImageType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_ProductPriceRange",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_ProductPriceRange",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductPriceRangeType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_ProductSalesData",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_ProductSalesData",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductSalesDataType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_ProductStock",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_ProductStock",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductStockType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_ProductText",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_ProductText",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductTextType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_Review",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_Review",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_ReviewPost",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_ReviewPost",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_StorageBinTP",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_StorageBinTP",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_StorageBinTPType",
+        },
+      },
+      {
+        "name": "SEPMRA_C_PD_Supplier",
+        "value": {
+          "entitySetName": "SEPMRA_C_PD_Supplier",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_SupplierType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_Address",
+        "value": {
+          "entitySetName": "SEPMRA_I_Address",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_AddressType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_DimensionUnit",
+        "value": {
+          "entitySetName": "SEPMRA_I_DimensionUnit",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_DimensionUnitType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_OrganizationalUnit",
+        "value": {
+          "entitySetName": "SEPMRA_I_OrganizationalUnit",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_OrganizationalUnitType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_PriceClassification",
+        "value": {
+          "entitySetName": "SEPMRA_I_PriceClassification",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_PriceClassificationType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_ProductCategory",
+        "value": {
+          "entitySetName": "SEPMRA_I_ProductCategory",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_ProductCategoryType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_ProductMainCategory",
+        "value": {
+          "entitySetName": "SEPMRA_I_ProductMainCategory",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_ProductMainCategoryType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_QuantityUnit",
+        "value": {
+          "entitySetName": "SEPMRA_I_QuantityUnit",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_QuantityUnitType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_StockAvailability",
+        "value": {
+          "entitySetName": "SEPMRA_I_StockAvailability",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_StockAvailabilityType",
+        },
+      },
+      {
+        "name": "SEPMRA_I_WeightUnit",
+        "value": {
+          "entitySetName": "SEPMRA_I_WeightUnit",
+          "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_WeightUnitType",
+        },
+      },
+    ],
+    "default": 6,
+    "guiOptions": {
+      "breadcrumb": true,
+    },
+    "message": "Main entity",
+    "name": "mainEntity",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+  },
+  {
+    "choices": [Function],
+    "default": 0,
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+    },
+    "message": "Navigation entity",
+    "name": "navigationEntity",
+    "source": [Function],
+    "type": "list",
+    "when": [Function],
+  },
+  {
+    "choices": [
+      {
+        "name": "Analytical",
+        "value": "AnalyticalTable",
+      },
+      {
+        "name": "Grid",
+        "value": "GridTable",
+      },
+      {
+        "name": "Responsive",
+        "value": "ResponsiveTable",
+      },
+      {
+        "name": "Tree",
+        "value": "TreeTable",
+      },
+    ],
+    "default": "ResponsiveTable",
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Defines the table type for the List Report Page.",
+    },
+    "message": "Table type",
+    "name": "tableType",
+    "type": "list",
+    "when": [Function],
+  },
+  {
+    "default": "",
+    "guiOptions": {
+      "breadcrumb": true,
+      "hint": "Leading property that decides between either a recursive hierarchy or data aggregation.",
+      "mandatory": true,
+    },
+    "message": "Hierarchy qualifier",
+    "name": "hierarchyQualifier",
+    "type": "input",
+    "validate": [Function],
+    "when": [Function],
+  },
+]
+`;

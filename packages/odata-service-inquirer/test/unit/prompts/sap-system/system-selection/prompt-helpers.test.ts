@@ -8,7 +8,6 @@ import {
     getBackendSystemDisplayName,
     NewSystemChoice
 } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { SystemSelectionPromptOptions } from '../../../../../src/types';
 
 const backendSystemBasic: BackendSystem = {
     name: 'http://abap.on.prem:1234 (ABAP-on-Prem)',
