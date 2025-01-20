@@ -13,7 +13,10 @@ import {
     type Destination,
     isS4HC,
     type ListDestinationOpts,
-    type CloudFoundryServiceInfo
+    type CloudFoundryServiceInfo,
+    OAuthUrlType,
+    DestinationProxyType,
+    DestinationType
 } from './destination';
 import type { ServiceInfo } from './service-info';
 import { destinations } from '@sap/bas-sdk';
@@ -100,7 +103,7 @@ export type Destinations = { [name: string]: Destination };
  * Helper function to strip `-api` from the host name.
  *
  * @param host -
- * @returns
+ * @returns an updated string value, with `-api` removed
  */
 function stripS4HCApiHost(host: string): string {
     const [first, ...rest] = host.split('.');
@@ -154,7 +157,7 @@ export async function exposePort(port: number, logger?: Logger): Promise<string>
  * @param credentials object representing the Client ID and Client Secret and token endpoint
  * @returns Populated OAuth destination
  */
-export function transformToBASSDKDestination(
+function transformToBASSDKDestination(
     destination: Destination,
     credentials: ServiceInfo['uaa']
 ): destinations.DestinationInfo {
@@ -164,16 +167,23 @@ export function transformToBASSDKDestination(
         html5Timeout: '60000'
     } as destinations.BASProperties;
 
+    const oauth2UserTokenExchange: destinations.OAuth2UserTokenExchange = {
+        clientId: credentials.clientid,
+        clientSecret: credentials.clientsecret,
+        tokenServiceURL: new URL('/oauth/token', credentials.url).toString(),
+        tokenServiceURLType: OAuthUrlType.DEDICATED
+    };
+
     return {
         name: destination.Name,
-        type: destination.Type,
-        proxyType: destination.ProxyType,
         description: destination.Description,
         url: new URL(credentials.url),
+        type: DestinationType.HTTP,
+        proxyType: DestinationProxyType.INTERNET,
         basProperties: BASProperties,
         credentials: {
             authentication: Authentication.OAUTH2_USER_TOKEN_EXCHANGE as destinations.AuthenticationType,
-            oauth2UserTokenExchange: credentials as unknown as destinations.OAuth2UserTokenExchange
+            oauth2UserTokenExchange
         }
     } as destinations.DestinationInfo;
 }
@@ -197,13 +207,19 @@ export async function generateABAPCloudDestinationName(name: string): Promise<st
  *  Generate a new object representing an OAuth2 token exchange BTP destination.
  *
  * @param destination destination info
+ * @param serviceInstanceName name of the service instance, for example, the ABAP Environment service name which is linked to the service technical name i.e. abap-canary
  * @param logger Logger
  * @returns Preconfigured OAuth destination
  */
 async function generateOAuth2UserTokenExchangeDestination(
     destination: Destination,
+    serviceInstanceName: string,
     logger?: Logger
 ): Promise<destinations.DestinationInfo> {
+    if (!serviceInstanceName) {
+        throw new Error(`No service instance name defined.`);
+    }
+
     const destinationName: string = await generateABAPCloudDestinationName(destination.Name);
     const instances: CloudFoundryServiceInfo[] = await apiGetServicesInstancesFilteredByType(['destination']);
     const destinationInstance = instances.find(
@@ -213,12 +229,12 @@ async function generateOAuth2UserTokenExchangeDestination(
     if (!destinationInstance) {
         // Create a new abap-cloud destination instance on the target CF subaccount
         await apiCreateServiceInstance('destination', 'lite', DESTINATION_INSTANCE_NAME, null);
-        logger?.info(`New ABAP destination instance ${DESTINATION_INSTANCE_NAME} created on subaccount.`);
+        logger?.info(`New ABAP destination instance ${DESTINATION_INSTANCE_NAME} created.`);
     }
 
-    const instanceDetails = await apiGetInstanceCredentials(DESTINATION_INSTANCE_NAME);
+    const instanceDetails = await apiGetInstanceCredentials(serviceInstanceName);
     if (!instanceDetails?.credentials) {
-        throw new Error(`Could not retrieve SAP BTP credentials.`);
+        throw new Error(`Could not retrieve SAP BTP credentials for ${serviceInstanceName}.`);
     }
     return transformToBASSDKDestination(
         {
@@ -232,17 +248,29 @@ async function generateOAuth2UserTokenExchangeDestination(
 
 /**
  *  Create a new SAP BTP subaccount destination of type 'OAuth2UserTokenExchange' using cf-tools to populate the UAA properties.
- *  If the destination already exists, only new or missing properties will be added.
+ *  If the destination already exists, only new or missing properties will be appended, existing fields are not updated with newer values.
  *
  *  For example: If an existing SAP BTP destination already contains `WebIDEEnabled` and the value is set as `false`, the value will remain `false` even after the update.
  *
  * @param destination destination info
+ * @param serviceInstanceName name of the service instance, for example, the ABAP Environment service name reflecting name of the service created using a supported service technica name i.e. abap | abap-canary
  * @param logger Logger
+ * @returns name representing the newly created SAP BTP destination
  */
-export async function createOAuth2UserTokenExchangeDest(destination: Destination, logger?: Logger): Promise<void> {
+export async function createOAuth2UserTokenExchangeDest(
+    destination: Destination,
+    serviceInstanceName: string,
+    logger?: Logger
+): Promise<string> {
     if (!isAppStudio()) {
         throw new Error(`Creating a SAP BTP destinations is only supported on SAP Business Application Studio.`);
     }
-    const basSDKDestination = await generateOAuth2UserTokenExchangeDestination(destination, logger);
+    const basSDKDestination: destinations.DestinationInfo = await generateOAuth2UserTokenExchangeDestination(
+        destination,
+        serviceInstanceName,
+        logger
+    );
     await destinations.createDestination(basSDKDestination);
+    logger?.debug(`SAP BTP destination ${JSON.stringify(basSDKDestination, null, 2)} created.`);
+    return basSDKDestination.name;
 }

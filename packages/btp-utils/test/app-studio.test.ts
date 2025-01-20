@@ -14,6 +14,7 @@ import {
 import { ENV } from '../src/app-studio.env';
 import destinationList from './mockResponses/destinations.json';
 import { type ServiceInstanceInfo } from '@sap/cf-tools';
+import { ToolsLogger } from '@sap-ux/logger';
 
 const destinations: { [key: string]: Destination } = {};
 destinationList.forEach((dest) => {
@@ -25,7 +26,10 @@ const mockInstanceSettings = {
     clientsecret: 'CLIENT_SECRET'
 };
 
-let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [];
+let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [
+    { label: 'system1', serviceName: 'service1' },
+    { label: 'system2', serviceName: 'service2' }
+];
 let uaaCredentialsMock = {
     credentials: {
         clientid: 'CLIENT_ID/WITH/STH/TO/ENCODE',
@@ -57,14 +61,6 @@ jest.mock('@sap/cf-tools', () => {
         apiGetInstanceCredentials: jest.fn(() => Promise.resolve(uaaCredentialsMock))
     };
 });
-
-// jest.mock('@sap/bas-sdk', () => {
-//     const original = jest.requireActual('@sap/bas-sdk');
-//     return {
-//         ...original,
-//         destinations: { ...original.destinations, createDestination: jest.fn(() => Promise.resolve()) }
-//     };
-// });
 
 describe('App Studio', () => {
     describe('isAppStudio', () => {
@@ -213,7 +209,14 @@ describe('App Studio', () => {
         });
     });
 
-    describe('createBTPABAPCloudDestination', () => {
+    describe('createOAuth2UserTokenExchangeDest', () => {
+        let envH20Settings: string | undefined;
+        let envWSBaseURLSettings: string | undefined;
+        const logger = new ToolsLogger();
+        const infoMock = (logger.info = jest.fn());
+        const debugMock = (logger.debug = jest.fn());
+
+        const serviceInstanceName = 'abap-test';
         const server = 'https://destinations.example';
         // Some settings are toggled or incorrect, to ensure the correct params are posted to BTP
         const destination: Destination = {
@@ -229,18 +232,20 @@ describe('App Studio', () => {
 
         beforeAll(() => {
             nock(server).get('/reload').reply(200).persist();
+            envH20Settings = process.env[ENV.H2O_URL];
+            envWSBaseURLSettings = process.env['WS_BASE_URL'];
             process.env[ENV.H2O_URL] = server;
         });
 
         afterAll(() => {
-            delete process.env[ENV.H2O_URL];
-            delete process.env['WS_BASE_URL'];
+            process.env[ENV.H2O_URL] = envH20Settings;
+            process.env['WS_BASE_URL'] = envWSBaseURLSettings;
             jest.resetAllMocks();
         });
 
         test('creation is only supported on BAS', async () => {
             delete process.env[ENV.H2O_URL];
-            await expect(createOAuth2UserTokenExchangeDest(destination)).rejects.toThrow(
+            await expect(createOAuth2UserTokenExchangeDest(destination, serviceInstanceName)).rejects.toThrow(
                 /SAP Business Application Studio/
             );
         });
@@ -257,7 +262,7 @@ describe('App Studio', () => {
                   "Name": "abap-cloud-my-abap-env-testorg-testspace",
                   "ProxyType": "Internet",
                   "Type": "HTTP",
-                  "URL": "http://my-server",
+                  "URL": "http://my-server/",
                   "WebIDEEnabled": "true",
                   "WebIDEUsage": "odata_abap,dev_abap,abap_cloud",
                   "clientId": "CLIENT_ID/WITH/STH/TO/ENCODE",
@@ -273,14 +278,25 @@ describe('App Studio', () => {
                     return true;
                 })
                 .reply(200);
-            await expect(createOAuth2UserTokenExchangeDest(destination)).resolves.toBe(undefined);
+            await expect(createOAuth2UserTokenExchangeDest(destination, serviceInstanceName, logger)).resolves.toBe(
+                'abap-cloud-my-abap-env-testorg-testspace'
+            );
             expect(bodyParam).toMatchInlineSnapshot(result);
+            expect(infoMock).toBeCalledTimes(1);
+            expect(debugMock).toBeCalledTimes(1);
+        });
+
+        test('throw exception if no service instance name provided', async () => {
+            process.env[ENV.H2O_URL] = server;
+            await expect(createOAuth2UserTokenExchangeDest(destination, '')).rejects.toThrow(
+                /No service instance name defined./
+            );
         });
 
         test('throw exception if no UAA credentials found', async () => {
             process.env[ENV.H2O_URL] = server;
             uaaCredentialsMock = {} as any;
-            await expect(createOAuth2UserTokenExchangeDest(destination)).rejects.toThrow(
+            await expect(createOAuth2UserTokenExchangeDest(destination, serviceInstanceName)).rejects.toThrow(
                 /Could not retrieve SAP BTP credentials./
             );
         });
@@ -288,7 +304,7 @@ describe('App Studio', () => {
         test('throw exception if no dev space is created for the respective subaccount', async () => {
             process.env[ENV.H2O_URL] = server;
             cfTargetMock = {} as any;
-            await expect(createOAuth2UserTokenExchangeDest(destination)).rejects.toThrow(
+            await expect(createOAuth2UserTokenExchangeDest(destination, serviceInstanceName)).rejects.toThrow(
                 /No Dev Space has been created for the subaccount./
             );
         });
