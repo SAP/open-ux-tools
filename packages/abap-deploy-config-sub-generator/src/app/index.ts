@@ -1,5 +1,10 @@
 import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
-import { DeploymentGenerator, ErrorMessages, showOverwriteQuestion } from '@sap-ux/deploy-config-generator-shared';
+import {
+    DeploymentGenerator,
+    ERROR_TYPE,
+    ErrorHandler,
+    showOverwriteQuestion
+} from '@sap-ux/deploy-config-generator-shared';
 import {
     isExtensionInstalled,
     YUI_EXTENSION_ID,
@@ -136,8 +141,10 @@ export default class extends DeploymentGenerator {
             await this._processIndexHtmlConfig();
             await this._initBackendConfig();
         } catch (e) {
-            if (e === ErrorMessages.abortSignal) {
-                DeploymentGenerator.logger?.debug(t('debug.initFailed', { error: e }));
+            if (e === ERROR_TYPE.ABORT_SIGNAL) {
+                DeploymentGenerator.logger?.debug(
+                    t('debug.initFailed', { error: ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ABORT_SIGNAL) })
+                );
             } else {
                 throw e;
             }
