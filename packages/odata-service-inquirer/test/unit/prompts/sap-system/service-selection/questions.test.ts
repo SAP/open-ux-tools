@@ -249,10 +249,19 @@ describe('Test new system prompt', () => {
 
     test('should show additional messages in service selection prompt selected service type is not UI', async () => {
         const connectValidator = new ConnectionValidator();
+        const annotations = [
+            {
+                Definitions: v2Annotations,
+                TechnicalName: 'ZTRAVEL_DESK_SRV',
+                Version: '0001',
+                Uri: 'http://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+            }
+        ];
         // Should show service type warning if service is not classified as UI
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
-                listServices: jest.fn().mockResolvedValue([serviceV2a])
+                listServices: jest.fn().mockResolvedValue([serviceV2a]),
+                getAnnotations: jest.fn().mockResolvedValue(annotations)
             },
             [ODataVersion.v4]: {
                 listServices: jest.fn().mockResolvedValue([serviceV4a])

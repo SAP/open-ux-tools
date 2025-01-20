@@ -290,7 +290,8 @@ export async function getSelectedServiceMessage(
     serviceChoices: ListChoiceOptions<ServiceAnswer>[],
     selectedService: ServiceAnswer,
     connectValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
+    requiredOdataVersion?: OdataVersion,
+    hasAnnotations = true
 ): Promise<IMessageSeverity | undefined> {
     if (serviceChoices?.length === 0) {
         if (requiredOdataVersion) {
@@ -310,7 +311,8 @@ export async function getSelectedServiceMessage(
     if (selectedService) {
         let serviceType = selectedService.serviceType;
         if (selectedService.serviceODataVersion === ODataVersion.v2) {
-            if (PromptState.odataService.annotations?.length === 0) {
+            // Warn if odata service is version is '2' and no annotations are present
+            if (!hasAnnotations) {
                 return {
                     message: t('prompts.warnings.noAnnotations'),
                     severity: Severity.warning
