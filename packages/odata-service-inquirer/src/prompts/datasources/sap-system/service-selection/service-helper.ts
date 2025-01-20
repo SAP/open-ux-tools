@@ -284,7 +284,7 @@ export function getSelectedServiceLabel(username: string | undefined): string {
  * @param selectedService the selected service
  * @param connectValidator the connection validator
  * @param requiredOdataVersion the required OData version for the service
- * @param hasAnnotations
+ * @param hasAnnotations false if backend annotations could not be retrieved for V2 services
  * @returns the service selection prompt additional message
  */
 export async function getSelectedServiceMessage(
