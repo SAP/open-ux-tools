@@ -168,13 +168,17 @@ export function getNavigationEntityChoices(
 
 /**
  * Returns only entity sets that have the `Aggregation.ApplySupported` annotation term with the `Transformations` property.
+ * This can be found within the entity set annotations or the entity type annotations.
  *
  * @param entitySets the entity sets to filter
  * @returns the filtered entity sets
  */
 function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
     return entitySets.filter((entitySet) => {
-        return !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations;
+        return (
+            !!entitySet.annotations?.Aggregation?.ApplySupported?.Transformations ||
+            !!entitySet.entityType?.annotations?.Aggregation?.ApplySupported?.Transformations
+        );
     });
 }
 

@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.11
+
+### Patch Changes
+
+-   6b6c64a: adds new module cf deploy config sub gen
+
 ## 0.0.10
 
 ### Patch Changes

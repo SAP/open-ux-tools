@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 1.1.1
+
+### Patch Changes
+
+-   09e5200: adds check on entity type for aggregation apply supported annotation
+
+## 1.1.0
+
+### Minor Changes
+
+-   7ecd4ec: Makes all properties of types `AlpTableConfigAnswers` and `TableConfigAnswers` optional
+
 ## 1.0.0
 
 ### Major Changes
