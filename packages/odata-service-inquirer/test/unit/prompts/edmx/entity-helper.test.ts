@@ -1,5 +1,4 @@
 import { getEntityChoices, getNavigationEntityChoices } from '../../../../src/prompts/edmx/entity-helper';
-import { LogWrapper } from '@sap-ux/fiori-generator-shared';
 import { readFile } from 'fs/promises';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
@@ -8,6 +7,7 @@ import { OdataVersion } from '@sap-ux/odata-service-writer';
 describe('Test entity helper functions', () => {
     let metadataV4WithDraftAndShareAnnot: string;
     let metadataV4WithAggregateTransforms: string;
+    let metadataV4WithAliasAggregateTransforms: string;
     let metadataV2: string;
     let metadataV4WithDraftEntities: string;
     let metadataV2WithDraftRoot: string;
@@ -20,6 +20,10 @@ describe('Test entity helper functions', () => {
         );
         metadataV4WithAggregateTransforms = await readFile(
             __dirname + '/test-data/metadataV4WithAggregateTransforms.xml',
+            'utf8'
+        );
+        metadataV4WithAliasAggregateTransforms = await readFile(
+            __dirname + '/test-data/metadataV4WithAliasAggregateTransforms.xml',
             'utf8'
         );
         metadataV2 = await readFile(__dirname + '/test-data/metadataV2.xml', 'utf8');
@@ -76,11 +80,28 @@ describe('Test entity helper functions', () => {
                 }
             ];
 
+            const filteredChoicesWithAggregationAlias = [
+                {
+                    name: 'C_MockAccountReconciliationType',
+                    value: {
+                        entitySetName: 'C_MockAccountReconciliationType',
+                        entitySetType:
+                            'com.sap.mock.srvd.z_mockaccountreconciliation.v0001.C_MockAccountReconciliationType'
+                    }
+                }
+            ];
+
             const filteredEntities = getEntityChoices(metadataV4WithAggregateTransforms, {
                 useEntityTypeAsName: true,
                 entitySetFilter: 'filterAggregateTransformationsOnly'
             });
             expect(filteredEntities.choices).toEqual(fitleredChoices);
+
+            const filteredEntitiesAggregationAlias = getEntityChoices(metadataV4WithAliasAggregateTransforms, {
+                useEntityTypeAsName: true,
+                entitySetFilter: 'filterAggregateTransformationsOnly'
+            });
+            expect(filteredEntitiesAggregationAlias.choices).toEqual(filteredChoicesWithAggregationAlias);
 
             // Metadata is odata v2 instead of v4, `filterAggregateTransformationsOnly` is ignored
             const filteredEntitiesNoEdmx = getEntityChoices(metadataV2, {
