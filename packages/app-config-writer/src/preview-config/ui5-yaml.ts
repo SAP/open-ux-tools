@@ -304,6 +304,10 @@ export async function updateTestConfig(
     basePath: string,
     fs: Editor
 ): Promise<PreviewConfig['test']> {
+    const hasTestsuite = (config: PreviewConfig['test']): boolean => {
+        return config?.some((test) => test.framework === 'Testsuite') ?? false;
+    };
+
     testConfiguration = testConfiguration ?? [];
 
     let framework: PreviewTestConfig['framework'] | undefined;
@@ -329,11 +333,19 @@ export async function updateTestConfig(
         }
     } else if (path?.includes(defaultPath)) {
         testConfiguration.push({ framework });
+        //default: add testsuite if not present
+        if (!hasTestsuite(testConfiguration)) {
+            testConfiguration.push({ framework: 'Testsuite' });
+        }
         //delete respective .js|.ts file
         await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.js'))]);
         await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.ts'))]);
     } else if (path) {
         testConfiguration.push({ framework, path });
+        //default: add testsuite if not present
+        if (!hasTestsuite(testConfiguration)) {
+            testConfiguration.push({ framework: 'Testsuite' });
+        }
         //delete respective .js|.ts file
         await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.js'))]);
         await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.ts'))]);
