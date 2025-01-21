@@ -816,8 +816,8 @@ importers:
   packages/btp-utils:
     dependencies:
       '@sap/bas-sdk':
-        specifier: 3.11.0
-        version: 3.11.0
+        specifier: 3.11.2
+        version: 3.11.2
       '@sap/cf-tools':
         specifier: 3.2.2
         version: 3.2.2
@@ -8186,8 +8186,8 @@ packages:
     engines: {node: '>=18.x'}
     dev: false
 
-  /@sap/bas-sdk@3.11.0:
-    resolution: {integrity: sha512-PcCz0m/xdlo+f6mHg8NQIbqFCd+Tfman+Tp/rZx0OcHsbjIFlcedAvgRvPRjJuhsIsiCd5m6XqAi2D4Z92XEfA==}
+  /@sap/bas-sdk@3.11.2:
+    resolution: {integrity: sha512-UU7tZNiWg2yvSdS2lqYq8o22GyzFKkqpJnWv1ihGMrfgp7riaZVfSKpO1+VZvmyJl7qbTRP0oyg5DKAoWVyAEw==}
     dependencies:
       axios: 1.7.9
       cross-spawn: 7.0.5
