@@ -1,4 +1,4 @@
-import { basename, join } from 'path';
+import { basename, join, normalize } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '../constants';
@@ -19,7 +19,10 @@ export async function getWebappPath(projectRoot: string, memFs?: Editor): Promis
         const ui5Config = await UI5Config.newInstance(yamlString);
         const relativeWebappPath = ui5Config.getConfiguration()?.paths?.webapp;
         if (relativeWebappPath) {
-            webappPath = join(projectRoot, relativeWebappPath);
+            // Additionally check if webappPath path is not conflicting with relativeWebappPath
+            if (!webappPath.endsWith(normalize(relativeWebappPath))) {
+                webappPath = join(projectRoot, relativeWebappPath);
+            }
         }
     }
     return webappPath;
