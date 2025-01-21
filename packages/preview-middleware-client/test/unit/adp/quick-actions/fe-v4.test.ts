@@ -1371,7 +1371,7 @@ describe('FE V4 quick actions', () => {
                         jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
                             return {
                                 getVariantManagement: jest.fn().mockReturnValue(testCase.varianManagmentValue),
-                                isA: jest.fn((type: string) => type === 'sap.fe.core.TemplateComponent'), // Ensure consistency with jest.fn
+                                isA: (type: string) => type === 'sap.fe.templates.ListReport.Component',
                                 getAppComponent: jest.fn(() => {
                                     return {
                                         getManifest: jest.fn(() => {
@@ -1506,7 +1506,7 @@ describe('FE V4 quick actions', () => {
                                     'variantManagement': 'Control'
                                 }
                             },
-                            'reference': 'test.id',
+                            'reference': '',
                             'selector': 'dummySelector'
                         }
                     });
@@ -2256,7 +2256,7 @@ describe('FE V4 quick actions', () => {
                             jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
                                 return {
                                     getVariantManagement: jest.fn().mockReturnValue(testCase.varianManagmentValue),
-                                    isA: jest.fn((type: string) => type === 'sap.fe.core.TemplateComponent'), // Ensure consistency with jest.fn
+                                    isA: (type: string) => type === 'sap.fe.templates.ObjectPage.Component',
                                     getAppComponent: jest.fn(() => {
                                         return {
                                             getManifest: jest.fn(() => {
@@ -2403,7 +2403,7 @@ describe('FE V4 quick actions', () => {
                                         'variantManagement': 'Control'
                                     }
                                 },
-                                'reference': 'test.id',
+                                'reference': '',
                                 'selector': 'dummySelector'
                             }
                         });

@@ -6,15 +6,12 @@ import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import Component from 'sap/ui/core/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { createManifestPropertyChange } from '../../../utils/fe-v4';
+import ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
 // sap.f.DynamicPage for list report and sap.uxap.ObjectPageLayout for object page.
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
-
-type LayoutPageComponent = Component & {
-    getVariantManagement: () => string;
-};
 
 /**
  * Quick Action for enabling table filtering using table personalization settings.
@@ -24,6 +21,7 @@ export class EnableVariantManagementQuickAction
     implements SimpleQuickActionDefinition
 {
     private pageSmartVariantManagementMode = '';
+    private ownerComponent: ListReportComponent;
     constructor(context: QuickActionContext) {
         super(
             ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
@@ -34,10 +32,7 @@ export class EnableVariantManagementQuickAction
                 {
                     run: () => {
                         if (this.control) {
-                            const ownerComponent = Component.getOwnerComponentFor(this.control);
-                            this.pageSmartVariantManagementMode = (
-                                ownerComponent as unknown as LayoutPageComponent
-                            ).getVariantManagement();
+                            this.pageSmartVariantManagementMode = this.ownerComponent.getVariantManagement();
                             if (this.pageSmartVariantManagementMode === 'Control') {
                                 return {
                                     type: 'error',
@@ -61,6 +56,16 @@ export class EnableVariantManagementQuickAction
             return;
         }
         super.initialize();
+        if (this.control) {
+            this.ownerComponent = Component.getOwnerComponentFor(this.control) as unknown as ListReportComponent;
+            if (
+                !this.ownerComponent?.isA('sap.fe.templates.ListReport.Component') &&
+                !this.ownerComponent?.isA('sap.fe.templates.ObjectPage.Component') &&
+                !this.ownerComponent?.isA('sap.fe.templates.AnalyticalListPage.Component')
+            ) {
+                this.control = undefined;
+            }
+        }
     }
 
     async execute(): Promise<FlexCommand[]> {

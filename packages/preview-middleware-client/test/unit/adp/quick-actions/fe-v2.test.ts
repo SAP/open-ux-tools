@@ -1525,7 +1525,8 @@ describe('FE V2 quick actions', () => {
                                 getEntitySet: jest.fn().mockReturnValue('testEntity'), // Use mockReturnValue for simple values
                                 getMetadata: jest.fn().mockImplementation(() => ({
                                     getComponentName: jest.fn().mockReturnValue('MyController') // Mock nested methods
-                                }))
+                                })),
+                                isA: (type: string) => type === 'sap.suite.ui.generic.template.ListReport.Component'
                             } as unknown as UIComponent;
                         });
                         view.getContent.mockImplementation(() => {
@@ -2863,7 +2864,7 @@ describe('FE V2 quick actions', () => {
                 // filter out irrelevant actions
                 const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
                 for (let i = actions.length - 1; i >= 0; i--) {
-                    if (actions[i].title !== 'Enable Variant Management in Tables and Charts') {
+                    if (actions[i].title !== 'Enable Variant Management in Tables') {
                         actions.splice(i, 1);
                     }
                 }
@@ -2889,7 +2890,7 @@ describe('FE V2 quick actions', () => {
                                           id: actionId,
                                           enabled: true,
                                           tooltip: undefined,
-                                          title: 'Enable Variant Management in Tables and Charts',
+                                          title: 'Enable Variant Management in Tables',
                                           children: [
                                               {
                                                   'children': [

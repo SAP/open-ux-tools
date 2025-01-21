@@ -9,17 +9,13 @@ import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { preprocessActionExecution } from './create-table-custom-column';
 import SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import UI5Element from 'sap/ui/core/Element';
+import SmartTableExtended from 'sap/ui/comp/smarttable';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE];
 
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
-
-type SmartTableExtended = SmartTable & {
-    getVariantManagement: () => boolean;
-    getEntitySet: () => string;
-};
 
 export class EnableObjectPageVariantManagementQuickAction
     extends TableQuickActionDefinitionBase
@@ -31,7 +27,7 @@ export class EnableObjectPageVariantManagementQuickAction
         super(
             ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
             CONTROL_TYPES,
-            'QUICK_ACTION_ENABLE_TABLES_AND_CHARTS_VARIANT_MANAGEMENT',
+            'QUICK_ACTION_ENABLE_TABLES_AND_VARIANT_MANAGEMENT',
             context
         );
     }

@@ -2,18 +2,14 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
+import ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import Component from 'sap/ui/core/Component';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
-const CONTROL_TYPES = ['sap.f.DynamicPage']; //, 'sap.uxap.ObjectPageLayout'
-
-type ListReportComponent = Component & {
-    getSmartVariantManagement: () => boolean;
-    getEntitySet: () => string;
-};
+const CONTROL_TYPES = ['sap.f.DynamicPage'];
 
 /**
  * Quick Action for enabling table filtering using table personalization settings.
@@ -23,6 +19,7 @@ export class EnableListReportVariantManagementQuickAction
     implements SimpleQuickActionDefinition
 {
     private isPageSmartVariantManagementEnabled = false;
+    private ownerComponent: ListReportComponent;
     readonly forceRefreshAfterExecution = true;
 
     constructor(context: QuickActionContext) {
@@ -34,11 +31,8 @@ export class EnableListReportVariantManagementQuickAction
             [
                 {
                     run: () => {
-                        if (this.control) {
-                            const ownerComponent = Component.getOwnerComponentFor(this.control);
-                            this.isPageSmartVariantManagementEnabled = (
-                                ownerComponent as unknown as ListReportComponent
-                            ).getSmartVariantManagement();
+                        if (this.ownerComponent) {
+                            this.isPageSmartVariantManagementEnabled = this.ownerComponent.getSmartVariantManagement();
                             if (!this.isPageSmartVariantManagementEnabled) {
                                 return {
                                     type: 'error',
@@ -61,19 +55,28 @@ export class EnableListReportVariantManagementQuickAction
             return;
         }
         super.initialize();
+        if (this.control) {
+            this.ownerComponent = Component.getOwnerComponentFor(this.control) as unknown as ListReportComponent;
+            if (
+                !this.ownerComponent?.isA('sap.suite.ui.generic.template.ListReport.Component') &&
+                !this.ownerComponent?.isA('sap.suite.ui.generic.template.AnalyticalListPage.Component')
+            ) {
+                this.control = undefined;
+            }
+        }
     }
 
     async execute(): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];
         }
-        const ownerComponent = Component.getOwnerComponentFor(this.control);
-        const entitySet = (ownerComponent as unknown as ListReportComponent).getEntitySet();
+
+        const entitySet = this.ownerComponent.getEntitySet();
         const command = await prepareManifestChange(
             this.context,
             'component/settings',
             this.control,
-            (ownerComponent as unknown as ListReportComponent).getMetadata().getComponentName(),
+            this.ownerComponent.getMetadata().getComponentName(),
             entitySet,
             {
                 smartVariantManagement: !this.isPageSmartVariantManagementEnabled
