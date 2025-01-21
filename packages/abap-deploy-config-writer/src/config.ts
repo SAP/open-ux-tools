@@ -13,11 +13,13 @@ import type { AbapDeployConfig, AbapTarget, CustomTask, NodeComment } from '@sap
  */
 export function updateBaseConfig(isLib: boolean, basePath: string, baseConfig: UI5Config, fs: Editor) {
     if (isLib) {
-        const customTask = {
-            name: UI5_TASK_FLATTEN_LIB,
-            afterTask: 'generateResourcesJson'
-        };
-        baseConfig.addCustomTasks([customTask]);
+        if (baseConfig.findCustomTask(UI5_TASK_FLATTEN_LIB) === undefined) {
+            const customTask = {
+                name: UI5_TASK_FLATTEN_LIB,
+                afterTask: 'generateResourcesJson'
+            };
+            baseConfig.addCustomTasks([customTask]);
+        }
         fs.write(basePath, baseConfig.toString());
         baseConfig.removeConfig('builder');
     }
