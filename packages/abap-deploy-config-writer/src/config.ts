@@ -13,7 +13,7 @@ import type { AbapDeployConfig, AbapTarget, CustomTask, NodeComment } from '@sap
  */
 export function updateBaseConfig(isLib: boolean, basePath: string, baseConfig: UI5Config, fs: Editor) {
     if (isLib) {
-        if (baseConfig.findCustomTask(UI5_TASK_FLATTEN_LIB) === undefined) {
+        if (!baseConfig.findCustomTask(UI5_TASK_FLATTEN_LIB)) {
             const customTask = {
                 name: UI5_TASK_FLATTEN_LIB,
                 afterTask: 'generateResourcesJson'
