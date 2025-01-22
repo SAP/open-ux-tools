@@ -7,9 +7,11 @@ const fs = require('fs');
  * @param {object} pathMappingFn The path mapping function.
  * @param {object} shimmedFilePath The shimmed file paths.
  * @param {object} mockData An object containing file content for the mock.
+ * @param {object} XHR The real XMLHttpRequest class.
  * @returns {object} The fake XMLHttpRequest class.
  */
-function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData) {
+function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, XHR) {
+    let realXhr = new XHR();
     return {
         /**
          * Returns true if cross-site Access-Control requests should be made using credentials such as cookies or authorization headers; otherwise false.
@@ -22,19 +24,50 @@ function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData) {
          * @param {string} url The URL of the request.
          */
         open: function (type, url) {
-            if (url.startsWith('./')) {
-                this.url = url;
-            } else if (url.endsWith('.js')) {
-                this.url = url.substring(0, url.length - 3);
+            if (url.startsWith('http')) {
+                realXhr.open(type, url);
             } else {
-                this.url = url;
+                realXhr = undefined;
+                if (url.startsWith('./')) {
+                    this.url = url;
+                } else if (url.endsWith('.js')) {
+                    this.url = url.substring(0, url.length - 3);
+                } else {
+                    this.url = url;
+                }
             }
         },
         /**
          * Sends the request.
          * If the request is asynchronous (which is the default), this method returns as soon as the request is sent.
+         * @param {string} data The data to send.
          */
-        send: function () {
+        send: function (data) {
+            if (realXhr) {
+                var that = this;
+                realXhr.addEventListener('load', function () {
+                    that.responseText = realXhr.responseText;
+                    if (that.listeners['load']) {
+                        that.listeners['load']?.({
+                            status: 200,
+                            responseText: realXhr.responseText
+                        });
+                    } else {
+                        that['onload'].apply(that, []);
+                    }
+                });
+                if (that.onload) {
+                    realXhr.onload = function () {
+                        that.responseText = realXhr.responseText;
+                        if (that.onload) {
+                            that.onload.apply(realXhr, arguments);
+                        }
+                    };
+                }
+
+                realXhr.send(data);
+                return;
+            }
             let fileContent = mockData[this.url];
             if (fileContent) {
                 this.responseText = fileContent;
@@ -95,6 +128,9 @@ function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData) {
          * @returns {{}|{"Content-Type": string}|string} The response headers.
          */
         getAllResponseHeaders: function () {
+            if (realXhr) {
+                return realXhr.getAllResponseHeaders();
+            }
             if (this.isXML) {
                 return 'Content-Type: application/xml; Last-Modified: 2019-08-29T00:00:00.000Z;ETag: NotYolow';
             } else if (this.url.endsWith('json')) {
@@ -111,6 +147,9 @@ function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData) {
          * @returns {null|string} The response header.
          */
         getResponseHeader: function (type) {
+            if (realXhr) {
+                return realXhr.getResponseHeader(type);
+            }
             if (type === 'Content-Type' && this.url.endsWith('xml')) {
                 return 'application/xml';
             }
@@ -119,8 +158,14 @@ function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData) {
         /**
          * Sets the value of an HTTP request header. You must call setRequestHeader() after open(), but before send().
          * Useless in our case.
+         * @param {string} header The name of the header whose value is to be set.
+         * @param {string} value The value to set as the body of the header.
          */
-        setRequestHeader: () => {},
+        setRequestHeader: (header, value) => {
+            if (realXhr) {
+                realXhr.setRequestHeader(header, value);
+            }
+        },
         /**
          * Adds an event listener to the XMLHttpRequest object.
          * @param {string} type The type of event to listen for.
