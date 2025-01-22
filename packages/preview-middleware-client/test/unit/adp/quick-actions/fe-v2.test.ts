@@ -1421,12 +1421,12 @@ describe('FE V2 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: "Add Annotation File for ''{0}''"
+                                            label: 'Add Annotation File for \'\'{0}\'\''
                                         },
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: "Show Annotation File for ''{0}''"
+                                            label: 'Show Annotation File for \'\'{0}\'\''
                                         }
                                     ]
                                 }
