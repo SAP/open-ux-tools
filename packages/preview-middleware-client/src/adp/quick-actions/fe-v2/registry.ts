@@ -85,9 +85,9 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                     definitions: [
                         AddControllerToPageQuickAction,
                         AddPageActionQuickAction,
-                        EnableListReportVariantManagementQuickAction,
                         ToggleClearFilterBarQuickAction,
                         ToggleSemanticDateRangeFilterBar,
+                        EnableListReportVariantManagementQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
