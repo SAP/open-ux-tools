@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 1.2.1
+
+### Patch Changes
+
+-   1f7b31e: update alp v4 error text
+
 ## 1.2.0
 
 ### Minor Changes
