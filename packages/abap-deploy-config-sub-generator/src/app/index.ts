@@ -113,15 +113,19 @@ export default class extends DeploymentGenerator {
     }
 
     private async _processIndexHtmlConfig(): Promise<void> {
-        const htmlIndexExists = await indexHtmlExists(this.fs, this.destinationPath());
-        if (htmlIndexExists) {
+        if (this.projectType === DeployProjectType.Library) {
             this.indexGenerationAllowed = false;
-            if (this.options.index) {
-                DeploymentGenerator.logger?.debug(t('debug.indexExists'));
-            }
-            delete this.options.index;
         } else {
-            this.indexGenerationAllowed = true;
+            const htmlIndexExists = await indexHtmlExists(this.fs, this.destinationPath());
+            if (htmlIndexExists) {
+                this.indexGenerationAllowed = false;
+                if (this.options.index) {
+                    DeploymentGenerator.logger?.debug(t('debug.indexExists'));
+                }
+                delete this.options.index;
+            } else {
+                this.indexGenerationAllowed = true;
+            }
         }
     }
 
@@ -138,8 +142,8 @@ export default class extends DeploymentGenerator {
         this._initDestinationRoot();
         try {
             this._processProjectConfig();
-            await this._processIndexHtmlConfig();
             await this._initBackendConfig();
+            await this._processIndexHtmlConfig();
         } catch (e) {
             if (e === ERROR_TYPE.ABORT_SIGNAL) {
                 DeploymentGenerator.logger?.debug(
