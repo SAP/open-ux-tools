@@ -19,7 +19,6 @@ export type CdsUi5PluginInfo = {
     hasCdsUi5Plugin: boolean;
 };
 
-
 export type CapRuntime = 'Node.js' | 'Java';
 
 export interface CapService {
