@@ -177,6 +177,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             enableTypescript: ffApp.appOptions?.typescript,
             enableCdsUi5Plugin: !!ffApp.service.capService.cdsUi5PluginInfo
         };
+        // apply cap updates when service is cap
         await applyCAPUpdates(fs, ffApp.service.capService, settings);
     }
 
