@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 1.2.0
+
+### Minor Changes
+
+-   1bb80a1: Warn when selected v2 service has no annotations.
+
 ## 1.1.1
 
 ### Patch Changes
