@@ -1,7 +1,7 @@
 import type { Package } from '@sap-ux/project-access';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import path, { join } from 'path';
+import path, { dirname, join } from 'path';
 import type { CapServiceCdsInfo } from '../cap-config/types';
 import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled } from '../cap-config';
 import type { Logger } from '@sap-ux/logger';
@@ -55,9 +55,10 @@ async function updateScripts(
     appId: string,
     enableNPMWorkspaces?: boolean
 ): Promise<void> {
-    const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
+    const hasNPMworkspaces = await checkCdsUi5PluginEnabled(dirname(packageJsonPath), fs);
     let cdsScript;
-    if (enableNPMWorkspaces ?? hasNPMworkspaces) {
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    if (enableNPMWorkspaces || hasNPMworkspaces) {
         // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
         cdsScript = getCDSWatchScript(projectName, appId);
     } else {
