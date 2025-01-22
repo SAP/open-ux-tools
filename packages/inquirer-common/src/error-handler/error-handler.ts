@@ -49,7 +49,8 @@ export enum ERROR_TYPE {
     NO_SUCH_HOST = 'NO_SUCH_HOST',
     NOT_FOUND = 'NOT_FOUND',
     ODATA_URL_NOT_FOUND = 'ODATA_URL_NOT_FOUND',
-    BAD_GATEWAY = 'BAD_GATEWAY', // Can be caused by either local issue or endpoint configuration
+    BAD_GATEWAY = 'BAD_GATEWAY', // Can be caused by either local issue or endpoint configuration,
+    GATEWAY_TIMEOUT = 'GATEWAY_TIMEOUT',
     INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
     DESTINATION_SERVICE_UNAVAILABLE = 'DESTINATION_SERVICE_UNAVAILABLE', // Caused by endpoint using a firewall or proxy
     DESTINATION_UNAVAILABLE = 'DESTINATION_UNAVAILABLE',
@@ -100,6 +101,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.ODATA_URL_NOT_FOUND]: [],
     [ERROR_TYPE.INTERNAL_SERVER_ERROR]: [/500/],
     [ERROR_TYPE.BAD_GATEWAY]: [/502/],
+    [ERROR_TYPE.GATEWAY_TIMEOUT]: [/504/],
     [ERROR_TYPE.DESTINATION_SERVICE_UNAVAILABLE]: [],
     [ERROR_TYPE.DESTINATION_UNAVAILABLE]: [],
     [ERROR_TYPE.DESTINATION_NOT_FOUND]: [],
@@ -180,6 +182,19 @@ export class ErrorHandler {
         );
     };
 
+    /**
+     *
+     * @param error
+     * @param subTextKey an i18next key used to provide additional context to the error message
+     * @returns
+     */
+    private static readonly serverErrorMessage = (error: Error | object | string | undefined, subTextKey?: string) =>
+        t('errors.serverReturnedAnError', {
+            errorDesc: subTextKey
+                ? t(subTextKey, { errorMsg: ErrorHandler.getMessageFromError(error) })
+                : ErrorHandler.getMessageFromError(error)
+        });
+
     // Get the localized parameterized error message for the specified error type
     private static readonly _errorTypeToMsg: Record<ERROR_TYPE, (error?: Error | object | string) => string> = {
         [ERROR_TYPE.CERT]: (error) =>
@@ -218,25 +233,13 @@ export class ErrorHandler {
                 error: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.SERVICES_UNAVAILABLE]: () => t('errors.servicesUnavailable'),
-        [ERROR_TYPE.SERVICE_UNAVAILABLE]: (error) =>
-            t('errors.serverReturnedAnError', {
-                errorDesc: ErrorHandler.getMessageFromError(error)
-            }),
+        [ERROR_TYPE.SERVICE_UNAVAILABLE]: (error) => ErrorHandler.serverErrorMessage(error),
         [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: () => t('errors.catalogServiceNotActive'),
-        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) => {
-            const errorMsg = ErrorHandler.getMessageFromError(error);
-            return t('errors.serverReturnedAnError', {
-                errorDesc: t('errors.internalServerError', { errorMsg })
-            });
-        },
+        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) =>
+            ErrorHandler.serverErrorMessage(error, 'errors.internalServerError'),
         [ERROR_TYPE.NOT_FOUND]: () => t('errors.urlNotFound'),
         [ERROR_TYPE.ODATA_URL_NOT_FOUND]: () => t('errors.odataServiceUrlNotFound'),
-        [ERROR_TYPE.BAD_GATEWAY]: (error) => {
-            const errorMsg = ErrorHandler.getMessageFromError(error);
-            return t('errors.serverReturnedAnError', {
-                errorDesc: t('errors.badGateway', { errorMsg })
-            });
-        },
+        [ERROR_TYPE.BAD_GATEWAY]: (error) => ErrorHandler.serverErrorMessage(error, 'errors.badGateway'),
         [ERROR_TYPE.DESTINATION_UNAVAILABLE]: () => t('errors.destination.unavailable'),
         [ERROR_TYPE.DESTINATION_NOT_FOUND]: () => t('errors.destination.notFound'),
         [ERROR_TYPE.DESTINATION_MISCONFIGURED]: (error) =>
@@ -249,17 +252,10 @@ export class ErrorHandler {
         [ERROR_TYPE.REDIRECT]: () => t('errors.redirectError'),
         [ERROR_TYPE.NO_SUCH_HOST]: () => t('errors.noSuchHostError'),
         [ERROR_TYPE.NO_ABAP_ENVS]: () => t('errors.abapEnvsUnavailable'),
-        [ERROR_TYPE.BAD_REQUEST]: (error) => {
-            const errorMsg = ErrorHandler.getMessageFromError(error);
-            return t('errors.serverReturnedAnError', {
-                errorDesc: t('errors.badRequest', { errorMsg })
-            });
-        },
+        [ERROR_TYPE.BAD_REQUEST]: (error) => ErrorHandler.serverErrorMessage(error, 'errors.badRequest'),
         [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: () => t('errors.systemConnectionValidationFailed'),
-        [ERROR_TYPE.SERVER_HTTP_ERROR]: (error) =>
-            t('errors.serverReturnedAnError', {
-                errorDesc: ErrorHandler.getMessageFromError(error)
-            })
+        [ERROR_TYPE.SERVER_HTTP_ERROR]: (error) => ErrorHandler.serverErrorMessage(error),
+        [ERROR_TYPE.GATEWAY_TIMEOUT]: (error) => ErrorHandler.serverErrorMessage(error)
     };
     /**
      *
@@ -278,10 +274,9 @@ export class ErrorHandler {
      * @returns The Guided Answers node for the specified error type
      */
     private static readonly getHelpNode = (errorType: ERROR_TYPE): number | undefined => {
+        const isBAS = isAppStudio();
         const errorToHelp: Record<ERROR_TYPE, number | undefined> = {
-            [ERROR_TYPE.SERVICES_UNAVAILABLE]: isAppStudio()
-                ? HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED
-                : undefined,
+            [ERROR_TYPE.SERVICES_UNAVAILABLE]: isBAS ? HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED : undefined,
             [ERROR_TYPE.CERT]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_SELF_SIGNED]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: HELP_NODES.CERTIFICATE_ERROR,
@@ -293,6 +288,7 @@ export class ErrorHandler {
             [ERROR_TYPE.BAD_GATEWAY]: HELP_NODES.BAD_GATEWAY,
             [ERROR_TYPE.DESTINATION_SERVICE_UNAVAILABLE]: HELP_NODES.DESTINATION_SERVICE_UNAVAILBLE,
             [ERROR_TYPE.NO_V4_SERVICES]: HELP_NODES.NO_V4_SERVICES,
+            [ERROR_TYPE.GATEWAY_TIMEOUT]: isBAS ? HELP_NODES.DESTINATION_GATEWAY_TIMEOUT : undefined,
             [ERROR_TYPE.AUTH]: undefined,
             [ERROR_TYPE.AUTH_TIMEOUT]: undefined,
             [ERROR_TYPE.REDIRECT]: undefined,
