@@ -384,6 +384,9 @@ export async function updateTestConfig(
         //default: add testsuite if not present
         if (!hasTestsuite(testConfiguration)) {
             testConfiguration.push({ framework: 'Testsuite' });
+            logger?.info(
+                `The test framework 'Testsuite' has been added because at least one test runner has been found.`
+            );
         }
     }
     return testConfiguration;
