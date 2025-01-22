@@ -1,5 +1,5 @@
 import type { Editor } from 'mem-fs-editor';
-import { readdirSync, readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative } from 'path';
 
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -47,6 +47,11 @@ export function flpConfigurationExists(basePath: string): boolean {
     } catch (error) {
         throw new Error(`Failed to check if FLP configuration exists: ${(error as Error).message}`);
     }
+}
+
+export function isTypescriptSupported(basePath: string, fs?: Editor): boolean {
+    const path = join(basePath, 'tsconfig.json');
+    return fs ? fs.exists(path) : existsSync(path);
 }
 
 /**

@@ -14,7 +14,7 @@ import { DirName, FileName } from '@sap-ux/project-access';
 import { type CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
 import type { DataSources } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant } from '../base/helper';
+import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 interface WriteControllerBody {
@@ -222,6 +222,7 @@ export default class RoutesHandler {
             const projectId = data.projectId;
 
             const sourcePath = this.util.getProject().getSourcePath();
+            const rootPath = this.util.getProject().getRootPath();
 
             if (!controllerExtName) {
                 res.status(HttpStatusCodes.BAD_REQUEST).send('Controller extension name was not provided!');
@@ -229,8 +230,10 @@ export default class RoutesHandler {
                 return;
             }
 
+            const isTsSupported = isTypescriptSupported(rootPath);
+
             const fullPath = path.join(sourcePath, DirName.Changes, DirName.Coding);
-            const filePath = path.join(fullPath, `${controllerExtName}.js`);
+            const filePath = path.join(fullPath, `${controllerExtName}.${isTsSupported ? 'ts' : 'js'}`);
 
             if (!fs.existsSync(fullPath)) {
                 fs.mkdirSync(fullPath, { recursive: true });
@@ -246,15 +249,7 @@ export default class RoutesHandler {
 
             const controllerExtPath = `${projectId}.${controllerExtName}`;
 
-            const controllerTemplateFilePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Controller);
-
-            renderFile(controllerTemplateFilePath, { controllerExtPath }, {}, (err, str) => {
-                if (err) {
-                    throw new Error('Error rendering template: ' + err.message);
-                }
-
-                fs.writeFileSync(filePath, str, { encoding: 'utf8' });
-            });
+            generateControllerFile(rootPath, filePath, controllerExtName, controllerExtPath);
 
             const message = 'Controller extension created!';
             res.status(HttpStatusCodes.CREATED).send(message);
@@ -357,4 +352,26 @@ export default class RoutesHandler {
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, this.logger);
         return await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
     }
+}
+
+function generateControllerFile(
+    rootPath: string,
+    filePath: string,
+    controllerExtName: string,
+    controllerExtPath: string
+): void {
+    const isTsSupported = isTypescriptSupported(rootPath);
+    const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
+    const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
+
+    const templateData = isTsSupported ? { controllerExtName, id: getVariant(rootPath).id } : { controllerExtPath };
+
+    renderFile(tmplPath, templateData, {}, (err, str) => {
+        if (err) {
+            const templateType = isTsSupported ? 'TypeScript' : 'JavaScript';
+            throw new Error(`Error rendering ${templateType} template: ${err.message}`);
+        }
+
+        fs.writeFileSync(filePath, str, { encoding: 'utf8' });
+    });
 }

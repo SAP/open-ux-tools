@@ -7,7 +7,8 @@ import {
     enhanceUI5Yaml,
     hasDeployConfig,
     enhanceUI5YamlWithCustomConfig,
-    enhanceUI5YamlWithCustomTask
+    enhanceUI5YamlWithCustomTask,
+    enhanceUI5YamlWithTranspileMiddleware
 } from './options';
 
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -47,11 +48,20 @@ export function writeTemplateToFolder(
     data: AdpWriterConfig,
     fs: Editor
 ): void {
+    const fullTmplPath = join(templatePath, '**/*.*');
+
     try {
-        fs.copyTpl(templatePath, projectPath, data, undefined, {
-            globOptions: { dot: true },
+        fs.copyTpl(fullTmplPath, projectPath, data, undefined, {
+            globOptions: { dot: true, ignore: ['**/tsconfig.json'] },
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
         });
+
+        if (data.options?.enableTypescript) {
+            const id = data.app?.id?.split('.').join('/');
+            fs.copyTpl(join(templatePath, '**/tsconfig.json'), projectPath, { id }, undefined, {
+                globOptions: { dot: true }
+            });
+        }
     } catch (e) {
         throw new Error(`Could not write template files to folder. Reason: ${e.message}`);
     }
@@ -71,11 +81,10 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
         ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
-        enhanceUI5YamlWithCustomConfig(ui5Config, data?.customConfig);
+        enhanceUI5YamlWithCustomConfig(ui5Config, data);
+        enhanceUI5YamlWithTranspileMiddleware(ui5Config, data);
         enhanceUI5Yaml(ui5Config, data);
-        if (data.customConfig?.adp?.environment === 'C') {
-            enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
-        }
+        enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {

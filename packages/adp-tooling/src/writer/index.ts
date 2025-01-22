@@ -60,7 +60,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
             fullConfig.app.content
         );
     }
-    writeTemplateToFolder(join(tmplPath, '**/*.*'), join(basePath), fullConfig, fs);
+    writeTemplateToFolder(tmplPath, join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
 

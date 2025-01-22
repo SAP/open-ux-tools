@@ -1,10 +1,4 @@
-import type {
-    CustomMiddleware,
-    UI5Config,
-    CustomTask,
-    AbapTarget,
-    FioriToolsProxyConfigBackend
-} from '@sap-ux/ui5-config';
+import { CustomMiddleware, UI5Config, CustomTask, AbapTarget, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type {
     CustomConfig,
     AdpWriterConfig,
@@ -43,8 +37,26 @@ export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
  * @param config full project configuration
  */
 export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWriterConfig & { app: CloudApp }) {
-    const tasks = getAdpCloudCustomTasks(config);
-    ui5Config.addCustomTasks(tasks);
+    if (config.options?.enableTypescript) {
+        ui5Config.addCustomTasks([
+            {
+                name: 'ui5-tooling-transpile-task',
+                afterTask: 'replaceVersion',
+                configuration: {
+                    debug: true,
+                    omitTSFromBuildResult: true,
+                    transformModulesToUI5: {
+                        overridesToOverride: true
+                    }
+                }
+            }
+        ]);
+    }
+
+    if (config.customConfig?.adp?.environment === 'C') {
+        const tasks = getAdpCloudCustomTasks(config);
+        ui5Config.addCustomTasks(tasks);
+    }
 }
 
 /**
@@ -53,10 +65,32 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
  */
-export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: CustomConfig) {
-    if (config?.adp) {
-        const { support } = config.adp;
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config: AdpWriterConfig) {
+    const adp = config.customConfig?.adp;
+    if (adp) {
+        const { support } = adp;
         ui5Config.addCustomConfiguration('adp', { support });
+    }
+
+    // TODO: How to write config-ui5-tooling-transpile: &cfgTranspile key without quotes
+    // if (config.options?.enableTypescript) {
+    //     const value = { '&cfgTranspile': { debug: true, transformModulesToUI5: { overridesToOverride: true } } };
+    //     ui5Config.addCustomConfiguration('config-ui5-tooling-transpile', value);
+    // }
+}
+
+export function enhanceUI5YamlWithTranspileMiddleware(ui5Config: UI5Config, config: AdpWriterConfig) {
+    if (config.options?.enableTypescript) {
+        ui5Config.updateCustomMiddleware({
+            name: 'ui5-tooling-transpile-middleware',
+            afterMiddleware: 'compression',
+            configuration: {
+                debug: true,
+                transformModulesToUI5: {
+                    overridesToOverride: true
+                }
+            }
+        });
     }
 }
 

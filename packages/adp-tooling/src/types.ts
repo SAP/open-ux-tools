@@ -85,6 +85,10 @@ export interface AdpWriterConfig {
          * Optional: if set to true then the generated project will be recognized by the SAP Fiori tools
          */
         fioriTools?: boolean;
+        /**
+         * Optional: if set to true then the generated project will support typescript
+         */
+        enableTypescript?: boolean;
     };
 }
 
@@ -278,6 +282,7 @@ export type ParameterRules = {
 export const enum TemplateFileName {
     Fragment = 'fragment.xml',
     Controller = 'controller.ejs',
+    TSController = 'ts-controller.ejs',
     Annotation = 'annotation.xml'
 }
 
