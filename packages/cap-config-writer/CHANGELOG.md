@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.8.2
+
+### Patch Changes
+
+-   1309fec: Fix writing watch script for CAP project where npm workspaces is already enabled
+
 ## 0.8.1
 
 ### Patch Changes
