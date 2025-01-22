@@ -1,5 +1,13 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.0.16
+
+### Patch Changes
+
+-   71e5a5e: fix issues for library deployment
+-   Updated dependencies [71e5a5e]
+    -   @sap-ux/abap-deploy-config-writer@0.0.75
+
 ## 0.0.15
 
 ### Patch Changes
