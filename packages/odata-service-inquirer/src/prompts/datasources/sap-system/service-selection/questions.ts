@@ -118,8 +118,21 @@ export function getSystemServiceQuestion(
             }
             return serviceChoices;
         },
-        additionalMessages: (selectedService: ServiceAnswer) =>
-            getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, requiredOdataVersion),
+        additionalMessages: (selectedService: ServiceAnswer) => {
+            // Additional messages is executed after validation, so we can assume the PromptState has been updated
+            let hasBackendAnnotations = false;
+            if (selectedService && PromptState.odataService.servicePath === selectedService.servicePath) {
+                hasBackendAnnotations =
+                    !!PromptState.odataService.annotations && PromptState.odataService.annotations.length > 0;
+            }
+            return getSelectedServiceMessage(
+                serviceChoices,
+                selectedService,
+                connectValidator,
+                requiredOdataVersion,
+                hasBackendAnnotations
+            );
+        },
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI and cli when automcomplete is used
         validate: async (

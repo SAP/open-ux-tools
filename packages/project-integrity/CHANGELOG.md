@@ -1,5 +1,11 @@
 # @sap-ux/project-integrity
 
+## 0.0.4
+
+### Patch Changes
+
+-   cd2ee02: Cleanup test project
+
 ## 0.0.3
 
 ### Patch Changes
