@@ -881,6 +881,7 @@ describe('FE V2 quick actions', () => {
                 validVersion: boolean;
                 versionInfo: string;
                 isManifestPagesAsArray: boolean;
+                isAlp?: boolean;
             }[] = [
                 {
                     validVersion: true,
@@ -913,6 +914,12 @@ describe('FE V2 quick actions', () => {
                     isManifestPagesAsArray: false
                 },
                 {
+                    validVersion: true,
+                    versionInfo: '1.130',
+                    isManifestPagesAsArray: false,
+                    isAlp: true
+                },
+                {
                     validVersion: false,
                     versionInfo: '1.96.34',
                     isManifestPagesAsArray: false
@@ -928,7 +935,11 @@ describe('FE V2 quick actions', () => {
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartFilterBar') {
                         return {
-                            isA: (type: string) => type === 'sap.ui.comp.smartfilterbar.SmartFilterBar',
+                            isA: (type: string) =>
+                                type ===
+                                (testCase.isAlp
+                                    ? 'sap.suite.ui.generic.template.AnalyticalListPage.control.SmartFilterBarExt'
+                                    : 'sap.ui.comp.smartfilterbar.SmartFilterBar'),
                             getProperty: jest.fn().mockImplementation((name) => {
                                 if (name === 'persistencyKey') {
                                     return 'filterbar';
@@ -950,8 +961,10 @@ describe('FE V2 quick actions', () => {
                                 contains: () => true
                             };
                         });
-                        pageView.getViewName.mockImplementation(
-                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        pageView.getViewName.mockImplementation(() =>
+                            testCase.isAlp
+                                ? 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage'
+                                : 'sap.suite.ui.generic.template.ListReport.view.ListReport'
                         );
                         const componentContainer = new ComponentContainer();
                         const spy = jest.spyOn(componentContainer, 'getComponent');
@@ -997,7 +1010,9 @@ describe('FE V2 quick actions', () => {
                 );
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
-                    'sap.ui.comp.smartfilterbar.SmartFilterBar': [
+                    [testCase.isAlp
+                        ? 'sap.suite.ui.generic.template.AnalyticalListPage.control.SmartFilterBarExt'
+                        : 'sap.ui.comp.smartfilterbar.SmartFilterBar']: [
                         {
                             controlId: 'SmartFilterBar'
                         } as any
@@ -1011,13 +1026,15 @@ describe('FE V2 quick actions', () => {
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
-                            title: 'LIST REPORT',
+                            title: testCase.isAlp ? 'ANALYTICAL LIST PAGE' : 'LIST REPORT',
                             actions:
                                 testCase.validVersion && !testCase.isManifestPagesAsArray
                                     ? [
                                           {
                                               'kind': 'simple',
-                                              id: 'listReport0-enable-semantic-daterange-filterbar',
+                                              id: testCase.isAlp
+                                                  ? 'analyticalListPage0-enable-semantic-daterange-filterbar'
+                                                  : 'listReport0-enable-semantic-daterange-filterbar',
                                               title: 'Enable Semantic Date Range in Filter Bar',
                                               enabled: true
                                           }
@@ -1028,7 +1045,12 @@ describe('FE V2 quick actions', () => {
                 );
                 if (testCase.validVersion && !testCase.isManifestPagesAsArray) {
                     await subscribeMock.mock.calls[0][0](
-                        executeQuickAction({ id: 'listReport0-enable-semantic-daterange-filterbar', kind: 'simple' })
+                        executeQuickAction({
+                            id: testCase.isAlp
+                                ? 'analyticalListPage0-enable-semantic-daterange-filterbar'
+                                : 'listReport0-enable-semantic-daterange-filterbar',
+                            kind: 'simple'
+                        })
                     );
                     expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
                         'settings': {},
@@ -1044,7 +1066,9 @@ describe('FE V2 quick actions', () => {
                                     }
                                 },
                                 'parentPage': {
-                                    'component': 'sap.suite.ui.generic.template.ListReport',
+                                    'component': testCase.isAlp
+                                        ? 'sap.suite.ui.generic.template.AnalyticalListPage'
+                                        : 'sap.suite.ui.generic.template.ListReport',
                                     'entitySet': 'testEntity'
                                 }
                             },
@@ -3042,6 +3066,20 @@ describe('FE V2 quick actions', () => {
                                         {
                                             'children': [],
                                             enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'analyticalListPage0-create-table-action',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Action',
+                                    'tooltip': undefined
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'enabled': true,
                                             'label': `'MyTable' table`
                                         }
                                     ],

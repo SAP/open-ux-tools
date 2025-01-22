@@ -84,9 +84,15 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                     title: 'ANALYTICAL LIST PAGE',
                     definitions: [
                         AddControllerToPageQuickAction,
+                        AddPageActionQuickAction,
                         EnableListReportVariantManagementQuickAction,
+                        ToggleClearFilterBarQuickAction,
+                        ToggleSemanticDateRangeFilterBar,
                         ChangeTableColumnsQuickAction,
-                        AddTableCustomColumnQuickAction
+                        AddTableActionQuickAction,
+                        AddTableCustomColumnQuickAction,
+                        EnableTableFilteringQuickAction,
+                        AddNewAnnotationFile
                     ],
                     view,
                     key: name + index
