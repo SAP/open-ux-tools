@@ -53,25 +53,17 @@ export function InfoCenter(): ReactElement {
                 </div>
                 <Stack className={`info-center-items`}>
                     {infoCenter.map((info, index) => {
-                        const isExpandable = info.message.description.length > 150; // Check if description exceeds 200 chars
+                        const isExpandable = info.message.description.length > 150; // Check if description exceeds 150 chars
                         const isExpanded = expandedStates[index]; // Check the expanded state for this index
                         return (
-                            <Stack.Item key={index}>
-                                <UIMessageBar messageBarType={info.type as MessageBarType} className={`message-bar ${getMessageType(info.type)}`}>
+                            <Stack.Item key={index} className={`message-bar ${getMessageType(info.type)}`}>
+                                <UIMessageBar messageBarType={info.type as MessageBarType}>
                                     <Text block={true} className={`message-title`}>{info.message.title}</Text>
                                     <Text block={true} className={`message-description`}>
                                         {isExpanded || !isExpandable
                                             ? info.message.description
                                             : `${info.message.description.slice(0, 150)}...`}
                                     </Text>
-                                    {   
-                                        isExpandable &&
-                                        <UIIconButton
-                                            className='icon-button-container-expand'
-                                            onClick={() => dispatch(toggleExpandMessage(index))}
-                                            iconProps={{ iconName: isExpanded ? UiIcons.ArrowUp : UiIcons.ArrowDown }}
-                                        />
-                                    }
                                     {
                                         info.type !== MessageBarType.error &&
                                         <UIIconButton
@@ -80,6 +72,15 @@ export function InfoCenter(): ReactElement {
                                             iconProps={{ iconName: UiIcons.TrashCan }}
                                         />
                                     }
+                                    {/* {   
+                                        isExpandable &&
+                                        <UIIconButton
+                                            className='icon-button-container-expand'
+                                            onClick={() => dispatch(toggleExpandMessage(index))}
+                                            iconProps={{ iconName: isExpanded ? UiIcons.ArrowUp : UiIcons.ArrowDown }}
+                                        />
+                                    } */}
+
                                 </UIMessageBar>
                             </Stack.Item>
                         )
