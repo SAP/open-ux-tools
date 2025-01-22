@@ -17,7 +17,7 @@ describe('Mock XHR', () => {
         const fakeWindow = jest.fn();
         const shimmedFilePath = {};
 
-        const mockData = { 'mockedPath': 'mockedData' };
+        const mockData = { 'mockedPath.xml': 'mockedData' };
         XHR = jest.fn().mockImplementation(() => {
             return {
                 open: openMock,
@@ -32,11 +32,12 @@ describe('Mock XHR', () => {
     });
 
     it('Can be used to query mockedData', (done) => {
-        mockXHR.open('GET', 'mockedPath');
+        mockXHR.open('GET', 'mockedPath.xml');
         mockXHR.addEventListener('load', () => {
             expect(mockXHR.responseText).toBe('mockedData');
             done();
         });
+        expect( mockXHR.getResponseHeader('Content-Type')).toBe("application/xml");
         mockXHR.send();
     });
     it('Can be used to query data from the backend', (done) => {
@@ -55,6 +56,8 @@ describe('Mock XHR', () => {
         expect(getResponseHeaderMock).toHaveBeenCalledWith('Content-Type');
         mockXHR.getAllResponseHeaders();
         expect(getAllResponseHeadersMock).toHaveBeenCalled();
+        mockXHR.onload();
+        expect(mockXHR.onload).toHaveBeenCalled();
         done();
     });
 });
