@@ -1,5 +1,54 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.0.0
+
+### Major Changes
+
+-   77b0800: Adds support for entity related prompting. Update some exported types `fiori-elements-writer`, `fiori-freestyle-writer` to remove problematic enum usage.
+    The major version updates for modules `@sap-ux/fiori-elements-writer` and `@sap-ux/fiori-freestyle-writer` indicates a breaking change of type definitions:
+
+    `@sap-ux/fiori-elements-writer`:
+    `TemplateType`
+    `TableType`
+    `TableSelectionMode`
+
+    `@sap-ux/fiori-freestyle-writer`:
+    `TemplateType`
+
+    These changes are required to reduce the impact of importing these types by consumers. Previously defined as enums, requiring full dependencies and bloating
+    consumer code where only these types are required. The new type defintions still allow both uses (type or value) but the `enums` are now defined as `const`.
+    This change requires updates to consuming code where the type is imported and referenced.
+    Example where a single enum was used as a value type:
+
+    ```
+    type Template = {
+        template: TemplateType.ListReportObjectPage
+    }
+    ```
+
+    should now be defined as:
+
+    ```
+    type Template = {
+        template: typeof TemplateType.ListReportObjectPage
+    }
+    ```
+
+## 1.2.41
+
+### Patch Changes
+
+-   Updated dependencies [625bca8]
+    -   @sap-ux/odata-service-writer@0.25.3
+
+## 1.2.40
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.19
+-   @sap-ux/odata-service-writer@0.25.2
+-   @sap-ux/ui5-application-writer@1.2.8
+
 ## 1.2.39
 
 ### Patch Changes

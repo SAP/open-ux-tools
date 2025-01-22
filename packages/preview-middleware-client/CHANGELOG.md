@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.50
+
+### Patch Changes
+
+-   b88531b: fix: Enabled missing quick actions on ALP in V2 adp projects
+
+## 0.11.49
+
+### Patch Changes
+
+-   2a9c788: Fixed wrong initial state for "Disable Semantic Date Range in Filter Bar" Quick Action.
+
 ## 0.11.48
 
 ### Patch Changes

@@ -168,7 +168,7 @@ importers:
         version: link:../../packages/system-access
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
@@ -1012,6 +1012,82 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
 
+  packages/cf-deploy-config-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/cf-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-inquirer
+      '@sap-ux/cf-deploy-config-writer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-writer
+      '@sap-ux/deploy-config-generator-shared':
+        specifier: workspace:*
+        version: link:../deploy-config-generator-shared
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      hasbin:
+        specifier: 1.2.3
+        version: 1.2.3
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@jest/types':
+        specifier: 29.6.3
+        version: 29.6.3
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap/mta-lib':
+        specifier: 1.7.4
+        version: 1.7.4
+      '@types/hasbin':
+        specifier: 1.2.2
+        version: 1.2.2
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
+      '@types/yeoman-environment':
+        specifier: 2.10.11
+        version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      js-yaml:
+        specifier: 4.1.0
+        version: 4.1.0
+      memfs:
+        specifier: 3.4.13
+        version: 3.4.13
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+
   packages/cf-deploy-config-writer:
     dependencies:
       '@sap-ux/btp-utils':
@@ -1327,7 +1403,7 @@ importers:
         version: 20.6.1
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -2309,12 +2385,18 @@ importers:
 
   packages/odata-service-inquirer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.9.10
+        version: 0.9.10
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.0
+        version: 0.9.0
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -2367,9 +2449,18 @@ importers:
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
+      '@sap-ux/fiori-elements-writer':
+        specifier: workspace:*
+        version: link:../fiori-elements-writer
+      '@sap-ux/fiori-freestyle-writer':
+        specifier: workspace:*
+        version: link:../fiori-freestyle-writer
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
+      '@sap-ux/vocabularies-types':
+        specifier: 0.11.7
+        version: 0.11.7
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -5269,7 +5360,7 @@ packages:
       '@babel/core': 7.25.2
       '@babel/helper-module-transforms': 7.25.2(@babel/core@7.25.2)
       '@babel/helper-plugin-utils': 7.24.8
-      '@babel/helper-simple-access': 7.24.7
+      '@babel/helper-simple-access': 7.24.6
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -8178,10 +8269,15 @@ packages:
       '@sap-ux/vocabularies-types': 0.11.7
     dev: false
 
+  /@sap-ux/edmx-parser@0.9.0:
+    resolution: {integrity: sha512-X7yda14CsUqGhEK5/XYhP0W65ueObQxq6Dv5qmJQBvR73V0gNexrY5sWuzCQPcEVVh0sB9A0qesMU9qgp6R37A==}
+    dependencies:
+      xml-js: 1.6.11
+    dev: false
+
   /@sap-ux/vocabularies-types@0.11.7:
     resolution: {integrity: sha512-rqRhmPW97dQ8K6nYjL1aP0a4THsUSGK6F5LSOOkSkyTQrBOGu5LNdqi90V2EYKSdIARTvgOnaz1mU+nmkzrsOA==}
     engines: {node: '>=18.x'}
-    dev: false
 
   /@sap/bas-sdk@3.8.9:
     resolution: {integrity: sha512-ycYttnSTlEPjDrb0svSv0jBgqEvoekD4bNB4IxuKCu5OKk5FycwsOTgufU8CXYf1ag23wTlurN+N7c4Po6PcJQ==}
@@ -8223,7 +8319,6 @@ packages:
       mta-local: 1.0.0
       temp-dir: 2.0.0
       which: 2.0.2
-    dev: false
 
   /@sap/ux-cds-compiler-facade@1.15.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
     resolution: {integrity: sha512-WfKLjNFZa6hfXu7+JUmvbCn110lLyddmBN4n1tpV7sH279bue8JF48ZPSqe70+Gric6YdY7jRoiVEALWRkzZ7w==}
@@ -9142,10 +9237,10 @@ packages:
 
   /@types/json-schema@7.0.12:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
+    dev: true
 
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-    dev: true
 
   /@types/json-stable-stringify@1.0.36:
     resolution: {integrity: sha512-b7bq23s4fgBB76n34m2b3RBf6M369B0Z9uRR8aHTMd8kZISRkmDEpPD8hhpYvDFzr3bJCPES96cm3Q6qRNDbQw==}
@@ -9944,7 +10039,7 @@ packages:
       eslint: ^8.56.0
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@types/json-schema': 7.0.12
+      '@types/json-schema': 7.0.15
       '@types/semver': 7.5.8
       '@typescript-eslint/scope-manager': 7.2.0
       '@typescript-eslint/types': 7.2.0
@@ -17509,7 +17604,6 @@ packages:
 
   /mta-local@1.0.0:
     resolution: {integrity: sha512-+pL8q5wJMyyVUj0gGFwceq7utIjwt744GBmBqYMARK6I4CzPvSv/0akRNTOxcsffXsu8EVyH2NJZ4XS9WcHzZA==}
-    dev: false
 
   /mta@1.0.8:
     resolution: {integrity: sha512-Be/+H9p58qVJRou8lthyWT4VSyifBdh/SnbVuZ7NNQQDvmOk/cKLnFeaPIel1Vk2FdojNLlTsCAlO+BElXcWDg==}
@@ -20084,7 +20178,7 @@ packages:
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
 
   /safe-array-concat@1.0.0:
     resolution: {integrity: sha512-9dVEFruWIsnie89yym+xWTAYASdpw3CJV7Li/6zBewGf9z2i1j31rP6jnY0pHEO4QZh6N0K11bFjWmdR8UGdPQ==}
@@ -20215,7 +20309,7 @@ packages:
     resolution: {integrity: sha512-1edyXKgh6XnJsJSQ8mKWXnN/BVaIbFMLpouRUrXgVq7WYne5kw3MW7UPhO44uRXQSIpTSXoJbmrR2X0w9kUTyg==}
     engines: {node: '>= 12.13.0'}
     dependencies:
-      '@types/json-schema': 7.0.12
+      '@types/json-schema': 7.0.15
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       ajv-keywords: 5.1.0(ajv@8.17.1)
@@ -21480,9 +21574,6 @@ packages:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
 
-  /tslib@2.5.0:
-    resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
-
   /tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
 
@@ -22739,37 +22830,6 @@ packages:
       - bluebird
       - supports-color
 
-  /yeoman-generator@5.10.0:
-    resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
-    engines: {node: '>=12.10.0'}
-    peerDependencies:
-      yeoman-environment: ^3.2.0
-    peerDependenciesMeta:
-      yeoman-environment:
-        optional: true
-    dependencies:
-      chalk: 4.1.2
-      dargs: 7.0.0
-      debug: 4.3.7
-      execa: 5.1.1
-      github-username: 6.0.0
-      lodash: 4.17.21
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
-      minimist: 1.2.8
-      pacote: 15.2.0
-      read-pkg-up: 7.0.1
-      run-async: 2.4.1
-      semver: 7.5.4
-      shelljs: 0.8.5
-      sort-keys: 4.2.0
-      text-table: 0.2.0
-    transitivePeerDependencies:
-      - bluebird
-      - encoding
-      - mem-fs
-      - supports-color
-    dev: false
-
   /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3):
     resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
     engines: {node: '>=12.10.0'}
@@ -22790,7 +22850,7 @@ packages:
       pacote: 15.2.0
       read-pkg-up: 7.0.1
       run-async: 2.4.1
-      semver: 7.6.3
+      semver: 7.5.4
       shelljs: 0.8.5
       sort-keys: 4.2.0
       text-table: 0.2.0

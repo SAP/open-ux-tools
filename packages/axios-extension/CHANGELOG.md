@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.18.1
+
+### Patch Changes
+
+-   1559aee: add entry for s4 hana cloud urls with .lab
+
 ## 1.18.0
 
 ### Minor Changes

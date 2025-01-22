@@ -67,8 +67,7 @@ describe('Test enhanceYaml()', () => {
                 localPath: './webapp/localService/SEPMRA_PROD_MAN.xml',
                 urlPath:
                     "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/"
-            },
-            { localPath: './webapp/annotations/annotation.xml', urlPath: 'annotations/annotation.xml' }
+            }
         ]);
     });
 
@@ -111,8 +110,7 @@ describe('Test enhanceYaml()', () => {
                 localPath: './webapp/localService/SEPMRA_PROD_MAN.xml',
                 urlPath:
                     "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/"
-            },
-            { localPath: './webapp/annotations/annotation.xml', urlPath: 'annotations/annotation.xml' }
+            }
         ]);
     });
 
