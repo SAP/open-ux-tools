@@ -114,6 +114,12 @@ export interface FioriElementsApp<T> extends Ui5App {
          * This will eventually move up to {@link Ui5App.appOptions}
          */
         addTests?: boolean;
+        /**
+         * Enables NPM workspaces for the application. 
+         * This is applicable when the service is of type `capService`. For more details, refer to the 
+         * `applyCAPUpdates` function at {@link ../../cap-config-writer/src/cap-writer/updates.ts}.
+         * When set to true and the CDS UI5 plugin is enabled, the application will be served using the `appId`.
+         */
         enableNPMWorkspaces?: boolean;
     };
 }
