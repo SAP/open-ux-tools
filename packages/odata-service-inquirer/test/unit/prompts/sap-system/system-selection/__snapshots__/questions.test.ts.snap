@@ -19,7 +19,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "default": -1,
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "Select a system configuration",
+      "hint": "Select a system configuration.",
     },
     "message": "System",
     "name": "systemSelection",
@@ -32,7 +32,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
-      "hint": "Enter the path to the OData service, relative to the selected destination URL",
+      "hint": "Enter the path to the OData service, relative to the selected destination URL.",
       "mandatory": true,
     },
     "message": "Service path",
@@ -113,7 +113,7 @@ exports[`Test system selection prompts should return system selection prompts an
     "default": -1,
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "Select a system configuration",
+      "hint": "Select a system configuration.",
     },
     "message": "System",
     "name": "systemSelection",
@@ -290,7 +290,7 @@ exports[`Test system selection prompts should return system selection prompts an
   },
   {
     "guiOptions": {
-      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
       "mandatory": true,
     },
     "guiType": "file-browser",
