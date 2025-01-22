@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.172
+
+### Patch Changes
+
+-   b88531b: fix: Enabled missing quick actions on ALP in V2 adp projects
+
 ## 0.16.171
 
 ### Patch Changes

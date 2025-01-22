@@ -161,6 +161,81 @@ describe('Test abap deploy configuration generator', () => {
         expect(showInformationSpy).toHaveBeenCalledWith(t('info.filesGenerated'), MessageType.notification);
     });
 
+    it('should run the generator for a library', async () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        cwd = join(`${OUTPUT_DIR_PREFIX}/lib1`);
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/lib1/ui5.yaml`]: testFixture.getContents('/samplelib/ui5.yaml'),
+                [`.${OUTPUT_DIR_PREFIX}/lib1/package.json`]: JSON.stringify({ scripts: {} })
+            },
+            '/'
+        );
+
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/lib1`);
+
+        const runContext = yeomanTest
+            .create(
+                AbapDeployGenerator,
+                {
+                    resolved: abapDeployGenPath
+                },
+                {
+                    cwd: appDir
+                }
+            )
+            .withOptions({
+                skipInstall: true,
+                launchStandaloneFromYui: true
+            })
+            .withPrompts({
+                targetSystem: 'https://mock.url.target2.com',
+                ui5AbapRepo: 'ZLIBRARY',
+                packageInputChoice: PackageInputChoices.EnterManualChoice,
+                packageManual: '$TMP',
+                description: 'Test Description'
+            });
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        const pkgJson = JSON.parse(
+            await fs.promises.readFile(`${appDir}/package.json`, {
+                encoding: 'utf8'
+            })
+        );
+
+        expect(pkgJson.scripts).toStrictEqual({
+            'deploy': 'npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip',
+            'deploy-test': 'npm run build && fiori deploy --config ui5-deploy.yaml --testMode true',
+            'undeploy': 'npm run build && fiori undeploy --config ui5-deploy.yaml'
+        });
+
+        // as rim raf version may change in future, we are just checking the presence of the dependency
+        expect(pkgJson.devDependencies).toHaveProperty('rimraf');
+
+        const ui5Config = await UI5Config.newInstance(
+            await fs.promises.readFile(`${appDir}/ui5.yaml`, { encoding: 'utf8' })
+        );
+        const ui5TaskFlattenLib = ui5Config.findCustomTask<AbapDeployConfig>('ui5-task-flatten-library');
+        expect(ui5TaskFlattenLib).toBeDefined();
+        const ui5DeployConfig = await UI5Config.newInstance(
+            await fs.promises.readFile(`${appDir}/ui5-deploy.yaml`, { encoding: 'utf8' })
+        );
+        const deployTask = ui5DeployConfig.findCustomTask<AbapDeployConfig>(ABAP_DEPLOY_TASK)?.configuration;
+
+        expect(deployTask).toStrictEqual({
+            app: {
+                name: 'ZLIBRARY',
+                description: 'Test Description',
+                package: '$TMP',
+                transport: ''
+            },
+            target: {
+                url: 'https://mock.url.target2.com'
+            },
+            exclude: ['/test/']
+        });
+    });
+
     it('should run the generator as a subgenerator with options provided as answers', async () => {
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
         mockSendTelemetry.mockRejectedValueOnce(new Error('Telemetry error'));
