@@ -32,7 +32,6 @@ export class EnableListReportVariantManagementQuickAction
                 {
                     run: () => {
                         if (this.ownerComponent) {
-                            this.isPageSmartVariantManagementEnabled = this.ownerComponent.getSmartVariantManagement();
                             if (!this.isPageSmartVariantManagementEnabled) {
                                 return {
                                     type: 'error',
@@ -62,6 +61,14 @@ export class EnableListReportVariantManagementQuickAction
                 !this.ownerComponent?.isA('sap.suite.ui.generic.template.AnalyticalListPage.Component')
             ) {
                 this.control = undefined;
+            } else {
+                const id = this.control.getId();
+                if (typeof id !== 'string') {
+                    throw new Error('Could not retrieve configuration property because control id is not valid!');
+                }
+                const value = this.context.changeService.getConfigurationPropertyValue(id, 'smartVariantManagement');
+                this.isPageSmartVariantManagementEnabled =
+                    value === undefined ? this.ownerComponent.getSmartVariantManagement() : (value as boolean);
             }
         }
     }

@@ -1578,7 +1578,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                 );
                 CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
                     return { type, value, settings };
@@ -2864,7 +2864,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                 );
 
                 CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {

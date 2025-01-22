@@ -32,7 +32,6 @@ export class EnableVariantManagementQuickAction
                 {
                     run: () => {
                         if (this.control) {
-                            this.pageSmartVariantManagementMode = this.ownerComponent.getVariantManagement();
                             if (this.pageSmartVariantManagementMode === 'Control') {
                                 return {
                                     type: 'error',
@@ -64,6 +63,14 @@ export class EnableVariantManagementQuickAction
                 !this.ownerComponent?.isA('sap.fe.templates.AnalyticalListPage.Component')
             ) {
                 this.control = undefined;
+            } else {
+                const id = this.control.getId();
+                if (typeof id !== 'string') {
+                    throw new Error('Could not retrieve configuration property because control id is not valid!');
+                }
+                const value = this.context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
+                this.pageSmartVariantManagementMode =
+                    value === undefined ? this.ownerComponent.getVariantManagement() : (value as string);
             }
         }
     }

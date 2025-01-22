@@ -48,9 +48,19 @@ export class EnableObjectPageVariantManagementQuickAction
             const table = this.tableMap[mapKey]?.table;
 
             if (table) {
-                if ((table as SmartTableExtended).getVariantManagement() !== undefined) {
+                const id = table.getId();
+                if (typeof id !== 'string') {
+                    throw new Error('Could not retrieve configuration property because control id is not valid!');
+                }
+                let value = this.context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
+                if (value === undefined) {
+                    value = !!(table as SmartTableExtended).getVariantManagement();
+                }
+                const hasItems = !!(table as SmartTable).getTable().getBindingInfo('items');
+
+                if (value || !hasItems) {
                     child.enabled = false;
-                    child.tooltip = alreadyEnabledTooltip;
+                    child.tooltip = hasItems ? alreadyEnabledTooltip : undefined;
                 }
             }
             child.children.forEach((nestedChild, idx) => processChild(nestedChild, `${mapKey}/${idx.toFixed(0)}`));

@@ -1340,7 +1340,8 @@ describe('FE V4 quick actions', () => {
                     if (id == 'DynamicPage') {
                         return {
                             getDomRef: () => ({}),
-                            getParent: () => pageView
+                            getParent: () => pageView,
+                            getId: () => 'DynamicPage'
                         };
                     }
                     if (id == 'NavContainer') {
@@ -1427,7 +1428,7 @@ describe('FE V4 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                 );
                 CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
                     return { type, value, settings };
@@ -2225,7 +2226,8 @@ describe('FE V4 quick actions', () => {
                         if (id == 'DynamicPage') {
                             return {
                                 getDomRef: () => ({}),
-                                getParent: () => pageView
+                                getParent: () => pageView,
+                                getId: () => 'DynamicPage'
                             };
                         }
                         if (id == 'NavContainer') {
@@ -2314,7 +2316,7 @@ describe('FE V4 quick actions', () => {
                         rtaMock,
                         new OutlineService(rtaMock, mockChangeService),
                         [registry],
-                        { onStackChange: jest.fn() } as any
+                        { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                     );
                     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
                         return { type, value, settings };
