@@ -35,10 +35,9 @@ import {
     INSERT_RECORD_CHANGE_TYPE,
     INSERT_TARGET_CHANGE_TYPE,
     createDeleteAnnotationGroupItemsChange,
-    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE,
-    type InsertRecord
+    DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE
 } from './change';
-import type { Deletes, CDSDocumentChange } from './change';
+import type { Deletes, CDSDocumentChange, InsertRecord } from './change';
 import { getChildCount, type AstNode, type CDSDocument } from './document';
 import { getAstNodesFromPointer } from './pointer';
 
