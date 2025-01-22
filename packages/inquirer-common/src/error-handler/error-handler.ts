@@ -183,10 +183,11 @@ export class ErrorHandler {
     };
 
     /**
+     * Get the localized error message for the specified server error.
      *
-     * @param error
+     * @param error the error object or message that was returned from the server (5xx)
      * @param subTextKey an i18next key used to provide additional context to the error message
-     * @returns
+     * @returns the localized error message
      */
     private static readonly serverErrorMessage = (error: Error | object | string | undefined, subTextKey?: string) =>
         t('errors.serverReturnedAnError', {
