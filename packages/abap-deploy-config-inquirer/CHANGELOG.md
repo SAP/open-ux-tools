@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.0
+
+### Minor Changes
+
+-   fc5916a: exposes getpackageprompts and gettransportrequest prompts
+
 ## 1.1.21
 
 ### Patch Changes

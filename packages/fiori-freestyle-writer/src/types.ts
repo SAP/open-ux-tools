@@ -2,11 +2,13 @@ import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
-export enum TemplateType {
-    Basic = 'basic',
-    Worklist = 'worklist',
-    ListDetail = 'listdetail'
-}
+export const TemplateType = {
+    Basic: 'basic',
+    Worklist: 'worklist',
+    ListDetail: 'listdetail'
+} as const;
+
+export type TemplateType = (typeof TemplateType)[keyof typeof TemplateType];
 
 interface Entity {
     name: string;

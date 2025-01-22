@@ -22,6 +22,12 @@
       "path": "../feature-toggle"
     },
     {
+      "path": "../fiori-elements-writer"
+    },
+    {
+      "path": "../fiori-freestyle-writer"
+    },
+    {
       "path": "../fiori-generator-shared"
     },
     {
