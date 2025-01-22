@@ -1,8 +1,27 @@
-import { basename, join, normalize } from 'path';
+import { basename, dirname, join, parse, resolve } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName } from '../constants';
 import { fileExists, findFilesByExtension, readFile } from '../file';
+
+/**
+ * Get path to folder where package.json is.
+ *
+ * @param projectRoot - root path, where package.json or ui5.yaml is
+ * @param [memFs] - optional mem-fs editor instance
+ * @returns - path to webapp folder
+ */
+async function getPackageJsonRoot(projectRoot: string, memFs?: Editor): Promise<string> {
+    let currentDir = resolve(projectRoot);
+    while (currentDir !== parse(currentDir).root) {
+        const packageJSONPath = join(currentDir, FileName.Package);
+        if (await fileExists(packageJSONPath, memFs)) {
+            return currentDir;
+        }
+        currentDir = dirname(currentDir);
+    }
+    return projectRoot;
+}
 
 /**
  * Get path to webapp.
@@ -12,17 +31,16 @@ import { fileExists, findFilesByExtension, readFile } from '../file';
  * @returns - path to webapp folder
  */
 export async function getWebappPath(projectRoot: string, memFs?: Editor): Promise<string> {
-    let webappPath = join(projectRoot, 'webapp');
     const ui5YamlPath = join(projectRoot, FileName.Ui5Yaml);
+    // Search for folder with package.json inside
+    const packageJsonRoot = await getPackageJsonRoot(projectRoot, memFs);
+    let webappPath = join(packageJsonRoot, 'webapp');
     if (await fileExists(ui5YamlPath, memFs)) {
         const yamlString = await readFile(ui5YamlPath, memFs);
         const ui5Config = await UI5Config.newInstance(yamlString);
         const relativeWebappPath = ui5Config.getConfiguration()?.paths?.webapp;
         if (relativeWebappPath) {
-            // Additionally check if webappPath path is not conflicting with relativeWebappPath
-            if (!webappPath.endsWith(normalize(relativeWebappPath))) {
-                webappPath = join(projectRoot, relativeWebappPath);
-            }
+            webappPath = join(packageJsonRoot, relativeWebappPath);
         }
     }
     return webappPath;
