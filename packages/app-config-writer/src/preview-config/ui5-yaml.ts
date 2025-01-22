@@ -11,7 +11,8 @@ import type {
     MiddlewareConfig as PreviewConfig,
     DefaultFlpPath,
     DefaultIntent,
-    TestConfigDefaults as PreviewTestConfigDefaults
+    TestConfigDefaults as PreviewTestConfigDefaults,
+    TestConfig
 } from '@sap-ux/preview-middleware';
 import type { PreviewConfigOptions } from '../types';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -203,6 +204,7 @@ export function extractYamlConfigFileName(script: string): string {
  * @param basePath - base path to be used for the conversion
  * @param ui5Yaml - the name of the UI5 yaml configuration file
  * @param script - the content of the script
+ * @param logger logger to report info to the user
  * @param skipPreviewMiddlewareCreation - (default: false) indicator if the preview middleware creation should be skipped if no preview middleware is configured.
  */
 export async function processUi5YamlConfig(
@@ -210,6 +212,7 @@ export async function processUi5YamlConfig(
     basePath: string,
     ui5Yaml: string,
     script: string,
+    logger?: ToolsLogger,
     skipPreviewMiddlewareCreation = false
 ): Promise<void> {
     let ui5YamlConfig: UI5Config;
@@ -228,7 +231,7 @@ export async function processUi5YamlConfig(
     }
 
     const { path, intent } = extractUrlDetails(script);
-    previewMiddleware = await updatePreviewMiddlewareConfig(previewMiddleware, intent, path, basePath, fs);
+    previewMiddleware = await updatePreviewMiddlewareConfig(previewMiddleware, intent, path, basePath, fs, logger);
 
     ui5YamlConfig.updateCustomMiddleware(previewMiddleware);
     const yamlPath = join(basePath, ui5Yaml);
@@ -245,6 +248,7 @@ export async function processUi5YamlConfig(
  * @param path - the flp path
  * @param basePath - the base path
  * @param fs - file system reference
+ * @param logger logger to report info to the user
  * @returns the preview middleware configuration
  */
 export async function updatePreviewMiddlewareConfig(
@@ -252,7 +256,8 @@ export async function updatePreviewMiddlewareConfig(
     intent: FlpConfig['intent'] | undefined,
     path: string | undefined,
     basePath: string,
-    fs: Editor
+    fs: Editor,
+    logger?: ToolsLogger
 ): Promise<CustomMiddleware<PreviewConfigOptions>> {
     const defaultIntent = `${DEFAULT_INTENT.object}-${DEFAULT_INTENT.action}`;
     const newMiddlewareConfig = sanitizePreviewMiddleware(previewMiddleware);
@@ -278,7 +283,7 @@ export async function updatePreviewMiddlewareConfig(
             writeConfig = true;
         }
     } else if (isTestPath(path, configuration)) {
-        configuration.test = await updateTestConfig(configuration.test, path, basePath, fs);
+        configuration.test = await updateTestConfig(configuration.test, path, basePath, fs, logger);
         writeConfig = true;
     }
 
@@ -290,19 +295,60 @@ export async function updatePreviewMiddlewareConfig(
 }
 
 /**
+ * Sanitize the test script (*.qunit.[jt]s)
+ * If the OPA5 test script uses the JourneyRunner, it will be renamed and added as pattern to the respective UI5 yaml configuration.
+ * If the test script does not use the JourneyRunner, it will be deleted.
+ *
+ * @param fs - file system reference
+ * @param basePath - base path to be used
+ * @param path - the path to the test runner html file
+ * @param newConfig - the new test configuration
+ * @param logger logger to report info to the user
+ */
+export async function sanitizeTestScript(
+    fs: Editor,
+    basePath: string,
+    path: string,
+    newConfig: TestConfig,
+    logger?: ToolsLogger
+): Promise<void> {
+    const jsTestScriptPath = join(await getWebappPath(basePath), path.replace('.html', '.js'));
+    const tsTestScriptPath = join(await getWebappPath(basePath), path.replace('.html', '.ts'));
+    const testScriptPath = fs.exists(jsTestScriptPath) ? jsTestScriptPath : tsTestScriptPath;
+    if (fs.exists(testScriptPath)) {
+        const file = fs.read(testScriptPath);
+        const usesJourneyRunner = file.includes('sap/fe/test/JourneyRunner');
+        if (usesJourneyRunner) {
+            const filePathRenamed = testScriptPath.replace(/(\.([jt])s)$/, '.custom$1');
+            fs.move(testScriptPath, filePathRenamed);
+            newConfig.pattern = `/test/**/${basename(filePathRenamed)}`;
+            logger?.info(
+                `Renamed '${basename(testScriptPath)}' to '${basename(
+                    filePathRenamed
+                )}'. This file creates the JourneyRunner for the OPA5 tests. As the handling of journey runners is not part of the virtual OPA5 test runner endpoint, this file has been renamed and added to the respective UI5 yaml configuration.`
+            );
+        } else {
+            await deleteFiles(fs, [testScriptPath]);
+        }
+    }
+}
+
+/**
  * Update the test configuration.
  *
  * @param testConfiguration - the test configuration
  * @param path - the path
  * @param basePath - the base path
  * @param fs - file system reference
+ * @param logger logger to report info to the user
  * @returns the updated test configuration
  */
 export async function updateTestConfig(
     testConfiguration: PreviewConfig['test'],
     path: string | undefined,
     basePath: string,
-    fs: Editor
+    fs: Editor,
+    logger?: ToolsLogger
 ): Promise<PreviewConfig['test']> {
     const hasTestsuite = (config: PreviewConfig['test']): boolean => {
         return config?.some((test) => test.framework === 'Testsuite') ?? false;
@@ -331,26 +377,14 @@ export async function updateTestConfig(
             //sanitize default path
             delete testConfig.path;
         }
-    } else if (path?.includes(defaultPath)) {
-        testConfiguration.push({ framework });
-        //default: add testsuite if not present
-        if (!hasTestsuite(testConfiguration)) {
-            testConfiguration.push({ framework: 'Testsuite' });
-        }
-        //delete respective .js|.ts file
-        await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.js'))]);
-        await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.ts'))]);
-    } else if (path) {
-        testConfiguration.push({ framework, path });
-        //default: add testsuite if not present
-        if (!hasTestsuite(testConfiguration)) {
-            testConfiguration.push({ framework: 'Testsuite' });
-        }
-        //delete respective .js|.ts file
-        await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.js'))]);
-        await deleteFiles(fs, [join(await getWebappPath(basePath), path.replace('.html', '.ts'))]);
     } else {
-        testConfiguration.push({ framework });
+        const newConfig: TestConfig = { framework, ...(path && !path.includes(defaultPath) && { path }) };
+        await sanitizeTestScript(fs, basePath, path ?? defaultPath, newConfig, logger);
+        testConfiguration.push({ ...newConfig });
+        //default: add testsuite if not present
+        if (!hasTestsuite(testConfiguration)) {
+            testConfiguration.push({ framework: 'Testsuite' });
+        }
     }
     return testConfiguration;
 }
@@ -397,7 +431,8 @@ export async function updateDefaultTestConfig(fs: Editor, basePath: string, logg
             previewMiddleware.configuration.test,
             defaultConfig.path,
             basePath,
-            fs
+            fs,
+            logger
         );
         logger?.info(
             `The UI5 YAML configuration file 'ui5.yaml', has been updated to support the test framework '${defaultConfig.framework}'. Please consider transferring the test configuration to the UI5 YAML configuration file used for testing.`
@@ -446,7 +481,7 @@ export async function updatePreviewMiddlewareConfigs(
         }
 
         try {
-            await processUi5YamlConfig(fs, basePath, ui5Yaml, script);
+            await processUi5YamlConfig(fs, basePath, ui5Yaml, script, logger);
         } catch (error) {
             logger?.warn(
                 `Skipping script '${scriptName}', which refers to the UI5 YAML configuration file '${ui5Yaml}'. ${error.message}`
@@ -467,7 +502,7 @@ export async function updatePreviewMiddlewareConfigs(
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
         //at least adjust deprecated preview config of unused ui5 yaml configurations
         try {
-            await processUi5YamlConfig(fs, basePath, ui5Yaml, '', true);
+            await processUi5YamlConfig(fs, basePath, ui5Yaml, '', logger, true);
         } catch (error) {
             logger?.warn(`Skipping UI5 yaml configuration file '${ui5Yaml}'. ${error.mesage}`);
         }
