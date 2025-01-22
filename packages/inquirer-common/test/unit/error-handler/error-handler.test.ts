@@ -13,7 +13,6 @@ import { ERROR_TYPE, ErrorHandler } from '../../../src/error-handler/error-handl
 import { initI18nInquirerCommon, t } from '../../../src/i18n';
 import * as telemetryUtils from '../../../src/telemetry/telemetry';
 import { type Destination } from '@sap-ux/btp-utils';
-import exp from 'constants';
 
 let mockIsAppStudio = false;
 
