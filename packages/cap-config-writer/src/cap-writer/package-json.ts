@@ -1,7 +1,7 @@
 import type { Package } from '@sap-ux/project-access';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import path, { dirname, join } from 'path';
+import { dirname, join, normalize, posix } from 'path';
 import type { CapServiceCdsInfo } from '../cap-config/types';
 import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled } from '../cap-config';
 import type { Logger } from '@sap-ux/logger';
@@ -103,7 +103,7 @@ export async function updateRootPackageJson(
     if (sapux) {
         const dirPath = join(capService.appPath ?? (await getCapCustomPaths(capService.projectPath)).app, projectName);
         // Converts a directory path to a POSIX-style path.
-        const capProjectPath = path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);
+        const capProjectPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
         const sapuxExt = Array.isArray(packageJson?.sapux) ? [...packageJson.sapux, capProjectPath] : [capProjectPath];
         fs.extendJSON(packageJsonPath, { sapux: sapuxExt });
     }
