@@ -2,9 +2,9 @@ import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
+import type { CapService } from '@sap-ux/cap-config-writer';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -141,40 +141,6 @@ export enum promptNames {
      * System selection
      */
     systemSelection = 'systemSelection'
-}
-
-export type CapRuntime = 'Node.js' | 'Java';
-
-export interface CapService {
-    /**
-     * The path to the CAP project.
-     */
-    projectPath: string;
-    /**
-     * The CDS info for the Cds instance that was used to compile the project when determining the service.
-     */
-    cdsVersionInfo?: CdsVersionInfo;
-    /**
-     * The name of the CAP service as identified by the cds model.
-     */
-    serviceName: string;
-    /**
-     * The URL path to the service, as specfied in the manifest.json of generated apps
-     * This is also provided as `OdataServicePromptAnswers` property `servicePath`
-     */
-    urlPath?: string;
-    /**
-     * The relative path (from the `projectPath`) to the service cds file.
-     */
-    serviceCdsPath?: string;
-    /**
-     * The runtime of the Cds instance that was used to compile the project when determining the service.
-     */
-    capType?: CapRuntime;
-    /**
-     * The relative path (from the `projectPath`) to the app folder
-     */
-    appPath?: string;
 }
 
 export interface CapServiceChoice extends ListChoiceOptions {

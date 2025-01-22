@@ -859,9 +859,6 @@ importers:
         specifier: 1.6.11
         version: 1.6.11
     devDependencies:
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2370,6 +2367,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle

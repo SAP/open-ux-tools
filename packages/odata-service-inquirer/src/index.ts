@@ -22,13 +22,12 @@ import LoggerHelper from './prompts/logger-helper';
 import {
     DatasourceType,
     promptNames,
-    type CapRuntime,
-    type CapService,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
     type SapSystemType
 } from './types';
+import type { CapService, CapRuntime } from '@sap-ux/cap-config-writer';
 import { getPromptHostEnvironment, PromptState } from './utils';
 
 /**
