@@ -50,7 +50,7 @@ export async function renameSandbox(fs: Editor, path: string, logger?: ToolsLogg
 export async function renameDefaultSandboxes(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
     const defaultSandboxPaths = [join('test', 'flpSandbox.html'), join('test', 'flpSandboxMockserver.html')];
     for (const path of defaultSandboxPaths) {
-        await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
+        await renameSandbox(fs, join(await getWebappPath(basePath, fs), path), logger);
     }
 }
 
@@ -77,7 +77,7 @@ export async function renameDefaultTestFiles(fs: Editor, basePath: string, logge
  * @param logger logger to report info to the user
  */
 export async function deleteNoLongerUsedFiles(fs: Editor, basePath: string, logger?: ToolsLogger): Promise<void> {
-    const webappTestPath = join(await getWebappPath(basePath), 'test');
+    const webappTestPath = join(await getWebappPath(basePath, fs), 'test');
     [
         join(webappTestPath, 'locate-reuse-libs.js'),
         join(webappTestPath, 'changes_loader.js'),
