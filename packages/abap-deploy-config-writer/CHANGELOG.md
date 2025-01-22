@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.75
+
+### Patch Changes
+
+-   71e5a5e: fix issues for library deployment
+
 ## 0.0.74
 
 ### Patch Changes
