@@ -94,10 +94,12 @@ async function getTypescriptFilePaths(typescriptPattern: string): Promise<string
  * @param fs - the memfs editor instance
  * @param path - the path where the file will be written
  */
-export async function writeUi5RepositoryFiles(fs: Editor, path: string): Promise<void> {
-    const typeScriptFilesPaths = await getTypescriptFilePaths(join(path, '/**/*.ts'));
-    if (typeScriptFilesPaths?.length > 0) {
-        writeUi5RepositoryFile(fs, path, UI5_REPO_TEXT_FILES, '^.*.ts$');
+export async function writeUi5RepositoryFiles(fs: Editor, path?: string): Promise<void> {
+    if (path) {
+        const typeScriptFilesPaths = await getTypescriptFilePaths(join(path, '/**/*.ts'));
+        if (typeScriptFilesPaths?.length > 0) {
+            writeUi5RepositoryFile(fs, path, UI5_REPO_TEXT_FILES, '^.*.ts$');
+        }
     }
 }
 
@@ -107,9 +109,11 @@ export async function writeUi5RepositoryFiles(fs: Editor, path: string): Promise
  * @param fs - the memfs editor instance
  * @param path - the path where the file will be written
  */
-export async function writeUi5RepositoryIgnore(fs: Editor, path: string): Promise<void> {
-    const typeScriptFilesPaths = await getTypescriptFilePaths(join(path, '/**/*.ts'));
-    if (typeScriptFilesPaths?.length > 0) {
-        writeUi5RepositoryFile(fs, path, UI5_REPO_IGNORE, '^.*.ts$\n^.*.ts.map$');
+export async function writeUi5RepositoryIgnore(fs: Editor, path?: string): Promise<void> {
+    if (path) {
+        const typeScriptFilesPaths = await getTypescriptFilePaths(join(path, '/**/*.ts'));
+        if (typeScriptFilesPaths?.length > 0) {
+            writeUi5RepositoryFile(fs, path, UI5_REPO_IGNORE, '^.*.ts$\n^.*.ts.map$');
+        }
     }
 }
