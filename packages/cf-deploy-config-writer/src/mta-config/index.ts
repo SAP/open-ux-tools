@@ -120,15 +120,25 @@ export function doesCDSBinaryExist(): void {
     }
 }
 
+/**
+ *
+ * @param cwd
+ * @param options
+ */
 export function addCAMtaServices(cwd: string, options?: string[]): void {
-    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
+    const result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
     if (result.error) {
         throw new Error(CDSBinNotFound);
     }
 }
 
+/**
+ *
+ * @param cwd
+ * @param options
+ */
 export function createCAPMTA(cwd: string, options?: string[]): void {
-    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
+    const result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
     if (result.error) {
         throw new Error(CDSBinNotFound);
     }

@@ -206,6 +206,11 @@ export class MtaConfig {
         this.dirty = true;
     }
 
+    /**
+     *
+     * @param serviceName
+     * @param resourceName
+     */
     private async updateServiceName(serviceName: string, resourceName: string): Promise<void> {
         const resource = this.resources.get(resourceName);
         if (resource && !resource.parameters?.['service-name']) {

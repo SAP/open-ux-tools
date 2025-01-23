@@ -51,14 +51,8 @@ import {
 import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
 import { type Logger } from '@sap-ux/logger';
-import {
-    ApiHubType,
-    type CFAppConfig,
-    type CFConfig,
-    type MTABaseConfig,
-    RouterModuleType,
-    XSAppDocument
-} from '../types';
+import type { XSAppDocument } from '../types';
+import { ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
 
 /**
  * Add a managed approuter configuration to an existing HTML5 application.
@@ -259,8 +253,9 @@ export function generateMTAFile(cfConfig: CFConfig): void {
 
 /**
  * Updates the MTA configuration file.
- * @param fs reference to a mem-fs editor
+ *
  * @param cfConfig writer configuration
+ * @param fs reference to a mem-fs editor
  */
 async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
