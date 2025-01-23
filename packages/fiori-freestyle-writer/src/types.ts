@@ -46,7 +46,7 @@ export interface FreestyleApp<T> extends Ui5App {
     appOptions?: Partial<AppOptions> & {
         /**
          * If the application is being generated with a `capService` into an exising root Cap project module and this is set to true,
-         * npm workspaces will be enabled for the root module. For more information see 
+         * npm workspaces will be enabled for the root module. For more information see
          * `applyCAPUpdates` function at {@link ../../cap-config-writer/src/cap-writer/updates.ts}.
          */
         enableNPMWorkspaces?: boolean;
