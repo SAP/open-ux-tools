@@ -47,7 +47,7 @@ export async function readManifest(manifestPath: string, fs: Editor): Promise<Ma
  * @param relativeTemplatePath - optional, the path of the required template relative to the ./templates folder. If not specified the root templates folder is returned.
  * @returns the path of the template specified or templates root folder
  */
-export function getTemplatePath(relativeTemplatePath: string = ''): string {
+export function getTemplatePath(relativeTemplatePath: string): string {
     return join(__dirname, '../templates', relativeTemplatePath);
 }
 
@@ -175,9 +175,9 @@ export async function addCommonPackageDependencies(targetPath: string, fs: Edito
  * @param fs reference to a mem-fs editor
  */
 export async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<void> {
-    const mtaId: string | undefined = config.mtaId ?? (await getMtaId(config.rootPath));
+    const mtaId: string = config.mtaId ?? (await getMtaId(config.rootPath));
     // Add specific MTA ID configurations
-    const mtaConfig = { mtaId: mtaId ?? config.appId, mtaPath: config.rootPath } as MTABaseConfig;
+    const mtaConfig = { mtaId, mtaPath: config.rootPath } as MTABaseConfig;
     if (mtaId && !fs.exists(join(config.rootPath, 'package.json'))) {
         addRootPackage(mtaConfig, fs);
     }

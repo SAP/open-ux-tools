@@ -31,27 +31,34 @@ import {
 } from '../constants';
 import {
     addCommonPackageDependencies,
+    generateSupportingConfig,
     getDestinationProperties,
     getTemplatePath,
     readManifest,
-    toPosixPath,
-    generateSupportingConfig
+    toPosixPath
 } from '../utils';
 import {
     addMtaDeployParameters,
+    createCAPMTA,
+    createMTA,
+    doesCDSBinaryExist,
+    doesMTABinaryExist,
     getMtaConfig,
     getMtaId,
     type MtaConfig,
-    toMtaModuleName,
-    doesMTABinaryExist,
-    createMTA,
-    createCAPMTA,
-    doesCDSBinaryExist
+    toMtaModuleName
 } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
 import { type Logger } from '@sap-ux/logger';
-import { ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig, XSAppDocument } from '../types';
+import {
+    ApiHubType,
+    type CFAppConfig,
+    type CFConfig,
+    type MTABaseConfig,
+    RouterModuleType,
+    XSAppDocument
+} from '../types';
 
 /**
  * Add a managed approuter configuration to an existing HTML5 application.
@@ -88,6 +95,11 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
         fs
     );
     const { servicePath, firstServicePathSegment, appId } = await processManifest(cfAppConfig.appPath, fs);
+
+    if (!appId) {
+        throw new Error('No SAP Fiori UI5 application found.');
+    }
+
     const { destinationIsFullUrl, destinationAuthentication } = await getDestinationProperties(
         cfAppConfig.destinationName ?? destination
     );
@@ -247,7 +259,7 @@ export function generateMTAFile(cfConfig: CFConfig): void {
 
 /**
  * Updates the MTA configuration file.
- *
+ * @param fs reference to a mem-fs editor
  * @param cfConfig writer configuration
  */
 async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
@@ -276,13 +288,13 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
         if (appRouterPath) {
             try {
                 const xsAppPath = join(appRouterPath, XSAppFile);
-                const appRouterXsAppObj = fs.readJSON(xsAppPath) as unknown as XSAppDocument;
+                const appRouterXsAppObj = fs.readJSON(join(cfConfig.rootPath, xsAppPath)) as unknown as XSAppDocument;
                 if (
                     (appRouterXsAppObj && !appRouterXsAppObj?.[WelcomeFile]) ||
                     appRouterXsAppObj?.[WelcomeFile] === '/'
                 ) {
                     appRouterXsAppObj[WelcomeFile] = `/${cfConfig.appId}`;
-                    fs.writeJSON(xsAppPath, appRouterXsAppObj);
+                    fs.writeJSON(join(cfConfig.rootPath, xsAppPath), appRouterXsAppObj);
                 }
             } catch (error) {
                 LoggerHelper.logger?.error(t('error.cannotUpdateRouterXSApp', { error }));
