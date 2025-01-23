@@ -121,9 +121,16 @@ export interface FioriElementsApp<T> extends Ui5App {
          */
         addTests?: boolean;
         /**
-         * If the application is being generated with a `capService` into an exising root Cap project module and this is set to true,
-         * npm workspaces will be enabled for the root module. For more information see 
-         * `applyCAPUpdates` function at {@link ../../cap-config-writer/src/cap-writer/updates.ts}.
+         * Enables NPM workspaces for the root CAP project module when the application is generated with a `capService`.
+         * If set to `true`, NPM workspaces will be enabled for the root module. For details, refer to the `applyCAPUpdates` function at 
+         * {@link ../../cap-config-writer/src/cap-writer/updates.ts}.
+         * 
+         * Examples:
+         * - With NPM Workspaces** (and `cds-plugin-ui5` enabled):
+         *   `"watch-typescript": "cds watch --open com.test.typescript/index.html?sap-ui-xx-viewCache=false"`
+         * 
+         * - Without NPM Workspaces**:
+         *   `"watch-javascript": "cds watch --open javascript/webapp/index.html?sap-ui-xx-viewCache=false"`
          */
         enableNPMWorkspaces?: boolean;
     };
