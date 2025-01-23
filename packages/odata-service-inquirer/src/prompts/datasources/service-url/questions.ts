@@ -2,10 +2,12 @@ import {
     extendWithOptions,
     type CommonPromptOptions,
     type YUIQuestion,
-    type InputQuestion
+    type InputQuestion,
+    type ConfirmQuestion,
+    type PasswordQuestion
 } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { ConfirmQuestion, PasswordQuestion, Question } from 'inquirer';
+import type { Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
 import { promptNames } from '../../../types';
