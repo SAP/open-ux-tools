@@ -3,8 +3,8 @@ import React from 'react';
 import { useTranslation } from 'react-i18next';
 import { Label, Stack, Text } from '@fluentui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { InfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import { clearInfoCenterMessage, clearAllInfoCenterMessages, MessageBarType, toggleExpandMessage } from '@sap-ux-private/control-property-editor-common';
+import type { InfoCenterMessage, InfoCenterMessageState } from '@sap-ux-private/control-property-editor-common';
+import { clearInfoCenterMessage, clearAllInfoCenterMessages, MessageBarType, toggleExpandMessage, readMessage } from '@sap-ux-private/control-property-editor-common';
 import { UIMessageBar, UIIconButton, UiIcons, UIIconButtonSizes } from '@sap-ux/ui-components';
 import type { RootState } from '../../store';
 import { sectionHeaderFontSize } from '../properties/constants';
@@ -18,8 +18,9 @@ import './InfoCenter.scss';
 export function InfoCenter(): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const infoCenter = useSelector<RootState, InfoCenterMessage[]>((state) => state.infoCenter);
-    const expandedStates = useSelector<RootState, boolean[]> ((state) => state.expandedStates);
+    const messages = useSelector<RootState, InfoCenterMessage[]>((state) => state.infoCenterMessages);
+    const messagesState = useSelector<RootState, InfoCenterMessageState[]>((state) => state.infoCenterMessagesState);
+    // const expandedStates = useSelector<RootState, boolean[]> ((state) => state.expandedStates);
     function getMessageType(type: MessageBarType) {
         switch (type) {
             case MessageBarType.error:
@@ -52,11 +53,12 @@ export function InfoCenter(): ReactElement {
                     </Stack.Item>
                 </div>
                 <Stack className={`info-center-items`}>
-                    {infoCenter.map((info, index) => {
+                    {messages.map((info, index) => {
                         const isExpandable = info.message.description.length > 150; // Check if description exceeds 150 chars
-                        const isExpanded = expandedStates[index]; // Check the expanded state for this index
+                        const isExpanded = messagesState[index].expanded; // Check the expanded state for this index
+                        const isRead = messagesState[index].read;
                         return (
-                            <Stack.Item key={index} className={`message-bar ${getMessageType(info.type)}`}>
+                            <Stack.Item key={index} className={`message-bar ${getMessageType(info.type)} ${isRead && 'message-read'}`} onMouseOver={() => dispatch(readMessage(index))}>
                                 <UIMessageBar messageBarType={info.type as MessageBarType}>
                                     <Text block={true} className={`message-title`}>{info.message.title}</Text>
                                     <Text block={true} className={`message-description`}>

@@ -19,7 +19,7 @@ import './RightPanel.scss';
 export function RightPanel(): ReactElement {
     const actionsCount = useSelector<RootState, number>((state) => state.quickActions.length);
     const scenario = useSelector<RootState, Scenario>((state) => state.scenario);
-    const infoCenterMessagesCount = useSelector<RootState, number>((state) => state.infoCenter.length);
+    const infoCenterMessagesCount = useSelector<RootState, number>((state) => state.infoCenterMessages.length);
 
     const rowSize = 100;
     const header = 50;

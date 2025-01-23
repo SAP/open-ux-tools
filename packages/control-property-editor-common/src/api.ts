@@ -292,6 +292,11 @@ export interface InfoCenterMessage {
     };
 }
 
+export interface InfoCenterMessageState {
+    expanded?: boolean;
+    read?: boolean;
+}
+
 export enum MessageBarType {
     /** Info styled MessageBar */
     info = 0,
@@ -399,6 +404,7 @@ export const clearInfoCenterMessage = createExternalAction<number>('clear-info-c
 export const clearAllInfoCenterMessages = createExternalAction<void>('clear-all-info-center-message');
 export const externalFileChange = createExternalAction<string>('external-file-change');
 export const toggleExpandMessage = createExternalAction<number>('toggle-expand-message');
+export const readMessage = createExternalAction<number>('read-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -431,3 +437,4 @@ export type ExternalAction =
     | ReturnType<typeof clearAllInfoCenterMessages>
     | ReturnType<typeof externalFileChange>
     | ReturnType<typeof toggleExpandMessage>
+    | ReturnType<typeof readMessage>
