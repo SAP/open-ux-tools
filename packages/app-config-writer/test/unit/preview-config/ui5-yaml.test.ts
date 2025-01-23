@@ -164,8 +164,7 @@ describe('update preview middleware config', () => {
                 'ui:mockserver':
                     'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance" --config ./ui5-deprecated-tools-preview-theme.yaml',
                 'start-variants-management': 'ui5 serve --o chicken.html',
-                'ui:opa5':
-                    'fiori run -o test/integration/opaTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml',
+                'ui:opa5': 'fiori run -o test/opaTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml',
                 'ui:unit':
                     'fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml'
             },
@@ -175,7 +174,7 @@ describe('update preview middleware config', () => {
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
         fs.write(
-            join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'),
+            join(variousConfigsPath, 'webapp', 'test', 'opaTests.qunit.js'),
             `sap.ui.require(['sap/fe/test/JourneyRunner'],function(JourneyRunner){
                 JourneyRunner.run({launchUrl: 'thisIsJustATest.html'});
             });`
@@ -185,10 +184,8 @@ describe('update preview middleware config', () => {
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
-        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'))).toBeFalsy();
-        expect(
-            fs.exists(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.custom.js'))
-        ).toBeTruthy();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'opaTests.qunit.js'))).toBeFalsy();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'opaTests.qunit.custom.js'))).toBeTruthy();
         expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'))).toBeFalsy();
     });
 

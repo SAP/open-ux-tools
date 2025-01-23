@@ -378,7 +378,10 @@ export async function updateTestConfig(
             delete testConfig.path;
         }
     } else {
-        const newConfig: TestConfig = { framework, ...(path && !path.includes(defaultPath) && { path }) };
+        const newConfig: TestConfig = {
+            framework,
+            ...(path && !(defaultPath === (path.startsWith('/') ? path : `/${path}`)) && { path })
+        };
         await sanitizeTestScript(fs, basePath, path ?? defaultPath, newConfig, logger);
         testConfiguration.push({ ...newConfig });
         //default: add testsuite if not present
