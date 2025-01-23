@@ -21,26 +21,34 @@ describe('preview-files', () => {
     });
 
     test('rename default Sandboxes', async () => {
-        fs.write(join(basePath, 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
-        fs.write(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'), 'dummy content flpSandboxMockserver');
+        const flpSandboxPath = join(basePath, 'webapp', 'test', 'flpSandbox.html');
+        const flpSandboxMockserverPath = join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html');
+        fs.write(flpSandboxPath, 'dummy content flpSandbox');
+        fs.write(flpSandboxMockserverPath, 'dummy content flpSandboxMockserver');
         await renameDefaultSandboxes(fs, basePath, logger);
         expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandbox.html'))).toThrowError(
-            `${join(basePath, 'webapp', 'test', 'flpSandbox.html')} doesn\'t exist`
+            `${flpSandboxPath} doesn\'t exist`
         );
         expect(fs.read(join(basePath, 'webapp', 'test', 'flpSandbox_old.html'))).toMatchInlineSnapshot(
             '"dummy content flpSandbox"'
         );
         expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'))).toThrowError(
-            `${join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html')} doesn\'t exist`
+            `${flpSandboxMockserverPath} doesn\'t exist`
         );
         expect(fs.read(join(basePath, 'webapp', 'test', 'flpSandboxMockserver_old.html'))).toMatchInlineSnapshot(
             '"dummy content flpSandboxMockserver"'
         );
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed 'flpSandbox.html' to 'flpSandbox_old.html'. This file is no longer needed for the virtual endpoints. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
+            `Renamed '${join('test', 'flpSandbox.html')}' to '${join(
+                'test',
+                'flpSandbox_old.html'
+            )}'. This file is no longer needed for the virtual endpoints. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
         );
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed 'flpSandboxMockserver.html' to 'flpSandboxMockserver_old.html'. This file is no longer needed for the virtual endpoints. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
+            `Renamed '${join('test', 'flpSandboxMockserver.html')}' to '${join(
+                'test',
+                'flpSandboxMockserver_old.html'
+            )}'. This file is no longer needed for the virtual endpoints. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
         );
     });
 
@@ -89,27 +97,26 @@ describe('preview-files', () => {
     });
 
     test('skip renaming for files which do not exist', async () => {
-        const path = join(basePath, 'test', 'IdoNotExist.html');
+        const path = join('test', 'IdoNotExist.html');
 
-        await renameSandbox(fs, path, logger);
-        expect(debugLogMock).toHaveBeenCalledWith(
-            `The file 'IdoNotExist.html', has not been found. Skipping renaming.`
-        );
+        await renameSandbox(fs, basePath, path, logger);
+        expect(debugLogMock).toHaveBeenCalledWith(`The file '${path}', has not been found. Skipping renaming.`);
     });
 
     test('skip renaming for files which have already been renamed', async () => {
-        const path = join(basePath, 'webapp', 'test', 'ImAlreadyRenamed.html');
+        const path = join('test', 'ImAlreadyRenamed.html');
 
         fs.write(join(basePath, 'webapp', 'test', 'ImAlreadyRenamed.html'), 'dummy content flpSandbox');
 
-        await renameSandbox(fs, path, logger);
+        await renameSandbox(fs, basePath, path, logger);
         expect(infoLogMock).toHaveBeenCalledWith(
-            `Renamed 'ImAlreadyRenamed.html' to 'ImAlreadyRenamed_old.html'. This file is no longer needed for the virtual endpoints. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
+            `Renamed '${path}' to '${path.slice(
+                0,
+                -5
+            )}_old.html'. This file is no longer needed for the virtual endpoints. If you have not modified this file, you can delete it. If you have modified this file, move the modified content to a custom init script for the preview middleware. For more information, see https://github.com/SAP/open-ux-tools/tree/main/packages/preview-middleware#migration.`
         );
 
-        await renameSandbox(fs, path, logger);
-        expect(debugLogMock).toHaveBeenCalledWith(
-            `The file 'ImAlreadyRenamed.html', has already been renamed. Skipping renaming.`
-        );
+        await renameSandbox(fs, basePath, path, logger);
+        expect(debugLogMock).toHaveBeenCalledWith(`The file '${path}', has already been renamed. Skipping renaming.`);
     });
 });

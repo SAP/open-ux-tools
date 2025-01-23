@@ -380,11 +380,10 @@ export async function updateTestConfig(
     } else {
         const newConfig: TestConfig = {
             framework,
-            ...(path && !(defaultPath === (path.startsWith('/') ? path : `/${path}`)) && { path })
+            ...(path && defaultPath !== (path.startsWith('/') ? path : `/${path}`) && { path })
         };
         await sanitizeTestScript(fs, basePath, path ?? defaultPath, newConfig, logger);
         testConfiguration.push({ ...newConfig });
-        //default: add testsuite if not present
         if (!hasTestsuite(testConfiguration)) {
             testConfiguration.push({ framework: 'Testsuite' });
             logger?.info(
@@ -497,7 +496,7 @@ export async function updatePreviewMiddlewareConfigs(
 
         const { path } = extractUrlDetails(script);
         if (path) {
-            await renameSandbox(fs, join(await getWebappPath(basePath), path), logger);
+            await renameSandbox(fs, basePath, path, logger);
         }
         ensurePreviewMiddlewareDependency(packageJson, fs, packageJsonPath);
 
