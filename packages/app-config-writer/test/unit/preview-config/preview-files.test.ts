@@ -24,7 +24,6 @@ describe('preview-files', () => {
     test('rename default Sandboxes', async () => {
         fs.write(join(basePath, 'webapp', 'test', 'flpSandbox.html'), 'dummy content flpSandbox');
         fs.write(join(basePath, 'webapp', 'test', 'flpSandboxMockserver.html'), 'dummy content flpSandboxMockserver');
-        fs.writeJSON(join(basePath, 'package.json'), {});
         await renameDefaultSandboxes(fs, basePath, logger);
         expect(() => fs.read(join(basePath, 'webapp', 'test', 'flpSandbox.html'))).toThrowError(
             `${join(basePath, 'webapp', 'test', 'flpSandbox.html')} doesn\'t exist`
@@ -49,7 +48,6 @@ describe('preview-files', () => {
     test('delete no longer used files', async () => {
         fs.write(join(basePath, 'webapp', 'test', 'locate-reuse-libs.js'), 'dummy content');
         fs.write(join(basePath, 'webapp', 'test', 'initFlpSandbox.js'), 'dummy content');
-        fs.writeJSON(join(basePath, 'package.json'), {});
         await deleteNoLongerUsedFiles(fs, basePath, logger);
         expect(infoLogMock).toHaveBeenCalledWith(
             `Deleted the '${join(
