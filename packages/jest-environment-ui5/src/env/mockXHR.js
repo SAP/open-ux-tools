@@ -12,6 +12,31 @@ const fs = require('fs');
  */
 function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, XHR) {
     let realXhr = new XHR();
+
+    function handleRealXHRSend(mockXHR, data) {
+        realXhr.addEventListener('load', function () {
+            mockXHR.responseText = realXhr.responseText;
+            if (mockXHR.listeners['load']) {
+                mockXHR.listeners['load']?.({
+                    status: 200,
+                    responseText: realXhr.responseText
+                });
+            } else {
+                mockXHR['onload']([]);
+            }
+        });
+        if (mockXHR.onload) {
+            realXhr.onload = function () {
+                mockXHR.responseText = realXhr.responseText;
+                if (mockXHR.onload) {
+                    mockXHR.onload.apply(realXhr, arguments);
+                }
+            };
+        }
+
+        realXhr.send(data);
+    }
+
     return {
         /**
          * Returns true if cross-site Access-Control requests should be made using credentials such as cookies or authorization headers; otherwise false.
@@ -44,28 +69,7 @@ function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, X
          */
         send: function (data) {
             if (realXhr) {
-                var that = this;
-                realXhr.addEventListener('load', function () {
-                    that.responseText = realXhr.responseText;
-                    if (that.listeners['load']) {
-                        that.listeners['load']?.({
-                            status: 200,
-                            responseText: realXhr.responseText
-                        });
-                    } else {
-                        that['onload'].apply(that, []);
-                    }
-                });
-                if (that.onload) {
-                    realXhr.onload = function () {
-                        that.responseText = realXhr.responseText;
-                        if (that.onload) {
-                            that.onload.apply(realXhr, arguments);
-                        }
-                    };
-                }
-
-                realXhr.send(data);
+                handleRealXHRSend(this, data);
                 return;
             }
             let fileContent = mockData[this.url];
