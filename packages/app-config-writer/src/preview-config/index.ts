@@ -28,7 +28,7 @@ export async function convertToVirtualPreview(
     const logger = options.logger;
     const convertTests = options.convertTests ?? false;
 
-    if (!(await checkPrerequisites(basePath, fs, logger))) {
+    if (!(await checkPrerequisites(basePath, fs, convertTests, logger))) {
         throw Error('The prerequisites are not met. For more information, see the log messages above.');
     }
 

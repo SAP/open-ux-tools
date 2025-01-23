@@ -45,10 +45,16 @@ function isLowerThanMinimalVersion(
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
+ * @param convertTests - if set to true, then test suite and test runners fill be included in the conversion
  * @param logger logger to report info to the user
  * @returns indicator if the prerequisites are met
  */
-export async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
+export async function checkPrerequisites(
+    basePath: string,
+    fs: Editor,
+    convertTests: boolean = false,
+    logger?: ToolsLogger
+): Promise<boolean> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     let prerequisitesMet = true;
@@ -91,6 +97,12 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
             "Conversion from 'sap/ui/core/util/MockServer' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
         );
         prerequisitesMet = false;
+    }
+
+    if (convertTests && (packageJson?.devDependencies?.['karma-ui5'] ?? packageJson?.dependencies?.['karma-ui5'])) {
+        logger?.warn(
+            "This app seems to use Karma as test runner. Please note that the converter does not convert any Karma configuration files. Please update your karma configuration ('ui5.configPath' and 'ui5.testpage') accord to the new virtual endpoints after the conversion."
+        );
     }
 
     return prerequisitesMet;
