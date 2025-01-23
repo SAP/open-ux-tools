@@ -9,8 +9,7 @@ import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import { validateODataVersion } from '../../validators';
 
-
-export type ValidateServiceUrlResult = {
+type ValidateServiceUrlResult = {
     validationResult: boolean | string;
     showAnnotationWarning?: boolean;
 }

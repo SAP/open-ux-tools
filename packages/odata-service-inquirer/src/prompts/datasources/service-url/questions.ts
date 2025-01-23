@@ -59,6 +59,7 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
         },
         message: t('prompts.odataServiceUrl.message', { odataVersion: requiredVersion }),
         validate: async (url: string) => {
+            showAnnotationWarning = false;
             const urlValidationState = await connectValidator.validateUrl(url);
             // Check if we have a cert error, the user will be prompted to ignore it later
             if (connectValidator.validity.canSkipCertError) {
@@ -116,6 +117,7 @@ function getIgnoreCertErrorsPrompt(
         message: t('prompts.ignoreCertErrors.message'),
         default: false,
         validate: async (ignoreCertError: boolean, { serviceUrl }: ServiceUrlAnswers) => {
+            showAnnotationWarning = false;
             if (!serviceUrl) {
                 return false;
             }
@@ -252,6 +254,7 @@ function getPasswordPrompt(
         message: t('prompts.servicePassword.message'),
         mask: '*',
         validate: async (password: string, { username, serviceUrl, ignoreCertError, sapClient }: ServiceUrlAnswers) => {
+            showAnnotationWarning = false;
             if (!serviceUrl || !username || !password) {
                 return false;
             }
