@@ -11,8 +11,8 @@ describe('Test getAllUi5YamlFileNames()', () => {
 
         expect(await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs)).toMatchInlineSnapshot(`
             Array [
-              "ui5-custom-multi.yaml",
               "ui5-custom.yaml",
+              "ui5-custom-multi.yaml",
               "ui5.yaml",
             ]
         `);
