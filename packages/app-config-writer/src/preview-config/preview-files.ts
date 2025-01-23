@@ -33,7 +33,7 @@ export async function renameSandbox(fs: Editor, path: string, logger?: ToolsLogg
     ) {
         logger?.debug(`The file '${basename(path)}', has already been renamed. Skipping renaming.`);
     } else {
-        logger?.info(`The file '${basename(path)}', has not been found. Skipping renaming.`);
+        logger?.debug(`The file '${basename(path)}', has not been found. Skipping renaming.`);
     }
 }
 
