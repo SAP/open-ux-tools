@@ -14,7 +14,8 @@
         "invalidMtaIdWithChars": "The MTA ID can only contain letters, numbers, dashes, periods, underscores",
         "invalidMtaId": "The MTA ID must start with a letter or underscore and be less than 128 characters long",
         "missingABAPServiceBindingDetails": "Missing ABAP service details for direct service binding",
-        "mtaAlreadyExists": "A folder with same name already exists in the target directory"
+        "mtaAlreadyExists": "A folder with same name already exists in the target directory",
+        "cannotUpdateRouterXSApp": "Unable to update router xs-app.json welcome location."
     },
     "info":{
         "existingMTAExtensionNotFound": "Cannot find a valid existing mta extension file, a new one will be created",
