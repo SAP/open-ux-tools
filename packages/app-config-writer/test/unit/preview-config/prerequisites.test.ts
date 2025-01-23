@@ -150,7 +150,7 @@ describe('prerequisites', () => {
 
         expect(await checkPrerequisites(basePath, fs, true, logger)).toBeTruthy();
         expect(warnLogMock).toHaveBeenCalledWith(
-            "This app seems to use Karma as test runner. Please note that the converter does not convert any Karma configuration files. Please update your karma configuration ('ui5.configPath' and 'ui5.testpage') accord to the new virtual endpoints after the conversion."
+            "This app seems to use Karma as a test runner. Please note that the converter does not convert any Karma configuration files. Please update your karma configuration ('ui5.configPath' and 'ui5.testpage') according to the new virtual endpoints after the conversion."
         );
     });
 });

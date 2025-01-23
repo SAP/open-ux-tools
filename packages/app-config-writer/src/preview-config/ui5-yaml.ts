@@ -325,7 +325,7 @@ export async function sanitizeTestScript(
             logger?.info(
                 `Renamed '${basename(testScriptPath)}' to '${basename(
                     filePathRenamed
-                )}'. This file creates the JourneyRunner for the OPA5 tests. As the handling of journey runners is not part of the virtual OPA5 test runner endpoint, this file has been renamed and added to the respective UI5 yaml configuration.`
+                )}'. This file creates the JourneyRunner for OPA5 tests. As the handling of journey runners is not part of the virtual OPA5 test runner endpoint, this file has been renamed and added to the respective UI5 yaml configuration.`
             );
         } else {
             await deleteFiles(fs, [testScriptPath]);
