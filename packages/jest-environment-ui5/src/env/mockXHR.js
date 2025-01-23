@@ -13,6 +13,11 @@ const fs = require('fs');
 function createMockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, XHR) {
     let realXhr = new XHR();
 
+    /**
+     * Handles the real XHR send.
+     * @param mockXHR The mock XHR object.
+     * @param data The data to send.
+     */
     function handleRealXHRSend(mockXHR, data) {
         realXhr.addEventListener('load', function () {
             mockXHR.responseText = realXhr.responseText;
