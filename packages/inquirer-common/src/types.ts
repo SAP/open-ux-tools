@@ -110,6 +110,7 @@ export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQ
 export interface InputQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
 export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheckBoxQuestion<A> {

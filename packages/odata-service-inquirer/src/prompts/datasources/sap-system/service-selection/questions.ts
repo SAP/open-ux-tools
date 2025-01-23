@@ -120,7 +120,7 @@ export function getSystemServiceQuestion(
         },
         additionalMessages: (selectedService: ServiceAnswer) => {
             // Additional messages is executed after validation, so we can assume the PromptState has been updated
-            let hasBackendAnnotations = false;
+            let hasBackendAnnotations;
             if (selectedService && PromptState.odataService.servicePath === selectedService.servicePath) {
                 hasBackendAnnotations =
                     !!PromptState.odataService.annotations && PromptState.odataService.annotations.length > 0;

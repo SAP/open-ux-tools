@@ -1,6 +1,11 @@
-import { extendWithOptions, type CommonPromptOptions, type YUIQuestion } from '@sap-ux/inquirer-common';
+import {
+    extendWithOptions,
+    type CommonPromptOptions,
+    type YUIQuestion,
+    type InputQuestion
+} from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { ConfirmQuestion, InputQuestion, PasswordQuestion, Question } from 'inquirer';
+import type { ConfirmQuestion, PasswordQuestion, Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
 import { promptNames } from '../../../types';
@@ -10,6 +15,7 @@ import LoggerHelper from '../../logger-helper';
 import { serviceUrlInternalPromptNames } from './types';
 import { validateService } from './validators';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
@@ -41,13 +47,15 @@ interface ServiceUrlAnswers extends OdataServiceAnswers {
  * @returns the service URL prompt
  */
 function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVersion?: OdataVersion) {
+    let showAnnotationWarning = false;
     return {
         type: 'input',
         name: promptNames.serviceUrl,
         guiOptions: {
             hint: 'https://<hostname>:<port>/path/to/odata/service/',
             mandatory: true,
-            breadcrumb: true
+            breadcrumb: true,
+            applyDefaultWhenDirty: true
         },
         message: t('prompts.odataServiceUrl.message', { odataVersion: requiredVersion }),
         validate: async (url: string) => {
@@ -59,7 +67,7 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
 
             if (urlValidationState === true) {
                 if (!connectValidator.validity.authRequired && connectValidator.odataService) {
-                    return validateService(
+                    const valResult = await validateService(
                         url,
                         {
                             odataService: connectValidator.odataService,
@@ -67,11 +75,20 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
                         },
                         requiredVersion
                     );
+                    showAnnotationWarning = !!valResult.showAnnotationWarning;
+                    return valResult.validationResult;
                 }
                 return true;
             }
             return urlValidationState;
-        }
+        },
+        additionalMessages: (serviceUrl: string) =>
+            showAnnotationWarning
+                ? {
+                      message: t('prompts.warnings.noAnnotations'),
+                      severity: Severity.warning
+                  }
+                : undefined
     } as InputQuestion<ServiceUrlAnswers>;
 }
 
@@ -86,6 +103,7 @@ function getIgnoreCertErrorsPrompt(
     connectValidator: ConnectionValidator,
     requiredVersion?: OdataVersion
 ): ConfirmQuestion<ServiceUrlAnswers> {
+    let showAnnotationWarning = false;
     return {
         when: ({ serviceUrl }: ServiceUrlAnswers) => {
             if (serviceUrl && connectValidator.validity.canSkipCertError) {
@@ -113,7 +131,7 @@ function getIgnoreCertErrorsPrompt(
 
             if (validUrl === true) {
                 if (!connectValidator.validity.authRequired && connectValidator.odataService) {
-                    return validateService(
+                    const valResult = await validateService(
                         serviceUrl,
                         {
                             odataService: connectValidator.odataService,
@@ -122,11 +140,20 @@ function getIgnoreCertErrorsPrompt(
                         requiredVersion,
                         ignoreCertError
                     );
+                    showAnnotationWarning = !!valResult.showAnnotationWarning;
+                    return valResult.validationResult;
                 }
                 return true;
             }
             return validUrl;
-        }
+        },
+        additionalMessages: (serviceUrl: string) =>
+            showAnnotationWarning
+                ? {
+                      message: t('prompts.warnings.noAnnotations'),
+                      severity: Severity.warning
+                  }
+                : undefined
     } as ConfirmQuestion<ServiceUrlAnswers>;
 }
 /**
@@ -171,7 +198,7 @@ function getCliIgnoreCertValidatePrompt(
                         requiredVersion,
                         true
                     );
-                    if (validService !== true) {
+                    if (validService.validationResult !== true) {
                         throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
                     }
                 }
@@ -212,6 +239,7 @@ function getPasswordPrompt(
     connectValidator: ConnectionValidator,
     requiredVersion?: OdataVersion
 ): PasswordQuestion<ServiceUrlAnswers> {
+    let showAnnotationWarning = false;
     return {
         when: () => (connectValidator.validity.reachable ? connectValidator.validity.authRequired === true : false),
         type: 'password',
@@ -232,7 +260,7 @@ function getPasswordPrompt(
                 sapClient
             });
             if (validAuth === true && connectValidator.odataService) {
-                return validateService(
+                const valResult = await validateService(
                     serviceUrl,
                     {
                         odataService: connectValidator.odataService,
@@ -241,9 +269,18 @@ function getPasswordPrompt(
                     requiredVersion,
                     ignoreCertError
                 );
+                showAnnotationWarning = !!valResult.showAnnotationWarning;
+                return valResult.validationResult;
             }
             return validAuth;
-        }
+        },
+        additionalMessages: (serviceUrl: string) =>
+            showAnnotationWarning
+                ? {
+                      message: t('prompts.warnings.noAnnotations'),
+                      severity: Severity.warning
+                  }
+                : undefined
     } as PasswordQuestion<ServiceUrlAnswers>;
 }
 
