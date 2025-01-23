@@ -6,7 +6,8 @@ import type { DeployConfigOptions } from '../../src/types';
 
 describe('generate', () => {
     const outputDir = join(__dirname, '../test-output');
-    const debug = !!process.env['UX_DEBUG'];
+    debugger;
+    const debug = true;
 
     beforeAll(async () => {
         fsExtra.removeSync(outputDir);
@@ -54,6 +55,11 @@ describe('generate', () => {
                 deployFile: 'deploy-config.yaml'
             },
             isAppStudio: false
+        },
+        {
+            name: 'test.ui5.typescript.library1',
+            config,
+            isAppStudio: false
         }
     ];
 
@@ -69,6 +75,7 @@ describe('generate', () => {
 
         return new Promise((resolve) => {
             if (debug) {
+                debugger;
                 fs.commit(resolve);
             } else {
                 fsExtra.removeSync(testPath);

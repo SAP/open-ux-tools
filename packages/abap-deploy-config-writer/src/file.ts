@@ -1,8 +1,8 @@
 import { join } from 'path';
 import fg from 'fast-glob';
 import { platform } from 'os';
-import { FileName, type Package, getWebappPath } from '@sap-ux/project-access';
-import { UI5_CLI_LIB, UI5_CLI_MIN_VERSION, UI5_REPO_TEXT_FILES } from './constants';
+import { FileName, type Package, getReuseLibs } from '@sap-ux/project-access';
+import { UI5_CLI_LIB, UI5_CLI_MIN_VERSION, UI5_REPO_IGNORE, UI5_REPO_TEXT_FILES } from './constants';
 import { coerce, satisfies } from 'semver';
 import type { Editor } from 'mem-fs-editor';
 
@@ -34,6 +34,22 @@ export function addUi5Dependency(fs: Editor, basePath: string, depName: string):
 }
 
 /**
+ * Returns the path of the library file.
+ *
+ * @param basePath - base path of the library
+ * @returns the path of the library file
+ */
+export async function getLibraryPath(basePath: string): Promise<string> {
+    return (
+        await getReuseLibs([
+            {
+                projectRoot: basePath
+            }
+        ])
+    )[0]?.path;
+}
+
+/**
  * Writes the UI5 repository file.
  *
  * @param fs - the memfs editor instance
@@ -61,17 +77,39 @@ export const writeUi5RepositoryFile = (
 };
 
 /**
+ * Returns the typescript file paths.
+ *
+ * @param typescriptPattern - the pattern to search for typescript files
+ * @returns the typescript file paths
+ */
+async function getTypescriptFilePaths(typescriptPattern: string): Promise<string[]> {
+    const normalisedPath = platform() === 'win32' ? typescriptPattern.replace(/\\/g, '/') : typescriptPattern;
+    const typeScriptFilesPaths: string[] = await fg(normalisedPath);
+    return typeScriptFilesPaths;
+}
+
+/**
  * Writes the UI5 repository files if typescript files are found.
  *
  * @param fs - the memfs editor instance
- * @param basePath - the base path
+ * @param path - the path where the file will be written
  */
-export const writeUi5RepositoryFiles = async (fs: Editor, basePath: string): Promise<void> => {
-    const webappPath = await getWebappPath(basePath);
-    const typescriptPattern = join(webappPath, '/**/*.ts');
-    const normalisedPath = platform() === 'win32' ? typescriptPattern.replace(/\\/g, '/') : typescriptPattern;
-    const typeScriptFilesPaths: string[] = await fg(normalisedPath);
+export async function writeUi5RepositoryFiles(fs: Editor, path: string): Promise<void> {
+    const typeScriptFilesPaths = await getTypescriptFilePaths(join(path, '/**/*.ts'));
     if (typeScriptFilesPaths?.length > 0) {
-        writeUi5RepositoryFile(fs, webappPath, UI5_REPO_TEXT_FILES, '^.*.ts$');
+        writeUi5RepositoryFile(fs, path, UI5_REPO_TEXT_FILES, '^.*.ts$');
     }
-};
+}
+
+/**
+ * Writes the UI5 repository ignore file if typescript files are found.
+ *
+ * @param fs - the memfs editor instance
+ * @param path - the path where the file will be written
+ */
+export async function writeUi5RepositoryIgnore(fs: Editor, path: string): Promise<void> {
+    const typeScriptFilesPaths = await getTypescriptFilePaths(join(path, '/**/*.ts'));
+    if (typeScriptFilesPaths?.length > 0) {
+        writeUi5RepositoryFile(fs, path, UI5_REPO_IGNORE, '^.*.ts$\n^.*.ts.map$');
+    }
+}
