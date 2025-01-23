@@ -6,8 +6,7 @@ import type { DeployConfigOptions } from '../../src/types';
 
 describe('generate', () => {
     const outputDir = join(__dirname, '../test-output');
-    debugger;
-    const debug = true;
+    const debug = !!process.env['UX_DEBUG'];
 
     beforeAll(async () => {
         fsExtra.removeSync(outputDir);
@@ -75,7 +74,6 @@ describe('generate', () => {
 
         return new Promise((resolve) => {
             if (debug) {
-                debugger;
                 fs.commit(resolve);
             } else {
                 fsExtra.removeSync(testPath);
