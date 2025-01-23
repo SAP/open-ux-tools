@@ -5,9 +5,7 @@ describe('Mock XHR', () => {
     const openMock = jest.fn();
     const sendMock = jest.fn();
     let callback;
-    const addEventMock = jest.fn().mockImplementation((event, outCallback) => {
-        callback = outCallback;
-    });
+    let addEventMock;
     const setRequestHeaderMock = jest.fn();
     const getResponseHeaderMock = jest.fn();
     const getAllResponseHeadersMock = jest.fn();
@@ -16,7 +14,9 @@ describe('Mock XHR', () => {
         const pathMappingFn = jest.fn();
         const fakeWindow = jest.fn();
         const shimmedFilePath = {};
-
+        addEventMock = jest.fn().mockImplementation((event, outCallback) => {
+            callback = outCallback;
+        });
         const mockData = { 'mockedPath.xml': 'mockedData' };
         XHR = jest.fn().mockImplementation(() => {
             currentRealXHR = {
@@ -30,6 +30,9 @@ describe('Mock XHR', () => {
             return currentRealXHR;
         });
         mockXHR = createMockXHR(fakeWindow, pathMappingFn, shimmedFilePath, mockData, XHR);
+    });
+    afterEach(() => {
+        jest.resetAllMocks();
     });
 
     it('Can be used to query mockedData', (done) => {
@@ -47,7 +50,8 @@ describe('Mock XHR', () => {
         expect(openMock).toHaveBeenCalledWith('PUT', 'http://localhost:8080/xxxc');
         mockXHR.setRequestHeader('Content-Type', 'application/json');
         expect(setRequestHeaderMock).toHaveBeenCalledWith('Content-Type', 'application/json');
-
+        const callback2 = jest.fn();
+        mockXHR.addEventListener('load', callback2);
         mockXHR.send('Hello');
         expect(sendMock).toHaveBeenCalledWith('Hello');
         expect(addEventMock).toHaveBeenCalled();
@@ -57,10 +61,13 @@ describe('Mock XHR', () => {
         expect(getResponseHeaderMock).toHaveBeenCalledWith('Content-Type');
         mockXHR.getAllResponseHeaders();
         expect(getAllResponseHeadersMock).toHaveBeenCalled();
+        expect(callback2).toHaveBeenCalledTimes(1);
         mockXHR.onload();
-        expect(mockXHR.onload).toHaveBeenCalledTimes(2);
+
+        expect(mockXHR.onload).toHaveBeenCalledTimes(1);
         currentRealXHR.onload();
-        expect(mockXHR.onload).toHaveBeenCalledTimes(3);
+        expect(callback2).toHaveBeenCalledTimes(1);
+        expect(mockXHR.onload).toHaveBeenCalledTimes(2);
         done();
     });
 });
