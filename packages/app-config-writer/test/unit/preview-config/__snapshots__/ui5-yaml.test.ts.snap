@@ -101,12 +101,40 @@ server:
         test:
           - framework: OPA5
             path: test/integration/opaTests.qunit.html
+          - framework: Testsuite
           - framework: QUnit
             path: test/unit/unitTests.qunit.html
 "
 `;
 
-exports[`update preview middleware config deprecated tools preview with theme and tests 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance\\\\\\" --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\",\\"ui:opa5\\":\\"fiori run -o test/integration/opaTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"ui:unit\\":\\"fiori run -o test/unit/unitTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+exports[`update preview middleware config deprecated tools preview with theme and tests 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance\\\\\\" --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\",\\"ui:opa5\\":\\"fiori run -o test/integration/opaTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"ui:testsuite\\":\\"fiori run -o /test/testsuite.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"ui:unit\\":\\"fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`update preview middleware config deprecated tools preview with theme and tests with JourneyRunner but w/o testsuite 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+        test:
+          - framework: OPA5
+            pattern: /test/**/opaTests.qunit.custom.js
+          - framework: Testsuite
+          - framework: QUnit
+            path: test/unit/unitTests.qunit.html
+"
+`;
+
+exports[`update preview middleware config deprecated tools preview with theme and tests with JourneyRunner but w/o testsuite 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance\\\\\\" --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\",\\"ui:opa5\\":\\"fiori run -o test/opaTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"ui:unit\\":\\"fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
 
 exports[`update preview middleware config existing RTA script 1`] = `
 "specVersion: \\"3.1\\"
