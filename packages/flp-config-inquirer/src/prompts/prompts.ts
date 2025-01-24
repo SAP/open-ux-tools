@@ -38,12 +38,8 @@ export function getQuestions(
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
-        [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys, promptOptions?.[promptNames.inboundId]),
-        [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(
-            inboundKeys,
-            appId,
-            promptOptions?.[promptNames.emptyInboundsInfo]
-        ),
+        [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys),
+        [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(inboundKeys, appId),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(
@@ -58,27 +54,37 @@ export function getQuestions(
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
         ),
-        [promptNames.additionalParameters]: getParameterStringPrompt(
-            inboundKeys,
-            promptOptions?.[promptNames.additionalParameters]
-        ),
-        [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(
-            isCLI,
-            promptOptions?.[promptNames.createAnotherInbound]
-        )
+        [promptNames.additionalParameters]: getParameterStringPrompt(inboundKeys),
+        [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(isCLI)
     };
 
-    const questions: FLPConfigQuestion[] = [
-        keyedPrompts[promptNames.inboundId],
-        keyedPrompts[promptNames.emptyInboundsInfo],
-        keyedPrompts[promptNames.semanticObject],
-        keyedPrompts[promptNames.action],
-        keyedPrompts[promptNames.overwrite],
-        keyedPrompts[promptNames.title],
-        keyedPrompts[promptNames.subTitle],
-        keyedPrompts[promptNames.additionalParameters],
-        keyedPrompts[promptNames.createAnotherInbound]
-    ];
+    const questions: FLPConfigQuestion[] = [];
+
+    if (promptOptions?.[promptNames.inboundId]?.hide !== true) {
+        questions.push(keyedPrompts[promptNames.inboundId]);
+    }
+
+    if (promptOptions?.[promptNames.emptyInboundsInfo]?.hide !== true) {
+        questions.push(keyedPrompts[promptNames.emptyInboundsInfo]);
+    }
+
+    questions.push(
+        ...[
+            keyedPrompts[promptNames.semanticObject],
+            keyedPrompts[promptNames.action],
+            keyedPrompts[promptNames.overwrite],
+            keyedPrompts[promptNames.title],
+            keyedPrompts[promptNames.subTitle]
+        ]
+    );
+
+    if (promptOptions?.[promptNames.additionalParameters]?.hide !== true) {
+        questions.push(keyedPrompts[promptNames.additionalParameters]);
+    }
+
+    if (promptOptions?.[promptNames.createAnotherInbound]?.hide !== true) {
+        questions.push(keyedPrompts[promptNames.createAnotherInbound]);
+    }
 
     return questions;
 }
