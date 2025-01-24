@@ -5,6 +5,8 @@ import LoggerHelper from '../logger-helper';
 import { createMTA, validateMtaConfig } from '../mta-config';
 import { type Logger } from '@sap-ux/logger';
 import { type CFBaseConfig, type MTABaseConfig } from '../types';
+import { join } from 'path';
+import { t } from '../i18n';
 
 /**
  * Add a standalone | managed approuter to an empty target folder.
@@ -22,7 +24,10 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
         LoggerHelper.logger = logger;
     }
     logger?.debug(`Generate base configuration using: \n ${JSON.stringify(config)}`);
-    validateMtaConfig(config, fs);
+    validateMtaConfig(config);
+    if (fs.exists(join(config.mtaPath, config.mtaId))) {
+        throw new Error(t('error.mtaFolderAlreadyExists'));
+    }
     createMTA(config as MTABaseConfig);
     await addRoutingConfig(config, fs);
     addSupportingConfig(config, fs);

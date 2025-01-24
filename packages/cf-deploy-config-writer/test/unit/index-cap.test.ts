@@ -4,8 +4,10 @@ import hasbin from 'hasbin';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { generateCAPConfig, RouterModuleType } from '../../src';
 import * as childProcess from 'child_process';
-jest.mock('child_process');
+import * as projectAccess from '@sap-ux/project-access';
+import fs from 'fs';
 
+jest.mock('child_process');
 jest.mock('hasbin', () => ({
     ...(jest.requireActual('hasbin') as {}),
     sync: jest.fn()
@@ -13,6 +15,9 @@ jest.mock('hasbin', () => ({
 
 let hasSyncMock: jest.SpyInstance;
 let spawnMock: jest.SpyInstance;
+const originalPlatform = process.platform;
+
+jest.mock('child_process');
 
 jest.mock('@sap/mta-lib', () => {
     return {
@@ -44,11 +49,14 @@ describe('CF Writer CAP', () => {
                 sync: hasSyncMock
             };
         });
+        Object.defineProperty(process, 'platform', { value: 'win32' });
     });
 
     afterAll(() => {
         jest.resetAllMocks();
-        // fsExtra.removeSync(outputDir);
+        Object.defineProperty(process, 'platform', {
+            value: originalPlatform
+        });
     });
 
     it.each([[RouterModuleType.Managed], [RouterModuleType.Standard]])(
@@ -58,13 +66,13 @@ describe('CF Writer CAP', () => {
             const mtaPath = join(outputDir, routerType, mtaId);
             fsExtra.mkdirSync(mtaPath, { recursive: true });
             fsExtra.copySync(join(__dirname, `../sample/capcds`), mtaPath);
+            const getCapProjectTypeMock = jest.spyOn(projectAccess, 'getCapProjectType').mockResolvedValue('CAPNodejs');
             // For testing purposes, an existing mta.yaml is copied to reflect the spawn command;
             // `cds add mta xsuaa connectivity destination html5-repo`
             spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => {
                 fsExtra.copySync(join(__dirname, `fixtures/mta-types/cdsmta`), mtaPath);
                 return { status: 0 } as any;
             });
-
             const localFs = await generateCAPConfig(
                 {
                     mtaPath,
@@ -75,15 +83,54 @@ describe('CF Writer CAP', () => {
                 logger
             );
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(getCapProjectTypeMock).toHaveBeenCalled();
+            expect(spawnMock.mock.calls).toHaveLength(2);
             expect(spawnMock).toHaveBeenCalledWith(
                 'cds',
                 ['add', 'mta', 'xsuaa', 'destination', 'html5-repo'],
                 expect.objectContaining({ cwd: expect.stringContaining(mtaId) })
             );
+            expect(spawnMock.mock.calls[1][0]).toStrictEqual('npm.cmd'); // Just always test for windows!
+            expect(spawnMock.mock.calls[1][1]).toStrictEqual(['install', '--ignore-engines']);
             if (RouterModuleType.Standard === routerType) {
                 expect(localFs.read(join(mtaPath, `router`, 'package.json'))).toMatchSnapshot();
                 expect(localFs.read(join(mtaPath, `router`, 'xs-app.json'))).toMatchSnapshot();
             }
         }
     );
+
+    test('Validate CAP project type is correct when creating mta.yaml', async () => {
+        const mtaId = 'captestproject';
+        const mtaPath = join(outputDir, mtaId);
+        jest.spyOn(projectAccess, 'getCapProjectType').mockResolvedValue('CAPJava');
+        await expect(
+            generateCAPConfig(
+                {
+                    mtaPath,
+                    mtaId,
+                    routerType: RouterModuleType.Managed
+                },
+                undefined,
+                logger
+            )
+        ).rejects.toThrowError(/Target folder does not contain a Node.js CAP project./);
+    });
+
+    test('Validate CAP type if target contains mta.yaml', async () => {
+        const mtaId = 'captestproject';
+        const mtaPath = join(outputDir, mtaId);
+        jest.spyOn(projectAccess, 'getCapProjectType').mockResolvedValue('CAPNodejs');
+        jest.spyOn(fs, 'existsSync').mockReturnValue(true);
+        await expect(
+            generateCAPConfig(
+                {
+                    mtaPath,
+                    mtaId,
+                    routerType: RouterModuleType.Managed
+                },
+                undefined,
+                logger
+            )
+        ).rejects.toThrowError(/An mta.yaml already exists in the target directory./);
+    });
 });

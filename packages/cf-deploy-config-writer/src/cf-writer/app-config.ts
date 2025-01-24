@@ -282,6 +282,14 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
     }
 }
 
+/**
+ *
+ * @param root0
+ * @param root0.rootPath
+ * @param root0.appId
+ * @param mtaInstance
+ * @param fs
+ */
 function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: MtaConfig, fs: Editor): void {
     // Cleanup standalone xs-app.json to reflect new application
     const appRouterPath = mtaInstance.standaloneRouterPath;
@@ -399,7 +407,7 @@ async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<vo
  * @param fs reference to a mem-fs editor
  */
 async function updateRootPackage(cfConfig: CFConfig, fs: Editor): Promise<void> {
-    const packageExists = fs.exists(join(cfConfig.rootPath, 'package.json'));
+    const packageExists = fs.exists(join(cfConfig.rootPath, FileName.Package));
     // Append mta scripts only if mta.yaml is at a different level to the HTML5 app
     if (cfConfig.isMtaRoot && packageExists) {
         await addPackageDevDependency(cfConfig.rootPath, Rimraf, RimrafVersion, fs);

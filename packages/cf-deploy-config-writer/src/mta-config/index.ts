@@ -20,7 +20,6 @@ import { type MTABaseConfig, type CFBaseConfig } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { spawnSync } from 'child_process';
-import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
 
 /**
@@ -137,9 +136,15 @@ export function doesCDSBinaryExist(): void {
  * @param options
  */
 export function createCAPMTA(cwd: string, options?: string[]): void {
-    const result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
-    if (result.error) {
-        throw new Error(CDSBinNotFound);
+    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
+    if (result?.error) {
+        throw new Error(`Something went wrong creating mta.yaml! ${result.error}`);
+    }
+    // Ensure the package-lock is created otherwise mta build will fail
+    const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
+    result = spawnSync(cmd, ['install', '--ignore-engines'], { cwd });
+    if (result?.error) {
+        throw new Error(`Something went wrong installing node modules! ${result.error}`);
     }
 }
 
@@ -147,9 +152,8 @@ export function createCAPMTA(cwd: string, options?: string[]): void {
  * Validate the writer configuration to ensure all required parameters are present.
  *
  * @param config writer configuration
- * @param fs reference to a mem-fs editor
  */
-export function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
+export function validateMtaConfig(config: CFBaseConfig): void {
     // We use mta-lib, which in turn relies on the mta executable being installed and available in the path
     doesMTABinaryExist();
 
@@ -172,9 +176,6 @@ export function validateMtaConfig(config: CFBaseConfig, fs: Editor): void {
         throw new Error(t('error.missingABAPServiceBindingDetails'));
     }
 
-    if (fs.exists(join(config.mtaPath, config.mtaId))) {
-        throw new Error(t('error.mtaAlreadyExists'));
-    }
     setMtaDefaults(config);
 }
 

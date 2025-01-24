@@ -7,7 +7,7 @@ import {
     type Authentication,
     type Destinations
 } from '@sap-ux/btp-utils';
-import { addPackageDevDependency, type Manifest } from '@sap-ux/project-access';
+import { addPackageDevDependency, FileName, type Manifest } from '@sap-ux/project-access';
 import {
     MTAVersion,
     UI5BuilderWebIdePackage,
@@ -151,7 +151,7 @@ export function addGitIgnore(targetPath: string, fs: Editor): void {
  * @param fs reference to a mem-fs editor
  */
 export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
-    fs.copyTpl(getTemplatePath('package.json'), join(mtaPath, 'package.json'), {
+    fs.copyTpl(getTemplatePath('package.json'), join(mtaPath, FileName.Package), {
         mtaId: mtaId
     });
 }
@@ -219,7 +219,7 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
         await mtaInstance.addAbapService(abapServiceName, abapService);
     }
 
-    fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/package.json`));
+    fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/${FileName.Package}`));
 
     if (abapServiceName) {
         let serviceKey;
