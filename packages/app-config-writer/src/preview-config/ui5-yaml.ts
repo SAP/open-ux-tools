@@ -173,7 +173,7 @@ export function isTestPath(script: Script, configuration?: PreviewConfig): boole
  * - 'ui:test-runner': 'ui5-test-runner --port 8081 --url http://localhost:8080/test/testsuite.qunit.html --report-dir ./target/'
  * - 'ui:test': 'start-server-and-test ui:test-server http://localhost:8080/ ui:test-runner'
  *
- * The test path for script 'ui:test-server' is 'http://localhost:8080/test/testsuite.qunit.html' from 'ui:test-runner' as they are connected via on indirection ('ui:test').
+ * The test path for script 'ui:test-server' is 'http://localhost:8080/test/testsuite.qunit.html' from 'ui:test-runner' as they are connected via one indirection ('ui:test').
  *
  * @param scriptName - the name of the script from the package.json file
  * @returns the related test path
@@ -340,7 +340,7 @@ export async function updatePreviewMiddlewareConfig(
     } else if (path && isTestPath(script, configuration)) {
         configuration.test = await updateTestConfig(configuration.test, path, basePath, fs, logger);
         writeConfig = true;
-    } else if (path === undefined) {
+    } else if (!path) {
         const ui5TestRunnerPath = getTestPathForUi5TestRunner(script.name);
         if (ui5TestRunnerPath) {
             configuration.test = await updateTestConfig(configuration.test, ui5TestRunnerPath, basePath, fs);
@@ -584,9 +584,9 @@ export async function updatePreviewMiddlewareConfigs(
     }
     for (const ui5Yaml of unprocessedUi5YamlFileNames) {
         //at least adjust deprecated preview config of unused ui5 yaml configurations
-        const fakeScript = { name: 'fake', value: '' };
+        const emptyScript = { name: '', value: '' };
         try {
-            await processUi5YamlConfig(fs, basePath, ui5Yaml, fakeScript, logger, true);
+            await processUi5YamlConfig(fs, basePath, ui5Yaml, emptyScript, logger, true);
         } catch (error) {
             logger?.warn(`Skipping UI5 yaml configuration file '${ui5Yaml}'. ${error.mesage}`);
         }
