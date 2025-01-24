@@ -5,21 +5,19 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/project-access';
 import type { FlpConfig } from '@sap-ux/preview-middleware';
+import type { Script } from './ui5-yaml';
 
 /**
  * Ensures that the @sap/ux-ui5-tooling or @sap-ux/preview-middleware dependency exists in the package.json.
  *
  * If none dependency is given, the @sap-ux/preview-middleware will be added as a devDependency.
  *
- * @param packageJson - the package.json file content
  * @param fs - file system reference
- * @param packageJsonPath - the path to the package.json file
+ * @param basePath - base path to be used for the conversion
  */
-export function ensurePreviewMiddlewareDependency(
-    packageJson: Package | undefined,
-    fs: Editor,
-    packageJsonPath: string
-): void {
+export function ensurePreviewMiddlewareDependency(fs: Editor, basePath: string): void {
+    const packageJsonPath = join(basePath, 'package.json');
+    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     if (!packageJson) {
         return;
     }
@@ -82,23 +80,18 @@ export function extractUrlDetails(script: string): {
  * - must not be 'start-variants-management'
  * - must not be 'start-control-property-editor'.
  *
- * @param scriptName - the name of the script from the package.json file
- * @param script - the content of the script from the package.json file
+ * @param script - the script from the package.json file
  * @param convertTests - indicator if test suite and test runner should be included in the conversion (default: false)
  * @returns indicator if the script is valid
  */
-export function isValidPreviewScript(
-    scriptName: string,
-    script: string | undefined,
-    convertTests: boolean = false
-): boolean {
+export function isValidPreviewScript(script: Script, convertTests: boolean = false): boolean {
     const isValidScriptName =
-        scriptName != 'start-variants-management' && scriptName != 'start-control-property-editor';
+        script.name != 'start-variants-management' && script.name != 'start-control-property-editor';
 
     //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-    const startsWebServer = !!(script?.includes('ui5 serve') || script?.includes('fiori run'));
-    const { path } = extractUrlDetails(script ?? '');
-    const opensTest = isTestPath(path);
+    const startsWebServer = !!(script.value.includes('ui5 serve') || script.value.includes('fiori run'));
+    const { path } = extractUrlDetails(script.value);
+    const opensTest = isTestPath(script ?? '');
     const opensIndexHtml = path === 'index.html';
 
     //tests are only relevant if the conversion of test runners is excluded

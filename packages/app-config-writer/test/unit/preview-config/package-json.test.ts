@@ -26,8 +26,7 @@ describe('package-json', () => {
             };
             fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
 
-            const variousConfigsPackageJsonPath = join(variousConfigsPath, 'package.json');
-            ensurePreviewMiddlewareDependency(packageJson, fs, variousConfigsPackageJsonPath);
+            ensurePreviewMiddlewareDependency(fs, variousConfigsPath);
             expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
         });
 
@@ -35,7 +34,7 @@ describe('package-json', () => {
             const variousConfigsPath = join(basePath, 'various-configs');
 
             const variousConfigsPackageJsonPath = join(variousConfigsPath, 'package.json');
-            ensurePreviewMiddlewareDependency(undefined, fs, variousConfigsPackageJsonPath);
+            ensurePreviewMiddlewareDependency(fs, variousConfigsPath);
             expect(() => fs.read(join(variousConfigsPath, 'package.json'))).toThrowError(
                 `${variousConfigsPackageJsonPath} doesn\'t exist`
             );
