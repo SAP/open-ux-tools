@@ -105,6 +105,15 @@ export async function checkPrerequisites(
         );
     }
 
+    if (
+        convertTests &&
+        (packageJson?.devDependencies?.['wdio-qunit-service'] ?? packageJson?.dependencies?.['wdio-qunit-service'])
+    ) {
+        logger?.warn(
+            'This app seems to use the WebdriverIO QUnit Service as a test runner. Please note that the converter does not convert any WebdriverIO configuration files. Please update your WebdriverIO QUnit Service test paths according to the new virtual endpoints after the conversion.'
+        );
+    }
+
     return prerequisitesMet;
 }
 

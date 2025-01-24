@@ -153,4 +153,22 @@ describe('prerequisites', () => {
             "This app seems to use Karma as a test runner. Please note that the converter does not convert any Karma configuration files. Please update your karma configuration ('ui5.configPath' and 'ui5.testpage') according to the new virtual endpoints after the conversion."
         );
     });
+
+    test('check prerequisites fulfilled with WebdriverIO QUnit Service', async () => {
+        fs.write(
+            join(basePath, 'package.json'),
+            JSON.stringify({
+                devDependencies: {
+                    '@ui5/cli': '3.0.0',
+                    '@sap-ux/ui5-middleware-fe-mockserver': '6.6.6',
+                    'wdio-qunit-service': '1.1.1'
+                }
+            })
+        );
+
+        expect(await checkPrerequisites(basePath, fs, true, logger)).toBeTruthy();
+        expect(warnLogMock).toHaveBeenCalledWith(
+            'This app seems to use the WebdriverIO QUnit Service as a test runner. Please note that the converter does not convert any WebdriverIO configuration files. Please update your WebdriverIO QUnit Service test paths according to the new virtual endpoints after the conversion.'
+        );
+    });
 });
