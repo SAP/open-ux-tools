@@ -51,8 +51,7 @@ import {
 import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
 import { type Logger } from '@sap-ux/logger';
-import type { XSAppDocument } from '../types';
-import { ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
+import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
 
 /**
  * Add a managed approuter configuration to an existing HTML5 application.
@@ -277,27 +276,26 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
                 cfConfig.destinationAuthentication = Authentication.NO_AUTHENTICATION;
             }
         }
-
-        // Cleanup standalone xs-app.json to reflect new application
-        const appRouterPath = mtaInstance.standaloneRouterPath;
-        if (appRouterPath) {
-            try {
-                const xsAppPath = join(appRouterPath, XSAppFile);
-                const appRouterXsAppObj = fs.readJSON(join(cfConfig.rootPath, xsAppPath)) as unknown as XSAppDocument;
-                if (
-                    (appRouterXsAppObj && !appRouterXsAppObj?.[WelcomeFile]) ||
-                    appRouterXsAppObj?.[WelcomeFile] === '/'
-                ) {
-                    appRouterXsAppObj[WelcomeFile] = `/${cfConfig.appId}`;
-                    fs.writeJSON(join(cfConfig.rootPath, xsAppPath), appRouterXsAppObj);
-                }
-            } catch (error) {
-                LoggerHelper.logger?.error(t('error.cannotUpdateRouterXSApp', { error }));
-            }
-        }
-
+        cleanupStandaloneRoutes(cfConfig, mtaInstance, fs);
         await saveMta(cfConfig, mtaInstance);
         cfConfig.cloudServiceName = mtaInstance.cloudServiceName;
+    }
+}
+
+function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: MtaConfig, fs: Editor): void {
+    // Cleanup standalone xs-app.json to reflect new application
+    const appRouterPath = mtaInstance.standaloneRouterPath;
+    if (appRouterPath) {
+        try {
+            const xsAppPath = join(appRouterPath, XSAppFile);
+            const appRouterXsAppObj = fs.readJSON(join(rootPath, xsAppPath)) as unknown as XSAppDocument;
+            if ((appRouterXsAppObj && !appRouterXsAppObj?.[WelcomeFile]) || appRouterXsAppObj?.[WelcomeFile] === '/') {
+                appRouterXsAppObj[WelcomeFile] = `/${appId}`;
+                fs.writeJSON(join(rootPath, xsAppPath), appRouterXsAppObj);
+            }
+        } catch (error) {
+            LoggerHelper.logger?.error(t('error.cannotUpdateRouterXSApp', { error }));
+        }
     }
 }
 

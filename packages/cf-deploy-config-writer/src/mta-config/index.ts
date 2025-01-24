@@ -3,12 +3,22 @@ import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
 import { getTemplatePath, setMtaDefaults, validateVersion } from '../utils';
-import { MTAYamlFile, MTAVersion, MTADescription, deployMode, enableParallelDeployments } from '../constants';
+import {
+    MTAYamlFile,
+    MTAVersion,
+    MTADescription,
+    deployMode,
+    enableParallelDeployments,
+    CDSAddMtaParams,
+    CDSBinNotFound,
+    CDSExecutable,
+    MTABinNotFound,
+    MTAExecutable
+} from '../constants';
 import type { mta } from '@sap/mta-lib';
 import { type MTABaseConfig, type CFBaseConfig } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
-import { CDSAddMtaParams, CDSBinNotFound, CDSExecutable, MTABinNotFound, MTAExecutable } from '../constants';
 import { spawnSync } from 'child_process';
 import type { Editor } from 'mem-fs-editor';
 import { t } from '../i18n';
@@ -121,18 +131,7 @@ export function doesCDSBinaryExist(): void {
 }
 
 /**
- *
- * @param cwd
- * @param options
- */
-export function addCAMtaServices(cwd: string, options?: string[]): void {
-    const result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
-    if (result.error) {
-        throw new Error(CDSBinNotFound);
-    }
-}
-
-/**
+ * Create MTA using `cds` binary to add mta and any optional services.
  *
  * @param cwd
  * @param options
