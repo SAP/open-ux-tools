@@ -3,6 +3,7 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getAppComponent, getPageName, getReference } from '../../../utils/fe-v4';
+import ManagedObject from 'sap/ui/base/ManagedObject';
 
 export async function executeToggleAction(
     context: QuickActionContext,
@@ -50,4 +51,17 @@ export async function executeToggleAction(
     }
 
     return [];
+}
+
+export function findParentById(el: ManagedObject, id: string): ManagedObject | undefined {
+    const parent = el.getParent();
+    if (!parent) {
+        return undefined;
+    } else {
+        if (parent.getId() === id) {
+            return parent;
+        } else {
+            return findParentById(parent, id);
+        }
+    }
 }

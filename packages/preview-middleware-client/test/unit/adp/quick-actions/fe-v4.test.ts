@@ -46,6 +46,7 @@ import { TableQuickActionDefinitionBase } from '../../../../src/adp/quick-action
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
+import { isA } from 'open/ux/preview/client/utils/core';
 
 describe('FE V4 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -660,6 +661,7 @@ describe('FE V4 quick actions', () => {
                 jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
                     return component as unknown as UIComponent;
                 });
+                let toolBarIndex = -1;
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'Table') {
                         return {
@@ -675,14 +677,26 @@ describe('FE V4 quick actions', () => {
                     }
 
                     if (id == 'ToolbarAction') {
+                        toolBarIndex++;
                         return {
                             isA: (type: string) => type === 'sap.ui.mdc.ActionToolbar',
-                            getHeader: () => 'MyTable',
+                            getHeader: () => 'MyChart',
                             getId: () => id,
                             getDomRef: () => ({
                                 scrollIntoView
                             }),
-                            getParent: () => pageView,
+                            getParent: () =>
+                                toolBarIndex == 0
+                                    ? pageView
+                                    : {
+                                          isA: (type: string) => type === GRID_TABLE_TYPE,
+                                          getId: () => 'GridTable',
+                                          getParent: () => ({
+                                              getId: () => 'Table',
+                                              isA: (type: string) => type === 'sap.ui.mdc.Table',
+                                              getParent: () => pageView
+                                          })
+                                      },
                             getBusy: () => false
                         };
                     }
@@ -746,6 +760,9 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ],
                     'sap.ui.mdc.ActionToolbar': [
+                        {
+                            controlId: 'ToolbarAction'
+                        } as any,
                         {
                             controlId: 'ToolbarAction'
                         } as any

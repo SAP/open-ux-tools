@@ -8,6 +8,7 @@ import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import { TableQuickActionDefinitionBase } from './table-quick-action-base';
 import { MDC_TABLE_TYPE } from '../control-types';
+import { findParentById } from './utils';
 
 export const CREATE_TABLE_ACTION = 'create_table_action';
 const TOOLBAR_ACTION = 'sap.ui.mdc.ActionToolbar';
@@ -24,28 +25,27 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
 
     async execute(path: string): Promise<FlexCommand[]> {
         const index = this.tableMap[path];
-        const smartTablesToolbarAction = getRelevantControlFromActivePage(
-            this.context.controlIndex,
-            this.context.view,
-            [TOOLBAR_ACTION]
-        );
-        for (let i = 0; i < smartTablesToolbarAction.length; i++) {
-            if (i === index) {
-                const section = getControlById(smartTablesToolbarAction[i].getId());
-                const controlOverlay = OverlayUtil.getClosestOverlayFor(section);
-                if (controlOverlay) {
-                    controlOverlay.setSelected(true);
-                    await DialogFactory.createDialog(
-                        controlOverlay,
-                        this.context.rta,
-                        DialogNames.ADD_FRAGMENT,
-                        undefined,
-                        {
-                            aggregation: 'actions',
-                            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                        }
-                    );
-                }
+        const actionToolbars = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
+            TOOLBAR_ACTION
+        ]);
+
+        const smartTableId = this.smartTables[index].getId();
+        const toolBar = actionToolbars.find((item) => findParentById(item, smartTableId) !== undefined);
+        if (toolBar) {
+            const section = getControlById(toolBar.getId());
+            const controlOverlay = OverlayUtil.getClosestOverlayFor(section);
+            if (controlOverlay) {
+                controlOverlay.setSelected(true);
+                await DialogFactory.createDialog(
+                    controlOverlay,
+                    this.context.rta,
+                    DialogNames.ADD_FRAGMENT,
+                    undefined,
+                    {
+                        aggregation: 'actions',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                    }
+                );
             }
         }
 

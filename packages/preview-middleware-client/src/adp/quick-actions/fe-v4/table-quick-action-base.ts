@@ -8,6 +8,7 @@ import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-defi
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { EnablementValidator } from '../enablement-validator';
 import { QuickActionDefinitionBase } from '../quick-action-base';
+import UI5Element from 'sap/ui/core/Element';
 
 const ACTION_ID = 'CTX_SETTINGS0';
 
@@ -19,6 +20,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
     isClearButtonEnabled = false;
     children: NestedQuickActionChild[] = [];
     tableMap: Record<string, number> = {};
+    smartTables: UI5Element[] = [];
     constructor(
         public readonly type: string,
         protected readonly controlTypes: string[],
@@ -53,6 +55,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
                     children: []
                 });
                 this.tableMap[`${this.children.length - 1}`] = index;
+                this.smartTables.push(smartTable);
                 index++;
             }
         }
