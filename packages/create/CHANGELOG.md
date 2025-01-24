@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.11.38
+
+### Patch Changes
+
+-   6f9104b: various improvements for the convert preview-config
+-   Updated dependencies [6f9104b]
+    -   @sap-ux/app-config-writer@0.5.16
+
 ## 0.11.37
 
 ### Patch Changes
