@@ -46,7 +46,6 @@ import { TableQuickActionDefinitionBase } from '../../../../src/adp/quick-action
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
-import { isA } from 'open/ux/preview/client/utils/core';
 
 describe('FE V4 quick actions', () => {
     let sendActionMock: jest.Mock;
