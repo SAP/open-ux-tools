@@ -56,7 +56,7 @@ export function writeTemplateToFolder(
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
         });
 
-        if (data.options?.enableTypescript) {
+        if (data.options?.enableTypeScript) {
             const id = data.app?.id?.split('.').join('/');
             fs.copyTpl(join(templatePath, '**/tsconfig.json'), projectPath, { id }, undefined, {
                 globOptions: { dot: true }

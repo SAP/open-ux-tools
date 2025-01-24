@@ -88,7 +88,7 @@ export interface AdpWriterConfig {
         /**
          * Optional: if set to true then the generated project will support typescript
          */
-        enableTypescript?: boolean;
+        enableTypeScript?: boolean;
     };
 }
 
