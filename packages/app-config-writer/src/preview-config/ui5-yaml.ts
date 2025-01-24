@@ -1,4 +1,4 @@
-import { basename, dirname, join } from 'path';
+import { basename, join } from 'path';
 import { createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
 import { ensurePreviewMiddlewareDependency, extractUrlDetails, isValidPreviewScript } from './package-json';
 import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml, type Package } from '@sap-ux/project-access';
