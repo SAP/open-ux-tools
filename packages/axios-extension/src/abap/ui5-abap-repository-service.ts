@@ -380,15 +380,15 @@ export class Ui5AbapRepositoryService extends ODataService {
             // If its already deployed, then dont try to create it again
             if (tryCount !== 1 && !isExisting && (await this.getInfo(appName)) !== undefined) {
                 /**
-                 * On the second try (tryCount = 2), the `getInfo` method may 
-                 * retrieve partial information because some data may now exist in the 
-                 * app after an initial timeout during the first attempt. 
-                 * 
-                 * We then attempt to update repository and return a response. 
-                 * If this attempt also fails, then on the third try (tryCount = 3), 
+                 * On the second try (tryCount = 2), the `getInfo` method may
+                 * retrieve partial information because some data may now exist in the
+                 * app after an initial timeout during the first attempt.
+                 *
+                 * We then attempt to update repository and return a response.
+                 * If this attempt also fails, then on the third try (tryCount = 3),
                  * the user will receive an error.
                  */
-                return await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
+                return await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config);
             } else {
                 this.log.info(`${appName} found on target system: ${isExisting}`);
                 const response = isExisting
