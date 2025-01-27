@@ -53,15 +53,19 @@ export async function executeToggleAction(
     return [];
 }
 
+/**
+ * Recursively searches element (Managed Object) parents by id
+ * @param el element to search parents
+ * @param id parent id to search
+ * @returns parent element with the given id, if found, otherwise undefined
+ */
 export function findParentById(el: ManagedObject, id: string): ManagedObject | undefined {
     const parent = el.getParent();
     if (!parent) {
         return undefined;
+    } else if (parent.getId() === id) {
+        return parent;
     } else {
-        if (parent.getId() === id) {
-            return parent;
-        } else {
-            return findParentById(parent, id);
-        }
+        return findParentById(parent, id);
     }
 }
