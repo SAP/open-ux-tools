@@ -84,6 +84,15 @@ describe('Project Utils', () => {
             expect(writeFilesSpy.mock.calls[0][2]).toEqual(data);
         });
 
+        it('should write TS template to the specified folder when project supports typescript', () => {
+            const newData = { ...data, options: { enableTypeScript: true } };
+            writeTemplateToFolder(templatePath, projectPath, newData, mockFs as unknown as Editor);
+
+            expect(writeFilesSpy.mock.calls[0][0]).toEqual(`${templatePath}/**/*.*`);
+            expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual(newData);
+        });
+
         it('should throw error when writing file fails', () => {
             const errMsg = 'Corrupted file.';
             mockFs.copyTpl.mockImplementation(() => {
