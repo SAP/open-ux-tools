@@ -235,6 +235,7 @@ describe('App Studio', () => {
             envH20Settings = process.env[ENV.H2O_URL];
             envWSBaseURLSettings = process.env['WS_BASE_URL'];
             process.env[ENV.H2O_URL] = server;
+            process.env[ENV.PROXY_URL] = server;
         });
 
         afterAll(() => {
@@ -278,12 +279,25 @@ describe('App Studio', () => {
                     return true;
                 })
                 .reply(200);
-            await expect(createOAuth2UserTokenExchangeDest(destination, serviceInstanceName, logger)).resolves.toBe(
-                'abap-cloud-my-abap-env-testorg-testspace'
-            );
+            nock(server)
+                .get('/api/listDestinations')
+                .replyWithFile(200, join(__dirname, 'mockResponses/destinations.json'));
+            await expect(
+                createOAuth2UserTokenExchangeDest(destination, serviceInstanceName, logger)
+            ).resolves.toMatchObject(destinations['abap-cloud-my-abap-env-testorg-testspace']);
             expect(bodyParam).toMatchInlineSnapshot(result);
             expect(infoMock).toBeCalledTimes(1);
             expect(debugMock).toBeCalledTimes(1);
+        });
+
+        test('throw exception if no destination found in SAP BTP', async () => {
+            process.env[ENV.H2O_URL] = server;
+            process.env['WS_BASE_URL'] = server;
+            nock(server).post('/api/createDestination').reply(200);
+            nock(server).get('/api/listDestinations').reply(200);
+            await expect(createOAuth2UserTokenExchangeDest(destination, serviceInstanceName)).rejects.toThrow(
+                /Destination not found on SAP BTP./
+            );
         });
 
         test('throw exception if no service instance name provided', async () => {

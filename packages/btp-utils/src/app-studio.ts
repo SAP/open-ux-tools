@@ -19,7 +19,7 @@ import {
     DestinationType
 } from './destination';
 import type { ServiceInfo } from './service-info';
-import { destinations } from '@sap/bas-sdk';
+import { destinations as destinationAPI } from '@sap/bas-sdk';
 
 /**
  * ABAP Cloud destination instance name.
@@ -160,14 +160,14 @@ export async function exposePort(port: number, logger?: Logger): Promise<string>
 function transformToBASSDKDestination(
     destination: Destination,
     credentials: ServiceInfo['uaa']
-): destinations.DestinationInfo {
+): destinationAPI.DestinationInfo {
     const BASProperties = {
         usage: 'odata_abap,dev_abap,abap_cloud',
         html5DynamicDestination: 'true',
         html5Timeout: '60000'
-    } as destinations.BASProperties;
+    } as destinationAPI.BASProperties;
 
-    const oauth2UserTokenExchange: destinations.OAuth2UserTokenExchange = {
+    const oauth2UserTokenExchange: destinationAPI.OAuth2UserTokenExchange = {
         clientId: credentials.clientid,
         clientSecret: credentials.clientsecret,
         tokenServiceURL: new URL('/oauth/token', credentials.url).toString(),
@@ -182,10 +182,10 @@ function transformToBASSDKDestination(
         proxyType: DestinationProxyType.INTERNET,
         basProperties: BASProperties,
         credentials: {
-            authentication: Authentication.OAUTH2_USER_TOKEN_EXCHANGE as destinations.AuthenticationType,
+            authentication: Authentication.OAUTH2_USER_TOKEN_EXCHANGE as destinationAPI.AuthenticationType,
             oauth2UserTokenExchange
         }
-    } as destinations.DestinationInfo;
+    } as destinationAPI.DestinationInfo;
 }
 
 /**
@@ -215,7 +215,7 @@ async function generateOAuth2UserTokenExchangeDestination(
     destination: Destination,
     serviceInstanceName: string,
     logger?: Logger
-): Promise<destinations.DestinationInfo> {
+): Promise<destinationAPI.DestinationInfo> {
     if (!serviceInstanceName) {
         throw new Error(`No service instance name defined.`);
     }
@@ -249,28 +249,40 @@ async function generateOAuth2UserTokenExchangeDestination(
 /**
  *  Create a new SAP BTP subaccount destination of type 'OAuth2UserTokenExchange' using cf-tools to populate the UAA properties.
  *  If the destination already exists, only new or missing properties will be appended, existing fields are not updated with newer values.
- *
  *  For example: If an existing SAP BTP destination already contains `WebIDEEnabled` and the value is set as `false`, the value will remain `false` even after the update.
  *
+ *  Exceptions: an exception will be thrown if the user is not logged into Cloud Foundry, ensure you are logged `cf login -a https://my-test-env.hana.ondemand.com -o staging -s qa`
+ *
  * @param destination destination info
- * @param serviceInstanceName name of the service instance, for example, the ABAP Environment service name reflecting name of the service created using a supported service technica name i.e. abap | abap-canary
+ * @param serviceInstanceName name of the service instance, for example, the ABAP Environment service name reflecting name of the service created using a supported service technical name i.e. abap | abap-canary
  * @param logger Logger
- * @returns name representing the newly created SAP BTP destination
+ * @returns the newly generated SAP BTP destination
  */
 export async function createOAuth2UserTokenExchangeDest(
     destination: Destination,
     serviceInstanceName: string,
     logger?: Logger
-): Promise<string> {
+): Promise<Destination> {
     if (!isAppStudio()) {
         throw new Error(`Creating a SAP BTP destinations is only supported on SAP Business Application Studio.`);
     }
-    const basSDKDestination: destinations.DestinationInfo = await generateOAuth2UserTokenExchangeDestination(
-        destination,
-        serviceInstanceName,
-        logger
-    );
-    await destinations.createDestination(basSDKDestination);
-    logger?.debug(`SAP BTP destination ${JSON.stringify(basSDKDestination, null, 2)} created.`);
-    return basSDKDestination.name;
+    try {
+        const basSDKDestination: destinationAPI.DestinationInfo = await generateOAuth2UserTokenExchangeDestination(
+            destination,
+            serviceInstanceName,
+            logger
+        );
+        // Destination is created on SAP BTP but nothing is returned to validate this!
+        await destinationAPI.createDestination(basSDKDestination);
+        logger?.debug(`SAP BTP destination ${JSON.stringify(basSDKDestination, null, 2)} created.`);
+        // Return updated destination from SAP BTP
+        const destinations = await listDestinations();
+        const newDestination = destinations?.[basSDKDestination.name];
+        if (!newDestination) {
+            throw new Error('Destination not found on SAP BTP.');
+        }
+        return newDestination;
+    } catch (error) {
+        throw new Error(`An error occurred while generating a destination ${destination.Name}: ${error}`);
+    }
 }
