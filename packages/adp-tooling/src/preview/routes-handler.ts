@@ -163,7 +163,10 @@ export default class RoutesHandler {
 
             const project = this.util.getProject();
             const sourcePath = project.getSourcePath();
+            const rootPath = this.util.getProject().getRootPath();
             const projectName = project.getName();
+
+            const isTsSupported = isTypescriptSupported(rootPath);
 
             const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
                 path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
@@ -173,7 +176,8 @@ export default class RoutesHandler {
                 const change = JSON.parse(fileStr) as CodeExtChange;
 
                 if (change.selector.controllerName === controllerName) {
-                    const fileName = change.content.codeRef.replace('coding/', '');
+                    const baseFileName = change.content.codeRef.replace('coding/', '');
+                    const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
                     controllerPath = getPath(sourcePath, fileName);
                     controllerPathFromRoot = getPath(projectName, fileName);
                     changeFilePath = getPath(projectName, file.getName(), '');

@@ -490,6 +490,8 @@ describe('AdaptationProject', () => {
                 },
                 ignoreCertErrors: false
             });
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+
             jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
             jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
                 getDataSourceMetadata: jest.fn().mockResolvedValue(`
@@ -621,12 +623,33 @@ describe('AdaptationProject', () => {
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
 
             const message = response.text;
-            expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
+            expect(mockWriteFileSync).toHaveBeenNthCalledWith(
+                1,
+                '/adp.project/webapp/changes/coding/Share.js',
+                expect.any(String),
+                { encoding: 'utf8' }
+            );
+            expect(message).toBe('Controller extension created!');
+        });
+
+        test('POST /adp/api/controller - creates TypeScript controller', async () => {
+            mockExistsSync.mockReturnValue(false);
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(true);
+            const controllerName = 'Share';
+            const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
+
+            const message = response.text;
+            expect(mockWriteFileSync).toHaveBeenNthCalledWith(
+                2,
+                '/adp.project/webapp/changes/coding/Share.ts',
+                expect.any(String),
+                { encoding: 'utf8' }
+            );
             expect(message).toBe('Controller extension created!');
         });
 
         test('POST /adp/api/controller - controller already exists', async () => {
-            mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(false).mockResolvedValueOnce(true);
+            mockExistsSync.mockReturnValueOnce(false).mockResolvedValueOnce(true);
 
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(409);
