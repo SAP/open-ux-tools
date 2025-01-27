@@ -2,4 +2,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-reroute missing url param viewCache
+add url param viewCache in case it is missing

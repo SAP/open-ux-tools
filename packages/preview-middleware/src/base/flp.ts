@@ -308,6 +308,7 @@ export class FlpSandbox {
 
         // add route for the sandbox html
         this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
+            // karma (connect API) has no request query property
             if (req.query && !req.query['sap-ui-xx-viewCache']) {
                 // Redirect to the same URL but add the necessary parameter
                 const params = structuredClone(req.query);
