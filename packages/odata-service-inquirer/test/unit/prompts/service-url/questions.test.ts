@@ -45,6 +45,7 @@ describe('Service URL prompts', () => {
         expect(questions).toMatchInlineSnapshot(`
             [
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "https://<hostname>:<port>/path/to/odata/service/",
@@ -56,6 +57,7 @@ describe('Service URL prompts', () => {
                 "validate": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "default": false,
                 "message": "Do you want to continue generation with the untrusted certificate?",
                 "name": "ignoreCertError",
@@ -78,6 +80,7 @@ describe('Service URL prompts', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
                   "mandatory": true,
@@ -123,7 +126,9 @@ describe('Service URL prompts', () => {
     });
 
     test('Test prompt: serviceUrl', async () => {
-        const serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
+        const serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         connectionValidatorMock.validity = {
             urlFormat: true,
             reachable: true,
@@ -227,7 +232,9 @@ describe('Service URL prompts', () => {
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'warn');
         expect(await (ignorableCertErrorsPrompt?.validate as Function)(true, {})).toBe(false);
 
-        const serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
+        const serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         connectionValidatorMock.validateUrl.mockClear();
         connectionValidatorMock.validity = {
             urlFormat: true,
@@ -305,7 +312,9 @@ describe('Service URL prompts', () => {
             })
         ).rejects.toThrowError(t('errors.exitingGeneration', { exitReason: t('errors.certValidationRequired') }));
 
-        let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
+        let serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'warn');
 
         // Should validate the service using the when condition on CLI but never return true, errors will be thrown and the generator will exit
@@ -356,7 +365,9 @@ describe('Service URL prompts', () => {
             canSkipCertError: true
         };
         // Should throw an error if the service is not a valid odata service
-        serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue('Invalid service');
+        serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: 'Invalid service' });
         await expect(
             (ignorableCertErrorsPrompt?.when as Function)({
                 [promptNames.serviceUrl]: serviceUrl,
@@ -395,7 +406,9 @@ describe('Service URL prompts', () => {
         expect(await (passwordPrompt?.validate as Function)('', {})).toBe(false);
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl: undefined })).toBe(false);
 
-        let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
+        let serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(true);
         expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(serviceUrl, username, password, {
             ignoreCertError: undefined
@@ -416,7 +429,9 @@ describe('Service URL prompts', () => {
         );
         // should return a validation message if the service is not valid
         connectionValidatorMock.validateAuth = validateAuthTrue;
-        serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue('Invalid service');
+        serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: 'Invalid service' });
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(
             'Invalid service'
         );

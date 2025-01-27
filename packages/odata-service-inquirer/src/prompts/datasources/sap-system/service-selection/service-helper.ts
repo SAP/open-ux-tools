@@ -20,6 +20,8 @@ import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import { validateODataVersion } from '../../../validators';
 import type { ServiceAnswer } from './types';
+import { showCollabDraftWarning } from '../../service-helpers/service-helpers';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 // Service ids continaining these paths should not be offered as UI compatible services
 const nonUIServicePaths = ['/IWBEP/COMMON/'];
@@ -210,6 +212,12 @@ export async function getServiceType(
     return resolvedServiceType ?? (serviceType as ServiceType);
 }
 
+type ValidateServiceResult = {
+    validationResult: boolean | string;
+    hasAnnotations?: boolean;
+    convertedMetadata?: ConvertedMetadata;
+};
+
 /**
  * Requests and sets the service details to the PromptState.odataService properties.
  * If an error occurs, the error message is returned for use in validators.
@@ -219,16 +227,16 @@ export async function getServiceType(
  * @param requiredOdataVersion the required OData version used to validate the service
  * @returns true if successful, setting the PromptState.odataService properties, or an error message indicating why the service details could not be retrieved.
  */
-export async function getServiceDetails(
+export async function validateService(
     service: ServiceAnswer,
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion
-): Promise<string | boolean> {
+): Promise<ValidateServiceResult> {
     const serviceCatalog = connectionValidator.catalogs?.[service.serviceODataVersion];
 
     if (!connectionValidator.serviceProvider) {
         LoggerHelper.logger.error('ConnectionValidator connection is not initialized');
-        return false;
+        return { validationResult: false };
     }
     // We may already have an odata service endpoint connection
     let odataService = connectionValidator.odataService;
@@ -238,12 +246,15 @@ export async function getServiceDetails(
 
     const serviceResult = await getServiceMetadata(service.servicePath, odataService, serviceCatalog);
     if (typeof serviceResult === 'string') {
-        return serviceResult;
+        return { validationResult: serviceResult };
     }
 
-    const { validationMsg, version } = validateODataVersion(serviceResult.metadata, requiredOdataVersion);
+    const { validationMsg, version, convertedMetadata } = validateODataVersion(
+        serviceResult.metadata,
+        requiredOdataVersion
+    );
     if (validationMsg) {
-        return validationMsg;
+        return { validationResult: validationMsg };
     }
 
     // If destinationUrl is available, use it, as validatedUrl may be in the form <protocal>:<destinationName>.dest
@@ -259,7 +270,11 @@ export async function getServiceDetails(
     PromptState.odataService.servicePath = service.servicePath;
     PromptState.odataService.origin = origin;
     PromptState.odataService.sapClient = connectionValidator.validatedClient;
-    return true;
+    return {
+        validationResult: true,
+        hasAnnotations: !!PromptState.odataService.annotations && PromptState.odataService.annotations.length > 0,
+        convertedMetadata
+    };
 }
 
 /**
@@ -276,6 +291,10 @@ export function getSelectedServiceLabel(username: string | undefined): string {
     return message;
 }
 
+type showCollabDraftWarnOptions = {
+    edmx: ConvertedMetadata;
+    showCollabDraftWarning: boolean;
+};
 /**
  * Get the service selection prompt additional message. This prompt will make an additional call to the system backend
  * to retrieve the service type and display a warning message if the service type is not UI.
@@ -283,16 +302,26 @@ export function getSelectedServiceLabel(username: string | undefined): string {
  * @param serviceChoices a list of service choices
  * @param selectedService the selected service
  * @param connectValidator the connection validator
- * @param requiredOdataVersion the required OData version for the service
- * @param hasAnnotations used to determine whether to show a warning message that annotations could not be retrieved
+ * @param options additional options
+ * @param options.requiredOdataVersion the required OData version for the service
+ * @param options.hasAnnotations used to determine whether to show a warning message that annotations could not be retrieved
+ * @param options.showCollabDraftWarnOptions to show the collaborative draft warning, the option `showCollabDraftWarning` must be true
+ *  and the edmx metadata must be provided
  * @returns the service selection prompt additional message
  */
 export async function getSelectedServiceMessage(
     serviceChoices: ListChoiceOptions<ServiceAnswer>[],
     selectedService: ServiceAnswer,
     connectValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion,
-    hasAnnotations = true
+    {
+        requiredOdataVersion,
+        hasAnnotations = true,
+        showCollabDraftWarnOptions
+    }: {
+        requiredOdataVersion?: OdataVersion;
+        hasAnnotations?: boolean;
+        showCollabDraftWarnOptions?: showCollabDraftWarnOptions;
+    }
 ): Promise<IMessageSeverity | undefined> {
     if (serviceChoices?.length === 0) {
         if (requiredOdataVersion) {
@@ -324,6 +353,17 @@ export async function getSelectedServiceMessage(
                 selectedService.serviceType,
                 connectValidator.catalogs[ODataVersion.v2] as V2CatalogService
             );
+        } else if (
+            showCollabDraftWarnOptions?.showCollabDraftWarning &&
+            selectedService.serviceODataVersion === ODataVersion.v4
+        ) {
+            const result = showCollabDraftWarning(showCollabDraftWarnOptions.edmx);
+            if (result) {
+                return {
+                    message: t('prompts.warnings.collaborativeDraftMessage'),
+                    severity: Severity.warning
+                };
+            }
         }
         if (serviceType && serviceType !== ServiceType.UI) {
             return {

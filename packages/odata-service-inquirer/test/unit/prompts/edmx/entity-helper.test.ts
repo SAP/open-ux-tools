@@ -5,7 +5,6 @@ import { convert } from '@sap-ux/annotation-converter';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 
 describe('Test entity helper functions', () => {
-    let metadataV4WithDraftAndShareAnnot: string;
     let metadataV4WithAggregateTransforms: string;
     let metadataV4WithAliasAggregateTransforms: string;
     let metadataV2: string;
@@ -14,10 +13,6 @@ describe('Test entity helper functions', () => {
 
     beforeAll(async () => {
         // Read the test metadata files
-        metadataV4WithDraftAndShareAnnot = await readFile(
-            __dirname + '/test-data/metadataV4WithDraftAnnotationAndShareAction.xml',
-            'utf8'
-        );
         metadataV4WithAggregateTransforms = await readFile(
             __dirname + '/test-data/metadataV4WithAggregateTransforms.xml',
             'utf8'

@@ -25,7 +25,8 @@ jest.mock('@sap-ux/axios-extension', () => ({
 
 describe('Test service url validators', () => {
     const validMetadata =
-        '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
+        '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">' +
+        '<edmx:DataServices m:DataServiceVersion="2.0"></edmx:DataServices></edmx:Edmx>';
     const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
                 <edmx:Edmx Version="1.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
                     <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName=\'%2FIWBEP%2FVOC_COMMON\',Version=\'0001\',SAP__Origin=\'\')/$value">
@@ -62,26 +63,27 @@ describe('Test service url validators', () => {
                 odataService,
                 axiosConfig: {}
             })
-        ).toMatch(t('prompts.validationMessages.metadataInvalid'));
+        ).toMatchObject({ validationResult: t('prompts.validationMessages.metadataInvalid') });
 
         // Valid metadata
         jest.spyOn(odataService, 'metadata').mockResolvedValue(validMetadata);
-        expect(
-            await validateService(serviceUrl, {
-                odataService,
-                axiosConfig: {}
-            })
-        ).toBe(true);
+        const validationResult = await validateService(serviceUrl, {
+            odataService,
+            axiosConfig: {}
+        });
+        expect(validationResult).toMatchObject({ validationResult: true });
         expect(catalogServiceMock).toHaveBeenCalledWith(OdataVersion.v2);
 
         // Valid metadata with required version
-        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v4)).toBe(
-            t('prompts.validationMessages.odataVersionMismatch', {
+        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v4)).toEqual({
+            validationResult: t('prompts.validationMessages.odataVersionMismatch', {
                 requiredOdataVersion: OdataVersion.v4,
                 providedOdataVersion: OdataVersion.v2
             })
-        );
-        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v2)).toBe(true);
+        });
+        expect(await validateService(serviceUrl, { odataService, axiosConfig: {} }, OdataVersion.v2)).toMatchObject({
+            validationResult: true
+        });
     });
 
     test('should set the prompt state', async () => {
@@ -102,7 +104,7 @@ describe('Test service url validators', () => {
                 odataService,
                 'axiosConfig': {}
             })
-        ).toBe(true);
+        ).toMatchObject({ validationResult: true });
         expect(PromptState.odataService).toEqual({
             metadata: validMetadata,
             odataVersion: '2',
@@ -131,7 +133,7 @@ describe('Test service url validators', () => {
                 odataService,
                 'axiosConfig': {}
             })
-        ).toBe(true);
+        ).toMatchObject({ validationResult: true });
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.annotationsNotFound'));
 
         jest.spyOn(V2CatalogService.prototype, 'getAnnotations').mockRejectedValue(
@@ -142,7 +144,7 @@ describe('Test service url validators', () => {
                 odataService,
                 'axiosConfig': {}
             })
-        ).toBe(true);
+        ).toMatchObject({ validationResult: true });
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.annotationsNotFound'));
     });
 
@@ -158,7 +160,7 @@ describe('Test service url validators', () => {
                 odataService,
                 'axiosConfig': {}
             })
-        ).toBe(t('errors.unknownError', { error: metadataRequestError.message }));
+        ).toMatchObject({ validationResult: t('errors.unknownError', { error: metadataRequestError.message }) });
         expect(loggerSpy).toHaveBeenCalled();
         expect(PromptState.odataService.metadata).toBeUndefined();
 
@@ -170,8 +172,9 @@ describe('Test service url validators', () => {
                 odataService,
                 'axiosConfig': {}
             })
-        ).toBe(
-            'The service URL you have provided is not a valid OData Service. SAP Fiori applications require an OData service as the data source.'
-        );
+        ).toMatchObject({
+            validationResult:
+                'The service URL you have provided is not a valid OData Service. SAP Fiori applications require an OData service as the data source.'
+        });
     });
 });

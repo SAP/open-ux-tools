@@ -8,11 +8,13 @@ import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import { validateODataVersion } from '../../validators';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 type ValidateServiceUrlResult = {
     validationResult: boolean | string;
     showAnnotationWarning?: boolean;
-}
+    convertedMetadata?: ConvertedMetadata;
+};
 /**
  * Validates that a service specified by the service url is accessible, has the required version and returns valid metadata.
  * Retrieves annotations (from Abap backends) if available and stores them in the PromptState.
@@ -38,7 +40,7 @@ export async function validateService(
         const metadata = await odataService.metadata();
         const odataVersionValResult = validateODataVersion(metadata, requiredVersion);
         if (odataVersionValResult.validationMsg) {
-            return { 
+            return {
                 validationResult: odataVersionValResult.validationMsg
             };
         }
@@ -82,20 +84,21 @@ export async function validateService(
         }
         return {
             validationResult: true,
-            showAnnotationWarning
+            showAnnotationWarning,
+            convertedMetadata: odataVersionValResult.convertedMetadata
         };
     } catch (error) {
         delete PromptState.odataService.metadata;
         // Provide a more specific error message if the metadata service URL is not found
         if (ErrorHandler.getErrorType(error) === ERROR_TYPE.NOT_FOUND) {
             // No metadata implies not a valid odata service
-            return { 
+            return {
                 validationResult: ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ODATA_URL_NOT_FOUND) ?? false
-            }
+            };
         }
-        return { 
+        return {
             validationResult: errorHandler.logErrorMsgs(error)
-        }
+        };
     } finally {
         ConnectionValidator.setGlobalRejectUnauthorized(true);
     }

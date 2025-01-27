@@ -1,12 +1,16 @@
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
+import { Severity } from '@sap-devx/yeoman-ui-types';
+import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     extendWithOptions,
     type CommonPromptOptions,
-    type YUIQuestion,
-    type InputQuestion,
     type ConfirmQuestion,
-    type PasswordQuestion
+    type InputQuestion,
+    type PasswordQuestion,
+    type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Question } from 'inquirer';
 import { t } from '../../../i18n';
 import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
@@ -14,10 +18,9 @@ import { promptNames } from '../../../types';
 import { PromptState, getPromptHostEnvironment } from '../../../utils';
 import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
+import { showCollabDraftWarning } from '../service-helpers/service-helpers';
 import { serviceUrlInternalPromptNames } from './types';
 import { validateService } from './validators';
-import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
@@ -46,18 +49,23 @@ interface ServiceUrlAnswers extends OdataServiceAnswers {
  *
  * @param connectValidator Connection validator instance
  * @param requiredVersion The required OData version of the service
+ * @param showCollabDraftWarn
  * @returns the service URL prompt
  */
-function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVersion?: OdataVersion) {
+function getServiceUrlPrompt(
+    connectValidator: ConnectionValidator,
+    requiredVersion?: OdataVersion,
+    showCollabDraftWarn?: boolean
+): InputQuestion<ServiceUrlAnswers> {
     let showAnnotationWarning = false;
+    let convertedMetadata: ConvertedMetadata | undefined;
     return {
         type: 'input',
         name: promptNames.serviceUrl,
         guiOptions: {
             hint: 'https://<hostname>:<port>/path/to/odata/service/',
             mandatory: true,
-            breadcrumb: true,
-            applyDefaultWhenDirty: true
+            breadcrumb: true
         },
         message: t('prompts.odataServiceUrl.message', { odataVersion: requiredVersion }),
         validate: async (url: string) => {
@@ -70,6 +78,8 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
 
             if (urlValidationState === true) {
                 if (!connectValidator.validity.authRequired && connectValidator.odataService) {
+                    showAnnotationWarning = false;
+                    convertedMetadata = undefined;
                     const valResult = await validateService(
                         url,
                         {
@@ -79,20 +89,42 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
                         requiredVersion
                     );
                     showAnnotationWarning = !!valResult.showAnnotationWarning;
+                    convertedMetadata = valResult.convertedMetadata;
                     return valResult.validationResult;
                 }
                 return true;
             }
             return urlValidationState;
         },
-        additionalMessages: (serviceUrl: string) =>
-            showAnnotationWarning
-                ? {
-                      message: t('prompts.warnings.noAnnotations'),
-                      severity: Severity.warning
-                  }
-                : undefined
+        additionalMessages: () => getAdditionalMessages(showAnnotationWarning, showCollabDraftWarn, convertedMetadata)
     } as InputQuestion<ServiceUrlAnswers>;
+}
+
+/**
+ * Get an additional message (IMessageSeverity) based on the specified parameters.
+ *
+ * @param showAnnotationWarning
+ * @param showCollabDraftWarn
+ * @param convertedMetadata provided to avoid reparsing the metadata
+ * @returns
+ */
+function getAdditionalMessages(
+    showAnnotationWarning?: boolean,
+    showCollabDraftWarn?: boolean,
+    convertedMetadata?: ConvertedMetadata
+): IMessageSeverity | void {
+    if (showAnnotationWarning) {
+        return {
+            message: t('prompts.warnings.noAnnotations'),
+            severity: Severity.warning
+        };
+    }
+    if (convertedMetadata && showCollabDraftWarn && showCollabDraftWarning(convertedMetadata)) {
+        return {
+            message: t('prompts.warnings.collaborativeDraftMessage'),
+            severity: Severity.warning
+        };
+    }
 }
 
 /**
@@ -107,6 +139,7 @@ function getIgnoreCertErrorsPrompt(
     requiredVersion?: OdataVersion
 ): ConfirmQuestion<ServiceUrlAnswers> {
     let showAnnotationWarning = false;
+    //toodo: add collab draft warning
     return {
         when: ({ serviceUrl }: ServiceUrlAnswers) => {
             if (serviceUrl && connectValidator.validity.canSkipCertError) {
@@ -151,7 +184,8 @@ function getIgnoreCertErrorsPrompt(
             }
             return validUrl;
         },
-        additionalMessages: (serviceUrl: string) =>
+        additionalMessages: () =>
+            //todo: use `getAdditionalMessages`
             showAnnotationWarning
                 ? {
                       message: t('prompts.warnings.noAnnotations'),
@@ -193,7 +227,7 @@ function getCliIgnoreCertValidatePrompt(
                 }
                 if (!connectValidator.validity.authRequired && connectValidator.odataService) {
                     // Will log on CLI
-                    const validService = await validateService(
+                    const { validationResult } = await validateService(
                         serviceUrl,
                         {
                             odataService: connectValidator.odataService,
@@ -202,8 +236,8 @@ function getCliIgnoreCertValidatePrompt(
                         requiredVersion,
                         true
                     );
-                    if (validService.validationResult !== true) {
-                        throw new Error(t('errors.exitingGeneration', { exitReason: validService.toString() }));
+                    if (validationResult !== true) {
+                        throw new Error(t('errors.exitingGeneration', { exitReason: validationResult.toString() }));
                     }
                 }
             }
@@ -237,13 +271,16 @@ function getUsernamePrompt(connectValidator: ConnectionValidator): InputQuestion
  *
  * @param connectValidator Connection validator instance
  * @param requiredVersion The required OData version of the service
+ * @param showCollabDraftWarn
  * @returns the password prompt
  */
 function getPasswordPrompt(
     connectValidator: ConnectionValidator,
-    requiredVersion?: OdataVersion
+    requiredVersion?: OdataVersion,
+    showCollabDraftWarn?: boolean
 ): PasswordQuestion<ServiceUrlAnswers> {
     let showAnnotationWarning = false;
+    let convertedMetadata: ConvertedMetadata | undefined;
     return {
         when: () => (connectValidator.validity.reachable ? connectValidator.validity.authRequired === true : false),
         type: 'password',
@@ -265,6 +302,8 @@ function getPasswordPrompt(
                 sapClient
             });
             if (validAuth === true && connectValidator.odataService) {
+                showAnnotationWarning = false;
+                convertedMetadata = undefined;
                 const valResult = await validateService(
                     serviceUrl,
                     {
@@ -275,17 +314,12 @@ function getPasswordPrompt(
                     ignoreCertError
                 );
                 showAnnotationWarning = !!valResult.showAnnotationWarning;
+                convertedMetadata = valResult.convertedMetadata;
                 return valResult.validationResult;
             }
             return validAuth;
         },
-        additionalMessages: (serviceUrl: string) =>
-            showAnnotationWarning
-                ? {
-                      message: t('prompts.warnings.noAnnotations'),
-                      severity: Severity.warning
-                  }
-                : undefined
+        additionalMessages: () => getAdditionalMessages(showAnnotationWarning, showCollabDraftWarn, convertedMetadata)
     } as PasswordQuestion<ServiceUrlAnswers>;
 }
 
@@ -307,7 +341,7 @@ export function getServiceUrlQuestions({
     PromptState.reset();
 
     let questions: Question<ServiceUrlAnswers>[] = [
-        getServiceUrlPrompt(connectValidator, requiredVersion),
+        getServiceUrlPrompt(connectValidator, requiredVersion, serviceUrlOpts?.showCollaborativeDraftWarning),
         getIgnoreCertErrorsPrompt(connectValidator, requiredVersion)
     ];
 

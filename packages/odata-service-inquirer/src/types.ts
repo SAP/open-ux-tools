@@ -351,6 +351,11 @@ export type ServiceSelectionPromptOptions = {
      * If the service selection prompt is hidden then the odata service related answer properties will not be returned.
      */
     hide?: boolean;
+    /**
+     * If true, warn the user if the selected service has draft root annotated entity sets but does not have the share action property set.
+     * This is used to indicate that the service does not support collaborative draft.
+     */
+    showCollaborativeDraftWarning?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {
@@ -366,6 +371,11 @@ export type OdataServiceUrlPromptOptions = {
      * Used to validate the service specified by the url is of the required odata version edmx
      */
     requiredOdataVersion?: OdataVersion;
+    /**
+     * If true, warn the user if the selected service has draft root annotated entity sets but does not have the share action property set.
+     * This is used to indicate that the service does not support collaborative draft.
+     */
+    showCollaborativeDraftWarning?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL prompts allow extension with additional messages
 
 export type OdataServiceUrlPasswordOptions = Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL password prompts allow extension with additional messages

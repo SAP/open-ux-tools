@@ -15,6 +15,7 @@ import {
     type YUIQuestion
 } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServicePromptOptions, ServiceSelectionPromptOptions } from '../../../../types';
@@ -27,8 +28,8 @@ import {
     getSelectedServiceLabel,
     getSelectedServiceMessage,
     getServiceChoices,
-    getServiceDetails,
-    sendDestinationServiceSuccessTelemetryEvent
+    sendDestinationServiceSuccessTelemetryEvent,
+    validateService
 } from '../service-selection/service-helper';
 import type { SystemSelectionAnswers } from '../system-selection';
 import { type ServiceAnswer } from './types';
@@ -54,6 +55,10 @@ export function getSystemServiceQuestion(
     let previousSystemUrl: string | undefined;
     let previousClient: string | undefined;
     let previousService: ServiceAnswer | undefined;
+    // State shared across validate and additionalMessages functions
+    let hasBackendAnnotations: boolean | undefined;
+    let convertedMetadata: ConvertedMetadata | undefined;
+
     const requiredOdataVersion = promptOptions?.requiredOdataVersion;
     const serviceSelectionPromptName = `${promptNamespace}:${promptNames.serviceSelection}`;
 
@@ -119,19 +124,17 @@ export function getSystemServiceQuestion(
             return serviceChoices;
         },
         additionalMessages: (selectedService: ServiceAnswer) => {
-            // Additional messages is executed after validation, so we can assume the PromptState has been updated
-            let hasBackendAnnotations;
-            if (selectedService && PromptState.odataService.servicePath === selectedService.servicePath) {
-                hasBackendAnnotations =
-                    !!PromptState.odataService.annotations && PromptState.odataService.annotations.length > 0;
-            }
-            return getSelectedServiceMessage(
-                serviceChoices,
-                selectedService,
-                connectValidator,
+            // Relies on `validate` to set the state
+            return getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, {
                 requiredOdataVersion,
-                hasBackendAnnotations
-            );
+                hasAnnotations: hasBackendAnnotations,
+                showCollabDraftWarnOptions: convertedMetadata
+                    ? {
+                          showCollabDraftWarning: !!promptOptions?.showCollaborativeDraftWarning,
+                          edmx: convertedMetadata
+                      }
+                    : undefined
+            });
         },
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI and cli when automcomplete is used
@@ -153,8 +156,13 @@ export function getSystemServiceQuestion(
             }
             // Dont re-request the same service details
             if (serviceAnswer && previousService?.servicePath !== serviceAnswer.servicePath) {
+                hasBackendAnnotations = undefined;
+                convertedMetadata = undefined;
                 previousService = serviceAnswer;
-                return await getServiceDetails(serviceAnswer, connectValidator, requiredOdataVersion);
+                const validationResult = await validateService(serviceAnswer, connectValidator, requiredOdataVersion);
+                hasBackendAnnotations = validationResult.hasAnnotations;
+                convertedMetadata = validationResult.convertedMetadata;
+                return validationResult.validationResult;
             }
             return true;
         }
@@ -180,10 +188,10 @@ export function getSystemServiceQuestion(
             when: async (answers: Answers): Promise<boolean> => {
                 const selectedService = answers?.[`${promptNamespace}:${promptNames.serviceSelection}`];
                 if (selectedService && connectValidator.validatedUrl) {
-                    const result = await getServiceDetails(selectedService, connectValidator);
-                    if (typeof result === 'string') {
-                        LoggerHelper.logger.error(result);
-                        throw new Error(result);
+                    const { validationResult } = await validateService(selectedService, connectValidator);
+                    if (typeof validationResult === 'string') {
+                        LoggerHelper.logger.error(validationResult);
+                        throw new Error(validationResult);
                     }
                 }
                 if (serviceChoices.length === 0 && errorHandler.hasError()) {
