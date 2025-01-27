@@ -13,8 +13,9 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2, ui5Version) {
 
     globalWindow.jestSetup = true;
 
+    const XHR = globalWindow.XMLHttpRequest;
     globalWindow.XMLHttpRequest = function () {
-        return mockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData);
+        return mockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, XHR);
     };
     globalWindow.performance.timing = {
         fetchStart: Date.now(),
