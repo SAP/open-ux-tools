@@ -26,12 +26,14 @@ Here’s the updated table with the additional column titled ">= SAPUI5 1.132.0"
 |                                          | OData V4      | List Report/Analytical List Page        |             |             |             |              |              |             |             | X            | X            | X                |
 | Enable Table Filtering for Page Variants*| OData V2      | List Report/Analytical List Page        |             |             | X           | X            | X            |             |             | X            | X            | X                |
 |                                          | OData V4      | List Report/Analytical List Page        |             |             |             |              |              |             |             |              | X            | X                |
-| Add New Annotation File*                 | OData V2      | List Report/Analytical List Page, Object Page |             |             |             |              |              |             |             |              |              | X                |
+| Add Local Annotation File*                 | OData V2      | List Report/Analytical List Page, Object Page |             |             |             |              |              |             |             |              |              | X                |
 |                                          | OData V4      | List Report/Analytical List Page, Object Page |             |             |             |              |              |             |             |              |              | X                |
 | Enable Empty Row Mode for Tables*        | OData V2      | Object Page                                 |             |             |             |              |              |             |             | X            | X            | X                |
 |                                          | OData V4      | Object Page                                 |             |             |             |              |              |             |             |              | X            | X                |
-| Enable Variant Management in Tables and Charts* | OData V2 | List Report/Analytical List Page, Object Page |             |             | X           | X            | X            |             |             | X            | X            | X                |
+| Enable Variant Management in Tables and Charts* | OData V2 | List Report/Analytical List Page              |             |             | X           | X            | X            |             |             | X            | X            | X                |
 |                                          | OData V4      | List Report/Analytical List Page, Object Page |             |             |             |              |              |             |             |              | X            | X                |
+| Enable Variant Management in Tables* | OData V2 | Object Page                                 |             |             | X           | X            | X            |             |             | X            | X            | X                |
+|                                          |
 
 *Actions resulting in manifest changes are not available for adaptation projects built for OData v2 appliactions using outdated array page structure in manifest.json.
 
