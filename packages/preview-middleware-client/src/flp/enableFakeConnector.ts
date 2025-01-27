@@ -25,7 +25,7 @@ interface LoadChangesResult {
  * Processes an array of FlexChange objects.
  * It updates each change object with settings and sends them to a API endpoint.
  *
- * @param {FlexChange[]} changes - Array of FlexChange objects to be processed.
+ * @param {FlexChange | FlexChange[]} changes - Array of FlexChange objects to be processed.
  * @returns {Promise<void>} A promise that resolves when all changes are processed.
  */
 export async function create(changes: FlexChange | FlexChange[]): Promise<void> {
