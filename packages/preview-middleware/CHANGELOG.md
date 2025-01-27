@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.16.175
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
+## 0.16.174
+
+### Patch Changes
+
+-   1586cc3: CPE: Enable Variant Management in Tables and Charts Quick Action
+
+## 0.16.173
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.112
+
+## 0.16.172
+
+### Patch Changes
+
+-   b88531b: fix: Enabled missing quick actions on ALP in V2 adp projects
+
 ## 0.16.171
 
 ### Patch Changes

@@ -1,5 +1,25 @@
 # @sap-ux/odata-service-inquirer
 
+## 1.2.2
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/guided-answers-helper@0.2.1
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 1.2.1
+
+### Patch Changes
+
+-   1f7b31e: update alp v4 error text
+
+## 1.2.0
+
+### Minor Changes
+
+-   1bb80a1: Warn when selected v2 service has no annotations.
+
 ## 1.1.1
 
 ### Patch Changes

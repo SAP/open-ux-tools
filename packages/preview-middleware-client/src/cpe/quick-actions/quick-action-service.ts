@@ -79,8 +79,7 @@ export class QuickActionService implements Service {
             }
             if (externalFileChange.match(action)) {
                 await this.reloadQuickActions(this.controlTreeIndex);
-             }
-
+            }
         });
 
         this.outlineService.onOutlineChange(async (event) => {
