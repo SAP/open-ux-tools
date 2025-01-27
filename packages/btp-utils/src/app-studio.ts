@@ -283,6 +283,6 @@ export async function createOAuth2UserTokenExchangeDest(
         }
         return newDestination;
     } catch (error) {
-        throw new Error(`An error occurred while generating a destination ${destination.Name}: ${error}`);
+        throw new Error(`An error occurred while generating destination ${destination.Name}: ${error}`);
     }
 }
