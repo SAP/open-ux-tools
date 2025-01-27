@@ -5,6 +5,7 @@ import {
     showPackageInputChoiceQuestion
 } from '../../conditions';
 import { t } from '../../../i18n';
+import { getSystemConfig } from '../../../utils';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
 import {
@@ -25,12 +26,18 @@ import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
  * Returns the package prompts.
  *
  * @param options - abap deploy config prompt options
+ * @param useStandalone - whether the prompts are used standalone, defaults to true
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns list of list of questions for package prompting
  */
-export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Question<AbapDeployConfigAnswersInternal>[] {
+export function getPackagePrompts(
+    options: AbapDeployConfigPromptOptions,
+    useStandalone = true,
+    isYUI = false
+): Question<AbapDeployConfigAnswersInternal>[] {
     let packageInputChoiceValid: boolean | string;
     let morePackageResultsMsg = '';
-    const isCli = !PromptState.isYUI;
+    PromptState.isYUI = isYUI;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
@@ -47,11 +54,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             validate: async (input: PackageInputChoices): Promise<boolean | string> => {
                 packageInputChoiceValid = await validatePackageChoiceInput(
                     input,
-                    {
-                        url: PromptState.abapDeployConfig.url,
-                        client: PromptState.abapDeployConfig.client,
-                        destination: PromptState.abapDeployConfig.destination
-                    },
+                    getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
                     options.backendTarget
                 );
                 return packageInputChoiceValid;
@@ -59,16 +62,13 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
         } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
-                if (isCli) {
+                if (!PromptState.isYUI) {
                     await validatePackageChoiceInputForCli(
-                        {
-                            url: PromptState.abapDeployConfig.url,
-                            client: PromptState.abapDeployConfig.client,
-                            destination: PromptState.abapDeployConfig.destination
-                        },
+                        getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
                         previousAnswers.packageInputChoice,
                         options.backendTarget
                     );
+
                     packageInputChoiceValid = true;
                 }
                 return false;
@@ -105,7 +105,7 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
             type: 'autocomplete',
             name: promptNames.packageAutocomplete,
             message: `${t('prompts.config.package.packageAutocomplete.message')}${
-                isCli ? t('prompts.config.package.packageAutocomplete.messageTypeFilter') : ''
+                !PromptState.isYUI ? t('prompts.config.package.packageAutocomplete.messageTypeFilter') : ''
             }`,
             guiOptions: {
                 hint: t('prompts.config.package.packageAutocomplete.hint'),
@@ -116,7 +116,13 @@ export function getPackagePrompts(options: AbapDeployConfigPromptOptions): Quest
                 previousAnswers: AbapDeployConfigAnswersInternal,
                 input: string
             ): Promise<string[] | undefined> => {
-                const results = await getPackageChoices(isCli, input, previousAnswers, options.backendTarget);
+                const results = await getPackageChoices(
+                    !PromptState.isYUI,
+                    input,
+                    getSystemConfig(useStandalone, PromptState.abapDeployConfig, options.backendTarget),
+                    previousAnswers,
+                    options.backendTarget
+                );
                 morePackageResultsMsg = results.morePackageResultsMsg;
                 return results.packages;
             },

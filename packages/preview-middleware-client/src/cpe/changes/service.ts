@@ -39,6 +39,10 @@ import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
 import { getConfigMapControlIdMap } from '../../utils/fe-v4';
 
+const TITLE_MAP: { [key: string]: string } = {
+    appdescr_app_addAnnotationsToOData: 'Add New Annotation File'
+};
+
 interface ChangeContent {
     property: string;
     newValue: string;
@@ -317,6 +321,7 @@ export class ChangeService extends EventTarget {
                                 }
                             } catch (error) {
                                 // Gracefully handle change files with invalid content
+                                const title = TITLE_MAP[change.changeType] ?? '';
                                 if (change.fileName) {
                                     this.changedFiles[change.fileName] = change;
                                     const unknownChange: UnknownSavedChange = {
@@ -324,7 +329,8 @@ export class ChangeService extends EventTarget {
                                         kind: 'unknown',
                                         changeType: change.changeType,
                                         fileName: change.fileName,
-                                        timestamp: new Date(change.creation).getTime()
+                                        timestamp: new Date(change.creation).getTime(),
+                                        ...(title && { title })
                                     };
                                     if (change.creation) {
                                         unknownChange.timestamp = new Date(change.creation).getTime();
@@ -431,7 +437,8 @@ export class ChangeService extends EventTarget {
                 const changesRequiringReload = this.pendingChanges.reduce(
                     (sum, change) =>
                         change.kind === CONFIGURATION_CHANGE_KIND ||
-                        change.changeType === 'appdescr_ui_generic_app_changePageConfiguration'
+                        change.changeType === 'appdescr_ui_generic_app_changePageConfiguration' ||
+                        change.changeType === 'appdescr_app_addAnnotationsToOData'
                             ? sum + 1
                             : sum,
                     0
@@ -558,6 +565,50 @@ export class ChangeService extends EventTarget {
         return result;
     }
 
+    private prepareV2ConfigurationChange(
+        command: FlexCommand,
+        fileName: string,
+        index: number,
+        inactiveCommandCount: number
+    ): PendingConfigurationChange {
+        const { entityPropertyChange, page } = command.getProperty('parameters') as {
+            entityPropertyChange: {
+                propertyPath: string;
+                propertyValue: Record<string, string>;
+            };
+            page: string;
+        };
+        const propertyName = Object.keys(entityPropertyChange.propertyValue)[0];
+        const propertyValue = entityPropertyChange.propertyValue[propertyName];
+        const controlId = this.getCommandSelectorId(command) ?? '';
+        const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
+
+        const key = getConfigMapControlIdMap(page, propertyPathSegments);
+
+        const isActive = index >= inactiveCommandCount;
+        const controlIds = this.configPropertyControlIdMap?.get(key) || [controlId];
+
+        const result: PendingConfigurationChange = {
+            type: PENDING_CHANGE_TYPE,
+            kind: CONFIGURATION_CHANGE_KIND,
+            controlIds,
+            propertyPath: getCompactV4ConfigPath(propertyPathSegments) || page,
+            propertyName,
+            isActive,
+            value: propertyValue,
+            fileName
+        };
+        for (const id of result.controlIds) {
+            if (!this.pendingConfigChangeMap.get(id)) {
+                this.pendingConfigChangeMap.set(id, []);
+            }
+            const pendingChanges = this.pendingConfigChangeMap.get(id);
+            pendingChanges?.push(result);
+        }
+
+        return result;
+    }
+
     /**
      * Prepares the type of change based on the command and other parameters.
      *
@@ -584,7 +635,7 @@ export class ChangeService extends EventTarget {
             return undefined;
         }
 
-        const { fileName } = change.getDefinition();
+        const { fileName } = change.getDefinition ? change.getDefinition() : (change.getJson() as { fileName: string });
         if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {
             let value = '';
             switch (changeType) {
@@ -613,10 +664,14 @@ export class ChangeService extends EventTarget {
                 command.getProperty('parameters') as { entityPropertyChange: { propertyValue: ConfigurationValue } }
             ).entityPropertyChange.propertyValue;
             return this.prepareV4ConfigurationChange(command, value, fileName, index, inactiveCommandCount);
+        } else if (changeType === 'appdescr_ui_generic_app_changePageConfiguration') {
+            return this.prepareV2ConfigurationChange(command, fileName, index, inactiveCommandCount);
         } else {
+            const title = TITLE_MAP[changeType] ?? '';
             let result: PendingChange = {
                 type: PENDING_CHANGE_TYPE,
                 kind: UNKNOWN_CHANGE_KIND,
+                ...(title && { title }),
                 changeType,
                 isActive: index >= inactiveCommandCount,
                 fileName

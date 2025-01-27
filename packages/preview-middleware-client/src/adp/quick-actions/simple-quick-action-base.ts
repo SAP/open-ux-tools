@@ -4,41 +4,33 @@ import { SIMPLE_QUICK_ACTION_KIND, SimpleQuickAction } from '@sap-ux-private/con
 
 import { getRelevantControlFromActivePage } from '../../cpe/quick-actions/utils';
 import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
+import { EnablementValidator } from './enablement-validator';
+import { QuickActionDefinitionBase } from './quick-action-base';
 
 /**
  * Base class for all simple quick actions.
  */
-export abstract class SimpleQuickActionDefinitionBase {
-    readonly kind = SIMPLE_QUICK_ACTION_KIND;
-    public get id(): string {
-        return `${this.context.key}-${this.type}`;
-    }
-
+export abstract class SimpleQuickActionDefinitionBase<
+    T extends UI5Element = UI5Element
+> extends QuickActionDefinitionBase<typeof SIMPLE_QUICK_ACTION_KIND> {
     public get isApplicable(): boolean {
         return this.control !== undefined;
     }
 
-    protected isDisabled: boolean | undefined;
-
-    public get tooltip(): string | undefined {
-        return undefined;
-    }
-
-    protected get textKey(): string {
-        return this.defaultTextKey;
-    }
-
-    protected control: UI5Element | undefined;
+    protected control: T | undefined;
 
     constructor(
         public readonly type: string,
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
-        protected readonly context: QuickActionContext
-    ) {}
+        protected readonly context: QuickActionContext,
+        protected readonly enablementValidators: EnablementValidator[] = []
+    ) {
+        super(type, SIMPLE_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
+    }
 
     initialize(): void {
-        for (const control of getRelevantControlFromActivePage(
+        for (const control of getRelevantControlFromActivePage<T>(
             this.context.controlIndex,
             this.context.view,
             this.controlTypes

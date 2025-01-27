@@ -10,12 +10,34 @@ import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName } from '@sap-ux/project-access';
-import type { CodeExtChange } from '../types';
+import { DirName, FileName } from '@sap-ux/project-access';
+import { type CodeExtChange } from '../types';
+import { ManifestService } from '../base/abap/manifest-service';
+import type { DataSources } from '../base/abap/manifest-service';
+import { getAdpConfig, getVariant } from '../base/helper';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 interface WriteControllerBody {
     controllerName: string;
     projectId: string;
+}
+
+interface AnnotationFileDetails {
+    fileName?: string;
+    annotationPath?: string;
+    annotationPathFromRoot?: string;
+    annotationExistsInWS: boolean;
+}
+
+interface AnnotationDataSourceMap {
+    [key: string]: {
+        serviceUrl: string;
+        annotationDetails: AnnotationFileDetails;
+    };
+}
+export interface AnnotationDataSourceResponse {
+    isRunningInBAS: boolean;
+    annotationDataSourceMap: AnnotationDataSourceMap;
 }
 
 /**
@@ -244,4 +266,95 @@ export default class RoutesHandler {
             next(e);
         }
     };
+
+    /**
+     * Handler for mapping annotation files with datasoruce.
+     *
+     * @param _req Request
+     * @param res Response
+     * @param next Next Function
+     */
+    public handleGetAllAnnotationFilesMappedByDataSource = async (_req: Request, res: Response, next: NextFunction) => {
+        try {
+            const isRunningInBAS = isAppStudio();
+
+            const manifestService = await this.getManifestService();
+            const dataSources = manifestService.getManifestDataSources();
+            const apiResponse: AnnotationDataSourceResponse = {
+                isRunningInBAS,
+                annotationDataSourceMap: {}
+            };
+
+            for (const dataSourceId in dataSources) {
+                if (dataSources[dataSourceId].type === 'OData') {
+                    apiResponse.annotationDataSourceMap[dataSourceId] = {
+                        annotationDetails: {
+                            annotationExistsInWS: false
+                        },
+                        serviceUrl: dataSources[dataSourceId].uri
+                    };
+                }
+                this.fillAnnotationDataSourceMap(dataSources, dataSourceId, apiResponse.annotationDataSourceMap);
+            }
+            this.sendFilesResponse(res, apiResponse);
+        } catch (e) {
+            this.handleErrorMessage(res, next, e);
+        }
+    };
+
+    /**
+     * Add local annotation details to api response.
+     *
+     * @param dataSources DataSources
+     * @param dataSourceId string
+     * @param apiResponse AnnotationDataSourceMap
+     */
+    private fillAnnotationDataSourceMap(
+        dataSources: DataSources,
+        dataSourceId: string,
+        apiResponse: AnnotationDataSourceMap
+    ): void {
+        const project = this.util.getProject();
+        const getPath = (projectPath: string, relativePath: string): string =>
+            path.join(projectPath, relativePath).split(path.sep).join(path.posix.sep);
+        const annotations = [...(dataSources[dataSourceId].settings?.annotations ?? [])].reverse();
+        for (const annotation of annotations) {
+            const annotationSetting = dataSources[annotation];
+            if (annotationSetting.type === 'ODataAnnotation') {
+                const ui5NamespaceUri = `ui5://${project.getNamespace()}`;
+                if (annotationSetting.uri.startsWith(ui5NamespaceUri)) {
+                    const localAnnotationUri = annotationSetting.uri.replace(ui5NamespaceUri, '');
+                    const annotationPath = getPath(project.getSourcePath(), localAnnotationUri);
+                    const annotationPathFromRoot = getPath(project.getName(), localAnnotationUri);
+                    const annotationExists = fs.existsSync(annotationPath);
+                    apiResponse[dataSourceId].annotationDetails = {
+                        fileName: path.parse(localAnnotationUri).base,
+                        annotationPath: os.platform() === 'win32' ? `/${annotationPath}` : annotationPath,
+                        annotationPathFromRoot,
+                        annotationExistsInWS: annotationExists
+                    };
+                }
+                if (apiResponse[dataSourceId].annotationDetails.annotationExistsInWS) {
+                    break;
+                }
+            }
+        }
+    }
+
+    /**
+     * Returns manifest service.
+     *
+     * @returns Promise<ManifestService>
+     */
+    private async getManifestService(): Promise<ManifestService> {
+        const project = this.util.getProject();
+        const basePath = project.getRootPath();
+        const variant = getVariant(basePath);
+        const { target, ignoreCertErrors = false } = await getAdpConfig(
+            basePath,
+            path.join(basePath, FileName.Ui5Yaml)
+        );
+        const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, this.logger);
+        return await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
+    }
 }

@@ -10,11 +10,12 @@ export function addConvertPreviewCommand(cmd: Command): void {
     cmd.command('preview-config [path]')
         .option('-s, --simulate', 'simulate only do not write or install')
         .option('-v, --verbose', 'show verbose information')
+        .option('-t, --tests', 'also convert test suite and test runners')
         .action(async (path, options) => {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            await convertPreview(path, !!options.simulate);
+            await convertPreview(path, !!options.simulate, !!options.tests);
         });
 }
 
@@ -23,17 +24,18 @@ export function addConvertPreviewCommand(cmd: Command): void {
  *
  * @param {string} basePath - The path to the adaptation project.
  * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
+ * @param {boolean} convertTests - If set to true, then test suite and test runners fill be included in the conversion.
  */
-async function convertPreview(basePath: string, simulate: boolean): Promise<void> {
+async function convertPreview(basePath: string, simulate: boolean, convertTests: boolean): Promise<void> {
     const logger = getLogger();
 
     if (!basePath) {
         basePath = process.cwd();
     }
 
-    logger.debug(`Called convert preview for path '${basePath}'. The simulate path is '${simulate}'.`);
+    logger.debug(`Called convert preview-config for path '${basePath}', simulate is '${simulate}'.`);
     try {
-        const fs = await convertToVirtualPreview(basePath, logger);
+        const fs = await convertToVirtualPreview(basePath, { convertTests, logger });
 
         if (!simulate) {
             fs.commit(() => logger.info(`The changes for preview conversion have been written.`));

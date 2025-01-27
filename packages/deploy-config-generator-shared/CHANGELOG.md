@@ -1,5 +1,37 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.11
+
+### Patch Changes
+
+-   6b6c64a: adds new module cf deploy config sub gen
+
+## 0.0.10
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.19
+
+## 0.0.9
+
+### Patch Changes
+
+-   fe0878d: feat(flp-config): adds new flp config generator
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+
+## 0.0.8
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.17
+
+## 0.0.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.16
+
 ## 0.0.6
 
 ### Patch Changes

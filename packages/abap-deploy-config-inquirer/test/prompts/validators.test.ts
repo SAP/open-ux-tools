@@ -312,7 +312,7 @@ describe('Test validators', () => {
                 ui5AbapRepo: 'ZUI5REPO'
             });
             expect(result).toBe(true);
-            expect(getTransportListFromServiceSpy).toBeCalledWith('ZPACKAGE', 'ZUI5REPO', {}, undefined);
+            expect(getTransportListFromServiceSpy).toBeCalledWith('ZPACKAGE', 'ZUI5REPO', undefined);
         });
         it('should return error for invalid package input', async () => {
             const result = await validatePackage(' ', previousAnswers);
@@ -399,10 +399,14 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid package / ui5 abap repo name', async () => {
-            let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, previousAnswers);
+            let result = await validateTransportChoiceInput(
+                false,
+                TransportChoices.ListExistingChoice,
+                previousAnswers
+            );
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
 
-            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {
+            result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
                 ...previousAnswers,
                 packageManual: 'ZPACKAGE'
             });
@@ -413,7 +417,7 @@ describe('Test validators', () => {
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
-            const result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {
+            const result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
                 ...previousAnswers,
                 packageManual: 'ZPACKAGE',
                 ui5AbapRepo: 'ZUI5REPO'
@@ -424,7 +428,7 @@ describe('Test validators', () => {
         it('should return errors messages for listing transport when transport request empty or undefined', async () => {
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([]);
 
-            let result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {
+            let result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
                 ...previousAnswers,
                 packageManual: 'ZPACKAGE',
                 ui5AbapRepo: 'ZUI5REPO'
@@ -432,7 +436,7 @@ describe('Test validators', () => {
             expect(result).toBe(t('warnings.noTransportReqs'));
 
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce(undefined);
-            result = await validateTransportChoiceInput(TransportChoices.ListExistingChoice, {
+            result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
                 ...previousAnswers,
                 packageManual: 'ZPACKAGE',
                 ui5AbapRepo: 'ZUI5REPO'
@@ -442,6 +446,7 @@ describe('Test validators', () => {
 
         it('should return true if transport request is same as previous', async () => {
             const result = await validateTransportChoiceInput(
+                false,
                 TransportChoices.CreateNewChoice,
                 previousAnswers,
                 true,
@@ -456,6 +461,7 @@ describe('Test validators', () => {
             ]);
 
             const result = await validateTransportChoiceInput(
+                false,
                 TransportChoices.CreateNewChoice,
                 previousAnswers,
                 true,
@@ -469,6 +475,7 @@ describe('Test validators', () => {
             jest.spyOn(validatorUtils, 'createTransportNumber').mockResolvedValueOnce('TR1234');
 
             const result = await validateTransportChoiceInput(
+                false,
                 TransportChoices.CreateNewChoice,
                 previousAnswers,
                 false,
@@ -482,6 +489,7 @@ describe('Test validators', () => {
             jest.spyOn(validatorUtils, 'createTransportNumber').mockResolvedValueOnce(undefined);
 
             const result = await validateTransportChoiceInput(
+                false,
                 TransportChoices.CreateNewChoice,
                 previousAnswers,
                 false,
@@ -493,6 +501,7 @@ describe('Test validators', () => {
 
         it('should return error if creating a new transport request returns undefined', async () => {
             const result = await validateTransportChoiceInput(
+                false,
                 TransportChoices.EnterManualChoice,
                 previousAnswers,
                 false,

@@ -7,9 +7,9 @@ import type {
     V4CatalogService
 } from '@sap-ux/axios-extension';
 import { ODataVersion, ServiceType } from '@sap-ux/axios-extension';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { ChoiceOptions } from 'inquirer';
+import type { Answers, ChoiceOptions } from 'inquirer';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
@@ -49,6 +49,8 @@ const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
                 <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common"/>
             </edmx:Reference>
         </edmx:Edmx>`;
+const v4Metadata =
+    '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
 
 let connectedUserNameMock: string | undefined;
 const catalogs = {
@@ -181,7 +183,7 @@ describe('Test new system prompt', () => {
 
         // The services choices should be restricted to the specified required odata version
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
-            serviceSelection: { requiredOdataVersion: OdataVersion.v2 }
+            requiredOdataVersion: OdataVersion.v2
         });
         serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -219,7 +221,7 @@ describe('Test new system prompt', () => {
 
         // No odata version specific (`requiredOdataVersion`) service available
         systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
-            serviceSelection: { requiredOdataVersion: OdataVersion.v2 }
+            requiredOdataVersion: OdataVersion.v2
         });
         serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -247,6 +249,17 @@ describe('Test new system prompt', () => {
 
     test('should show additional messages in service selection prompt selected service type is not UI', async () => {
         const connectValidator = new ConnectionValidator();
+        const annotations = [
+            {
+                Definitions: v2Annotations,
+                TechnicalName: 'ZTRAVEL_DESK_SRV',
+                Version: '0001',
+                Uri: 'http://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+            }
+        ];
+        PromptState.odataService.annotations = annotations;
+        PromptState.odataService.servicePath = '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002';
+
         // Should show service type warning if service is not classified as UI
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
@@ -318,6 +331,38 @@ describe('Test new system prompt', () => {
         });
     });
 
+    test('should show additional messages in service selection prompt selected V2 service has no annotations', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
+        PromptState.odataService.annotations = [];
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+
+        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
+        const serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+        const choices: { name: string; value: ServiceAnswer }[] = await (
+            (serviceSelectionPrompt as ListQuestion)?.choices as Function
+        )();
+        expect(choices.length).toBe(2);
+
+        const message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
+            choices[1].value
+        );
+
+        expect(message).toMatchObject({
+            message: t('prompts.warnings.noAnnotations'),
+            severity: Severity.warning
+        });
+    });
+
     test('should pre-select service if only one', async () => {
         const connectValidator = new ConnectionValidator();
         connectionValidatorMock.catalogs = {
@@ -372,6 +417,7 @@ describe('Test new system prompt', () => {
             }
         ];
         const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
                 listServices: jest.fn().mockResolvedValue([serviceV2a]),
@@ -387,28 +433,54 @@ describe('Test new system prompt', () => {
                 metadata: jest.fn().mockResolvedValue(v2Metadata)
             } as Partial<ODataService>)
         } as Partial<ServiceProvider>;
-        const serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
+        let serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
 
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
 
-        const selectedService = {
+        // v2 service
+        const selectedServiceV2 = {
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002',
             serviceODataVersion: '2',
             serviceType: 'Not implemented'
         } as ServiceAnswer;
 
-        const validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedService);
+        let validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedServiceV2);
         expect(validationResult).toBe(true);
-        expect(serviceSpy).toHaveBeenCalledWith(selectedService.servicePath);
+        expect(serviceSpy).toHaveBeenCalledWith(selectedServiceV2.servicePath);
         expect(PromptState.odataService).toEqual({
             annotations: annotations,
             metadata: v2Metadata,
             odataVersion: '2',
             origin: 'http://some.abap.system:1234',
             servicePath: '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+        });
+
+        // v4 service
+        connectionValidatorMock.serviceProvider = {
+            service: jest.fn().mockReturnValue({
+                metadata: jest.fn().mockResolvedValue(v4Metadata)
+            } as Partial<ODataService>)
+        } as Partial<ServiceProvider>;
+
+        const selectedServiceV4 = {
+            servicePath: '/sap/opu/odata4/dmo/flight/0001',
+            serviceODataVersion: '4',
+            serviceType: 'WebUI'
+        } as ServiceAnswer;
+        serviceSpy = jest.spyOn(connectionValidatorMock.serviceProvider, 'service');
+
+        validationResult = await (serviceSelectionPrompt?.validate as Function)(selectedServiceV4);
+        expect(validationResult).toBe(true);
+        expect(serviceSpy).toHaveBeenCalledWith(selectedServiceV4.servicePath);
+        expect(PromptState.odataService).toEqual({
+            annotations: [],
+            metadata: v4Metadata,
+            odataVersion: '4',
+            origin: 'http://some.abap.system:1234',
+            servicePath: '/sap/opu/odata4/dmo/flight/0001'
         });
     });
 
@@ -474,7 +546,7 @@ describe('Test new system prompt', () => {
             }
         };
         const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace, {
-            serviceSelection: { useAutoComplete: true }
+            useAutoComplete: true
         });
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
@@ -503,6 +575,34 @@ describe('Test new system prompt', () => {
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(flightChoice);
         expect(validationResult).toBe(true);
         expect(getServiceDetailsSpy).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
+    });
+
+    test('Should apply `additionalMessages` prompt option', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([])
+            }
+        };
+        const customAdditionalMsgs: PromptSeverityMessage = (input: unknown, answers: Answers | undefined) => {
+            return { message: 'Custom message', severity: Severity.information };
+        };
+        const serviceSelectionPromptOptions = { additionalMessages: customAdditionalMsgs };
+        const systemServiceQuestions = getSystemServiceQuestion(
+            connectValidator,
+            promptNamespace,
+            serviceSelectionPromptOptions
+        );
+        const serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+        expect(await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)()).toEqual({
+            message: 'Custom message',
+            severity: Severity.information
+        });
     });
 
     test('Should show and log error message when service validation fails', async () => {
@@ -568,7 +668,6 @@ describe('Test new system prompt', () => {
         const serviceSelectionPrompt = systemServiceQuestions.find(
             (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
         );
-        // todo: No check for GA link here???
         const choices = await ((serviceSelectionPrompt as ListQuestion)?.choices as Function)();
         expect(choices).toEqual([]);
         const valResult = await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)();

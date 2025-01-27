@@ -64,7 +64,9 @@ async function validateSystemSelection(
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
     PromptState.reset();
-    if (systemSelection.type === 'newSystemChoice') {
+    if (systemSelection.type === 'newSystemChoice' || systemSelection.type === 'cfAbapEnvService') {
+        // Reset the connection state
+        connectionValidator.resetConnectionState(true);
         return true;
     }
     let connectValResult: ValidationResult = false;
@@ -110,13 +112,18 @@ export async function getSystemSelectionQuestions(
     );
 
     // Existing system (BackendSystem or Destination) selected,
-    // In future, make the service prompt optional by wrapping in condition `[promptOptions?.serviceSelection?.hide]`
-    questions.push(
-        ...withCondition(
-            getSystemServiceQuestion(connectValidator, systemSelectionPromptNamespace, promptOptions) as Question[],
-            (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
-        )
-    );
+    if (!promptOptions?.serviceSelection?.hide) {
+        questions.push(
+            ...withCondition(
+                getSystemServiceQuestion(
+                    connectValidator,
+                    systemSelectionPromptNamespace,
+                    promptOptions?.serviceSelection
+                ) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
+            )
+        );
+    }
 
     // Create new system connection for storage only supported on non-App Studio environments
     if (!isAppStudio()) {
@@ -155,6 +162,9 @@ export async function getSystemConnectionQuestions(
         promptOptions?.systemSelection?.defaultChoice
     );
 
+    const shouldOnlyShowDefaultChoice =
+        promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice;
+
     const questions: Question[] = [
         {
             type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
@@ -165,8 +175,8 @@ export async function getSystemConnectionQuestions(
                 hint: t('prompts.systemSelection.hint')
             },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
-            choices: systemChoices,
-            default: defaultChoiceIndex,
+            choices: shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices,
+            default: shouldOnlyShowDefaultChoice ? 0 : defaultChoiceIndex,
             validate: async (
                 selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
             ): Promise<ValidationResult> => {

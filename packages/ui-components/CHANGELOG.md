@@ -1,5 +1,59 @@
 # @sap-ux/ui-components
 
+## 1.24.2
+
+### Patch Changes
+
+-   dd34d62: UI accessability improvements for disabled elements and in quick action list
+
+## 1.24.1
+
+### Patch Changes
+
+-   7b5e3b9: UISections: Recalculate section sizes when external prop sizes change.
+
+## 1.24.0
+
+### Minor Changes
+
+-   f48bfa0: This update introduces hover styles for the UIToggle component's thumb when in a checked state. It improves the visual feedback for users interacting with the toggle.
+
+## 1.23.0
+
+### Minor Changes
+
+-   c570683: Unified the size-property in the UIToggle component. Fixed padding issues throughout the component. Fixed icon display issues during component mounting.
+
+## 1.22.3
+
+### Patch Changes
+
+-   81a5351: Add export for `setIconOptions` method from `@fluentui/react`
+
+## 1.22.2
+
+### Patch Changes
+
+-   318477a: Add missing exports:
+    -   `UIChoiceGroup` - export interface `IChoiceGroup`
+    -   `UIList` - export interfaces `UIGroup`, `UIGroupedListProps`, `UIGroupHeaderProps`, `UIGroupRenderProps`
+    -   `UILoader` - export enum `UISpinnerSize `
+    -   `UIStack` - export component `UIStack`
+    -   focus utility functions - export method `isElementTabbable`
+
+## 1.22.1
+
+### Patch Changes
+
+-   0fd924b: Adding a workaround for FluentUI not setting aria-invalid correctly for ComboBoxes
+
+## 1.22.0
+
+### Minor Changes
+
+-   0f9d186: Added new SVG icons: SwitchOff and SwitchOn.
+    Enhanced the UIToggle component by adding visual indicators to display the switch status.
+
 ## 1.21.4
 
 ### Patch Changes

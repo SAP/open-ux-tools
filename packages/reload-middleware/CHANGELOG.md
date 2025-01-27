@@ -1,5 +1,24 @@
 # @sap-ux/reload-middleware
 
+## 0.2.13
+
+### Patch Changes
+
+-   1358041: fix: Manifest change for enabling semantic date range has no effect on running app with UI5 latest snapshot (=>1.132)
+
+## 0.2.12
+
+### Patch Changes
+
+-   261cf6e: Detect annotation changes in CPE.
+
+## 0.2.11
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+
 ## 0.2.10
 
 ### Patch Changes

@@ -1,4 +1,5 @@
 import { basename, dirname, isAbsolute, join, parse, sep } from 'path';
+import type { Editor } from 'mem-fs-editor';
 import type {
     AdaptationResults,
     AllAppResults,
@@ -77,10 +78,16 @@ function wsFoldersToRootPaths(wsFolders: readonly WorkspaceFolder[] | string[] |
  * @param path path of a project file
  * @param sapuxRequired if true, only find sapux projects
  * @param silent if true, then does not throw an error but returns an empty path
+ * @param memFs - optional mem-fs-editor instance
  * @returns {*}  {Promise<string>} - Project Root
  */
-export async function findProjectRoot(path: string, sapuxRequired = true, silent = false): Promise<string> {
-    const packageJson = await findFileUp(FileName.Package, path);
+export async function findProjectRoot(
+    path: string,
+    sapuxRequired = true,
+    silent = false,
+    memFs?: Editor
+): Promise<string> {
+    const packageJson = await findFileUp(FileName.Package, path, memFs);
     if (!packageJson) {
         if (silent) {
             return '';
@@ -93,9 +100,9 @@ export async function findProjectRoot(path: string, sapuxRequired = true, silent
     }
     let root = dirname(packageJson);
     if (sapuxRequired) {
-        const sapux = (await readJSON<Package>(packageJson)).sapux;
+        const sapux = (await readJSON<Package>(packageJson, memFs)).sapux;
         if (!sapux) {
-            root = await findProjectRoot(dirname(root), sapuxRequired, silent);
+            root = await findProjectRoot(dirname(root), sapuxRequired, silent, memFs);
         }
     }
     return root;
@@ -168,27 +175,31 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
  * - Freestyle application (non CAP) has in package.json dependency to @sap/ux-ui5-tooling and <appRoot>/ui5-local.yaml.
  *
  * @param path - path to check, e.g. to the manifest.json
+ * @param memFs - optional mem-fs-editor instance
  * @returns - in case a supported app is found this function returns the appRoot and projectRoot path
  */
-export async function findRootsForPath(path: string): Promise<{ appRoot: string; projectRoot: string } | null> {
+export async function findRootsForPath(
+    path: string,
+    memFs?: Editor
+): Promise<{ appRoot: string; projectRoot: string } | null> {
     try {
         // Get the root of the app, that is where the package.json is, otherwise not supported
-        const appRoot = await findProjectRoot(path, false);
+        const appRoot = await findProjectRoot(path, false, false, memFs);
         if (!appRoot) {
             return null;
         }
-        const appPckJson = await readJSON<Package>(join(appRoot, FileName.Package));
+        const appPckJson = await readJSON<Package>(join(appRoot, FileName.Package), memFs);
         // Check for most common app, Fiori elements with sapux=true in package.json
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
-        if ((await getCapProjectType(appRoot)) !== undefined) {
+        if ((await getCapProjectType(appRoot, memFs)) !== undefined) {
             // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
             // in root -> not supported
             return null;
         }
         // Check if app is included in CAP project
-        const projectRoot = await findCapProjectRoot(appRoot);
+        const projectRoot = await findCapProjectRoot(appRoot, undefined, memFs);
         if (projectRoot) {
             // App included in CAP
             return {
@@ -197,7 +208,7 @@ export async function findRootsForPath(path: string): Promise<{ appRoot: string;
             };
         } else if (
             // Check for freestyle non CAP
-            (await fileExists(join(appRoot, FileName.Ui5LocalYaml))) &&
+            (await fileExists(join(appRoot, FileName.Ui5LocalYaml), memFs)) &&
             hasDependency(appPckJson, '@sap/ux-ui5-tooling')
         ) {
             return {
@@ -216,9 +227,14 @@ export async function findRootsForPath(path: string): Promise<{ appRoot: string;
  *
  * @param path - path inside CAP project
  * @param checkForAppRouter - if true, checks for app router in CAP project app folder
+ * @param memFs - optional mem-fs-editor instance
  * @returns - CAP project root path
  */
-export async function findCapProjectRoot(path: string, checkForAppRouter = true): Promise<string | null> {
+export async function findCapProjectRoot(
+    path: string,
+    checkForAppRouter = true,
+    memFs?: Editor
+): Promise<string | null> {
     try {
         if (!isAbsolute(path)) {
             return null;
@@ -226,7 +242,7 @@ export async function findCapProjectRoot(path: string, checkForAppRouter = true)
         const { root } = parse(path);
         let projectRoot = dirname(path);
         while (projectRoot !== root) {
-            if (await getCapProjectType(projectRoot)) {
+            if (await getCapProjectType(projectRoot, memFs)) {
                 // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
                 // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
                 // or skip app router check if checkForAppRouter is false and return the project root.
@@ -248,12 +264,14 @@ export async function findCapProjectRoot(path: string, checkForAppRouter = true)
  * findFioriArtifacts({ wsFolders, artifacts: ['applications'] }); from same module.
  *
  * @param wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
+ * @param memFs - optional mem-fs-editor instance
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
 export async function findAllApps(
-    wsFolders: readonly WorkspaceFolder[] | string[] | undefined
+    wsFolders: readonly WorkspaceFolder[] | string[] | undefined,
+    memFs?: Editor
 ): Promise<AllAppResults[]> {
-    const findResults = await findFioriArtifacts({ wsFolders, artifacts: ['applications'] });
+    const findResults = await findFioriArtifacts({ wsFolders, artifacts: ['applications'], memFs });
     return findResults.applications ?? [];
 }
 
@@ -261,16 +279,17 @@ export async function findAllApps(
  * Filter Fiori apps from a list of files.
  *
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
+ * @param memFs - optional mem-fs-editor instance
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
-async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResults[]> {
+async function filterApplications(pathMap: FileMapAndCache, memFs?: Editor): Promise<AllAppResults[]> {
     const filterApplicationByManifest = async (manifestPath: string) => {
-        pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+        pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
         const manifest: Manifest = pathMap[manifestPath] as Manifest; // cast needed as pathMap also allows strings and any other objects
         // cast allowed, as this is the only place pathMap is filled for manifests
         if (manifest['sap.app'].id && manifest['sap.app'].type === 'application') {
-            const roots = await findRootsForPath(dirname(manifestPath));
-            if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig)))) {
+            const roots = await findRootsForPath(dirname(manifestPath), memFs);
+            if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig), memFs))) {
                 return { appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest: manifest, manifestPath };
             }
         }
@@ -291,16 +310,17 @@ async function filterApplications(pathMap: FileMapAndCache): Promise<AllAppResul
  * Filter adaptation projects from a list of files.
  *
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
+ * @param memFs - optional mem-fs-editor instance
  * @returns - results as array of found adaptation projects.
  */
-async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationResults[]> {
+async function filterAdaptations(pathMap: FileMapAndCache, memFs?: Editor): Promise<AdaptationResults[]> {
     const results: AdaptationResults[] = [];
     const manifestAppDescrVars = Object.keys(pathMap).filter((path) => path.endsWith(FileName.ManifestAppDescrVar));
     for (const manifestAppDescrVar of manifestAppDescrVars) {
-        const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestAppDescrVar));
+        const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestAppDescrVar), memFs);
         const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
-        if (projectRoot && (await fileExists(join(projectRoot, 'webapp', FileName.ManifestAppDescrVar)))) {
-            results.push({ appRoot: projectRoot, manifestAppdescrVariantPath: manifestAppDescrVar, projectRoot });
+        if (projectRoot && (await fileExists(join(projectRoot, 'webapp', FileName.ManifestAppDescrVar), memFs))) {
+            results.push({ appRoot: projectRoot, manifestAppdescrVariantPath: manifestAppDescrVar });
         }
     }
     return results;
@@ -310,9 +330,10 @@ async function filterAdaptations(pathMap: FileMapAndCache): Promise<AdaptationRe
  * Filter extensions projects from a list of files.
  *
  * @param pathMap - map of files. Key is the path, on first read parsed content will be set as value to prevent multiple reads of a file.
+ * @param memFs - optional mem-fs-editor instance
  * @returns - results as array of found extension projects.
  */
-async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResults[]> {
+async function filterExtensions(pathMap: FileMapAndCache, memFs?: Editor): Promise<ExtensionResults[]> {
     const results: ExtensionResults[] = [];
     const extensionConfigs = Object.keys(pathMap).filter((path) => basename(path) === FileName.ExtConfigJson);
     for (const extensionConfig of extensionConfigs) {
@@ -322,17 +343,18 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
                 (path) => path.startsWith(dirname(extensionConfig) + sep) && basename(path) === FileName.Manifest
             );
             if (manifestPath) {
-                pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+                pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
                 manifest = pathMap[manifestPath] as Manifest;
             } else {
                 const manifests = await findBy({
                     fileNames: [FileName.Manifest],
                     root: dirname(extensionConfig),
-                    excludeFolders
+                    excludeFolders,
+                    memFs
                 });
                 if (manifests.length === 1) {
                     [manifestPath] = manifests;
-                    manifest = await readJSON<Manifest>(manifestPath);
+                    manifest = await readJSON<Manifest>(manifestPath, memFs);
                 }
             }
             if (manifestPath && manifest) {
@@ -350,9 +372,14 @@ async function filterExtensions(pathMap: FileMapAndCache): Promise<ExtensionResu
  *
  * @param pathMap - path to files
  * @param manifestPaths - paths to manifest.json files
+ * @param memFs - optional mem-fs-editor instance
  * @returns - results as array of found .library projects.
  */
-async function filterDotLibraries(pathMap: FileMapAndCache, manifestPaths: string[]): Promise<LibraryResults[]> {
+async function filterDotLibraries(
+    pathMap: FileMapAndCache,
+    manifestPaths: string[],
+    memFs?: Editor
+): Promise<LibraryResults[]> {
     const dotLibraries: LibraryResults[] = [];
     const dotLibraryPaths = Object.keys(pathMap)
         .filter((path) => basename(path) === FileName.Library)
@@ -360,7 +387,9 @@ async function filterDotLibraries(pathMap: FileMapAndCache, manifestPaths: strin
         .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
     if (dotLibraryPaths) {
         for (const libraryPath of dotLibraryPaths) {
-            const projectRoot = dirname((await findFileUp(FileName.Package, dirname(libraryPath))) ?? libraryPath);
+            const projectRoot = dirname(
+                (await findFileUp(FileName.Package, dirname(libraryPath), memFs)) ?? libraryPath
+            );
             dotLibraries.push({ projectRoot, libraryPath });
         }
     }
@@ -371,20 +400,21 @@ async function filterDotLibraries(pathMap: FileMapAndCache, manifestPaths: strin
  * Filter extensions projects from a list of files.
  *
  * @param pathMap - path to files
+ * @param memFs - optional mem-fs-editor instance
  * @returns - results as array of found library projects.
  */
-async function filterLibraries(pathMap: FileMapAndCache): Promise<LibraryResults[]> {
+async function filterLibraries(pathMap: FileMapAndCache, memFs?: Editor): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
     const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
-    results.push(...(await filterDotLibraries(pathMap, manifestPaths)));
+    results.push(...(await filterDotLibraries(pathMap, manifestPaths, memFs)));
     for (const manifestPath of manifestPaths) {
         try {
-            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath);
+            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
             const manifest = pathMap[manifestPath] as Manifest;
             if (manifest['sap.app'] && manifest['sap.app'].type === 'library') {
-                const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath));
+                const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath), memFs);
                 const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
-                if (projectRoot && (await fileExists(join(projectRoot, FileName.Ui5Yaml)))) {
+                if (projectRoot && (await fileExists(join(projectRoot, FileName.Ui5Yaml), memFs))) {
                     results.push({ projectRoot, manifestPath, manifest });
                 }
             }
@@ -416,11 +446,13 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @param options - find options
  * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes
+ * @param options.memFs
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
 export async function findFioriArtifacts(options: {
     wsFolders?: readonly WorkspaceFolder[] | string[];
     artifacts: FioriArtifactTypes[];
+    memFs?: Editor;
 }): Promise<FoundFioriArtifacts> {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
@@ -431,7 +463,8 @@ export async function findFioriArtifacts(options: {
             const foundFiles = await findBy({
                 fileNames,
                 root,
-                excludeFolders
+                excludeFolders,
+                memFs: options.memFs
             });
             foundFiles.forEach((path) => (pathMap[path] = null));
         } catch {
@@ -439,16 +472,16 @@ export async function findFioriArtifacts(options: {
         }
     }
     if (options.artifacts.includes('applications')) {
-        results.applications = await filterApplications(pathMap);
+        results.applications = await filterApplications(pathMap, options.memFs);
     }
     if (options.artifacts.includes('adaptations')) {
-        results.adaptations = await filterAdaptations(pathMap);
+        results.adaptations = await filterAdaptations(pathMap, options.memFs);
     }
     if (options.artifacts.includes('extensions')) {
-        results.extensions = await filterExtensions(pathMap);
+        results.extensions = await filterExtensions(pathMap, options.memFs);
     }
     if (options.artifacts.includes('libraries')) {
-        results.libraries = await filterLibraries(pathMap);
+        results.libraries = await filterLibraries(pathMap, options.memFs);
     }
     return results;
 }

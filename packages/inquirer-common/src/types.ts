@@ -99,6 +99,7 @@ export interface ListQuestion<A extends Answers = Answers> extends BaseListQuest
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: PromptSeverityMessage;
 }
 
 export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQuestion<A> {

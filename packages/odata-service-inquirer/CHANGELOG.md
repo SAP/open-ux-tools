@@ -1,5 +1,180 @@
 # @sap-ux/odata-service-inquirer
 
+## 1.2.2
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/guided-answers-helper@0.2.1
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 1.2.1
+
+### Patch Changes
+
+-   1f7b31e: update alp v4 error text
+
+## 1.2.0
+
+### Minor Changes
+
+-   1bb80a1: Warn when selected v2 service has no annotations.
+
+## 1.1.1
+
+### Patch Changes
+
+-   09e5200: adds check on entity type for aggregation apply supported annotation
+
+## 1.1.0
+
+### Minor Changes
+
+-   7ecd4ec: Makes all properties of types `AlpTableConfigAnswers` and `TableConfigAnswers` optional
+
+## 1.0.0
+
+### Major Changes
+
+-   77b0800: Adds support for entity related prompting. Update some exported types `fiori-elements-writer`, `fiori-freestyle-writer` to remove problematic enum usage.
+    The major version updates for modules `@sap-ux/fiori-elements-writer` and `@sap-ux/fiori-freestyle-writer` indicates a breaking change of type definitions:
+
+    `@sap-ux/fiori-elements-writer`:
+    `TemplateType`
+    `TableType`
+    `TableSelectionMode`
+
+    `@sap-ux/fiori-freestyle-writer`:
+    `TemplateType`
+
+    These changes are required to reduce the impact of importing these types by consumers. Previously defined as enums, requiring full dependencies and bloating
+    consumer code where only these types are required. The new type defintions still allow both uses (type or value) but the `enums` are now defined as `const`.
+    This change requires updates to consuming code where the type is imported and referenced.
+    Example where a single enum was used as a value type:
+
+    ```
+    type Template = {
+        template: TemplateType.ListReportObjectPage
+    }
+    ```
+
+    should now be defined as:
+
+    ```
+    type Template = {
+        template: typeof TemplateType.ListReportObjectPage
+    }
+    ```
+
+## 0.8.8
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/fiori-generator-shared@0.7.19
+    -   @sap-ux/telemetry@0.5.51
+    -   @sap-ux/inquirer-common@0.6.4
+
+## 0.8.7
+
+### Patch Changes
+
+-   Updated dependencies [1559aee]
+    -   @sap-ux/axios-extension@1.18.1
+
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [40ba546]
+    -   @sap-ux/inquirer-common@0.6.3
+
+## 0.8.5
+
+### Patch Changes
+
+-   Updated dependencies [dac696a]
+    -   @sap-ux/guided-answers-helper@0.2.0
+    -   @sap-ux/inquirer-common@0.6.2
+
+## 0.8.4
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+
+## 0.8.3
+
+### Patch Changes
+
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+    -   @sap-ux/inquirer-common@0.6.1
+
+## 0.8.2
+
+### Patch Changes
+
+-   2d4fc36: Fix for connection reset when switching system selection
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 0.8.0
+
+### Minor Changes
+
+-   46b9357: Provide onlyShowDefault option and expose getSystemSelectionQuestions
+
+## 0.7.14
+
+### Patch Changes
+
+-   77cff66: Fix for CF selection not resetting connection
+
+## 0.7.13
+
+### Patch Changes
+
+-   f8dda3b: Fix for multiple issues relating to prompt validations
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.7.12
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/fiori-generator-shared@0.7.17
+    -   @sap-ux/telemetry@0.5.50
+    -   @sap-ux/inquirer-common@0.5.14
+
+## 0.7.11
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/fiori-generator-shared@0.7.16
+    -   @sap-ux/inquirer-common@0.5.13
+    -   @sap-ux/telemetry@0.5.49
+
+## 0.7.10
+
+### Patch Changes
+
+-   ec1dc17: Fix `additionalMessages` option not applied for system service prompt
+
 ## 0.7.9
 
 ### Patch Changes

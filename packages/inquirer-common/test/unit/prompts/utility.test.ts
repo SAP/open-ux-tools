@@ -83,13 +83,57 @@ describe('utility.ts', () => {
         expect(ui5VersionsGrouped([])).toEqual([]);
 
         const defaultChoice = { name: '9.999.9-snapshot', value: '9.999.9-snapshot' };
-        const ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoice);
+        let ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoice);
         expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoice);
         expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
             [
               {
                 "name": "9.999.9-snapshot",
                 "value": "9.999.9-snapshot",
+              },
+              {
+                "name": "1.118.0 - (Maintained version)",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0 - (Maintained version)",
+                "value": "1.117.0",
+              },
+              {
+                "name": "1.116.0 - (Out of maintenance version)",
+                "value": "1.116.0",
+              },
+            ]
+        `);
+
+        const defaultChoiceSourceSystem = { name: '1.118.0 (Source system version)', value: '1.118.0' };
+        ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoiceSourceSystem, true);
+        expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoiceSourceSystem);
+        expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "1.118.0 (Source system version)",
+                "value": "1.118.0",
+              },
+              {
+                "name": "1.117.0 - (Maintained version)",
+                "value": "1.117.0",
+              },
+              {
+                "name": "1.116.0 - (Out of maintenance version)",
+                "value": "1.116.0",
+              },
+            ]
+        `);
+        // check name label when its not a snapshot and its not in the list
+        const defaultChoiceSourceSystem2 = { name: '9.999.9 (Source system version)', value: '9.999.9' };
+        ui5VersWithAdditonalChoice = ui5VersionsGrouped(ui5Vers, false, defaultChoiceSourceSystem2, true);
+        expect(ui5VersWithAdditonalChoice[0]).toEqual(defaultChoiceSourceSystem2);
+        expect(ui5VersWithAdditonalChoice).toMatchInlineSnapshot(`
+            [
+              {
+                "name": "9.999.9 (Source system version)",
+                "value": "9.999.9",
               },
               {
                 "name": "1.118.0 - (Maintained version)",

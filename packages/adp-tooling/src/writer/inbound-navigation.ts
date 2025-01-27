@@ -53,7 +53,7 @@ export function getFlpI18nKeys(config: InternalInboundNavigation, appId: string)
 
     newEntries.push({ key: `${baseKey}.title`, value: config.title });
     if (config?.subTitle) {
-        newEntries.push({ key: `${baseKey}.subTitle`, value: config.title });
+        newEntries.push({ key: `${baseKey}.subTitle`, value: config.subTitle });
     }
 
     return newEntries;

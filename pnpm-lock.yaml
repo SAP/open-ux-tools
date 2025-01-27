@@ -413,9 +413,6 @@ importers:
       '@sap-ux/system-access':
         specifier: workspace:*
         version: link:../system-access
-      '@types/fs-extra':
-        specifier: 9.0.13
-        version: 9.0.13
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -425,9 +422,6 @@ importers:
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
-      fs-extra:
-        specifier: 10.0.0
-        version: 10.0.0
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -504,6 +498,9 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -665,6 +662,9 @@ importers:
       prompts:
         specifier: 2.4.2
         version: 2.4.2
+      semver:
+        specifier: 7.6.3
+        version: 7.6.3
     devDependencies:
       '@sap-ux/preview-middleware':
         specifier: workspace:*
@@ -681,6 +681,9 @@ importers:
       '@types/prompts':
         specifier: 2.4.4
         version: 2.4.4
+      '@types/semver':
+        specifier: 7.5.8
+        version: 7.5.8
       axios:
         specifier: 1.7.4
         version: 1.7.4
@@ -1012,6 +1015,82 @@ importers:
         specifier: 8.2.6
         version: 8.2.6
 
+  packages/cf-deploy-config-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/cf-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-inquirer
+      '@sap-ux/cf-deploy-config-writer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-writer
+      '@sap-ux/deploy-config-generator-shared':
+        specifier: workspace:*
+        version: link:../deploy-config-generator-shared
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      hasbin:
+        specifier: 1.2.3
+        version: 1.2.3
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@jest/types':
+        specifier: 29.6.3
+        version: 29.6.3
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap/mta-lib':
+        specifier: 1.7.4
+        version: 1.7.4
+      '@types/hasbin':
+        specifier: 1.2.2
+        version: 1.2.2
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
+      '@types/yeoman-environment':
+        specifier: 2.10.11
+        version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      js-yaml:
+        specifier: 4.1.0
+        version: 4.1.0
+      memfs:
+        specifier: 3.4.13
+        version: 3.4.13
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+
   packages/cf-deploy-config-writer:
     dependencies:
       '@sap-ux/btp-utils':
@@ -1316,6 +1395,9 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
       '@vscode-logging/logger':
         specifier: 2.0.0
         version: 2.0.0
@@ -1335,6 +1417,12 @@ importers:
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/vscode':
+        specifier: 1.73.1
+        version: 1.73.1
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1796,6 +1884,9 @@ importers:
       '@types/semver':
         specifier: 7.5.2
         version: 7.5.2
+      '@types/vscode':
+        specifier: 1.73.1
+        version: 1.73.1
       '@types/yeoman-environment':
         specifier: 2.10.11
         version: 2.10.11
@@ -1855,6 +1946,97 @@ importers:
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
+
+  packages/flp-config-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/app-config-writer':
+        specifier: workspace:*
+        version: link:../app-config-writer
+      '@sap-ux/deploy-config-generator-shared':
+        specifier: workspace:*
+        version: link:../deploy-config-generator-shared
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/flp-config-inquirer':
+        specifier: workspace:*
+        version: link:../flp-config-inquirer
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@jest/types':
+        specifier: 29.6.3
+        version: 29.6.3
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/yeoman-environment':
+        specifier: 2.10.11
+        version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      '@vscode-logging/logger':
+        specifier: 2.0.0
+        version: 2.0.0
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      memfs:
+        specifier: 3.4.13
+        version: 3.4.13
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/guided-answers-helper: {}
 
@@ -2206,12 +2388,18 @@ importers:
 
   packages/odata-service-inquirer:
     dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.9.10
+        version: 0.9.10
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.0
+        version: 0.9.0
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -2264,9 +2452,18 @@ importers:
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
+      '@sap-ux/fiori-elements-writer':
+        specifier: workspace:*
+        version: link:../fiori-elements-writer
+      '@sap-ux/fiori-freestyle-writer':
+        specifier: workspace:*
+        version: link:../fiori-freestyle-writer
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
+      '@sap-ux/vocabularies-types':
+        specifier: 0.11.7
+        version: 0.11.7
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -2563,6 +2760,15 @@ importers:
       jest-extended:
         specifier: 4.0.2
         version: 4.0.2(jest@29.7.0)
+
+  packages/project-integrity:
+    dependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      lz-string:
+        specifier: 1.5.0
+        version: 1.5.0
 
   packages/reload-middleware:
     dependencies:
@@ -3390,9 +3596,6 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/ui5-application-writer':
-        specifier: workspace:*
-        version: link:../ui5-application-writer
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -5160,7 +5363,7 @@ packages:
       '@babel/core': 7.25.2
       '@babel/helper-module-transforms': 7.25.2(@babel/core@7.25.2)
       '@babel/helper-plugin-utils': 7.24.8
-      '@babel/helper-simple-access': 7.24.7
+      '@babel/helper-simple-access': 7.24.6
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -6125,7 +6328,7 @@ packages:
       outdent: 0.5.0
       prettier: 2.8.8
       resolve-from: 5.0.0
-      semver: 7.5.4
+      semver: 7.6.3
     dev: true
 
   /@changesets/assemble-release-plan@6.0.5:
@@ -6136,7 +6339,7 @@ packages:
       '@changesets/should-skip-package': 0.1.1
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
-      semver: 7.5.4
+      semver: 7.6.3
     dev: true
 
   /@changesets/changelog-git@0.2.0:
@@ -6174,7 +6377,7 @@ packages:
       package-manager-detector: 0.2.2
       picocolors: 1.1.1
       resolve-from: 5.0.0
-      semver: 7.5.4
+      semver: 7.6.3
       spawndamnit: 3.0.1
       term-size: 2.2.1
     dev: true
@@ -6203,7 +6406,7 @@ packages:
       '@changesets/types': 6.0.0
       '@manypkg/get-packages': 1.1.3
       picocolors: 1.1.1
-      semver: 7.5.4
+      semver: 7.6.3
     dev: true
 
   /@changesets/get-release-plan@4.0.5:
@@ -7421,7 +7624,7 @@ packages:
       read-package-json-fast: 2.0.3
       readdir-scoped-modules: 1.1.0
       rimraf: 3.0.2
-      semver: 7.5.4
+      semver: 7.6.3
       ssri: 8.0.1
       treeverse: 1.0.4
       walk-up-path: 1.0.0
@@ -7439,7 +7642,7 @@ packages:
       nopt: 7.2.0
       proc-log: 3.0.0
       read-package-json-fast: 3.0.2
-      semver: 7.5.4
+      semver: 7.6.3
       walk-up-path: 3.0.1
     dev: true
 
@@ -7447,20 +7650,20 @@ packages:
     resolution: {integrity: sha512-8KG5RD0GVP4ydEzRn/I4BNDuxDtqVbOdm8675T49OIG/NGhaK0pjPX7ZcDlvKYbA+ulvVK3ztfcF4uBdOxuJbQ==}
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.5.4
+      semver: 7.6.3
 
   /@npmcli/fs@2.1.2:
     resolution: {integrity: sha512-yOJKRvohFOaLqipNtwYB9WugyZKhC/DZC4VYPmpaCzDBrA8YpK3qHZ8/HGscMnE4GqbkLNuVcCnxkeQEdGt6LQ==}
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
     dependencies:
       '@gar/promisify': 1.1.3
-      semver: 7.5.4
+      semver: 7.6.3
 
   /@npmcli/fs@3.1.0:
     resolution: {integrity: sha512-7kZUAaLscfgbwBQRbvdMYaZOWyMEcPTH/tJjnyAWJ/dvvs9Ef+CERx/qJb9GExJpl1qipaDGn7KqHnFGGixd0w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.3
 
   /@npmcli/git@2.1.0:
     resolution: {integrity: sha512-/hBFX/QG1b+N7PZBFs0bi+evgRZcK9nWBxQKZkGoXUT5hJSwl5c4d7y8/hm+NQZRPhQ67RzFaj5UM9YeyKoryw==}
@@ -7471,7 +7674,7 @@ packages:
       npm-pick-manifest: 6.1.1
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.5.4
+      semver: 7.6.3
       which: 2.0.2
     transitivePeerDependencies:
       - bluebird
@@ -7486,7 +7689,7 @@ packages:
       proc-log: 3.0.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.5.4
+      semver: 7.6.3
       which: 3.0.1
     transitivePeerDependencies:
       - bluebird
@@ -7501,7 +7704,7 @@ packages:
       proc-log: 3.0.0
       promise-inflight: 1.0.1
       promise-retry: 2.0.1
-      semver: 7.5.4
+      semver: 7.6.3
       which: 4.0.0
     transitivePeerDependencies:
       - bluebird
@@ -7549,7 +7752,7 @@ packages:
       cacache: 15.3.0
       json-parse-even-better-errors: 2.3.1
       pacote: 12.0.3
-      semver: 7.5.4
+      semver: 7.6.3
     transitivePeerDependencies:
       - bluebird
       - supports-color
@@ -7866,7 +8069,7 @@ packages:
       '@types/shimmer': 1.0.5
       import-in-the-middle: 1.4.2
       require-in-the-middle: 7.2.0
-      semver: 7.5.4
+      semver: 7.6.3
       shimmer: 1.2.1
     transitivePeerDependencies:
       - supports-color
@@ -8069,10 +8272,15 @@ packages:
       '@sap-ux/vocabularies-types': 0.11.7
     dev: false
 
+  /@sap-ux/edmx-parser@0.9.0:
+    resolution: {integrity: sha512-X7yda14CsUqGhEK5/XYhP0W65ueObQxq6Dv5qmJQBvR73V0gNexrY5sWuzCQPcEVVh0sB9A0qesMU9qgp6R37A==}
+    dependencies:
+      xml-js: 1.6.11
+    dev: false
+
   /@sap-ux/vocabularies-types@0.11.7:
     resolution: {integrity: sha512-rqRhmPW97dQ8K6nYjL1aP0a4THsUSGK6F5LSOOkSkyTQrBOGu5LNdqi90V2EYKSdIARTvgOnaz1mU+nmkzrsOA==}
     engines: {node: '>=18.x'}
-    dev: false
 
   /@sap/bas-sdk@3.8.9:
     resolution: {integrity: sha512-ycYttnSTlEPjDrb0svSv0jBgqEvoekD4bNB4IxuKCu5OKk5FycwsOTgufU8CXYf1ag23wTlurN+N7c4Po6PcJQ==}
@@ -8114,7 +8322,6 @@ packages:
       mta-local: 1.0.0
       temp-dir: 2.0.0
       which: 2.0.2
-    dev: false
 
   /@sap/ux-cds-compiler-facade@1.15.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
     resolution: {integrity: sha512-WfKLjNFZa6hfXu7+JUmvbCn110lLyddmBN4n1tpV7sH279bue8JF48ZPSqe70+Gric6YdY7jRoiVEALWRkzZ7w==}
@@ -8275,7 +8482,7 @@ packages:
     dependencies:
       '@storybook/core-webpack': 8.4.2(storybook@8.4.2)
       '@types/node': 22.9.0
-      '@types/semver': 7.5.4
+      '@types/semver': 7.5.8
       browser-assert: 1.2.1
       case-sensitive-paths-webpack-plugin: 2.4.0
       cjs-module-lexer: 1.3.1
@@ -8287,13 +8494,13 @@ packages:
       magic-string: 0.30.11
       path-browserify: 1.0.1
       process: 0.11.10
-      semver: 7.5.4
+      semver: 7.6.3
       storybook: 8.4.2(prettier@2.8.8)
       style-loader: 3.3.3(webpack@5.96.1)
       terser-webpack-plugin: 5.3.10(esbuild@0.19.2)(webpack@5.96.1)
       ts-dedent: 2.2.0
       typescript: 5.6.2
-      url: 0.11.0
+      url: 0.11.4
       util: 0.12.5
       util-deprecate: 1.0.2
       webpack: 5.96.1(esbuild@0.19.2)
@@ -8436,14 +8643,14 @@ packages:
       '@storybook/react': 8.4.2(react-dom@16.14.0)(react@16.14.0)(storybook@8.4.2)(typescript@5.6.2)
       '@storybook/react-docgen-typescript-plugin': 1.0.6--canary.9.0c3f3b7.0(typescript@5.6.2)(webpack@5.96.1)
       '@types/node': 22.9.0
-      '@types/semver': 7.5.4
+      '@types/semver': 7.5.8
       find-up: 5.0.0
       magic-string: 0.30.11
       react: 16.14.0
       react-docgen: 7.0.3
       react-dom: 16.14.0(react@16.14.0)
       resolve: 1.22.8
-      semver: 7.5.4
+      semver: 7.6.3
       storybook: 8.4.2(prettier@2.8.8)
       tsconfig-paths: 4.2.0
       typescript: 5.6.2
@@ -9033,10 +9240,10 @@ packages:
 
   /@types/json-schema@7.0.12:
     resolution: {integrity: sha512-Hr5Jfhc9eYOQNPYO5WLDq/n4jqijdHNlDXjuAQkkt+mWdQR+XJToOHrsD4cPaMXpn6KO7y2+wM8AZEs8VpBLVA==}
+    dev: true
 
   /@types/json-schema@7.0.15:
     resolution: {integrity: sha512-5+fP8P8MFNC+AyZCDxrB2pkZFPGzqQWUzpSeuuVLvm8VMcorNYavBqoFcxK8bQz4Qsbn4oUEEem4wDLfcysGHA==}
-    dev: true
 
   /@types/json-stable-stringify@1.0.36:
     resolution: {integrity: sha512-b7bq23s4fgBB76n34m2b3RBf6M369B0Z9uRR8aHTMd8kZISRkmDEpPD8hhpYvDFzr3bJCPES96cm3Q6qRNDbQw==}
@@ -9267,6 +9474,10 @@ packages:
 
   /@types/semver@7.5.4:
     resolution: {integrity: sha512-MMzuxN3GdFwskAnb6fz0orFvhfqi752yjaXylr0Rp4oDg5H0Zn1IuyRhDVvYOwAXoJirx2xuS16I3WjxnAIHiQ==}
+    dev: true
+
+  /@types/semver@7.5.8:
+    resolution: {integrity: sha512-I8EUhyrgfLrcTkzV3TSsGyl1tSuPrEDzr0yd5m90UgNxQkyDXULk3b6MlQqTCpZpNtWe1K0hzclnZkTcLBe2UQ==}
 
   /@types/send@0.17.1:
     resolution: {integrity: sha512-Cwo8LE/0rnvX7kIIa3QHCkcuF21c05Ayb0ZfxPiv0W8VRiZiNW/WuRupHKpqqGVGf7SUA44QSOUKaEd9lIrd/Q==}
@@ -9514,7 +9725,7 @@ packages:
       graphemer: 1.4.0
       ignore: 5.2.4
       natural-compare: 1.4.0
-      semver: 7.5.4
+      semver: 7.6.3
       ts-api-utils: 1.2.1(typescript@5.6.3)
       typescript: 5.6.3
     transitivePeerDependencies:
@@ -9696,7 +9907,7 @@ packages:
       debug: 4.3.7
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.5.4
+      semver: 7.6.3
       tsutils: 3.21.0(typescript@5.6.2)
       typescript: 5.6.2
     transitivePeerDependencies:
@@ -9717,7 +9928,7 @@ packages:
       debug: 4.3.7
       globby: 11.1.0
       is-glob: 4.0.3
-      semver: 7.5.4
+      semver: 7.6.3
       tsutils: 3.21.0(typescript@5.6.3)
       typescript: 5.6.3
     transitivePeerDependencies:
@@ -9761,7 +9972,7 @@ packages:
       globby: 11.1.0
       is-glob: 4.0.3
       minimatch: 9.0.3
-      semver: 7.5.4
+      semver: 7.6.3
       ts-api-utils: 1.2.1(typescript@5.6.3)
       typescript: 5.6.3
     transitivePeerDependencies:
@@ -9776,13 +9987,13 @@ packages:
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
       '@types/json-schema': 7.0.12
-      '@types/semver': 7.5.4
+      '@types/semver': 7.5.8
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.6.2)
       eslint: 8.57.0
       eslint-scope: 5.1.1
-      semver: 7.5.4
+      semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -9796,13 +10007,13 @@ packages:
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
       '@types/json-schema': 7.0.12
-      '@types/semver': 7.5.4
+      '@types/semver': 7.5.8
       '@typescript-eslint/scope-manager': 5.62.0
       '@typescript-eslint/types': 5.62.0
       '@typescript-eslint/typescript-estree': 5.62.0(typescript@5.6.3)
       eslint: 8.57.0
       eslint-scope: 5.1.1
-      semver: 7.5.4
+      semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -9831,13 +10042,13 @@ packages:
       eslint: ^8.56.0
     dependencies:
       '@eslint-community/eslint-utils': 4.4.0(eslint@8.57.0)
-      '@types/json-schema': 7.0.12
-      '@types/semver': 7.5.4
+      '@types/json-schema': 7.0.15
+      '@types/semver': 7.5.8
       '@typescript-eslint/scope-manager': 7.2.0
       '@typescript-eslint/types': 7.2.0
       '@typescript-eslint/typescript-estree': 7.2.0(typescript@5.6.3)
       eslint: 8.57.0
-      semver: 7.5.4
+      semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
       - typescript
@@ -9883,7 +10094,7 @@ packages:
       less-openui5: 0.11.6
       pretty-data: 0.40.0
       rimraf: 5.0.5
-      semver: 7.5.4
+      semver: 7.6.3
       terser: 5.32.0
       workerpool: 6.5.1
       xml2js: 0.6.2
@@ -9905,7 +10116,7 @@ packages:
       js-yaml: 4.1.0
       open: 9.1.0
       pretty-hrtime: 1.0.3
-      semver: 7.5.4
+      semver: 7.6.3
       update-notifier: 6.0.2
       yargs: 17.7.2
     transitivePeerDependencies:
@@ -9979,7 +10190,7 @@ packages:
       read-pkg-up: 10.1.0
       resolve: 1.22.8
       rimraf: 5.0.5
-      semver: 7.5.4
+      semver: 7.6.3
       xml2js: 0.6.2
       yesno: 0.4.0
     transitivePeerDependencies:
@@ -10321,7 +10532,7 @@ packages:
     resolution: {integrity: sha512-RZNwNclF7+MS/8bDg70amg32dyeZGZxiDuQmZxKLAlQjr3jGyLx+4Kkk58UO7D2QdgFIQCovuSuZESne6RG6XQ==}
     engines: {node: '>= 6.0.0'}
     dependencies:
-      debug: 4.3.4
+      debug: 4.3.7
     transitivePeerDependencies:
       - supports-color
 
@@ -10330,16 +10541,6 @@ packages:
     engines: {node: '>= 14'}
     dependencies:
       debug: 4.3.7
-    transitivePeerDependencies:
-      - supports-color
-
-  /agentkeepalive@4.3.0:
-    resolution: {integrity: sha512-7Epl1Blf4Sy37j4v9f9FjICCh4+KAQOyXgHEwlyBiAQLbhKdq/i2QQU3amQalS/wPhdPzDXPL5DMR5bkn+YeWg==}
-    engines: {node: '>= 8.0.0'}
-    dependencies:
-      debug: 4.3.7
-      depd: 2.0.0
-      humanize-ms: 1.2.1
     transitivePeerDependencies:
       - supports-color
 
@@ -10523,6 +10724,7 @@ packages:
   /aproba@1.2.0:
     resolution: {integrity: sha512-Y9J6ZjXtoYh8RnXVCMOU/ttDmk1aBjunq9vO0ta5x85WDQiQfUF9sIPBITdbiiIVcBo03Hi3jMxigBtsddlXRw==}
     requiresBuild: true
+    dev: true
 
   /aproba@2.0.0:
     resolution: {integrity: sha512-lYe4Gx7QT+MKGbDsA+Z+he/Wtef0BiwDOlK/XkBrdfsh9J/jPPXbX0tE9x9cl27Tmu5gg3QUbUrQYa/y+KOHPQ==}
@@ -11162,10 +11364,6 @@ packages:
       chainsaw: 0.1.0
     dev: false
 
-  /binaryextensions@4.18.0:
-    resolution: {integrity: sha512-PQu3Kyv9dM4FnwB7XGj1+HucW+ShvJzJqjuw1JkKVs1mWdwOKVcRjOi+pV9X52A0tNvrPCsPkbFFQb+wE1EAXw==}
-    engines: {node: '>=0.8'}
-
   /binaryextensions@4.19.0:
     resolution: {integrity: sha512-DRxnVbOi/1OgA5pA9EDiRT8gvVYeqfuN7TmPfLyt6cyho3KbHCi3EtDQf39TTmGDrR5dZ9CspdXhPkL/j/WGbg==}
     engines: {node: '>=0.8'}
@@ -11348,7 +11546,7 @@ packages:
   /builtins@5.0.1:
     resolution: {integrity: sha512-qwVpFEHNfhYJIzNRBvd2C1kyo6jz3ZSMPyyuR47OPdiKWlbYnZNyDWuyR175qDnAJLiCo5fBBqPb3RiXgWlkOQ==}
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.3
 
   /bundle-name@3.0.0:
     resolution: {integrity: sha512-PKA4BeSvBpQKQ8iPOGCSiell+N8P+Tf1DlwqmYhpe2gAhKPHn8EYOxVT+ShuGmhg8lN8XiSlS80yiExKXrURlw==}
@@ -12472,6 +12670,7 @@ packages:
   /depd@2.0.0:
     resolution: {integrity: sha512-g7nH6P6dyDioJogAAGprGpCtVImJhpPk/roCzdb3fIh61/s/nPsfR6onyMwkCAR/OlC3yBC0lESvUoQEAssIrw==}
     engines: {node: '>= 0.8'}
+    dev: true
 
   /deprecation@2.3.1:
     resolution: {integrity: sha512-xmHIy4F3scKVwMsQ4WnVaS8bHOx0DmVwRywosKhaILI0ywMDWPtBSku2HNxRvF7jtwDRsoEwYQSfbxj8b7RlJQ==}
@@ -12541,7 +12740,7 @@ packages:
   /diagnostic-channel@1.1.1:
     resolution: {integrity: sha512-r2HV5qFkUICyoaKlBEpLKHjxMXATUf/l+h8UZPGBHGLy4DDiY2sOLcIctax4eRnTw5wH2jTMExLntGPJ8eOJxw==}
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.3
     dev: false
 
   /diff-sequences@29.6.3:
@@ -13583,7 +13782,7 @@ packages:
       eslint: 8.56.0
       esquery: 1.6.0
       is-builtin-module: 3.2.1
-      semver: 7.5.4
+      semver: 7.6.3
       spdx-expression-parse: 4.0.0
     transitivePeerDependencies:
       - supports-color
@@ -14278,7 +14477,7 @@ packages:
       minimatch: 3.0.5
       node-abort-controller: 3.1.1
       schema-utils: 3.3.0
-      semver: 7.5.4
+      semver: 7.6.3
       tapable: 2.2.1
       typescript: 5.6.2
       webpack: 5.96.1(esbuild@0.19.2)
@@ -14501,7 +14700,7 @@ packages:
     engines: {node: ^12.13.0 || ^14.15.0 || >=16.0.0}
     deprecated: This package is no longer supported.
     dependencies:
-      aproba: 1.2.0
+      aproba: 2.0.0
       color-support: 1.1.3
       console-control-strings: 1.1.0
       has-unicode: 2.0.1
@@ -15816,7 +16015,7 @@ packages:
       '@babel/parser': 7.25.3
       '@istanbuljs/schema': 0.1.3
       istanbul-lib-coverage: 3.2.2
-      semver: 7.5.4
+      semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -16288,7 +16487,7 @@ packages:
       jest-util: 29.7.0
       natural-compare: 1.4.0
       pretty-format: 29.7.0
-      semver: 7.5.4
+      semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -16874,7 +17073,7 @@ packages:
 
   /lz-string@1.5.0:
     resolution: {integrity: sha512-h5bgJWpxJNswbU7qCrV0tIKQCaS3blPDrqKWx+QxzuzL1zGUzij9XCWLrSLsJPu5t+eWA/ycetzYAO5IOMcWAQ==}
-    dev: true
+    hasBin: true
 
   /macos-release@2.5.1:
     resolution: {integrity: sha512-DXqXhEM7gW59OjZO8NIjBCz9AQ1BEMrfiOAl4AYByHCtVHRF4KoGNO8mqQeM8lRCtQe/UnJ4imO/d2HdkKsd+A==}
@@ -16909,7 +17108,7 @@ packages:
     resolution: {integrity: sha512-hXdUTZYIVOt1Ex//jAQi+wTZZpUpwBj/0QsOzqegb3rGMMeJiSEu5xLHnYfBrRV4RH2+OCSOO95Is/7x1WJ4bw==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.3
     dev: true
 
   /make-error@1.3.6:
@@ -16944,7 +17143,7 @@ packages:
     resolution: {integrity: sha512-rLWS7GCSTcEujjVBs2YqG7Y4643u8ucvCJeSRqiLYhesrDuzeuFIk37xREzAsfQaqzl8b9rNCE4m6J8tvX4Q8w==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      agentkeepalive: 4.3.0
+      agentkeepalive: 4.5.0
       cacache: 17.1.3
       http-cache-semantics: 4.1.1
       http-proxy-agent: 5.0.0
@@ -17082,7 +17281,7 @@ packages:
       mem-fs:
         optional: true
     dependencies:
-      binaryextensions: 4.18.0
+      binaryextensions: 4.19.0
       commondir: 1.0.1
       deep-extend: 0.6.0
       ejs: 3.1.10
@@ -17092,7 +17291,7 @@ packages:
       minimatch: 3.0.5
       multimatch: 5.0.0
       normalize-path: 3.0.0
-      textextensions: 5.14.0
+      textextensions: 5.16.0
 
   /mem-fs@2.1.0:
     resolution: {integrity: sha512-55vFOT4rfJx/9uoWntNrfzEj9209rd26spsSvKsCVBfOPH001YS5IakfElhcyagieC4uL++Ry/XDcwvgxF4/zQ==}
@@ -17408,7 +17607,6 @@ packages:
 
   /mta-local@1.0.0:
     resolution: {integrity: sha512-+pL8q5wJMyyVUj0gGFwceq7utIjwt744GBmBqYMARK6I4CzPvSv/0akRNTOxcsffXsu8EVyH2NJZ4XS9WcHzZA==}
-    dev: false
 
   /mta@1.0.8:
     resolution: {integrity: sha512-Be/+H9p58qVJRou8lthyWT4VSyifBdh/SnbVuZ7NNQQDvmOk/cKLnFeaPIel1Vk2FdojNLlTsCAlO+BElXcWDg==}
@@ -17527,7 +17725,7 @@ packages:
     engines: {node: '>=10'}
     requiresBuild: true
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.3
     dev: true
 
   /node-abort-controller@3.1.1:
@@ -17557,7 +17755,7 @@ packages:
       make-fetch-happen: 13.0.0
       nopt: 7.2.0
       proc-log: 3.0.0
-      semver: 7.5.4
+      semver: 7.6.3
       tar: 6.2.1
       which: 4.0.0
     transitivePeerDependencies:
@@ -17576,7 +17774,7 @@ packages:
       nopt: 5.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.5.4
+      semver: 7.6.3
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -17596,7 +17794,7 @@ packages:
       nopt: 6.0.0
       npmlog: 6.0.2
       rimraf: 3.0.2
-      semver: 7.5.4
+      semver: 7.6.3
       tar: 6.2.1
       which: 2.0.2
     transitivePeerDependencies:
@@ -17669,7 +17867,7 @@ packages:
     dependencies:
       hosted-git-info: 6.1.1
       is-core-module: 2.15.0
-      semver: 7.5.4
+      semver: 7.6.3
       validate-npm-package-license: 3.0.4
 
   /normalize-package-data@6.0.0:
@@ -17678,7 +17876,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.0
       is-core-module: 2.15.0
-      semver: 7.5.4
+      semver: 7.6.3
       validate-npm-package-license: 3.0.4
     dev: true
 
@@ -17711,13 +17909,13 @@ packages:
     resolution: {integrity: sha512-09OmyDkNLYwqKPOnbI8exiOZU2GVVmQp7tgez2BPi5OZC8M82elDAps7sxC4l//uSUtotWqoEIDwjRvWH4qz8w==}
     engines: {node: '>=10'}
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.3
 
   /npm-install-checks@6.1.1:
     resolution: {integrity: sha512-dH3GmQL4vsPtld59cOn8uY0iOqRmqKvV+DLGwNXV/Q7MDgD2QfOADWd/mFXcIE5LVhYYGjA3baz6W9JneqnuCw==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.3
 
   /npm-normalize-package-bin@1.0.1:
     resolution: {integrity: sha512-EPfafl6JL5/rU+ot6P3gRSCpPDW5VmIzX959Ob1+ySFUuuYHWHekXpwdUZcKP5C+DS4GEtdJluwBjnsNDl+fSA==}
@@ -17736,7 +17934,7 @@ packages:
     dependencies:
       hosted-git-info: 6.1.1
       proc-log: 3.0.0
-      semver: 7.5.4
+      semver: 7.6.3
       validate-npm-package-name: 5.0.0
 
   /npm-package-arg@11.0.1:
@@ -17745,7 +17943,7 @@ packages:
     dependencies:
       hosted-git-info: 7.0.0
       proc-log: 3.0.0
-      semver: 7.5.4
+      semver: 7.6.3
       validate-npm-package-name: 5.0.0
     dev: true
 
@@ -17754,7 +17952,7 @@ packages:
     engines: {node: '>=10'}
     dependencies:
       hosted-git-info: 4.1.0
-      semver: 7.5.4
+      semver: 7.6.3
       validate-npm-package-name: 3.0.0
 
   /npm-packlist@3.0.0:
@@ -17786,7 +17984,7 @@ packages:
       npm-install-checks: 4.0.0
       npm-normalize-package-bin: 1.0.1
       npm-package-arg: 8.1.5
-      semver: 7.5.4
+      semver: 7.6.3
 
   /npm-pick-manifest@8.0.1:
     resolution: {integrity: sha512-mRtvlBjTsJvfCCdmPtiu2bdlx8d/KXtF7yNXNWe7G0Z36qWA9Ny5zXsI2PfBZEv7SXgoxTmNaTzGSbbzDZChoA==}
@@ -17795,7 +17993,7 @@ packages:
       npm-install-checks: 6.1.1
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 10.1.0
-      semver: 7.5.4
+      semver: 7.6.3
 
   /npm-pick-manifest@9.0.0:
     resolution: {integrity: sha512-VfvRSs/b6n9ol4Qb+bDwNGUXutpy76x6MARw/XssevE0TnctIKcmklJZM5Z7nqs5z5aW+0S63pgCNbpkUNNXBg==}
@@ -17804,7 +18002,7 @@ packages:
       npm-install-checks: 6.1.1
       npm-normalize-package-bin: 3.0.1
       npm-package-arg: 11.0.1
-      semver: 7.5.4
+      semver: 7.6.3
     dev: true
 
   /npm-registry-fetch@12.0.2:
@@ -17974,7 +18172,7 @@ packages:
       npm-run-path: 4.0.1
       open: 8.4.2
       ora: 5.3.0
-      semver: 7.5.4
+      semver: 7.6.3
       string-width: 4.2.3
       strong-log-transformer: 2.1.0
       tar-stream: 2.2.0
@@ -18413,7 +18611,7 @@ packages:
       got: 12.6.1
       registry-auth-token: 5.0.2
       registry-url: 6.0.1
-      semver: 7.5.4
+      semver: 7.6.3
     dev: true
 
   /package-manager-detector@0.2.2:
@@ -19077,13 +19275,8 @@ packages:
       end-of-stream: 1.4.4
       once: 1.4.0
 
-  /punycode@1.3.2:
-    resolution: {integrity: sha512-RofWgt/7fL5wP1Y7fxE7/EmTLzQVnB0ycyibJ0OOHIlJqTNzglYFxVwETOcIoJqJmpDXJ9xImDv+Fq34F/d4Dw==}
-    dev: true
-
   /punycode@1.4.1:
     resolution: {integrity: sha512-jmYNElW7yvO7TV33CjSmvSiE2yco3bV2czu/OzDKdMNVZQWfxCblURLhf+47syQRBntjfLdd/H0egrzIG+oaFQ==}
-    dev: false
 
   /punycode@2.3.0:
     resolution: {integrity: sha512-rRV+zQD8tVFys26lAGR9WUuS4iUAngJScM+ZRSKtvl5tKeZ2t5bvdNFdNHBW9FWR4guGHlgmsZ1G7BSm2wTbuA==}
@@ -19139,12 +19332,6 @@ packages:
     engines: {node: '>=0.6'}
     dependencies:
       side-channel: 1.0.6
-
-  /querystring@0.2.0:
-    resolution: {integrity: sha512-X/xY82scca2tau62i9mDyU9K+I+djTMUsvwf7xnUX5GLvVzgJybOJf4Y6o9Zx3oJK/LSXg5tTZBjwzqVPaPO2g==}
-    engines: {node: '>=0.4.x'}
-    deprecated: The querystring API is considered Legacy. new code should use the URLSearchParams API instead.
-    dev: true
 
   /querystringify@2.2.0:
     resolution: {integrity: sha512-FIqgj2EUvTa7R50u0rGsyTftzjYmv/a3hO345bZNrqabNqjtgiDMgmo4mkUjd+nzU5oF3dClKqFIPUKybUyqoQ==}
@@ -19994,7 +20181,7 @@ packages:
   /rxjs@7.8.1:
     resolution: {integrity: sha512-AA3TVj+0A2iuIoQkWEK/tqFjBq2j+6PO6Y0zJcvzLAFhEFIO3HL0vls9hWLncZbAAbK0mar7oZ4V079I/qPMxg==}
     dependencies:
-      tslib: 2.5.0
+      tslib: 2.6.3
 
   /safe-array-concat@1.0.0:
     resolution: {integrity: sha512-9dVEFruWIsnie89yym+xWTAYASdpw3CJV7Li/6zBewGf9z2i1j31rP6jnY0pHEO4QZh6N0K11bFjWmdR8UGdPQ==}
@@ -20125,7 +20312,7 @@ packages:
     resolution: {integrity: sha512-1edyXKgh6XnJsJSQ8mKWXnN/BVaIbFMLpouRUrXgVq7WYne5kw3MW7UPhO44uRXQSIpTSXoJbmrR2X0w9kUTyg==}
     engines: {node: '>= 12.13.0'}
     dependencies:
-      '@types/json-schema': 7.0.12
+      '@types/json-schema': 7.0.15
       ajv: 8.17.1
       ajv-formats: 2.1.1(ajv@8.17.1)
       ajv-keywords: 5.1.0(ajv@8.17.1)
@@ -20143,7 +20330,7 @@ packages:
     resolution: {integrity: sha512-0Ju4+6A8iOnpL/Thra7dZsSlOHYAHIeMxfhWQRI1/VLcT3WDBZKKtQt/QkBOsiIN9ZpuvHE6cGZ0x4glCMmfiA==}
     engines: {node: '>=12'}
     dependencies:
-      semver: 7.5.4
+      semver: 7.6.3
     dev: true
 
   /semver@5.7.2:
@@ -20173,7 +20360,6 @@ packages:
     resolution: {integrity: sha512-oVekP1cKtI+CTDvHWYFUcMtsK/00wmAEfyqKfNdARm8u1wNVhSgaX7A8d4UuIlUI5e84iEwOhs7ZPYRmzU9U6A==}
     engines: {node: '>=10'}
     hasBin: true
-    dev: true
 
   /send@0.19.0:
     resolution: {integrity: sha512-dW41u5VfLXu8SJh5bwRmyYUbAoSB3c9uQh6L8h/KtsFREPWpbX1lrljJo186Jc4nmci/sGUZ9a0a0J2zgfq2hw==}
@@ -20912,7 +21098,7 @@ packages:
       methods: 1.1.2
       mime: 2.6.0
       qs: 6.11.0
-      semver: 7.5.4
+      semver: 7.6.3
     transitivePeerDependencies:
       - supports-color
     dev: true
@@ -21088,10 +21274,6 @@ packages:
   /text-table@0.2.0:
     resolution: {integrity: sha512-N+8UisAXDGk8PFXP4HAzVR9nbfmVJ3zYLAWiTIoqC5v5isinhr+r5uaO8+7r3BMfuNIufIsA7RdpVgacC2cSpw==}
 
-  /textextensions@5.14.0:
-    resolution: {integrity: sha512-4cAYwNFNYlIAHBUo7p6zw8POUvWbZor+/R0Tanv+rIhsauEyV9QSrEXL40pI+GfTQxKX8k6Tyw6CmdSDSmASrg==}
-    engines: {node: '>=0.8'}
-
   /textextensions@5.16.0:
     resolution: {integrity: sha512-7D/r3s6uPZyU//MCYrX6I14nzauDwJ5CxazouuRGNuvSCihW87ufN6VLoROLCrHg6FblLuJrT6N2BVaPVzqElw==}
     engines: {node: '>=0.8'}
@@ -21257,7 +21439,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.5.4
+      semver: 7.6.3
       typescript: 5.6.2
       yargs-parser: 21.1.1
     dev: true
@@ -21292,7 +21474,7 @@ packages:
       json5: 2.2.3
       lodash.memoize: 4.1.2
       make-error: 1.3.6
-      semver: 7.5.4
+      semver: 7.6.3
       typescript: 5.6.3
       yargs-parser: 21.1.1
     dev: true
@@ -21394,9 +21576,6 @@ packages:
   /tslib@1.14.1:
     resolution: {integrity: sha512-Xni35NKzjgMrwevysHTCArtLDpPvye8zV/0E4EyYn43P7/7qvQwPh9BGkHewbMulVntbigmcT7rdX3BNo9wRJg==}
     dev: true
-
-  /tslib@2.5.0:
-    resolution: {integrity: sha512-336iVw3rtn2BUK7ORdIAHTyxHGRIHVReokCR3XjbckJMK7ms8FysBfhLR8IXnAgy7T0PTPNBWKiH514FOW/WSg==}
 
   /tslib@2.6.3:
     resolution: {integrity: sha512-xNvxJEOUiWPGhUuUdQgAJPKOOJfGnIyKySOc09XkKsgdUV/3E2zvwZYdejjmRgPCgcym1juLH3226yA7sEFJKQ==}
@@ -21891,7 +22070,7 @@ packages:
       is-yarn-global: 0.4.1
       latest-version: 7.0.0
       pupa: 3.1.0
-      semver: 7.5.4
+      semver: 7.6.3
       semver-diff: 4.0.0
       xdg-basedir: 5.1.0
     dev: true
@@ -21926,20 +22105,12 @@ packages:
       querystringify: 2.2.0
       requires-port: 1.0.0
 
-  /url@0.11.0:
-    resolution: {integrity: sha512-kbailJa29QrtXnxgq+DdCEGlbTeYM2eJUxsz6vjZavrCYPMIFHMKQmSKYAIuUK2i7hgPm28a8piX5NTUtM/LKQ==}
-    dependencies:
-      punycode: 1.3.2
-      querystring: 0.2.0
-    dev: true
-
   /url@0.11.4:
     resolution: {integrity: sha512-oCwdVC7mTuWiPyjLUz/COz5TLk6wgp0RCsN+wHZ2Ekneac9w8uuV0njcbbie2ME+Vs+d6duwmYuR3HgQXs1fOg==}
     engines: {node: '>= 0.4'}
     dependencies:
       punycode: 1.4.1
       qs: 6.13.0
-    dev: false
 
   /urlpattern-polyfill@10.0.0:
     resolution: {integrity: sha512-H/A06tKD7sS1O1X2SshBVeA5FLycRpjqiBeqGKmBwBDBy28EnRjORxTNe269KSSr5un5qyWi1iL61wLxpd+ZOg==}
@@ -22652,7 +22823,7 @@ packages:
       preferred-pm: 3.1.4
       pretty-bytes: 5.6.0
       readable-stream: 4.5.2
-      semver: 7.5.4
+      semver: 7.6.3
       slash: 3.0.0
       strip-ansi: 6.0.1
       text-table: 0.2.0

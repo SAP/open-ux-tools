@@ -42,7 +42,8 @@ describe('basic prompts', () => {
                 message: t('prompts.semanticObject'),
                 default: 'DefaultSemanticObject',
                 filter: expect.any(Function),
-                validate: expect.any(Function)
+                validate: expect.any(Function),
+                when: expect.any(Function)
             });
         });
 
@@ -83,6 +84,19 @@ describe('basic prompts', () => {
             expect(mockValidateText).toHaveBeenCalledWith('invalidValue', true, 30, ['_']);
             expect(result).toBe(false);
         });
+
+        it('should evaluate "when" to true if no inboundId is provided', () => {
+            const prompt = getSemanticObjectPrompt(false);
+
+            expect((prompt.when as Function)({})).toBe(true);
+        });
+
+        it('should evaluate "when" to false if inboundId is provided', () => {
+            const answers = { inboundId: 'display' };
+            const prompt = getSemanticObjectPrompt(false);
+
+            expect((prompt.when as Function)(answers)).toBe(false);
+        });
     });
 
     describe('getActionPrompt', () => {
@@ -106,7 +120,8 @@ describe('basic prompts', () => {
                 message: t('prompts.action'),
                 default: 'defaultAction',
                 filter: expect.any(Function),
-                validate: expect.any(Function)
+                validate: expect.any(Function),
+                when: expect.any(Function)
             });
         });
 
@@ -146,6 +161,20 @@ describe('basic prompts', () => {
             const prompt = getActionPrompt(true);
 
             expect(prompt.default).toBeUndefined();
+        });
+
+        it('should evaluate "when" to true if no inboundId is provided', () => {
+            const answers = {};
+            const prompt = getActionPrompt(false);
+
+            expect((prompt.when as Function)(answers)).toBe(true);
+        });
+
+        it('should evaluate "when" to false if inboundId is provided', () => {
+            const answers = { inboundId: 'display' };
+            const prompt = getActionPrompt(false);
+
+            expect((prompt.when as Function)(answers)).toBe(false);
         });
     });
 
@@ -193,15 +222,6 @@ describe('basic prompts', () => {
 
             expect(existingKeyRef.value).toBe(true);
             expect(result).toBe(true);
-        });
-
-        it('should return false for "when" if options.hide is true', () => {
-            const options = { hide: true };
-
-            const prompt = getOverwritePrompt([], false, existingKeyRef, options);
-            const whenFn = prompt.when as boolean;
-
-            expect(whenFn).toBe(false);
         });
 
         it('should provide additionalMessages with correct severity and message', () => {

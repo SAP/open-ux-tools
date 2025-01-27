@@ -1,5 +1,45 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.75
+
+### Patch Changes
+
+-   71e5a5e: fix issues for library deployment
+
+## 0.0.74
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/system-access@0.5.26
+
+## 0.0.73
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.26
+
+## 0.0.72
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.25
+
+## 0.0.71
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/system-access@0.5.24
+
+## 0.0.70
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.24
+
 ## 0.0.69
 
 ### Patch Changes

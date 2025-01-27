@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-library-writer"
     },
-    "version": "0.5.37",
+    "version": "0.5.42",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
@@ -36,7 +36,6 @@
     },
     "dependencies": {
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/ui5-application-writer": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "ejs": "3.1.10",
         "i18next": "20.6.1",

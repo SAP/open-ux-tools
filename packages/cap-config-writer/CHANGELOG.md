@@ -1,5 +1,46 @@
 # @sap-ux/cap-config-writer
 
+## 0.8.2
+
+### Patch Changes
+
+-   1309fec: Fix writing watch script for CAP project where npm workspaces is already enabled
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/fiori-generator-shared@0.7.19
+
+## 0.8.0
+
+### Minor Changes
+
+-   45c01b0: Remove cds version check when adding a cds watch script to root package.json
+
+## 0.7.68
+
+### Patch Changes
+
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+
+## 0.7.67
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/fiori-generator-shared@0.7.17
+
+## 0.7.66
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.16
+
 ## 0.7.65
 
 ### Patch Changes

@@ -160,6 +160,7 @@ export interface PendingOtherChange {
     type: typeof PENDING_CHANGE_TYPE;
     kind: typeof UNKNOWN_CHANGE_KIND;
     isActive: boolean;
+    title?: string;
     changeType: string;
     fileName: string;
 }
@@ -171,6 +172,7 @@ export interface PendingControlChange {
     changeType: string;
     controlId: string;
     fileName: string;
+    title?: string;
 }
 
 export type PendingChange =
@@ -199,6 +201,7 @@ export interface UnknownSavedChange {
     kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
     changeType: string;
+    title?: string;
     controlId?: string;
     timestamp?: number;
 }
@@ -209,6 +212,7 @@ export interface SavedControlChange {
     controlId: string;
     fileName: string;
     changeType: string;
+    title?: string;
     timestamp?: number;
 }
 
@@ -373,6 +377,7 @@ export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
+export const externalFileChange = createExternalAction<string>('external-file-change');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -399,4 +404,5 @@ export type ExternalAction =
     | ReturnType<typeof quickActionListChanged>
     | ReturnType<typeof setApplicationRequiresReload>
     | ReturnType<typeof updateQuickAction>
-    | ReturnType<typeof executeQuickAction>;
+    | ReturnType<typeof executeQuickAction>
+    | ReturnType<typeof externalFileChange>;
