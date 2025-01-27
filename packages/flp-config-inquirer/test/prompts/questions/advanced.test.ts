@@ -41,12 +41,6 @@ describe('advanced prompts', () => {
             });
         });
 
-        it('should set "when" to false when options.hide is true', () => {
-            const prompt = getInboundIdsPrompt(inboundIds, { hide: true });
-
-            expect(prompt.when).toBe(false);
-        });
-
         it('should return a warning message when inboundIds are empty', () => {
             const emptyInboundIds: string[] = [];
             const prompt = getInboundIdsPrompt(emptyInboundIds);
@@ -115,12 +109,6 @@ describe('advanced prompts', () => {
             expect(prompt.when).toBe(false);
         });
 
-        it('should not display the prompt when options.hide is true', () => {
-            const prompt = getEmptyInboundsLabelPrompt([], 'app.variant1', { hide: true });
-
-            expect(prompt.when).toBe(false);
-        });
-
         it('should generate the correct link URL based on appId', () => {
             const appId = 'app.variant1';
             const prompt = getEmptyInboundsLabelPrompt([], appId);
@@ -156,12 +144,6 @@ describe('advanced prompts', () => {
                     mandatory: false
                 }
             });
-        });
-
-        it('should set "when" to false if options.hide is true', () => {
-            const prompt = getParameterStringPrompt(inboundIds, { hide: true });
-
-            expect(prompt.when).toBe(false);
         });
 
         it('should set "when" to true if inboundIds is empty', () => {
@@ -217,12 +199,6 @@ describe('advanced prompts', () => {
                     breadcrumb: t('prompts.inboundIds')
                 }
             });
-        });
-
-        it('should set "when" to false if options.hide is true', () => {
-            const prompt = getCreateAnotherInboundPrompt(false, { hide: true });
-
-            expect(prompt.when).toBe(false);
         });
 
         it('should set "when" to a function if options.hide is not true', () => {

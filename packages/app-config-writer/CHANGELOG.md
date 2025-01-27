@@ -1,5 +1,20 @@
 # @sap-ux/app-config-writer
 
+## 0.5.17
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/project-access@1.29.1
+    -   @sap-ux/axios-extension@1.18.1
+
+## 0.5.16
+
+### Patch Changes
+
+-   6f9104b: various improvements for the convert preview-config
+
 ## 0.5.15
 
 ### Patch Changes
