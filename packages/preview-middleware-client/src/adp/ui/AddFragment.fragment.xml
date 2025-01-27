@@ -51,9 +51,9 @@
                         width="1rem"
                         height="2rem"
                         tooltip="{/iconTooltip}">
-						<core:layoutData>
-							<l:GridData span="S6" />
-						</core:layoutData>
+                        <core:layoutData>
+                            <l:GridData span="S6" />
+                        </core:layoutData>
                     </core:Icon>
                 <Label text="{i18n>ADP_ADD_FRAGMENT_DIALOG_FRAGMENT_NAME_LABEL}" required="true" />
                 <Input 
