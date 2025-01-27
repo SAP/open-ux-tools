@@ -1,27 +1,8 @@
-import { basename, dirname, join, parse, resolve } from 'path';
+import { basename, dirname, join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { DirName, FileName } from '../constants';
-import { fileExists, findFilesByExtension, readFile } from '../file';
-
-/**
- * Get path to folder where package.json is.
- *
- * @param projectRoot - root path, where package.json or ui5.yaml is
- * @param [memFs] - optional mem-fs editor instance
- * @returns - path to webapp folder
- */
-async function getPackageJsonRoot(projectRoot: string, memFs?: Editor): Promise<string> {
-    let currentDir = resolve(projectRoot);
-    while (currentDir !== parse(currentDir).root) {
-        const packageJSONPath = join(currentDir, FileName.Package);
-        if (await fileExists(packageJSONPath, memFs)) {
-            return currentDir;
-        }
-        currentDir = dirname(currentDir);
-    }
-    return projectRoot;
-}
+import { fileExists, findFilesByExtension, findFileUp, readFile } from '../file';
 
 /**
  * Get path to webapp.
@@ -39,8 +20,11 @@ export async function getWebappPath(appRoot: string, memFs?: Editor): Promise<st
         const relativeWebappPath = ui5Config.getConfiguration()?.paths?.webapp;
         if (relativeWebappPath) {
             // Search for folder with package.json inside
-            const packageJsonRoot = await getPackageJsonRoot(appRoot, memFs);
-            webappPath = join(packageJsonRoot, relativeWebappPath);
+            const packageJsonPath = await findFileUp(FileName.Package, appRoot, memFs);
+            if (packageJsonPath) {
+                const packageJsonDirPath = dirname(packageJsonPath);
+                webappPath = join(packageJsonDirPath, relativeWebappPath);
+            }
         }
     }
     return webappPath;
