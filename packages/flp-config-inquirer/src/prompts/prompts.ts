@@ -58,33 +58,12 @@ export function getQuestions(
         [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(isCLI)
     };
 
-    const questions: FLPConfigQuestion[] = [];
-
-    if (promptOptions?.[promptNames.inboundId]?.hide !== true) {
-        questions.push(keyedPrompts[promptNames.inboundId]);
-    }
-
-    if (promptOptions?.[promptNames.emptyInboundsInfo]?.hide !== true) {
-        questions.push(keyedPrompts[promptNames.emptyInboundsInfo]);
-    }
-
-    questions.push(
-        ...[
-            keyedPrompts[promptNames.semanticObject],
-            keyedPrompts[promptNames.action],
-            keyedPrompts[promptNames.overwrite],
-            keyedPrompts[promptNames.title],
-            keyedPrompts[promptNames.subTitle]
-        ]
-    );
-
-    if (promptOptions?.[promptNames.additionalParameters]?.hide !== true) {
-        questions.push(keyedPrompts[promptNames.additionalParameters]);
-    }
-
-    if (promptOptions?.[promptNames.createAnotherInbound]?.hide !== true) {
-        questions.push(keyedPrompts[promptNames.createAnotherInbound]);
-    }
+    const questions: FLPConfigQuestion[] = Object.entries(keyedPrompts)
+        .filter(([promptName]) => {
+            const option = promptOptions?.[promptName as promptNames];
+            return option && 'hide' in option ? !option.hide : true;
+        })
+        .map(([_, prompt]) => prompt);
 
     return questions;
 }
