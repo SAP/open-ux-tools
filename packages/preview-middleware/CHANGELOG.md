@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.16.175
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
 ## 0.16.174
 
 ### Patch Changes
