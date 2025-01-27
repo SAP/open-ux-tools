@@ -24,13 +24,7 @@ import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import type { CodeExtResponse, ControllersResponse } from '../api-handler';
-import {
-    getExistingController,
-    getManifestAppdescr,
-    readControllers,
-    writeChange,
-    writeController
-} from '../api-handler';
+import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
 
@@ -257,8 +251,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      */
     private async createNewController(controllerName: string, viewId: string): Promise<void> {
         try {
-            const manifest = await getManifestAppdescr();
-            await writeController({ controllerName, projectId: manifest.id });
+            await writeController({ controllerName });
 
             const controllerRef = {
                 codeRef: `coding/${controllerName}.js`,

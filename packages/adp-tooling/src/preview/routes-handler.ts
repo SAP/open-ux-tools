@@ -219,7 +219,6 @@ export default class RoutesHandler {
             const data = req.body as WriteControllerBody;
 
             const controllerExtName = sanitize(data.controllerName);
-            const projectId = data.projectId;
 
             const sourcePath = this.util.getProject().getSourcePath();
             const rootPath = this.util.getProject().getRootPath();
@@ -247,9 +246,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            const controllerExtPath = `${projectId}.${controllerExtName}`;
-
-            generateControllerFile(rootPath, filePath, controllerExtName, controllerExtPath);
+            generateControllerFile(rootPath, filePath, controllerExtName);
 
             const message = 'Controller extension created!';
             res.status(HttpStatusCodes.CREATED).send(message);
@@ -354,17 +351,25 @@ export default class RoutesHandler {
     }
 }
 
-function generateControllerFile(
-    rootPath: string,
-    filePath: string,
-    controllerExtName: string,
-    controllerExtPath: string
-): void {
+/**
+ * Generates a controller file for the Adaptation Project based on the project's TypeScript support.
+ *
+ * This function creates a controller file in the specified `filePath` by rendering a template.
+ * It determines whether to use a TypeScript or JavaScript template based on the TypeScript support of the project.
+ *
+ * @param {string} rootPath - The root directory of the project.
+ * @param {string} filePath - The destination path where the generated controller file should be saved.
+ * @param {string} controllerExtName - The name of the controller extension (used in TypeScript templates).
+ * @throws {Error} Throws an error if rendering the template fails.
+ */
+function generateControllerFile(rootPath: string, filePath: string, controllerExtName: string): void {
+    const id = getVariant(rootPath)?.id;
     const isTsSupported = isTypescriptSupported(rootPath);
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
     const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
+    const controllerExtPath = `${id}.${controllerExtName}`;
 
-    const templateData = isTsSupported ? { controllerExtName, id: getVariant(rootPath).id } : { controllerExtPath };
+    const templateData = isTsSupported ? { controllerExtName, id } : { controllerExtPath };
 
     renderFile(tmplPath, templateData, {}, (err, str) => {
         if (err) {
