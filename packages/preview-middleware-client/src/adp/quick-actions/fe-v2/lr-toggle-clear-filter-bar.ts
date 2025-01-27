@@ -9,7 +9,8 @@ import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
 export const ENABLE_CLEAR_FILTER_BAR_TYPE = 'enable-clear-filter-bar';
 const PROPERTY_NAME = 'showClearOnFB';
-const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
+const CONTROL_TYPE_LR = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
+const CONTROL_TYPE_ALP = 'sap.suite.ui.generic.template.AnalyticalListPage.control.SmartFilterBarExt';
 
 /**
  * Quick Action for toggling the visibility of "clear filter bar" button in List Report page.
@@ -25,7 +26,10 @@ export class ToggleClearFilterBarQuickAction
     private isClearButtonEnabled = false;
 
     initialize(): void {
-        const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
+        const controls = [
+            ...(this.context.controlIndex[CONTROL_TYPE_LR] ?? []),
+            ...(this.context.controlIndex[CONTROL_TYPE_ALP] ?? [])
+        ];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
             const modifiedControl = getControlById<FilterBar>(control.controlId);

@@ -132,7 +132,7 @@
             "defaultEntityNameNotFoundWarning": "The supplied entity cannot be found in the service. Please choose from the list above.",
             "noDraftEnabledEntitiesError": "The CAP service you have chosen does not have any entities that are draft enabled. In order to generate a V4 Fiori application using this floor plan for a CAP project, the entity selected must be draft enabled.",
             "noEntitiesError": "$t(errors.noRelevantEntities)",
-            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an Analytical List Page application. The service must contain aggregate based entity sets for this template."
+            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an Analytical List Page application. The service must contain aggregate based entities for this template."
         },
         "navigationEntitySelection": {
             "message": "Navigation entity",
@@ -174,7 +174,7 @@
         "tableSelectionMode": {
             "message": "Selection mode",
             "hint": "Defines different selection modes for the SmartTable in Analytical List Page.",
-            "choiceNone":"$t(texts.choiceNameNone)",
+            "choiceNone": "$t(texts.choiceNameNone)",
             "choiceSingle": "Single",
             "choiceAuto": "Auto",
             "choiceMulti": "Multi"
@@ -183,7 +183,7 @@
             "message": "Allow multi select",
             "hint": "Allows you to show a checkbox for selecting multiple items in a table. This setting comes into effect only if there are actions defined either through annotation or manifest."
         },
-        "tableAutoHide":{
+        "tableAutoHide": {
             "message": "Auto hide",
             "hint": "Determines chart/table interaction. If set to true, the chart acts as a filter for the table. If set to false, the matching table rows are highlighted but the table is not filtered."
         },
