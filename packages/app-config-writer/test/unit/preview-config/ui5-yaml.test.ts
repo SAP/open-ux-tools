@@ -40,7 +40,9 @@ describe('update preview middleware config', () => {
                 }
             }
         } as CustomMiddleware<PreviewConfigOptions>;
-        expect(updatePreviewMiddlewareConfig(previewMiddleware, undefined, undefined)).toMatchSnapshot();
+        expect(
+            await updatePreviewMiddlewareConfig(previewMiddleware, undefined, undefined, basePath, fs)
+        ).toMatchSnapshot();
     });
 
     test('skip yaml configurations not used in any script', async () => {
@@ -134,19 +136,57 @@ describe('update preview middleware config', () => {
                     'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance" --config ./ui5-deprecated-tools-preview-theme.yaml',
                 'start-variants-management': 'ui5 serve --o chicken.html',
                 'ui:opa5':
-                    'fiori run -o test/integration/opaTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml',
+                    'fiori run -o test/integration/opaTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml',
+                'ui:testsuite':
+                    'fiori run -o /test/testsuite.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml',
                 'ui:unit':
-                    'fiori run -o test/unit/unitTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview-theme.yaml'
+                    'fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml'
             },
             'devDependencies': {
                 '@sap/ux-ui5-tooling': '1.15.1'
             }
         };
         fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+        fs.write(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'), 'dummy content');
+        fs.write(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'), 'dummy content');
 
         await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
         expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
         expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'integration', 'opaTests.qunit.js'))).toBeFalsy();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'))).toBeFalsy();
+    });
+
+    test('deprecated tools preview with theme and tests with JourneyRunner but w/o testsuite', async () => {
+        const variousConfigsPath = join(basePath, 'various-configs');
+        const packageJson = {
+            scripts: {
+                'ui:mockserver':
+                    'fiori run --open "test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance" --config ./ui5-deprecated-tools-preview-theme.yaml',
+                'start-variants-management': 'ui5 serve --o chicken.html',
+                'ui:opa5': 'fiori run -o test/opaTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml',
+                'ui:unit':
+                    'fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml'
+            },
+            'devDependencies': {
+                '@sap/ux-ui5-tooling': '1.15.1'
+            }
+        };
+        fs.write(join(variousConfigsPath, 'package.json'), JSON.stringify(packageJson));
+        fs.write(
+            join(variousConfigsPath, 'webapp', 'test', 'opaTests.qunit.js'),
+            `sap.ui.require(['sap/fe/test/JourneyRunner'],function(JourneyRunner){
+                JourneyRunner.run({launchUrl: 'thisIsJustATest.html'});
+            });`
+        );
+        fs.write(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'), 'dummy content');
+
+        await updatePreviewMiddlewareConfigs(fs, variousConfigsPath, true, logger);
+        expect(fs.read(join(variousConfigsPath, 'ui5-deprecated-tools-preview-theme.yaml'))).toMatchSnapshot();
+        expect(fs.read(join(variousConfigsPath, 'package.json'))).toMatchSnapshot();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'opaTests.qunit.js'))).toBeFalsy();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'opaTests.qunit.custom.js'))).toBeTruthy();
+        expect(fs.exists(join(variousConfigsPath, 'webapp', 'test', 'unit', 'unitTests.qunit.ts'))).toBeFalsy();
     });
 
     test('deprecated tools preview with theme', async () => {

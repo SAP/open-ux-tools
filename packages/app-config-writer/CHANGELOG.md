@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.5.16
+
+### Patch Changes
+
+-   6f9104b: various improvements for the convert preview-config
+
 ## 0.5.15
 
 ### Patch Changes
