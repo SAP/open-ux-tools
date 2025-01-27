@@ -56,8 +56,7 @@ function getServiceUrlPrompt(connectValidator: ConnectionValidator, requiredVers
         guiOptions: {
             hint: 'https://<hostname>:<port>/path/to/odata/service/',
             mandatory: true,
-            breadcrumb: true,
-            applyDefaultWhenDirty: true
+            breadcrumb: true
         },
         message: t('prompts.odataServiceUrl.message', { odataVersion: requiredVersion }),
         validate: async (url: string) => {
