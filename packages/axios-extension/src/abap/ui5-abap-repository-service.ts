@@ -377,8 +377,8 @@ export class Ui5AbapRepositoryService extends ODataService {
                     'Warning: The BSP application deployment timed out while waiting for a response from the backend. This may indicate the deployment was not finished. To resolve this, consider increasing the value of the HTML5.Timeout property for the destination.'
                 );
             }
-            // If its already deployed, then dont try to create it again
-            if (tryCount !== 1 && !isExisting && (await this.getInfo(appName)) !== undefined) {
+            let hasBeenUpdated = isExisting; // Default for first request
+            if (tryCount !== 1) {
                 /**
                  * On the second try (tryCount = 2), the `getInfo` method may
                  * retrieve partial information because some data may now exist in the
@@ -388,14 +388,12 @@ export class Ui5AbapRepositoryService extends ODataService {
                  * If this attempt also fails, then on the third try (tryCount = 3),
                  * the user will receive an error.
                  */
-                return await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config);
-            } else {
-                this.log.info(`${appName} found on target system: ${isExisting}`);
-                const response = isExisting
-                    ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
-                    : await this.post('/Repositories', payload, config);
-                return response;
+                hasBeenUpdated = (await this.getInfo(appName)) !== undefined;
             }
+            this.log.info(`${appName} found on target system: ${hasBeenUpdated}`);
+            return hasBeenUpdated
+                ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
+                : await this.post('/Repositories', payload, config);
         } catch (error) {
             // Known ABAP timeout exception codes should re-trigger a deployment again to confirm the app was deployed
             if ([504, 408].includes(error?.response?.status)) {

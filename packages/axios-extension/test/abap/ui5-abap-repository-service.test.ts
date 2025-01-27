@@ -6,6 +6,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
 import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { info } from 'console';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -270,7 +271,7 @@ describe('Ui5AbapRepositoryService', () => {
             }
 
             const service = new Ui5AbapRepositoryService();
-            service.log = { warn: jest.fn() } as any;
+            service.log = { warn: jest.fn(), info: jest.fn() } as any;
             const testUi5AbapRepositoryService = new TestableUi5AbapRepositoryService();
             const appName = 'test ';
             const payload = '{ "some" : "data" }';
@@ -278,7 +279,8 @@ describe('Ui5AbapRepositoryService', () => {
             testUi5AbapRepositoryService.getInfo = jest.fn().mockResolvedValue({});
             testUi5AbapRepositoryService.put = jest.fn().mockResolvedValue({ status: 200 });
             testUi5AbapRepositoryService.log = {
-                warn: jest.fn()
+                warn: jest.fn(),
+                info: jest.fn()
             } as any;
 
             // Call the testUpdateRepoRequest method with tryCount = 2 to simulate the second attempt
@@ -299,6 +301,9 @@ describe('Ui5AbapRepositoryService', () => {
             // Check that the warning message was logged
             expect(testUi5AbapRepositoryService.log.warn).toHaveBeenCalledWith(
                 'Warning: The BSP application deployment timed out while waiting for a response from the backend. This may indicate the deployment was not finished. To resolve this, consider increasing the value of the HTML5.Timeout property for the destination.'
+            );
+            expect(testUi5AbapRepositoryService.log.info).toHaveBeenCalledWith(
+                `${appName} found on target system: true`
             );
         });
 
