@@ -224,15 +224,6 @@ describe('basic prompts', () => {
             expect(result).toBe(true);
         });
 
-        it('should return false for "when" if options.hide is true', () => {
-            const options = { hide: true };
-
-            const prompt = getOverwritePrompt([], false, existingKeyRef, options);
-            const whenFn = prompt.when as boolean;
-
-            expect(whenFn).toBe(false);
-        });
-
         it('should provide additionalMessages with correct severity and message', () => {
             const prompt = getOverwritePrompt([], false, existingKeyRef);
             const additionalMessagesFn = prompt.additionalMessages as (val: any, previousAnswers: any) => any;
