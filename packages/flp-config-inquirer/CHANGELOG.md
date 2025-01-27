@@ -1,5 +1,19 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.2.18
+
+### Patch Changes
+
+-   f581b5f: fix hiding prompts with prompt options
+
+## 0.2.17
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/inquirer-common@0.6.5
+    -   @sap-ux/adp-tooling@0.12.112
+
 ## 0.2.16
 
 ### Patch Changes

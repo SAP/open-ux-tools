@@ -1,5 +1,13 @@
 # @sap-ux/inquirer-common
 
+## 0.6.5
+
+### Patch Changes
+
+-   080bda2: Adds new GA link for 504
+-   Updated dependencies [080bda2]
+    -   @sap-ux/guided-answers-helper@0.2.1
+
 ## 0.6.4
 
 ### Patch Changes
