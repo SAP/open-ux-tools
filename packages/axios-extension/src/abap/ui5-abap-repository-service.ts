@@ -374,7 +374,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             // Was the app deployed after the first failed attempt?
             if (tryCount === 2) {
                 this.log.warn(
-                    'Warning: The BSP application deployment timed out while waiting for a response from the backend. This may indicate the deployment did not finish completely. To resolve this, consider increasing the value of the HTML5.Timeout property for the destination.'
+                    'Warning: The BSP application deployment timed out while waiting for a response from the backend. This may indicate the deployment was not finished. To resolve this, consider increasing the value of the HTML5.Timeout property for the destination.'
                 );
             }
             // If its already deployed, then dont try to create it again
