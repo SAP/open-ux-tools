@@ -28,6 +28,9 @@ describe('Project Utils', () => {
         },
         target: {
             url: 'http://sap.example'
+        },
+        options: {
+            enableTypeScript: false
         }
     };
 
@@ -76,7 +79,7 @@ describe('Project Utils', () => {
         it('should write template to the specified folder', () => {
             writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
 
-            expect(writeFilesSpy.mock.calls[0][0]).toEqual(templatePath);
+            expect(writeFilesSpy.mock.calls[0][0]).toEqual(`${templatePath}/**/*.*`);
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
             expect(writeFilesSpy.mock.calls[0][2]).toEqual(data);
         });

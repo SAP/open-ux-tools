@@ -626,7 +626,7 @@ describe('AdaptationProject', () => {
         });
 
         test('POST /adp/api/controller - controller already exists', async () => {
-            mockExistsSync.mockReturnValueOnce(false).mockResolvedValueOnce(true);
+            mockExistsSync.mockReturnValueOnce(false).mockReturnValueOnce(false).mockResolvedValueOnce(true);
 
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(409);

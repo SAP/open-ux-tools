@@ -49,6 +49,13 @@ export function flpConfigurationExists(basePath: string): boolean {
     }
 }
 
+/**
+ * Checks whether TypeScript is supported in the project by verifying the existence of `tsconfig.json`.
+ *
+ * @param basePath - The base path of the project.
+ * @param fs - An optional `mem-fs-editor` instance to check for the file's existence.
+ * @returns `true` if `tsconfig.json` exists, otherwise `false`.
+ */
 export function isTypescriptSupported(basePath: string, fs?: Editor): boolean {
     const path = join(basePath, 'tsconfig.json');
     return fs ? fs.exists(path) : existsSync(path);

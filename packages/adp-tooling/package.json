@@ -44,6 +44,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
+        "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "adm-zip": "0.5.10",
         "ejs": "3.1.10",

@@ -1,11 +1,13 @@
 import * as fs from 'fs';
 import * as path from 'path';
-import { exec } from 'child_process';
+
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 /**
- * Deletes all `.js.map` files in the specified directory and its subdirectories.
+ * Recursively deletes all `.js.map` files within the specified directory and its subdirectories.
  *
- * @param directory The directory to search for `.js.map` files.
+ * @param {string} directory - The directory to search for `.js.map` files.
+ * @throws {Error} If any filesystem operation (e.g., reading or deleting files) fails.
  */
 function deleteJsMapFiles(directory: string): void {
     const files = fs.readdirSync(directory, { withFileTypes: true });
@@ -25,49 +27,31 @@ function deleteJsMapFiles(directory: string): void {
 }
 
 /**
- * Executes a command and waits for its completion.
+ * Executes a build command in the specified project directory and cleans up `.js.map` files
+ * in the provided target directory.
  *
- * @param projectPath The path to the project directory.
- * @param command The command to execute.
- * @returns A promise that resolves when the command completes.
- */
-function runCommand(projectPath: string, command: string): Promise<void> {
-    return new Promise((resolve, reject) => {
-        const buildProcess = exec(command, { cwd: projectPath });
-
-        buildProcess.stdout?.on('data', (data) => console.log(data.toString()));
-        buildProcess.stderr?.on('data', (data) => console.error(data.toString()));
-
-        buildProcess.on('close', (code) => {
-            if (code === 0) {
-                resolve();
-            } else {
-                reject(new Error(`Command "${command}" exited with code ${code}`));
-            }
-        });
-    });
-}
-
-/**
- * Executes the build process and deletes `.js.map` files from the specified directory.
+ * This function uses the `CommandRunner` to run the build process via the command
+ * `npm run build`. After the build completes, it deletes any `.js.map` files in the
+ * specified `dirToClean`. If the directory does not exist, a warning is logged.
  *
- * @param projectPath The path to the project directory.
- * @param dirToClean The directory to clean after the build.
+ * @param {string} projectPath - The absolute path to the project directory where the build command will be executed.
+ * @param {string} dirToClean - The absolute path to the directory to clean up after the build process.
+ * @returns {Promise<void>} Resolves when the build process and cleanup are completed successfully.
+ * @throws {Error} If the build process fails or if an error occurs during cleanup.
  */
 export async function runBuildAndClean(projectPath: string, dirToClean: string): Promise<void> {
-    try {
-        console.log('Running build command...');
-        await runCommand(projectPath, 'npm run build');
+    const commandRunner = new CommandRunner();
 
-        console.log('Build completed. Cleaning up .js.map files...');
+    try {
+        await commandRunner.run('npm', ['run', 'build'], { cwd: projectPath });
+
         if (fs.existsSync(dirToClean)) {
             deleteJsMapFiles(dirToClean);
-            console.log('Cleanup completed successfully!');
         } else {
             console.warn(`No directory found at ${dirToClean}`);
         }
-    } catch (error) {
-        console.error(`Error during build and clean: ${error.message}`);
-        throw error;
+    } catch (e) {
+        console.error(`Error during build and clean: ${e.message}`);
+        throw e;
     }
 }
