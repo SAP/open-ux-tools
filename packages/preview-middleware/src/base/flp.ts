@@ -348,7 +348,7 @@ export class FlpSandbox {
             this.logger.error('Unable to fetch UI5 version: No host found in request header.');
         } else {
             try {
-                const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
+                const versionUrl = `${protocol ?? 'http'}://${host}${baseUrl}/resources/sap-ui-version.json`;
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
                     | { libraries: { name: string; version: string }[] }
                     | undefined;
