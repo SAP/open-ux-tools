@@ -318,7 +318,8 @@ export class FlpSandbox {
             } else {
                 const ui5Version = await this.getUi5Version(
                     req.protocol,
-                    req.headers.host,
+                    //use host from request header referer as fallback for karma (connect API)
+                    req.headers.host ?? req.headers.referer?.substring(0, req.headers.referer.indexOf(':')),
                     req['ui5-patched-router']?.baseUrl
                 );
                 const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
