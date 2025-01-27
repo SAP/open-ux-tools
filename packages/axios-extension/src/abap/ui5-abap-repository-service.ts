@@ -374,13 +374,21 @@ export class Ui5AbapRepositoryService extends ODataService {
             // Was the app deployed after the first failed attempt?
             if (tryCount === 2) {
                 this.log.warn(
-                    'Warning: The application was deployed despite a time out response from the backend. Increasing the value of the HTML5.Timeout property for the destination may solve the issue'
+                    'Warning: The application deployment timed out while waiting for a response from the backend. This may indicate that the deployment did not finish completely. To resolve this, consider increasing the value of the HTML5.Timeout property for the destination.'
                 );
             }
             // If its already deployed, then dont try to create it again
             if (tryCount !== 1 && !isExisting && (await this.getInfo(appName)) !== undefined) {
-                // We've nothing to return as we dont want to show the exception to the user!
-                return Promise.resolve(undefined);
+                /**
+                 * On the second try (tryCount = 2), the `getInfo` method may 
+                 * retrieve partial information because some data may now exist in the 
+                 * app after an initial timeout during the first attempt. 
+                 * 
+                 * We then attempt to update repository and return a response. 
+                 * If this attempt also fails, then on the third try (tryCount = 3), 
+                 * the user will receive an error.
+                 */
+                return await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
             } else {
                 this.log.info(`${appName} found on target system: ${isExisting}`);
                 const response = isExisting
