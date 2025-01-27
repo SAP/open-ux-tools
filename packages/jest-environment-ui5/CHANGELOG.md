@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.6
+
+### Patch Changes
+
+-   754a4e6: feat: add the possibility to refer to external services, and load application CSS for further component testing using mockserver
+
 ## 5.3.5
 
 ### Patch Changes
