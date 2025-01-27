@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.17.0
+
+### Minor Changes
+
+-   0c3964e: add url param viewCache in case it is missing
+
+## 0.16.175
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
 ## 0.16.174
 
 ### Patch Changes
