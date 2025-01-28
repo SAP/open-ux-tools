@@ -32,6 +32,7 @@ export function getCredentialsPrompts(
             guiType: 'login',
             name: t('prompts.password.name'),
             message: t('prompts.password.message'),
+            mask: '*',
             guiOptions: {
                 mandatory: true
             },

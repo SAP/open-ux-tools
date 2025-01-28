@@ -23,7 +23,7 @@ import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
 import { getPrompts, type FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
-import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import { TelemetryHelper, sendTelemetry, isCli, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
@@ -256,7 +256,7 @@ export default class extends Generator {
                 description: t('yuiNavSteps.flpConfigDesc', { projectName: path.basename(this.projectRootPath) })
             }
         ]);
-        this.setPromptsCallback = (fn) => {
+        this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
                 this.prompts.setCallback(fn);
             }
@@ -272,7 +272,7 @@ export default class extends Generator {
     private async _findConfiguredSystem(target: AbapTarget): Promise<string | undefined> {
         let configuredSystem: string | undefined;
         if (isAppStudio()) {
-            configuredSystem = target.destination;
+            configuredSystem = target?.destination;
             if (!configuredSystem) {
                 this._showErrorNotification(t('error.destinationNotFound'));
                 return;
@@ -284,9 +284,9 @@ export default class extends Generator {
                 return;
             }
         } else {
-            const { url } = target;
+            const url = target?.url;
             if (!url) {
-                this._showErrorNotification(t('error.systemUrlNotFound'));
+                this._showErrorNotification(t('error.systemNotFound'));
                 return;
             }
 
@@ -306,7 +306,11 @@ export default class extends Generator {
      * @param {string} message - The error message to display.
      */
     private _showErrorNotification(message: string): void {
-        this.vscode.window.showErrorMessage(message);
+        if (isCli()) {
+            this.toolsLogger.error(message);
+        } else {
+            this.vscode.window.showErrorMessage(message);
+        }
         this.abort = true;
     }
 
