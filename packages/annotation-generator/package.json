@@ -18,12 +18,12 @@
         "watch": "tsc  --build ./ -watch"
     },
     "dependencies": {
-        "@sap-ux/annotation-converter": "0.9.10",
+        "@sap-ux/annotation-converter": "0.10.2",
         "@sap-ux/fiori-annotation-api": "workspace:*",
         "@sap-ux/odata-annotation-core-types": "workspace:*",
         "@sap-ux/odata-entity-model": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@sap-ux/vocabularies-types": "0.11.7",
+        "@sap-ux/vocabularies-types": "0.13.0",
         "mem-fs-editor": "9.4.0"
     },
     "devDependencies": {
