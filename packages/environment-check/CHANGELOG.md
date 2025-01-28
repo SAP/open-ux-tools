@@ -1,5 +1,13 @@
 # @sap-ux/environment-check
 
+## 0.17.70
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/axios-extension@1.18.1
+
 ## 0.17.69
 
 ### Patch Changes
