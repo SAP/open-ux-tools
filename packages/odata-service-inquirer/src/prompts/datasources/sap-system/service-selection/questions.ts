@@ -123,9 +123,8 @@ export function getSystemServiceQuestion(
             }
             return serviceChoices;
         },
-        additionalMessages: (selectedService: ServiceAnswer) => {
-            // Relies on `validate` to set the state
-            return getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, {
+        additionalMessages: (selectedService: ServiceAnswer) =>
+            getSelectedServiceMessage(serviceChoices, selectedService, connectValidator, {
                 requiredOdataVersion,
                 hasAnnotations: hasBackendAnnotations,
                 showCollabDraftWarnOptions: convertedMetadata
@@ -134,8 +133,7 @@ export function getSystemServiceQuestion(
                           edmx: convertedMetadata
                       }
                     : undefined
-            });
-        },
+            }),
         default: () => getDefaultChoiceIndex(serviceChoices as Answers[]),
         // Warning: only executes in YUI and cli when automcomplete is used
         validate: async (

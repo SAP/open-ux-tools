@@ -3,6 +3,7 @@ import { readFile } from 'fs/promises';
 import { parse } from '@sap-ux/edmx-parser';
 import { convert } from '@sap-ux/annotation-converter';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { join } from 'path';
 
 describe('Test entity helper functions', () => {
     let metadataV4WithAggregateTransforms: string;
@@ -12,18 +13,20 @@ describe('Test entity helper functions', () => {
     let metadataV2WithDraftRoot: string;
 
     beforeAll(async () => {
-        // Read the test metadata files
         metadataV4WithAggregateTransforms = await readFile(
-            __dirname + '/test-data/metadataV4WithAggregateTransforms.xml',
+            join(__dirname, '../test-data/metadataV4WithAggregateTransforms.xml'),
             'utf8'
         );
         metadataV4WithAliasAggregateTransforms = await readFile(
-            __dirname + '/test-data/metadataV4WithAliasAggregateTransforms.xml',
+            join(__dirname, '../test-data/metadataV4WithAliasAggregateTransforms.xml'),
             'utf8'
         );
-        metadataV2 = await readFile(__dirname + '/test-data/metadataV2.xml', 'utf8');
-        metadataV4WithDraftEntities = await readFile(__dirname + '/test-data/metadataV4WithDraftEntities.xml', 'utf8');
-        metadataV2WithDraftRoot = await readFile(__dirname + '/test-data/metadataV2WithDraftRoot.xml', 'utf8');
+        metadataV2 = await readFile(join(__dirname, '../test-data/metadataV2.xml'), 'utf8');
+        metadataV4WithDraftEntities = await readFile(
+            join(__dirname, '../test-data/metadataV4WithDraftEntities.xml'),
+            'utf8'
+        );
+        metadataV2WithDraftRoot = await readFile(join(__dirname, '../test-data/metadataV2WithDraftRoot.xml'), 'utf8');
     });
 
     describe('Test getNavigationEntityOptions', () => {
