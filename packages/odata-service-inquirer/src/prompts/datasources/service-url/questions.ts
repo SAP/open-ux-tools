@@ -13,7 +13,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 import type { Question } from 'inquirer';
 import { t } from '../../../i18n';
-import type { OdataServiceAnswers, OdataServicePromptOptions } from '../../../types';
+import type { OdataServiceAnswers, OdataServiceUrlPromptOptions } from '../../../types';
 import { promptNames } from '../../../types';
 import { PromptState, getPromptHostEnvironment } from '../../../utils';
 import { ConnectionValidator } from '../../connectionValidator';
@@ -132,13 +132,16 @@ function getAdditionalMessages(
  *
  * @param connectValidator Connection validator instance
  * @param requiredVersion The required OData version of the service
+ * @param showCollabDraftWarn
  * @returns the ignore cert errors prompt
  */
 function getIgnoreCertErrorsPrompt(
     connectValidator: ConnectionValidator,
-    requiredVersion?: OdataVersion
+    requiredVersion?: OdataVersion,
+    showCollabDraftWarn?: boolean
 ): ConfirmQuestion<ServiceUrlAnswers> {
     let showAnnotationWarning = false;
+    let convertedMetadata: ConvertedMetadata | undefined;
     //toodo: add collab draft warning
     return {
         when: ({ serviceUrl }: ServiceUrlAnswers) => {
@@ -178,20 +181,14 @@ function getIgnoreCertErrorsPrompt(
                         ignoreCertError
                     );
                     showAnnotationWarning = !!valResult.showAnnotationWarning;
+                    convertedMetadata = valResult.convertedMetadata;
                     return valResult.validationResult;
                 }
                 return true;
             }
             return validUrl;
         },
-        additionalMessages: () =>
-            //todo: use `getAdditionalMessages`
-            showAnnotationWarning
-                ? {
-                      message: t('prompts.warnings.noAnnotations'),
-                      severity: Severity.warning
-                  }
-                : undefined
+        additionalMessages: () => getAdditionalMessages(showAnnotationWarning, showCollabDraftWarn, convertedMetadata)
     } as ConfirmQuestion<ServiceUrlAnswers>;
 }
 /**
@@ -293,7 +290,6 @@ function getPasswordPrompt(
         message: t('prompts.servicePassword.message'),
         mask: '*',
         validate: async (password: string, { username, serviceUrl, ignoreCertError, sapClient }: ServiceUrlAnswers) => {
-            showAnnotationWarning = false;
             if (!serviceUrl || !username || !password) {
                 return false;
             }
@@ -326,38 +322,49 @@ function getPasswordPrompt(
 /**
  * Get the service URL questions.
  *
- * @param promptOptions prompt options that can be passed to the service URL questions to configure behaviour
- * @param promptOptions.serviceUrl see {@link OdataServicePromptOptions}
- * @param promptOptions.serviceUrlPassword see {@link OdataServicePromptOptions}
+ * @param serviceUrlPromptOptions Options used to control prompt behaviour, see {@link OdataServiceUrlPromptOptions} for details
  * @returns the odata service URL questions
  */
-export function getServiceUrlQuestions({
-    serviceUrl: serviceUrlOpts,
-    serviceUrlPassword: passwordOpts
-}: OdataServicePromptOptions = {}): Question<OdataServiceAnswers>[] {
+export function getServiceUrlQuestions(
+    serviceUrlPromptOptions: OdataServiceUrlPromptOptions = {}
+): Question<OdataServiceAnswers>[] {
     // Connection validator maintains connection state and validity across multiple prompts
     const connectValidator = new ConnectionValidator();
-    const requiredVersion = serviceUrlOpts?.requiredOdataVersion;
+    const requiredVersion = serviceUrlPromptOptions?.requiredOdataVersion;
     PromptState.reset();
 
     let questions: Question<ServiceUrlAnswers>[] = [
-        getServiceUrlPrompt(connectValidator, requiredVersion, serviceUrlOpts?.showCollaborativeDraftWarning),
-        getIgnoreCertErrorsPrompt(connectValidator, requiredVersion)
+        getServiceUrlPrompt(connectValidator, requiredVersion, serviceUrlPromptOptions?.showCollaborativeDraftWarning),
+        getIgnoreCertErrorsPrompt(
+            connectValidator,
+            requiredVersion,
+            serviceUrlPromptOptions?.showCollaborativeDraftWarning
+        )
     ];
 
     if (getPromptHostEnvironment() === hostEnvironment.cli) {
         questions.push(getCliIgnoreCertValidatePrompt(connectValidator, requiredVersion));
     }
-    questions.push(getUsernamePrompt(connectValidator), getPasswordPrompt(connectValidator, requiredVersion));
+    questions.push(
+        getUsernamePrompt(connectValidator),
+        getPasswordPrompt(connectValidator, requiredVersion, serviceUrlPromptOptions?.showCollaborativeDraftWarning)
+    );
 
-    // Add additional messages to prompts if specified in the prompt options
+    // Add additional messages to prompts if specified in the prompt options.
+    // Note that the additional messages specified for the service URL prompt will also be added to the ignore cert errors prompt and password prompt
+    // this is to ensure that the messages are rendered in YUI regardless of authorization or cert prompts being displayed.
     let promptsOptToExtend: Record<string, CommonPromptOptions> = {};
 
-    if (serviceUrlOpts?.additionalMessages) {
-        promptsOptToExtend = { serviceUrl: serviceUrlOpts };
-    }
-    if (passwordOpts?.additionalMessages) {
-        promptsOptToExtend = { ...promptsOptToExtend, serviceUrlPassword: passwordOpts };
+    if (serviceUrlPromptOptions?.additionalMessages) {
+        promptsOptToExtend = {
+            [promptNames.serviceUrl]: serviceUrlPromptOptions,
+            [promptNames.serviceUrlPassword]: {
+                additionalMessages: serviceUrlPromptOptions?.additionalMessages
+            },
+            [serviceUrlInternalPromptNames.ignoreCertError]: {
+                additionalMessages: serviceUrlPromptOptions?.additionalMessages
+            }
+        };
     }
 
     if (promptsOptToExtend) {

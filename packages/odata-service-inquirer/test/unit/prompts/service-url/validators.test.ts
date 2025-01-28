@@ -26,7 +26,12 @@ jest.mock('@sap-ux/axios-extension', () => ({
 describe('Test service url validators', () => {
     const validMetadata =
         '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">' +
-        '<edmx:DataServices m:DataServiceVersion="2.0"></edmx:DataServices></edmx:Edmx>';
+        '<edmx:DataServices m:DataServiceVersion="2.0">' +
+        '<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="SEPMRA_PROD_MAN" xml:lang="en" sap:schema-version="1">' +
+        '<EntityContainer Name="SEPMRA_PROD_MAN_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">' +
+        '</EntityContainer>' +
+        '</Schema>' +
+        '</edmx:DataServices></edmx:Edmx>';
     const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
                 <edmx:Edmx Version="1.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
                     <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName=\'%2FIWBEP%2FVOC_COMMON\',Version=\'0001\',SAP__Origin=\'\')/$value">
@@ -122,7 +127,7 @@ describe('Test service url validators', () => {
         });
     });
 
-    test('should catch errors and log if annotations are not available', async () => {
+    test('should catch errors, log and return state if annotations are not available', async () => {
         const serviceUrl = 'https://some.host:1234/service/path?sap-client=999';
         const odataService = createServiceForUrl('https://some.host:1234/service/path?sap-client=999');
         jest.spyOn(odataService, 'metadata').mockResolvedValue(validMetadata);
@@ -144,7 +149,7 @@ describe('Test service url validators', () => {
                 odataService,
                 'axiosConfig': {}
             })
-        ).toMatchObject({ validationResult: true });
+        ).toMatchObject({ validationResult: true, showAnnotationWarning: true });
         expect(loggerSpy).toHaveBeenCalledWith(t('prompts.validationMessages.annotationsNotFound'));
     });
 
@@ -176,5 +181,18 @@ describe('Test service url validators', () => {
             validationResult:
                 'The service URL you have provided is not a valid OData Service. SAP Fiori applications require an OData service as the data source.'
         });
+    });
+
+    test('should return converted metadata', async () => {
+        const serviceUrl = 'https://some.host:1234/service/path?sap-client=999';
+        const odataService = createServiceForUrl('https://some.host:1234/service/path?sap-client=999');
+        jest.spyOn(odataService, 'metadata').mockResolvedValue(validMetadata);
+
+        expect(
+            await validateService(serviceUrl, {
+                odataService,
+                'axiosConfig': {}
+            })
+        ).toMatchObject({ convertedMetadata: expect.objectContaining({ version: '1.0' }) });
     });
 });

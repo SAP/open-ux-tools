@@ -378,8 +378,6 @@ export type OdataServiceUrlPromptOptions = {
     showCollaborativeDraftWarning?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL prompts allow extension with additional messages
 
-export type OdataServiceUrlPasswordOptions = Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL password prompts allow extension with additional messages
-
 /**
  * Provide the correct type checking for prompt options
  */
@@ -388,7 +386,6 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.capProject, CapProjectPromptOptions> &
     Record<promptNames.capService, CapServicePromptOptions> &
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
-    Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
     Record<promptNames.userSystemName, SystemNamePromptOptions> &
     Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
