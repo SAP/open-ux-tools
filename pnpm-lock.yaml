@@ -1710,6 +1710,9 @@ importers:
 
   packages/fiori-elements-writer:
     dependencies:
+      '@sap-ux/annotation-generator':
+        specifier: workspace:*
+        version: link:../annotation-generator
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer

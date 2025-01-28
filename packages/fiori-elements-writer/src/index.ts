@@ -22,6 +22,9 @@ import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
+import { generateAnnotations, type AnnotationServiceParameters, type GenerateAnnotationsOptions } from '@sap-ux/annotation-generator';
+import { sep } from 'path';
+import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -223,6 +226,25 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
 
+    // Handle annotation writing if configuration is provided
+    if (feApp.appOptions?.writeAnnotations) {
+        const serviceName = feApp.service.capService ? feApp.service.capService.serviceName : 'mainService'
+        const projectPath = feApp.service.capService ? feApp.service.capService.projectPath : basePath;
+        const appName = feApp.service.capService ? feApp.package.name : '';
+        const relativeAnnotationFilePath = feApp.service.capService ? `${
+            feApp.service.capService.appPath ?? getCapFolderPathsSync(feApp.service.capService.projectPath).app
+            }${sep}${appName}${sep}annotations.cds` : `webapp${sep}annotations${sep}annotation.xml`
+
+        const options: GenerateAnnotationsOptions = {
+            entitySetName: feApp.appOptions.writeAnnotations.entitySetName, 
+            annotationFilePath: relativeAnnotationFilePath,
+            addFacets: true,
+            addLineItems: feApp.appOptions.writeAnnotations.addLineItems,
+            addValueHelps: !!feApp.service.capService
+        };
+        const annoServiceParams: AnnotationServiceParameters = { serviceName, appName, project: projectPath };
+        await generateAnnotations(fs, annoServiceParams, options);
+    }
     return fs;
 }
 
