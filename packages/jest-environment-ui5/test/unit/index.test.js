@@ -46,7 +46,7 @@ describe('Custom environment', () => {
         try {
             global.CanvasRenderingContext2D();
         } catch (e) {
-            hasError = true;
+            hasError = e !== undefined;
         }
         expect(hasError).toBe(false);
     });
