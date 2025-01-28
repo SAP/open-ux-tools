@@ -52,6 +52,12 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
         context.testPath = this.testPath;
         global.window = context;
         global.Object = context.Object;
+        if (!this.allowCSS) {
+            global.CanvasRenderingContext2D = function () {};
+            context.HTMLCanvasElement.prototype.getContext = () => {};
+            window.CanvasRenderingContext2D = function () {};
+        }
+
         window.NewObject = Object;
         [
             'sap',
