@@ -6,5 +6,6 @@ export const RIMRAF = 'rimraf';
 export const UI5_TASK_FLATTEN_LIB = 'ui5-task-flatten-library';
 export const UI5_TASK_FLATTEN_LIB_VERSION = '3.0.2';
 export const UI5_REPO_TEXT_FILES = '.Ui5RepositoryTextFiles';
+export const UI5_REPO_IGNORE = '.Ui5RepositoryIgnore';
 export const UI5_CLI_LIB = '@ui5/cli';
 export const UI5_CLI_MIN_VERSION = '3.0.0';

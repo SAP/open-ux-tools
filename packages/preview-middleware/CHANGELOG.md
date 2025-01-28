@@ -1,5 +1,36 @@
 # @sap-ux/preview-middleware
 
+## 0.17.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.113
+-   @sap-ux/project-access@1.29.1
+
+## 0.17.0
+
+### Minor Changes
+
+-   0c3964e: add url param viewCache in case it is missing
+
+## 0.16.175
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
+## 0.16.174
+
+### Patch Changes
+
+-   1586cc3: CPE: Enable Variant Management in Tables and Charts Quick Action
+
+## 0.16.173
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.112
+
 ## 0.16.172
 
 ### Patch Changes
