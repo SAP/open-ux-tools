@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.77
+
+### Patch Changes
+
+-   ccb96dd: enhancements for deploying ui5 libs
+
 ## 0.0.76
 
 ### Patch Changes
