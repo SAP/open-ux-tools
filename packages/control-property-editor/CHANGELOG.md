@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.33
+
+### Patch Changes
+
+-   dd34d62: UI accessability improvements for disabled elements and in quick action list
+
 ## 0.5.32
 
 ### Patch Changes

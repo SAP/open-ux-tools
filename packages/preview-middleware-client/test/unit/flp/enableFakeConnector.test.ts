@@ -69,5 +69,23 @@ describe('flp/FakeLrepConnector', () => {
 
             expect(fetchMock).toBeCalledTimes(1);
         });
+
+        test('calls the API to save a single change', async () => {
+            const change = {
+                changeType: 'propertyChange',
+                fileName: 'dummyFileName',
+                support: {
+                    generator: 'sap.ui.rta.command'
+                }
+            };
+            fetchMock.mockResolvedValue({ text: jest.fn(), ok: true });
+            documentMock.getElementById.mockReturnValue({
+                getAttribute: jest.fn().mockReturnValue('{"generator":"@sap-ux/control-property-editor"}')
+            });
+
+            await create(change);
+
+            expect(fetchMock).toBeCalledTimes(1);
+        });
     });
 });
