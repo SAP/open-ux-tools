@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.2
+
+### Patch Changes
+
+-   93ef8c1: Improved `getWebappPath` for projects that has relative webapp path defined in ui5.yaml.
+
 ## 1.29.1
 
 ### Patch Changes
