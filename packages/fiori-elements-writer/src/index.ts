@@ -208,14 +208,16 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         );
     }
     if (feApp.service.capService) {
+        const hasCdsUi5PluginInfo = !!feApp.service.capService.cdsUi5PluginInfo;
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: feApp.package.name ?? '',
             appId: feApp.app.id,
             sapux: feApp.appOptions?.sapux,
-            enableNPMWorkspaces: feApp.appOptions?.enableNPMWorkspaces,
             enableTypescript: feApp.appOptions?.typescript,
-            enableCdsUi5Plugin: !!feApp.service.capService.cdsUi5PluginInfo
+            // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
+            enableCdsUi5Plugin: hasCdsUi5PluginInfo,
+            enableNPMWorkspaces: hasCdsUi5PluginInfo
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, feApp.service.capService, settings);

@@ -1,4 +1,4 @@
-import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
+import type { Ui5App, App } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
@@ -43,21 +43,6 @@ export interface FreestyleApp<T> extends Ui5App {
         capService?: CapServiceCdsInfo;
     };
     app: FioriApp;
-    appOptions?: Partial<AppOptions> & {
-        /**
-         * Enables NPM workspaces for the root CAP project module when the application is generated with a `capService`.
-         * If set to `true`, NPM workspaces will be enabled for the root module. For details, refer to the `applyCAPUpdates` function at 
-         * {@link ../../cap-config-writer/src/cap-writer/updates.ts}.
-         * 
-         * Examples:
-         * - With NPM Workspaces** (and `cds-plugin-ui5` enabled):
-         *   `"watch-typescript": "cds watch --open com.test.typescript/index.html?sap-ui-xx-viewCache=false"`
-         * 
-         * - Without NPM Workspaces**:
-         *   `"watch-javascript": "cds watch --open javascript/webapp/index.html?sap-ui-xx-viewCache=false"`
-         */
-        enableNPMWorkspaces?: boolean;
-    };
 }
 
 // We need this for the service version
