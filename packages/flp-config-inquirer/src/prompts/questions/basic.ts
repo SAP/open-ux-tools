@@ -32,7 +32,8 @@ export function getSemanticObjectPrompt(isCLI: boolean, options?: SemanticObject
         message: t('prompts.semanticObject'),
         default: options?.default,
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 30, ['_'])
+        validate: (val) => validateText(val, isCLI, 30, ['_']),
+        when: (answers: FLPConfigAnswers) => !answers?.inboundId
     };
 }
 
@@ -54,7 +55,8 @@ export function getActionPrompt(isCLI: boolean, options?: ActionPromptOptions): 
         message: t('prompts.action'),
         default: options?.default,
         filter: (val: string): string => val?.trim(),
-        validate: (val) => validateText(val, isCLI, 60, ['_'])
+        validate: (val) => validateText(val, isCLI, 60, ['_']),
+        when: (answers: FLPConfigAnswers) => !answers?.inboundId
     };
 }
 
@@ -88,13 +90,11 @@ export function getOverwritePrompt(
             applyDefaultWhenDirty: true
         },
         default: options?.default ?? ((): boolean => !existingKeyRef.value),
-        when: options?.hide
-            ? false
-            : (previousAnswers: FLPConfigAnswers): boolean => {
-                  existingKeyRef.value =
-                      inboundKeys.indexOf(`${previousAnswers.semanticObject}-${previousAnswers.action}`) > -1;
-                  return existingKeyRef.value;
-              },
+        when: (previousAnswers: FLPConfigAnswers): boolean => {
+            existingKeyRef.value =
+                inboundKeys.indexOf(`${previousAnswers.semanticObject}-${previousAnswers.action}`) > -1;
+            return existingKeyRef.value;
+        },
         additionalMessages: (_, previousAnswers) => ({
             message: t('validators.inboundConfigKeyExists', {
                 inboundKey: `${(previousAnswers as FLPConfigAnswers).semanticObject}-${

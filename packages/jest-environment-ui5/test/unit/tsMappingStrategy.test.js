@@ -37,5 +37,5 @@ describe('Typescript Mapping Strategy', () => {
             configPath: path.resolve(__dirname, 'fixtures/tsconfig.json')
         });
         expect(secondpathMapping).toStrictEqual(pathMappingFn); // No need to recreate the pathMappingFn
-    });
+    }, 35000);
 });

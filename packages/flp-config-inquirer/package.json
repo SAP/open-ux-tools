@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/flp-config-inquirer",
     "description": "Prompts module that can prompt users for inputs required for FLP configuration",
-    "version": "0.1.0",
+    "version": "0.2.21",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -34,6 +34,8 @@
         "@sap-ux/btp-utils": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/adp-tooling": "workspace:*",
         "i18next": "23.5.1",
         "lodash": "4.17.21"
     },

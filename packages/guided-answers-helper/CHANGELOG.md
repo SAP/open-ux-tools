@@ -1,5 +1,23 @@
 # @sap-ux/guided-answers-helper
 
+## 0.2.1
+
+### Patch Changes
+
+-   080bda2: Adds new GA link for 504
+
+## 0.2.0
+
+### Minor Changes
+
+-   dac696a: Fix for incorrect error messsages connecting to destinations. Correct incorrect GA node name.
+
+## 0.1.1
+
+### Patch Changes
+
+-   307706e: move GA link code in inq-common, add node in GA helper
+
 ## 0.1.0
 
 ### Minor Changes

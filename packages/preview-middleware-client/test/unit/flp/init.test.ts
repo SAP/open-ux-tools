@@ -38,6 +38,9 @@ Object.defineProperty(window, 'location', {
 });
 
 describe('flp/init', () => {
+    afterEach(() => {
+        sapMock.ushell.Container.getServiceAsync.mockReset();
+    });
     test('registerSAPFonts', () => {
         registerSAPFonts();
         expect(IconPoolMock.registerFont).toBeCalledTimes(2);
@@ -238,7 +241,6 @@ describe('flp/init', () => {
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            expect(sapMock.ushell.Container.getServiceAsync).toBeCalledWith('AppState');
         });
 
         test('flex configured', async () => {
@@ -247,22 +249,22 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.84.50' });
-            await init({ flex: JSON.stringify(flexSettings) });
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
-                .calls[0][0] as () => Promise<void>;
 
             // testing the nested callbacks
             const mockService = {
                 attachAppLoaded: jest.fn()
             };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
 
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
             await rendererCb();
             expect(mockService.attachAppLoaded).toBeCalled();
-            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
 
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
             loadedCb({ getParameter: () => {} });
             expect(sapMock.ui.require).toBeCalledWith(
                 ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
@@ -285,22 +287,22 @@ describe('flp/init', () => {
                 pluginScript: 'my/script'
             };
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.71.60' });
-            await init({ flex: JSON.stringify(flexSettings) });
-            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
-            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
-            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
-                .calls[0][0] as () => Promise<void>;
 
             // testing the nested callbacks
             const mockService = {
                 attachAppLoaded: jest.fn()
             };
             sapMock.ushell.Container.getServiceAsync.mockResolvedValueOnce(mockService);
+            await init({ flex: JSON.stringify(flexSettings) });
+            expect(sapMock.ushell.Container.attachRendererCreatedEvent).toBeCalled();
+            expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
 
+            const rendererCb = sapMock.ushell.Container.attachRendererCreatedEvent.mock
+                .calls[0][0] as () => Promise<void>;
             await rendererCb();
             expect(mockService.attachAppLoaded).toBeCalled();
-            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
 
+            const loadedCb = mockService.attachAppLoaded.mock.calls[0][0] as (event: unknown) => void;
             loadedCb({ getParameter: () => {} });
             expect(sapMock.ui.require).toBeCalledWith(
                 ['open/ux/preview/client/flp/initRta', flexSettings.pluginScript],

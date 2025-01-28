@@ -1,5 +1,174 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.0.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.21
+-   @sap-ux/odata-service-writer@0.25.4
+-   @sap-ux/ui5-application-writer@1.2.9
+
+## 2.0.1
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/odata-service-writer@0.25.4
+    -   @sap-ux/ui5-application-writer@1.2.9
+    -   @sap-ux/fiori-generator-shared@0.7.20
+
+## 2.0.0
+
+### Major Changes
+
+-   77b0800: Adds support for entity related prompting. Update some exported types `fiori-elements-writer`, `fiori-freestyle-writer` to remove problematic enum usage.
+    The major version updates for modules `@sap-ux/fiori-elements-writer` and `@sap-ux/fiori-freestyle-writer` indicates a breaking change of type definitions:
+
+    `@sap-ux/fiori-elements-writer`:
+    `TemplateType`
+    `TableType`
+    `TableSelectionMode`
+
+    `@sap-ux/fiori-freestyle-writer`:
+    `TemplateType`
+
+    These changes are required to reduce the impact of importing these types by consumers. Previously defined as enums, requiring full dependencies and bloating
+    consumer code where only these types are required. The new type defintions still allow both uses (type or value) but the `enums` are now defined as `const`.
+    This change requires updates to consuming code where the type is imported and referenced.
+    Example where a single enum was used as a value type:
+
+    ```
+    type Template = {
+        template: TemplateType.ListReportObjectPage
+    }
+    ```
+
+    should now be defined as:
+
+    ```
+    type Template = {
+        template: typeof TemplateType.ListReportObjectPage
+    }
+    ```
+
+## 1.2.41
+
+### Patch Changes
+
+-   Updated dependencies [625bca8]
+    -   @sap-ux/odata-service-writer@0.25.3
+
+## 1.2.40
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.19
+-   @sap-ux/odata-service-writer@0.25.2
+-   @sap-ux/ui5-application-writer@1.2.8
+
+## 1.2.39
+
+### Patch Changes
+
+-   Updated dependencies [326cd59]
+    -   @sap-ux/odata-service-writer@0.25.2
+
+## 1.2.38
+
+### Patch Changes
+
+-   Updated dependencies [0f1b457]
+    -   @sap-ux/odata-service-writer@0.25.1
+
+## 1.2.37
+
+### Patch Changes
+
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+
+## 1.2.36
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.17
+-   @sap-ux/odata-service-writer@0.25.0
+-   @sap-ux/ui5-application-writer@1.2.8
+
+## 1.2.35
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.16
+
+## 1.2.34
+
+### Patch Changes
+
+-   21f0b20: TBI - Prevent CRLF injection in logs
+-   Updated dependencies [21f0b20]
+    -   @sap-ux/ui5-application-writer@1.2.8
+
+## 1.2.33
+
+### Patch Changes
+
+-   Updated dependencies [036b48b]
+    -   @sap-ux/odata-service-writer@0.25.0
+
+## 1.2.32
+
+### Patch Changes
+
+-   Updated dependencies [9f14de1]
+    -   @sap-ux/odata-service-writer@0.24.2
+
+## 1.2.31
+
+### Patch Changes
+
+-   @sap-ux/ui5-config@0.26.0
+-   @sap-ux/fiori-generator-shared@0.7.15
+
+## 1.2.30
+
+### Patch Changes
+
+-   Updated dependencies [1bb4d48]
+    -   @sap-ux/fiori-generator-shared@0.7.14
+
+## 1.2.29
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.13
+-   @sap-ux/odata-service-writer@0.24.1
+-   @sap-ux/ui5-application-writer@1.2.7
+
+## 1.2.28
+
+### Patch Changes
+
+-   Updated dependencies [0c9e896]
+    -   @sap-ux/odata-service-writer@0.24.1
+
+## 1.2.27
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.12
+
+## 1.2.26
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/odata-service-writer@0.24.0
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/ui5-application-writer@1.2.7
+    -   @sap-ux/fiori-generator-shared@0.7.11
+
 ## 1.2.25
 
 ### Patch Changes

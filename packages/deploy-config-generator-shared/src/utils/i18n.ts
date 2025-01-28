@@ -7,7 +7,7 @@ const deployConfigGenShared = 'deploy-config-generator-shared';
 /**
  * Initialize i18next with the translations for this module.
  */
-async function initI18n(): Promise<void> {
+export async function initI18n(): Promise<void> {
     await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
         i18next.addResourceBundle('en', deployConfigGenShared, translations)
     );

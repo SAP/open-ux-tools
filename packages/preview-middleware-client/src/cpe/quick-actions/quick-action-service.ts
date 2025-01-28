@@ -10,7 +10,8 @@ import {
     NESTED_QUICK_ACTION_KIND,
     QuickActionExecutionPayload,
     QuickActionGroup,
-    updateQuickAction
+    updateQuickAction,
+    externalFileChange
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -20,6 +21,7 @@ import { QuickActionDefinitionRegistry } from './registry';
 import { OutlineService } from '../outline/service';
 import { getTextBundle, TextBundle } from '../../i18n';
 import { ChangeService } from '../changes';
+import { DialogFactory } from '../../adp/dialog-factory';
 
 /**
  * Service providing Quick Actions.
@@ -33,7 +35,7 @@ export class QuickActionService implements Service {
     private texts: TextBundle;
 
     /**
-     * Qucik action service constructor.zrf
+     * Quick action service constructor.
      *
      * @param rta - RTA object.
      * @param outlineService - Outline service instance.
@@ -75,6 +77,9 @@ export class QuickActionService implements Service {
                     this.sendAction(updateQuickAction(actionInstance.getActionObject()));
                 }
             }
+            if (externalFileChange.match(action)) {
+                await this.reloadQuickActions(this.controlTreeIndex);
+            }
         });
 
         this.outlineService.onOutlineChange(async (event) => {
@@ -83,6 +88,10 @@ export class QuickActionService implements Service {
         });
 
         this.changeService.onStackChange(async () => {
+            await this.reloadQuickActions(this.controlTreeIndex);
+        });
+
+        DialogFactory.onOpenDialogStatusChange(async () => {
             await this.reloadQuickActions(this.controlTreeIndex);
         });
     }
@@ -119,7 +128,7 @@ export class QuickActionService implements Service {
                     try {
                         const instance = new Definition(actionContext);
                         await instance.initialize();
-                        this.addAction(group, instance);
+                        await this.addAction(group, instance);
                     } catch {
                         Log.warning(`Failed to initialize ${Definition.name} quick action.`);
                     }
@@ -131,8 +140,9 @@ export class QuickActionService implements Service {
         this.sendAction(quickActionListChanged(groups));
     }
 
-    private addAction(group: QuickActionGroup, instance: QuickActionDefinition): void {
+    private async addAction(group: QuickActionGroup, instance: QuickActionDefinition): Promise<void> {
         if (instance.isApplicable) {
+            await instance.runEnablementValidators();
             const quickAction = instance.getActionObject();
             group.actions.push(quickAction);
             this.actions.push(instance);

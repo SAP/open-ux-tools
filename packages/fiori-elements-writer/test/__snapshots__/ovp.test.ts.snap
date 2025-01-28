@@ -95,10 +95,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -140,14 +142,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/GWSAMPLE_BASIC.xml
+          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -272,7 +272,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/GWSAMPLE_BASIC.xml": Object {
+  "webapp/localService/mainService/GWSAMPLE_BASIC.xml": Object {
     "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
     <edmx:Reference Uri=\\"https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2\\">
         <edmx:Include Alias=\\"Common\\" Namespace=\\"com.sap.vocabularies.Common.v1\\"/>
@@ -561,7 +561,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\"
 xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
@@ -1019,7 +1019,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
             \\"GWSAMPLE_BASIC\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -1027,7 +1027,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/GWSAMPLE_BASIC.xml\\"
+          \\"localUri\\": \\"localService/mainService/GWSAMPLE_BASIC.xml\\"
         }
       },
       \\"annotation\\": {
@@ -1083,7 +1083,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"bundleName\\": \\"feovp1.i18n.i18n\\"
         }
       },
-      \\"mainModel\\": {
+      \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -1110,7 +1110,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterModel\\": \\"\\",
     \\"globalFilterEntityType\\": \\"GlobalFilters\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -1448,9 +1448,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -1547,9 +1544,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -1846,10 +1843,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -1907,14 +1906,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/GWSAMPLE_BASIC.xml
+          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -2071,7 +2068,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/GWSAMPLE_BASIC.xml": Object {
+  "webapp/localService/mainService/GWSAMPLE_BASIC.xml": Object {
     "contents": "<edmx:Edmx xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\" Version=\\"4.0\\">
     <edmx:Reference Uri=\\"https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2\\">
         <edmx:Include Alias=\\"Common\\" Namespace=\\"com.sap.vocabularies.Common.v1\\"/>
@@ -2360,7 +2357,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\"
 xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
@@ -2818,7 +2815,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
             \\"GWSAMPLE_BASIC\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -2826,7 +2823,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/GWSAMPLE_BASIC.xml\\"
+          \\"localUri\\": \\"localService/mainService/GWSAMPLE_BASIC.xml\\"
         }
       },
       \\"annotation\\": {
@@ -2882,7 +2879,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"bundleName\\": \\"feovp1.i18n.i18n\\"
         }
       },
-      \\"mainModel\\": {
+      \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -2909,7 +2906,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterModel\\": \\"\\",
     \\"globalFilterEntityType\\": \\"GlobalFilters\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -3357,8 +3354,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -3402,12 +3399,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -3532,7 +3527,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.xml\\">
@@ -8769,7 +8764,7 @@ appDescription=A Fiori application.",
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -8822,7 +8817,7 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"feovp2.i18n.i18n\\"
         }
       },
-      \\"mainModel\\": {
+      \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -8847,7 +8842,7 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterModel\\": \\"\\",
     \\"globalFilterEntityType\\": \\"SalesOrderItem\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -8950,9 +8945,6 @@ appDescription=A Fiori application.",
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -9049,9 +9041,9 @@ appDescription=A Fiori application.",
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -9345,8 +9337,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -9406,12 +9398,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -9568,7 +9558,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Aggregation.V1.xml\\">
@@ -14805,7 +14795,7 @@ appDescription=A Fiori application.",
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -14858,7 +14848,7 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"feovp2.i18n.i18n\\"
         }
       },
-      \\"mainModel\\": {
+      \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -14883,7 +14873,7 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"mainModel\\",
+    \\"globalFilterModel\\": \\"\\",
     \\"globalFilterEntityType\\": \\"SalesOrderItem\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,

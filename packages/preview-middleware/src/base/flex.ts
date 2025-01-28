@@ -1,8 +1,8 @@
 import type { Logger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { Editor } from 'mem-fs-editor';
-import { existsSync, readdirSync, unlinkSync } from 'fs';
-import { join, parse } from 'path';
+import { existsSync, readdirSync, statSync, unlinkSync } from 'fs';
+import { join, parse, sep } from 'path';
 import type { CommonChangeProperties } from '@sap-ux/adp-tooling';
 
 /**
@@ -17,11 +17,12 @@ export async function readChanges(
     logger: Logger
 ): Promise<Record<string, CommonChangeProperties>> {
     const changes: Record<string, CommonChangeProperties> = {};
-    const files = await project.byGlob('/**/changes/*.*');
+    const files = await project.byGlob('/**/changes/**/*.*');
     for (const file of files) {
         try {
-            const change = JSON.parse(await file.getString()) as CommonChangeProperties;
-            changes[`sap.ui.fl.${parse(file.getName()).name}`] = change;
+            changes[`sap.ui.fl.${parse(file.getName()).name}`] = JSON.parse(
+                await file.getString()
+            ) as CommonChangeProperties;
             logger.debug(`Read change from ${file.getPath()}`);
         } catch (error) {
             logger.warn(error.message);
@@ -78,15 +79,36 @@ export function deleteChange(
     if (fileName) {
         const path = join(webappPath, 'changes');
         if (existsSync(path)) {
-            const files = readdirSync(path);
-            const file = files.find((element) => element.includes(fileName));
-            if (file) {
-                logger.debug(`Write change ${file}`);
-                const filePath = join(path, file);
+            // Changes can be in subfolders of changes directory. For eg: New Annotation File Change
+            const files: string[] = [];
+            readDirectoriesRecursively(path, files);
+            const filePath = files.find((element) => element.includes(fileName));
+            if (filePath) {
+                const fileNameWithExt = filePath.split(sep).pop();
+                logger.debug(`Write change ${fileNameWithExt}`);
                 unlinkSync(filePath);
-                return { success: true, message: `FILE_DELETED ${file}` };
+                return { success: true, message: `FILE_DELETED ${fileNameWithExt}` };
             }
         }
     }
     return { success: false };
+}
+
+/**
+ * Recursively find all files in the given folder.
+ *
+ * @param path path to the folder.
+ * @param files all files in the given folder and subfolders.
+ */
+function readDirectoriesRecursively(path: string, files: string[] = []): void {
+    const items = readdirSync(path);
+    items.forEach((item) => {
+        const fullPath = join(path, item);
+        const stats = statSync(fullPath);
+        if (stats.isDirectory()) {
+            readDirectoriesRecursively(fullPath, files);
+        } else if (stats.isFile()) {
+            files.push(fullPath);
+        }
+    });
 }

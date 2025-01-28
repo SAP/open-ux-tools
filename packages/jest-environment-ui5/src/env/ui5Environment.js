@@ -5,15 +5,17 @@ const mockXHR = require('./mockXHR');
  * @param {object} globalWindow The global window object.
  * @param {Function} pathMappingFn The path mapping function.
  * @param {boolean} isV2  Whether the environment is for UI5 V2.
+ * @param {object} [ui5Version] The UI5 version object.
  * @returns {void}
  */
-function initUI5Environment(globalWindow, pathMappingFn, isV2) {
+function initUI5Environment(globalWindow, pathMappingFn, isV2, ui5Version) {
     const mockData = {};
 
     globalWindow.jestSetup = true;
 
+    const XHR = globalWindow.XMLHttpRequest;
     globalWindow.XMLHttpRequest = function () {
-        return mockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData);
+        return mockXHR(globalWindow, pathMappingFn, shimmedFilePath, mockData, XHR);
     };
     globalWindow.performance.timing = {
         fetchStart: Date.now(),
@@ -79,6 +81,9 @@ function initUI5Environment(globalWindow, pathMappingFn, isV2) {
     }
     globalWindow.pathMappingFn = pathMappingFn;
 
+    if (ui5Version) {
+        mockData['sap-ui-version.json'] = JSON.stringify(ui5Version);
+    }
     globalWindow.jestUI5 = {
         resolvePath: function (sPath) {
             return pathMappingFn(sPath);

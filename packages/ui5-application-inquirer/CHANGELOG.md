@@ -1,5 +1,147 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.9.7
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/inquirer-common@0.6.7
+
+## 0.9.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/inquirer-common@0.6.6
+
+## 0.9.5
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 0.9.4
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/inquirer-common@0.6.4
+
+## 0.9.3
+
+### Patch Changes
+
+-   Updated dependencies [40ba546]
+    -   @sap-ux/inquirer-common@0.6.3
+
+## 0.9.2
+
+### Patch Changes
+
+-   Updated dependencies [dac696a]
+    -   @sap-ux/inquirer-common@0.6.2
+
+## 0.9.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.1
+
+## 0.9.0
+
+### Minor Changes
+
+-   112d29a: Include the name label for default UI5 choice
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 0.8.14
+
+### Patch Changes
+
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.8.13
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/inquirer-common@0.5.14
+
+## 0.8.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.13
+
+## 0.8.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.12
+
+## 0.8.10
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
+## 0.8.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.10
+
+## 0.8.8
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/inquirer-common@0.5.9
+
+## 0.8.7
+
+### Patch Changes
+
+-   b67b17d: Fixes non-loading texts from nested dependency
+
+## 0.8.6
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/inquirer-common@0.5.8
+
+## 0.8.5
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/inquirer-common@0.5.7
+
+## 0.8.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.6
+
+## 0.8.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.8
+-   @sap-ux/inquirer-common@0.5.5
+
 ## 0.8.2
 
 ### Patch Changes

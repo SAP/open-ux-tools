@@ -1,0 +1,398 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`update preview middleware config default ui5.yaml w/o index.html 1`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: v4lropconvert0711
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: https://sap-ux-mock.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: v4lropconvert0711
+            action: tile
+"
+`;
+
+exports[`update preview middleware config default ui5.yaml w/o index.html 2`] = `"{\\"scripts\\":{\\"start\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\",\\"start-index\\":\\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\",\\"start-index2\\":\\"fiori run --open 'index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile'\\",\\"start-index3\\":\\"fiori run --open index.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
+exports[`update preview middleware config deprecated tools preview w/o theme 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: test/flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`update preview middleware config deprecated tools preview w/o theme 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`update preview middleware config deprecated tools preview with theme 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`update preview middleware config deprecated tools preview with theme 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance\\\\\\" --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`update preview middleware config deprecated tools preview with theme and tests 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+        test:
+          - framework: OPA5
+            path: test/integration/opaTests.qunit.html
+          - framework: Testsuite
+          - framework: QUnit
+            path: test/unit/unitTests.qunit.html
+"
+`;
+
+exports[`update preview middleware config deprecated tools preview with theme and tests 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance\\\\\\" --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\",\\"ui:opa5\\":\\"fiori run -o test/integration/opaTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"ui:testsuite\\":\\"fiori run -o /test/testsuite.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"ui:unit\\":\\"fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`update preview middleware config deprecated tools preview with theme and tests with JourneyRunner but w/o testsuite 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+        test:
+          - framework: OPA5
+            pattern: /test/**/opaTests.qunit.custom.js
+          - framework: Testsuite
+          - framework: QUnit
+            path: test/unit/unitTests.qunit.html
+"
+`;
+
+exports[`update preview middleware config deprecated tools preview with theme and tests with JourneyRunner but w/o testsuite 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance\\\\\\" --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"start-variants-management\\":\\"ui5 serve --o chicken.html\\",\\"ui:opa5\\":\\"fiori run -o test/opaTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\",\\"ui:unit\\":\\"fiori run -o test/unit/unitTests.qunit.html --config ./ui5-deprecated-tools-preview-theme.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`update preview middleware config existing RTA script 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: localService/index.html
+          intent:
+            object: Chicken
+            action: dance
+        test:
+          - framework: OPA5
+            path: test/integration/opaTests.qunit.html
+          - framework: QUnit
+            path: test/unit/unitTests.qunit.html
+          - framework: Testsuite
+        rta:
+          editors:
+            - path: preview.html
+"
+`;
+
+exports[`update preview middleware config existing RTA script 2`] = `"{\\"scripts\\":{\\"start-rta\\":\\"ui5 run -o preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\",\\"start-local\\":\\"ui5 run -o /test/flp.html#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
+exports[`update preview middleware config existing preview middleware 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: localService/index.html
+          intent:
+            object: Chicken
+            action: dance
+        test:
+          - framework: OPA5
+            path: test/integration/opaTests.qunit.html
+          - framework: QUnit
+            path: test/unit/unitTests.qunit.html
+          - framework: Testsuite
+        rta:
+          editors:
+            - path: preview.html
+"
+`;
+
+exports[`update preview middleware config existing preview middleware 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\",\\"ui:opa5\\":\\"fiori run -o test/integration/opaTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\",\\"ui:unit\\":\\"fiori run -o test/unit/unitTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.102\\"}}"`;
+
+exports[`update preview middleware config existing preview middleware with tests 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: localService/index.html
+          intent:
+            object: Chicken
+            action: dance
+        test:
+          - framework: OPA5
+            path: test/integration/opaTests.qunit.html
+          - framework: QUnit
+            path: test/unit/unitTests.qunit.html
+          - framework: Testsuite
+        rta:
+          editors:
+            - path: preview.html
+"
+`;
+
+exports[`update preview middleware config existing preview middleware with tests 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\",\\"ui:opa5\\":\\"fiori run -o test/integration/opaTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\",\\"ui:unit\\":\\"fiori run -o test/unit/unitTests.qunit.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-preview-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.102\\"}}"`;
+
+exports[`update preview middleware config existing start-variants-management and start-control-property-editor script 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`update preview middleware config existing start-variants-management and start-control-property-editor script 2`] = `"{\\"scripts\\":{\\"start-variants-management\\":\\"fiori run -o /preview.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-control-property-editor\\":\\"fiori run -o /editor.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\",\\"start-local\\":\\"fiori run -o /test/flp.html#Chicken-dance --config ./ui5-deprecated-tools-preview.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
+exports[`update preview middleware config existing tools preview 1`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: Chicken
+            action: dance
+          libs: true
+"
+`;
+
+exports[`update preview middleware config existing tools preview 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"fiori run -o test/flpSandbox.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-existing-tools-preview.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.1\\"}}"`;
+
+exports[`update preview middleware config multiple scripts same yaml configuration 1`] = `
+"specVersion: '4.0'
+metadata:
+  name: com.sap.cap.fe.ts.sample
+  allowSapInternal: true
+type: application
+framework:
+  name: SAPUI5
+  version: 1.124.0
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`update preview middleware config multiple scripts same yaml configuration 2`] = `"{\\"scripts\\":{\\"start\\":\\"fiori run -o /test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml\\",\\"start-local\\":\\"fiori run -o /test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml\\",\\"start-mock\\":\\"fiori run -o /test/flp.html#Chicken-dance --config ./ui5-no-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
+exports[`update preview middleware config no tooling, no middleware 1`] = `
+"specVersion: '4.0'
+metadata:
+  name: com.sap.cap.fe.ts.sample
+  allowSapInternal: true
+type: application
+framework:
+  name: SAPUI5
+  version: 1.124.0
+server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        flp:
+          path: /localService/index.html
+          intent:
+            object: Chicken
+            action: dance
+"
+`;
+
+exports[`update preview middleware config no tooling, no middleware 2`] = `"{\\"scripts\\":{\\"ui:mockserver\\":\\"ui5 serve -o /localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-no-middleware.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
+
+exports[`update preview middleware config same yaml config different endpoints 1`] = `
+"# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: \\"3.1\\"
+metadata:
+  name: v4lropconvert0711
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-proxy
+      afterMiddleware: compression
+      configuration:
+        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+        ui5:
+          path:
+            - /resources
+            - /test-resources
+          url: https://ui5.sap.com
+        backend:
+          - path: /sap
+            url: https://sap-ux-mock.com
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        port: 35729
+        path: webapp
+        delay: 300
+    - name: fiori-tools-preview
+      afterMiddleware: fiori-tools-appreload
+      configuration:
+        flp:
+          theme: sap_horizon
+          path: test/flpSandbox.html
+          intent:
+            object: v4lropconvert0711
+            action: tile
+"
+`;
+
+exports[`update preview middleware config same yaml config different endpoints 2`] = `"{\\"scripts\\":{\\"start1\\":\\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\",\\"start2\\":\\"fiori run --open \\\\\\"test/flpSandboxMockserver.html?sap-ui-xx-viewCache=false#v4lropconvert0711-tile\\\\\\"\\"},\\"devDependencies\\":{\\"@sap/ux-ui5-tooling\\":\\"1.15.4\\"}}"`;
+
+exports[`update preview middleware config skip invalid yaml configurations 1`] = `"{\\"scripts\\":{\\"invalid\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-invalid.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
+
+exports[`update preview middleware config skip not found yaml configurations 1`] = `"{\\"scripts\\":{\\"not:found\\":\\"ui5 serve -o localService/index.html?sap-ui-xx-viewCache=false#Chicken-dance --config ./ui5-unavailable.yaml\\"},\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
+
+exports[`update preview middleware config skip yaml configurations not used in any script 1`] = `"{\\"devDependencies\\":{\\"@sap-ux/preview-middleware\\":\\"0.16.83\\"}}"`;
+
+exports[`update preview middleware config skip yaml configurations not used in any script 2`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+"
+`;
+
+exports[`update preview middleware config skip yaml configurations not used in any script 3`] = `
+"specVersion: \\"3.1\\"
+metadata:
+  name: v2lrop0909
+type: application
+server:
+  customMiddleware:
+    - name: fiori-tools-preview
+      afterMiddleware: compression
+      configuration:
+        flp:
+          theme: sap_horizon
+"
+`;
+
+exports[`update preview middleware config w/o path and intent 1`] = `
+Object {
+  "afterMiddleware": "compression",
+  "configuration": Object {
+    "flp": Object {
+      "path": "/test/flp.html",
+    },
+  },
+  "name": "fiori-tools-preview",
+}
+`;

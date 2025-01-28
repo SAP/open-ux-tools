@@ -25,13 +25,13 @@ interface LoadChangesResult {
  * Processes an array of FlexChange objects.
  * It updates each change object with settings and sends them to a API endpoint.
  *
- * @param {FlexChange[]} changes - Array of FlexChange objects to be processed.
+ * @param {FlexChange | FlexChange[]} changes - Array of FlexChange objects to be processed.
  * @returns {Promise<void>} A promise that resolves when all changes are processed.
  */
-export async function create(changes: FlexChange[]): Promise<void> {
+export async function create(changes: FlexChange | FlexChange[]): Promise<void> {
     const settings = getFlexSettings();
     await Promise.all(
-        changes.map((change) => {
+        (Array.isArray(changes) ? changes : [changes]).map((change) => {
             if (settings) {
                 change.support ??= {};
                 change.support.generator = settings.generator;
@@ -74,8 +74,7 @@ export async function loadChanges(...args: []): Promise<LoadChangesResult> {
     const changes = (await response.json()) as FetchedChanges;
 
     return LrepConnector.prototype.loadChanges.apply(lrep, args).then((res: LoadChangesResult) => {
-        const flexChanges = Object.values(changes);
-        res.changes.changes = flexChanges;
+        res.changes.changes = Object.values(changes);
         return res;
     });
 }

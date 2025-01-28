@@ -7,9 +7,11 @@ import {
     ManifestService,
     getVariant
 } from '@sap-ux/adp-tooling';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
-import { getLogger, traceChanges } from '../../tracing';
+
 import { promptYUIQuestions } from '../../common';
+import { getLogger, traceChanges } from '../../tracing';
 import { validateAdpProject } from '../../validation/validation';
 
 let loginAttempts = 3;
@@ -43,8 +45,16 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
         }
         await validateAdpProject(basePath);
         const variant = getVariant(basePath);
-        const adpConfig = await getAdpConfig(basePath, yamlPath);
-        const manifestService = await ManifestService.initMergedManifest(basePath, variant, adpConfig, logger);
+        const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
+        const provider = await createAbapServiceProvider(
+            target,
+            {
+                ignoreCertErrors
+            },
+            true,
+            logger
+        );
+        const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
         const dataSources = manifestService.getManifestDataSources();
         const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(basePath, dataSources), false);
         let namespaces: NamespaceAlias[] = [];
@@ -63,7 +73,8 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
                     filePath: answers.filePath,
                     namespaces,
                     serviceUrl: dataSources[answers.id].uri
-                }
+                },
+                isCommand: true
             }
         );
 

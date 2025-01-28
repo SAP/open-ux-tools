@@ -91,16 +91,11 @@ export class AbapServiceProvider extends ServiceProvider {
      *
      * @returns true if it an S/4HANA cloud system
      */
-    public async isS4Cloud(): Promise<boolean> {
+    public async isAbapCloud(): Promise<boolean> {
         if (this.atoSettings === undefined) {
             await this.getAtoInfo();
         }
-        return (
-            this.atoSettings.tenantType === TenantType.Customer &&
-            this.atoSettings.operationsType === 'C' &&
-            this.atoSettings.developmentPrefix !== '' &&
-            this.atoSettings.developmentPackage !== ''
-        );
+        return this.atoSettings.tenantType === TenantType.Customer && this.atoSettings.operationsType === 'C';
     }
 
     /**
@@ -139,8 +134,8 @@ export class AbapServiceProvider extends ServiceProvider {
         } else {
             throw new Error('not implemented yet');
         }
-        Object.defineProperty(service, 'isS4Cloud', {
-            get: this.isS4Cloud.bind(this)
+        Object.defineProperty(service, 'isAbapCloud', {
+            get: this.isAbapCloud.bind(this)
         });
         return service;
     }

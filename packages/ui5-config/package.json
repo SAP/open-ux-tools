@@ -9,11 +9,11 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aui5-config"
     },
-    "version": "0.25.2",
+    "version": "0.26.1",
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build",
+        "build": "tsc --build && node ../ui5-config/scripts/download-ui5yaml-schema.js",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -32,13 +32,17 @@
     ],
     "dependencies": {
         "@sap-ux/yaml": "workspace:*",
+        "ajv": "8.17.1",
+        "js-yaml": "4.1.0",
         "lodash": "4.17.21",
-        "semver": "7.5.4"
+        "semver": "7.5.4",
+        "axios": "1.7.4"
     },
     "devDependencies": {
         "@sap-ux/store": "workspace:*",
         "@types/lodash": "4.14.202",
-        "@types/semver": "7.5.2"
+        "@types/semver": "7.5.2",
+        "@types/js-yaml": "4.0.9"
     },
     "engines": {
         "node": ">=18.x"

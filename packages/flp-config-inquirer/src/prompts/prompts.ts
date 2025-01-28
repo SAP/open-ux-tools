@@ -1,3 +1,4 @@
+import type { ManifestNamespace } from '@sap-ux/project-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 import {
@@ -5,24 +6,40 @@ import {
     getActionPrompt,
     getTitlePrompt,
     getSubTitlePrompt,
-    getOverwritePrompt
-} from './questions/basic';
+    getOverwritePrompt,
+    getCreateAnotherInboundPrompt,
+    getEmptyInboundsLabelPrompt,
+    getInboundIdsPrompt,
+    getParameterStringPrompt
+} from './questions';
 import { promptNames } from '../types';
 import type { ExistingInboundRef, FLPConfigPromptOptions, FLPConfigQuestion } from '../types';
 
 /**
  * Generates a list of prompts for FLP (Fiori Launchpad) configuration.
  *
- * @param {string[]} [inboundKeys] - An array of existing inbound keys to check for duplicates.
- * @param {FLPConfigPromptOptions} [promptOptions] - Optional configuration to control prompt behavior and defaults.
+ * This function creates a set of prompts tailored for configuring FLP inbound navigation, including prompts
+ * for inbound IDs, semantic objects, actions, titles, subtitles, and overwrite options. The behavior of the
+ * prompts can be customized through the provided `promptOptions` parameter.
+ *
+ * @param {ManifestNamespace.Inbound | undefined} [inbounds] - Existing inbounds for the application, if any.
+ * @param {string | undefined} [appId] - Application ID for generating relevant prompts.
+ * @param {FLPConfigPromptOptions | undefined} [promptOptions] - Optional configuration to control prompt behavior and defaults.
  * @returns {FLPConfigQuestion[]} An array of FLPConfigQuestion objects to be used for prompting the user.
  */
-export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConfigPromptOptions): FLPConfigQuestion[] {
+export function getQuestions(
+    inbounds?: ManifestNamespace.Inbound,
+    appId?: string,
+    promptOptions?: FLPConfigPromptOptions
+): FLPConfigQuestion[] {
+    const inboundKeys = Object.keys(inbounds ?? {});
     const isCLI = getHostEnvironment() === hostEnvironment.cli;
     const existingKeyRef: ExistingInboundRef = { value: false };
     const silentOverwrite = promptOptions?.silentOverwrite ?? false;
 
     const keyedPrompts: Record<promptNames, FLPConfigQuestion> = {
+        [promptNames.inboundId]: getInboundIdsPrompt(inboundKeys),
+        [promptNames.emptyInboundsInfo]: getEmptyInboundsLabelPrompt(inboundKeys, appId),
         [promptNames.semanticObject]: getSemanticObjectPrompt(isCLI, promptOptions?.[promptNames.semanticObject]),
         [promptNames.action]: getActionPrompt(isCLI, promptOptions?.[promptNames.action]),
         [promptNames.overwrite]: getOverwritePrompt(
@@ -36,16 +53,17 @@ export function getQuestions(inboundKeys: string[] = [], promptOptions?: FLPConf
             existingKeyRef,
             silentOverwrite,
             promptOptions?.[promptNames.subTitle]
-        )
+        ),
+        [promptNames.additionalParameters]: getParameterStringPrompt(inboundKeys),
+        [promptNames.createAnotherInbound]: getCreateAnotherInboundPrompt(isCLI)
     };
 
-    const questions: FLPConfigQuestion[] = [
-        keyedPrompts[promptNames.semanticObject],
-        keyedPrompts[promptNames.action],
-        keyedPrompts[promptNames.overwrite],
-        keyedPrompts[promptNames.title],
-        keyedPrompts[promptNames.subTitle]
-    ];
+    const questions: FLPConfigQuestion[] = Object.entries(keyedPrompts)
+        .filter(([promptName]) => {
+            const option = promptOptions?.[promptName as promptNames];
+            return option && 'hide' in option ? !option.hide : true;
+        })
+        .map(([_, prompt]) => prompt);
 
     return questions;
 }

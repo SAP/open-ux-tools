@@ -1,5 +1,245 @@
 # @sap-ux/adp-tooling
 
+## 0.12.115
+
+### Patch Changes
+
+-   Updated dependencies [e516306]
+    -   @sap-ux/axios-extension@1.18.2
+    -   @sap-ux/system-access@0.5.27
+
+## 0.12.114
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/odata-service-writer@0.25.4
+    -   @sap-ux/system-access@0.5.26
+    -   @sap-ux/inquirer-common@0.6.7
+
+## 0.12.113
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/odata-service-writer@0.25.4
+    -   @sap-ux/project-access@1.29.1
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/system-access@0.5.26
+    -   @sap-ux/inquirer-common@0.6.6
+
+## 0.12.112
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 0.12.111
+
+### Patch Changes
+
+-   Updated dependencies [625bca8]
+    -   @sap-ux/odata-service-writer@0.25.3
+
+## 0.12.110
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/odata-service-writer@0.25.2
+    -   @sap-ux/system-access@0.5.26
+    -   @sap-ux/inquirer-common@0.6.4
+
+## 0.12.109
+
+### Patch Changes
+
+-   Updated dependencies [1559aee]
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/system-access@0.5.26
+
+## 0.12.108
+
+### Patch Changes
+
+-   f115bfa: fix: remove unused api routes and implementation for annotation file creation
+
+## 0.12.107
+
+### Patch Changes
+
+-   030857d: fix: Hide semantic object & action FLP prompts when there are inbounds for an Adaptation Project
+
+## 0.12.106
+
+### Patch Changes
+
+-   Updated dependencies [326cd59]
+    -   @sap-ux/odata-service-writer@0.25.2
+
+## 0.12.105
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
+## 0.12.104
+
+### Patch Changes
+
+-   Updated dependencies [40ba546]
+    -   @sap-ux/inquirer-common@0.6.3
+
+## 0.12.103
+
+### Patch Changes
+
+-   Updated dependencies [dac696a]
+    -   @sap-ux/inquirer-common@0.6.2
+
+## 0.12.102
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+    -   @sap-ux/system-access@0.5.25
+
+## 0.12.101
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.1
+
+## 0.12.100
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 0.12.99
+
+### Patch Changes
+
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.12.98
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/system-access@0.5.24
+    -   @sap-ux/inquirer-common@0.5.14
+
+## 0.12.97
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/inquirer-common@0.5.13
+    -   @sap-ux/system-access@0.5.24
+
+## 0.12.96
+
+### Patch Changes
+
+-   3ebd767: Replace keytar with @zowe/secrets-for-zowe-sdk
+    -   @sap-ux/system-access@0.5.23
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/inquirer-common@0.5.12
+
+## 0.12.95
+
+### Patch Changes
+
+-   0c64478: feat: Enhance extracted FLP prompts to support ADP scenario
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
+## 0.12.94
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.10
+
+## 0.12.93
+
+### Patch Changes
+
+-   Updated dependencies [727fd86]
+    -   @sap-ux/axios-extension@1.17.7
+    -   @sap-ux/system-access@0.5.22
+
+## 0.12.92
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/system-access@0.5.21
+    -   @sap-ux/inquirer-common@0.5.9
+
+## 0.12.91
+
+### Patch Changes
+
+-   Updated dependencies [307706e]
+    -   @sap-ux/inquirer-common@0.5.8
+
+## 0.12.90
+
+### Patch Changes
+
+-   3805f2e: add request options to manifest-service
+
+## 0.12.89
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/inquirer-common@0.5.7
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/axios-extension@1.17.6
+    -   @sap-ux/system-access@0.5.21
+
+## 0.12.88
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.5
+-   @sap-ux/inquirer-common@0.5.6
+-   @sap-ux/system-access@0.5.20
+
+## 0.12.87
+
+### Patch Changes
+
+-   14163cd: Update deploy scripts and ui5.yaml with latest ui5 builder configurations
+
+## 0.12.86
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/project-access@1.28.8
+    -   @sap-ux/axios-extension@1.17.4
+    -   @sap-ux/system-access@0.5.19
+    -   @sap-ux/inquirer-common@0.5.5
+
 ## 0.12.85
 
 ### Patch Changes

@@ -82,6 +82,27 @@ export interface TestConfig extends Partial<OptionalTestConfig> {
 
 export type InternalTestConfig = TestConfig & OptionalTestConfig;
 
+export type TestConfigDefaults = {
+    qunit: {
+        path: '/test/unitTests.qunit.html';
+        init: '/test/unitTests.qunit.js';
+        pattern: '/test/**/*Test.*';
+        framework: 'QUnit';
+    };
+    opa5: {
+        path: '/test/opaTests.qunit.html';
+        init: '/test/opaTests.qunit.js';
+        pattern: '/test/**/*Journey.*';
+        framework: 'OPA5';
+    };
+    testsuite: {
+        path: '/test/testsuite.qunit.html';
+        init: '/test/testsuite.qunit.js';
+        pattern: '';
+        framework: 'Testsuite';
+    };
+};
+
 /**
  * Middleware configuration.
  */
@@ -92,3 +113,10 @@ export interface MiddlewareConfig {
     adp?: AdpPreviewConfig;
     debug?: boolean;
 }
+
+export type DefaultFlpPath = '/test/flp.html';
+
+export type DefaultIntent = {
+    object: 'app';
+    action: 'preview';
+};

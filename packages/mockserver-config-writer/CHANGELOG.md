@@ -1,5 +1,29 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.7.2
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+
+## 0.7.1
+
+### Patch Changes
+
+-   625bca8: Removed local annotation definitions from mockserver middleware in ui5-local.yaml and ui5-mock.yaml files.
+
+## 0.7.0
+
+### Minor Changes
+
+-   73475e5: Support for multiple services and multiple annotations per service.
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+
 ## 0.6.7
 
 ### Patch Changes

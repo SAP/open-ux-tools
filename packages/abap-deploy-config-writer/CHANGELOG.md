@@ -1,5 +1,122 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.79
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.27
+
+## 0.0.78
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/system-access@0.5.26
+
+## 0.0.77
+
+### Patch Changes
+
+-   ccb96dd: enhancements for deploying ui5 libs
+
+## 0.0.76
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/project-access@1.29.1
+    -   @sap-ux/system-access@0.5.26
+
+## 0.0.75
+
+### Patch Changes
+
+-   71e5a5e: fix issues for library deployment
+
+## 0.0.74
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/system-access@0.5.26
+
+## 0.0.73
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.26
+
+## 0.0.72
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.25
+
+## 0.0.71
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/system-access@0.5.24
+
+## 0.0.70
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.24
+
+## 0.0.69
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.23
+-   @sap-ux/ui5-config@0.26.0
+
+## 0.0.68
+
+### Patch Changes
+
+-   1bb4d48: adds new module @sap-ux/abap-deploy-config-sub-generator
+
+## 0.0.67
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.22
+
+## 0.0.66
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/system-access@0.5.21
+
+## 0.0.65
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.21
+
+## 0.0.64
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.20
+
+## 0.0.63
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/project-access@1.28.8
+    -   @sap-ux/system-access@0.5.19
+
 ## 0.0.62
 
 ### Patch Changes

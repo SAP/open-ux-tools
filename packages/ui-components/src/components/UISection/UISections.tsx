@@ -164,8 +164,26 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         }
     }
 
-    componentDidUpdate(): void {
+    /**
+     * React lifecycle method that is invoked immediately after updating occurs.
+     * This method is used to determine if the section sizes need to be recalculated
+     * when the external prop sizes have changed.
+     *
+     * @param prevProps The previous props of the component before the update.
+     */
+    componentDidUpdate(prevProps: UISectionsProps): void {
         this.ignoreAnimation = false;
+        const sizes = this.props.sizes ?? [];
+        const prevSizes = prevProps.sizes ?? [];
+        if (
+            sizes !== prevSizes &&
+            (sizes.length !== prevSizes.length || sizes.some((size, index) => size !== prevSizes[index]))
+        ) {
+            // Calculate state
+            this.setState({
+                sizes: this.updateStateSizes(this.rootSize, sizes)
+            });
+        }
     }
 
     /**
@@ -332,33 +350,48 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     /**
      * Method called when resizing of section is happening.
      *
+     * @param {number} index Index of splitter.
      * @param {number} position Delta position in pixels.
      * @returns {boolean} If resizing was happened - it can return false when splitter meets resizing limitation.
      */
-    private onSplitterResize(position: number): boolean {
+    private onSplitterResize(index: number, position: number): boolean {
         const resizeSections = position !== 0 ? this.resizeSections : [];
-        let left = 0;
-        for (let i = 0; i < resizeSections.length; i++) {
-            const minSectionSize = this.getMinSectionSize(i);
-            const resizeSection = resizeSections[i];
-            let newSize = resizeSection.size + (i === 0 ? position : -position);
-            if (minSectionSize === resizeSection.maxSize) {
-                // Ignore resize - section is not resizable
-                continue;
-            }
-            // Do not allow size exceed min and max boundaries
-            if (newSize < minSectionSize) {
-                position = this.correctBoundaryPosition(position, minSectionSize, newSize, i === 0);
-                newSize = minSectionSize;
-            } else if (newSize > resizeSection.maxSize) {
-                position = this.correctBoundaryPosition(position, resizeSection.maxSize, newSize, i === 0);
-                newSize = resizeSection.maxSize;
-            }
+        const totalSize = this.rootSize;
+        let left = this.getSiblingsSize(resizeSections, 0, index);
+        this.refreshResizeSections(0, index, this.state.sizes);
+        let minSizeTriggered = false;
+        for (let i = index; i < resizeSections.length; i++) {
             const sectionSize: UISectionSize = {
                 percentage: false
             };
-            const nextSession = resizeSections[i + 1];
-            const right = nextSession ? nextSession.size - position : 0;
+            const resizeSection = resizeSections[i];
+            const minSectionSize = this.getMinSectionSize(i);
+            const maxSectioSize = this.getMaxSectionSize(i, minSectionSize, index);
+            if (minSectionSize === maxSectioSize) {
+                // Ignore resize - section is not resizable
+                left += minSectionSize;
+                continue;
+            }
+            let newSize = resizeSection.size;
+            if (i === index) {
+                newSize = resizeSection.size + position;
+            } else if (i === index + 1 || minSizeTriggered) {
+                newSize = resizeSection.size - position;
+            }
+            // Do not allow size exceed min and max boundaries
+            minSizeTriggered = false;
+            if (newSize < minSectionSize) {
+                position = this.correctBoundaryPosition(position, minSectionSize, newSize, i === index);
+                newSize = minSectionSize;
+                minSizeTriggered = true;
+            } else if (newSize > maxSectioSize) {
+                position = this.correctBoundaryPosition(position, maxSectioSize, newSize, i === index);
+                newSize = maxSectioSize;
+            }
+            let right = 0;
+            if (resizeSections[i + 1]) {
+                right = totalSize - left - newSize;
+            }
             if (i > 0) {
                 sectionSize.size = newSize;
                 sectionSize.start = left;
@@ -369,6 +402,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             }
             sectionSize.end = right;
             resizeSection.dom.style[this.endPositionProperty] = right + 'px';
+            resizeSection.dom.style[this.sizeProperty] = '';
             resizeSection.section = sectionSize;
             left += newSize;
         }
@@ -630,6 +664,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const sectionStyle = UISections.isSectionVisible(childNode)
             ? this.getVisibleSectionStyle(index)
             : this.getHiddenSectionStyle(index);
+
         if (!sectionStyle) {
             return undefined;
         }
@@ -656,7 +691,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 {isSplitterVisible && childNode && (
                     <UISplitter
                         vertical={vertical}
-                        onResize={this.onSplitterResize.bind(this)}
+                        onResize={this.onSplitterResize.bind(this, index - 1)}
                         onResizeStart={this.onSplitterResizeStart.bind(this)}
                         onResizeEnd={this.onSplitterResizeEnd.bind(this)}
                         onToggle={this.onSplitterToggle.bind(this)}
@@ -753,8 +788,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 percentage: false
             };
             const current = sizes[i];
-            const next = sizes[i + 1];
-            const right = next ? next.size : 0;
+            const right = this.getSiblingsSize(sizes, i + 1, sizes.length);
             if (i > 0) {
                 sectionSize.size = current.size;
                 sectionSize.start = undefined;
@@ -833,5 +867,66 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 {sections}
             </div>
         );
+    }
+
+    /**
+     * Calculates the total size of sibling elements within a specified range.
+     *
+     * @param sizes An array of objects, each containing 'size` property.
+     * @param start The starting index (inclusive) of the range.
+     * @param end The ending index (exclusive) of the range.
+     * @returns The sum of the sibling sizes for the specified range.
+     */
+    private getSiblingsSize(sizes: Array<{ size?: number }>, start: number, end: number): number {
+        let size = 0;
+        for (let j = start; j < end; j++) {
+            const next = sizes[j];
+            if (next?.size) {
+                size += next.size;
+            }
+        }
+        return size;
+    }
+
+    /**
+     * Refreshes the resize sections by updating their sizes from a provided range.
+     *
+     * @param start The starting index (inclusive) of the sections to refresh.
+     * @param end The ending index (exclusive) of the sections to refresh.
+     * @param sizes An array of section sizes to apply.
+     */
+    private refreshResizeSections(start: number, end: number, sizes: UISectionSize[] = []): void {
+        for (let i = start; i < end; i++) {
+            if (sizes[i]) {
+                this.resizeSections[i].section = sizes[i];
+            }
+        }
+    }
+
+    /**
+     * Calculates the maximum allowable size for a section at the specified index.
+     *
+     * @param index The index of the section to calculate the maximum size for.
+     * @param minSectionSize The minimum size of the section.
+     * @param splitterIndex Optional index of the splitter; if specified, the section at this index is not considered resizable.
+     * @returns The maximum size the section can expand to, constrained by available space and other sections.
+     */
+    private getMaxSectionSize(index: number, minSectionSize: number, splitterIndex?: number): number {
+        const resizeSection = this.resizeSections[index];
+        if (resizeSection && index !== splitterIndex) {
+            return Math.max(minSectionSize, resizeSection.maxSize);
+        }
+        // Calculate max size based on current DOM
+        const rootDom = this.rootRef.current;
+        const mainSize = rootDom?.[this.domSizeProperty] ?? 0;
+        const resizeSections = this.resizeSections;
+        let reservedSize = 0;
+        for (let i = 0; i < index; i++) {
+            reservedSize += resizeSections[i].size;
+        }
+        for (let i = index + 1; i < resizeSections.length; i++) {
+            reservedSize += this.getMinSectionSize(i);
+        }
+        return Math.max(minSectionSize, mainSize - reservedSize);
     }
 }

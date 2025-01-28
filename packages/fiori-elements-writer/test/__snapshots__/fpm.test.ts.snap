@@ -90,8 +90,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -135,12 +135,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -325,7 +323,7 @@ MainTitle=Main",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
 xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
@@ -3258,7 +3256,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -3442,9 +3440,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -3541,9 +3536,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -3835,8 +3830,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -3896,12 +3891,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -4161,7 +4154,7 @@ MainTitle=Main",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
 xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
@@ -7094,7 +7087,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },

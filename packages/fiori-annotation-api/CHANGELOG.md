@@ -1,5 +1,67 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.3.8
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/cds-odata-annotation-converter@0.3.10
+
+## 0.3.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/cds-odata-annotation-converter@0.3.10
+
+## 0.3.6
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/cds-odata-annotation-converter@0.3.10
+
+## 0.3.5
+
+### Patch Changes
+
+-   Updated dependencies [54b6d61]
+    -   @sap-ux/odata-vocabularies@0.4.5
+    -   @sap-ux/cds-annotation-parser@0.2.5
+    -   @sap-ux/cds-odata-annotation-converter@0.3.10
+    -   @sap-ux/xml-odata-annotation-converter@0.3.2
+
+## 0.3.4
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/cds-odata-annotation-converter@0.3.9
+
+## 0.3.3
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/cds-odata-annotation-converter@0.3.9
+
+## 0.3.2
+
+### Patch Changes
+
+-   7d61e58: Fixed writing collections with string values
+
+## 0.3.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.28.8
+-   @sap-ux/cds-odata-annotation-converter@0.3.9
+
 ## 0.3.0
 
 ### Minor Changes

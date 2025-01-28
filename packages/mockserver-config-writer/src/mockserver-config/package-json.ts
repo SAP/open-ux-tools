@@ -30,8 +30,8 @@ function enhanceDependencies(
     packageJson: Package,
     mockserverModule = '@sap-ux/ui5-middleware-fe-mockserver',
     version = '2'
-) {
-    packageJson.devDependencies = packageJson.devDependencies || {};
+): void {
+    packageJson.devDependencies = packageJson.devDependencies ?? {};
     delete packageJson.devDependencies['@sap/ux-ui5-fe-mockserver-middleware'];
     packageJson.devDependencies[mockserverModule] = version;
     if (isUi5CliHigherTwo(packageJson.devDependencies)) {
@@ -135,7 +135,7 @@ function replaceConfig(startScript: string, configStartIndex: number): string {
  *
  * @param packageJson - parsed package.json content
  */
-function removeMockserverUi5Dependencies(packageJson: Package) {
+function removeMockserverUi5Dependencies(packageJson: Package): void {
     const removeModules = new Set(['@sap/ux-ui5-fe-mockserver-middleware', '@sap-ux/ui5-middleware-fe-mockserver']);
     if (packageJson.ui5?.dependencies && Array.isArray(packageJson.ui5.dependencies)) {
         packageJson.ui5.dependencies = packageJson.ui5.dependencies.filter((d) => !removeModules.has(d));

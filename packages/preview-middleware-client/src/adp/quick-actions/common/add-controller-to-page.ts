@@ -8,9 +8,11 @@ import type {
     QuickActionContext,
     SimpleQuickActionDefinition
 } from '../../../cpe/quick-actions/quick-action-definition';
-import { DialogNames, handler, isControllerExtensionEnabledForControl } from '../../init-dialogs';
+import { DialogFactory, DialogNames } from '../../dialog-factory';
+import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
 import { getExistingController } from '../../api-handler';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -23,7 +25,7 @@ export class AddControllerToPageQuickAction
     implements SimpleQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context);
+        super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context, [DIALOG_ENABLEMENT_VALIDATOR]);
     }
 
     private controllerExists = false;
@@ -52,7 +54,7 @@ export class AddControllerToPageQuickAction
     async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await handler(overlay, this.context.rta, DialogNames.CONTROLLER_EXTENSION);
+            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.CONTROLLER_EXTENSION);
         }
         return [];
     }

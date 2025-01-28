@@ -1,5 +1,63 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.4
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/mockserver-config-writer@0.7.2
+
+## 0.25.3
+
+### Patch Changes
+
+-   625bca8: Removed local annotation definitions from mockserver middleware in ui5-local.yaml and ui5-mock.yaml files.
+-   Updated dependencies [625bca8]
+    -   @sap-ux/mockserver-config-writer@0.7.1
+
+## 0.25.2
+
+### Patch Changes
+
+-   326cd59: Uses "" model for mainService during generation if model for mainService already exists.
+
+## 0.25.1
+
+### Patch Changes
+
+-   0f1b457: Improved update function for manifest by reducing JSON write calls for manifest file.
+
+## 0.25.0
+
+### Minor Changes
+
+-   036b48b: Removed ejs for manifest enhancements.
+
+## 0.24.2
+
+### Patch Changes
+
+-   9f14de1: Improved manifest.json template to allow services with empty remote annotations array and added support for multiple local annotations.
+
+## 0.24.1
+
+### Patch Changes
+
+-   0c9e896: Update existing services in a way that is required for multiple services support - service files in their respective folders.
+
+## 0.24.0
+
+### Minor Changes
+
+-   73475e5: Support for multiple services and multiple annotations per service.
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/mockserver-config-writer@0.7.0
+    -   @sap-ux/ui5-config@0.26.0
+
 ## 0.23.3
 
 ### Patch Changes

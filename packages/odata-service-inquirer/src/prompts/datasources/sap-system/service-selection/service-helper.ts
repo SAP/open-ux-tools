@@ -255,7 +255,7 @@ export async function getServiceDetails(
     PromptState.odataService.annotations = serviceResult?.annotations;
     PromptState.odataService.metadata = serviceResult?.metadata;
     PromptState.odataService.odataVersion =
-        version ?? service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4;
+        version ?? (service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4);
     PromptState.odataService.servicePath = service.servicePath;
     PromptState.odataService.origin = origin;
     PromptState.odataService.sapClient = connectionValidator.validatedClient;
@@ -284,13 +284,15 @@ export function getSelectedServiceLabel(username: string | undefined): string {
  * @param selectedService the selected service
  * @param connectValidator the connection validator
  * @param requiredOdataVersion the required OData version for the service
+ * @param hasAnnotations used to determine whether to show a warning message that annotations could not be retrieved
  * @returns the service selection prompt additional message
  */
 export async function getSelectedServiceMessage(
     serviceChoices: ListChoiceOptions<ServiceAnswer>[],
     selectedService: ServiceAnswer,
     connectValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
+    requiredOdataVersion?: OdataVersion,
+    hasAnnotations = true
 ): Promise<IMessageSeverity | undefined> {
     if (serviceChoices?.length === 0) {
         if (requiredOdataVersion) {
@@ -310,6 +312,13 @@ export async function getSelectedServiceMessage(
     if (selectedService) {
         let serviceType = selectedService.serviceType;
         if (selectedService.serviceODataVersion === ODataVersion.v2) {
+            // Warn if odata service is version is '2' and no annotations are present
+            if (!hasAnnotations) {
+                return {
+                    message: t('prompts.warnings.noAnnotations'),
+                    severity: Severity.warning
+                };
+            }
             serviceType = await getServiceType(
                 selectedService.servicePath,
                 selectedService.serviceType,

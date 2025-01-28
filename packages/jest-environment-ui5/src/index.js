@@ -23,6 +23,7 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
         this.testEnvironmentOptions = config.testEnvironmentOptions;
         this.mappingStrategy = config.testEnvironmentOptions ? config.testEnvironmentOptions.mappingStrategy : 'ui5';
         this.useOptimized = config.testEnvironmentOptions ? !config.testEnvironmentOptions.useDebugSources : true;
+        this.allowCSS = config.testEnvironmentOptions ? config.testEnvironmentOptions.allowCSS : false;
 
         // make sure that the test path is in POSIX style:
         //   C:\dir1\dir2 --> /dir1/dir2
@@ -37,23 +38,23 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
      */
     async setup() {
         let pathMappingFn;
+        let ui5VersionInfo;
         if (this.mappingStrategy === 'tsconfig') {
             pathMappingFn = await initTsConfigMappingStrategy(this.testEnvironmentOptions);
         } else {
-            pathMappingFn = await initUi5MappingStrategy(this.testEnvironmentOptions);
+            const ui5Mappings = await initUi5MappingStrategy(this.testEnvironmentOptions);
+            pathMappingFn = ui5Mappings.pathMappingFn;
+            ui5VersionInfo = ui5Mappings.ui5VersionInfo;
         }
         await super.setup();
         const context = this.getVmContext();
-        initUI5Environment(context, pathMappingFn, this.testEnvironmentOptions.isV2 ?? false);
+        initUI5Environment(context, pathMappingFn, this.testEnvironmentOptions.isV2 ?? false, ui5VersionInfo);
         context.testPath = this.testPath;
         global.window = context;
         global.Object = context.Object;
-        global.CanvasRenderingContext2D = function () {};
-        context.HTMLCanvasElement.prototype.getContext = () => {};
         window.NewObject = Object;
         [
             'sap',
-            'navigator',
             'location',
             'top',
             'self',
@@ -68,7 +69,6 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
             global[keyName] = context[keyName];
         });
         window.console = console;
-        window.CanvasRenderingContext2D = function () {};
         window.matchMedia = (query) => ({
             matches: false,
             media: query,
@@ -112,22 +112,23 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
             this.core.boot();
         }
         return new Promise((resolve) => {
-            this.initUI5Core(resolve);
+            this.initUI5Core(resolve, this.allowCSS);
         });
     }
 
     /**
      * Initialize the UI5 Core and resolve once ready.
      * @param {Function} resolve The function to call once the core is ready
+     * @param {boolean} allowCSS Whether to allow the UI5 CSS to be loaded
      */
-    initUI5Core(resolve) {
+    initUI5Core(resolve, allowCSS = false) {
         sap.ui.require(['sap/ui/core/Core', 'sap/ui/core/date/Gregorian'], async (Core) => {
             if (Core.ready) {
                 await Core.ready();
-                this.overwriteUi5Lib(resolve);
+                this.overwriteUi5Lib(resolve, allowCSS);
             } else {
                 Core.attachInit(() => {
-                    this.overwriteUi5Lib(resolve);
+                    this.overwriteUi5Lib(resolve, allowCSS);
                 });
             }
         });
@@ -136,14 +137,15 @@ class UI5DOMEnvironment extends JSDOMEnvironment {
     /**
      * Overwrite the UI5 Lib to disable the library CSS.
      * @param {Function} resolve the function to call once the lib is overwritten
+     * @param {boolean} allowCSS Whether to allow the UI5 CSS to be loaded
      */
-    overwriteUi5Lib(resolve) {
+    overwriteUi5Lib(resolve, allowCSS) {
         sap.ui.require(
             ['sap/ui/core/Lib'],
             function (Lib) {
                 const fnInit = Lib.init;
                 Lib.init = function (mSettings) {
-                    mSettings.noLibraryCSS = true;
+                    mSettings.noLibraryCSS = !allowCSS;
                     return fnInit.call(this, mSettings);
                 };
                 resolve();

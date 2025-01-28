@@ -5,6 +5,7 @@ import { UIToggle, UIToggleSize } from '../src/components/UIToggle';
 import type { UIDropdownOption } from '../src/components/UIDropdown';
 import { UIDropdown } from '../src/components/UIDropdown';
 import { UIDefaultButton } from '../src/components/UIButton';
+import { UITextInput } from '../src';
 
 export default { title: 'Utilities/Splitter' };
 
@@ -19,6 +20,9 @@ const css = `
     #storybook-root {
         height: 100%;
     }
+    .componentOptions .ms-TextField .ms-Label {
+        margin-top: 0;
+    }
 `;
 
 const text = `Lorem ipsum dolor sit amet, modo iriure prompta eos in, eos ex meis ponderum, veniam cetero imperdiet ex mel. Munere recteque nam ut, ipsum aeterno est ex. Duo porro nulla ea, ut iudicabit scriptorem sed. Eos senserit imperdiet consequuntur in.
@@ -29,6 +33,7 @@ Unum consectetuer et pro, at ignota evertitur mei. Wisi meis officiis sed ne, ea
 
 interface SectionsExampleProps {
     vertical: boolean;
+    threeSections?: boolean;
 }
 
 const getOptions = (values: string[]): UIDropdownOption[] => {
@@ -41,16 +46,17 @@ const getOptions = (values: string[]): UIDropdownOption[] => {
 };
 
 function SectionsExample(props: SectionsExampleProps): JSX.Element {
+    const [firstSectionSize, setFirstSectionSize] = useState(props.threeSections ? 200 : 400);
     const [sectionsProps, setSectionsProps] = useState<Omit<UISectionsProps, 'children'>>({
         vertical: props.vertical,
         splitterType: UISplitterType.Resize,
         splitter: true,
         splitterTabIndex: 0,
-        minSectionSize: [300, 300],
+        minSectionSize: props.threeSections ? [100, 100, 100] : [300, 300],
         animation: true,
         splitterLayoutType: UISplitterLayoutType.Standard,
         sizesAsPercents: false,
-        sizes: [400, undefined]
+        sizes: props.threeSections ? [firstSectionSize, undefined, 200] : [firstSectionSize, undefined]
     });
     const [leftSectionVisible, setLeftSectionVisible] = useState<boolean>(true);
     const [rightSectionVisible, setRightSectionVisible] = useState<boolean>(true);
@@ -84,6 +90,35 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
     ) => {
         propertyChange(id, option?.key);
     };
+    const sectionElements = [
+        <UISections.Section key="first" height="100%" cleanPadding={true} hidden={!leftSectionVisible} data-test="test">
+            <div>
+                {text}
+                {text}
+                {text}
+            </div>
+        </UISections.Section>
+    ];
+    if (props.threeSections) {
+        sectionElements.push(
+            <UISections.Section key="second" height="100%" cleanPadding={true}>
+                <div>
+                    {text}
+                    {text}
+                    {text}
+                </div>
+            </UISections.Section>
+        );
+    }
+    sectionElements.push(
+        <UISections.Section key="last" height="100%" cleanPadding={true} hidden={!rightSectionVisible}>
+            <div>
+                {text}
+                {text}
+                {text}
+            </div>
+        </UISections.Section>
+    );
     return (
         <>
             <style>{css}</style>
@@ -126,6 +161,19 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
                         options={getOptions([UISplitterLayoutType.Compact, UISplitterLayoutType.Standard])}
                         // ts-ignore
                         onChange={dropdownChange.bind(this, 'splitterLayoutType')}
+                    />
+                    <UITextInput
+                        label="First section size"
+                        value={firstSectionSize}
+                        onChange={(e, newValue) => {
+                            const valueDec = parseFloat(newValue ?? '');
+                            if (!isNaN(valueDec)) {
+                                setFirstSectionSize(valueDec);
+                                const sizes = [...sectionsProps.sizes];
+                                sizes[0] = valueDec;
+                                propertyChange('sizes', sizes);
+                            }
+                        }}
                     />
                     <div>
                         <UIToggle
@@ -203,24 +251,7 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
                         onClose={() => {
                             setRightSectionVisible(!rightSectionVisible);
                         }}>
-                        <UISections.Section
-                            height="100%"
-                            cleanPadding={true}
-                            hidden={!leftSectionVisible}
-                            data-test="test">
-                            <div>
-                                {text}
-                                {text}
-                                {text}
-                            </div>
-                        </UISections.Section>
-                        <UISections.Section height="100%" cleanPadding={true} hidden={!rightSectionVisible}>
-                            <div>
-                                {text}
-                                {text}
-                                {text}
-                            </div>
-                        </UISections.Section>
+                        {sectionElements}
                     </UISections>
                 </div>
             </div>
@@ -231,3 +262,9 @@ function SectionsExample(props: SectionsExampleProps): JSX.Element {
 export const HorizontalSections = (): JSX.Element => <SectionsExample vertical={false} />;
 
 export const VerticalSections = (): JSX.Element => <SectionsExample vertical={true} />;
+
+export const HorizontalSectionsThreeColumns = (): JSX.Element => (
+    <SectionsExample vertical={false} threeSections={true} />
+);
+
+export const VerticalSectionsThreeRows = (): JSX.Element => <SectionsExample vertical={true} threeSections={true} />;

@@ -412,9 +412,6 @@ function (JSONModel, Device) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -511,9 +508,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -1131,9 +1128,6 @@ export function createDeviceModel () {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -1230,9 +1224,9 @@ export function createDeviceModel () {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -1862,9 +1856,6 @@ function (JSONModel, Device) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -1961,9 +1952,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -2279,8 +2270,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -2340,8 +2331,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -2523,7 +2514,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -2550,7 +2541,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -2917,8 +2908,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -2978,8 +2969,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -3161,7 +3152,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -3188,7 +3179,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -3549,8 +3540,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -3610,8 +3601,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -3793,7 +3784,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -3820,7 +3811,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -4181,8 +4172,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -4242,8 +4233,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 builder:
@@ -4423,7 +4414,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -4450,7 +4441,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -4749,8 +4740,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -4794,8 +4785,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -4947,7 +4938,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -4974,7 +4965,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -5298,8 +5289,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -5343,8 +5334,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -5496,7 +5487,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -5523,7 +5514,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -5724,9 +5715,6 @@ function (JSONModel, Device) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -5826,9 +5814,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -6110,8 +6098,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -6155,8 +6143,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -6324,7 +6312,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -6351,7 +6339,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -6562,9 +6550,6 @@ function (JSONModel, Device) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -6661,9 +6646,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -6924,8 +6909,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -6969,8 +6954,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -7138,7 +7123,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -7165,7 +7150,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -7376,9 +7361,6 @@ function (JSONModel, Device) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -7475,9 +7457,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -7738,8 +7720,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -7783,8 +7765,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -7952,7 +7934,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -7980,7 +7962,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -8191,9 +8173,6 @@ function (JSONModel, Device) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -8290,9 +8269,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -8553,8 +8532,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -8598,8 +8577,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -8767,7 +8746,7 @@ title=App Title",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -8794,7 +8773,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -9122,8 +9101,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -9167,8 +9146,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -9298,7 +9277,7 @@ appDescription=A Fiori application.
 title=App Title",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<metadata />",
     "state": "modified",
   },
@@ -9325,7 +9304,7 @@ title=App Title",
         \\"type\\": \\"OData\\",
         \\"settings\\": {
           \\"annotations\\": [],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       }
@@ -9536,9 +9515,6 @@ function (JSONModel, Device) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -9635,9 +9611,9 @@ function (JSONModel, Device) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {

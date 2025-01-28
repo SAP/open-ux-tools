@@ -102,8 +102,7 @@ describe('getPackagePrompts', () => {
         const validatePackageChoiceInputForCliSpy = jest.spyOn(validators, 'validatePackageChoiceInputForCli');
         validatePackageChoiceInputForCliSpy.mockResolvedValueOnce();
         // Cli
-        PromptState.isYUI = false;
-        const packagePromptsCli = getPackagePrompts({});
+        const packagePromptsCli = getPackagePrompts({}, false, false);
         const packageCliExecutionPromptCli = packagePromptsCli.find(
             (prompt) => prompt.name === promptNames.packageCliExecution
         );
@@ -113,9 +112,7 @@ describe('getPackagePrompts', () => {
         }
 
         // Vscode
-        PromptState.isYUI = true;
-
-        const packagePrompts = getPackagePrompts({});
+        const packagePrompts = getPackagePrompts({}, true, true);
         const packageCliExecutionPrompt = packagePrompts.find(
             (prompt) => prompt.name === promptNames.packageCliExecution
         );
@@ -177,6 +174,7 @@ describe('getPackagePrompts', () => {
                 await ((packageAutocompletePrompt as AutocompleteQuestionOptions).source as Function)()
             ).toStrictEqual(['TEST_PACKAGE_1', 'TEST_PACKAGE_2']);
             expect(((packageAutocompletePrompt as any).additionalInfo as Function)()).toBe('Test additional msg');
+            expect(await (packageAutocompletePrompt.validate as Function)({ name: '$TMP', value: '$TMP' })).toBe(true);
         }
     });
 });

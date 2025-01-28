@@ -4,7 +4,7 @@ describe('Jest Environment UI5', () => {
     it('should be able to run a test', async () => {
         const window = { performance: {}, window: {} };
         const pathMapping = jest.fn();
-        initUI5Environment(window, pathMapping, false);
+        initUI5Environment(window, pathMapping, false, { libs: 'sap.ui.core, sap.m' });
         expect(window.jestUI5).toBeDefined();
         window.jestUI5.resolvePath('test');
         expect(pathMapping).toHaveBeenCalled();

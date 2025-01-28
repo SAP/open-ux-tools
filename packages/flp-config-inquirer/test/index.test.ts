@@ -1,5 +1,4 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-
 import { getPrompts, prompt } from '../src';
 import type { FLPConfigAnswers } from '../src';
 
@@ -11,15 +10,20 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('index', () => {
     describe('getPrompts', () => {
-        it('should return prompts from getPrompts', async () => {
-            const prompts = await getPrompts([], undefined);
-
-            expect(prompts).toBeDefined();
-            expect(prompts.length).toBe(5);
-        });
-
         it('should return prompts from getPrompts without any arguments', async () => {
             const prompts = await getPrompts();
+
+            expect(prompts).toBeDefined();
+            expect(prompts.length).toBe(9);
+        });
+
+        it('should return selected prompts from getPrompts prompt options', async () => {
+            const prompts = await getPrompts(undefined, undefined, {
+                inboundId: { hide: true },
+                emptyInboundsInfo: { hide: true },
+                additionalParameters: { hide: true },
+                createAnotherInbound: { hide: true }
+            });
 
             expect(prompts).toBeDefined();
             expect(prompts.length).toBe(5);
@@ -64,7 +68,7 @@ describe('index', () => {
                 prompt: jest.fn().mockResolvedValueOnce(answers)
             };
 
-            const result = await prompt(adapter, [], {
+            const result = await prompt(adapter, undefined, undefined, {
                 overwrite: { hide: false },
                 // simulating behavior when default is a function
                 subTitle: { default: (() => 'defaultSubTitle') as unknown as string },

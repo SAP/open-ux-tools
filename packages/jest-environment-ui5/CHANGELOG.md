@@ -1,5 +1,35 @@
 # Change Log
 
+## 5.3.6
+
+### Patch Changes
+
+-   754a4e6: feat: add the possibility to refer to external services, and load application CSS for further component testing using mockserver
+
+## 5.3.5
+
+### Patch Changes
+
+-   264458a: Do not reassign global.navigator
+
+## 5.3.4
+
+### Patch Changes
+
+-   01c5695: Fix an issue when running the test multiple times
+
+## 5.3.3
+
+### Patch Changes
+
+-   a0f9244: fix: impossible snapshots due to version
+
+## 5.3.2
+
+### Patch Changes
+
+-   9a80888: We now properly generate a sap-ui-version.json for ui5 mapping strategy
+
 ## 5.3.1
 
 ### Patch Changes

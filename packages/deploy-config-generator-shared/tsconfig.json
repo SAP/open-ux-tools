@@ -10,7 +10,19 @@
   },
   "references": [
     {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
       "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../nodejs-utils"
+    },
+    {
+      "path": "../store"
     }
   ]
 }

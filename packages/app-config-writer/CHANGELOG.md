@@ -1,5 +1,144 @@
 # @sap-ux/app-config-writer
 
+## 0.5.19
+
+### Patch Changes
+
+-   Updated dependencies [e516306]
+    -   @sap-ux/axios-extension@1.18.2
+
+## 0.5.18
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/axios-extension@1.18.1
+
+## 0.5.17
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/project-access@1.29.1
+    -   @sap-ux/axios-extension@1.18.1
+
+## 0.5.16
+
+### Patch Changes
+
+-   6f9104b: various improvements for the convert preview-config
+
+## 0.5.15
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/axios-extension@1.18.1
+
+## 0.5.14
+
+### Patch Changes
+
+-   Updated dependencies [1559aee]
+    -   @sap-ux/axios-extension@1.18.1
+
+## 0.5.13
+
+### Patch Changes
+
+-   04f0547: fix: preview config update default configs
+
+## 0.5.12
+
+### Patch Changes
+
+-   20ab455: fix: prerequisites check for preview conversion
+
+## 0.5.11
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+
+## 0.5.10
+
+### Patch Changes
+
+-   d964a24: feat: add option to convert test runners to preview-config command
+
+## 0.5.9
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/axios-extension@1.17.8
+
+## 0.5.8
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/axios-extension@1.17.8
+
+## 0.5.7
+
+### Patch Changes
+
+-   29cdac8: fix: add missing logger parameter to convert preview-config
+
+## 0.5.6
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/store@1.0.0
+    -   @sap-ux/ui5-config@0.26.0
+
+## 0.5.5
+
+### Patch Changes
+
+-   Updated dependencies [727fd86]
+    -   @sap-ux/axios-extension@1.17.7
+
+## 0.5.4
+
+### Patch Changes
+
+-   e93797a: Added the `convert` command to convert local preview files of a project to virtual files.
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/axios-extension@1.17.6
+
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [2359524]
+    -   @sap-ux/btp-utils@0.17.1
+    -   @sap-ux/axios-extension@1.17.6
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.5
+
+## 0.5.1
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/project-access@1.28.8
+    -   @sap-ux/axios-extension@1.17.4
+
 ## 0.5.0
 
 ### Minor Changes

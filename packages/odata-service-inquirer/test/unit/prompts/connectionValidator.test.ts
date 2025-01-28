@@ -1,5 +1,5 @@
 import * as axiosExtension from '@sap-ux/axios-extension';
-import type { AbapServiceProvider, ODataServiceInfo } from '@sap-ux/axios-extension';
+import type { ODataServiceInfo } from '@sap-ux/axios-extension';
 import { ODataService, ODataVersion, ServiceProvider, type AxiosRequestConfig } from '@sap-ux/axios-extension';
 import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
@@ -572,7 +572,7 @@ describe('ConnectionValidator', () => {
         const connectValidator = new ConnectionValidator();
         expect(
             await connectValidator.validateDestination({
-                Name: 'dest1',
+                Name: 'DEST1',
                 Host: 'https://system1:12345/path/to/service',
                 Type: 'HTTP',
                 Authentication: 'NoAuthentication',
@@ -594,7 +594,7 @@ describe('ConnectionValidator', () => {
         expect(
             await connectValidator.validateDestination(
                 {
-                    Name: 'dest2',
+                    Name: 'DEST2',
                     Host: 'https://system2:12345/',
                     Type: 'HTTP',
                     Authentication: 'NoAuthentication',
@@ -637,7 +637,8 @@ describe('ConnectionValidator', () => {
                         text: 'Need help with this error?',
                         url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_NOT_FOUND}`
                     },
-                    message: t('errors.urlNotFound')
+                    message:
+                        'The destination target URL cannot be found. The request failed with status code 404. Please check the destination target URL connectivity in your BTP cockpit.'
                 }
             })
         );
@@ -670,5 +671,24 @@ describe('ConnectionValidator', () => {
                 }
             })
         );
+
+        // Authentication errors should return an authentication error message if the destination has authentication configured as 'NoAuthentication'
+        jest.spyOn(ODataService.prototype, 'get').mockRejectedValueOnce(newAxiosErrorWithStatus(403));
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system1:12345/path/to/service',
+                Type: 'HTTP',
+                Authentication: 'OAuth2ClientCredentials',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_gen',
+                WebIDEAdditionalData: 'full_url',
+                'HTML5.DynamicDestination': 'true'
+            })
+        ).toEqual({
+            errorType: ERROR_TYPE.AUTH,
+            valResult: 'Authentication incorrect. Please check the SAP BTP destination authentication configuration.'
+        });
     });
 });

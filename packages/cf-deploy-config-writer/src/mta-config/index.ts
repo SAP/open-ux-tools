@@ -81,7 +81,7 @@ export async function addMtaBuildParams(mtaInstance: MtaConfig): Promise<void> {
 }
 
 /**
- * Add the deploy parameters to the MTA configuration.
+ * Add the deployment parameters to the MTA configuration.
  *
  * @param mtaInstance MTA instance
  */

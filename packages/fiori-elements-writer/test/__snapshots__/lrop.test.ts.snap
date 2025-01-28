@@ -93,10 +93,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -139,14 +141,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -272,7 +272,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -1073,7 +1073,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -2910,7 +2910,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -2918,7 +2918,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -3378,9 +3378,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -3477,9 +3474,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -3719,10 +3716,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -3765,14 +3764,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -3898,7 +3895,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -4699,7 +4696,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -6536,7 +6533,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -6544,7 +6541,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -7004,9 +7001,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -7103,9 +7097,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -7400,10 +7394,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -7462,14 +7458,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -7627,7 +7621,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -8428,7 +8422,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -10265,7 +10259,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -10273,7 +10267,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -10842,8 +10836,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -10887,12 +10881,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -11017,7 +11009,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
 xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
@@ -13950,7 +13942,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -14190,9 +14182,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -14289,9 +14278,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -14527,8 +14516,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -14572,12 +14561,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -14702,7 +14689,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
 xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
@@ -17635,7 +17622,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -17875,9 +17862,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -17974,9 +17958,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -18213,8 +18197,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -18258,12 +18242,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -18388,7 +18370,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
 xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
@@ -21321,7 +21303,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -21726,9 +21708,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -21825,9 +21804,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -22546,9 +22525,6 @@ appDescription=A Fiori application.",
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -22645,9 +22621,9 @@ appDescription=A Fiori application.",
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -23433,9 +23409,6 @@ appDescription=A Fiori application.",
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -23532,9 +23505,9 @@ appDescription=A Fiori application.",
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -23797,8 +23770,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -23842,12 +23815,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -23972,7 +23943,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\"
 xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
@@ -24376,7 +24347,7 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -24782,9 +24753,6 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -24881,9 +24849,9 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -25145,8 +25113,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -25190,12 +25158,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -25320,7 +25286,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
 xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
@@ -28253,7 +28219,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -28493,9 +28459,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -28592,9 +28555,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -28830,8 +28793,8 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
 ",
@@ -28875,12 +28838,10 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations:
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
+        annotations: []
 ",
     "state": "modified",
   },
@@ -29005,7 +28966,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\"
 xmlns=\\"http://docs.oasis-open.org/odata/ns/edm\\">
@@ -31938,7 +31899,7 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"annotations\\": [
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
         }
       },
@@ -32179,9 +32140,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -32278,9 +32236,9 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -32520,10 +32478,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -32566,14 +32526,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -32699,7 +32657,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -33500,7 +33458,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -35337,7 +35295,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -35345,7 +35303,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -35807,9 +35765,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -35906,9 +35861,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -36148,10 +36103,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -36194,14 +36151,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -36327,7 +36282,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -37128,7 +37083,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -38965,7 +38920,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -38973,7 +38928,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -39532,10 +39487,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -39578,14 +39535,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -39711,7 +39666,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -40512,7 +40467,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -42350,7 +42305,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -42358,7 +42313,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -42818,9 +42773,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -42917,9 +42869,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -43159,10 +43111,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -43205,14 +43159,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -43338,7 +43290,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -44139,7 +44091,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -45977,7 +45929,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -45985,7 +45937,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -46445,9 +46397,6 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
   },
   "webapp/test/locate-reuse-libs.js": Object {
     "contents": "(function (sap) {
-    var sanitizeString = function (str) {
-        return str.replace(/[\\\\n]/g, '\\\\\\\\n').replace(/[\\\\r]/g, '\\\\\\\\r');
-    }
     var fioriToolsGetManifestLibs = function (manifestPath) {
         var url = manifestPath;
         var result = \\"\\";
@@ -46544,9 +46493,9 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
                     if (dependency.url && dependency.url.length > 0 && dependency.type === \\"UI5LIB\\") {
                         sap.ui.require([\\"sap/base/Log\\"], function (Log) {
                             Log.info(\\"Registering Library \\" +
-                                sanitizeString(dependency.componentId) +
+                                encodeURI(dependency.componentId) +
                                 \\" from server \\" +
-                                sanitizeString(dependency.url));
+                                encodeURI(dependency.url));
                         });
                         var compId = dependency.componentId.replace(/\\\\./g, \\"/\\");
                         var config = {
@@ -46841,10 +46790,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -46903,14 +46854,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -47068,7 +47017,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -47869,7 +47818,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -49706,7 +49655,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -49714,7 +49663,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -50331,10 +50280,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -50393,14 +50344,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -50558,7 +50507,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -51359,7 +51308,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -53196,7 +53145,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -53204,7 +53153,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -53821,10 +53770,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -53883,14 +53834,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 builder:
   customTasks:
     - name: ui5-tooling-transpile-task
@@ -54048,7 +53997,7 @@ appDescription=A Fiori application.",
 </html>",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -54849,7 +54798,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -56686,7 +56635,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -56694,7 +56643,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {
@@ -57707,10 +57656,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
-        annotations: []
+        annotations:
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+            urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
 ",
     "state": "modified",
   },
@@ -57753,14 +57704,12 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/metadata.xml
-            mockdataPath: ./webapp/localService/data
+            metadataPath: ./webapp/localService/mainService/metadata.xml
+            mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml
+          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotation.xml
-            urlPath: annotations/annotation.xml
 ",
     "state": "modified",
   },
@@ -57848,7 +57797,7 @@ appTitle=App \\"Title\\" \\\\\\"
 appDescription=A Fiori application.",
     "state": "modified",
   },
-  "webapp/localService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
+  "webapp/localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"utf-8\\"?>
 <edmx:Edmx Version=\\"4.0\\" xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
     <edmx:Reference Uri=\\"http://ims.saplabs.com:50017/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value\\">
@@ -58649,7 +58598,7 @@ appDescription=A Fiori application.",
 </edmx:Edmx>",
     "state": "modified",
   },
-  "webapp/localService/metadata.xml": Object {
+  "webapp/localService/mainService/metadata.xml": Object {
     "contents": "<?xml version=\\"1.0\\" encoding=\\"UTF-8\\" standalone=\\"yes\\"?>
 <edmx:Edmx Version=\\"1.0\\" xmlns:edmx=\\"http://schemas.microsoft.com/ado/2007/06/edmx\\" xmlns:m=\\"http://schemas.microsoft.com/ado/2007/08/dataservices/metadata\\" xmlns:sap=\\"http://www.sap.com/Protocols/SAPData\\">
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='')/$value\\">
@@ -60486,7 +60435,7 @@ appDescription=A Fiori application.",
             \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
             \\"annotation\\"
           ],
-          \\"localUri\\": \\"localService/metadata.xml\\",
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"2.0\\"
         }
       },
@@ -60494,7 +60443,7 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPMRA_PROD_MAN_ANNO_MDL.xml\\"
         }
       },
       \\"annotation\\": {

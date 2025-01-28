@@ -1,5 +1,77 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.45
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+
+## 0.5.44
+
+### Patch Changes
+
+-   ccb96dd: enhancements for deploying ui5 libs
+
+## 0.5.43
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/project-access@1.29.1
+
+## 0.5.42
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+
+## 0.5.41
+
+### Patch Changes
+
+-   b0e70e8: remove belize theme files for 1.120.0
+
+## 0.5.40
+
+### Patch Changes
+
+-   9bfbd73: add versioning to ui5 lib templates, update deprecated code
+
+## 0.5.39
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/ui5-application-writer@1.2.8
+
+## 0.5.38
+
+### Patch Changes
+
+-   Updated dependencies [21f0b20]
+    -   @sap-ux/ui5-application-writer@1.2.8
+
+## 0.5.37
+
+### Patch Changes
+
+-   Updated dependencies [e93797a]
+    -   @sap-ux/project-access@1.28.9
+    -   @sap-ux/ui5-application-writer@1.2.7
+
+## 0.5.36
+
+### Patch Changes
+
+-   Updated dependencies [73475e5]
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/project-access@1.28.8
+    -   @sap-ux/ui5-application-writer@1.2.7
+
 ## 0.5.35
 
 ### Patch Changes

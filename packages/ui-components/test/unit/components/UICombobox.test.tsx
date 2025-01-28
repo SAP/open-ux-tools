@@ -641,6 +641,28 @@ describe('<UIComboBox />', () => {
         expect(inputProps?.['aria-disabled']).toEqual(true);
     });
 
+    describe('Test "aria-invalid" set according to error message', () => {
+        it('No Error case', () => {
+            const autofill = wrapper.find(Autofill);
+            const autofillProps = autofill.props();
+
+            expect('aria-invalid' in autofillProps).toEqual(true);
+            expect(autofillProps['aria-invalid']).toEqual(false);
+        });
+
+        it('Error case', () => {
+            wrapper.setProps({
+                errorMessage: 'dummy'
+            });
+
+            const autofill = wrapper.find(Autofill);
+            const autofillProps = autofill.props();
+
+            expect('aria-invalid' in autofillProps).toEqual(true);
+            expect(autofillProps['aria-invalid']).toEqual(true);
+        });
+    });
+
     describe('Test "readonly" property', () => {
         const testCases = [
             {

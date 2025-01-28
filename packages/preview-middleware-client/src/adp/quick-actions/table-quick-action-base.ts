@@ -14,17 +14,22 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version
 import ObjectPageSection from 'sap/uxap/ObjectPageSection';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import { EnablementValidator } from './enablement-validator';
+import { QuickActionDefinitionBase } from './quick-action-base';
+import {
+    ANALYTICAL_TABLE_TYPE,
+    GRID_TABLE_TYPE,
+    M_TABLE_TYPE,
+    MDC_TABLE_TYPE,
+    SMART_TABLE_TYPE,
+    TREE_TABLE_TYPE
+} from './control-types';
 
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
 const SETTINGS_ID = 'CTX_SETTINGS';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
-export const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
-export const M_TABLE_TYPE = 'sap.m.Table';
-export const MDC_TABLE_TYPE = 'sap.ui.mdc.Table';
-export const TREE_TABLE_TYPE = 'sap.ui.table.TreeTable';
-export const GRID_TABLE_TYPE = 'sap.ui.table.Table';
-export const ANALYTICAL_TABLE_TYPE = 'sap.ui.table.AnalyticalTable';
 
 async function getActionId(table: UI5Element): Promise<string[]> {
     const { major, minor } = await getUi5Version();
@@ -39,23 +44,18 @@ async function getActionId(table: UI5Element): Promise<string[]> {
 
     return [M_TABLE_ACTION_ID, SETTINGS_ID];
 }
+export type TableQuickActionsOptions = {
+    includeServiceAction?: boolean;
+    areTableRowsRequired?: boolean;
+};
 
 /**
  * Base class for table quick actions.
  */
-export abstract class TableQuickActionDefinitionBase {
-    readonly kind = NESTED_QUICK_ACTION_KIND;
-    public get id(): string {
-        return `${this.context.key}-${this.type}`;
-    }
-
+export abstract class TableQuickActionDefinitionBase extends QuickActionDefinitionBase<
+    typeof NESTED_QUICK_ACTION_KIND
+> {
     public isApplicable = false;
-
-    protected isDisabled: boolean | undefined;
-
-    public get tooltip(): string | undefined {
-        return undefined;
-    }
 
     public children: NestedQuickActionChild[] = [];
     public tableMap: Record<
@@ -85,8 +85,11 @@ export abstract class TableQuickActionDefinitionBase {
         protected readonly controlTypes: string[],
         protected readonly defaultTextKey: string,
         protected readonly context: QuickActionContext,
-        protected includeServiceAction?: boolean
-    ) {}
+        protected options: TableQuickActionsOptions = {},
+        protected readonly enablementValidators: EnablementValidator[] = []
+    ) {
+        super(type, NESTED_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
+    }
 
     /**
      * Initializes action object instance
@@ -109,11 +112,9 @@ export abstract class TableQuickActionDefinitionBase {
             if (section) {
                 this.collectChildrenInSection(section, table);
             } else if (this.iconTabBar && tabKey) {
-                this.children.push({
-                    label: `'${iconTabBarfilterMap[tabKey]}' table`,
-                    enabled: true,
-                    children: []
-                });
+                const label = `'${iconTabBarfilterMap[tabKey]}' table`;
+                const child = this.createChild(label, table);
+                this.children.push(child);
                 this.tableMap[`${this.children.length - 1}`] = {
                     table,
                     iconTabBarFilterKey: tabKey,
@@ -124,7 +125,7 @@ export abstract class TableQuickActionDefinitionBase {
             }
 
             // add action id to the table map, if the service actions are needed.
-            if (this.includeServiceAction) {
+            if (this.options.includeServiceAction) {
                 const actions = await this.context.actionService.get(table.getId());
                 const actionsIds = await getActionId(table);
 
@@ -139,6 +140,30 @@ export abstract class TableQuickActionDefinitionBase {
         }
         if (this.children.length > 0) {
             this.isApplicable = true;
+        }
+    }
+
+    /**
+     * Retrieves the internal table control from a UI5Element.
+     *
+     * @param table - The UI5Element instance to analyze.
+     * @returns The internal table otherwise undefined.
+     */
+    protected getInternalTable(table: UI5Element): UI5Element | undefined {
+        try {
+            let tableInternal: ManagedObject | undefined;
+
+            if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+                const itemsAggregation = table.getAggregation('items') as ManagedObject[];
+                tableInternal = itemsAggregation.find((item) =>
+                    [M_TABLE_TYPE, TREE_TABLE_TYPE, ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE].some((tType) =>
+                        isA(tType, item)
+                    )
+                );
+            }
+            return tableInternal as UI5Element | undefined;
+        } catch (error) {
+            return undefined;
         }
     }
 
@@ -202,28 +227,25 @@ export abstract class TableQuickActionDefinitionBase {
             if (subSections?.length === 1) {
                 this.processTable(table, { section, subSection: subSections[0], layout });
             } else if (subSections.length > 1) {
-                const sectionChild = this.children.find((val) => val.label === `${section.getTitle()} section`);
-                let tableMapIndex = `${this.children.length - 1}`;
-                if (!sectionChild) {
-                    tableMapIndex = `${tableMapIndex}/0`;
+                const existingChildIdx = this.children.findIndex(
+                    (val) => val.label === `'${section.getTitle()}' section`
+                );
+                let tableMapIndex;
+                const label = this.getTableLabel(table);
+                const child = this.createChild(label, table);
+                if (existingChildIdx < 0) {
                     this.children.push({
                         label: `'${section?.getTitle()}' section`,
                         enabled: true,
-                        children: [
-                            {
-                                label: this.getTableLabel(table),
-                                enabled: true,
-                                children: []
-                            }
-                        ]
+                        children: [child]
                     });
+
+                    tableMapIndex = `${this.children.length - 1}/0`;
                 } else {
-                    tableMapIndex = `${tableMapIndex}/${sectionChild.children.length - 1}`;
-                    sectionChild.children.push({
-                        label: this.getTableLabel(table),
-                        enabled: true,
-                        children: []
-                    });
+                    this.children[existingChildIdx].children.push(child);
+                    tableMapIndex = `${existingChildIdx.toFixed(0)}/${
+                        this.children[existingChildIdx].children.length - 1
+                    }`;
                 }
 
                 this.tableMap[tableMapIndex] = {
@@ -244,12 +266,19 @@ export abstract class TableQuickActionDefinitionBase {
         table: UI5Element,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
-        if ([SMART_TABLE_TYPE, M_TABLE_TYPE, MDC_TABLE_TYPE, TREE_TABLE_TYPE].some((type) => isA(type, table))) {
-            this.children.push({
-                label: this.getTableLabel(table),
-                enabled: true,
-                children: []
-            });
+        if (
+            [
+                SMART_TABLE_TYPE,
+                M_TABLE_TYPE,
+                MDC_TABLE_TYPE,
+                TREE_TABLE_TYPE,
+                GRID_TABLE_TYPE,
+                ANALYTICAL_TABLE_TYPE
+            ].some((type) => isA(type, table))
+        ) {
+            const label = this.getTableLabel(table);
+            const child = this.createChild(label, table);
+            this.children.push(child);
         }
 
         this.tableMap[`${this.children.length - 1}`] = {
@@ -283,5 +312,23 @@ export abstract class TableQuickActionDefinitionBase {
             title: this.context.resourceBundle.getText(this.textKey),
             children: this.children
         };
+    }
+
+    createChild(label: string, table: UI5Element): NestedQuickActionChild {
+        const child: NestedQuickActionChild = {
+            label,
+            enabled: true,
+            children: []
+        };
+        if (!this.options.areTableRowsRequired) {
+            return child;
+        }
+        const innerTable = this.getInternalTable(table);
+        const tableRows = (innerTable?.getAggregation('items') as ManagedObject[]) || [];
+        if (isA(M_TABLE_TYPE, innerTable) && !tableRows.length) {
+            child.enabled = false;
+            child.tooltip = this.context.resourceBundle.getText('TABLE_CUSTOM_COLUMN_ACTION_NOT_AVAILABLE');
+        }
+        return child;
     }
 }
