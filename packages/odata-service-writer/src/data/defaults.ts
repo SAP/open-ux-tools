@@ -61,7 +61,8 @@ async function setDefaultServiceModel(basePath: string, service: OdataService, f
         const servicesModels = Object.values(models).filter((model) => model.dataSource);
         service.model =
             servicesModels.length === 0 ||
-            servicesModels.find((serviceModel) => serviceModel.dataSource === 'mainService') // model for mainService is ""
+            (servicesModels.find((serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME) &&
+                service.name === DEFAULT_DATASOURCE_NAME) // model for mainService is ""
                 ? ''
                 : service.model ?? service.name;
     }
