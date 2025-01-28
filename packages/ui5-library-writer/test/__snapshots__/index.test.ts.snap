@@ -38,6 +38,8 @@ module.exports = function (config) {
   },
   \\"scripts\\": {
     \\"build\\": \\"ui5 build --clean-dest\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start\\": \\"fiori run --open test-resources/com/sap/myui5lib/Example.html\\",
     \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5lib/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
@@ -585,6 +587,8 @@ module.exports = function (config) {
   },
   \\"scripts\\": {
     \\"build\\": \\"ui5 build --clean-dest\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start\\": \\"fiori run --open test-resources/com/sap/myui5jslib121/Example.html\\",
     \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5jslib121/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
@@ -1105,6 +1109,8 @@ module.exports = function (config) {
   },
   \\"scripts\\": {
     \\"build\\": \\"ui5 build --clean-dest\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start\\": \\"fiori run --open test-resources/com/sap/myui5jsliblatest/Example.html\\",
     \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5jsliblatest/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\"
@@ -1641,6 +1647,8 @@ module.exports = function (config) {
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start\\": \\"fiori run --open \\\\\\"test-resources/com/sap/myui5tslib113/Example.html\\\\\\"\\",
     \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5tslib113/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\",
@@ -2262,6 +2270,8 @@ module.exports = function (config) {
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start\\": \\"fiori run --open \\\\\\"test-resources/com/sap/myui5tslib/Example.html\\\\\\"\\",
     \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5tslib/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\",
@@ -2883,6 +2893,8 @@ module.exports = function (config) {
   },
   \\"scripts\\": {
     \\"build\\": \\"run-p -l build-app build-interface\\",
+    \\"deploy\\": \\"fiori verify\\",
+    \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start\\": \\"fiori run --open \\\\\\"test-resources/com/sap/myui5tslib121/Example.html\\\\\\"\\",
     \\"testsuite\\": \\"fiori run --open test-resources/com/sap/myui5tslib121/qunit/testsuite.qunit.html\\",
     \\"test\\": \\"karma start --browsers=ChromeHeadless --singleRun=true\\",
