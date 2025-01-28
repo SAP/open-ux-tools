@@ -1,5 +1,6 @@
 import type { Ui5App, App } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
+import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
 export const TemplateType = {
     Basic: 'basic',
@@ -38,7 +39,9 @@ export interface FioriApp extends App {
 }
 export interface FreestyleApp<T> extends Ui5App {
     template: Template<T>;
-    service?: OdataService;
+    service?: OdataService & {
+        capService?: CapServiceCdsInfo;
+    };
     app: FioriApp;
 }
 

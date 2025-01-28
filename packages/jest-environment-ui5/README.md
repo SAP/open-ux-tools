@@ -59,6 +59,27 @@ framework:
         - name: sap.m
 ```
 
+### Options
+
+You can define with the following options in the `jest.config.js` file:
+
+##### Enable css support
+
+By default the css is not supported and are not loaded when you run the test through jest.
+In some case, it might make sense to have css enabled. To enable it, you need to add the following configuration in jest.config.js
+If you enable CSS, you will need to pull the `canvas` package as a dependency.
+```javascript
+module.exports = {
+    // use custom test environment
+    testEnvironment: "@sap-ux/jest-environment-ui5",
+    
+    testEnvironmentOptions: {
+        allowCSS: true
+    }   
+};
+```
+
+
 ## Enable reporting
 ```json
     "devDependencies": {
