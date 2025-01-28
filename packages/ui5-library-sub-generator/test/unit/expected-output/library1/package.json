@@ -11,6 +11,8 @@
   },
   "scripts": {
     "build": "ui5 build --clean-dest",
+    "deploy": "fiori verify",
+    "deploy-config": "fiori add deploy-config",
     "start": "fiori run --open test-resources/com/sap/library1/Example.html",
     "testsuite": "fiori run --open test-resources/com/sap/library1/qunit/testsuite.qunit.html",
     "test": "karma start --browsers=ChromeHeadless --singleRun=true"

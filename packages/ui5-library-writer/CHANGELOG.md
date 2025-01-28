@@ -1,5 +1,11 @@
 # @sap-ux/ui5-library-writer
 
+## 0.5.44
+
+### Patch Changes
+
+-   ccb96dd: enhancements for deploying ui5 libs
+
 ## 0.5.43
 
 ### Patch Changes
