@@ -28,10 +28,10 @@
       "path": "../flp-config-inquirer"
     },
     {
-      "path": "../logger"
+      "path": "../inquirer-common"
     },
     {
-      "path": "../odata-service-inquirer"
+      "path": "../logger"
     },
     {
       "path": "../project-access"

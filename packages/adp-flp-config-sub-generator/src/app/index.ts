@@ -1,11 +1,14 @@
 import type { Manifest } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types';
 import type { Question } from 'inquirer';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { AbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import Generator from 'yeoman-generator';
 import path, { join } from 'path';
+import {
+    type AxiosError,
+    type AxiosRequestConfig,
+    type ProviderConfiguration,
+    isAxiosError
+} from '@sap-ux/axios-extension';
 import {
     ManifestService,
     getVariant,
@@ -23,10 +26,17 @@ import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName } from '@sap-ux/project-access';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { getCredentialsFromStore } from '@sap-ux/system-access';
 import AdpFlpConfigLogger from '../utils/logger';
-import { t } from '../utils/i18n';
+import { t, initI18n } from '../utils/i18n';
+import { type Credentials, type ValidationResults, getCredentialsPrompts } from './questions';
+import { ErrorHandler } from '@sap-ux/inquirer-common';
+import {
+    createAbapServiceProvider,
+    type AbapTarget,
+    type UrlAbapTarget,
+    getCredentialsFromStore
+} from '@sap-ux/system-access';
+import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 
 /**
  * Generator for adding a FLP configuration to an Adaptation Project.
@@ -35,16 +45,21 @@ import { t } from '../utils/i18n';
  */
 export default class extends Generator {
     setPromptsCallback: (fn: object) => void;
-    prompts: Prompts;
+    private prompts: Prompts;
     // Flag to determine if the generator was launched as a sub-generator or standalone
-    launchAsSubGen: boolean;
-    appWizard: AppWizard;
-    manifest: Manifest;
-    projectRootPath: string = '';
-    answers: FLPConfigAnswers;
-    toolsLogger: ToolsLogger;
-    logger: ILogWrapper;
+    private launchAsSubGen: boolean;
+    private appWizard: AppWizard;
+    private manifest: Manifest;
+    private projectRootPath: string = '';
+    private answers: FLPConfigAnswers;
+    private toolsLogger: ToolsLogger;
+    private logger: ILogWrapper;
     public options: FlpConfigOptions;
+    private vscode: any;
+    private authenticationRequired: boolean = false;
+    // Flag to determine if the generator was aborted
+    private abort: boolean = false;
+    private configuredSystem: string | undefined;
 
     /**
      * Creates an instance of the generator.
@@ -62,6 +77,7 @@ export default class extends Generator {
         this.toolsLogger = new ToolsLogger();
         this.projectRootPath = opts.data?.projectRootPath ?? this.destinationRoot();
         this.options = opts;
+        this.vscode = opts.vscode;
 
         this._configureLogging();
 
@@ -76,6 +92,11 @@ export default class extends Generator {
         if (isCFEnvironment(this.projectRootPath)) {
             throw new Error(t('error.cfNotSupported'));
         }
+
+        await initI18n();
+        if (!this.manifest) {
+            await this._fetchManifest();
+        }
         // Add telemetry to be sent once adp-flp-config is generated
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -88,8 +109,11 @@ export default class extends Generator {
     }
 
     public async prompting(): Promise<void> {
-        if (!this.manifest) {
-            await this._fetchManifest();
+        if (this.abort) {
+            return;
+        }
+        if (this.authenticationRequired) {
+            await this._promptAuthentication();
         }
         const inbounds = getInboundsFromManifest(this.manifest);
         const appId = getRegistrationIdFromManifest(this.manifest);
@@ -102,6 +126,9 @@ export default class extends Generator {
     }
 
     async writing(): Promise<void> {
+        if (this.abort) {
+            return;
+        }
         try {
             await generateInboundConfig(this.projectRootPath, this.answers as InternalInboundNavigation, this.fs);
         } catch (error) {
@@ -111,6 +138,9 @@ export default class extends Generator {
     }
 
     end(): void {
+        if (this.abort) {
+            return;
+        }
         if (!this.launchAsSubGen) {
             this.appWizard?.showInformation(t('info.flpConfigAdded'), MessageType.notification);
         }
@@ -127,64 +157,93 @@ export default class extends Generator {
     }
 
     /**
-     * Finds the configured system based on the provided target in ui5.yaml configuration.
-     *
-     * @param {AbapTarget} target - The target ABAP system.
-     * @returns {Promise<string>} The configured system.
-     */
-    private async _findConfiguredSystem(target: AbapTarget): Promise<string | undefined> {
-        let configuredSystem: string | undefined;
-
-        if (isAppStudio()) {
-            configuredSystem = target.destination;
-            if (!configuredSystem) {
-                throw new Error(t('error.destinationNotFound'));
-            }
-        } else {
-            const { url } = target;
-            if (!url) {
-                throw new Error(t('error.systemNotFound'));
-            }
-
-            configuredSystem = (await getCredentialsFromStore(target as UrlAbapTarget, this.toolsLogger))?.name;
-            if (!configuredSystem) {
-                throw new Error(t('error.systemNotFoundInStore', { url }));
-            }
-        }
-
-        return configuredSystem;
-    }
-
-    /**
      * Fetches the manifest for the project.
      *
+     * @param {Credentials} credentials - The request options.
+     * @param {ValidationResults} validationResult - The validation results object used in password prompt validation.
      * @returns {Promise<void>} A promise that resolves when the manifest has been fetched.
      */
-    private async _fetchManifest(): Promise<void> {
-        const { target } = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
-        const configuredSystem = await this._findConfiguredSystem(target);
+    private async _fetchManifest(credentials?: Credentials, validationResult?: ValidationResults): Promise<void> {
+        const { target, ignoreCertErrors = false } = await getAdpConfig(
+            this.projectRootPath,
+            join(this.projectRootPath, FileName.Ui5Yaml)
+        );
+        this.configuredSystem = await this._findConfiguredSystem(target);
+        if (!this.configuredSystem) {
+            return;
+        }
         try {
-            const systemSelectionQuestions = await getSystemSelectionQuestions({
-                systemSelection: {
-                    onlyShowDefaultChoice: true,
-                    defaultChoice: configuredSystem,
-                    showConnectionSuccessMessage: true
-                },
-                serviceSelection: { hide: true }
-            });
-            await this.prompt(systemSelectionQuestions.prompts);
+            const requiestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
+            if (credentials) {
+                requiestOptions['auth'] = { username: credentials.username, password: credentials.password };
+            }
+            const provider = await createAbapServiceProvider(target, requiestOptions, false, this.toolsLogger);
             const variant = getVariant(this.projectRootPath);
             const manifestService = await ManifestService.initMergedManifest(
-                systemSelectionQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
+                provider,
                 this.projectRootPath,
                 variant,
                 this.toolsLogger
             );
             this.manifest = manifestService.getManifest();
+            if (validationResult) {
+                validationResult.valid = true;
+            }
         } catch (error) {
-            this.logger.error(`Manifest fetching failed: ${error}`);
-            throw new Error(t('error.fetchingManifest'));
+            await this._handleFetchingError(error, validationResult);
         }
+    }
+
+    /**
+     * Prompts the user for authentication credentials.
+     *
+     * @returns {void}
+     */
+    private async _promptAuthentication(): Promise<void> {
+        const prompts = getCredentialsPrompts(this._fetchManifest.bind(this));
+        this.prompts.splice(0, 0, [
+            {
+                name: t('yuiNavSteps.flpCredentialsName'),
+                description: t('yuiNavSteps.flpCredentialsDesc', { system: this.configuredSystem })
+            }
+        ]);
+        await this.prompt(prompts);
+    }
+
+    /**
+     * Handles errors that occur during the fetching of the manifest.
+     *
+     * @param {Error | AxiosError} error - The error that occurred.
+     * @param {ValidationResults} [validationResult] - The validation results object used in password prompt validation.
+     * @returns {Promise<void>} A promise that resolves when the error has been handled.
+     */
+    private async _handleFetchingError(error: Error | AxiosError, validationResult?: ValidationResults): Promise<void> {
+        if (isAxiosError(error)) {
+            this.logger.error(
+                `Manifest fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
+            );
+            if (error.response?.status === 401) {
+                if (validationResult) {
+                    validationResult.valid = false;
+                    validationResult.message = t('error.authenticationFailed');
+                }
+                this.authenticationRequired = true;
+                return;
+            }
+
+            const errorHandler = new ErrorHandler();
+            const errorHelp = errorHandler.getValidationErrorHelp(error);
+            if (errorHelp) {
+                this._showErrorNotification(
+                    typeof errorHelp === 'string'
+                        ? errorHelp
+                        : `${errorHelp?.message} ([${errorHelp.link.text}](${errorHelp.link.url}))`
+                );
+                return;
+            }
+        }
+        this.logger.error(`Manifest fetching failed: ${error}`);
+        throw new Error(t('error.fetchingManifest'));
     }
 
     /**
@@ -192,10 +251,6 @@ export default class extends Generator {
      */
     private _setupPrompts(): void {
         this.prompts = new Prompts([
-            {
-                name: t('yuiNavSteps.sysConfirmName'),
-                description: t('yuiNavSteps.sysConfirmDesc')
-            },
             {
                 name: t('yuiNavSteps.flpConfigName'),
                 description: t('yuiNavSteps.flpConfigDesc', { projectName: path.basename(this.projectRootPath) })
@@ -206,6 +261,53 @@ export default class extends Generator {
                 this.prompts.setCallback(fn);
             }
         };
+    }
+
+    /**
+     * Finds the configured system based on the provided target in ui5.yaml configuration.
+     *
+     * @param {AbapTarget} target - The target ABAP system.
+     * @returns {Promise<string>} The configured system.
+     */
+    private async _findConfiguredSystem(target: AbapTarget): Promise<string | undefined> {
+        let configuredSystem: string | undefined;
+        if (isAppStudio()) {
+            configuredSystem = target.destination;
+            if (!configuredSystem) {
+                this._showErrorNotification(t('error.destinationNotFound'));
+                return;
+            }
+
+            const destinations = await listDestinations();
+            if (!(configuredSystem in destinations)) {
+                this._showErrorNotification(t('error.destinationNotFoundInStore', { destination: configuredSystem }));
+                return;
+            }
+        } else {
+            const { url } = target;
+            if (!url) {
+                this._showErrorNotification(t('error.systemUrlNotFound'));
+                return;
+            }
+
+            configuredSystem = (await getCredentialsFromStore(target as UrlAbapTarget, this.toolsLogger))?.name;
+            if (!configuredSystem) {
+                this._showErrorNotification(t('error.systemNotFoundInStore', { systemUrl: url }));
+                return;
+            }
+        }
+
+        return configuredSystem;
+    }
+
+    /**
+     * Shows an error notification with the provided message and aborts the generator execution.
+     *
+     * @param {string} message - The error message to display.
+     */
+    private _showErrorNotification(message: string): void {
+        this.vscode.window.showErrorMessage(message);
+        this.abort = true;
     }
 
     /**

@@ -193,16 +193,6 @@ export async function getSystemConnectionQuestions(
                 );
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
-                // Show message if connection to selected system is successful and showConnectionSuccessMessage is enabled
-                if (
-                    promptOptions?.systemSelection?.showConnectionSuccessMessage &&
-                    (connectionValidator.validity.authenticated || connectionValidator.validity.authRequired === false)
-                ) {
-                    return {
-                        message: t('prompts.systemSelection.connectionSuccessMessage'),
-                        severity: Severity.information
-                    };
-                }
                 // Backend systems credentials may need to be updated
                 if (
                     selectedSystem.type === 'backendSystem' &&

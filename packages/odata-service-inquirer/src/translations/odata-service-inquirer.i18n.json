@@ -103,8 +103,7 @@
             "newSystemChoiceLabel": "New system",
             "hint": "Select a system configuration",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials.",
-            "connectionSuccessMessage": "Connection successful"
+            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",

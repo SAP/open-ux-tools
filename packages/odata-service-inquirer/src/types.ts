@@ -268,11 +268,6 @@ export type SystemSelectionPromptOptions = {
      * this option will not be applied and the full list of choices will be presented to the user.
      */
     onlyShowDefaultChoice?: boolean;
-
-    /**
-     * Shows a message when the connection to the system is successful.
-     */
-    showConnectionSuccessMessage?: boolean;
 };
 
 export type MetadataPromptOptions = {

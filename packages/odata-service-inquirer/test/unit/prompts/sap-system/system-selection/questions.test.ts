@@ -630,41 +630,4 @@ describe('Test system selection prompts', () => {
         );
         expect(serviceSelectionPrompt).toBeDefined();
     });
-
-    test('Should show connestion success message when showConnectionSuccessMessage is provided as true and connections is successful', async () => {
-        const connectValidator = new ConnectionValidator();
-        connectValidator.validity.authRequired = false;
-        connectValidator.validity.authenticated = true;
-        const systemSelectionQuestions = await getSystemConnectionQuestions(connectValidator, {
-            [promptNames.systemSelection]: { showConnectionSuccessMessage: true }
-        });
-        const systemSelectionPrompt = systemSelectionQuestions.find(
-            (question) => question.name === promptNames.systemSelection
-        );
-        expect((systemSelectionPrompt as ListQuestion).additionalMessages).toBeDefined();
-        const additionalMessages = await (systemSelectionPrompt as ListQuestion).additionalMessages?.({
-            type: 'backendSystem',
-            system: backendSystemBasic
-        } as SystemSelectionAnswerType);
-        expect(additionalMessages).toMatchObject({
-            message: t('prompts.systemSelection.connectionSuccessMessage'),
-            severity: 2
-        });
-    });
-
-    test('Should not show connestion success message when showConnectionSuccessMessage is not provided and connections is successful', async () => {
-        const connectValidator = new ConnectionValidator();
-        connectValidator.validity.authRequired = false;
-        connectValidator.validity.authenticated = true;
-        const systemSelectionQuestions = await getSystemConnectionQuestions(connectValidator);
-        const systemSelectionPrompt = systemSelectionQuestions.find(
-            (question) => question.name === promptNames.systemSelection
-        );
-        expect((systemSelectionPrompt as ListQuestion).additionalMessages).toBeDefined();
-        const additionalMessages = await (systemSelectionPrompt as ListQuestion).additionalMessages?.({
-            type: 'backendSystem',
-            system: backendSystemBasic
-        } as SystemSelectionAnswerType);
-        expect(additionalMessages).not.toBeDefined();
-    });
 });
