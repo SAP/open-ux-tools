@@ -52,16 +52,16 @@ export type TableQuickActionsOptions = {
 /**
  * Base class for table quick actions.
  */
-export abstract class TableQuickActionDefinitionBase extends QuickActionDefinitionBase<
-    typeof NESTED_QUICK_ACTION_KIND
-> {
+export abstract class TableQuickActionDefinitionBase<
+    T extends UI5Element = UI5Element
+> extends QuickActionDefinitionBase<typeof NESTED_QUICK_ACTION_KIND> {
     public isApplicable = false;
 
     public children: NestedQuickActionChild[] = [];
     public tableMap: Record<
         string,
         {
-            table: UI5Element;
+            table: T;
             tableUpdateEventAttachedOnce: boolean;
             iconTabBarFilterKey?: string;
             changeColumnActionId?: string;
@@ -102,7 +102,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             return;
         }
         const iconTabBarfilterMap = this.buildIconTabBarFilterMap();
-        for (const table of getRelevantControlFromActivePage(
+        for (const table of getRelevantControlFromActivePage<T>(
             this.context.controlIndex,
             this.context.view,
             this.controlTypes
@@ -219,7 +219,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
      * @param section - object page section
      * @param table - table element
      */
-    private collectChildrenInSection(section: ObjectPageSection, table: UI5Element): void {
+    private collectChildrenInSection(section: ObjectPageSection, table: T): void {
         const layout = getParentContainer<ObjectPageLayout>(table, 'sap.uxap.ObjectPageLayout');
         const subSections = section.getSubSections();
         const subSection = getParentContainer<ObjectPageSubSection>(table, 'sap.uxap.ObjectPageSubSection');
@@ -263,7 +263,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
      * @param sectionInfo - section info object
      */
     private processTable(
-        table: UI5Element,
+        table: T,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): void {
         if (

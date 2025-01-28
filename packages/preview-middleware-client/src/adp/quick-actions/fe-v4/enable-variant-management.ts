@@ -1,12 +1,14 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type ListReportComponent from 'sap/fe/templates/ListReport/Component';
+import type ObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
+import type AnalyticalListPageComponent from 'sap/fe/templates/AnalyticalListPage/Component';
+import Component from 'sap/ui/core/Component';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import Component from 'sap/ui/core/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import { createManifestPropertyChange } from '../../../utils/fe-v4';
-import ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
@@ -21,7 +23,7 @@ export class EnableVariantManagementQuickAction
     implements SimpleQuickActionDefinition
 {
     private pageSmartVariantManagementMode = '';
-    private ownerComponent: ListReportComponent;
+    private ownerComponent: ListReportComponent | ObjectPageComponent | AnalyticalListPageComponent;
     constructor(context: QuickActionContext) {
         super(
             ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS,
@@ -56,14 +58,13 @@ export class EnableVariantManagementQuickAction
         }
         super.initialize();
         if (this.control) {
-            this.ownerComponent = Component.getOwnerComponentFor(this.control) as unknown as ListReportComponent;
+            const ownerComponent = Component.getOwnerComponentFor(this.control);
             if (
-                !this.ownerComponent?.isA('sap.fe.templates.ListReport.Component') &&
-                !this.ownerComponent?.isA('sap.fe.templates.ObjectPage.Component') &&
-                !this.ownerComponent?.isA('sap.fe.templates.AnalyticalListPage.Component')
+                ownerComponent?.isA<ListReportComponent>('sap.fe.templates.ListReport.Component') ||
+                ownerComponent?.isA<ObjectPageComponent>('sap.fe.templates.ObjectPage.Component') ||
+                ownerComponent?.isA<AnalyticalListPageComponent>('sap.fe.templates.AnalyticalListPage.Component')
             ) {
-                this.control = undefined;
-            } else {
+                this.ownerComponent = ownerComponent;
                 const id = this.control.getId();
                 if (typeof id !== 'string') {
                     throw new Error('Could not retrieve configuration property because control id is not valid!');
@@ -71,6 +72,8 @@ export class EnableVariantManagementQuickAction
                 const value = this.context.changeService.getConfigurationPropertyValue(id, 'variantManagement');
                 this.pageSmartVariantManagementMode =
                     value === undefined ? this.ownerComponent.getVariantManagement() : (value as string);
+            } else {
+                this.control = undefined;
             }
         }
     }
