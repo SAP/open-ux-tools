@@ -622,13 +622,11 @@ describe('AdaptationProject', () => {
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
 
+            const controllerPath = join('/adp.project', 'webapp', 'changes', 'coding', 'Share.js');
             const message = response.text;
-            expect(mockWriteFileSync).toHaveBeenNthCalledWith(
-                1,
-                '/adp.project/webapp/changes/coding/Share.js',
-                expect.any(String),
-                { encoding: 'utf8' }
-            );
+            expect(mockWriteFileSync).toHaveBeenNthCalledWith(1, controllerPath, expect.any(String), {
+                encoding: 'utf8'
+            });
             expect(message).toBe('Controller extension created!');
         });
 
@@ -638,13 +636,11 @@ describe('AdaptationProject', () => {
             const controllerName = 'Share';
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
 
+            const controllerPath = join('/adp.project', 'webapp', 'changes', 'coding', 'Share.ts');
             const message = response.text;
-            expect(mockWriteFileSync).toHaveBeenNthCalledWith(
-                2,
-                '/adp.project/webapp/changes/coding/Share.ts',
-                expect.any(String),
-                { encoding: 'utf8' }
-            );
+            expect(mockWriteFileSync).toHaveBeenNthCalledWith(2, controllerPath, expect.any(String), {
+                encoding: 'utf8'
+            });
             expect(message).toBe('Controller extension created!');
         });
 
