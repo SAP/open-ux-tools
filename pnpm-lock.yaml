@@ -859,9 +859,6 @@ importers:
         specifier: 1.6.11
         version: 1.6.11
     devDependencies:
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -1713,6 +1710,9 @@ importers:
 
   packages/fiori-elements-writer:
     dependencies:
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
       '@sap-ux/fe-fpm-writer':
         specifier: workspace:*
         version: link:../fe-fpm-writer
@@ -1780,6 +1780,9 @@ importers:
 
   packages/fiori-freestyle-writer:
     dependencies:
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -2446,6 +2449,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle

@@ -56,6 +56,7 @@
         "@sap-ux/fiori-freestyle-writer": "workspace:*",
         "@sap-ux/feature-toggle": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
+        "@sap-ux/cap-config-writer": "workspace:*",
         "@sap-ux/vocabularies-types": "0.13.0",
         "@sap-devx/yeoman-ui-types": "1.14.4",
         "@types/inquirer-autocomplete-prompt": "2.0.1",
