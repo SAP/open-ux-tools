@@ -1,5 +1,77 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.0.0
+
+### Major Changes
+
+-   d6b7440: Move `CapService` and `CapRuntime` types from `@sap-ux/odata-service-inquirer` to `@sap-ux/cap-config-writer` for better relevance; add CAP updates to generate functions of Fiori Elements and Freestyle writers
+
+## 1.3.0
+
+### Minor Changes
+
+-   e6f42df: Update @sap-ux/annotation-converter, @sap-ux/vocabularies-types, @sap/ux-cds-compiler-facade dependencies
+
+## 1.2.5
+
+### Patch Changes
+
+-   Updated dependencies [e516306]
+    -   @sap-ux/axios-extension@1.18.2
+
+## 1.2.4
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/fiori-generator-shared@0.7.21
+    -   @sap-ux/telemetry@0.5.53
+    -   @sap-ux/inquirer-common@0.6.7
+
+## 1.2.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/telemetry@0.5.52
+-   @sap-ux/axios-extension@1.18.1
+-   @sap-ux/fiori-generator-shared@0.7.20
+-   @sap-ux/inquirer-common@0.6.6
+
+## 1.2.2
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/guided-answers-helper@0.2.1
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 1.2.1
+
+### Patch Changes
+
+-   1f7b31e: update alp v4 error text
+
+## 1.2.0
+
+### Minor Changes
+
+-   1bb80a1: Warn when selected v2 service has no annotations.
+
+## 1.1.1
+
+### Patch Changes
+
+-   09e5200: adds check on entity type for aggregation apply supported annotation
+
+## 1.1.0
+
+### Minor Changes
+
+-   7ecd4ec: Makes all properties of types `AlpTableConfigAnswers` and `TableConfigAnswers` optional
+
 ## 1.0.0
 
 ### Major Changes

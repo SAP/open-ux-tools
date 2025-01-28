@@ -249,6 +249,17 @@ describe('Test new system prompt', () => {
 
     test('should show additional messages in service selection prompt selected service type is not UI', async () => {
         const connectValidator = new ConnectionValidator();
+        const annotations = [
+            {
+                Definitions: v2Annotations,
+                TechnicalName: 'ZTRAVEL_DESK_SRV',
+                Version: '0001',
+                Uri: 'http://some.abap.system:1234/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002'
+            }
+        ];
+        PromptState.odataService.annotations = annotations;
+        PromptState.odataService.servicePath = '/sap/opu/odata/sap/ZTRAVEL_DESK_SRV_0002';
+
         // Should show service type warning if service is not classified as UI
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
@@ -316,6 +327,38 @@ describe('Test new system prompt', () => {
         message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choiceV2?.value);
         expect(message).toMatchObject({
             message: t('prompts.warnings.nonUIServiceTypeWarningMessage', { serviceType: 'A2X' }),
+            severity: Severity.warning
+        });
+    });
+
+    test('should show additional messages in service selection prompt selected V2 service has no annotations', async () => {
+        const connectValidator = new ConnectionValidator();
+        connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
+        PromptState.odataService.annotations = [];
+        connectionValidatorMock.catalogs = {
+            [ODataVersion.v2]: {
+                listServices: jest.fn().mockResolvedValue([serviceV2a])
+            },
+            [ODataVersion.v4]: {
+                listServices: jest.fn().mockResolvedValue([serviceV4a])
+            }
+        };
+
+        const systemServiceQuestions = getSystemServiceQuestion(connectValidator, promptNamespace);
+        const serviceSelectionPrompt = systemServiceQuestions.find(
+            (question) => question.name === `${promptNamespace}:${promptNames.serviceSelection}`
+        );
+        const choices: { name: string; value: ServiceAnswer }[] = await (
+            (serviceSelectionPrompt as ListQuestion)?.choices as Function
+        )();
+        expect(choices.length).toBe(2);
+
+        const message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
+            choices[1].value
+        );
+
+        expect(message).toMatchObject({
+            message: t('prompts.warnings.noAnnotations'),
             severity: Severity.warning
         });
     });
