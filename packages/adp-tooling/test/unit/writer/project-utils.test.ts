@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { join } from 'path';
 import { readFileSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 
@@ -79,7 +79,7 @@ describe('Project Utils', () => {
         it('should write template to the specified folder', () => {
             writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
 
-            expect(writeFilesSpy.mock.calls[0][0]).toEqual(`${templatePath}/**/*.*`);
+            expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
             expect(writeFilesSpy.mock.calls[0][2]).toEqual(data);
         });
@@ -88,7 +88,7 @@ describe('Project Utils', () => {
             const newData = { ...data, options: { enableTypeScript: true } };
             writeTemplateToFolder(templatePath, projectPath, newData, mockFs as unknown as Editor);
 
-            expect(writeFilesSpy.mock.calls[0][0]).toEqual(`${templatePath}/**/*.*`);
+            expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
             expect(writeFilesSpy.mock.calls[0][2]).toEqual(newData);
         });
