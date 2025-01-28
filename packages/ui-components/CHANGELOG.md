@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.24.2
+
+### Patch Changes
+
+-   dd34d62: UI accessability improvements for disabled elements and in quick action list
+
+## 1.24.1
+
+### Patch Changes
+
+-   7b5e3b9: UISections: Recalculate section sizes when external prop sizes change.
+
 ## 1.24.0
 
 ### Minor Changes

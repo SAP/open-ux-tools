@@ -1,5 +1,35 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.52
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
+## 0.11.51
+
+### Patch Changes
+
+-   1586cc3: CPE: Enable Variant Management in Tables and Charts Quick Action
+
+## 0.11.50
+
+### Patch Changes
+
+-   b88531b: fix: Enabled missing quick actions on ALP in V2 adp projects
+
+## 0.11.49
+
+### Patch Changes
+
+-   2a9c788: Fixed wrong initial state for "Disable Semantic Date Range in Filter Bar" Quick Action.
+
+## 0.11.48
+
+### Patch Changes
+
+-   f115bfa: fix: update quick action list on external changes
+
 ## 0.11.47
 
 ### Patch Changes

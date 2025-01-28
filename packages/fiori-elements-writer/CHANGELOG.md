@@ -1,5 +1,91 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.0.3
+
+### Patch Changes
+
+-   Updated dependencies [e6f42df]
+    -   @sap-ux/fe-fpm-writer@0.32.0
+
+## 2.0.2
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.27
+-   @sap-ux/fiori-generator-shared@0.7.21
+-   @sap-ux/odata-service-writer@0.25.4
+-   @sap-ux/ui5-application-writer@1.2.9
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 2.0.1
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/odata-service-writer@0.25.4
+    -   @sap-ux/ui5-application-writer@1.2.9
+    -   @sap-ux/fe-fpm-writer@0.31.26
+    -   @sap-ux/fiori-generator-shared@0.7.20
+    -   @sap-ux/ui5-test-writer@0.4.1
+
+## 2.0.0
+
+### Major Changes
+
+-   77b0800: Adds support for entity related prompting. Update some exported types `fiori-elements-writer`, `fiori-freestyle-writer` to remove problematic enum usage.
+    The major version updates for modules `@sap-ux/fiori-elements-writer` and `@sap-ux/fiori-freestyle-writer` indicates a breaking change of type definitions:
+
+    `@sap-ux/fiori-elements-writer`:
+    `TemplateType`
+    `TableType`
+    `TableSelectionMode`
+
+    `@sap-ux/fiori-freestyle-writer`:
+    `TemplateType`
+
+    These changes are required to reduce the impact of importing these types by consumers. Previously defined as enums, requiring full dependencies and bloating
+    consumer code where only these types are required. The new type defintions still allow both uses (type or value) but the `enums` are now defined as `const`.
+    This change requires updates to consuming code where the type is imported and referenced.
+    Example where a single enum was used as a value type:
+
+    ```
+    type Template = {
+        template: TemplateType.ListReportObjectPage
+    }
+    ```
+
+    should now be defined as:
+
+    ```
+    type Template = {
+        template: typeof TemplateType.ListReportObjectPage
+    }
+    ```
+
+## 1.3.46
+
+### Patch Changes
+
+-   Updated dependencies [625bca8]
+    -   @sap-ux/odata-service-writer@0.25.3
+
+## 1.3.45
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.25
+-   @sap-ux/fiori-generator-shared@0.7.19
+-   @sap-ux/odata-service-writer@0.25.2
+-   @sap-ux/ui5-application-writer@1.2.8
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 1.3.44
+
+### Patch Changes
+
+-   @sap-ux/fe-fpm-writer@0.31.24
+
 ## 1.3.43
 
 ### Patch Changes

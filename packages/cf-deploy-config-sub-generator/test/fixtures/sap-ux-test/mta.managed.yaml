@@ -1,0 +1,70 @@
+_schema-version: '3.2'
+ID: sap-ux-test
+description: Main MTA configuration for router
+version: 0.0.1
+parameters:
+    enable-parallel-deployments: true
+    deploy_mode: html5-repo
+modules:
+    - name: sap-ux-test-destination-content
+      type: com.sap.application.content
+      requires:
+          - name: sap-ux-test-destination-service
+            parameters:
+                content-target: true
+          - name: sap-ux-test-repo-host
+            parameters:
+                service-key:
+                    name: sap-ux-test-repo-host-key
+          - name: sap-ux-test-uaa
+            parameters:
+                service-key:
+                    name: sap-ux-test-uaa-key
+      parameters:
+          content:
+              instance:
+                  destinations:
+                      - Name: sap-ux-test_html_repo_host
+                        ServiceInstanceName: sap-ux-test-html5-service
+                        ServiceKeyName: sap-ux-test-repo-host-key
+                        sap.cloud.service: sap-ux-test
+                      - Authentication: OAuth2UserTokenExchange
+                        Name: sap-ux-test_uaa
+                        ServiceInstanceName: sap-ux-test-xsuaa-service
+                        ServiceKeyName: sap-ux-test-uaa-key
+                        sap.cloud.service: sap-ux-test
+                  existing_destinations_policy: update
+      build-parameters:
+          no-source: true
+resources:
+    - name: sap-ux-test-destination-service
+      type: org.cloudfoundry.managed-service
+      parameters:
+          service: destination
+          service-name: sap-ux-test-destination-service
+          service-plan: lite
+          config:
+              HTML5Runtime_enabled: true
+              version: 1.0.0
+              init_data:
+                  instance:
+                      existing_destinations_policy: update
+                      destinations:
+                          - Name: ui5
+                            Type: HTTP
+                            URL: https://ui5.sap.com
+                            ProxyType: Internet
+                            Authentication: NoAuthentication
+    - name: sap-ux-test-uaa
+      type: org.cloudfoundry.managed-service
+      parameters:
+          path: ./xs-security.json
+          service: xsuaa
+          service-name: sap-ux-test-xsuaa-service
+          service-plan: application
+    - name: sap-ux-test-repo-host
+      type: org.cloudfoundry.managed-service
+      parameters:
+          service: html5-apps-repo
+          service-name: sap-ux-test-html5-service
+          service-plan: app-host

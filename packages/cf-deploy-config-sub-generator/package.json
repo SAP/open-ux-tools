@@ -1,0 +1,63 @@
+{
+    "name": "@sap-ux/cf-deploy-config-sub-generator",
+    "description": "Generators for configuring Cloud Foundry deployment configuration",
+    "version": "0.0.4",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/cf-deploy-config-sub-generator"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
+    },
+    "license": "Apache-2.0",
+    "main": "generators/app-router/index.js",
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "files": [
+        "LICENSE",
+        "generators",
+        "!generators/*.map",
+        "!generators/**/*.map"
+    ],
+    "dependencies": {
+        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-ux/cf-deploy-config-writer": "workspace:*",
+        "@sap-ux/cf-deploy-config-inquirer": "workspace:*",
+        "@sap-ux/deploy-config-generator-shared": "workspace:*",
+        "@sap-ux/i18n": "workspace:*",
+        "@sap-ux/inquirer-common": "workspace:*",
+        "hasbin": "1.2.3",
+        "i18next": "23.5.1",
+        "yeoman-generator": "5.10.0"
+    },
+    "devDependencies": {
+        "@jest/types": "29.6.3",
+        "@types/hasbin": "1.2.2",
+        "@types/inquirer": "8.2.6",
+        "@types/js-yaml": "4.0.9",
+        "@types/yeoman-generator": "5.2.11",
+        "@types/yeoman-environment": "2.10.11",
+        "@types/yeoman-test": "4.0.6",
+        "@sap-ux/logger": "workspace:*",
+        "@sap/mta-lib": "1.7.4",
+        "js-yaml": "4.1.0",
+        "memfs": "3.4.13",
+        "rimraf": "5.0.5",
+        "typescript": "5.3.3",
+        "unionfs": "4.4.0",
+        "yeoman-test": "6.3.0"
+    },
+    "engines": {
+        "node": ">=18.x"
+    }
+}

@@ -1,5 +1,64 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.4
+
+### Patch Changes
+
+-   Updated dependencies [e516306]
+    -   @sap-ux/axios-extension@1.18.2
+    -   @sap-ux/system-access@0.5.27
+
+## 1.2.3
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.1
+-   @sap-ux/fiori-generator-shared@0.7.21
+-   @sap-ux/system-access@0.5.26
+-   @sap-ux/inquirer-common@0.6.7
+
+## 1.2.2
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/fiori-generator-shared@0.7.20
+    -   @sap-ux/system-access@0.5.26
+    -   @sap-ux/inquirer-common@0.6.6
+
+## 1.2.1
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/guided-answers-helper@0.2.1
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 1.2.0
+
+### Minor Changes
+
+-   fc5916a: exposes getpackageprompts and gettransportrequest prompts
+
+## 1.1.21
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.1
+-   @sap-ux/fiori-generator-shared@0.7.19
+-   @sap-ux/system-access@0.5.26
+-   @sap-ux/inquirer-common@0.6.4
+
+## 1.1.20
+
+### Patch Changes
+
+-   Updated dependencies [1559aee]
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/system-access@0.5.26
+
 ## 1.1.19
 
 ### Patch Changes

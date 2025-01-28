@@ -2,9 +2,15 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import cloneDeep from 'lodash/cloneDeep';
-import { addPackageDevDependency, FileName, readUi5Yaml, updatePackageScript } from '@sap-ux/project-access';
+import {
+    addPackageDevDependency,
+    FileName,
+    getWebappPath,
+    readUi5Yaml,
+    updatePackageScript
+} from '@sap-ux/project-access';
 import { getDeployConfig, updateBaseConfig } from './config';
-import { addUi5Dependency, writeUi5RepositoryFiles } from './file';
+import { addUi5Dependency, getLibraryPath, writeUi5RepositoryFiles, writeUi5RepositoryIgnore } from './file';
 import {
     BUILD_SCRIPT,
     DEPLOY_SCRIPT,
@@ -66,12 +72,16 @@ async function generate(
     await addPackageDevDependency(basePath, RIMRAF, RIMRAF_VERSION, fs);
 
     if (isLib) {
+        // ui5 repo ignore file
         await addPackageDevDependency(basePath, UI5_TASK_FLATTEN_LIB, UI5_TASK_FLATTEN_LIB_VERSION, fs);
         addUi5Dependency(fs, basePath, UI5_TASK_FLATTEN_LIB);
+        const libPath = await getLibraryPath(basePath);
+        await writeUi5RepositoryIgnore(fs, libPath);
+    } else {
+        // ui5 repo file
+        const webappPath = await getWebappPath(basePath);
+        await writeUi5RepositoryFiles(fs, webappPath);
     }
-
-    // ui5 repo files
-    await writeUi5RepositoryFiles(fs, basePath);
 
     return fs;
 }
