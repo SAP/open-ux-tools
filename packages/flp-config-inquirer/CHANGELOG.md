@@ -1,5 +1,36 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.2.21
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.115
+
+## 0.2.20
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/adp-tooling@0.12.114
+    -   @sap-ux/fiori-generator-shared@0.7.21
+    -   @sap-ux/inquirer-common@0.6.7
+
+## 0.2.19
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.113
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/fiori-generator-shared@0.7.20
+-   @sap-ux/inquirer-common@0.6.6
+
+## 0.2.18
+
+### Patch Changes
+
+-   f581b5f: fix hiding prompts with prompt options
+
 ## 0.2.17
 
 ### Patch Changes
