@@ -104,7 +104,7 @@ export class AddNewAnnotationFile
                     this.context.flexSettings.layer === 'CUSTOMER_BASE'
                         ? `customer.annotation.${annotationFileNameWithoutExtension}`
                         : `annotation.${annotationFileNameWithoutExtension}`;
-                const content = {
+                const parameters = {
                     dataSourceId: dataSourceId,
                     annotations: [annotationNameSpace],
                     annotationsInsertPosition: 'END',
@@ -120,12 +120,12 @@ export class AddNewAnnotationFile
                     generator: this.context.flexSettings.generator,
                     reference: this.context.flexSettings.projectId,
                     fileName: `id_${timestamp}_addAnnotationsToOData`,
-                    content: content,
+                    parameters,
                     serviceUrl: dataSource.serviceUrl
                 };
                 const command = await CommandFactory.getCommandFor<FlexCommand>(
                     this.context.view,
-                    'annotation',
+                    'appDescriptor',
                     modifiedValue,
                     null,
                     this.context.flexSettings
