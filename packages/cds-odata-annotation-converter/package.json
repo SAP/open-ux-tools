@@ -28,7 +28,7 @@
         "@sap-ux/cds-annotation-parser": "workspace:*",
         "@sap-ux/odata-annotation-core": "workspace:*",
         "@sap-ux/odata-vocabularies": "workspace:*",
-        "@sap/ux-cds-compiler-facade": "1.15.1",
+        "@sap/ux-cds-compiler-facade": "1.16.0",
         "i18next": "20.6.1",
         "@sap-ux/text-document-utils": "workspace:*"
     },
