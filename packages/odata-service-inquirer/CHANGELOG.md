@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 1.3.0
+
+### Minor Changes
+
+-   e6f42df: Update @sap-ux/annotation-converter, @sap-ux/vocabularies-types, @sap/ux-cds-compiler-facade dependencies
+
 ## 1.2.5
 
 ### Patch Changes
