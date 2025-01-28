@@ -1,6 +1,12 @@
-import { CustomMiddleware, UI5Config, CustomTask, AbapTarget, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type {
-    CustomConfig,
+    CustomMiddleware,
+    UI5Config,
+    CustomTask,
+    AbapTarget,
+    FioriToolsProxyConfigBackend
+} from '@sap-ux/ui5-config';
+
+import type {
     AdpWriterConfig,
     InboundContent,
     Language,
@@ -31,10 +37,12 @@ export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
 }
 
 /**
- * Generate the configuration for the custom tasks required for the ui5.yaml.
+ * Generates the configuration for the custom tasks required for the ui5.yaml.
  *
- * @param ui5Config configuration representing the ui5.yaml
- * @param config full project configuration
+ * Adds a custom task for building TypeScript projects.
+ *
+ * @param {UI5Config} ui5Config - The UI5 configuration object representing the ui5.yaml.
+ * @param {AdpWriterConfig} config - The configuration object containing options for the adaptation project.
  */
 export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWriterConfig & { app: CloudApp }) {
     if (config.options?.enableTypeScript) {
@@ -73,6 +81,13 @@ export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config: Adp
     }
 }
 
+/**
+ * Enhances a UI5 YAML configuration with the transpile middleware for TypeScript support.
+ *
+ * @param {UI5Config} ui5Config - The UI5 configuration object representing the ui5.yaml.
+ * @param {AdpWriterConfig} config - The configuration object containing options for the adaptation project.
+ * @param {boolean} [config.options.enableTypeScript] - Flag indicating if TypeScript support is enabled.
+ */
 export function enhanceUI5YamlWithTranspileMiddleware(ui5Config: UI5Config, config: AdpWriterConfig) {
     if (config.options?.enableTypeScript) {
         ui5Config.updateCustomMiddleware({
