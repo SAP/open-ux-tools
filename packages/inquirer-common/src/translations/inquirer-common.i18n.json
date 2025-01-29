@@ -1,4 +1,12 @@
 {
+    "prompts": {
+        "username": {
+            "message": "Username"
+        },
+        "password": {
+            "message": "Password"
+        }
+    },
     "ui5VersionLabels": {
         "maintained": "Maintained",
         "outOfMaintenance": "Out of maintenance",
@@ -37,7 +45,8 @@
         "systemConnectionValidationFailed": "A connection to the selected system could not be established.",
         "internalServerError": "Internal server error{{-errorMsg, addMsgWithColonFormatter}}",
         "badGateway": "Bad gateway{{- errorMsg, addMsgWithColonFormatter}}",
-        "badRequest": "Bad request{{- errorMsg, addMsgWithColonFormatter}}"
+        "badRequest": "Bad request{{- errorMsg, addMsgWithColonFormatter}}",
+        "cannotBeEmpty": "{{- field}} cannot be empty."
     },
     "guidedAnswers": {
         "validationErrorHelpText": "Need help with this error?"

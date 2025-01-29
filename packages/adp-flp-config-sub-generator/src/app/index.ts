@@ -28,8 +28,7 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
 import { t, initI18n } from '../utils/i18n';
-import { type CredentialsAnswers, getCredentialsPrompts } from './questions';
-import { ErrorHandler } from '@sap-ux/inquirer-common';
+import { ErrorHandler, type CredentialsAnswers, getCredentialsPrompts } from '@sap-ux/inquirer-common';
 import {
     createAbapServiceProvider,
     type AbapTarget,
@@ -80,11 +79,6 @@ export default class extends Generator {
         this.vscode = opts.vscode;
 
         this._configureLogging();
-
-        // If launched standalone add navigation steps
-        if (!this.launchAsSubGen) {
-            this._setupPrompts();
-        }
     }
 
     async initializing(): Promise<void> {
@@ -94,6 +88,11 @@ export default class extends Generator {
         }
 
         await initI18n();
+        // If launched standalone add navigation steps
+        if (!this.launchAsSubGen) {
+            this._setupPrompts();
+        }
+
         if (!this.manifest) {
             await this._fetchManifest();
         }
@@ -197,7 +196,7 @@ export default class extends Generator {
      * @returns {void}
      */
     private async _promptAuthentication(): Promise<void> {
-        const prompts = getCredentialsPrompts(this._fetchManifest.bind(this));
+        const prompts = await getCredentialsPrompts(this._fetchManifest.bind(this));
         this.prompts.splice(0, 0, [
             {
                 name: t('yuiNavSteps.flpCredentialsName'),
