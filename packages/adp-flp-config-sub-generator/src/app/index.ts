@@ -78,13 +78,7 @@ export default class extends Generator {
         this.options = opts;
         this.vscode = opts.vscode;
 
-        this.prompts = new Prompts([]);
-        this.setPromptsCallback = (fn): void => {
-            if (this.prompts) {
-                this.prompts.setCallback(fn);
-            }
-        };
-
+        this._setupPrompts();
         this._configureLogging();
     }
 
@@ -95,10 +89,7 @@ export default class extends Generator {
         }
 
         await initI18n();
-        // If launched standalone add navigation steps
-        if (!this.launchAsSubGen) {
-            this._setupFLPConfigPage();
-        }
+        this._setupFLPConfigPage();
 
         if (!this.manifest) {
             await this._fetchManifest();
@@ -248,12 +239,30 @@ export default class extends Generator {
      * Adds navigations steps and callback function for the generator prompts.
      */
     private _setupFLPConfigPage(): void {
-        this.prompts.splice(0, 0, [
-            {
-                name: t('yuiNavSteps.flpConfigName'),
-                description: t('yuiNavSteps.flpConfigDesc', { projectName: path.basename(this.projectRootPath) })
-            }
-        ]);
+        // if launched as a sub-generator, the navigation steps will be set by the parent generator
+        if (!this.launchAsSubGen) {
+            this.prompts.splice(0, 0, [
+                {
+                    name: t('yuiNavSteps.flpConfigName'),
+                    description: t('yuiNavSteps.flpConfigDesc', { projectName: path.basename(this.projectRootPath) })
+                }
+            ]);
+        }
+    }
+
+    /**
+     * Sets up the prompts for the generator.
+     */
+    private _setupPrompts(): void {
+        // If launched as a sub-generator, the prompts will be set by the parent generator
+        if (!this.launchAsSubGen) {
+            this.prompts = new Prompts([]);
+            this.setPromptsCallback = (fn): void => {
+                if (this.prompts) {
+                    this.prompts.setCallback(fn);
+                }
+            };
+        }
     }
 
     /**
