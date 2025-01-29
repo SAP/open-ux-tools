@@ -934,7 +934,7 @@ describe('FE V2 quick actions', () => {
                                 return false;
                             }),
                             getDomRef: () => ({}),
-
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
                             getId: jest
                                 .fn()
                                 .mockImplementation(
