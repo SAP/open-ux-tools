@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cds-annotation-parser",
-    "version": "0.2.4",
+    "version": "0.2.5",
     "description": "Annotation Parser for CDS",
     "publisher": "SAPSE",
     "author": "SAP SE",

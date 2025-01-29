@@ -63,7 +63,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "default": -1,
     "guiOptions": {
       "breadcrumb": true,
-      "hint": "Select a system configuration",
+      "hint": "Select a system configuration.",
     },
     "message": "System",
     "name": "systemSelection",
@@ -241,7 +241,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
   },
   {
     "guiOptions": {
-      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+      "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
       "mandatory": true,
     },
     "guiType": "file-browser",
@@ -347,6 +347,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "https://<hostname>:<port>/path/to/odata/service/",
@@ -359,6 +360,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": false,
     "message": "Do you want to continue generation with the untrusted certificate?",
     "name": "ignoreCertError",
@@ -377,6 +379,7 @@ exports[`API tests getPrompts, i18n is loaded 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "mandatory": true,

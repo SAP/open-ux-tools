@@ -1,5 +1,44 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.22
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/inquirer-common@0.6.8
+
+## 0.1.21
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.7
+
+## 0.1.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.6
+
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 0.1.18
+
+### Patch Changes
+
+-   6b6c64a: adds new module cf deploy config sub gen
+
+## 0.1.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.4
+
 ## 0.1.16
 
 ### Patch Changes

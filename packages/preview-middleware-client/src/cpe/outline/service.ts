@@ -3,7 +3,12 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
-import { outlineChanged, SCENARIO, showMessage, showInfoCenterMessage, MessageBarType } from '@sap-ux-private/control-property-editor-common';
+import {
+    outlineChanged,
+    SCENARIO,
+    showInfoCenterMessage,
+    MessageBarType
+} from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../../utils/error';
 import { getTextBundle } from '../../i18n';
@@ -60,46 +65,15 @@ export class OutlineService extends EventTarget {
                 this.dispatchEvent(event);
                 sendAction(outlineChanged(outlineNodes));
                 if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning) {
-                    // sendAction(
-                    //     showMessage({
-                    //         message,
-                    //         shouldHideIframe: false
-                    //     })
-                    // );
-                    setTimeout(() => {
-                        sendAction(
-                            showInfoCenterMessage({
-                                message: {
-                                    title: "Reuse components detected",
-                                    description: message
-                                },
-                                type: MessageBarType.info
-                            })
-                        );
-                    }, 20000);
-                    setTimeout(() => {
-                        sendAction(
-                            showInfoCenterMessage({
-                                message: {
-                                    title: "Reuse components detected",
-                                    description: message
-                                },
-                                type: MessageBarType.info
-                            })
-                        );
-                    }, 40000);
-                    setTimeout(() => {
-                        sendAction(
-                            showInfoCenterMessage({
-                                message: {
-                                    title: "Reuse components detected",
-                                    description: message
-                                },
-                                type: MessageBarType.info
-                            })
-                        );
-                    }, 60000);
-
+                    sendAction(
+                        showInfoCenterMessage({
+                            message: {
+                                title: 'Reuse components detected',
+                                description: message
+                            },
+                            type: MessageBarType.info
+                        })
+                    );
                     hasSentWarning = true;
                 }
                 await this.changeService.updateConfigurationProps(configPropertyIdMap);

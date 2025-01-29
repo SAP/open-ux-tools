@@ -1,4 +1,22 @@
 /**
+ * Support different Token Service URL Types
+ */
+export enum DestinationType {
+    HTTP = 'HTTP',
+    LDAP = 'LDAP',
+    MAIL = 'MAIL',
+    RFC = 'RFC'
+}
+
+/**
+ * Support different Token Service URL Types
+ */
+export enum OAuthUrlType {
+    DEDICATED = 'Dedicated',
+    COMMON = 'Common'
+}
+
+/**
  * Support destination authentication types
  */
 export enum Authentication {
@@ -76,6 +94,7 @@ export interface Destination extends Partial<AdditionalDestinationProperties> {
     Authentication: string;
     ProxyType: string;
     Description: string;
+
     /**
      * N.B. Not the host but the full destination URL property!
      */
@@ -286,3 +305,25 @@ export const AbapEnvType = {
 } as const;
 
 export type AbapEnvType = (typeof AbapEnvType)[keyof typeof AbapEnvType];
+
+/**
+ * OAuth destination properties.
+ */
+export interface OAuth2Destination extends Omit<Destination, 'Host'>, Partial<AdditionalDestinationProperties> {
+    URL: string; // Required for creation flow
+    clientSecret: string;
+    clientId: string;
+    tokenServiceURL: string;
+    tokenServiceURLType?: 'Dedicated'; // Optional for OAuth2Password destinations
+}
+
+export interface CloudFoundryServiceInfo {
+    label: string;
+    serviceName: string;
+    guid?: string;
+    tags?: string[];
+    alwaysShow?: boolean;
+    plan_guid?: string;
+    plan?: string;
+    credentials?: any;
+}

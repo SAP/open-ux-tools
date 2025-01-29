@@ -1,5 +1,43 @@
 # @sap-ux/inquirer-common
 
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/fiori-generator-shared@0.7.22
+    -   @sap-ux/telemetry@0.5.54
+
+## 0.6.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.21
+-   @sap-ux/telemetry@0.5.53
+
+## 0.6.6
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.52
+-   @sap-ux/fiori-generator-shared@0.7.20
+
+## 0.6.5
+
+### Patch Changes
+
+-   080bda2: Adds new GA link for 504
+-   Updated dependencies [080bda2]
+    -   @sap-ux/guided-answers-helper@0.2.1
+
+## 0.6.4
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.19
+-   @sap-ux/telemetry@0.5.51
+
 ## 0.6.3
 
 ### Patch Changes

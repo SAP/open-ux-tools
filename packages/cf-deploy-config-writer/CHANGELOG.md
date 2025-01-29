@@ -1,5 +1,40 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+
+## 0.1.0
+
+### Minor Changes
+
+-   3ff99e2: append new logic to create CAP mta
+
+## 0.0.19
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+
+## 0.0.18
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/project-access@1.29.1
+
+## 0.0.17
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+
 ## 0.0.16
 
 ### Patch Changes

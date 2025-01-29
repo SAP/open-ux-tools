@@ -1,5 +1,51 @@
 # @sap-ux/annotation-generator
 
+## 0.3.0
+
+### Minor Changes
+
+-   e6f42df: Update @sap-ux/annotation-converter, @sap-ux/vocabularies-types, @sap/ux-cds-compiler-facade dependencies
+
+### Patch Changes
+
+-   Updated dependencies [e6f42df]
+    -   @sap-ux/fiori-annotation-api@0.4.0
+
+## 0.2.27
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/fiori-annotation-api@0.3.8
+
+## 0.2.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/fiori-annotation-api@0.3.7
+
+## 0.2.25
+
+### Patch Changes
+
+-   5fff6e1: Pass optional mem-fs editor to get project information in annotation generator
+
+## 0.2.24
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/fiori-annotation-api@0.3.6
+
+## 0.2.23
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.3.5
+
 ## 0.2.22
 
 ### Patch Changes
