@@ -28,7 +28,7 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
 import { t, initI18n } from '../utils/i18n';
-import { type Credentials, type ValidationResults, getCredentialsPrompts } from './questions';
+import { type Credentials, getCredentialsPrompts } from './questions';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import {
     createAbapServiceProvider,
@@ -160,17 +160,16 @@ export default class extends Generator {
      * Fetches the manifest for the project.
      *
      * @param {Credentials} credentials - The request options.
-     * @param {ValidationResults} validationResult - The validation results object used in password prompt validation.
-     * @returns {Promise<void>} A promise that resolves when the manifest has been fetched.
+     * @returns {Promise<boolean | string>} A promise that resolves with a boolean or an error message.
      */
-    private async _fetchManifest(credentials?: Credentials, validationResult?: ValidationResults): Promise<void> {
+    private async _fetchManifest(credentials?: Credentials): Promise<boolean | string> {
         const { target, ignoreCertErrors = false } = await getAdpConfig(
             this.projectRootPath,
             join(this.projectRootPath, FileName.Ui5Yaml)
         );
         this.configuredSystem = await this._findConfiguredSystem(target);
         if (!this.configuredSystem) {
-            return;
+            return false;
         }
         try {
             const requiestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
@@ -186,11 +185,9 @@ export default class extends Generator {
                 this.toolsLogger
             );
             this.manifest = manifestService.getManifest();
-            if (validationResult) {
-                validationResult.valid = true;
-            }
+            return true;
         } catch (error) {
-            await this._handleFetchingError(error, validationResult);
+            return (await this._handleFetchingError(error)) ?? false;
         }
     }
 
@@ -214,21 +211,16 @@ export default class extends Generator {
      * Handles errors that occur during the fetching of the manifest.
      *
      * @param {Error | AxiosError} error - The error that occurred.
-     * @param {ValidationResults} [validationResult] - The validation results object used in password prompt validation.
-     * @returns {Promise<void>} A promise that resolves when the error has been handled.
+     * @returns {Promise<undefined | string>} A promise that resolves with an error message or undefined.
      */
-    private async _handleFetchingError(error: Error | AxiosError, validationResult?: ValidationResults): Promise<void> {
+    private async _handleFetchingError(error: Error | AxiosError): Promise<undefined | string> {
         if (isAxiosError(error)) {
             this.logger.error(
                 `Manifest fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
             );
             if (error.response?.status === 401) {
-                if (validationResult) {
-                    validationResult.valid = false;
-                    validationResult.message = t('error.authenticationFailed');
-                }
                 this.authenticationRequired = true;
-                return;
+                return t('error.authenticationFailed');
             }
 
             const errorHandler = new ErrorHandler();
