@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.6
+
+### Patch Changes
+
+-   1f98f07: Add stable ids in AddFragment and ControllerExtension forms
+
 ## 0.17.5
 
 ### Patch Changes
