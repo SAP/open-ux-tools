@@ -28,7 +28,7 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
 import { t, initI18n } from '../utils/i18n';
-import { type Credentials, getCredentialsPrompts } from './questions';
+import { type CredentialsAnswers, getCredentialsPrompts } from './questions';
 import { ErrorHandler } from '@sap-ux/inquirer-common';
 import {
     createAbapServiceProvider,
@@ -159,10 +159,10 @@ export default class extends Generator {
     /**
      * Fetches the manifest for the project.
      *
-     * @param {Credentials} credentials - The request options.
+     * @param {CredentialsAnswers} credentials - The request options.
      * @returns {Promise<boolean | string>} A promise that resolves with a boolean or an error message.
      */
-    private async _fetchManifest(credentials?: Credentials): Promise<boolean | string> {
+    private async _fetchManifest(credentials?: CredentialsAnswers): Promise<boolean | string> {
         const { target, ignoreCertErrors = false } = await getAdpConfig(
             this.projectRootPath,
             join(this.projectRootPath, FileName.Ui5Yaml)

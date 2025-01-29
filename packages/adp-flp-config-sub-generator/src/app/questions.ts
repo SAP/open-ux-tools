@@ -1,7 +1,8 @@
 import type Generator from 'yeoman-generator';
 import { t } from '../utils/i18n';
+import type { YUIQuestion, InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 
-export type Credentials = { username: string; password: string };
+export type CredentialsAnswers = { username: string; password: string };
 
 /**
  * Prompts the user for credentials.
@@ -10,8 +11,8 @@ export type Credentials = { username: string; password: string };
  * @returns {Array} An array of prompts.
  */
 export function getCredentialsPrompts(
-    additionalValidation?: (credentials: Credentials) => Promise<boolean | string>
-): Array<object> {
+    additionalValidation?: (credentials: CredentialsAnswers) => Promise<boolean | string>
+): YUIQuestion<CredentialsAnswers>[] {
     return [
         {
             type: 'input',
@@ -24,7 +25,7 @@ export function getCredentialsPrompts(
             validate: (value: string): string | boolean => {
                 return value ? true : t('error.cannotBeEmpty', { field: t('prompts.username.message') });
             }
-        },
+        } as InputQuestion,
         {
             type: 'password',
             guiType: 'login',
@@ -48,6 +49,6 @@ export function getCredentialsPrompts(
                 }
                 return true;
             }
-        }
+        } as PasswordQuestion
     ];
 }
