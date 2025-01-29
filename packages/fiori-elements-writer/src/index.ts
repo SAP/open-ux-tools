@@ -21,7 +21,7 @@ import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
-import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
+import { applyCAPUpdates, type CapProjectSettings, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { generateAnnotations, type AnnotationServiceParameters, type GenerateAnnotationsOptions } from '@sap-ux/annotation-generator';
 import { sep } from 'path';
 import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
@@ -53,6 +53,22 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
     }
     return ignore;
 }
+
+/**
+ * Generates the annotation file path based on whether the CAP service is available.
+ * 
+ * @param {string} [appName] - The name of the application.
+ * @param {CapServiceCdsInfo} [capService] - The CAP service info.
+ * @returns {string} The annotation file path based on whether the CAP service is available.
+ */
+function getAnnotationFilePath(appName?: string, capService?: CapServiceCdsInfo) {
+    if (capService) {
+        const appPath = capService.appPath ?? getCapFolderPathsSync(capService.projectPath).app;
+        return `${appPath}${sep}${appName}${sep}annotations.cds`;
+    }
+    return `webapp${sep}annotations${sep}annotation.xml`;
+}
+
 /**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
  *
@@ -226,20 +242,18 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
 
-    // Handle annotation writing if configuration is provided
-    if (feApp.appOptions?.writeAnnotations) {
+    // Handle annotation writing
+    if (feApp.appOptions?.entityRelatedConfig?.addFEOPAnnotations || feApp.appOptions?.entityRelatedConfig?.addLineItems) {
         const serviceName = feApp.service.capService ? feApp.service.capService.serviceName : 'mainService'
         const projectPath = feApp.service.capService ? feApp.service.capService.projectPath : basePath;
         const appName = feApp.service.capService ? feApp.package.name : '';
-        const relativeAnnotationFilePath = feApp.service.capService ? `${
-            feApp.service.capService.appPath ?? getCapFolderPathsSync(feApp.service.capService.projectPath).app
-            }${sep}${appName}${sep}annotations.cds` : `webapp${sep}annotations${sep}annotation.xml`
+        const relativeAnnotationFilePath = getAnnotationFilePath(appName, feApp.service.capService);
 
         const options: GenerateAnnotationsOptions = {
-            entitySetName: feApp.appOptions.writeAnnotations.entitySetName, 
+            entitySetName: feApp.appOptions.entityRelatedConfig.entitySetName, 
             annotationFilePath: relativeAnnotationFilePath,
             addFacets: true,
-            addLineItems: feApp.appOptions.writeAnnotations.addLineItems,
+            addLineItems: feApp.appOptions.entityRelatedConfig.addLineItems,
             addValueHelps: !!feApp.service.capService
         };
         const annoServiceParams: AnnotationServiceParameters = { serviceName, appName, project: projectPath };

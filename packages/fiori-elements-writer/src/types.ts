@@ -112,7 +112,7 @@ export interface FioriApp extends App {
 export interface FioriElementsApp<T> extends Ui5App {
     template: Template<T>;
     service: Omit<OdataService, 'model'> & {
-        capService?: CapServiceCdsInfo;
+        capService?: CapServiceCdsInfo
     };
     app: FioriApp;
     appOptions: Partial<AppOptions> & {
@@ -121,8 +121,9 @@ export interface FioriElementsApp<T> extends Ui5App {
          * This will eventually move up to {@link Ui5App.appOptions}
          */
         addTests?: boolean;
-        writeAnnotations?: GenerateAnnotationsOptions & {
+        entityRelatedConfig?: GenerateAnnotationsOptions & {
             serviceName: string;
+            addFEOPAnnotations?: boolean;
         };
     };
 }

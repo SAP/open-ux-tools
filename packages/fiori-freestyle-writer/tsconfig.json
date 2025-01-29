@@ -11,6 +11,9 @@
   },
   "references": [
     {
+      "path": "../annotation-generator"
+    },
+    {
       "path": "../cap-config-writer"
     },
     {
