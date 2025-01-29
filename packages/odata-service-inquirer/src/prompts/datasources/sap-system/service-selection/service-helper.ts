@@ -291,7 +291,7 @@ export function getSelectedServiceLabel(username: string | undefined): string {
     return message;
 }
 
-type showCollabDraftWarnOptions = {
+type ShowCollabDraftWarnOptions = {
     edmx: ConvertedMetadata;
     showCollabDraftWarning: boolean;
 };
@@ -320,7 +320,7 @@ export async function getSelectedServiceMessage(
     }: {
         requiredOdataVersion?: OdataVersion;
         hasAnnotations?: boolean;
-        showCollabDraftWarnOptions?: showCollabDraftWarnOptions;
+        showCollabDraftWarnOptions?: ShowCollabDraftWarnOptions;
     }
 ): Promise<IMessageSeverity | undefined> {
     if (serviceChoices?.length === 0) {

@@ -8,7 +8,7 @@ import { t } from '../../../i18n';
 /**
  * If any of the draft root annotated entity sets have the share action property, then collaborative draft is enabled.
  *
- * @param draftEnabledEntitySets ]
+ * @param draftEnabledEntitySets entity sets with draft enabled property `HasDraftEntity`
  * @returns
  */
 function hasCollaborativeDraft(draftEnabledEntitySets: EntitySet[]): boolean {

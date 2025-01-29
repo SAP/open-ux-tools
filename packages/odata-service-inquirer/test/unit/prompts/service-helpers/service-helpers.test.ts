@@ -4,7 +4,7 @@ import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { join } from 'path';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 
-describe('showCollabDraftWarning', () => {
+describe('Test service-helpers function `showCollabDraftWarning`', () => {
     let metadataV4WithDraftAndShareAnnot: string;
     let metadataNoDraftEntities: string;
     let metadataV4WithDraftEntities: string;

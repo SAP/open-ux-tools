@@ -103,8 +103,9 @@ function getServiceUrlPrompt(
 /**
  * Get an additional message (IMessageSeverity) based on the specified parameters.
  *
- * @param showAnnotationWarning
- * @param showCollabDraftWarn
+ * @param showAnnotationWarning true to show annotation warning, this will take precedence over collaborative draft warning
+ * @param showCollabDraftWarn true to show collaborative draft warning, this will be shown only if `showAnnotationWarning` is false
+ *  and determines that collaborative draft is not enabled
  * @param convertedMetadata provided to avoid reparsing the metadata
  * @returns
  */
@@ -142,7 +143,7 @@ function getIgnoreCertErrorsPrompt(
 ): ConfirmQuestion<ServiceUrlAnswers> {
     let showAnnotationWarning = false;
     let convertedMetadata: ConvertedMetadata | undefined;
-    //toodo: add collab draft warning
+
     return {
         when: ({ serviceUrl }: ServiceUrlAnswers) => {
             if (serviceUrl && connectValidator.validity.canSkipCertError) {
