@@ -37,7 +37,8 @@ export class RapGeneratorService extends AdtService {
                 Accept: 'application/atom+xml;type=feed'
             },
             params: {
-                type: 'webapi'
+                type: 'webapi',
+                fetchAllGenerators: true
             }
         });
 
