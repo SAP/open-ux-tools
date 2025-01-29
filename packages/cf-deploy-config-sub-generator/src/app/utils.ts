@@ -1,9 +1,8 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { FileName, getMtaPath, getWebappPath } from '@sap-ux/project-access';
-import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
+import { DeploymentGenerator, bail, ErrorHandler, ERROR_TYPE } from '@sap-ux/deploy-config-generator-shared';
 import { ApiHubType, MtaConfig } from '@sap-ux/cf-deploy-config-writer';
 import { join } from 'path';
-import { bail, ErrorHandler, ERROR_TYPE } from '@sap-ux/deploy-config-generator-shared';
 import {
     DEFAULT_MTA_DESTINATION,
     DESTINATION_CHOICE_NONE,
@@ -134,7 +133,7 @@ export function destinationQuestionDefaultOption(
     cfDestination?: string
 ): string {
     if (!isBAS) {
-        return cfDestination || '';
+        return cfDestination ?? '';
     }
     if (cfDestination) {
         return cfDestination;
