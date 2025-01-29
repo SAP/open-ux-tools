@@ -1,5 +1,5 @@
 import { join } from 'path';
-import { readFileSync } from 'fs';
+import { existsSync, readFileSync } from 'fs';
 import type { create, Editor } from 'mem-fs-editor';
 
 import { UI5Config } from '@sap-ux/ui5-config';
@@ -11,10 +11,12 @@ import {
     getAdpConfig,
     getWebappFiles,
     flpConfigurationExists,
-    updateVariant
+    updateVariant,
+    isTypescriptSupported
 } from '../../../src/base/helper';
 
 const readFileSyncMock = readFileSync as jest.Mock;
+const existsSyncMock = existsSync as jest.Mock;
 
 jest.mock('fs', () => {
     return {
@@ -115,6 +117,55 @@ describe('helper', () => {
                 'Failed to check if FLP configuration exists: Failed to retrieve variant'
             );
             expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
+        });
+    });
+
+    describe('isTypescriptSupported', () => {
+        const basePath = '/mock/project/path';
+        const tsconfigPath = join(basePath, 'tsconfig.json');
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return true if tsconfig.json exists and fs is not provided', () => {
+            existsSyncMock.mockReturnValueOnce(true);
+
+            const result = isTypescriptSupported(basePath);
+
+            expect(result).toBe(true);
+            expect(existsSyncMock).toHaveBeenCalledWith(tsconfigPath);
+        });
+
+        it('should return false if tsconfig.json does not exist and fs is not provided', () => {
+            existsSyncMock.mockReturnValueOnce(false);
+
+            const result = isTypescriptSupported(basePath);
+
+            expect(result).toBe(false);
+            expect(existsSyncMock).toHaveBeenCalledWith(tsconfigPath);
+        });
+
+        it('should return true if tsconfig.json exists and fs is provided', () => {
+            const mockEditor = {
+                exists: jest.fn().mockReturnValueOnce(true)
+            } as unknown as Editor;
+
+            const result = isTypescriptSupported(basePath, mockEditor);
+
+            expect(result).toBe(true);
+            expect(mockEditor.exists).toHaveBeenCalledWith(tsconfigPath);
+        });
+
+        it('should return false if tsconfig.json does not exist and fs is provided', () => {
+            const mockEditor = {
+                exists: jest.fn().mockReturnValueOnce(false)
+            } as unknown as Editor;
+
+            const result = isTypescriptSupported(basePath, mockEditor);
+
+            expect(result).toBe(false);
+            expect(mockEditor.exists).toHaveBeenCalledWith(tsconfigPath);
         });
     });
 

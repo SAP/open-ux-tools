@@ -5,7 +5,7 @@ import type { AdpWriterConfig, InternalInboundNavigation } from '../types';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 
-const tmplPath = join(__dirname, '../../templates/project');
+const baseTmplPath = join(__dirname, '../../templates');
 
 /**
  * Set default values for optional properties.
@@ -60,7 +60,7 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
             fullConfig.app.content
         );
     }
-    writeTemplateToFolder(tmplPath, join(basePath), fullConfig, fs);
+    writeTemplateToFolder(baseTmplPath, join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);
 
@@ -81,6 +81,8 @@ export async function migrate(basePath: string, config: AdpWriterConfig, fs?: Ed
     }
 
     const fullConfig = setDefaults(config);
+
+    const tmplPath = join(baseTmplPath, 'project');
 
     // Copy the specified files to target project
     fs.copyTpl(join(tmplPath, '**/ui5.yaml'), join(basePath), fullConfig, undefined, {

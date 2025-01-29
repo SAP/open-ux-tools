@@ -20,8 +20,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest FIORI_TOOLS_DISABLE_SECURE_STORE=true --ci --forceExit --detectOpenHandles --colors --testPathPattern=test/unit",
-        "test-u": "jest FIORI_TOOLS_DISABLE_SECURE_STORE=true --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env FIORI_TOOLS_DISABLE_SECURE_STORE=true jest --ci --forceExit --detectOpenHandles --colors --testPathPattern=test/unit",
+        "test-u": "cross-env FIORI_TOOLS_DISABLE_SECURE_STORE=true jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -71,7 +71,8 @@
         "express": "4.21.1",
         "nock": "13.4.0",
         "rimraf": "5.0.5",
-        "supertest": "6.3.3"
+        "supertest": "6.3.3",
+        "cross-env": "^7.0.3"
     },
     "engines": {
         "node": ">=18.x"

@@ -36,29 +36,30 @@ export function getPackageJSONInfo(): PackageJSON {
 /**
  * Writes a given project template files within a specified folder in the project directory.
  *
- * @param {string} templatePath - The root path of the project template.
+ * @param {string} baseTmplPath - The root path of the templates folder.
  * @param {string} projectPath - The root path of the project.
  * @param {AdpWriterConfig} data - The data to be populated in the template file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
 export function writeTemplateToFolder(
-    templatePath: string,
+    baseTmplPath: string,
     projectPath: string,
     data: AdpWriterConfig,
     fs: Editor
 ): void {
-    const fullTmplPath = join(templatePath, '**/*.*');
+    const tmplPath = join(baseTmplPath, 'project', '**/*.*');
+    const tsConfigPath = join(baseTmplPath, 'typescript', 'tsconfig.json');
 
     try {
-        fs.copyTpl(fullTmplPath, projectPath, data, undefined, {
-            globOptions: { dot: true, ignore: ['**/tsconfig.json'] },
+        fs.copyTpl(tmplPath, projectPath, data, undefined, {
+            globOptions: { dot: true },
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
         });
 
         if (data.options?.enableTypeScript) {
             const id = data.app?.id?.split('.').join('/');
-            fs.copyTpl(join(templatePath, '**/tsconfig.json'), projectPath, { id }, undefined, {
+            fs.copyTpl(tsConfigPath, join(projectPath, 'tsconfig.json'), { id }, undefined, {
                 globOptions: { dot: true }
             });
         }
