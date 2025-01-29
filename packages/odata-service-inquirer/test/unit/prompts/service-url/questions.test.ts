@@ -7,6 +7,9 @@ import { serviceUrlInternalPromptNames } from '../../../../src/prompts/datasourc
 import LoggerHelper from '../../../../src/prompts/logger-helper';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ODataService, ServiceProvider } from '@sap-ux/axios-extension';
+import type { ConfirmQuestion, InputQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import * as serviceHelpers from '../../../../src/prompts/datasources/service-helpers/service-helpers';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 const validateUrlMockTrue = jest.fn().mockResolvedValue(true);
 const validateAuthTrue = jest.fn().mockResolvedValue({ valResult: true });
@@ -45,6 +48,7 @@ describe('Service URL prompts', () => {
         expect(questions).toMatchInlineSnapshot(`
             [
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "breadcrumb": true,
                   "hint": "https://<hostname>:<port>/path/to/odata/service/",
@@ -56,6 +60,7 @@ describe('Service URL prompts', () => {
                 "validate": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "default": false,
                 "message": "Do you want to continue generation with the untrusted certificate?",
                 "name": "ignoreCertError",
@@ -78,6 +83,7 @@ describe('Service URL prompts', () => {
                 "when": [Function],
               },
               {
+                "additionalMessages": [Function],
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
                   "mandatory": true,
@@ -93,7 +99,7 @@ describe('Service URL prompts', () => {
             ]
         `);
 
-        questions = getServiceUrlQuestions({ serviceUrl: { requiredOdataVersion: OdataVersion.v4 } });
+        questions = getServiceUrlQuestions({ requiredOdataVersion: OdataVersion.v4 });
         let serviceUrlQuestion = questions.find((q) => q.name === 'serviceUrl');
         expect(serviceUrlQuestion).toMatchObject({
             guiOptions: {
@@ -107,7 +113,7 @@ describe('Service URL prompts', () => {
             validate: expect.any(Function)
         });
 
-        questions = getServiceUrlQuestions({ serviceUrl: { requiredOdataVersion: OdataVersion.v2 } });
+        questions = getServiceUrlQuestions({ requiredOdataVersion: OdataVersion.v2 });
         serviceUrlQuestion = questions.find((q) => q.name === 'serviceUrl');
         expect(serviceUrlQuestion).toMatchObject({
             guiOptions: {
@@ -123,7 +129,9 @@ describe('Service URL prompts', () => {
     });
 
     test('Test prompt: serviceUrl', async () => {
-        const serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
+        const serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         connectionValidatorMock.validity = {
             urlFormat: true,
             reachable: true,
@@ -150,7 +158,7 @@ describe('Service URL prompts', () => {
         // Should call validate service with required odata version
         serviceValidatorSpy.mockClear();
         connectionValidatorMock.validateUrl.mockClear();
-        questions = getServiceUrlQuestions({ serviceUrl: { requiredOdataVersion: OdataVersion.v4 } });
+        questions = getServiceUrlQuestions({ requiredOdataVersion: OdataVersion.v4 });
         serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl);
 
         expect(await (serviceUrlQuestion?.validate as Function)(serviceUrl)).toBe(true);
@@ -227,7 +235,9 @@ describe('Service URL prompts', () => {
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'warn');
         expect(await (ignorableCertErrorsPrompt?.validate as Function)(true, {})).toBe(false);
 
-        const serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
+        const serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         connectionValidatorMock.validateUrl.mockClear();
         connectionValidatorMock.validity = {
             urlFormat: true,
@@ -305,7 +315,9 @@ describe('Service URL prompts', () => {
             })
         ).rejects.toThrowError(t('errors.exitingGeneration', { exitReason: t('errors.certValidationRequired') }));
 
-        let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
+        const serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'warn');
 
         // Should validate the service using the when condition on CLI but never return true, errors will be thrown and the generator will exit
@@ -356,7 +368,7 @@ describe('Service URL prompts', () => {
             canSkipCertError: true
         };
         // Should throw an error if the service is not a valid odata service
-        serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue('Invalid service');
+        jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue({ validationResult: 'Invalid service' });
         await expect(
             (ignorableCertErrorsPrompt?.when as Function)({
                 [promptNames.serviceUrl]: serviceUrl,
@@ -395,7 +407,9 @@ describe('Service URL prompts', () => {
         expect(await (passwordPrompt?.validate as Function)('', {})).toBe(false);
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl: undefined })).toBe(false);
 
-        let serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue(true);
+        const serviceValidatorSpy = jest
+            .spyOn(serviceUrlValidators, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(true);
         expect(connectionValidatorMock.validateAuth).toHaveBeenCalledWith(serviceUrl, username, password, {
             ignoreCertError: undefined
@@ -416,9 +430,138 @@ describe('Service URL prompts', () => {
         );
         // should return a validation message if the service is not valid
         connectionValidatorMock.validateAuth = validateAuthTrue;
-        serviceValidatorSpy = jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue('Invalid service');
+        jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue({ validationResult: 'Invalid service' });
         expect(await (passwordPrompt?.validate as Function)(password, { serviceUrl, username })).toBe(
             'Invalid service'
         );
+    });
+
+    test('should return additional warning messages when no backend annotations', async () => {
+        jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue({
+            validationResult: true,
+            showAnnotationWarning: true
+        });
+        let questions = getServiceUrlQuestions();
+        let serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl) as InputQuestion;
+
+        // Validations checks for backend annotations and sets the state used by `additionalMessages`
+        expect(await serviceUrlQuestion?.validate?.('https://some.host:1234/service/path')).toBe(true);
+        expect((serviceUrlQuestion?.additionalMessages as Function)()).toEqual({
+            message: t('prompts.warnings.noAnnotations'),
+            severity: 1
+        });
+
+        // Related prompts should also return the same additional messages
+        let ignoreCertErrorsPrompt = questions.find(
+            (q) => q.name === serviceUrlInternalPromptNames.ignoreCertError
+        ) as ConfirmQuestion;
+        expect(
+            await ignoreCertErrorsPrompt?.validate?.(true, {
+                [promptNames.serviceUrl]: 'https://some.host:1234/service/path'
+            })
+        ).toBe(true);
+        expect((ignoreCertErrorsPrompt?.additionalMessages as Function)()).toEqual({
+            message: t('prompts.warnings.noAnnotations'),
+            severity: 1
+        });
+
+        let passwordPrompt = questions.find((q) => q.name === promptNames.serviceUrlPassword) as PasswordQuestion;
+        expect(
+            await passwordPrompt?.validate?.('password', {
+                [serviceUrlInternalPromptNames.username]: 'user1',
+                [promptNames.serviceUrl]: 'https://some.host:1234/service/path'
+            })
+        ).toBe(true);
+        expect((passwordPrompt?.additionalMessages as Function)()).toEqual({
+            message: t('prompts.warnings.noAnnotations'),
+            severity: 1
+        });
+
+        // Should not show annotation warning
+        jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue({
+            validationResult: true,
+            showAnnotationWarning: false
+        });
+        questions = getServiceUrlQuestions();
+        serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl) as InputQuestion;
+        expect(await serviceUrlQuestion?.validate?.('https://some.host:1234/service/path')).toBe(true);
+        expect((serviceUrlQuestion?.additionalMessages as Function)()).toBeUndefined();
+
+        ignoreCertErrorsPrompt = questions.find(
+            (q) => q.name === serviceUrlInternalPromptNames.ignoreCertError
+        ) as ConfirmQuestion;
+        expect(
+            await ignoreCertErrorsPrompt?.validate?.(true, {
+                [promptNames.serviceUrl]: 'https://some.host:1234/service/path'
+            })
+        ).toBe(true);
+        expect((ignoreCertErrorsPrompt?.additionalMessages as Function)()).toBeUndefined();
+
+        passwordPrompt = questions.find((q) => q.name === promptNames.serviceUrlPassword) as PasswordQuestion;
+        expect(
+            await passwordPrompt?.validate?.('password', {
+                [serviceUrlInternalPromptNames.username]: 'user1',
+                [promptNames.serviceUrl]: 'https://some.host:1234/service/path'
+            })
+        ).toBe(true);
+        expect((passwordPrompt?.additionalMessages as Function)()).toBeUndefined();
+    });
+
+    test('should return additional warning messages when `showCollaborativDraftWarning` option is specified', async () => {
+        jest.spyOn(serviceUrlValidators, 'validateService').mockResolvedValue({
+            validationResult: true,
+            showAnnotationWarning: false, // not relevant for this test
+            convertedMetadata: { version: '4.0' } as ConvertedMetadata
+        });
+        const showCollabDraftWarningSpy = jest.spyOn(serviceHelpers, 'showCollabDraftWarning').mockReturnValue(true); // tested by service-helpers.test.ts
+        let questions = getServiceUrlQuestions();
+        let serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl) as InputQuestion;
+        // Validation sets the metadta used to test for collaborative drafts
+        expect(await serviceUrlQuestion?.validate?.('https://some.host:1234/service/path')).toBe(true);
+        // Option was not passed, so no additional message should be returned
+        expect((serviceUrlQuestion?.additionalMessages as Function)()).toBeUndefined();
+        expect(showCollabDraftWarningSpy).not.toHaveBeenCalled();
+
+        questions = getServiceUrlQuestions({ showCollaborativeDraftWarning: true });
+        serviceUrlQuestion = questions.find((q) => q.name === promptNames.serviceUrl) as InputQuestion;
+        // Validation sets the metadata used to test for collaborative drafts
+        expect(await serviceUrlQuestion?.validate?.('https://some.host:1234/service/path')).toBe(true);
+        // Option was not passed, so no additional message should be returned
+        expect((serviceUrlQuestion?.additionalMessages as Function)()).toEqual({
+            message: t('prompts.warnings.collaborativeDraftMessage'),
+            severity: 1
+        });
+        expect(showCollabDraftWarningSpy).toHaveBeenCalledWith({ version: '4.0' });
+        showCollabDraftWarningSpy.mockClear();
+
+        // Related prompts should also return the same additional messages
+        const ignoreCertErrorsPrompt = questions.find(
+            (q) => q.name === serviceUrlInternalPromptNames.ignoreCertError
+        ) as ConfirmQuestion;
+        expect(
+            await ignoreCertErrorsPrompt?.validate?.(true, {
+                [promptNames.serviceUrl]: 'https://some.host:1234/service/path'
+            })
+        ).toBe(true);
+        expect((ignoreCertErrorsPrompt?.additionalMessages as Function)()).toEqual({
+            message: t('prompts.warnings.collaborativeDraftMessage'),
+            severity: 1
+        });
+        expect(showCollabDraftWarningSpy).toHaveBeenCalledWith({ version: '4.0' });
+        showCollabDraftWarningSpy.mockClear();
+
+        const passwordPrompt = questions.find((q) => q.name === promptNames.serviceUrlPassword) as PasswordQuestion;
+        expect(
+            await passwordPrompt?.validate?.('password', {
+                [serviceUrlInternalPromptNames.username]: 'user1',
+                [promptNames.serviceUrl]: 'https://some.host:1234/service/path'
+            })
+        ).toBe(true);
+        expect((passwordPrompt?.additionalMessages as Function)()).toEqual({
+            message: t('prompts.warnings.collaborativeDraftMessage'),
+            severity: 1
+        });
+        expect(showCollabDraftWarningSpy).toHaveBeenCalledWith({ version: '4.0' });
+        showCollabDraftWarningSpy.mockClear();
     });
 });

@@ -1,5 +1,25 @@
 # @sap-ux/preview-middleware
 
+## 0.17.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.118
+
+## 0.17.6
+
+### Patch Changes
+
+-   1f98f07: Add stable ids in AddFragment and ControllerExtension forms
+
+## 0.17.5
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/adp-tooling@0.12.117
+
 ## 0.17.4
 
 ### Patch Changes

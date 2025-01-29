@@ -6,14 +6,14 @@ import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { getAnalyticListPageQuestions } from '../../../../src/prompts/edmx/alp-questions';
 import type { EntityAnswer } from '../../../../src/prompts/edmx/entity-helper';
 import { EntityPromptNames } from '../../../../src/types';
+import { join } from 'path';
 
 describe('Test analytic list page specific prompts', () => {
     let annotationsWithPresentationQualifier: string;
 
     beforeAll(async () => {
-        // Read the test metadata files
         annotationsWithPresentationQualifier = await readFile(
-            __dirname + '/test-data/annotationsWithPresentationQualifier.xml',
+            join(__dirname, '../test-data/annotationsWithPresentationQualifier.xml'),
             'utf8'
         );
         // Ensure i18n texts are loaded so we can test localised strings
@@ -112,8 +112,8 @@ describe('Test analytic list page specific prompts', () => {
             Version: '0001'
         };
 
-        const questions = getAnalyticListPageQuestions(OdataVersion.v2, annotations);
-        const presentationQualifierPrompt = questions.find(
+        let questions = getAnalyticListPageQuestions(OdataVersion.v2, annotations);
+        let presentationQualifierPrompt = questions.find(
             (question) => question.name === EntityPromptNames.presentationQualifier
         ) as ListQuestion;
         expect(
@@ -127,12 +127,36 @@ describe('Test analytic list page specific prompts', () => {
         expect((presentationQualifierPrompt.choices as Function)()).toEqual([
             {
                 name: 'None',
-                value: undefined
+                value: ''
             },
             {
                 name: 'DefaultVariant',
                 value: 'DefaultVariant'
             }
         ]);
+
+        // Prompt should not be displayed when no presentation qualifier is available
+        const annotationsWithoutPresentationQualifier = await readFile(
+            join(__dirname, '../test-data/annotationsWithoutPresentationQualifier.xml'),
+            'utf8'
+        );
+        const annotationsWithoutQualifier = {
+            Definitions: annotationsWithoutPresentationQualifier,
+            TechnicalName: 'SEPMRA_ALP_SO_ANA_SRV',
+            Uri: '../../../sap/sepmra_alp_so_ana_srv/$metadata',
+            Version: '0001'
+        };
+        questions = getAnalyticListPageQuestions(OdataVersion.v2, annotationsWithoutQualifier);
+        presentationQualifierPrompt = questions.find(
+            (question) => question.name === EntityPromptNames.presentationQualifier
+        ) as ListQuestion;
+        expect(
+            (presentationQualifierPrompt.when as Function)({
+                [EntityPromptNames.mainEntity]: {
+                    entitySetName: 'SEPMRA_C_ALP_SlsOrdItemCubeALPResults',
+                    entitySetType: 'SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult'
+                } as EntityAnswer
+            })
+        ).toBe(false);
     });
 });

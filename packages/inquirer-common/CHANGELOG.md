@@ -1,5 +1,20 @@
 # @sap-ux/inquirer-common
 
+## 0.6.9
+
+### Patch Changes
+
+-   5e3a5f8: Adds support for `showCollaborativeDraftWarning` option
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/fiori-generator-shared@0.7.22
+    -   @sap-ux/telemetry@0.5.54
+
 ## 0.6.7
 
 ### Patch Changes
