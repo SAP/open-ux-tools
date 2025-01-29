@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.0
+
+### Minor Changes
+
+-   3ff99e2: append new logic to create CAP mta
+
 ## 0.0.19
 
 ### Patch Changes
