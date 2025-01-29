@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.0.0
+
+### Major Changes
+
+-   d6b7440: Move `CapService` and `CapRuntime` types from `@sap-ux/odata-service-inquirer` to `@sap-ux/cap-config-writer` for better relevance; add CAP updates to generate functions of Fiori Elements and Freestyle writers
+
+## 1.3.0
+
+### Minor Changes
+
+-   e6f42df: Update @sap-ux/annotation-converter, @sap-ux/vocabularies-types, @sap/ux-cds-compiler-facade dependencies
+
 ## 1.2.5
 
 ### Patch Changes

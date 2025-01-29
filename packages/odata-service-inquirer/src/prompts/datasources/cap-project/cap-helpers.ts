@@ -8,7 +8,8 @@ import {
 } from '@sap-ux/project-access';
 import { basename, isAbsolute, relative } from 'path';
 import { t } from '../../../i18n';
-import type { CapService, CapServiceChoice } from '../../../types';
+import type { CapServiceChoice } from '../../../types';
+import type { CapService } from '@sap-ux/cap-config-writer';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import type { CapProjectChoice, CapProjectPaths, CapProjectRootPath } from './types';

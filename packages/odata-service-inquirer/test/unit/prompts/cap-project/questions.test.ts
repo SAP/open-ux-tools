@@ -1,7 +1,7 @@
 import type { ListQuestion } from 'inquirer';
 import { initI18nOdataServiceInquirer, t } from '../../../../src/i18n';
 import { getLocalCapProjectPrompts } from '../../../../src/prompts/datasources/cap-project/questions';
-import type { CapService } from '../../../../src/types';
+import type { CapService } from '@sap-ux/cap-config-writer';
 import { promptNames, type CapServiceChoice } from '../../../../src/types';
 import { type CapProjectChoice, capInternalPromptNames } from '../../../../src/prompts/datasources/cap-project/types';
 import { PromptState, getPromptHostEnvironment } from '../../../../src/utils';

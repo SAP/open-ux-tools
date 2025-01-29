@@ -1,5 +1,11 @@
 # @sap-ux/cap-config-writer
 
+## 0.9.0
+
+### Minor Changes
+
+-   d6b7440: Move `CapService` and `CapRuntime` types from `@sap-ux/odata-service-inquirer` to `@sap-ux/cap-config-writer` for better relevance; add CAP updates to generate functions of Fiori Elements and Freestyle writers
+
 ## 0.8.4
 
 ### Patch Changes
