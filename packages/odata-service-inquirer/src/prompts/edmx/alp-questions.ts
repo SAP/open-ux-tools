@@ -16,7 +16,7 @@ import { xmlToJson } from '../../utils';
  * @returns the matching `UI.selectionPresentationVariant` qualifers as prompt choices
  */
 function getQualifierChoices(annotations: Annotations, entityType: string): ChoiceOptions[] {
-    const qualifierChoices: ChoiceOptions[] = [{ name: t('texts.choiceNameNone'), value: undefined }];
+    const qualifierChoices: ChoiceOptions[] = [{ name: t('texts.choiceNameNone'), value: '' }];
 
     const parsedDefinitions: any = xmlToJson(annotations?.Definitions) || {};
     const parsedAnnotations = parsedDefinitions.Edmx.DataServices.Schema?.Annotations;
@@ -66,12 +66,12 @@ export function getAnalyticListPageQuestions(
     const alpQuestions: Question<AlpTableConfigAnswers>[] = [];
 
     if (annotations && odataVersion === OdataVersion.v2) {
-        const qualifierChoices: ChoiceOptions[] = [];
+        let qualifierChoices: ChoiceOptions[] = [];
 
         alpQuestions.push({
             when: (answers: EntitySelectionAnswers) => {
                 if (answers.mainEntity) {
-                    qualifierChoices.push(...getQualifierChoices(annotations, answers.mainEntity?.entitySetType));
+                    qualifierChoices = getQualifierChoices(annotations, answers.mainEntity?.entitySetType);
                 }
                 return qualifierChoices.length > 1;
             },
