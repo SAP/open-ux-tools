@@ -262,6 +262,7 @@ export default class extends DeploymentGenerator {
             } satisfies CFAppConfig;
             await generateAppConfig(appConfig, this.fs, DeploymentGenerator.logger as unknown as Logger);
         } catch (error) {
+            this.abort = true;
             handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.writing', { error }) });
         }
     }

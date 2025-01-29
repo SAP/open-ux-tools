@@ -17,6 +17,7 @@ import * as fs from 'fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as questions from '../src/app/questions';
+import * as cfConfigWriter from '@sap-ux/cf-deploy-config-writer';
 
 const mockIsAppStudio = jest.fn();
 
@@ -57,11 +58,11 @@ jest.mock('@sap/mta-lib', () => {
 });
 
 const mockGetHostEnvironment = jest.fn();
-
+const mockSendTelemetry = jest.fn();
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
-    sendTelemetry: jest.fn(),
+    sendTelemetry: () => mockSendTelemetry(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),
     getHostEnvironment: () => mockGetHostEnvironment(),
     TelemetryHelper: {
@@ -84,8 +85,6 @@ const mockAppWizard = {
 };
 
 describe('Cloud foundry generator tests', () => {
-    // jest.setTimeout(60000);
-
     let cwd: string;
     const cfGenPath = join(__dirname, '../src/app');
     const OUTPUT_DIR_PREFIX = join('/output');
@@ -1067,5 +1066,83 @@ describe('Cloud foundry generator tests', () => {
                 .withPrompts({})
                 .run()
         ).rejects.toThrowError(`Could not determine app name from manifest`);
+    });
+
+    it('Should throw error if config writing fails', async () => {
+        hasbinSyncMock.mockReturnValue(true);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        jest.spyOn(cfConfigWriter, 'generateAppConfig').mockImplementation(() => {
+            throw new Error('MTA Error');
+        });
+        const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
+
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
+                    testFixture.getContents('app1/webapp/manifest.json'),
+                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
+                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
+            },
+            '/'
+        );
+        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+
+        await expect(
+            yeomanTest
+                .create(
+                    CFGenerator,
+                    {
+                        resolved: cfGenPath
+                    },
+                    { cwd: appDir }
+                )
+                .withOptions({
+                    skipInstall: true,
+                    appWizard: mockAppWizard
+                })
+                .withPrompts({})
+                .run()
+        ).rejects.toThrowError();
+    });
+
+    it('Should not throw error in end phase if telemetry fails', async () => {
+        hasbinSyncMock.mockReturnValue(true);
+        mockSendTelemetry.mockImplementation(() => {
+            throw new Error('Telemetry Error');
+        });
+
+        const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
+
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
+                    testFixture.getContents('app1/webapp/manifest.json'),
+                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
+                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
+                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
+            },
+            '/'
+        );
+        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+
+        await expect(
+            yeomanTest
+                .create(
+                    CFGenerator,
+                    {
+                        resolved: cfGenPath
+                    },
+                    { cwd: appDir }
+                )
+                .withOptions({
+                    skipInstall: true,
+                    appWizard: mockAppWizard,
+                    launchStandaloneFromYui: true,
+                    launchDeployConfigAsSubGenerator: true
+                })
+                .withPrompts({})
+                .run()
+        ).resolves.not.toThrow();
     });
 });

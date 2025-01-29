@@ -132,19 +132,19 @@ export function destinationQuestionDefaultOption(
     isBAS: boolean,
     cfDestination?: string
 ): string {
+    let defaultDestination = '';
+
     if (!isBAS) {
-        return cfDestination ?? '';
+        defaultDestination = cfDestination ?? '';
+    } else if (cfDestination) {
+        defaultDestination = cfDestination;
+    } else if (isAbapDirectServiceBinding) {
+        defaultDestination = DESTINATION_CHOICE_DIRECT_SERVICE_BINDING;
+    } else if (isBAS) {
+        defaultDestination = DESTINATION_CHOICE_NONE;
     }
-    if (cfDestination) {
-        return cfDestination;
-    }
-    if (isAbapDirectServiceBinding) {
-        return DESTINATION_CHOICE_DIRECT_SERVICE_BINDING;
-    }
-    if (isBAS) {
-        return DESTINATION_CHOICE_NONE;
-    }
-    return '';
+
+    return defaultDestination;
 }
 
 /**
