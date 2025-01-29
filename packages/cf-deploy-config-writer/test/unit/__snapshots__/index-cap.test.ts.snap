@@ -1,0 +1,306 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`CF Writer CAP Validate generation of CAP mta configurations managed 1`] = `
+"_schema-version: 3.3.0
+ID: captestproject
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: captestproject-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+    build-parameters:
+      builder: npm
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: '\${default-url}'
+    requires:
+      - name: captestproject-db
+      - name: captestproject-auth
+      - name: captestproject-connectivity
+      - name: captestproject-destination
+  - name: captestproject-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: captestproject-db
+  - name: captestproject-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: captestproject-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: app/
+      requires: null
+  - name: captestproject-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: captestproject-destination
+        parameters:
+          content-target: true
+      - name: captestproject-html5-repo-host
+        parameters:
+          service-key:
+            name: captestproject-html5-repo-host-key
+      - name: captestproject-auth
+        parameters:
+          service-key:
+            name: captestproject-auth-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: captestproject_html_repo_host
+              ServiceInstanceName: captestproject-html5-service
+              ServiceKeyName: captestproject-html5-repo-host-key
+              sap.cloud.service: captestproject
+            - Authentication: OAuth2UserTokenExchange
+              Name: captestproject_uaa
+              ServiceInstanceName: captestproject-xsuaa-service
+              ServiceKeyName: captestproject-auth-key
+              sap.cloud.service: captestproject
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+resources:
+  - name: captestproject-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: captestproject-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: 'captestproject-\${org}-\${space}'
+        tenant-mode: dedicated
+      service-name: captestproject-xsuaa-service
+  - name: captestproject-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
+  - name: captestproject-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: captestproject-srv-api
+                URL: '~{srv-api/srv-url}'
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+              - Name: ui5
+                URL: 'https://ui5.sap.com'
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+  - name: captestproject-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+      service-name: captestproject-html5-service
+"
+`;
+
+exports[`CF Writer CAP Validate generation of CAP mta configurations standard 1`] = `
+"_schema-version: 3.3.0
+ID: captestproject
+version: 1.0.0
+description: A simple CAP project.
+parameters:
+  enable-parallel-deployments: true
+  deploy_mode: html5-repo
+build-parameters:
+  before-all:
+    - builder: custom
+      commands:
+        - npm ci
+        - npx cds build --production
+modules:
+  - name: captestproject-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+      readiness-health-check-type: http
+      readiness-health-check-http-endpoint: /health
+    build-parameters:
+      builder: npm
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: '\${default-url}'
+    requires:
+      - name: captestproject-db
+      - name: captestproject-auth
+      - name: captestproject-connectivity
+      - name: captestproject-destination
+  - name: captestproject-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: captestproject-db
+  - name: captestproject-app-deployer
+    type: com.sap.application.content
+    path: gen
+    requires:
+      - name: captestproject-html5-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: app/
+      requires: null
+  - name: captestproject-router
+    type: approuter.nodejs
+    path: router
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+    requires:
+      - name: captestproject-html5-repo-runtime
+      - name: captestproject-uaa
+      - name: captestproject-destination
+        group: destinations
+        properties:
+          name: ui5
+          url: 'https://ui5.sap.com'
+          forwardAuthToken: false
+resources:
+  - name: captestproject-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+  - name: captestproject-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: 'captestproject-\${org}-\${space}'
+        tenant-mode: dedicated
+  - name: captestproject-connectivity
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: connectivity
+      service-plan: lite
+  - name: captestproject-destination
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: captestproject-srv-api
+                URL: '~{srv-api/srv-url}'
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+                HTML5.ForwardAuthToken: true
+                HTML5.DynamicDestination: true
+              - Name: ui5
+                URL: 'https://ui5.sap.com'
+                Authentication: NoAuthentication
+                Type: HTTP
+                ProxyType: Internet
+  - name: captestproject-html5-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
+  - name: captestproject-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: application
+      service: xsuaa
+      config:
+        xsappname: 'captestproject-\${space-guid}'
+        tenant-mode: dedicated
+  - name: captestproject-html5-repo-runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-plan: app-runtime
+      service: html5-apps-repo
+"
+`;
+
+exports[`CF Writer CAP Validate generation of CAP mta configurations standard 2`] = `
+"{
+    \\"name\\": \\"app-router\\",
+    \\"private\\": true,
+    \\"description\\": \\"App router\\",
+    \\"engines\\": {
+        \\"node\\": \\">= 16.0.0\\"
+    },
+    \\"scripts\\": {
+        \\"start\\": \\"node node_modules/@sap/approuter/approuter.js\\",
+        \\"start-local\\": \\"node node_modules/@sap/html5-repo-mock/index.js\\"
+    },
+    \\"dependencies\\": {
+        \\"@sap/approuter\\": \\"^14\\"
+    },
+    \\"devDependencies\\": {
+        \\"@sap/html5-repo-mock\\": \\"^2.1.0\\"
+    }
+}
+"
+`;
+
+exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`] = `
+"{
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^(?:/app|/app/.*)?/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^(?:/app|/app/.*)?/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    }
+  ]
+}
+"
+`;
