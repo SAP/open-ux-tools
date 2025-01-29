@@ -167,7 +167,7 @@ export interface CfSystemChoice {
     /** Value associated with the system choice. */
     value: string;
     /** Flag indicating if the system choice is an SCP destination. */
-    scp: boolean;
+    scp?: boolean;
     /** URL associated with the system choice. */
-    url: string;
+    url?: string;
 }
