@@ -2,9 +2,11 @@ import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
+import type { CapService } from '@sap-ux/cap-config-writer';
+import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
+import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -27,6 +29,12 @@ export const SapSystemTypes = {
 } as const;
 
 export type SapSystemType = keyof typeof SapSystemTypes;
+
+export const SAP_CLIENT_KEY = 'sap-client';
+/**
+ * The limit for the metadata file size in KB above which a warning will be displayed to the user regarding processing time.
+ */
+export const MetadataSizeWarningLimitKb = 1000;
 
 /**
  * Answers returned by the OdataServiceInquirer prompt API.
@@ -143,39 +151,56 @@ export enum promptNames {
     systemSelection = 'systemSelection'
 }
 
-export type CapRuntime = 'Node.js' | 'Java';
+/**
+ * Prompt names for entity related prompts. These indirectly define the properties of the answers object returned by the entity related prompts.
+ */
+export const EntityPromptNames = {
+    mainEntity: 'mainEntity',
+    navigationEntity: 'navigationEntity',
+    filterEntityType: 'filterEntityType',
+    tableType: 'tableType',
+    hierarchyQualifier: 'hierarchyQualifier',
+    addFEOPAnnotations: 'addFEOPAnnotations',
+    addLineItemAnnotations: 'addLineItemAnnotations',
+    presentationQualifier: 'presentationQualifier',
+    tableSelectionMode: 'tableSelectionMode',
+    tableMultiSelect: 'tableMultiSelect',
+    tableAutoHide: 'tableAutoHide',
+    smartVariantManagement: 'smartVariantManagement'
+} as const;
+export type EntityPromptNames = (typeof EntityPromptNames)[keyof typeof EntityPromptNames];
 
-export interface CapService {
-    /**
-     * The path to the CAP project.
-     */
-    projectPath: string;
-    /**
-     * The CDS info for the Cds instance that was used to compile the project when determining the service.
-     */
-    cdsVersionInfo?: CdsVersionInfo;
-    /**
-     * The name of the CAP service as identified by the cds model.
-     */
-    serviceName: string;
-    /**
-     * The URL path to the service, as specfied in the manifest.json of generated apps
-     * This is also provided as `OdataServicePromptAnswers` property `servicePath`
-     */
-    urlPath?: string;
-    /**
-     * The relative path (from the `projectPath`) to the service cds file.
-     */
-    serviceCdsPath?: string;
-    /**
-     * The runtime of the Cds instance that was used to compile the project when determining the service.
-     */
-    capType?: CapRuntime;
-    /**
-     * The relative path (from the `projectPath`) to the app folder
-     */
-    appPath?: string;
+export interface EntitySelectionAnswers {
+    [EntityPromptNames.mainEntity]?: EntityAnswer;
+    [EntityPromptNames.navigationEntity]?: NavigationEntityAnswer;
+    [EntityPromptNames.filterEntityType]?: EntityAnswer;
 }
+
+export interface TableConfigAnswers {
+    [EntityPromptNames.tableType]?: TableType;
+    [EntityPromptNames.hierarchyQualifier]?: string;
+}
+
+export interface AnnotationGenerationAnswers {
+    [EntityPromptNames.addFEOPAnnotations]?: boolean;
+    [EntityPromptNames.addLineItemAnnotations]?: boolean;
+}
+
+export interface AlpTableConfigAnswers {
+    [EntityPromptNames.tableAutoHide]?: boolean;
+    [EntityPromptNames.tableMultiSelect]?: boolean;
+    [EntityPromptNames.tableSelectionMode]?: TableSelectionMode;
+    [EntityPromptNames.presentationQualifier]?: string;
+    [EntityPromptNames.smartVariantManagement]?: boolean;
+}
+
+/**
+ * Convienience alias type for the entity related answers
+ */
+export type EntityRelatedAnswers = EntitySelectionAnswers &
+    TableConfigAnswers &
+    AnnotationGenerationAnswers &
+    AlpTableConfigAnswers;
 
 export interface CapServiceChoice extends ListChoiceOptions {
     value: CapService;
@@ -292,6 +317,11 @@ export type ServiceSelectionPromptOptions = {
      * If the service selection prompt is hidden then the odata service related answer properties will not be returned.
      */
     hide?: boolean;
+    /**
+     * If true, warn the user if the selected service has draft root annotated entity sets but does not have the share action property set.
+     * This is used to indicate that the service does not support collaborative draft.
+     */
+    showCollaborativeDraftWarning?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {
@@ -307,9 +337,12 @@ export type OdataServiceUrlPromptOptions = {
      * Used to validate the service specified by the url is of the required odata version edmx
      */
     requiredOdataVersion?: OdataVersion;
+    /**
+     * If true, warn the user if the selected service has draft root annotated entity sets but does not have the share action property set.
+     * This is used to indicate that the service does not support collaborative draft.
+     */
+    showCollaborativeDraftWarning?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL prompts allow extension with additional messages
-
-export type OdataServiceUrlPasswordOptions = Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL password prompts allow extension with additional messages
 
 /**
  * Provide the correct type checking for prompt options
@@ -319,7 +352,6 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.capProject, CapProjectPromptOptions> &
     Record<promptNames.capService, CapServicePromptOptions> &
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
-    Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
     Record<promptNames.userSystemName, SystemNamePromptOptions> &
     Record<promptNames.systemSelection, SystemSelectionPromptOptions>;
@@ -328,4 +360,21 @@ export type OdataServiceQuestion = YUIQuestion<OdataServiceAnswers>;
 
 export type OdataServicePromptOptions = Partial<odataServiceInquirerPromptOptions>;
 
-export const SAP_CLIENT_KEY = 'sap-client';
+/**
+ * The entity related prompt options. These options are used to configure the entity related prompts.
+ */
+export type EntityPromptOptions = {
+    /**
+     * Determines if entity related prompts should use auto complete on user input.
+     * Note that the auto-complete module must be registered with the inquirer instance to use this feature.
+     */
+    useAutoComplete?: boolean;
+    /**
+     * Provide an entity name that will be preselected as the default option for the prompt.
+     */
+    defaultMainEntityName?: string;
+    /**
+     * Hides the table layout related prompts when true, default is false.
+     */
+    hideTableLayoutPrompts?: boolean;
+};

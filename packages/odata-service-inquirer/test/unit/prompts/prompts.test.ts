@@ -54,7 +54,7 @@ describe('getQuestions', () => {
         // Test that additional choices are added by options: 'includeNone'
         expect((await getQuestions({ datasourceType: { includeNone: true } }))[0]).toMatchObject({
             choices: expect.arrayContaining([
-                { name: t('prompts.datasourceType.noneName'), value: DatasourceType.none }
+                { name: t('prompts.datasourceType.choiceNone'), value: DatasourceType.none }
             ])
         });
     });

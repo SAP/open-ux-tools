@@ -223,7 +223,7 @@ describe('Test function createApplicationAccess()', () => {
         const createCapI18nEntriesMock = jest.spyOn(i18nMock, 'createCapI18nEntries').mockResolvedValue(true);
         const createUI5I18nEntriesMock = jest.spyOn(i18nMock, 'createUI5I18nEntries').mockResolvedValue(true);
         const projectRoot = join(sampleRoot, 'cap-project');
-        const appRoot = join(projectRoot, 'apps/one');
+        const appRoot = join(projectRoot, 'apps', 'one');
         const appAccess = await createApplicationAccess(appRoot, memFs);
 
         // Test execution

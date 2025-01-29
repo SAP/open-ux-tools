@@ -1,5 +1,27 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.5
+
+### Patch Changes
+
+-   9910e7f: Improved set function for the default service model.
+
+## 0.25.4
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/mockserver-config-writer@0.7.2
+
+## 0.25.3
+
+### Patch Changes
+
+-   625bca8: Removed local annotation definitions from mockserver middleware in ui5-local.yaml and ui5-mock.yaml files.
+-   Updated dependencies [625bca8]
+    -   @sap-ux/mockserver-config-writer@0.7.1
+
 ## 0.25.2
 
 ### Patch Changes

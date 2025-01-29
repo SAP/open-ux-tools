@@ -9,6 +9,7 @@ export const MTABuildParams = 'build-parameters';
 export const MTAFileExtension = 'mta-ext.mtaext';
 export const DefaultServiceURL = '${default-url}';
 export const ManagedXSUAA = 'managed:xsuaa';
+export const HTML5RepoHost = 'html5-apps-repo:app-host';
 export const SRV_API = 'srv-api';
 export const DefaultMTADestination = 'fiori-default-srv-api';
 export const EmptyDestination = 'NONE';
@@ -36,6 +37,10 @@ export const UI5TaskZipperPackageVersion = '^3.1.3';
 export const UI5Package = '@ui5/cli';
 export const UI5PackageVersion = '^3.9.2';
 export const CDSAddMtaParams = ['add', 'mta'];
+export const CDSXSUAAService = 'xsuaa';
+export const CDSHTML5RepoService = 'html5-repo';
+export const CDSConnectivityService = 'connectivity';
+export const CDSDestinationService = 'destination';
 export const MTAAPIDestination = {
     Name: ResourceMTADestination,
     Type: 'HTTP',

@@ -107,6 +107,17 @@ describe('Test ErrorHandler', () => {
                 errorMsg: 'Request failed with status code 502'
             })
         );
+        // status: 504
+        expect(
+            errorHandler.getErrorMsg({
+                message: 'Request failed with status code 504',
+                response: { data: { error: { code: '504' } } }
+            })
+        ).toEqual(
+            t('errors.serverReturnedAnError', {
+                errorDesc: 'Request failed with status code 504'
+            })
+        );
 
         // code: 500
         const err = {
@@ -186,6 +197,15 @@ describe('Test ErrorHandler', () => {
         expect(errorHandler.getErrorMsg()).toEqual(t('errors.servicesUnavailable'));
         errorHandler.getValidationErrorHelp(undefined, true);
         expect(errorHandler.getErrorMsg()).toEqual(undefined);
+
+        // Ensure 504 links to 504 page
+        expect(errorHandler.getValidationErrorHelp(ERROR_TYPE.GATEWAY_TIMEOUT)).toEqual(
+            expect.objectContaining({
+                link: expect.objectContaining({
+                    url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_GATEWAY_TIMEOUT}`
+                })
+            })
+        );
 
         // Ensure VSCode GA command is not generated when GA is not enabled
         ErrorHandler.guidedAnswersEnabled = false;

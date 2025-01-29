@@ -85,7 +85,7 @@ export function validateMtaId(input: string, previousAnswers: CfAppRouterDeployC
     if (input.length > 100) {
         return t('errors.invalidMtaIdError');
     }
-    const idPattern = /^[a-zA-Z_][a-zA-Z0-9_-]{0,98}[a-zA-Z0-9]$/;
+    const idPattern = /^[a-zA-Z_]+[a-zA-Z0-9_\-.]*$/;
     if (!idPattern.exec(input)) {
         return t('errors.invalidMtaIdError');
     }

@@ -10,14 +10,14 @@ import { QuickActionDefinitionBase } from './quick-action-base';
 /**
  * Base class for all simple quick actions.
  */
-export abstract class SimpleQuickActionDefinitionBase extends QuickActionDefinitionBase<
-    typeof SIMPLE_QUICK_ACTION_KIND
-> {
+export abstract class SimpleQuickActionDefinitionBase<
+    T extends UI5Element = UI5Element
+> extends QuickActionDefinitionBase<typeof SIMPLE_QUICK_ACTION_KIND> {
     public get isApplicable(): boolean {
         return this.control !== undefined;
     }
 
-    protected control: UI5Element | undefined;
+    protected control: T | undefined;
 
     constructor(
         public readonly type: string,
@@ -30,7 +30,7 @@ export abstract class SimpleQuickActionDefinitionBase extends QuickActionDefinit
     }
 
     initialize(): void {
-        for (const control of getRelevantControlFromActivePage(
+        for (const control of getRelevantControlFromActivePage<T>(
             this.context.controlIndex,
             this.context.view,
             this.controlTypes

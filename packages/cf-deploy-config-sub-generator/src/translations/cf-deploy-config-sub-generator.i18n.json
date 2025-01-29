@@ -1,0 +1,7 @@
+{
+    "appRouterGen": {
+        "debug": {
+            "projectPath": "Project loaded from {{- destinationPath}}"
+        }
+    }
+}

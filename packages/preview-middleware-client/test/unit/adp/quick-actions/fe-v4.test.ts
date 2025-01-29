@@ -935,7 +935,6 @@ describe('FE V4 quick actions', () => {
                     p13nMode: ['Filter'],
                     expectedIsEnabled: false,
                     expectedTooltip:
-                       
                         'This option is disabled because table filtering for page variants is already enabled'
                 }
             ];
@@ -1296,7 +1295,230 @@ describe('FE V4 quick actions', () => {
             });
         });
 
+        describe('enable variant management in tables and charts', () => {
+            const testCases: {
+                supportedVersion: boolean;
+                varianManagmentValue?: string;
+                ui5version?: versionUtils.Ui5VersionInfo;
+            }[] = [
+                {
+                    supportedVersion: true,
+                    varianManagmentValue: 'None'
+                },
+                {
+                    supportedVersion: true,
+                    varianManagmentValue: 'Control'
+                },
+                {
+                    supportedVersion: false,
+                    varianManagmentValue: 'None',
+                    ui5version: {
+                        major: 1,
+                        minor: 70
+                    }
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                    testCase.ui5version ?? { major: 1, minor: 131 }
+                );
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView,
+                            getId: () => 'DynamicPage'
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new TemplateComponentMock();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
+                        const componentContainer = new ComponentContainer();
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return componentContainer;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                            return {
+                                getVariantManagement: jest.fn().mockReturnValue(testCase.varianManagmentValue),
+                                isA: (type: string) => type === 'sap.fe.templates.ListReport.Component',
+                                getAppComponent: jest.fn(() => {
+                                    return {
+                                        getManifest: jest.fn(() => {
+                                            return {
+                                                'sap.app': {
+                                                    id: 'test.id'
+                                                }
+                                            };
+                                        })
+                                    };
+                                })
+                            } as unknown as UIComponent;
+                        });
+
+                        mockOverlay.getDesignTimeMetadata.mockReturnValue({
+                            getData: jest.fn().mockReturnValue({
+                                manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
+                                manifestPropertyChange: jest.fn().mockImplementation((propertyValue, propertyPath) => [
+                                    {
+                                        component,
+                                        changeSpecificData: {
+                                            appDescriptorChangeType: 'appdescr_fe_changePageConfiguration',
+                                            content: {
+                                                parameters: {
+                                                    propertyValue,
+                                                    propertyPath
+                                                }
+                                            }
+                                        },
+                                        selector: 'dummySelector'
+                                    }
+                                ])
+                            })
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui5': {
+                        routing: {
+                            targets: [
+                                {
+                                    name: 'sap.fe.templates.'
+                                }
+                            ]
+                        }
+                    }
+                });
+                const registry = new FEV4QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
+                );
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+                let tooltip = undefined;
+                let enabled = true;
+                if (testCase.varianManagmentValue === 'Control') {
+                    (tooltip =
+                        'This option has been disabled because variant management is already enabled for tables and charts'),
+                        (enabled = false);
+                }
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: testCase.supportedVersion
+                                ? [
+                                      {
+                                          'enabled': true,
+                                          'id': 'listReport0-add-controller-to-page',
+                                          'kind': 'simple',
+                                          'title': 'Add Controller to Page',
+                                          'tooltip': undefined
+                                      },
+                                      {
+                                          kind: 'simple',
+                                          id: 'listReport0-enable-variant-management-in-tables-charts',
+                                          enabled,
+                                          title: 'Enable Variant Management in Tables and Charts',
+                                          tooltip
+                                      }
+                                  ]
+                                : [
+                                      {
+                                          'enabled': true,
+                                          'id': 'listReport0-add-controller-to-page',
+                                          'kind': 'simple',
+                                          'title': 'Add Controller to Page',
+                                          'tooltip': undefined
+                                      }
+                                  ]
+                        }
+                    ])
+                );
+
+                if (testCase.supportedVersion && testCase.varianManagmentValue === 'None') {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: 'listReport0-enable-variant-management-in-tables-charts',
+                            kind: 'simple'
+                        })
+                    );
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        'settings': {},
+                        'type': 'appDescriptor',
+                        'value': {
+                            'changeType': 'appdescr_fe_changePageConfiguration',
+                            'appComponent': undefined,
+                            'parameters': {
+                                'propertyPath': 'dummyManifestPath',
+                                'propertyValue': {
+                                    'variantManagement': 'Control'
+                                }
+                            },
+                            'reference': '',
+                            'selector': 'dummySelector'
+                        }
+                    });
+                }
+            });
+        });
+
         describe('ObjectPage', () => {
+            beforeAll(() => {
+                jest.restoreAllMocks();
+            });
             describe('add header field', () => {
                 test('initialize and execute action', async () => {
                     const pageView = new XMLView();
@@ -1652,7 +1874,6 @@ describe('FE V4 quick actions', () => {
                         })
                     );
 
-                    
                     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
                         mockOverlay,
                         rtaMock,
@@ -1959,6 +2180,237 @@ describe('FE V4 quick actions', () => {
                     },
                     100000
                 );
+            });
+            describe('enable variant management in tables and charts', () => {
+                const testCases: {
+                    supportedVersion: boolean;
+                    varianManagmentValue?: string;
+                    ui5version?: versionUtils.Ui5VersionInfo;
+                }[] = [
+                    {
+                        supportedVersion: true,
+                        varianManagmentValue: 'None'
+                    },
+                    {
+                        supportedVersion: true,
+                        varianManagmentValue: 'Control'
+                    },
+                    {
+                        supportedVersion: false,
+                        varianManagmentValue: 'None',
+                        ui5version: {
+                            major: 1,
+                            minor: 70
+                        }
+                    }
+                ];
+                test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                    const pageView = new XMLView();
+                    jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                        testCase.ui5version ?? { major: 1, minor: 131 }
+                    );
+                    fetchMock.mockResolvedValue({
+                        json: jest
+                            .fn()
+                            .mockReturnValueOnce({
+                                controllerExists: false,
+                                controllerPath: '',
+                                controllerPathFromRoot: '',
+                                isRunningInBAS: false
+                            })
+                            .mockReturnValueOnce({ controllers: [] }),
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    sapCoreMock.byId.mockImplementation((id) => {
+                        if (id == 'DynamicPage') {
+                            return {
+                                getDomRef: () => ({}),
+                                getParent: () => pageView,
+                                getId: () => 'DynamicPage'
+                            };
+                        }
+                        if (id == 'NavContainer') {
+                            const container = new NavContainer();
+                            const component = new TemplateComponentMock();
+                            pageView.getDomRef.mockImplementation(() => {
+                                return {
+                                    contains: () => true
+                                };
+                            });
+                            pageView.getId.mockReturnValue('test.app::ProductsList');
+                            pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ObjectPage.ObjectPage');
+                            const componentContainer = new ComponentContainer();
+                            jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                                return 'component-id';
+                            });
+                            jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                                if (id === 'component-id') {
+                                    return component;
+                                }
+                            });
+                            container.getCurrentPage.mockImplementation(() => {
+                                return componentContainer;
+                            });
+                            component.getRootControl.mockImplementation(() => {
+                                return pageView;
+                            });
+                            jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                                return {
+                                    getVariantManagement: jest.fn().mockReturnValue(testCase.varianManagmentValue),
+                                    isA: (type: string) => type === 'sap.fe.templates.ObjectPage.Component',
+                                    getAppComponent: jest.fn(() => {
+                                        return {
+                                            getManifest: jest.fn(() => {
+                                                return {
+                                                    'sap.app': {
+                                                        id: 'test.id'
+                                                    }
+                                                };
+                                            })
+                                        };
+                                    })
+                                } as unknown as UIComponent;
+                            });
+
+                            mockOverlay.getDesignTimeMetadata.mockReturnValue({
+                                getData: jest.fn().mockReturnValue({
+                                    manifestPropertyPath: jest.fn().mockReturnValue('dummyManifestPath'),
+                                    manifestPropertyChange: jest
+                                        .fn()
+                                        .mockImplementation((propertyValue, propertyPath) => [
+                                            {
+                                                component,
+                                                changeSpecificData: {
+                                                    appDescriptorChangeType: 'appdescr_fe_changePageConfiguration',
+                                                    content: {
+                                                        parameters: {
+                                                            propertyValue,
+                                                            propertyPath
+                                                        }
+                                                    }
+                                                },
+                                                selector: 'dummySelector'
+                                            }
+                                        ])
+                                })
+                            });
+                            return container;
+                        }
+                    });
+
+                    const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                    jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                        'sap.ui5': {
+                            routing: {
+                                targets: [
+                                    {
+                                        name: 'sap.fe.templates.'
+                                    }
+                                ]
+                            }
+                        }
+                    });
+                    const registry = new FEV4QuickActionRegistry();
+                    const service = new QuickActionService(
+                        rtaMock,
+                        new OutlineService(rtaMock, mockChangeService),
+                        [registry],
+                        { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
+                    );
+                    CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                        return { type, value, settings };
+                    });
+                    await service.init(sendActionMock, subscribeMock);
+
+                    await service.reloadQuickActions({
+                        'sap.uxap.ObjectPageLayout': [
+                            {
+                                controlId: 'DynamicPage'
+                            } as any
+                        ],
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                    let tooltip = undefined;
+                    let enabled = true;
+                    if (testCase.varianManagmentValue === 'Control') {
+                        (tooltip =
+                            'This option has been disabled because variant management is already enabled for tables and charts'),
+                            (enabled = false);
+                    }
+                    const baseActions = [
+                        {
+                            enabled: true,
+                            id: 'objectPage0-add-controller-to-page',
+                            kind: 'simple',
+                            title: 'Add Controller to Page',
+                            tooltip: undefined
+                        },
+                        {
+                            enabled: true,
+                            id: 'objectPage0-op-add-header-field',
+                            kind: 'simple',
+                            title: 'Add Header Field',
+                            tooltip: undefined
+                        },
+                        {
+                            enabled: true,
+                            id: 'objectPage0-op-add-custom-section',
+                            kind: 'simple',
+                            title: 'Add Custom Section',
+                            tooltip: undefined
+                        }
+                    ] as QuickAction[];
+
+                    const variantManagementAction = (enabled: boolean, tooltip?: string) =>
+                        ({
+                            kind: 'simple',
+                            id: 'objectPage0-enable-variant-management-in-tables-charts',
+                            enabled,
+                            title: 'Enable Variant Management in Tables and Charts',
+                            tooltip
+                        } as QuickAction);
+
+                    expect(sendActionMock).toHaveBeenCalledWith(
+                        quickActionListChanged([
+                            {
+                                title: 'OBJECT PAGE',
+                                actions: testCase.supportedVersion
+                                    ? [...baseActions, variantManagementAction(enabled, tooltip)]
+                                    : baseActions
+                            }
+                        ])
+                    );
+
+                    if (testCase.supportedVersion && testCase.varianManagmentValue === 'None') {
+                        await subscribeMock.mock.calls[0][0](
+                            executeQuickAction({
+                                id: 'objectPage0-enable-variant-management-in-tables-charts',
+                                kind: 'simple'
+                            })
+                        );
+                        expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                            'settings': {},
+                            'type': 'appDescriptor',
+                            'value': {
+                                'changeType': 'appdescr_fe_changePageConfiguration',
+                                'appComponent': undefined,
+                                'parameters': {
+                                    'propertyPath': 'dummyManifestPath',
+                                    'propertyValue': {
+                                        'variantManagement': 'Control'
+                                    }
+                                },
+                                'reference': '',
+                                'selector': 'dummySelector'
+                            }
+                        });
+                    }
+                });
             });
         });
     });

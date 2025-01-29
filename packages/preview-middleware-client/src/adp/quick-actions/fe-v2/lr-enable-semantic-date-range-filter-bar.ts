@@ -1,5 +1,4 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import type FilterBar from 'sap/ui/comp/filterbar/FilterBar';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA } from '../../../utils/core';
@@ -9,13 +8,16 @@ import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/vers
 import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
-const CONTROL_TYPE = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
-const COMPONENT = 'sap.suite.ui.generic.template.ListReport';
+const CONTROL_TYPE_LR = 'sap.ui.comp.smartfilterbar.SmartFilterBar';
+const CONTROL_TYPE_ALP = 'sap.suite.ui.generic.template.AnalyticalListPage.control.SmartFilterBarExt';
+const COMPONENT_LR = 'sap.suite.ui.generic.template.ListReport';
+const COMPONENT_ALP = 'sap.suite.ui.generic.template.AnalyticalListPage';
+
 /**
  * Quick Action for toggling the visibility of "semantic date range" for filterbar fields.
  */
 export class ToggleSemanticDateRangeFilterBar
-    extends SimpleQuickActionDefinitionBase
+    extends SimpleQuickActionDefinitionBase<SmartFilterBar>
     implements SimpleQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
@@ -29,10 +31,13 @@ export class ToggleSemanticDateRangeFilterBar
         if (!manifestChangesSupported) {
             return;
         }
-        const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
+        const controls = [
+            ...(this.context.controlIndex[CONTROL_TYPE_LR] ?? []),
+            ...(this.context.controlIndex[CONTROL_TYPE_ALP] ?? [])
+        ];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
-            const modifiedControl = getControlById<FilterBar>(control.controlId);
+            const modifiedControl = getControlById<SmartFilterBar>(control.controlId);
             if (isActionApplicable && modifiedControl) {
                 this.control = modifiedControl;
 
@@ -42,7 +47,7 @@ export class ToggleSemanticDateRangeFilterBar
                 }
                 const value = this.context.changeService.getConfigurationPropertyValue(id, 'useDateRange');
                 this.isUseDateRangeTypeEnabled =
-                    value === undefined ? (this.control.data('useDateRangeType') as boolean) : (value as boolean);
+                    value === undefined ? this.control.getUseDateRangeType() : (value as boolean);
             }
         }
     }
@@ -54,21 +59,24 @@ export class ToggleSemanticDateRangeFilterBar
     }
 
     async execute(): Promise<FlexCommand[]> {
-        // Use a regex to match the part after the last "::" and before "--"
         const version = await getUi5Version();
         const isAboveOrEqualMinimalVersion = !isLowerThanMinimalUi5Version(version, { major: 1, minor: 126 });
         let entitySet;
-        if (isAboveOrEqualMinimalVersion) {
-            entitySet = isA<SmartFilterBar>(CONTROL_TYPE, this.control) ? this.control.getEntitySet() : undefined;
-        } else {
+        if (!isAboveOrEqualMinimalVersion && isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control)) {
             entitySet = this.control?.getId()?.match(/::([^:]+)--/)?.[1];
+        } else {
+            entitySet =
+                isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control) ||
+                isA<SmartFilterBar>(CONTROL_TYPE_ALP, this.control)
+                    ? this.control.getEntitySet()
+                    : undefined;
         }
-
+        const viewName = this.context.view.getViewName();
         const command = await prepareManifestChange(
             this.context,
             'component/settings/filterSettings/dateSettings',
             this.control!,
-            COMPONENT,
+            viewName.includes('AnalyticalListPage') ? COMPONENT_ALP : COMPONENT_LR,
             entitySet,
             {
                 useDateRange: !this.isUseDateRangeTypeEnabled

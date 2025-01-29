@@ -1,14 +1,14 @@
 import { initI18n, t } from '../../src/i18n';
 import LoggerHelper from '../../src/logger-helper';
 import { listPackagesFromService } from '../../src/service-provider-utils';
-import { getOrCreateServiceProvider } from '../../src/service-provider-utils/abap-service-provider';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 
 jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
     ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
-    getOrCreateServiceProvider: jest.fn()
+    AbapServiceProviderManager: { getOrCreateServiceProvider: jest.fn() }
 }));
 
-const mockGetOrCreateServiceProvider = getOrCreateServiceProvider as jest.Mock;
+const mockGetOrCreateServiceProvider = AbapServiceProviderManager.getOrCreateServiceProvider as jest.Mock;
 
 describe('Test list packages', () => {
     beforeAll(async () => {
@@ -16,11 +16,6 @@ describe('Test list packages', () => {
     });
 
     const phrase = 'ZPACK';
-
-    const systemConfig = {
-        url: 'https://mock.url.target1.com',
-        client: '000'
-    };
 
     it('should return a list of packages', async () => {
         const packages = ['ZPACK1', 'ZPACK2'];
@@ -32,7 +27,7 @@ describe('Test list packages', () => {
             getAdtService: jest.fn().mockResolvedValueOnce(mockGetAdtService)
         });
 
-        const allPackages = await listPackagesFromService(phrase, systemConfig);
+        const allPackages = await listPackagesFromService(phrase);
         expect(allPackages).toBe(packages);
     });
 
@@ -41,7 +36,7 @@ describe('Test list packages', () => {
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
         mockGetOrCreateServiceProvider.mockRejectedValueOnce(errorObj);
 
-        const allPackages = await listPackagesFromService(phrase, systemConfig);
+        const allPackages = await listPackagesFromService(phrase);
         expect(allPackages).toStrictEqual([]);
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'listPackagesFromService', error: errorObj.message })

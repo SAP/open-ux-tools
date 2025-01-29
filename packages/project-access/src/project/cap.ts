@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { basename, dirname, join, normalize, relative, sep } from 'path';
+import { basename, dirname, join, normalize, relative, sep, resolve } from 'path';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import { FileName } from '../constants';
@@ -63,30 +63,70 @@ export function isCapNodeJsProject(packageJson: Package): boolean {
  *
  * @param projectRoot - the root path of the project
  * @param [capCustomPaths] - optional, relative CAP paths like app, db, srv
+ * @param memFs - optional mem-fs-editor instance
  * @returns - true if the project is a CAP project
  */
-export async function isCapJavaProject(projectRoot: string, capCustomPaths?: CapCustomPaths): Promise<boolean> {
+export async function isCapJavaProject(
+    projectRoot: string,
+    capCustomPaths?: CapCustomPaths,
+    memFs?: Editor
+): Promise<boolean> {
     const srv = capCustomPaths?.srv ?? (await getCapCustomPaths(projectRoot)).srv;
-    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml));
+    return fileExists(join(projectRoot, srv, 'src', 'main', 'resources', FileName.CapJavaApplicationYaml), memFs);
+}
+
+/**
+ * Checks if there are files in the `srv` folder, using node fs or mem-fs.
+ *
+ * @param {string} srvFolderPath - The path to the `srv` folder to check for files.
+ * @param {Editor} [memFs] - An optional `mem-fs-editor` instance. If provided, the function checks files within the in-memory file system.
+ * @returns {Promise<boolean>} - Resolves to `true` if files are found in the `srv` folder; otherwise, `false`.
+ */
+async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Promise<boolean> {
+    if (!memFs) {
+        return await fileExists(srvFolderPath);
+    }
+    // Load the srv folder and its files into mem-fs
+    // This is necessary as mem-fs operates in-memory and doesn't automatically include files from disk.
+    // By loading the files, we ensure they are available within mem-fs.
+    if (await fileExists(srvFolderPath)) {
+        const fileSystemFiles = await readDirectory(srvFolderPath);
+        for (const file of fileSystemFiles) {
+            const filePath = join(srvFolderPath, file);
+            if (await fileExists(filePath)) {
+                const fileContent = await readFile(filePath);
+                memFs.write(filePath, fileContent);
+            }
+        }
+    }
+    // Dump the mem-fs state
+    const memFsDump = memFs.dump();
+    const memFsFiles = Object.keys(memFsDump).filter((filePath) => {
+        const normalisedFilePath = resolve(filePath);
+        const normalisedSrvPath = resolve(srvFolderPath);
+        return normalisedFilePath.startsWith(normalisedSrvPath);
+    });
+    return memFsFiles.length > 0;
 }
 
 /**
  * Returns the CAP project type, undefined if it is not a CAP project.
  *
  * @param projectRoot - root of the project, where the package.json resides.
+ * @param memFs - optional mem-fs-editor instance
  * @returns - CAPJava for Java based CAP projects; CAPNodejs for node.js based CAP projects; undefined if it is no CAP project
  */
-export async function getCapProjectType(projectRoot: string): Promise<CapProjectType | undefined> {
+export async function getCapProjectType(projectRoot: string, memFs?: Editor): Promise<CapProjectType | undefined> {
     const capCustomPaths = await getCapCustomPaths(projectRoot);
-    if (!(await fileExists(join(projectRoot, capCustomPaths.srv)))) {
+    if (!(await checkFilesInSrvFolder(join(projectRoot, capCustomPaths.srv), memFs))) {
         return undefined;
     }
-    if (await isCapJavaProject(projectRoot, capCustomPaths)) {
+    if (await isCapJavaProject(projectRoot, capCustomPaths, memFs)) {
         return 'CAPJava';
     }
     let packageJson;
     try {
-        packageJson = await readJSON<Package>(join(projectRoot, FileName.Package));
+        packageJson = await readJSON<Package>(join(projectRoot, FileName.Package), memFs);
     } catch {
         // Ignore errors while reading the package.json file
     }

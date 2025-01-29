@@ -1,5 +1,24 @@
 # @sap-ux/project-access
 
+## 1.29.2
+
+### Patch Changes
+
+-   93ef8c1: Improved `getWebappPath` for projects that has relative webapp path defined in ui5.yaml.
+
+## 1.29.1
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+
+## 1.29.0
+
+### Minor Changes
+
+-   88bf030: Add optional mem-fs editor to function in project-access
+
 ## 1.28.10
 
 ### Patch Changes

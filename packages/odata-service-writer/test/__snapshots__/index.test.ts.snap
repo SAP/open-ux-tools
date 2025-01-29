@@ -43,8 +43,6 @@ Object {
         annotations:
           - localPath: ./webapp/localService/mainService/sepmra_annotations_tech_name.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotations_test.xml
-            urlPath: annotations/annotations_test.xml
 ",
     "state": "modified",
   },
@@ -75,8 +73,6 @@ Object {
         annotations:
           - localPath: ./webapp/localService/mainService/sepmra_annotations_tech_name.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='sepmra_annotations_tech_name',Version='0001')/$value/
-          - localPath: ./webapp/annotations/annotations_test.xml
-            urlPath: annotations/annotations_test.xml
 ",
     "state": "modified",
   },

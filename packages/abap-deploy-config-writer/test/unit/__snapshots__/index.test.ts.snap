@@ -92,6 +92,115 @@ builder:
 }
 `;
 
+exports[`generate Generate deployment configs: test.ui5.typescript.library1 1`] = `
+Object {
+  "package.json": Object {
+    "contents": "{
+  \\"name\\": \\"test.ui5.typescript.library1\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"@ui5/cli\\": \\"2.9.9\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"ui5-task-flatten-library\\": \\"3.0.2\\"
+  },
+  \\"scripts\\": {
+    \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
+    \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
+    \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
+  },
+  \\"ui5\\": {
+    \\"dependencies\\": [
+      \\"ui5-task-flatten-library\\"
+    ]
+  }
+}
+",
+    "state": "modified",
+  },
+  "src/test/ui5/typescript/library1/.Ui5RepositoryIgnore": Object {
+    "contents": "^.*.ts$
+^.*.ts.map$",
+    "state": "modified",
+  },
+  "ui5-deploy.yaml": Object {
+    "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
+
+specVersion: '2.2'
+metadata:
+  name: \\"library1\\"
+type: library
+framework:
+  name: SAPUI5
+  version: 1.132.0
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_fiori_3
+builder:
+  resources:
+    excludes:
+      - /test/**
+      - /localService/**
+  customTasks:
+    - name: deploy-to-abap
+      afterTask: generateCachebusterInfo
+      configuration:
+        target:
+          url: https://example.com
+          client: '000'
+        app:
+          name: test.ui5.typescript.library1
+          package: TESTPKG12
+          description: Mock deployment description
+          transport: TR123
+        exclude:
+          - /test/
+",
+    "state": "modified",
+  },
+  "ui5.yaml": Object {
+    "contents": "specVersion: '2.2'
+metadata:
+  name: \\"library1\\"
+type: library
+framework:
+  name: SAPUI5
+  version: 1.132.0
+  libraries:
+    - name: sap.ui.core
+    - name: themelib_sap_fiori_3
+server:
+  customMiddleware:
+    - name: fiori-tools-appreload
+      afterMiddleware: compression
+      configuration:
+        path: src
+        port: 35729
+        delay: 300
+    - name: ui5-tooling-transpile-middleware
+      afterMiddleware: compression
+      configuration:
+        debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
+        excludePatterns:
+          - /Component-preload.js
+builder:
+  customTasks:
+    - name: ui5-tooling-transpile-task
+      afterTask: replaceVersion
+      configuration:
+        debug: true
+        transformModulesToUI5:
+          overridesToOverride: true
+    - name: ui5-task-flatten-library
+      afterTask: generateResourcesJson
+",
+    "state": "modified",
+  },
+}
+`;
+
 exports[`generate Generate deployment configs: test-js-app 1`] = `
 Object {
   "package.json": Object {

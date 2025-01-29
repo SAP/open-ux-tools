@@ -1,5 +1,4 @@
 import { t } from '../../../i18n';
-
 import {
     defaultOrShowManualTransportQuestion,
     defaultOrShowTransportCreatedQuestion,
@@ -24,12 +23,17 @@ import { useCreateTrDuringDeploy } from '../../../utils';
  * Returns the transport prompts.
  *
  * @param options - abap deploy config prompt options
+ * @param useStandalone - whether the prompts are used standalone, defaults to true
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
  * @returns list of questions for transport prompting
  */
 export function getTransportRequestPrompts(
-    options: AbapDeployConfigPromptOptions
+    options: AbapDeployConfigPromptOptions,
+    useStandalone = true,
+    isYUI = false
 ): Question<AbapDeployConfigAnswersInternal>[] {
     let transportInputChoice: TransportChoices;
+    PromptState.isYUI = isYUI;
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
@@ -50,7 +54,15 @@ export function getTransportRequestPrompts(
                 input: TransportChoices,
                 previousAnswers: AbapDeployConfigAnswersInternal
             ): Promise<boolean | string> => {
-                const result = validateTransportChoiceInput(input, previousAnswers, true, transportInputChoice);
+                const result = validateTransportChoiceInput(
+                    useStandalone,
+                    input,
+                    previousAnswers,
+                    true,
+                    transportInputChoice,
+                    options.backendTarget,
+                    options.ui5AbapRepo?.default
+                );
                 transportInputChoice = input;
                 return result;
             }
@@ -61,11 +73,13 @@ export function getTransportRequestPrompts(
             when: async (previousAnswers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 if (!PromptState.isYUI) {
                     const result = await validateTransportChoiceInput(
+                        useStandalone,
                         previousAnswers.transportInputChoice,
                         previousAnswers,
                         false,
                         undefined,
-                        options.backendTarget
+                        options.backendTarget,
+                        options.ui5AbapRepo?.default
                     );
                     if (result !== true) {
                         throw new Error(result as string);

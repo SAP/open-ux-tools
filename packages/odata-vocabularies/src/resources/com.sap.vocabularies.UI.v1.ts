@@ -1,4 +1,4 @@
-// Last content update: Mon Oct 21 2024 11:45:53 GMT+0200 (Mitteleuropäische Sommerzeit)
+// Last content update: Fri Jan 10 2025 12:27:42 GMT+0100 (Mitteleuropäische Normalzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -212,7 +212,7 @@ export default {
         'FieldGroup': {
             '$Kind': 'Term',
             '$Type': 'com.sap.vocabularies.UI.v1.FieldGroupType',
-            '$AppliesTo': ['EntityType', 'Action', 'Function', 'FunctionImport'],
+            '$AppliesTo': ['EntityType', 'Action', 'Function', 'ActionImport', 'FunctionImport'],
             '@Org.OData.Core.V1.Description': 'Group of fields with an optional label',
             '@com.sap.vocabularies.UI.v1.ThingPerspective': true
         },
@@ -1107,7 +1107,7 @@ export default {
             '$Kind': 'Term',
             '$Collection': true,
             '$Type': 'com.sap.vocabularies.UI.v1.CriticalityLabelType',
-            '$AppliesTo': ['Property', 'EntityType'],
+            '$AppliesTo': ['Property', 'EntityType', 'TypeDefinition'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 '\n              Assign labels to criticalities. This information can be used for semantic coloring.\n              When applied to a property, a label for a criticality must be provided, if more than one value of the annotated property has been assigned to the same criticality.\n              There must be no more than one label per criticality.\n          '
@@ -1169,6 +1169,15 @@ export default {
             '$AppliesTo': ['EntityType'],
             '@Org.OData.Core.V1.Description':
                 'Facets that reference UI.FieldGroup annotations to group filterable fields'
+        },
+        'OperationParameterFacets': {
+            '$Kind': 'Term',
+            '$Collection': true,
+            '$Type': 'com.sap.vocabularies.UI.v1.ReferenceFacet',
+            '$AppliesTo': ['Action', 'Function', 'ActionImport', 'FunctionImport'],
+            '@com.sap.vocabularies.Common.v1.Experimental': true,
+            '@Org.OData.Core.V1.Description':
+                'Facets that reference UI.FieldGroup annotations to group action or function parameters'
         },
         'Facet': {
             '$Kind': 'ComplexType',
@@ -1592,7 +1601,7 @@ export default {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property', 'Term'],
+            '$AppliesTo': ['Property', 'Term', 'TypeDefinition'],
             '@Org.OData.Core.V1.Description':
                 'Properties and terms annotated with this term MUST contain a valid URL referencing an resource with a MIME type image',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String',
@@ -1602,7 +1611,7 @@ export default {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property', 'EntityType'],
+            '$AppliesTo': ['Property', 'EntityType', 'TypeDefinition'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Properties annotated with this term MUST be a stream property annotated with a MIME type image. Entity types annotated with this term MUST be a media entity type annotated with a MIME type image.',
@@ -1613,7 +1622,7 @@ export default {
             '$Kind': 'Term',
             '$Type': 'Org.OData.Core.V1.Tag',
             '$DefaultValue': true,
-            '$AppliesTo': ['Property', 'PropertyValue', 'Parameter'],
+            '$AppliesTo': ['Property', 'PropertyValue', 'Parameter', 'TypeDefinition'],
             '@Org.OData.Core.V1.Description':
                 'Properties and parameters annotated with this annotation should be rendered as multi-line text (e.g. text area)',
             '@Org.OData.Core.V1.RequiresType': 'Edm.String'
@@ -2011,6 +2020,13 @@ export default {
             '$BaseType': 'com.sap.vocabularies.UI.v1.DataFieldAbstract',
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description': 'Collection of OData actions and intent based navigations',
+            'ID': {
+                '$Nullable': true,
+                '@Org.OData.Core.V1.Description':
+                    'Identifier of an action group. ID should be stable, as long as the perceived semantics of the action group is unchanged.',
+                '@Org.OData.Core.V1.LongDescription':
+                    'The ID should be unique among all action groups used in all data fields of one entity type / set.'
+            },
             'Actions': {
                 '$Collection': true,
                 '$Type': 'com.sap.vocabularies.UI.v1.DataFieldForActionAbstract',
@@ -2206,7 +2222,7 @@ export default {
         'RecommendationList': {
             '$Kind': 'Term',
             '$Type': 'com.sap.vocabularies.UI.v1.RecommendationListType',
-            '$AppliesTo': ['Property', 'Parameter'],
+            '$AppliesTo': ['Property', 'Parameter', 'TypeDefinition'],
             '@Org.OData.Core.V1.Description':
                 'Specifies how to get a list of recommended values for a property or parameter',
             '@Org.OData.Core.V1.LongDescription':
@@ -2294,7 +2310,7 @@ export default {
         'DoNotCheckScaleOfMeasuredQuantity': {
             '$Kind': 'Term',
             '$Type': 'Edm.Boolean',
-            '$AppliesTo': ['Property'],
+            '$AppliesTo': ['Property', 'TypeDefinition'],
             '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Do not check the number of fractional digits of the annotated measured quantity',

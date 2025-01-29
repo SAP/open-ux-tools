@@ -1,34 +1,37 @@
-import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import type { Question } from 'inquirer';
+import { type InquirerAdapter, ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
 import { type Logger } from '@sap-ux/logger';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ToolsSuiteTelemetryClient } from '@sap-ux/telemetry';
+import type { Question } from 'inquirer';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import { ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
 import { initI18nOdataServiceInquirer } from './i18n';
 import { getQuestions } from './prompts';
+import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection';
 import {
     type SystemSelectionAnswers,
-    SystemSelectionAnswerType,
-    getSystemSelectionQuestions as getSystemSelectionQuestionsBase
+    getSystemSelectionQuestions as getSystemSelectionQuestionsBase,
+    SystemSelectionAnswerType
 } from './prompts/datasources/sap-system/system-selection';
-import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection';
 import type {
-    NewSystemChoice,
-    CfAbapEnvServiceChoice
+    CfAbapEnvServiceChoice,
+    NewSystemChoice
 } from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
+import type { Annotations } from '@sap-ux/axios-extension';
+import type { TemplateType } from '@sap-ux/fiori-elements-writer';
+import { getEntitySelectionQuestions } from './prompts/edmx/questions';
 import LoggerHelper from './prompts/logger-helper';
 import {
     DatasourceType,
     promptNames,
-    type CapRuntime,
-    type CapService,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
-    type SapSystemType
+    type SapSystemType,
+    type EntityPromptOptions,
+    EntityRelatedAnswers
 } from './types';
+import type { CapService, CapRuntime } from '@sap-ux/cap-config-writer';
 import { getPromptHostEnvironment, PromptState } from './utils';
 
 /**
@@ -85,6 +88,35 @@ async function getSystemSelectionQuestions(
 }
 
 /**
+ * Get the questions that may be used to prompt for entity selection, table configuration, annotation generation, and ALP specific table configuration.
+ * Since these are releated to service metadata processing and entity selection, they are grouped together.
+ *
+ * @param metadata the metadata (edmx) string from which to extract entity choices
+ * @param templateType the template type which will define the type of prompts and their choices
+ * @param isCapService if true, the service is a CAP service, some prompts will be adjusted accordingly
+ * @param promptOptions options that can control some of the prompt behavior. See {@link EntityPromptOptions} for details
+ * @param annotations annotations to be used for entity selection, only used for analytical list page presentation variant qualifier choices when the edmx odata version is `2`
+ * @param logger a logger compatible with the {@link Logger} interface
+ * @param isYUI if true, the prompt is being called from the Yeoman UI extension host
+ * @returns the prompts which may be used to prompt for entity selection, table configuration, annotation generation, and ALP specific table configuration
+ */
+function getEntityRelatedPrompts(
+    metadata: string,
+    templateType: TemplateType,
+    isCapService = false,
+    promptOptions?: EntityPromptOptions,
+    annotations?: Annotations,
+    logger?: Logger,
+    isYUI = false
+): Question<EntityRelatedAnswers>[] {
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
+    PromptState.isYUI = isYUI;
+    return getEntitySelectionQuestions(metadata, templateType, isCapService, promptOptions, annotations);
+}
+
+/**
  * Prompt for odata service writer inputs.
  *
  * @param adapter - optionally provide references to a calling inquirer instance, this supports integration to Yeoman generators, for example
@@ -116,13 +148,18 @@ async function prompt(
 }
 
 export {
-    // @derecated - temp export to support to support open source migration
+    CfAbapEnvServiceChoice,
+    // @deprecated - temp export to support to support open source migration
     DatasourceType,
+    EntityRelatedAnswers,
     // @deprecated - temp export to support to support open source migration
     ERROR_TYPE,
     // @deprecated - temp export to support to support open source migration
     ErrorHandler,
+    getEntityRelatedPrompts,
     getPrompts,
+    getSystemSelectionQuestions,
+    NewSystemChoice,
     // @deprecated - temp export to support to support open source migration
     OdataVersion,
     prompt,
@@ -135,8 +172,5 @@ export {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     // @deprecated - temp export to support to support open source migration
-    type SapSystemType,
-    NewSystemChoice,
-    CfAbapEnvServiceChoice,
-    getSystemSelectionQuestions
+    type SapSystemType
 };

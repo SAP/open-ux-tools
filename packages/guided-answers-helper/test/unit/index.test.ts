@@ -27,24 +27,23 @@ describe('Guided Answers Helper', () => {
     });
 
     it('should return the help nodes', () => {
-        expect(HELP_NODES).toMatchInlineSnapshot(`
-            Object {
-              "APPLICATION_PREVIEW": 52881,
-              "BAD_GATEWAY": 48366,
-              "BAS_CATALOG_SERVICES_REQUEST_FAILED": 48366,
-              "CERTIFICATE_ERROR": 53643,
-              "DESTINATION_CONNECTION_ERRORS": 48366,
-              "DESTINATION_MISCONFIGURED": 54336,
-              "DESTINATION_NOT_FOUND": 51208,
-              "DESTINATION_SERVICE_UNAVAILBLE": 52526,
-              "DESTINATION_UNAVAILABLE": 51208,
-              "DEV_PLATFORM": 45996,
-              "FIORI_APP_GENERATOR": 48363,
-              "FIORI_TOOLS": 45995,
-              "NO_ADT_SERVICE_AUTH": 57266,
-              "NO_V4_SERVICES": 57573,
-              "UI_SERVICE_GENERATOR": 63068,
-            }
-        `);
+        expect(HELP_NODES).toEqual({
+            APPLICATION_PREVIEW: 52881,
+            BAD_GATEWAY: 48366,
+            BAS_CATALOG_SERVICES_REQUEST_FAILED: 48366,
+            CERTIFICATE_ERROR: 53643,
+            DESTINATION_CONNECTION_ERRORS: 48366,
+            DESTINATION_MISCONFIGURED: 54336,
+            DESTINATION_NOT_FOUND: 51208,
+            DESTINATION_SERVICE_UNAVAILBLE: 52526,
+            DESTINATION_UNAVAILABLE: 51208,
+            DEV_PLATFORM: 45996,
+            FIORI_APP_GENERATOR: 48363,
+            FIORI_TOOLS: 45995,
+            NO_ADT_SERVICE_AUTH: 57266,
+            NO_V4_SERVICES: 57573,
+            UI_SERVICE_GENERATOR: 63068,
+            DESTINATION_GATEWAY_TIMEOUT: 57914
+        });
     });
 });
