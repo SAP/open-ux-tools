@@ -5,7 +5,6 @@ import type {
     Control,
     IconDetails,
     InfoCenterMessage,
-    InfoCenterMessageState,
     OutlineNode,
     PendingChange,
     PendingConfigurationChange,
@@ -50,7 +49,8 @@ import {
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
     CONFIGURATION_CHANGE_KIND,
-    expandableMessage
+    expandableMessage,
+    toggleModalMessage
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -173,7 +173,7 @@ export const initialState: SliceState = {
     applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: [],
-    infoCenterMessages: [{message: {title: 'Error message', description: `Contrary to popular belief, Lorem Ipsum is not simply random text. It has roots in a piece of classical Latin literature from 45 BC, making it over 2000 years old. Richard McClintock, a Latin professor at Hampden-Sydney College in Virginia, looked up one of the more obscure Latin words, consectetur, from a Lorem Ipsum passage, and going through the cites of the word in classical literature, discovered the undoubtable source. Lorem Ipsum comes from sections 1.10.32 and 1.10.33 of "de Finibus Bonorum et Malorum" (The Extremes of Good and Evil) by Cicero, written in 45 BC. This book is a treatise on the theory of ethics, very popular during the Renaissance. The first line of Lorem Ipsum, "Lorem ipsum dolor sit amet..", comes from a line in section 1.10.32. The standard chunk of Lorem Ipsum used since the 1500s is reproduced below for those interested. Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form, accompanied by English versions from the 1914 translation by H. Rackham.`},  type: MessageBarType.error}, {message: {title: 'Warning message', description: "this is the warning message"}, type: MessageBarType.warning}, {message: {title: 'Reuse components detected and there is a two line title', description: "this is the info message"}, type: MessageBarType.info}]
+    infoCenterMessages: []
 };
 
 /**
@@ -474,7 +474,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 toggleExpandMessage.match,
                 (state: SliceState, action: ReturnType<typeof toggleExpandMessage>): void => {
                     const index = action.payload;
-                    state.infoCenterMessages[index].expanded = !state.infoCenterMessages[index].expanded
+                    state.infoCenterMessages[index].expanded = !state.infoCenterMessages[index].expanded;
                 }
             )
             .addMatcher(
@@ -489,6 +489,13 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 (state: SliceState, action: ReturnType<typeof expandableMessage>): void => {
                     const index = action.payload;
                     state.infoCenterMessages[index].expandable = true;
+                }
+            )
+            .addMatcher(
+                toggleModalMessage.match,
+                (state: SliceState, action: ReturnType<typeof toggleModalMessage>): void => {
+                    const index = action.payload;
+                    state.infoCenterMessages[index].modal = !state.infoCenterMessages[index].modal;
                 }
             )
 });

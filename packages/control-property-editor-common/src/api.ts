@@ -289,10 +289,12 @@ export interface InfoCenterMessage {
     message: {
         title: string;
         description: string;
+        details?: string;
     };
     expandable?: boolean;
     expanded?: boolean;
     read?: boolean;
+    modal?: boolean;
 }
 
 export enum MessageBarType {
@@ -404,6 +406,7 @@ export const externalFileChange = createExternalAction<string>('external-file-ch
 export const toggleExpandMessage = createExternalAction<number>('toggle-expand-message');
 export const readMessage = createExternalAction<number>('read-message');
 export const expandableMessage = createExternalAction<number>('expadnable-message');
+export const toggleModalMessage = createExternalAction<number>('toggle-modal-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -438,3 +441,4 @@ export type ExternalAction =
     | ReturnType<typeof toggleExpandMessage>
     | ReturnType<typeof readMessage>
     | ReturnType<typeof expandableMessage>
+    | ReturnType<typeof toggleModalMessage>

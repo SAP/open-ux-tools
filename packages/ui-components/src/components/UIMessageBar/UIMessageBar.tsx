@@ -49,12 +49,12 @@ export class UIMessageBar extends React.Component<IMessageBarProps, {}> {
         switch (type) {
             case MessageBarType.error:
                 return UiIcons.Error;
-            case MessageBarType.success:
-                return UiIcons.Success;
+            case MessageBarType.info:
+                return UiIcons.Info;
             case MessageBarType.warning:
                 return UiIcons.Warning;
             default:
-                return UiIcons.Info;
+                return UiIcons.Success;
         }
     }
 

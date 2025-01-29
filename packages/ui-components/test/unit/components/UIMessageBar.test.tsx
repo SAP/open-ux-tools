@@ -50,4 +50,26 @@ describe('<UIMessageBar />', () => {
         const styles = getStyles();
         expect(styles.root?.['backgroundColor']).toEqual('transparent');
     });
+
+    it('Test property "messageBarType" - info', () => {
+        wrapper.setProps({
+            messageBarType: MessageBarType.info
+        });
+        const messageBar = wrapper.find(MessageBar);
+        expect(messageBar.prop('messageBarIconProps')?.iconName).toEqual(UiIcons.Info);
+        // Check styles
+        const styles = getStyles();
+        expect(styles.root?.['backgroundColor']).toEqual('transparent');
+    });
+
+    it('Test property "messageBarType" - info', () => {
+        wrapper.setProps({
+            messageBarType: MessageBarType.warning
+        });
+        const messageBar = wrapper.find(MessageBar);
+        expect(messageBar.prop('messageBarIconProps')?.iconName).toEqual(UiIcons.Warning);
+        // Check styles
+        const styles = getStyles();
+        expect(styles.root?.['backgroundColor']).toEqual('transparent');
+    });
 });

@@ -39,22 +39,22 @@
     }
 
     &.info {
-        border-left: 2px solid #1A85FF;
+        border-left: 2px solid var(--vscode-editorInfo-foreground);
     }
 
     &.warning {
-        border-left: 2px solid #BF8803;
+        border-left: 2px solid var(--vscode-editorWarning-foreground);
 
         .message-title {
-            color: #BF8803;
+            color: var(--vscode-editorWarning-foreground);
         }
     }
 
     &.error {
-        border-left: 2px solid #E51400;
+        border-left: 2px solid var(--vscode-editorError-foreground);
 
         .message-title {
-            color: #E51400;
+            color: var(--vscode-editorError-foreground);
         }
     }
 
@@ -133,9 +133,8 @@
 
 .more-less {
     font-size: 11px;
-    color: #005FB8;
-    text-decoration: underline solid;
-    cursor: pointer;
+    font-weight: bold;
+    color: var(--vscode-textLink-foreground);
     margin-right: 4px;
     position: absolute;
     bottom: 0;
@@ -143,4 +142,36 @@
     background-color: var(--vscode-sideBar-background);
     padding-left: 6px;
     margin-left: 6px;
+
+    &:hover {
+        text-decoration: underline solid;
+        cursor: pointer;
+    }
+}
+
+.ms-Dialog {
+    .ms-Dialog-main {
+        max-width: 700px;
+    }
+    .ms-Dialog-subText {
+        padding: 7px;
+        background-color: var(--vscode-input-background);
+    }
+    .ms-Button {
+        color: var(--vscode-button-secondaryForeground);
+        background-color: var(--vscode-button-secondaryBackground);
+    }
+}
+
+.message-details {
+    font-size: 11px;
+    font-weight: bold;
+    color: var(--vscode-textLink-foreground);
+    background-color: var(--vscode-sideBar-background);
+    padding-left: 2px;
+
+    &:hover {
+        text-decoration: underline solid;
+        cursor: pointer;
+    }
 }
