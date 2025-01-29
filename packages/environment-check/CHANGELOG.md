@@ -1,5 +1,13 @@
 # @sap-ux/environment-check
 
+## 0.17.72
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/axios-extension@1.18.3
+
 ## 0.17.71
 
 ### Patch Changes
