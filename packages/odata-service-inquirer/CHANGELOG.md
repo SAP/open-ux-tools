@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.1.0
+
+### Minor Changes
+
+-   5e3a5f8: Adds support for `showCollaborativeDraftWarning` option
+
+### Patch Changes
+
+-   2a85cad: Fix for qualifier prompt shown with no qualifiers
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
 ## 2.0.1
 
 ### Patch Changes

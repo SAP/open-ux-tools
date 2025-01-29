@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.6.9
+
+### Patch Changes
+
+-   5e3a5f8: Adds support for `showCollaborativeDraftWarning` option
+
 ## 0.6.8
 
 ### Patch Changes
