@@ -3,7 +3,11 @@ import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as btp from '@sap-ux/btp-utils';
-import { generateAppConfig } from '../../src';
+import { generateAppConfig, DefaultMTADestination } from '../../src';
+import { generateSupportingConfig } from '../../src/utils';
+import type { CFConfig } from '../../src/types';
+import { create } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -15,6 +19,13 @@ jest.mock('hasbin', () => ({
     ...(jest.requireActual('hasbin') as {}),
     sync: jest.fn()
 }));
+
+jest.mock('@sap/mta-lib', () => {
+    return {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        Mta: require('./mockMta').MockMta
+    };
+});
 
 let hasSyncMock: jest.SpyInstance;
 let isAppStudioMock: jest.SpyInstance;
@@ -62,6 +73,10 @@ describe('CF Writer App', () => {
 
     afterAll(() => {
         jest.resetAllMocks();
+    });
+
+    test('Generate deployment configs - DefaultMTADestination', async () => {
+        expect(DefaultMTADestination).toEqual('fiori-default-srv-api');
     });
 
     test('Generate deployment configs - HTML5 App and destination read from ui5.yaml', async () => {
@@ -112,5 +127,53 @@ describe('CF Writer App', () => {
         const appName = 'validate';
         const appPath = join(outputDir, appName);
         await expect(generateAppConfig({ appPath }, undefined, logger)).rejects.toThrowError();
+    });
+
+    test('Generate deployment configs - should fail if no HTML5 app found', async () => {
+        const appName = 'standalone';
+        const appPath = join(outputDir, appName);
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(appPath);
+        fsExtra.copySync(join(__dirname, `../sample/standalone`), appPath);
+        await expect(generateAppConfig({ appPath, addManagedAppRouter: false })).rejects.toThrowError(
+            /No SAP Fiori UI5 application found./
+        );
+    });
+
+    test('Generate deployment configs - standalone approuter cleanup', async () => {
+        const rootPath = join(outputDir, 'standalonewithapp');
+        const appPath = join(rootPath, 'myapp');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(rootPath);
+        fsExtra.copySync(join(__dirname, `../sample/standalonewithapp`), rootPath);
+        const localFs = await generateAppConfig({ appPath, addManagedAppRouter: false });
+        expect(localFs.read(join(rootPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(localFs.read(join(rootPath, 'router', 'package.json'))).toMatchSnapshot();
+        expect(localFs.read(join(rootPath, 'router', 'xs-app.json'))).toMatchSnapshot();
+    });
+
+    test('Generate deployment configs - generateSupportingConfig with mtaId passed in', async () => {
+        const fs = create(createStorage());
+        const appPath = join(outputDir, 'supportingconfig');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(appPath);
+        await generateSupportingConfig({ appPath, mtaId: 'testMtaId', rootPath: appPath } as unknown as CFConfig, fs);
+        expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
+    });
+
+    test('Generate deployment configs - generateSupportingConfig read mtaId read from file', async () => {
+        const fs = create(createStorage());
+        const appPath = join(outputDir, 'supportingconfigreadmta');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(appPath);
+        fsExtra.copySync(join(__dirname, 'fixtures/mta-types/cdsmta'), appPath);
+        await generateSupportingConfig(
+            { appPath, rootPath: appPath, addManagedAppRouter: true } as unknown as CFConfig,
+            fs
+        );
+        expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();
+        expect(fs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
+        expect(fs.read(join(appPath, 'xs-security.json'))).toMatchSnapshot();
     });
 });
