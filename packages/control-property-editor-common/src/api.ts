@@ -290,9 +290,7 @@ export interface InfoCenterMessage {
         title: string;
         description: string;
     };
-}
-
-export interface InfoCenterMessageState {
+    expandable?: boolean;
     expanded?: boolean;
     read?: boolean;
 }
@@ -405,6 +403,7 @@ export const clearAllInfoCenterMessages = createExternalAction<void>('clear-all-
 export const externalFileChange = createExternalAction<string>('external-file-change');
 export const toggleExpandMessage = createExternalAction<number>('toggle-expand-message');
 export const readMessage = createExternalAction<number>('read-message');
+export const expandableMessage = createExternalAction<number>('expadnable-message');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -438,3 +437,4 @@ export type ExternalAction =
     | ReturnType<typeof externalFileChange>
     | ReturnType<typeof toggleExpandMessage>
     | ReturnType<typeof readMessage>
+    | ReturnType<typeof expandableMessage>
