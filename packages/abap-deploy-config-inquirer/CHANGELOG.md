@@ -1,5 +1,16 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.5
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/fiori-generator-shared@0.7.22
+    -   @sap-ux/inquirer-common@0.6.8
+    -   @sap-ux/system-access@0.5.28
+
 ## 1.2.4
 
 ### Patch Changes
