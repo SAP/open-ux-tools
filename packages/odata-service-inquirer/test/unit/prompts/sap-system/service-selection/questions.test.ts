@@ -21,6 +21,7 @@ import { promptNames } from '../../../../../src/types';
 import * as utils from '../../../../../src/utils';
 import { PromptState } from '../../../../../src/utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 const serviceV4a = {
     id: '/DMO/FLIGHT',
@@ -42,7 +43,13 @@ const serviceV2a = {
 } as ODataServiceInfo;
 
 const v2Metadata =
-    '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
+    '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">' +
+    '<edmx:DataServices m:DataServiceVersion="2.0">' +
+    '<Schema xmlns="http://schemas.microsoft.com/ado/2008/09/edm" Namespace="SEPMRA_PROD_MAN" xml:lang="en" sap:schema-version="1">' +
+    '<EntityContainer Name="SEPMRA_PROD_MAN_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">' +
+    '</EntityContainer>' +
+    '</Schema>' +
+    '</edmx:DataServices></edmx:Edmx>';
 const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
         <edmx:Edmx Version="1.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
             <edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName=\'%2FIWBEP%2FVOC_COMMON\',Version=\'0001\',SAP__Origin=\'\')/$value">
@@ -50,7 +57,8 @@ const v2Annotations = `<?xml version="1.0" encoding="utf-8"?>
             </edmx:Reference>
         </edmx:Edmx>`;
 const v4Metadata =
-    '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx"></edmx:Edmx>';
+    '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="4.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">' +
+    '<edmx:DataServices m:DataServiceVersion="4.0"></edmx:DataServices></edmx:Edmx>';
 
 let connectedUserNameMock: string | undefined;
 const catalogs = {
@@ -247,7 +255,7 @@ describe('Test new system prompt', () => {
         });
     });
 
-    test('should show additional messages in service selection prompt selected service type is not UI', async () => {
+    test('should show additional messages in service selection prompt if selected service type is not UI', async () => {
         const connectValidator = new ConnectionValidator();
         const annotations = [
             {
@@ -331,16 +339,29 @@ describe('Test new system prompt', () => {
         });
     });
 
-    test('should show additional messages in service selection prompt selected V2 service has no annotations', async () => {
+    test('should show additional messages in service selection prompt if selected service has no annotations and is odata version "2"', async () => {
         const connectValidator = new ConnectionValidator();
         connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         PromptState.odataService.annotations = [];
+        const serviceV2HasAnnotations = {
+            id: 'ZZZ',
+            serviceVersion: '2',
+            serviceType: 'UI',
+            name: 'ZZZ',
+            path: '/sap/opu/odata/sap/ZZZ',
+            odataVersion: ODataVersion.v2
+        } as ODataServiceInfo;
+
+        // Clone, test isolation
+        const serviceV4 = { ...serviceV4a };
+        serviceV4.serviceType = ServiceType.UI;
+
         connectionValidatorMock.catalogs = {
             [ODataVersion.v2]: {
-                listServices: jest.fn().mockResolvedValue([serviceV2a])
+                listServices: jest.fn().mockResolvedValue([serviceV2a, serviceV2HasAnnotations])
             },
             [ODataVersion.v4]: {
-                listServices: jest.fn().mockResolvedValue([serviceV4a])
+                listServices: jest.fn().mockResolvedValue([serviceV4])
             }
         };
 
@@ -351,16 +372,47 @@ describe('Test new system prompt', () => {
         const choices: { name: string; value: ServiceAnswer }[] = await (
             (serviceSelectionPrompt as ListQuestion)?.choices as Function
         )();
-        expect(choices.length).toBe(2);
+        expect(choices[0].value.serviceODataVersion).toBe(ODataVersion.v4);
+        expect(choices[1].value.serviceODataVersion).toBe(ODataVersion.v2);
+        expect(choices[2].value.serviceODataVersion).toBe(ODataVersion.v2);
 
-        const message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
+        // No annotations, show warning
+        jest.spyOn(serviceHelpers, 'validateService').mockResolvedValue({
+            validationResult: true,
+            hasAnnotations: false,
+            convertedMetadata: { version: '2' } as ConvertedMetadata
+        });
+
+        await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(choices[1].value);
+        let message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(
             choices[1].value
         );
-
         expect(message).toMatchObject({
             message: t('prompts.warnings.noAnnotations'),
             severity: Severity.warning
         });
+
+        // Should not show the message if the service has annotations
+        jest.spyOn(serviceHelpers, 'validateService').mockResolvedValue({
+            validationResult: true,
+            hasAnnotations: true,
+            convertedMetadata: { version: '2' } as ConvertedMetadata
+        });
+
+        await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(choices[2].value);
+        message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choices[2].value);
+        expect(message).toBeUndefined();
+
+        // Should not show the message if the service is OData V4
+        jest.spyOn(serviceHelpers, 'validateService').mockResolvedValue({
+            validationResult: true,
+            hasAnnotations: false,
+            convertedMetadata: { version: '4' } as ConvertedMetadata
+        });
+
+        await ((serviceSelectionPrompt as ListQuestion)?.validate as Function)(choices[0].value);
+        message = await ((serviceSelectionPrompt as ListQuestion)?.additionalMessages as Function)(choices[0].value);
+        expect(message).toBeUndefined();
     });
 
     test('should pre-select service if only one', async () => {
@@ -568,13 +620,15 @@ describe('Test new system prompt', () => {
 
         // autocomplete passes the entire choice object to the validate function instead of the value (as in YUI)
         // test to ensure this is handled correctly
-        const getServiceDetailsSpy = jest.spyOn(serviceHelpers, 'getServiceDetails').mockResolvedValue(true);
+        const validateServiceSpy = jest
+            .spyOn(serviceHelpers, 'validateService')
+            .mockResolvedValue({ validationResult: true });
         connectionValidatorMock.validatedUrl = 'http://some.abap.system:1234';
         // change the choice service path otherwise the validate function not re-request the service details
         flightChoice!.value.servicePath = '/a/different/service/path';
         const validationResult = await (serviceSelectionPrompt?.validate as Function)(flightChoice);
         expect(validationResult).toBe(true);
-        expect(getServiceDetailsSpy).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
+        expect(validateServiceSpy).toHaveBeenCalledWith(flightChoice?.value, connectionValidatorMock, undefined);
     });
 
     test('Should apply `additionalMessages` prompt option', async () => {
