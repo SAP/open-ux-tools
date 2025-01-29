@@ -308,6 +308,14 @@ export class FlpSandbox {
 
         // add route for the sandbox html
         this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
+            // karma (connect API) has no request query property
+            if (req.query && !req.query['sap-ui-xx-viewCache']) {
+                // Redirect to the same URL but add the necessary parameter
+                const params = structuredClone(req.query);
+                params['sap-ui-xx-viewCache'] = 'false';
+                res.redirect(302, `${this.config.path}?${new URLSearchParams(params)}`);
+                return;
+            }
             await this.setApplicationDependencies();
             // inform the user if a html file exists on the filesystem
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment

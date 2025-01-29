@@ -12,6 +12,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
+import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -164,6 +165,27 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addFioriToolsProxydMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    }
+
+    if (ffApp.service?.capService) {
+        const hasCdsUi5PluginInfo = !!ffApp.service.capService.cdsUi5PluginInfo;
+        const settings: CapProjectSettings = {
+            appRoot: basePath,
+            packageName: ffApp.package.name ?? '',
+            appId: ffApp.app.id,
+            sapux: ffApp.appOptions?.sapux,
+            enableTypescript: ffApp.appOptions?.typescript,
+            // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
+            enableCdsUi5Plugin: hasCdsUi5PluginInfo,
+            enableNPMWorkspaces: hasCdsUi5PluginInfo
+        };
+        // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
+        if (ffApp.service?.capService.cdsUi5PluginInfo) {
+            settings.enableCdsUi5Plugin = true;
+            settings.enableNPMWorkspaces = true;
+        }
+        // apply cap updates when service is cap
+        await applyCAPUpdates(fs, ffApp.service.capService, settings);
     }
 
     return fs;
