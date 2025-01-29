@@ -266,14 +266,9 @@ describe('UI5Config', () => {
             expect(ui5Config.toString()).toMatchSnapshot();
         });
 
-        test('should not add duplicate', () => {
-            ui5Config.addFioriToolsProxydMiddleware({ ui5: {} });
-            // Add backend
-            ui5Config.addBackendToFioriToolsProxydMiddleware({
-                url,
-                path
-            });
-            // Try to add same backend
+        test('handle duplicate backend', () => {
+            ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url, path }], ui5: {} });
+            // Add same backend
             ui5Config.addBackendToFioriToolsProxydMiddleware({
                 url,
                 path
@@ -281,6 +276,10 @@ describe('UI5Config', () => {
             const fioriToolsProxyMiddlewareConfig =
                 ui5Config.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy)?.configuration;
             expect(fioriToolsProxyMiddlewareConfig?.backend).toStrictEqual([
+                {
+                    path: '/~testpath~',
+                    url: 'http://localhost:8080'
+                },
                 {
                     path: '/~testpath~',
                     url: 'http://localhost:8080'
@@ -370,6 +369,25 @@ describe('UI5Config', () => {
         test('try removing backend without a proxy middleware added before', () => {
             ui5Config.addFioriToolsAppReloadMiddleware();
             expect(() => ui5Config.removeBackendFromFioriToolsProxydMiddleware(url)).toThrowError();
+        });
+
+        test('only one occurance per backend should be deleted', () => {
+            // Create proxy middleware with backend config
+            ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url, path }], ui5: {} });
+            // Add same backend
+            ui5Config.addBackendToFioriToolsProxydMiddleware({
+                url,
+                path
+            });
+            ui5Config.removeBackendFromFioriToolsProxydMiddleware(url);
+            const fioriToolsProxyMiddlewareConfig =
+                ui5Config.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy)?.configuration;
+            expect(fioriToolsProxyMiddlewareConfig?.backend).toStrictEqual([
+                {
+                    path: '/~testpath~',
+                    url: 'http://localhost:8080'
+                }
+            ]);
         });
     });
 

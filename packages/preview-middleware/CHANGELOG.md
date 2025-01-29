@@ -1,5 +1,44 @@
 # @sap-ux/preview-middleware
 
+## 0.17.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.116
+
+## 0.17.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.115
+
+## 0.17.2
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/adp-tooling@0.12.114
+
+## 0.17.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.113
+-   @sap-ux/project-access@1.29.1
+
+## 0.17.0
+
+### Minor Changes
+
+-   0c3964e: add url param viewCache in case it is missing
+
+## 0.16.175
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
 ## 0.16.174
 
 ### Patch Changes
