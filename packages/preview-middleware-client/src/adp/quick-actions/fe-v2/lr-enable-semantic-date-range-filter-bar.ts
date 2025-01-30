@@ -60,9 +60,10 @@ export class ToggleSemanticDateRangeFilterBar
 
     async execute(): Promise<FlexCommand[]> {
         const version = await getUi5Version();
-        const isAboveOrEqualMinimalVersion = !isLowerThanMinimalUi5Version(version, { major: 1, minor: 126 });
+        const isLowerMinimalVersion = isLowerThanMinimalUi5Version(version, { major: 1, minor: 126 });
         let entitySet;
-        if (!isAboveOrEqualMinimalVersion && isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control)) {
+        if (isLowerMinimalVersion && isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control)) {
+            // In older versions of UI5, the getEntitySet method is unavailable, so this workaround has been introduced.
             const regex = /::([^:]+)--/;
             entitySet = regex.exec(this.control?.getId() ?? '')?.[1];
         } else {
