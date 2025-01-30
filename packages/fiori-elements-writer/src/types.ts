@@ -1,5 +1,6 @@
 import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
+import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
 export const TemplateType = {
     Worklist: 'worklist',
@@ -109,7 +110,9 @@ export interface FioriApp extends App {
 
 export interface FioriElementsApp<T> extends Ui5App {
     template: Template<T>;
-    service: Omit<OdataService, 'model'>; // Model name will use defaults
+    service: Omit<OdataService, 'model'> & {
+        capService?: CapServiceCdsInfo;
+    };
     app: FioriApp;
     appOptions: Partial<AppOptions> & {
         /**

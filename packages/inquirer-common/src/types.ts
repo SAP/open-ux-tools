@@ -85,6 +85,12 @@ export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     additionalMessages?: PromptSeverityMessage;
 };
 
+export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
+}
+
 export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
     name: YUIQuestion['name'];
     guiType: 'file-browser' | 'folder-browser';
@@ -111,6 +117,7 @@ export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQ
 export interface InputQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
 export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
