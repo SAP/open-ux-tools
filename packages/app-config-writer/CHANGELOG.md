@@ -1,5 +1,13 @@
 # @sap-ux/app-config-writer
 
+## 0.5.21
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/axios-extension@1.18.3
+
 ## 0.5.20
 
 ### Patch Changes
