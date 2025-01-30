@@ -6,7 +6,7 @@ import * as appConfigWriter from '@sap-ux/app-config-writer';
 import * as logger from '../../../../src/tracing/logger';
 import * as childProcess from 'child_process';
 import { join } from 'path';
-
+import * as ownPrompts from '../../../../src/cli/convert/prompts';
 jest.mock('child_process');
 jest.mock('prompts');
 
@@ -16,6 +16,8 @@ describe('Test command convert preview', () => {
     let fsMock: Editor;
     let logLevelSpy: jest.SpyInstance;
     let spawnSpy: jest.SpyInstance;
+    const simulatePromptSpy = jest.spyOn(ownPrompts, 'simulatePrompt');
+    const includeTestRunnersPromptSpy = jest.spyOn(ownPrompts, 'includeTestRunnersPrompt');
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
@@ -41,6 +43,8 @@ describe('Test command convert preview', () => {
     });
 
     test('Test create-fiori convert preview <appRoot>', async () => {
+        simulatePromptSpy.mockResolvedValue(false);
+        includeTestRunnersPromptSpy.mockResolvedValue(false);
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
@@ -71,6 +75,8 @@ describe('Test command convert preview', () => {
     });
 
     test('Test create-fiori convert preview --verbose', async () => {
+        simulatePromptSpy.mockResolvedValue(false);
+        includeTestRunnersPromptSpy.mockResolvedValue(false);
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
@@ -82,5 +88,68 @@ describe('Test command convert preview', () => {
         expect(loggerMock.error).not.toBeCalled();
         expect(fsMock.commit).toBeCalled();
         expect(spawnSpy).not.toBeCalled();
+    });
+
+    test('Test create-fiori convert preview with simulate from prompt', async () => {
+        simulatePromptSpy.mockResolvedValue(true);
+        includeTestRunnersPromptSpy.mockResolvedValue(false);
+        // Test execution
+        const command = new Command('convert');
+        addConvertPreviewCommand(command);
+        await command.parseAsync(getArgv(['preview-config']));
+
+        // Result check
+        expect(logLevelSpy).toBeCalled();
+        expect(loggerMock.warn).not.toBeCalled();
+        expect(loggerMock.error).not.toBeCalled();
+        expect(spawnSpy).not.toBeCalled();
+        expect(fsMock.commit).not.toBeCalled();
+    });
+
+    test('Test create-fiori convert preview with simulate cancelled from prompt', async () => {
+        simulatePromptSpy.mockResolvedValue(Promise.reject());
+        // Test execution
+        const command = new Command('convert');
+        addConvertPreviewCommand(command);
+        await command.parseAsync(getArgv(['preview-config']));
+
+        // Result check
+        expect(logLevelSpy).not.toBeCalled();
+        expect(loggerMock.warn).not.toBeCalled();
+        expect(loggerMock.error).toBeCalled();
+        expect(spawnSpy).not.toBeCalled();
+        expect(fsMock.commit).not.toBeCalled();
+    });
+
+    test('Test create-fiori convert preview with simulate and test from prompt', async () => {
+        simulatePromptSpy.mockResolvedValue(true);
+        includeTestRunnersPromptSpy.mockResolvedValue(true);
+        // Test execution
+        const command = new Command('convert');
+        addConvertPreviewCommand(command);
+        await command.parseAsync(getArgv(['preview-config']));
+
+        // Result check
+        expect(logLevelSpy).toBeCalled();
+        expect(loggerMock.warn).not.toBeCalled();
+        expect(loggerMock.error).not.toBeCalled();
+        expect(spawnSpy).not.toBeCalled();
+        expect(fsMock.commit).not.toBeCalled();
+    });
+
+    test('Test create-fiori convert preview with simulate and test cancelled from prompt', async () => {
+        simulatePromptSpy.mockResolvedValue(true);
+        includeTestRunnersPromptSpy.mockResolvedValue(Promise.reject());
+        // Test execution
+        const command = new Command('convert');
+        addConvertPreviewCommand(command);
+        await command.parseAsync(getArgv(['preview-config']));
+
+        // Result check
+        expect(logLevelSpy).toBeCalled();
+        expect(loggerMock.warn).not.toBeCalled();
+        expect(loggerMock.error).toBeCalled();
+        expect(spawnSpy).not.toBeCalled();
+        expect(fsMock.commit).not.toBeCalled();
     });
 });
