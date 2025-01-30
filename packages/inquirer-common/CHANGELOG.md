@@ -1,5 +1,12 @@
 # @sap-ux/inquirer-common
 
+## 0.6.10
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.23
+-   @sap-ux/telemetry@0.5.55
+
 ## 0.6.9
 
 ### Patch Changes
