@@ -76,9 +76,11 @@ function getAnnotationFilePath(appName?: string, capService?: CapServiceCdsInfo)
 /**
  * Determines if annotations can be written for a given project template.
  *
- * @param version
+ * @param version OData version
  * @param {TemplateType} type - The template type.
- * @returns {boolean} - Returns true if annotations can be written, otherwise false.
+ * @returns {boolean} - Returns true if template type is LROP/Worklist and version is v4.
+ * Returns true if template type is FormEntryObjectPage.
+ * Otherwise, returns false.
  */
 function canGenerateAnnotationsForTemplate(version: OdataVersion, type: TemplateType): boolean {
     const isODataV4 = version === OdataVersion.v4;
@@ -286,13 +288,13 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             addLineItems,
             addValueHelps: !!capService
         };
-        const annoServiceParams: AnnotationServiceParameters = {
+        const serviceParameters: AnnotationServiceParameters = {
             serviceName,
             appName: packageName,
             project: projectPath
         };
 
-        await generateAnnotations(fs, annoServiceParams, options);
+        await generateAnnotations(fs, serviceParameters, options);
     }
     return fs;
 }
