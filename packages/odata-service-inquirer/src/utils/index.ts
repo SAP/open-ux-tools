@@ -7,6 +7,9 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import LoggerHelper from '../prompts/logger-helper';
 import { PromptState } from './prompt-state';
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -25,13 +28,27 @@ export function getPromptHostEnvironment(): { name: string; technical: HostEnvir
  * Validate xml and parse the odata version from the metadata xml.
  *
  * @param metadata a metadata string
- * @returns the odata version of the specified metadata, throws an error if the metadata is invalid
+ * @returns the odata version of the specified metadata, along with the converted metadata in case further processing may be required to avoid re-parsing.
+ *  Throws an error if the metadata or odata version is invalid.
  */
-export function parseOdataVersion(metadata: string): OdataVersion {
+export function parseOdataVersion(metadata: string): {
+    odataVersion: OdataVersion;
+    convertedMetadata: ConvertedMetadata;
+} {
     try {
-        const parsed = xmlToJson(metadata);
-        const odataVersion: OdataVersion = parsed['Edmx']['Version'] === 1 ? OdataVersion.v2 : OdataVersion.v4;
-        return odataVersion;
+        const convertedMetadata = convert(parse(metadata));
+        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+
+        if (Number.isNaN(parsedOdataVersion)) {
+            LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
+            throw new Error(t('errors.unparseableOdataVersion'));
+        }
+        // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
+        const odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
+        return {
+            odataVersion,
+            convertedMetadata
+        };
     } catch (error) {
         LoggerHelper.logger.error(error);
         throw new Error(t('prompts.validationMessages.metadataInvalid'));
