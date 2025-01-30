@@ -63,7 +63,8 @@ export class ToggleSemanticDateRangeFilterBar
         const isAboveOrEqualMinimalVersion = !isLowerThanMinimalUi5Version(version, { major: 1, minor: 126 });
         let entitySet;
         if (!isAboveOrEqualMinimalVersion && isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control)) {
-            entitySet = this.control?.getId()?.match(/::([^:]+)--/)?.[1];
+            const regex = /::([^:]+)--/;
+            entitySet = regex.exec(this.control?.getId() ?? '')?.[1];
         } else {
             entitySet =
                 isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control) ||
