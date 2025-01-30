@@ -57,7 +57,7 @@ describe('index', () => {
                 visible: true
             }
         ]);
-        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService, {} as any);
         await service.init(mockSendAction);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
         expect(mockSendAction).toMatchInlineSnapshot(`
@@ -91,7 +91,7 @@ describe('index', () => {
 
     test('initOutline - exception', async () => {
         transformNodesSpy.mockRejectedValue('error');
-        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService, {} as any);
         await service.init(mockSendAction);
         // transformNodesSpy called but rejected.
         expect(transformNodesSpy).toHaveBeenCalled();
@@ -112,7 +112,7 @@ describe('index', () => {
         ]);
         transformNodesSpy.mockRejectedValue('error');
 
-        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService, {} as any);
         await service.init(mockSendAction);
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
     });
@@ -125,7 +125,7 @@ describe('index', () => {
         rtaMock.getFlexSettings.mockReturnValue({
             scenario: 'ADAPTATION_PROJECT'
         });
-        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService, {} as any);
         await service.init(mockSendAction);
         expect(mockSendAction).toHaveBeenNthCalledWith(2, {
             type: '[ext] show-dialog-message',

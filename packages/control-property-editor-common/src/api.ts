@@ -114,6 +114,10 @@ export type ControlProperty =
 
 export interface OutlineNode {
     controlId: string;
+    contextMenuActions?: {
+        name: string;
+        actionName: string;
+    }[];
     controlType: string; // as used in rta i.e sap.m.NavContainer
     name: string;
     visible: boolean;
@@ -270,7 +274,6 @@ export interface QuickActionGroup {
     title: string;
     actions: QuickAction[];
 }
-
 export interface SimpleQuickActionExecutionPayload {
     kind: typeof SIMPLE_QUICK_ACTION_KIND;
     id: string;
@@ -283,6 +286,11 @@ export interface NestedQuickActionExecutionPayload {
 }
 
 export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | NestedQuickActionExecutionPayload;
+
+export interface ContextMenuActionExecutionPayload {
+    controlId: string;
+    actionName: string;
+}
 
 /**
  * ACTIONS
@@ -376,6 +384,7 @@ export const save = createExternalAction<void>('save');
 export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
+export const executeContextMenuAction = createExternalAction<ContextMenuActionExecutionPayload>('execute-quick-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
 export const externalFileChange = createExternalAction<string>('external-file-change');
 
@@ -405,4 +414,5 @@ export type ExternalAction =
     | ReturnType<typeof setApplicationRequiresReload>
     | ReturnType<typeof updateQuickAction>
     | ReturnType<typeof executeQuickAction>
+    | ReturnType<typeof executeContextMenuAction>
     | ReturnType<typeof externalFileChange>;

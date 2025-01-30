@@ -10,6 +10,7 @@ import { getTextBundle } from '../../i18n';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 import { ChangeService } from '../changes';
+import { ContextMenuService } from '../context-menu-service';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 
@@ -20,7 +21,11 @@ export interface OutlineChangedEventDetail {
  * A Class of WorkspaceConnectorService
  */
 export class OutlineService extends EventTarget {
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {
+    constructor(
+        private readonly rta: RuntimeAuthoring,
+        private readonly changeService: ChangeService,
+        private readonly contextMenuService: ContextMenuService
+    ) {
         super();
     }
 
@@ -48,7 +53,8 @@ export class OutlineService extends EventTarget {
                     reuseComponentsIds,
                     controlIndex,
                     this.changeService,
-                    configPropertyIdMap
+                    configPropertyIdMap,
+                    this.contextMenuService
                 );
 
                 const event = new CustomEvent(OUTLINE_CHANGE_EVENT, {

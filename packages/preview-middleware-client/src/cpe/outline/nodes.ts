@@ -13,6 +13,7 @@ import { getOverlay, isReuseComponent } from '../utils';
 import { isEditable } from './editable';
 import { ChangeService } from '../changes';
 import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4';
+import { ContextMenuService } from '../context-menu-service';
 
 interface AdditionalData {
     text?: string;
@@ -131,6 +132,7 @@ function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
  * @param propertyIdMap ChangeService for change stack event handling.
+ * @param contextMenuService ContextMenuService for displaying context menu for outline.
  * @returns transformed outline tree nodes
  */
 export async function transformNodes(
@@ -139,7 +141,8 @@ export async function transformNodes(
     reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
     changeService: ChangeService,
-    propertyIdMap: Map<string, string[]>
+    propertyIdMap: Map<string, string[]>,
+    contextMenuService: ContextMenuService
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
@@ -163,7 +166,8 @@ export async function transformNodes(
                           reuseComponentsIds,
                           controlIndex,
                           changeService,
-                          propertyIdMap
+                          propertyIdMap,
+                          contextMenuService
                       )
                     : await transformNodes(
                           children,
@@ -171,12 +175,22 @@ export async function transformNodes(
                           reuseComponentsIds,
                           controlIndex,
                           changeService,
-                          propertyIdMap
+                          propertyIdMap,
+                          contextMenuService
                       );
+                // let contextMenuActions: { name: string; actionName: string }[] = [];
+                const actions = await contextMenuService.getContextMenuActionsForControl(current.id);
+                // if (actions.length) {
 
+                // }
                 const node: OutlineNode = {
                     controlId: current.id,
                     controlType: current.technicalName,
+                    contextMenuActions: actions.length
+                        ? actions.map((val) => {
+                              return { actionName: val.id, name: val.text };
+                          })
+                        : [],
                     name: text ?? technicalName,
                     editable,
                     visible: current.visible ?? true,
@@ -246,6 +260,7 @@ function fillReuseComponents(
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
  * @param propertyIdMap  Map<string, string[]>.
+ * @param contextMenuService ContextMenuService for displaying context menu for outline.
  * @returns transformed outline tree nodes
  */
 export async function handleDuplicateNodes(
@@ -254,7 +269,8 @@ export async function handleDuplicateNodes(
     reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
     changeService: ChangeService,
-    propertyIdMap: Map<string, string[]>
+    propertyIdMap: Map<string, string[]>,
+    contextMenuService: ContextMenuService
 ): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
@@ -267,5 +283,13 @@ export async function handleDuplicateNodes(
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex, changeService, propertyIdMap);
+    return transformNodes(
+        uniqueChildren,
+        scenario,
+        reuseComponentsIds,
+        controlIndex,
+        changeService,
+        propertyIdMap,
+        contextMenuService
+    );
 }

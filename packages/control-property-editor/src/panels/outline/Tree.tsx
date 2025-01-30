@@ -3,10 +3,22 @@ import type { ReactElement } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import type { IGroup, IGroupRenderProps, IGroupHeaderProps } from '@fluentui/react';
 import { Icon } from '@fluentui/react';
-import { UIList, UiIcons } from '@sap-ux/ui-components';
+import {
+    UIContextualMenu,
+    UIContextualMenuLayoutType,
+    UIDirectionalHint,
+    UIList,
+    UiIcons
+} from '@sap-ux/ui-components';
+import type { UIContextualMenuItem } from '@sap-ux/ui-components';
 import { useTranslation } from 'react-i18next';
 
-import { selectControl, reportTelemetry, addExtensionPoint } from '@sap-ux-private/control-property-editor-common';
+import {
+    selectControl,
+    reportTelemetry,
+    addExtensionPoint,
+    executeContextMenuAction
+} from '@sap-ux-private/control-property-editor-common';
 import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
@@ -20,6 +32,7 @@ interface OutlineNodeItem extends OutlineNode {
     level: number;
     path: string[];
 }
+type EventType = (EventTarget & (HTMLAnchorElement | HTMLElement | HTMLButtonElement)) | null;
 
 export const Tree = (): ReactElement => {
     // padding + height of `Search` bar
@@ -39,7 +52,9 @@ export const Tree = (): ReactElement => {
         group: undefined,
         cell: undefined
     });
-
+    const [showActionContextualMenu, setShowActionContextualMenu] = useState(false);
+    const [showActionContextualMenuInHeader, setShowActionContextualMenuInHeader] = useState(false);
+    const [contextMenuDisplayTarget, setContextMenuDisplayTarget] = useState<EventType>(null);
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
@@ -256,7 +271,39 @@ export const Tree = (): ReactElement => {
     if (items.length === 0 && groups.length === 0) {
         return <NoControlFound />;
     }
-
+    const onContextMenuAction = (
+        e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
+        item: OutlineNodeItem,
+        targetType: 'header' | 'cell',
+        target: HTMLElement | null
+    ): void => {
+        if (item.contextMenuActions?.length) {
+            e.nativeEvent.preventDefault();
+            e.preventDefault();
+            e.stopPropagation();
+            if (targetType === 'cell') {
+                setShowActionContextualMenu(true);
+            } else if (targetType === 'header') {
+                setShowActionContextualMenuInHeader(true);
+            }
+            if (contextMenuDisplayTarget) {
+                setContextMenuDisplayTarget(contextMenuDisplayTarget);
+            } else if (target) {
+                setContextMenuDisplayTarget(target);
+            }
+        }
+        // if (item.contextMenuActions?.actionName) {
+        //     setSelection({
+        //         group: undefined,
+        //         cell: item
+        //     });
+        //     const action = executeContextMenuAction({
+        //         actionName: item.contextMenuActions?.actionName,
+        //         controlId: item.controlId
+        //     });
+        //     dispatch(action);
+        // }
+    };
     const onSelectCell = (item: OutlineNodeItem): void => {
         setSelection({
             group: undefined,
@@ -280,6 +327,36 @@ export const Tree = (): ReactElement => {
             const action = selectControl(node.key);
             dispatch(action);
         }
+    };
+    /**
+     * Build menu items for nested quick actions.
+     *
+     * @param controlId control id.
+     * @param children Node children.
+     * @returns ReactElement
+     */
+    const buildMenuItems = function (
+        controlId: string,
+        children: { name: string; actionName: string }[] | undefined
+    ): UIContextualMenuItem[] {
+        return (children ?? []).map((child, index) => {
+            // const hasChildren = child?.children?.length > 1;
+            // const value = child?.children?.length === 1 ? `${child.label}-${child.children[0].label}` : child.label;
+            return {
+                key: `${controlId}-${child.actionName}-${index}`,
+                text: child?.name,
+                // disabled: !child.enabled,
+                title: child?.name,
+                onClick(): void {
+                    dispatch(
+                        executeContextMenuAction({
+                            controlId,
+                            actionName: child.actionName
+                        })
+                    );
+                }
+            };
+        });
     };
     const onRenderCell = (nestingDepth?: number, item?: OutlineNodeItem, itemIndex?: number): React.ReactNode => {
         const paddingValue = (item?.level ?? 0) * 10 + 45;
@@ -308,7 +385,6 @@ export const Tree = (): ReactElement => {
         const hasDefaultContent = item?.hasDefaultContent || false;
 
         const tooltipId = `tooltip--${item?.name}`;
-
         const cellName = hasDefaultContent
             ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: item?.name })
             : item?.name;
@@ -317,13 +393,17 @@ export const Tree = (): ReactElement => {
                 aria-hidden
                 id={item.controlId}
                 className={classNames.join(' ')}
-                onClick={(): void => onSelectCell(item)}>
+                onClick={(): void => onSelectCell(item)}
+                onContextMenu={(e) => onContextMenuAction(e, item, 'cell', document.getElementById(item.controlId))}>
                 <span
                     {...props}
                     data-testid={isExtensionPoint ? 'tooltip-container' : ''}
                     style={{ paddingLeft: paddingValue }}
                     className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
-                    onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
+                    onContextMenu={
+                        (e) => isExtensionPoint && handleOpenTooltip(e, tooltipId) /* ||
+                        onContextMenuAction(e, item, 'cell', document.getElementById(item.controlId)) */
+                    }>
                     {isExtensionPoint && <Icon className="extension-icon" iconName={UiIcons.DataSource} />}
 
                     <div
@@ -347,7 +427,18 @@ export const Tree = (): ReactElement => {
                         </div>
                     )}
                 </span>
-
+                {showActionContextualMenu && (
+                    <UIContextualMenu
+                        layoutType={UIContextualMenuLayoutType.ContextualMenu}
+                        showSubmenuBeneath={true}
+                        target={document.getElementById(item.controlId)}
+                        isBeakVisible={true}
+                        items={buildMenuItems(item.controlId, item.contextMenuActions)}
+                        directionalHint={UIDirectionalHint.bottomRightEdge}
+                        onDismiss={() => setShowActionContextualMenu(false)}
+                        iconToLeft={true}
+                    />
+                )}
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
         ) : null;
@@ -415,11 +506,15 @@ export const Tree = (): ReactElement => {
                 aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}>
+                {/* onContextMenu={(e) => onContextMenuAction(e, data, 'header', document.getElementById(data.controlId))} */}
                 <span
                     style={{ paddingLeft: paddingValue }}
                     data-testid="tooltip-container"
                     className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
-                    onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
+                    onContextMenu={(e) =>
+                        (isExtensionPoint && handleOpenTooltip(e, tooltipId)) ||
+                        onContextMenuAction(e, data, 'header', document.getElementById(data.controlId))
+                    }>
                     {groupHeaderProps?.group?.count !== 0 && (
                         <Icon
                             className={`${chevronTransform}`}
@@ -453,6 +548,18 @@ export const Tree = (): ReactElement => {
                         </div>
                     )}
                 </span>
+                {showActionContextualMenuInHeader && (
+                    <UIContextualMenu
+                        layoutType={UIContextualMenuLayoutType.ContextualMenu}
+                        showSubmenuBeneath={true}
+                        target={document.getElementById(data.controlId)}
+                        isBeakVisible={true}
+                        items={buildMenuItems(data.controlId, data.contextMenuActions)}
+                        directionalHint={UIDirectionalHint.bottomRightEdge}
+                        onDismiss={() => setShowActionContextualMenuInHeader(false)}
+                        iconToLeft={true}
+                    />
+                )}
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
         );
@@ -540,4 +647,11 @@ function getGroups(model: OutlineNode[], items: OutlineNodeItem[], level = 0, pa
         }
     }
     return group;
+}
+
+export interface ContextMenuItems {
+    label: string;
+    tooltip?: string;
+    // enabled: boolean;
+    children: ContextMenuItems[];
 }
