@@ -27,7 +27,7 @@ export interface CfDeployConfigOptions extends CfDeployConfigAnswers {
     /**
      * Path to the application
      */
-    appPath: string;
+    appRootPath: string;
     /**
      * The name of the base config file e.g. ui5.yaml
      */

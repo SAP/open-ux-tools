@@ -294,7 +294,7 @@ describe('Cloud foundry generator tests', () => {
                     },
                     { cwd: appDir }
                 )
-                .withOptions({ skipInstall: true, appPath: appDir })
+                .withOptions({ skipInstall: true, appRootPath: appDir })
                 .withPrompts({ destinationName: 'testDestination' })
                 .run()
         ).resolves.not.toThrow();
@@ -490,21 +490,18 @@ describe('Cloud foundry generator tests', () => {
                 )
                 .withOptions({
                     skipInstall: true,
-                    appPath: join(appDir, projectName),
+                    appRootPath: join(appDir, projectName),
                     addManagedAppRouter: true,
                     launchDeployConfigAsSubGenerator: true,
                     destinationName: 'testDestination',
                     destinationAuthType: 'NoAuthentication' // Validating SH4
                 })
-                .withArguments(TargetName.CF)
                 .withPrompts({ addManagedApprouter: true })
                 .run()
         ).resolves.not.toThrow();
 
         // After
         expect(fs.existsSync(`${OUTPUT_DIR_PREFIX}/app1/mta.yaml`)).toBeFalsy(); // Ensure nothing is added to the root folder
-        const expectAfterMtaContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/mta.yaml`, 'utf-8');
-        const expectedAfterYaml = load(expectAfterMtaContent);
 
         const mtaAfterYaml = new MockMta(`${OUTPUT_DIR_PREFIX}/app1/${projectName}/`);
         const idAfter = await mtaAfterYaml.getMtaID();

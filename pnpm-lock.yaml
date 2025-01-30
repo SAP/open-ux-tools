@@ -1410,6 +1410,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -1429,9 +1432,6 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store

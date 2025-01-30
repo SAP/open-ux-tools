@@ -20,16 +20,11 @@ import {
     ErrorHandler,
     ERROR_TYPE,
     mtaExecutable,
-    cdsExecutable
-} from '@sap-ux/deploy-config-generator-shared';
-import {
-    t,
+    cdsExecutable,
     generateDestinationName,
-    getDestination,
-    initI18n,
-    DESTINATION_AUTHTYPE_NOTFOUND,
-    API_BUSINESS_HUB_ENTERPRISE_PREFIX
-} from '../utils';
+    getDestination
+} from '@sap-ux/deploy-config-generator-shared';
+import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils';
 import { loadManifest } from './utils';
 import { getMtaPath, findCapProjectRoot, FileName } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
@@ -90,7 +85,7 @@ export default class extends DeploymentGenerator {
         this.apiHubConfig = opts.apiHubConfig;
         this.servicePath = opts.appGenServicePath;
         this.serviceBase = opts.appGenServiceHost;
-        this.appPath = opts.appPath ?? this.destinationRoot();
+        this.appPath = opts.appRootPath ?? this.destinationRoot();
         this.projectRoot = opts.projectRoot ?? this.destinationRoot();
     }
 
@@ -147,8 +142,8 @@ export default class extends DeploymentGenerator {
             }
             this.isCap = true;
             this.projectRoot = capRoot;
-        } else {
-            this.projectRoot = this.mtaPath ? dirname(this.mtaPath) : join(this.appPath, '..');
+        } else if (this.mtaPath) {
+            this.projectRoot = dirname(this.mtaPath);
         }
     }
 
@@ -332,3 +327,6 @@ export default class extends DeploymentGenerator {
         }
     }
 }
+
+export { getCFQuestions, loadManifest };
+export { CfDeployConfigOptions, CfDeployConfigAnswers };

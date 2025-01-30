@@ -4,10 +4,10 @@ import { DeploymentGenerator, bail, ErrorHandler, ERROR_TYPE } from '@sap-ux/dep
 import { ApiHubType, MtaConfig } from '@sap-ux/cf-deploy-config-writer';
 import { join } from 'path';
 import {
+    t,
     DEFAULT_MTA_DESTINATION,
     DESTINATION_CHOICE_NONE,
-    DESTINATION_CHOICE_DIRECT_SERVICE_BINDING,
-    t
+    DESTINATION_CHOICE_DIRECT_SERVICE_BINDING
 } from '../utils';
 import type { Manifest } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
