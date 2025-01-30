@@ -1,5 +1,5 @@
 import { getPrompts } from '@sap-ux/abap-deploy-config-inquirer';
-import { FileName, readUi5Yaml } from '@sap-ux/project-access';
+import { FileName, readUi5Yaml, AppType } from '@sap-ux/project-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { ABAP_DEPLOY_TASK } from '../utils/constants';
@@ -75,6 +75,7 @@ function getAbapTarget(
  * @param params.showOverwriteQuestion - whether the overwrite question should be shown
  * @param params.projectType - the project type
  * @param params.logger - the logger
+ * @param params.appType - the application type
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
@@ -85,6 +86,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed = false,
     showOverwriteQuestion = false,
     projectType = DeployProjectType.Application,
+    appType = 'SAP Fiori elements',
     logger
 }: {
     appRootPath: string;
@@ -94,6 +96,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed?: boolean;
     showOverwriteQuestion?: boolean;
     projectType?: DeployProjectType;
+    appType?: AppType;
     logger?: ILogWrapper;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
@@ -123,10 +126,16 @@ export async function getAbapQuestions({
             },
             ui5AbapRepo: { default: deployAppConfig?.name },
             description: { default: deployAppConfig?.description },
-            packageManual: { default: deployAppConfig?.package },
+            packageManual: {
+                default: deployAppConfig?.package,
+                additionalValidation: { shouldValidatePackageType: appType === 'Fiori Adaptation' }
+            },
             transportManual: { default: deployAppConfig?.transport },
             index: { indexGenerationAllowed },
-            packageAutocomplete: { useAutocomplete: true },
+            packageAutocomplete: {
+                useAutocomplete: true,
+                additionalValidation: { shouldValidatePackageType: appType === 'Fiori Adaptation' }
+            },
             overwrite: { hide: !showOverwriteQuestion }
         },
         logger as unknown as Logger,

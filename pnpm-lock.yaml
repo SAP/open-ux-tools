@@ -168,7 +168,7 @@ importers:
         version: link:../../packages/system-access
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+        version: 5.10.0
     devDependencies:
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
@@ -1406,7 +1406,7 @@ importers:
         version: 20.6.1
       yeoman-generator:
         specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+        version: 5.10.0
     devDependencies:
       '@sap-ux/axios-extension':
         specifier: workspace:*
@@ -2717,8 +2717,8 @@ importers:
         specifier: 2.1.0
         version: 2.1.0
       mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
+        specifier: 9.6.0
+        version: 9.6.0(mem-fs@2.1.0)
       semver:
         specifier: 7.5.4
         version: 7.5.4
@@ -17293,6 +17293,27 @@ packages:
       normalize-path: 3.0.0
       textextensions: 5.16.0
 
+  /mem-fs-editor@9.6.0(mem-fs@2.1.0):
+    resolution: {integrity: sha512-CsuAd+s0UPZnGzm3kQ5X7gGmVmwiX9XXRAmXj9Mbq0CJa8YWUkPqneelp0aG2g+7uiwCBHlJbl30FYtToLT3VQ==}
+    engines: {node: '>=12.10.0'}
+    peerDependencies:
+      mem-fs: ^2.1.0
+    peerDependenciesMeta:
+      mem-fs:
+        optional: true
+    dependencies:
+      binaryextensions: 4.19.0
+      commondir: 1.0.1
+      deep-extend: 0.6.0
+      ejs: 3.1.10
+      globby: 11.1.0
+      isbinaryfile: 4.0.10
+      mem-fs: 2.1.0
+      minimatch: 3.1.2
+      multimatch: 5.0.0
+      normalize-path: 3.0.0
+      textextensions: 5.16.0
+
   /mem-fs@2.1.0:
     resolution: {integrity: sha512-55vFOT4rfJx/9uoWntNrfzEj9209rd26spsSvKsCVBfOPH001YS5IakfElhcyagieC4uL++Ry/XDcwvgxF4/zQ==}
     engines: {node: '>=12'}
@@ -22814,7 +22835,7 @@ packages:
       lodash: 4.17.21
       log-symbols: 4.1.0
       mem-fs: 2.1.0
-      mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      mem-fs-editor: 9.6.0(mem-fs@2.1.0)
       minimatch: 3.0.5
       npmlog: 5.0.1
       p-queue: 6.6.2
@@ -22833,7 +22854,7 @@ packages:
       - bluebird
       - supports-color
 
-  /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3):
+  /yeoman-generator@5.10.0:
     resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
     engines: {node: '>=12.10.0'}
     peerDependencies:
@@ -22849,6 +22870,37 @@ packages:
       github-username: 6.0.0
       lodash: 4.17.21
       mem-fs-editor: 9.4.0(mem-fs@2.1.0)
+      minimist: 1.2.8
+      pacote: 15.2.0
+      read-pkg-up: 7.0.1
+      run-async: 2.4.1
+      semver: 7.5.4
+      shelljs: 0.8.5
+      sort-keys: 4.2.0
+      text-table: 0.2.0
+    transitivePeerDependencies:
+      - bluebird
+      - encoding
+      - mem-fs
+      - supports-color
+    dev: false
+
+  /yeoman-generator@5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3):
+    resolution: {integrity: sha512-iDUKykV7L4nDNzeYSedRmSeJ5eMYFucnKDi6KN1WNASXErgPepKqsQw55TgXPHnmpcyOh2Dd/LAZkyc+f0qaAw==}
+    engines: {node: '>=12.10.0'}
+    peerDependencies:
+      yeoman-environment: ^3.2.0
+    peerDependenciesMeta:
+      yeoman-environment:
+        optional: true
+    dependencies:
+      chalk: 4.1.2
+      dargs: 7.0.0
+      debug: 4.3.7
+      execa: 5.1.1
+      github-username: 6.0.0
+      lodash: 4.17.21
+      mem-fs-editor: 9.6.0(mem-fs@2.1.0)
       minimist: 1.2.8
       pacote: 15.2.0
       read-pkg-up: 7.0.1

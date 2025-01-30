@@ -391,15 +391,9 @@ export async function validatePackage(
     if (answers?.ui5AbapRepo && !answers.ui5AbapRepo.startsWith(startingPrefix)) {
         return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
     }
-
-    const systemConfig: SystemConfig = {
-        url: PromptState.abapDeployConfig.url,
-        client: PromptState.abapDeployConfig.client,
-        destination: PromptState.abapDeployConfig.destination
-    };
     // checks if package is a local package and will update prompt state accordingly
-    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', systemConfig, backendTarget);
-  
+    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
+
     return true;
 }
 

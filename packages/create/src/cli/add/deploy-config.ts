@@ -106,7 +106,6 @@ async function addDeployConfig(
                     useAutocomplete: true,
                     additionalValidation: { shouldValidatePackageType: isAdp }
                 },
-                targetSystem: { hide: isAdp },
                 packageManual: { additionalValidation: { shouldValidatePackageType: isAdp } },
                 appType: appType
             };
@@ -126,10 +125,8 @@ async function addDeployConfig(
                 false
             );
 
-            const filterredPrompts = abapPrompts.filter((prompt) => prompt?.guiOptions?.type !== 'label');
-
             const answers = reconcileAnswers(
-                await promptYUIQuestions<AbapDeployConfigAnswers>(filterredPrompts, false),
+                await promptYUIQuestions<AbapDeployConfigAnswers>(abapPrompts, false),
                 abapAnswers
             );
 
