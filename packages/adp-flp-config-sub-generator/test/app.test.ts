@@ -1,5 +1,5 @@
 import type { BackendSystem } from '@sap-ux/store';
-import type * as axios from '@sap-ux/axios-extension';
+import type { YUIQuestion, CredentialsAnswers } from '@sap-ux/inquirer-common';
 import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { join } from 'path';
@@ -10,13 +10,13 @@ import adpFlpConfigGenerator from '../src/app';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as btpUtils from '@sap-ux/btp-utils';
 import * as Logger from '@sap-ux/logger';
-import * as odataInquirer from '@sap-ux/odata-service-inquirer';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import { rimraf } from 'rimraf';
 import { EventName } from '../src/telemetryEvents';
 import * as sysAccess from '@sap-ux/system-access';
 import { t } from '../src/utils/i18n';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
+import * as inquirerCommon from '@sap-ux/inquirer-common';
 
 jest.mock('@sap-ux/system-access');
 jest.mock('@sap-ux/btp-utils');
@@ -26,7 +26,10 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getAdpConfig: jest.fn(),
     generateInboundConfig: jest.fn()
 }));
-
+jest.mock('@sap-ux/inquirer-common', () => ({
+    ...jest.requireActual('@sap-ux/inquirer-common'),
+    getCredentialsPrompts: jest.fn()
+}));
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
@@ -39,10 +42,9 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
         })
     },
     isExtensionInstalled: jest.fn().mockReturnValue(true),
-    getHostEnvironment: jest.fn()
+    getHostEnvironment: jest.fn(),
+    isCli: jest.fn().mockReturnValue(false)
 }));
-
-const sendTelemetrySpy = fioriGenShared.sendTelemetry as jest.Mock;
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -58,30 +60,21 @@ describe('FLPConfigGenerator Integration Tests', () => {
 
     const generatorPath = join(__dirname, '../../src/app/index.ts');
     const testOutputDir = join(__dirname, 'test-output');
-    const systemSelectionPrompts = {
+    const credentialsPrompts = {
         prompts: [
             {
-                name: 'systemSelection'
+                username: 'systemUsername'
             },
             {
-                name: 'systemUsername'
-            },
-            {
-                name: 'systemPassword'
+                password: 'systemPassword'
             }
-        ],
-        answers: {
-            connectedSystem: {
-                serviceProvider: {} as axios.ServiceProvider
-            }
-        }
+        ]
     };
     let answers:
         | FLPConfigAnswers
         | {
-              systemSelection: string;
-              systemUsername: string;
-              systemPassword: string;
+              username: string;
+              password: string;
           };
 
     jest.spyOn(adpTooling.ManifestService, 'initMergedManifest').mockResolvedValue({
@@ -92,13 +85,20 @@ describe('FLPConfigGenerator Integration Tests', () => {
         setHeaderTitle: jest.fn(),
         showInformation: showInformationSpy
     };
-    jest.spyOn(odataInquirer, 'getSystemSelectionQuestions').mockResolvedValue(systemSelectionPrompts);
+    jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockResolvedValue(
+        credentialsPrompts as unknown as YUIQuestion<CredentialsAnswers>[]
+    );
+    const vsCodeMessageSpy = jest.fn();
+    const vscode = {
+        window: {
+            showErrorMessage: vsCodeMessageSpy
+        }
+    };
 
     beforeEach(() => {
         answers = {
-            systemSelection: 'testSystem',
-            systemUsername: 'testUsername',
-            systemPassword: 'testPassword',
+            username: 'testUsername',
+            password: 'testPassword',
             semanticObject: 'testSemanticObject',
             emptyInboundsInfo: 'testEmptyInboundsInfo',
             action: 'testAction',
@@ -128,6 +128,16 @@ describe('FLPConfigGenerator Integration Tests', () => {
             }
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({
+            testDestination: {
+                Name: 'https://testUrl',
+                Host: '000',
+                Type: 'Type',
+                Authentication: 'Basic',
+                ProxyType: 'Internet',
+                Description: 'Description'
+            }
+        });
         const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
 
         const runContext = yeomanTest
@@ -141,6 +151,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 }
             )
             .withOptions({
+                vscode,
                 appWizard: mockAppWizard,
                 launchAsSubGen: false
             })
@@ -195,6 +206,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 }
             )
             .withOptions({
+                vscode,
                 appWizard: mockAppWizard,
                 launchAsSubGen: true
             })
@@ -241,6 +253,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 }
             )
             .withOptions({
+                vscode,
                 appWizard: mockAppWizard,
                 launchFlpConfigAsSubGenerator: false
             })
@@ -270,6 +283,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 }
             )
             .withOptions({
+                vscode,
                 appWizard: mockAppWizard,
                 launchFlpConfigAsSubGenerator: false
             })
@@ -283,6 +297,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             target: {} as unknown as sysAccess.AbapTarget
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({});
         const testProjectPath = join(__dirname, 'fixtures/app.variant1');
 
         const runContext = yeomanTest
@@ -296,12 +311,14 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 }
             )
             .withOptions({
+                vscode,
                 appWizard: mockAppWizard,
                 launchFlpConfigAsSubGenerator: false
             })
             .withPrompts(answers);
 
-        await expect(runContext.run()).rejects.toThrow(t('error.destinationNotFound'));
+        await runContext.run();
+        expect(vsCodeMessageSpy).toBeCalledWith(t('error.destinationNotFound'));
     });
 
     it('Should throw an error when no url is configured for target in VS Code', async () => {
@@ -322,12 +339,14 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 }
             )
             .withOptions({
+                vscode,
                 appWizard: mockAppWizard,
                 launchFlpConfigAsSubGenerator: false
             })
             .withPrompts(answers);
 
-        await expect(runContext.run()).rejects.toThrow(t('error.systemNotFound'));
+        await runContext.run();
+        expect(vsCodeMessageSpy).toBeCalledWith(t('error.systemNotFound'));
     });
 
     it('Should throw an error when system is not found in the store in VS Code', async () => {
@@ -352,12 +371,13 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 }
             )
             .withOptions({
+                vscode,
                 appWizard: mockAppWizard,
                 launchFlpConfigAsSubGenerator: false
             })
             .withPrompts(answers);
-
-        await expect(runContext.run()).rejects.toThrow(t('error.systemNotFoundInStore', { url: systemUrl }));
+        await runContext.run();
+        expect(vsCodeMessageSpy).toBeCalledWith(t('error.systemNotFound', { systemUrl }));
     });
 
     it('Should throw an error when fetching manifest fails', async () => {
@@ -366,7 +386,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 url: 'https://testUrl'
             }
         });
-        jest.spyOn(odataInquirer, 'getSystemSelectionQuestions').mockRejectedValueOnce(new Error('Error'));
+        jest.spyOn(adpTooling.ManifestService, 'initMergedManifest').mockRejectedValueOnce(new Error('Error'));
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(false);
         const testProjectPath = join(__dirname, 'fixtures/app.variant1');
 
@@ -381,6 +401,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 }
             )
             .withOptions({
+                vscode,
                 appWizard: mockAppWizard,
                 launchFlpConfigAsSubGenerator: false
             })
