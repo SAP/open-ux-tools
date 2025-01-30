@@ -52,8 +52,7 @@ export const Tree = (): ReactElement => {
         group: undefined,
         cell: undefined
     });
-    const [showActionContextualMenu, setShowActionContextualMenu] = useState(false);
-    const [showActionContextualMenuInHeader, setShowActionContextualMenuInHeader] = useState(false);
+    const [showActionContextualMenu, setShowActionContextualMenu] = useState<OutlineNodeItem | undefined>();
     const [contextMenuDisplayTarget, setContextMenuDisplayTarget] = useState<EventType>(null);
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
@@ -281,11 +280,7 @@ export const Tree = (): ReactElement => {
             e.nativeEvent.preventDefault();
             e.preventDefault();
             e.stopPropagation();
-            if (targetType === 'cell') {
-                setShowActionContextualMenu(true);
-            } else if (targetType === 'header') {
-                setShowActionContextualMenuInHeader(true);
-            }
+            setShowActionContextualMenu(item);
             if (contextMenuDisplayTarget) {
                 setContextMenuDisplayTarget(contextMenuDisplayTarget);
             } else if (target) {
@@ -427,18 +422,6 @@ export const Tree = (): ReactElement => {
                         </div>
                     )}
                 </span>
-                {showActionContextualMenu && (
-                    <UIContextualMenu
-                        layoutType={UIContextualMenuLayoutType.ContextualMenu}
-                        showSubmenuBeneath={true}
-                        target={document.getElementById(item.controlId)}
-                        isBeakVisible={true}
-                        items={buildMenuItems(item.controlId, item.contextMenuActions)}
-                        directionalHint={UIDirectionalHint.bottomRightEdge}
-                        onDismiss={() => setShowActionContextualMenu(false)}
-                        iconToLeft={true}
-                    />
-                )}
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
         ) : null;
@@ -548,18 +531,6 @@ export const Tree = (): ReactElement => {
                         </div>
                     )}
                 </span>
-                {showActionContextualMenuInHeader && (
-                    <UIContextualMenu
-                        layoutType={UIContextualMenuLayoutType.ContextualMenu}
-                        showSubmenuBeneath={true}
-                        target={document.getElementById(data.controlId)}
-                        isBeakVisible={true}
-                        items={buildMenuItems(data.controlId, data.contextMenuActions)}
-                        directionalHint={UIDirectionalHint.bottomRightEdge}
-                        onDismiss={() => setShowActionContextualMenuInHeader(false)}
-                        iconToLeft={true}
-                    />
-                )}
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
         );
@@ -589,6 +560,21 @@ export const Tree = (): ReactElement => {
                 onSelect={onSelectHeader}
                 groupProps={groupRenderProps}
             />
+            {showActionContextualMenu && (
+                <UIContextualMenu
+                    layoutType={UIContextualMenuLayoutType.ContextualMenu}
+                    showSubmenuBeneath={true}
+                    target={document.getElementById(showActionContextualMenu.controlId)}
+                    isBeakVisible={true}
+                    items={buildMenuItems(
+                        showActionContextualMenu.controlId,
+                        showActionContextualMenu.contextMenuActions
+                    )}
+                    directionalHint={UIDirectionalHint.bottomRightEdge}
+                    onDismiss={() => setShowActionContextualMenu(undefined)}
+                    iconToLeft={true}
+                />
+            )}
         </div>
     );
 };
