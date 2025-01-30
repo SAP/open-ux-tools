@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.5
+
+### Patch Changes
+
+-   9910e7f: Improved set function for the default service model.
+
 ## 0.25.4
 
 ### Patch Changes

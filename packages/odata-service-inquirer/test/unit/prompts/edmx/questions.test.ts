@@ -14,27 +14,25 @@ import type { EntitySelectionAnswers } from '../../../../src/types';
 import * as Types from '../../../../src/types';
 import { EntityPromptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/utils';
+import { join } from 'path';
 
 describe('Test entity prompts', () => {
-    let metadataV4WithDraftAndShareAnnot: string;
     let metadataV4WithAggregateTransforms: string;
     let metadataV2: string;
     let metadataV4WithDraftEntities: string;
     let metadataV2NoEntities: string;
 
     beforeAll(async () => {
-        // Read the test metadata files
-        metadataV4WithDraftAndShareAnnot = await readFile(
-            __dirname + '/test-data/metadataV4WithDraftAnnotationAndShareAction.xml',
-            'utf8'
-        );
         metadataV4WithAggregateTransforms = await readFile(
-            __dirname + '/test-data/metadataV4WithAggregateTransforms.xml',
+            join(__dirname, '../test-data/metadataV4WithAggregateTransforms.xml'),
             'utf8'
         );
-        metadataV2 = await readFile(__dirname + '/test-data/metadataV2.xml', 'utf8');
-        metadataV4WithDraftEntities = await readFile(__dirname + '/test-data/metadataV4WithDraftEntities.xml', 'utf8');
-        metadataV2NoEntities = await readFile(__dirname + '/test-data/metadataV2NoEntities.xml', 'utf8');
+        metadataV2 = await readFile(join(__dirname, '../test-data/metadataV2.xml'), 'utf8');
+        metadataV4WithDraftEntities = await readFile(
+            join(__dirname, '../test-data/metadataV4WithDraftEntities.xml'),
+            'utf8'
+        );
+        metadataV2NoEntities = await readFile(join(__dirname, '../test-data/metadataV2NoEntities.xml'), 'utf8');
         // Ensure i18n texts are loaded so we can test localised strings
         await initI18nOdataServiceInquirer();
     });

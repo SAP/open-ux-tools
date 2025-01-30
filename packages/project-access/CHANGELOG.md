@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.3
+
+### Patch Changes
+
+-   096b021: filter CAP services to include odata only
+
 ## 1.29.2
 
 ### Patch Changes
