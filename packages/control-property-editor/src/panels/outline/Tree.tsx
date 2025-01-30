@@ -273,7 +273,6 @@ export const Tree = (): ReactElement => {
     const onContextMenuAction = (
         e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
         item: OutlineNodeItem,
-        targetType: 'header' | 'cell',
         target: HTMLElement | null
     ): void => {
         if (item.contextMenuActions?.length) {
@@ -343,6 +342,7 @@ export const Tree = (): ReactElement => {
                 // disabled: !child.enabled,
                 title: child?.name,
                 onClick(): void {
+                    dispatch(selectControl(controlId));
                     dispatch(
                         executeContextMenuAction({
                             controlId,
@@ -387,9 +387,10 @@ export const Tree = (): ReactElement => {
             <div
                 aria-hidden
                 id={item.controlId}
+                data-control-id={item.controlId}
                 className={classNames.join(' ')}
                 onClick={(): void => onSelectCell(item)}
-                onContextMenu={(e) => onContextMenuAction(e, item, 'cell', document.getElementById(item.controlId))}>
+                onContextMenu={(e) => onContextMenuAction(e, item, document.getElementById(item.controlId))}>
                 <span
                     {...props}
                     data-testid={isExtensionPoint ? 'tooltip-container' : ''}
@@ -485,6 +486,7 @@ export const Tree = (): ReactElement => {
             : groupName;
         return (
             <div
+                data-control-id={data.controlId}
                 {...refProps}
                 aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
@@ -496,7 +498,7 @@ export const Tree = (): ReactElement => {
                     className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
                     onContextMenu={(e) =>
                         (isExtensionPoint && handleOpenTooltip(e, tooltipId)) ||
-                        onContextMenuAction(e, data, 'header', document.getElementById(data.controlId))
+                        onContextMenuAction(e, data, document.getElementById(data.controlId))
                     }>
                     {groupHeaderProps?.group?.count !== 0 && (
                         <Icon
@@ -564,7 +566,8 @@ export const Tree = (): ReactElement => {
                 <UIContextualMenu
                     layoutType={UIContextualMenuLayoutType.ContextualMenu}
                     showSubmenuBeneath={true}
-                    target={document.getElementById(showActionContextualMenu.controlId)}
+                    /* target={document.getElementById(showActionContextualMenu.controlId)} */
+                    target={`[data-control-id="${showActionContextualMenu.controlId}"]`}
                     isBeakVisible={true}
                     items={buildMenuItems(
                         showActionContextualMenu.controlId,
