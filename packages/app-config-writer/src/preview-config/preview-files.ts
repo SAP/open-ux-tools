@@ -85,7 +85,7 @@ export async function deleteNoLongerUsedFiles(
     convertTests: boolean,
     logger?: ToolsLogger
 ): Promise<void> {
-    const webappTestPath = join(await getWebappPath(basePath), 'test');
+    const webappTestPath = join(await getWebappPath(basePath, fs), 'test');
     const files = [
         join(webappTestPath, 'locate-reuse-libs.js'),
         join(webappTestPath, 'changes_loader.js'),

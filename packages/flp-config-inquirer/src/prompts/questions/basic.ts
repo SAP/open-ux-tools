@@ -90,13 +90,11 @@ export function getOverwritePrompt(
             applyDefaultWhenDirty: true
         },
         default: options?.default ?? ((): boolean => !existingKeyRef.value),
-        when: options?.hide
-            ? false
-            : (previousAnswers: FLPConfigAnswers): boolean => {
-                  existingKeyRef.value =
-                      inboundKeys.indexOf(`${previousAnswers.semanticObject}-${previousAnswers.action}`) > -1;
-                  return existingKeyRef.value;
-              },
+        when: (previousAnswers: FLPConfigAnswers): boolean => {
+            existingKeyRef.value =
+                inboundKeys.indexOf(`${previousAnswers.semanticObject}-${previousAnswers.action}`) > -1;
+            return existingKeyRef.value;
+        },
         additionalMessages: (_, previousAnswers) => ({
             message: t('validators.inboundConfigKeyExists', {
                 inboundKey: `${(previousAnswers as FLPConfigAnswers).semanticObject}-${

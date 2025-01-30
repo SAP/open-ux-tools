@@ -1,5 +1,4 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-
 import { getPrompts, prompt } from '../src';
 import type { FLPConfigAnswers } from '../src';
 
@@ -16,6 +15,18 @@ describe('index', () => {
 
             expect(prompts).toBeDefined();
             expect(prompts.length).toBe(9);
+        });
+
+        it('should return selected prompts from getPrompts prompt options', async () => {
+            const prompts = await getPrompts(undefined, undefined, {
+                inboundId: { hide: true },
+                emptyInboundsInfo: { hide: true },
+                additionalParameters: { hide: true },
+                createAnotherInbound: { hide: true }
+            });
+
+            expect(prompts).toBeDefined();
+            expect(prompts.length).toBe(5);
         });
     });
 

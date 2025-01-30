@@ -1,0 +1,18 @@
+{
+    "name": "app-router",
+    "private": true,
+    "description": "App router",
+    "engines": {
+        "node": ">= 16.0.0"
+    },
+    "scripts": {
+        "start": "node node_modules/@sap/approuter/approuter.js",
+        "start-local": "node node_modules/@sap/html5-repo-mock/index.js"
+    },
+    "dependencies": {
+        "@sap/approuter": "^14"
+    },
+    "devDependencies": {
+        "@sap/html5-repo-mock": "^2.1.0"
+    }
+}

@@ -67,9 +67,20 @@ describe('Test getWebappPath()', () => {
             join(samplesRoot, 'custom-webapp-path/ui5.yaml'),
             'resources:\n  configuration:\n    paths:\n      webapp: new/webapp/path'
         );
+        memFs.writeJSON(join(samplesRoot, 'custom-webapp-path/package.json'), {});
         expect(await getWebappPath(join(samplesRoot, 'custom-webapp-path'), memFs)).toEqual(
             join(samplesRoot, 'custom-webapp-path/new/webapp/path')
         );
+    });
+
+    test('Get custom webapp path from mem-fs editor instance with custom webapp mapping in ui5.yaml', async () => {
+        const memFs = create(createStorage());
+        memFs.write(
+            join(samplesRoot, 'app/app1/ui5.yaml'),
+            'resources:\n  configuration:\n    paths:\n      webapp: app/app1/webapp'
+        );
+        memFs.writeJSON(join(samplesRoot, 'package.json'), {});
+        expect(await getWebappPath(join(samplesRoot, 'app/app1'), memFs)).toEqual(join(samplesRoot, 'app/app1/webapp'));
     });
 });
 
