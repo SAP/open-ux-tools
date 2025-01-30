@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
@@ -19,7 +19,7 @@ import {
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
-import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls, getPackageScripts, getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import {
@@ -27,8 +27,6 @@ import {
     type AnnotationServiceParameters,
     type GenerateAnnotationsOptions
 } from '@sap-ux/annotation-generator';
-import { sep } from 'path';
-import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
