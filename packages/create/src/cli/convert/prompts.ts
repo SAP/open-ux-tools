@@ -29,7 +29,7 @@ export async function includeTestRunnersPrompt(): Promise<boolean> {
         type: 'confirm',
         name: PROMPT_NAME,
         initial: false,
-        message: 'Do you want to convert Test Runners as well??'
+        message: 'Do you want to convert Test Runners as well?'
     };
     const answer = (await prompt([question])) as Answers<typeof PROMPT_NAME>;
     return answer.includeTests ?? (await Promise.reject()); //in case of doubt, reject
