@@ -1,8 +1,9 @@
-import { t, addi18nResourceBundle } from '../i18n';
+import { t } from '../i18n';
 import type { YUIQuestion, InputQuestion, PasswordQuestion } from '../types';
+import type { ValidationLink } from '../types';
 
 export type CredentialsAnswers = { username: string; password: string };
-export type AdditionalValidation = (credentials: CredentialsAnswers) => Promise<boolean | string>;
+export type AdditionalValidation = (credentials: CredentialsAnswers) => Promise<ValidationLink | boolean | string>;
 
 /**
  * Prompts the user for credentials.
@@ -13,7 +14,6 @@ export type AdditionalValidation = (credentials: CredentialsAnswers) => Promise<
 export async function getCredentialsPrompts(
     additionalValidation?: AdditionalValidation
 ): Promise<YUIQuestion<CredentialsAnswers>[]> {
-    addi18nResourceBundle();
     return [
         {
             type: 'input',
@@ -37,7 +37,10 @@ export async function getCredentialsPrompts(
                 mandatory: true
             },
             store: false,
-            validate: async (value: string, answers: CredentialsAnswers): Promise<string | boolean> => {
+            validate: async (
+                value: string,
+                answers: CredentialsAnswers
+            ): Promise<ValidationLink | string | boolean> => {
                 if (!value) {
                     return t('errors.cannotBeEmpty', { field: t('prompts.password.message') });
                 }

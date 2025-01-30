@@ -17,7 +17,8 @@ import {
     getRegistrationIdFromManifest,
     isCFEnvironment,
     generateInboundConfig,
-    type InternalInboundNavigation
+    type InternalInboundNavigation,
+    type AdpPreviewConfig
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
@@ -28,7 +29,13 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
 import { t, initI18n } from '../utils/i18n';
-import { ErrorHandler, type CredentialsAnswers, getCredentialsPrompts } from '@sap-ux/inquirer-common';
+import {
+    ErrorHandler,
+    type CredentialsAnswers,
+    getCredentialsPrompts,
+    addi18nResourceBundle,
+    type ValidationLink
+} from '@sap-ux/inquirer-common';
 import {
     createAbapServiceProvider,
     type AbapTarget,
@@ -59,6 +66,8 @@ export default class extends Generator {
     // Flag to determine if the generator was aborted
     private abort: boolean = false;
     private configuredSystem: string | undefined;
+    private ui5Yaml: AdpPreviewConfig;
+    private credentials: CredentialsAnswers;
 
     /**
      * Creates an instance of the generator.
@@ -79,7 +88,7 @@ export default class extends Generator {
         this.vscode = opts.vscode;
 
         this._setupPrompts();
-        this._configureLogging();
+        this._setupLogging();
     }
 
     async initializing(): Promise<void> {
@@ -89,10 +98,25 @@ export default class extends Generator {
         }
 
         await initI18n();
+        addi18nResourceBundle();
         this._setupFLPConfigPage();
 
+        this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
+        this.configuredSystem = await this._findConfiguredSystem(this.ui5Yaml.target);
+        if (!this.configuredSystem) {
+            return;
+        }
+
         if (!this.manifest) {
-            await this._fetchManifest();
+            try {
+                this.manifest = await this._getManifest();
+            } catch (error) {
+                this.authenticationRequired = this._checkAuthRequired(error);
+                if (this.authenticationRequired) {
+                    return;
+                }
+                this._handleFetchingError(error);
+            }
         }
         // Add telemetry to be sent once adp-flp-config is generated
         await TelemetryHelper.initTelemetrySettings({
@@ -106,11 +130,12 @@ export default class extends Generator {
     }
 
     public async prompting(): Promise<void> {
-        if (this.abort) {
-            return;
-        }
         if (this.authenticationRequired) {
             await this._promptAuthentication();
+        }
+
+        if (this.abort) {
+            return;
         }
         const inbounds = getInboundsFromManifest(this.manifest);
         const appId = getRegistrationIdFromManifest(this.manifest);
@@ -154,38 +179,25 @@ export default class extends Generator {
     }
 
     /**
-     * Fetches the manifest for the project.
+     * Retrieves the manifest for the project.
      *
-     * @param {CredentialsAnswers} credentials - The request options.
-     * @returns {Promise<boolean | string>} A promise that resolves with a boolean or an error message.
+     * @returns {Promise<Manifest>} The project manifest.
      */
-    private async _fetchManifest(credentials?: CredentialsAnswers): Promise<boolean | string> {
-        const { target, ignoreCertErrors = false } = await getAdpConfig(
+    private async _getManifest(): Promise<Manifest> {
+        const { target, ignoreCertErrors = false } = this.ui5Yaml;
+        const requiestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
+        if (this.credentials) {
+            requiestOptions['auth'] = { username: this.credentials.username, password: this.credentials.password };
+        }
+        const provider = await createAbapServiceProvider(target, requiestOptions, false, this.toolsLogger);
+        const variant = getVariant(this.projectRootPath);
+        const manifestService = await ManifestService.initMergedManifest(
+            provider,
             this.projectRootPath,
-            join(this.projectRootPath, FileName.Ui5Yaml)
+            variant,
+            this.toolsLogger
         );
-        this.configuredSystem = await this._findConfiguredSystem(target);
-        if (!this.configuredSystem) {
-            return false;
-        }
-        try {
-            const requiestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
-            if (credentials) {
-                requiestOptions['auth'] = { username: credentials.username, password: credentials.password };
-            }
-            const provider = await createAbapServiceProvider(target, requiestOptions, false, this.toolsLogger);
-            const variant = getVariant(this.projectRootPath);
-            const manifestService = await ManifestService.initMergedManifest(
-                provider,
-                this.projectRootPath,
-                variant,
-                this.toolsLogger
-            );
-            this.manifest = manifestService.getManifest();
-            return true;
-        } catch (error) {
-            return (await this._handleFetchingError(error)) ?? false;
-        }
+        return manifestService.getManifest();
     }
 
     /**
@@ -194,7 +206,25 @@ export default class extends Generator {
      * @returns {void}
      */
     private async _promptAuthentication(): Promise<void> {
-        const prompts = await getCredentialsPrompts(this._fetchManifest.bind(this));
+        const prompts = await getCredentialsPrompts(
+            async (credentials: CredentialsAnswers): Promise<ValidationLink | string | boolean> => {
+                this.credentials = credentials;
+                try {
+                    this.manifest = await this._getManifest();
+                } catch (error) {
+                    if (!isAxiosError(error)) {
+                        this.logger.error(`Manifest fetching failed: ${error}`);
+                        throw new Error(t('error.fetchingManifest'));
+                    }
+                    this.authenticationRequired = this._checkAuthRequired(error);
+                    if (this.authenticationRequired) {
+                        return t('error.authenticationFailed');
+                    }
+                    return this._getErrorHandlerMessage(error) ?? false;
+                }
+                return true;
+            }
+        );
         this.prompts.splice(0, 0, [
             {
                 name: t('yuiNavSteps.flpCredentialsName'),
@@ -208,27 +238,20 @@ export default class extends Generator {
      * Handles errors that occur during the fetching of the manifest.
      *
      * @param {Error | AxiosError} error - The error that occurred.
-     * @returns {Promise<undefined | string>} A promise that resolves with an error message or undefined.
      */
-    private async _handleFetchingError(error: Error | AxiosError): Promise<undefined | string> {
+    private _handleFetchingError(error: AxiosError): void {
         if (isAxiosError(error)) {
             this.logger.error(
                 `Manifest fetching failed: ${error}. Status: ${error.response?.status}. URI: ${error.request?.path}`
             );
-            if (error.response?.status === 401) {
-                this.authenticationRequired = true;
-                return t('error.authenticationFailed');
-            }
 
-            const errorHandler = new ErrorHandler();
-            const errorHelp = errorHandler.getValidationErrorHelp(error);
+            const errorHelp = this._getErrorHandlerMessage(error);
             if (errorHelp) {
-                this._showErrorNotification(
+                this._abortExecution(
                     typeof errorHelp === 'string'
                         ? errorHelp
                         : `${errorHelp?.message} ([${errorHelp.link.text}](${errorHelp.link.url}))`
                 );
-                return;
             }
         }
         this.logger.error(`Manifest fetching failed: ${error}`);
@@ -276,25 +299,25 @@ export default class extends Generator {
         if (isAppStudio()) {
             configuredSystem = target?.destination;
             if (!configuredSystem) {
-                this._showErrorNotification(t('error.destinationNotFound'));
+                this._abortExecution(t('error.destinationNotFound'));
                 return;
             }
 
             const destinations = await listDestinations();
             if (!(configuredSystem in destinations)) {
-                this._showErrorNotification(t('error.destinationNotFoundInStore', { destination: configuredSystem }));
+                this._abortExecution(t('error.destinationNotFoundInStore', { destination: configuredSystem }));
                 return;
             }
         } else {
             const url = target?.url;
             if (!url) {
-                this._showErrorNotification(t('error.systemNotFound'));
+                this._abortExecution(t('error.systemNotFound'));
                 return;
             }
 
             configuredSystem = (await getCredentialsFromStore(target as UrlAbapTarget, this.toolsLogger))?.name;
             if (!configuredSystem) {
-                this._showErrorNotification(t('error.systemNotFoundInStore', { systemUrl: url }));
+                this._abortExecution(t('error.systemNotFoundInStore', { systemUrl: url }));
                 return;
             }
         }
@@ -307,7 +330,7 @@ export default class extends Generator {
      *
      * @param {string} message - The error message to display.
      */
-    private _showErrorNotification(message: string): void {
+    private _abortExecution(message: string): void {
         if (isCli()) {
             this.toolsLogger.error(message);
         } else {
@@ -317,9 +340,36 @@ export default class extends Generator {
     }
 
     /**
+     * Retrieves the error handler message for the provided error.
+     *
+     * @param {Error | AxiosError} error - The error to handle.
+     * @returns {ValidationLink | string | undefined} The validation link or error message.
+     */
+    private _getErrorHandlerMessage(error: Error | AxiosError): ValidationLink | string | undefined {
+        const errorHandler = new ErrorHandler();
+        return errorHandler.getValidationErrorHelp(error);
+    }
+
+    /**
+     * Checks if authentication is required based on the provided error.
+     *
+     * @param {Error | AxiosError} error - The error to check.
+     * @returns {boolean} True if authentication is required, false otherwise.
+     */
+    private _checkAuthRequired(error: Error | AxiosError): boolean {
+        if (isAxiosError(error)) {
+            this.authenticationRequired = false;
+            if (error.response?.status === 401) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
      * Configures logging for the generator.
      */
-    private _configureLogging(): void {
+    private _setupLogging(): void {
         AdpFlpConfigLogger.configureLogging(
             this.options.logger,
             this.rootGeneratorName(),
