@@ -252,6 +252,7 @@ export default class extends Generator {
                         : `${errorHelp?.message} ([${errorHelp.link.text}](${errorHelp.link.url}))`
                 );
             }
+            return;
         }
         this.logger.error(`Manifest fetching failed: ${error}`);
         throw new Error(t('error.fetchingManifest'));

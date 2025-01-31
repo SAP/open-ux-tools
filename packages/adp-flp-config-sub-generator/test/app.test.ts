@@ -29,7 +29,13 @@ jest.mock('@sap-ux/adp-tooling', () => ({
 }));
 jest.mock('@sap-ux/inquirer-common', () => ({
     ...jest.requireActual('@sap-ux/inquirer-common'),
-    getCredentialsPrompts: jest.fn()
+    getCredentialsPrompts: jest.fn(),
+    ErrorHandler: jest.fn().mockImplementation(
+        () =>
+            ({
+                getValidationErrorHelp: () => 'Network Error'
+            } as unknown as inquirerCommon.ErrorHandler)
+    )
 }));
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
@@ -47,11 +53,12 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     isCli: jest.fn().mockReturnValue(false)
 }));
 
+const toolsLoggerErrorSpy = jest.fn();
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
     info: jest.fn(),
     warn: jest.fn(),
-    error: jest.fn()
+    error: toolsLoggerErrorSpy
 } as Partial<ToolsLogger> as ToolsLogger;
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
@@ -69,6 +76,16 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 password: 'systemPassword'
             }
         ]
+    };
+    const destinationList = {
+        testDestination: {
+            Name: 'https://testUrl',
+            Host: '000',
+            Type: 'Type',
+            Authentication: 'Basic',
+            ProxyType: 'Internet',
+            Description: 'Description'
+        }
     };
     let answers:
         | FLPConfigAnswers
@@ -129,16 +146,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             }
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
-        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({
-            testDestination: {
-                Name: 'https://testUrl',
-                Host: '000',
-                Type: 'Type',
-                Authentication: 'Basic',
-                ProxyType: 'Internet',
-                Description: 'Description'
-            }
-        });
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
         const sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
 
         const runContext = yeomanTest
@@ -412,16 +420,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('Should require authentication if manifest fetching returns 401 and fail after authentication', async () => {
-        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({
-            testDestination: {
-                Name: 'https://testUrl',
-                Host: '000',
-                Type: 'Type',
-                Authentication: 'Basic',
-                ProxyType: 'Internet',
-                Description: 'Description'
-            }
-        });
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
@@ -477,16 +476,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('Should require authentication again if credentials are wrong', async () => {
-        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({
-            testDestination: {
-                Name: 'https://testUrl',
-                Host: '000',
-                Type: 'Type',
-                Authentication: 'Basic',
-                ProxyType: 'Internet',
-                Description: 'Description'
-            }
-        });
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
@@ -548,23 +538,13 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('Should show error message after authetication when manifest request fails with connection error', async () => {
-        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({
-            testDestination: {
-                Name: 'https://testUrl',
-                Host: '000',
-                Type: 'Type',
-                Authentication: 'Basic',
-                ProxyType: 'Internet',
-                Description: 'Description'
-            }
-        });
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
             }
         });
-        const initMergedManifestSpy = jest
-            .spyOn(adpTooling.ManifestService, 'initMergedManifest')
+        jest.spyOn(adpTooling.ManifestService, 'initMergedManifest')
             .mockRejectedValueOnce({
                 isAxiosError: true,
                 response: {
@@ -573,9 +553,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             })
             .mockRejectedValueOnce({
                 isAxiosError: true,
-                response: {
-                    message: 'unable to get local issuer certificate'
-                }
+                message: 'Network Error'
             });
         jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
         const testProjectPath = join(__dirname, 'fixtures/app.variant1');
@@ -614,6 +592,177 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await runContext.run();
-        expect(callbackResult).toEqual(t('error.authenticationFailed'));
+        expect(callbackResult).toEqual('Network Error');
+    });
+
+    it('Should pass authentication successfully', async () => {
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        jest.spyOn(adpTooling.ManifestService, 'initMergedManifest').mockRejectedValueOnce({
+            isAxiosError: true,
+            response: {
+                status: 401
+            }
+        });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+        let callbackResult: string = '';
+        jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
+            async (
+                callback?: inquirerCommon.AdditionalValidation
+            ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
+                callbackResult = (await callback?.({ username: 'testUsername', password: 'testPassword' })) as string;
+                return Promise.resolve([
+                    {
+                        username: 'testUsername'
+                    } as unknown as inquirerCommon.InputQuestion,
+                    {
+                        password: 'testPassword'
+                    } as unknown as inquirerCommon.PasswordQuestion
+                ]);
+            }
+        );
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(callbackResult).toEqual(true);
+    });
+
+    it('Should fail manifest fetching with network error', async () => {
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue(destinationList);
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        jest.spyOn(adpTooling.ManifestService, 'initMergedManifest').mockRejectedValueOnce({
+            isAxiosError: true,
+            message: 'Network Error'
+        });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+        let callbackResult: string = '';
+        jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
+            async (
+                callback?: inquirerCommon.AdditionalValidation
+            ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
+                callbackResult = (await callback?.({ username: 'testUsername', password: 'testPassword' })) as string;
+                return Promise.resolve([
+                    {
+                        username: 'testUsername'
+                    } as unknown as inquirerCommon.InputQuestion,
+                    {
+                        password: 'testPassword'
+                    } as unknown as inquirerCommon.PasswordQuestion
+                ]);
+            }
+        );
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(vsCodeMessageSpy).toBeCalledWith('Network Error');
+    });
+
+    it('Should fail if destination is not found in BTP subaccount', async () => {
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({});
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(vsCodeMessageSpy).toBeCalledWith(
+            t('error.destinationNotFoundInStore', { destination: 'testDestination' })
+        );
+    });
+
+    it('Should fail if destination is not found in BTP subaccount and log error in CLI', async () => {
+        jest.spyOn(fioriGenShared, 'isCli').mockReturnValue(true);
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({});
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(toolsLoggerErrorSpy).toBeCalledWith(
+            t('error.destinationNotFoundInStore', { destination: 'testDestination' })
+        );
     });
 });
