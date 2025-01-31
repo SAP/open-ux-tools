@@ -33,6 +33,7 @@ import {
     addApp,
     getAppName
 } from './config';
+import type connect from 'connect';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -307,7 +308,11 @@ export class FlpSandbox {
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox html
-        this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
+        this.router.get(this.config.path, (async (
+            req: EnhancedRequest | connect.IncomingMessage,
+            res: Response | http.ServerResponse,
+            next: NextFunction
+        ) => {
             await this.setApplicationDependencies();
             // inform the user if a html file exists on the filesystem
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -317,10 +322,12 @@ export class FlpSandbox {
                 next();
             } else {
                 const ui5Version = await this.getUi5Version(
-                    req.protocol,
                     //use host from request header referer as fallback for karma (connect API)
-                    req.headers.host ?? req.headers.referer?.substring(0, req.headers.referer.indexOf(':')),
-                    req['ui5-patched-router']?.baseUrl
+                    'protocol' in req
+                        ? req.protocol
+                        : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http',
+                    req.headers.host,
+                    'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
                 );
                 const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
                 this.sendResponse(res, 'text/html', 200, html);
@@ -348,7 +355,7 @@ export class FlpSandbox {
             this.logger.error('Unable to fetch UI5 version: No host found in request header.');
         } else {
             try {
-                const versionUrl = `${protocol ?? 'http'}://${host}${baseUrl}/resources/sap-ui-version.json`;
+                const versionUrl = `${protocol}://${host}${baseUrl}/resources/sap-ui-version.json`;
                 const responseJson = (await fetch(versionUrl).then((res) => res.json())) as
                     | { libraries: { name: string; version: string }[] }
                     | undefined;
@@ -512,7 +519,11 @@ export class FlpSandbox {
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
         const config = mergeTestConfigDefaults(testsuiteConfig);
         this.logger.debug(`Add route for ${config.path}`);
-        this.router.get(config.path, (async (_req, res) => {
+        this.router.get(config.path, (async (
+            _req: EnhancedRequest | connect.IncomingMessage,
+            res: Response | http.ServerResponse,
+            _next: NextFunction
+        ) => {
             this.logger.debug(`Serving test route: ${config.path}`);
             const templateConfig = {
                 basePath: this.templateConfig.basePath,
@@ -539,7 +550,11 @@ export class FlpSandbox {
         }
 
         this.logger.debug(`Add route for ${config.init}`);
-        this.router.get(config.init, (async (_req, res, next) => {
+        this.router.get(config.init, (async (
+            _req: EnhancedRequest | connect.IncomingMessage,
+            res: Response | http.ServerResponse,
+            next: NextFunction
+        ) => {
             const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
             if (files?.length > 0) {
                 this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
@@ -587,7 +602,11 @@ export class FlpSandbox {
             const config = mergeTestConfigDefaults(testConfig);
             this.logger.debug(`Add route for ${config.path}`);
             // add route for the *.qunit.html
-            this.router.get(config.path, (async (_req, res, next) => {
+            this.router.get(config.path, (async (
+                _req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse,
+                next: NextFunction
+            ) => {
                 this.logger.debug(`Serving test route: ${config.path}`);
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const file = await this.project.byPath(config.path);
@@ -606,7 +625,11 @@ export class FlpSandbox {
             }
             // add route for the init file
             this.logger.debug(`Add route for ${config.init}`);
-            this.router.get(config.init, (async (_req, res, next) => {
+            this.router.get(config.init, (async (
+                _req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse,
+                next: NextFunction
+            ) => {
                 this.logger.debug(`Serving test init script: ${config.init}`);
 
                 const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
