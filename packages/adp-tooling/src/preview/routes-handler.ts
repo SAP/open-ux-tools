@@ -199,7 +199,8 @@ export default class RoutesHandler {
                 controllerExists,
                 controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
                 controllerPathFromRoot,
-                isRunningInBAS
+                isRunningInBAS,
+                isTsSupported
             });
             this.logger.debug(
                 controllerExists
