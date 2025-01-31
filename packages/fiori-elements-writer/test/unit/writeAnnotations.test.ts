@@ -81,18 +81,18 @@ describe('writeAnnotations', () => {
             packageName: 'anotherApp'
         };
 
-        await writeAnnotations('/base/path', appInfo, fs);
+        await writeAnnotations('test', appInfo, fs);
 
         expect(generateAnnotations).toHaveBeenCalledWith(
             fs,
             {
                 serviceName: 'mainService',
                 appName: 'anotherApp',
-                project: '/base/path'
+                project: join('test')
             },
             {
                 entitySetName: 'AnotherEntitySet',
-                annotationFilePath: 'webapp/annotations/annotation.xml',
+                annotationFilePath: join('webapp', 'annotations', 'annotation.xml'),
                 addFacets: true,
                 addLineItems: true,
                 addValueHelps: false
