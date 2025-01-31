@@ -434,8 +434,8 @@ describe('flp-config generator', () => {
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers, true);
 
         const i18nContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/webapp/i18n/i18n.properties`).toString();
-        expect(i18nContent).toContain('flpTitle=title1');
-        expect(i18nContent).toContain('flpSubtitle=subtitle1');
+        expect(i18nContent).toContain(`flpTitle=${answers.semanticObject}-${answers.action}-${answers.title}`);
+        expect(i18nContent).toContain(`flpSubtitle=${answers.semanticObject}-${answers.action}-${answers.subTitle}`);
     });
 
     it('adds flp-config, updates i18n file using bundle reference', async () => {
@@ -480,8 +480,8 @@ describe('flp-config generator', () => {
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers, true);
 
         const i18nContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/webapp/i18n/i18n.properties`).toString();
-        expect(i18nContent).toContain('flpTitle=title1');
-        expect(i18nContent).toContain('flpSubtitle=subtitle1');
+        expect(i18nContent).toContain(`flpTitle=${answers.semanticObject}-${answers.action}-${answers.title}`);
+        expect(i18nContent).toContain(`flpSubtitle=${answers.semanticObject}-${answers.action}-${answers.subTitle}`);
     });
 
     it('shows error when createPropertiesI18nEntries fails', async () => {
