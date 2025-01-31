@@ -206,8 +206,6 @@ export default class extends Generator {
                 action,
                 title: keysAdded ? `{{${semanticObject}-${action}.${i18nKeyTitle}}}` : title,
                 subTitle: keysAdded && subTitle ? `{{${semanticObject}-${action}.${i18nKeySubTitle}}}` : subTitle
-                subTitle:
-                    keysAdded && subTitle ? `{{${i18nKeySubTitle}}}` : semanticObject + '-' + action + '-' + subTitle
             },
             true,
             this.fs
