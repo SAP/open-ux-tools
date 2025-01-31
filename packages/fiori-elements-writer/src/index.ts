@@ -1,4 +1,4 @@
-import { join, sep } from 'path';
+import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
@@ -19,14 +19,16 @@ import {
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
 import { initI18n } from './i18n';
-import { getBootstrapResourceUrls, getPackageScripts, getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
+import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
-import { applyCAPUpdates, type CapProjectSettings, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
+import type { Logger } from '@sap-ux/logger';
+import { t } from './i18n';
 import {
-    generateAnnotations,
-    type AnnotationServiceParameters,
-    type GenerateAnnotationsOptions
-} from '@sap-ux/annotation-generator';
+    writeAnnotations,
+    canGenerateAnnotationsForTemplate,
+    annotationSupportedTemplateTypes
+} from './data/writeAnnotations';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -57,44 +59,20 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
 }
 
 /**
- * Generates the annotation file path based on whether the CAP service is available.
- *
- * @param {string} [appName] - The name of the application.
- * @param {CapServiceCdsInfo} [capService] - The CAP service info.
- * @returns {string} The annotation file path based on whether the CAP service is available.
- */
-function getAnnotationFilePath(appName?: string, capService?: CapServiceCdsInfo): string {
-    if (capService) {
-        const appPath = capService.appPath ?? getCapFolderPathsSync(capService.projectPath).app;
-        return `${appPath}${sep}${appName}${sep}annotations.cds`;
-    }
-    return `webapp${sep}annotations${sep}annotation.xml`;
-}
-
-/**
- * Determines if annotations can be written for a given project template.
- *
- * @param version OData version
- * @param {TemplateType} type - The template type.
- * @returns {boolean} - Returns true if template type is LROP/Worklist and version is v4.
- * Returns true if template type is FormEntryObjectPage.
- * Otherwise, returns false.
- */
-function canGenerateAnnotationsForTemplate(version: OdataVersion, type: TemplateType): boolean {
-    const isODataV4 = version === OdataVersion.v4;
-    const supportedTemplates: TemplateType[] = [TemplateType.ListReportObjectPage, TemplateType.Worklist];
-    return (isODataV4 && supportedTemplates.includes(type)) || type === TemplateType.FormEntryObjectPage;
-}
-
-/**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
  *
  * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the Fiori elements application
  * @param fs - an optional reference to a mem-fs editor
+ * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
  */
-async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
+async function generate<T extends {}>(
+    basePath: string,
+    data: FioriElementsApp<T>,
+    fs?: Editor,
+    log?: Logger
+): Promise<Editor> {
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
@@ -261,38 +239,30 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Handle annotation writing
     if (
-        feApp.appOptions?.addAnnotations &&
-        canGenerateAnnotationsForTemplate(feApp.service.version, feApp.template.type)
+        canGenerateAnnotationsForTemplate(feApp.appOptions?.addAnnotations, feApp.service.version, feApp.template.type)
     ) {
         const { settings } = feApp.template;
         const { capService } = feApp.service;
         const { name: packageName } = feApp.package ?? {};
-        let serviceName = 'mainService';
-        let projectPath = basePath;
-        // add line items is false for FormEntryObjectPage type project
-        const addLineItems =
-            feApp.template.type === TemplateType.ListReportObjectPage || feApp.template.type === TemplateType.Worklist;
         const entitySetName = (settings as T & { entityConfig?: EntityConfig })?.entityConfig?.mainEntityName ?? '';
 
-        if (capService) {
-            serviceName = capService.serviceName;
-            projectPath = capService.projectPath;
-        }
-
-        const options: GenerateAnnotationsOptions = {
-            entitySetName,
-            annotationFilePath: getAnnotationFilePath(packageName, capService),
-            addFacets: true,
-            addLineItems,
-            addValueHelps: !!capService
-        };
-        const serviceParameters: AnnotationServiceParameters = {
-            serviceName,
-            appName: packageName,
-            project: projectPath
-        };
-
-        await generateAnnotations(fs, serviceParameters, options);
+        await writeAnnotations(
+            basePath,
+            {
+                templateType: feApp.template.type,
+                packageName: packageName,
+                entitySetName: entitySetName,
+                capService: capService
+            },
+            fs
+        );
+    } else {
+        log?.warn(
+            t('warn.invalidTypeForAnnotationGeneration', {
+                templateType: feApp.template.type,
+                supportedTypes: annotationSupportedTemplateTypes
+            })
+        );
     }
     return fs;
 }
