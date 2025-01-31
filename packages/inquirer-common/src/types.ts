@@ -120,13 +120,6 @@ export interface InputQuestion<A extends Answers = Answers> extends BaseInputQue
     additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
-export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
-    name: YUIQuestion['name'];
-    guiOptions?: YUIQuestion['guiOptions'];
-    guiType?: string;
-    mask?: string;
-}
-
 export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheckBoxQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
