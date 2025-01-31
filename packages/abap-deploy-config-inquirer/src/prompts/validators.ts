@@ -611,11 +611,6 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
 async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
-    const systemConfig: SystemConfig = {
-        url: PromptState.abapDeployConfig.url,
-        client: PromptState.abapDeployConfig.client,
-        destination: PromptState.abapDeployConfig.destination
-    };
     const packageType = PromptState.abapDeployConfig.isS4HC
         ? AdaptationProjectType.CLOUD_READY
         : AdaptationProjectType.ON_PREMISE;
@@ -623,7 +618,7 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
         packageType === AdaptationProjectType.CLOUD_READY
             ? t('errors.validators.invalidCloudPackage')
             : t('errors.validators.invalidOnpremPackage');
-    const systemInfo = await getSystemInfo(input, systemConfig, backendTarget);
+    const systemInfo = await getSystemInfo(input, backendTarget);
     const isValidPackageType =
         systemInfo != undefined &&
         systemInfo.adaptationProjectTypes.length === 1 &&
