@@ -208,6 +208,15 @@ export async function getCapModelAndServices(
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'projectRoot': ${_projectRoot}`);
 
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
+    // filter services that have ( urlPath defined AND no endpoints) OR have endpoints with kind 'odata'
+    // i.e. ignore services for websockets and other unsupported protocols
+    if (services.filter) {
+        services = services.filter(
+            (service) =>
+                (service.urlPath && service.endpoints === undefined) ||
+                service.endpoints?.find((endpoint) => endpoint.kind === 'odata')
+        );
+    }
     if (services.map) {
         services = services.map((value) => {
             const { endpoints, urlPath } = value;

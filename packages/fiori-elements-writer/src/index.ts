@@ -21,6 +21,7 @@ import semVer from 'semver';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
+import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -205,6 +206,21 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             },
             fs
         );
+    }
+    if (feApp.service.capService) {
+        const hasCdsUi5PluginInfo = !!feApp.service.capService.cdsUi5PluginInfo;
+        const settings: CapProjectSettings = {
+            appRoot: basePath,
+            packageName: feApp.package.name ?? '',
+            appId: feApp.app.id,
+            sapux: feApp.appOptions?.sapux,
+            enableTypescript: feApp.appOptions?.typescript,
+            // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
+            enableCdsUi5Plugin: hasCdsUi5PluginInfo,
+            enableNPMWorkspaces: hasCdsUi5PluginInfo
+        };
+        // apply cap updates when service is cap
+        await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
 
     return fs;

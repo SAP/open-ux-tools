@@ -332,22 +332,19 @@ export class UI5Config {
         const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration;
         // Add new entry to existing backend configurations in yaml
         if (proxyMiddlewareConfig?.backend) {
-            // Avoid adding duplicates by checking existing backend configs
-            if (!proxyMiddlewareConfig.backend.find((existingBackend) => existingBackend.url === backend.url)) {
-                backendNode = this.document.createNode({
-                    value: backend,
-                    comments
-                });
-                const configuration = this.document.getMap({
-                    start: proxyMiddleware as YAMLMap,
-                    path: 'configuration'
-                });
-                const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
-                if (backendConfigs.items.length === 0) {
-                    configuration.set('backend', [backendNode]);
-                } else {
-                    backendConfigs.add(backendNode);
-                }
+            backendNode = this.document.createNode({
+                value: backend,
+                comments
+            });
+            const configuration = this.document.getMap({
+                start: proxyMiddleware as YAMLMap,
+                path: 'configuration'
+            });
+            const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+            if (backendConfigs.items.length === 0) {
+                configuration.set('backend', [backendNode]);
+            } else {
+                backendConfigs.add(backendNode);
             }
         } else {
             // Create a new 'backend' node in yaml for middleware config
@@ -374,9 +371,13 @@ export class UI5Config {
             const proxyMiddlewareConfig = fioriToolsProxyMiddleware?.configuration;
             // Remove backend from middleware configurations in yaml
             if (proxyMiddlewareConfig?.backend) {
-                proxyMiddlewareConfig.backend = proxyMiddlewareConfig.backend.filter(
-                    (existingBackend) => existingBackend.url !== backendUrl
+                // Avoid using filter method, because multiple services could have same backend url, we should delete one entry per service
+                const existingBackendIndex = proxyMiddlewareConfig.backend.findIndex(
+                    (backend) => backend.url === backendUrl
                 );
+                if (existingBackendIndex !== -1) {
+                    proxyMiddlewareConfig.backend.splice(existingBackendIndex, 1);
+                }
                 this.updateCustomMiddleware(fioriToolsProxyMiddleware);
             }
         }

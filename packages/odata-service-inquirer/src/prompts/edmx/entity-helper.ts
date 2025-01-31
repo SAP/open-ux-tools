@@ -188,7 +188,7 @@ function filterAggregateTransformations(entitySets: EntitySet[]): EntitySet[] {
  * @param entitySets the entity sets to filter by draft enabled entities
  * @returns the filtered entity sets
  */
-function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[] | undefined {
+export function filterDraftEnabledEntities(entitySets: EntitySet[]): EntitySet[] | undefined {
     return entitySets.filter((entitySet) => {
         const entitySetTypeProperties = entitySet.entityType.entityProperties;
         return !!entitySetTypeProperties.find((property) => property.name === 'HasDraftEntity');
