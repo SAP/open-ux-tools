@@ -4,6 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { coerce, lt } from 'semver';
 import type { Manifest } from './types';
+import { getWebappPath } from '@sap-ux/project-access';
 
 /**
  * Validate that the UI5 version requirement is valid.
@@ -43,12 +44,16 @@ export function validateDependenciesLibs(manifest: Manifest, dependencies: strin
  * @param {string[]} dependencies - expected dependencies
  * @returns true if the path is valid, otherwise, throws and error
  */
-export function validateBasePath(basePath: string, fs?: Editor, dependencies = ['sap.fe.templates']): boolean {
+export async function validateBasePath(
+    basePath: string,
+    fs?: Editor,
+    dependencies = ['sap.fe.templates']
+): Promise<boolean> {
     if (!fs) {
         fs = create(createStorage());
     }
 
-    const manifestPath = join(basePath, 'webapp', 'manifest.json');
+    const manifestPath = join(await getWebappPath(basePath, fs), 'manifest.json');
     if (!fs.exists(manifestPath)) {
         throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
     } else {
