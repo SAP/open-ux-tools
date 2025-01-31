@@ -330,7 +330,7 @@ export class FlpSandbox {
                 next();
             } else {
                 const ui5Version = await this.getUi5Version(
-                    //use host from request header referer as fallback for connect API (karma test runner)
+                    //use protocol from request header referer as fallback for connect API (karma test runner)
                     'protocol' in req
                         ? req.protocol
                         : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http',
