@@ -1,6 +1,5 @@
 import { t } from '../i18n';
-import type { YUIQuestion, InputQuestion, PasswordQuestion } from '../types';
-import type { ValidationLink } from '../types';
+import type { YUIQuestion, InputQuestion, PasswordQuestion, ValidationLink } from '../types';
 
 export type CredentialsAnswers = { username: string; password: string };
 export type AdditionalValidation = (credentials: CredentialsAnswers) => Promise<ValidationLink | boolean | string>;
