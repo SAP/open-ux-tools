@@ -111,7 +111,7 @@ export interface CfDeployConfigAnswers {
     /** The selected Cloud Foundry destination. */
     destinationName?: string;
     /** Indicates whether the user opted to include a managed application router. */
-    addManagedRouter?: boolean;
+    addManagedAppRouter?: boolean;
     /** Indicates whether the user opted to overwrite the destination. */
     overwrite?: boolean;
 }

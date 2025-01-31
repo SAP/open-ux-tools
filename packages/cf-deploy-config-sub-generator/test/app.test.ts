@@ -496,7 +496,7 @@ describe('Cloud foundry generator tests', () => {
                     destinationName: 'testDestination',
                     destinationAuthType: 'NoAuthentication' // Validating SH4
                 })
-                .withPrompts({ addManagedApprouter: true })
+                .withPrompts({ addManagedAppRouter: true })
                 .run()
         ).resolves.not.toThrow();
 
@@ -573,7 +573,7 @@ describe('Cloud foundry generator tests', () => {
                 })
                 .withPrompts({
                     destinationName: 'TestDestination',
-                    addManagedRouter: false
+                    addManagedAppRouter: false
                 })
                 .run()
         ).resolves.not.toThrow();
@@ -781,7 +781,7 @@ describe('Cloud foundry generator tests', () => {
                 .withOptions({
                     skipInstall: true
                 })
-                .withPrompts({ destinationName: 'TestDestination', addManagedApprouter: false })
+                .withPrompts({ destinationName: 'TestDestination', addManagedAppRouter: false })
                 .run()
         ).resolves.not.toThrow();
 
