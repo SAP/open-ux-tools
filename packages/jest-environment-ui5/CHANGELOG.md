@@ -1,5 +1,11 @@
 # Change Log
 
+## 5.3.7
+
+### Patch Changes
+
+-   642d507: Fix the canvas dependency issue
+
 ## 5.3.6
 
 ### Patch Changes
