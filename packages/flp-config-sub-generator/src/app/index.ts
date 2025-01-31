@@ -241,7 +241,10 @@ export default class extends Generator {
         try {
             const i18nEntries = [{ key: `${semanticObject}-${action}.${i18nKeyTitle}`, value: title }];
             if (subTitle) {
-                i18nEntries.push({ key: i18nKeySubTitle, value: semanticObject + '-' + action + '-' + subTitle });
+                i18nEntries.push({
+                    key: `${semanticObject}-${action}.${i18nKeySubTitle}`,
+                    value: subTitle
+                });
             }
             createProps = await createPropertiesI18nEntries(i18nPath, i18nEntries, this.appRootPath, this.fs);
         } catch (error) {
