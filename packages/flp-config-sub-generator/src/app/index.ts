@@ -239,7 +239,7 @@ export default class extends Generator {
         let createProps = false;
         const { 'sap.app': i18nPath } = await getI18nPropertiesPaths(manifestPath, manifest);
         try {
-            const i18nEntries = [{ key: i18nKeyTitle, value: semanticObject + '-' + action + '-' + title }];
+            const i18nEntries = [{ key: `${semanticObject}-${action}.${i18nKeyTitle}`, value: title }];
             if (subTitle) {
                 i18nEntries.push({ key: i18nKeySubTitle, value: semanticObject + '-' + action + '-' + subTitle });
             }
