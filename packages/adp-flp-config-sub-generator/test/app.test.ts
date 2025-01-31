@@ -14,7 +14,7 @@ import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import { rimraf } from 'rimraf';
 import { EventName } from '../src/telemetryEvents';
 import * as sysAccess from '@sap-ux/system-access';
-import { t } from '../src/utils/i18n';
+import { t, initI18n } from '../src/utils/i18n';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import * as inquirerCommon from '@sap-ux/inquirer-common';
 import * as projectAccess from '@sap-ux/project-access';
@@ -58,7 +58,6 @@ jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 describe('FLPConfigGenerator Integration Tests', () => {
     jest.setTimeout(100000);
     jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValue(false);
-
     const generatorPath = join(__dirname, '../../src/app/index.ts');
     const testOutputDir = join(__dirname, 'test-output');
     const credentialsPrompts = {
@@ -97,7 +96,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     };
     jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
 
-    beforeEach(() => {
+    beforeEach(async () => {
         answers = {
             username: 'testUsername',
             password: 'testPassword',
@@ -110,7 +109,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
         };
     });
 
-    beforeAll(() => {
+    beforeAll(async () => {
         fs.mkdirSync(testOutputDir, { recursive: true });
     });
 
@@ -410,5 +409,211 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await expect(runContext.run()).rejects.toThrow(t('error.fetchingManifest'));
+    });
+
+    it('Should require authentication if manifest fetching returns 401 and fail after authentication', async () => {
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({
+            testDestination: {
+                Name: 'https://testUrl',
+                Host: '000',
+                Type: 'Type',
+                Authentication: 'Basic',
+                ProxyType: 'Internet',
+                Description: 'Description'
+            }
+        });
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        const initMergedManifestSpy = jest
+            .spyOn(adpTooling.ManifestService, 'initMergedManifest')
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: {
+                    status: 401
+                }
+            })
+            .mockRejectedValueOnce(new Error('Error'));
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+        jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
+            async (
+                callback?: inquirerCommon.AdditionalValidation
+            ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
+                await callback?.({ username: 'testUsername', password: 'testPassword' });
+                return Promise.resolve([
+                    {
+                        username: 'testUsername'
+                    } as unknown as inquirerCommon.InputQuestion,
+                    {
+                        password: 'testPassword'
+                    } as unknown as inquirerCommon.PasswordQuestion
+                ]);
+            }
+        );
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        initMergedManifestSpy.mockClear();
+        await expect(runContext.run()).rejects.toThrow(t('error.fetchingManifest'));
+        expect(initMergedManifestSpy).toBeCalledTimes(2);
+    });
+
+    it('Should require authentication again if credentials are wrong', async () => {
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({
+            testDestination: {
+                Name: 'https://testUrl',
+                Host: '000',
+                Type: 'Type',
+                Authentication: 'Basic',
+                ProxyType: 'Internet',
+                Description: 'Description'
+            }
+        });
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        const initMergedManifestSpy = jest
+            .spyOn(adpTooling.ManifestService, 'initMergedManifest')
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: {
+                    status: 401
+                }
+            })
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: {
+                    status: 401
+                }
+            });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+        let callbackResult: string = '';
+        jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
+            async (
+                callback?: inquirerCommon.AdditionalValidation
+            ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
+                callbackResult = (await callback?.({ username: 'testUsername', password: 'testPassword' })) as string;
+                return Promise.resolve([
+                    {
+                        username: 'testUsername'
+                    } as unknown as inquirerCommon.InputQuestion,
+                    {
+                        password: 'testPassword'
+                    } as unknown as inquirerCommon.PasswordQuestion
+                ]);
+            }
+        );
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        await initI18n();
+        expect(callbackResult).toEqual(t('error.authenticationFailed'));
+    });
+
+    it('Should show error message after authetication when manifest request fails with connection error', async () => {
+        jest.spyOn(btpUtils, 'listDestinations').mockResolvedValue({
+            testDestination: {
+                Name: 'https://testUrl',
+                Host: '000',
+                Type: 'Type',
+                Authentication: 'Basic',
+                ProxyType: 'Internet',
+                Description: 'Description'
+            }
+        });
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        const initMergedManifestSpy = jest
+            .spyOn(adpTooling.ManifestService, 'initMergedManifest')
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: {
+                    status: 401
+                }
+            })
+            .mockRejectedValueOnce({
+                isAxiosError: true,
+                response: {
+                    message: 'unable to get local issuer certificate'
+                }
+            });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+        let callbackResult: string = '';
+        jest.spyOn(inquirerCommon, 'getCredentialsPrompts').mockImplementationOnce(
+            async (
+                callback?: inquirerCommon.AdditionalValidation
+            ): Promise<inquirerCommon.YUIQuestion<inquirerCommon.CredentialsAnswers>[]> => {
+                callbackResult = (await callback?.({ username: 'testUsername', password: 'testPassword' })) as string;
+                return Promise.resolve([
+                    {
+                        username: 'testUsername'
+                    } as unknown as inquirerCommon.InputQuestion,
+                    {
+                        password: 'testPassword'
+                    } as unknown as inquirerCommon.PasswordQuestion
+                ]);
+            }
+        );
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+
+        await runContext.run();
+        expect(callbackResult).toEqual(t('error.authenticationFailed'));
     });
 });
