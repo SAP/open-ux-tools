@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.10
+
+### Patch Changes
+
+-   1f0bb25: fix: refactor object clones
+
 ## 0.17.9
 
 ### Patch Changes
