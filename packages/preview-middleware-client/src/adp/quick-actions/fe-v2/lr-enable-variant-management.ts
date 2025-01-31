@@ -1,11 +1,12 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type ListReportComponent from 'sap/suite/ui/generic/template/ListReport/Component';
+import type AnalyticalListComponent from 'sap/suite/ui/generic/template/AnalyticalListPage/Component';
+import Component from 'sap/ui/core/Component';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
-import ListReportComponent from 'sap/suite/ui/generic/template/ListReport';
 
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import Component from 'sap/ui/core/Component';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
@@ -19,7 +20,7 @@ export class EnableListReportVariantManagementQuickAction
     implements SimpleQuickActionDefinition
 {
     private isPageSmartVariantManagementEnabled = false;
-    private ownerComponent: ListReportComponent;
+    private ownerComponent: ListReportComponent | AnalyticalListComponent;
     readonly forceRefreshAfterExecution = true;
 
     constructor(context: QuickActionContext) {
@@ -31,15 +32,13 @@ export class EnableListReportVariantManagementQuickAction
             [
                 {
                     run: () => {
-                        if (this.ownerComponent) {
-                            if (!this.isPageSmartVariantManagementEnabled) {
-                                return {
-                                    type: 'error',
-                                    message: this.context.resourceBundle.getText(
-                                        'VARIANT_MANAGEMENT_FOR_PAGE_CONTROLS_IS_ALREADY_ENABLED'
-                                    )
-                                };
-                            }
+                        if (this.ownerComponent && !this.isPageSmartVariantManagementEnabled) {
+                            return {
+                                type: 'error',
+                                message: this.context.resourceBundle.getText(
+                                    'VARIANT_MANAGEMENT_FOR_PAGE_CONTROLS_IS_ALREADY_ENABLED'
+                                )
+                            };
                         }
                         return undefined;
                     }
@@ -55,13 +54,14 @@ export class EnableListReportVariantManagementQuickAction
         }
         super.initialize();
         if (this.control) {
-            this.ownerComponent = Component.getOwnerComponentFor(this.control) as unknown as ListReportComponent;
+            const ownerComponent = Component.getOwnerComponentFor(this.control);
             if (
-                !this.ownerComponent?.isA('sap.suite.ui.generic.template.ListReport.Component') &&
-                !this.ownerComponent?.isA('sap.suite.ui.generic.template.AnalyticalListPage.Component')
+                ownerComponent?.isA<ListReportComponent>('sap.suite.ui.generic.template.ListReport.Component') ||
+                ownerComponent?.isA<AnalyticalListComponent>(
+                    'sap.suite.ui.generic.template.AnalyticalListPage.Component'
+                )
             ) {
-                this.control = undefined;
-            } else {
+                this.ownerComponent = ownerComponent;
                 const id = this.control.getId();
                 if (typeof id !== 'string') {
                     throw new Error('Could not retrieve configuration property because control id is not valid!');
@@ -69,6 +69,8 @@ export class EnableListReportVariantManagementQuickAction
                 const value = this.context.changeService.getConfigurationPropertyValue(id, 'smartVariantManagement');
                 this.isPageSmartVariantManagementEnabled =
                     value === undefined ? this.ownerComponent.getSmartVariantManagement() : (value as boolean);
+            } else {
+                this.control = undefined;
             }
         }
     }

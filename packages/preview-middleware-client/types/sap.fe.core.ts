@@ -15,3 +15,8 @@ declare module 'sap/fe/core/TemplateComponent' {
     export default TemplateComponent;
 }
 
+declare module 'sap/fe/core/sap/VariantManagement' {
+    type VariantManagement = 'Control' | 'None' | 'Page';
+
+    export default VariantManagement;
+}
