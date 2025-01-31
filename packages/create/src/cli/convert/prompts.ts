@@ -15,7 +15,7 @@ export async function simulatePrompt(): Promise<boolean> {
 Do you want to simulate the conversion first?`
     };
     const answer = (await prompt([question])) as Answers<typeof PROMPT_NAME>;
-    return answer.simulate ?? (await Promise.reject()); //in case of doubt, reject
+    return answer.simulate ?? (await Promise.reject('The conversion has been canceled.')); //in case of doubt, reject
 }
 
 /**
@@ -32,5 +32,5 @@ export async function includeTestRunnersPrompt(): Promise<boolean> {
         message: 'Do you want to convert Test Runners as well?'
     };
     const answer = (await prompt([question])) as Answers<typeof PROMPT_NAME>;
-    return answer.includeTests ?? (await Promise.reject()); //in case of doubt, reject
+    return answer.includeTests ?? (await Promise.reject('The conversion has been canceled.')); //in case of doubt, reject
 }

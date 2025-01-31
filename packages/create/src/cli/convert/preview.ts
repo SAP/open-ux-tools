@@ -35,21 +35,19 @@ async function convertPreview(basePath: string, simulate: boolean, convertTests:
         basePath = process.cwd();
     }
 
-    const simulatePromptAnswer = await simulatePrompt().catch(() => undefined);
-    if (simulatePromptAnswer === undefined) {
-        logger.error('The conversion has been canceled.');
-        return;
-    }
+    const simulatePromptAnswer = await simulatePrompt().catch((reason: string) => {
+        logger.error(reason);
+        return process.exit(1);
+    });
     simulate = simulate || Boolean(simulatePromptAnswer);
     if (simulate) {
         setLogLevelVerbose();
     }
 
-    const convertTestsAnswer = await includeTestRunnersPrompt().catch(() => undefined);
-    if (convertTestsAnswer === undefined) {
-        logger.error('The conversion has been canceled.');
-        return;
-    }
+    const convertTestsAnswer = await includeTestRunnersPrompt().catch((reason: string) => {
+        logger.error(reason);
+        return process.exit(1);
+    });
     convertTests = convertTests || Boolean(convertTestsAnswer);
 
     logger.debug(`Called convert preview-config for path '${basePath}', simulate is '${simulate}'.`);
