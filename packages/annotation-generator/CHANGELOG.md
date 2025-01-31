@@ -1,5 +1,24 @@
 # @sap-ux/annotation-generator
 
+## 0.3.1
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/fiori-annotation-api@0.4.1
+
+## 0.3.0
+
+### Minor Changes
+
+-   e6f42df: Update @sap-ux/annotation-converter, @sap-ux/vocabularies-types, @sap/ux-cds-compiler-facade dependencies
+
+### Patch Changes
+
+-   Updated dependencies [e6f42df]
+    -   @sap-ux/fiori-annotation-api@0.4.0
+
 ## 0.2.27
 
 ### Patch Changes

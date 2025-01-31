@@ -1,5 +1,51 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.1.1
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/fiori-generator-shared@0.7.23
+    -   @sap-ux/telemetry@0.5.55
+    -   @sap-ux/inquirer-common@0.6.10
+
+## 2.1.0
+
+### Minor Changes
+
+-   5e3a5f8: Adds support for `showCollaborativeDraftWarning` option
+
+### Patch Changes
+
+-   2a85cad: Fix for qualifier prompt shown with no qualifiers
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
+## 2.0.1
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/fiori-generator-shared@0.7.22
+    -   @sap-ux/inquirer-common@0.6.8
+    -   @sap-ux/telemetry@0.5.54
+
+## 2.0.0
+
+### Major Changes
+
+-   d6b7440: Move `CapService` and `CapRuntime` types from `@sap-ux/odata-service-inquirer` to `@sap-ux/cap-config-writer` for better relevance; add CAP updates to generate functions of Fiori Elements and Freestyle writers
+
+## 1.3.0
+
+### Minor Changes
+
+-   e6f42df: Update @sap-ux/annotation-converter, @sap-ux/vocabularies-types, @sap/ux-cds-compiler-facade dependencies
+
 ## 1.2.5
 
 ### Patch Changes

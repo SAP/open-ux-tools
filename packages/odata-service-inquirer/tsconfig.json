@@ -16,6 +16,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../cap-config-writer"
+    },
+    {
       "path": "../feature-toggle"
     },
     {
