@@ -261,7 +261,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             })
             .withPrompts(answers);
 
-        await expect(runContext.run()).rejects.toThrow(t('error.projectNotSUpported'));
+        await expect(runContext.run()).rejects.toThrow(t('error.projectNotSupported'));
     });
 
     it('Should throw an error if writing phase fails', async () => {

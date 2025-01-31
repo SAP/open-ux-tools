@@ -93,7 +93,7 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         // Check if the project is supported
         if ((await getAppType(this.projectRootPath)) !== 'Fiori Adaptation' || isCFEnvironment(this.projectRootPath)) {
-            throw new Error(t('error.projectNotSUpported'));
+            throw new Error(t('error.projectNotSupported'));
         }
 
         await initI18n();
