@@ -32,7 +32,6 @@ import { getCFQuestions } from './questions';
 import type { ApiHubConfig, CFAppConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import type { CfDeployConfigOptions } from './types';
-import type { Manifest } from '@sap-ux/project-access';
 import type { CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-inquirer/dist/types';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 
@@ -52,7 +51,6 @@ export default class extends DeploymentGenerator {
 
     private answers: CfDeployConfigAnswers & Partial<CFAppConfig> = {};
     private projectRoot: string;
-    private manifest?: Manifest;
     private mtaPath?: string;
     private isCap = false;
     private isAbapDirectServiceBinding = false;
@@ -122,7 +120,6 @@ export default class extends DeploymentGenerator {
 
         await this._processProjectPaths();
         await this._processProjectConfigs();
-        await this._processManifest();
 
         this.isAbapDirectServiceBinding = await useAbapDirectServiceBinding(this.appPath, false, this.mtaPath);
 
@@ -157,15 +154,6 @@ export default class extends DeploymentGenerator {
         this.deployConfigExists = this.fs.exists(join(this.appPath, this.options.config ?? FileName.Ui5Yaml));
     }
 
-    private async _processManifest(): Promise<void> {
-        try {
-            this.manifest = await loadManifest(this.fs, this.appPath);
-        } catch (error) {
-            this.abort = true;
-            handleErrorMessage(this.appWizard, { errorMsg: error });
-        }
-    }
-
     public async prompting(): Promise<void> {
         if (this.abort) {
             return;
@@ -179,7 +167,7 @@ export default class extends DeploymentGenerator {
         }
 
         if (!this.launchDeployConfigAsSubGenerator) {
-            this._handleApiHubConfig();
+            await this._handleApiHubConfig();
 
             const questions = await getCFQuestions({
                 projectRoot: this.projectRoot,
@@ -201,12 +189,13 @@ export default class extends DeploymentGenerator {
         await this._reconcileAnswersWithOptions();
     }
 
-    private _handleApiHubConfig(): void {
+    private async _handleApiHubConfig(): Promise<void> {
         // generate a new instance dest name for api hub
         if (this.apiHubConfig && this.apiHubConfig.apiHubType === ApiHubType.apiHubEnterprise) {
             // full service path is only available from the manifest.json
             if (!this.servicePath) {
-                this.servicePath = this.manifest?.['sap.app']?.dataSources?.mainService?.uri;
+                const manifest = await loadManifest(this.fs, this.appPath);
+                this.servicePath = manifest?.['sap.app']?.dataSources?.mainService?.uri;
             }
             this.destinationName = generateDestinationName(API_BUSINESS_HUB_ENTERPRISE_PREFIX, this.servicePath);
         }
@@ -329,4 +318,5 @@ export default class extends DeploymentGenerator {
 }
 
 export { getCFQuestions, loadManifest };
+export { API_BUSINESS_HUB_ENTERPRISE_PREFIX, DESTINATION_AUTHTYPE_NOTFOUND };
 export { CfDeployConfigOptions, CfDeployConfigAnswers };

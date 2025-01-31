@@ -1,18 +1,15 @@
 import hasbin from 'hasbin';
 import CFGenerator from '../src/app';
 import yeomanTest from 'yeoman-test';
-
 import { load, dump } from 'js-yaml';
 import { join } from 'path';
 import { TestFixture } from './fixtures';
-import { TargetName } from '@sap-ux/deploy-config-generator-shared';
 import { Manifest } from '@sap-ux/project-access';
 import { initI18n, t } from '../src/utils';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { MockMta } from './utils/mock-mta';
 import { ApiHubType } from '@sap-ux/cf-deploy-config-writer';
-
 import * as fs from 'fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
@@ -1023,7 +1020,11 @@ describe('Cloud foundry generator tests', () => {
                     { cwd: appDir }
                 )
                 .withOptions({
-                    skipInstall: true
+                    skipInstall: true,
+                    apiHubConfig: {
+                        apiHubKey: 'mockApiHubKey',
+                        apiHubType: ApiHubType.apiHubEnterprise
+                    }
                 })
                 .withPrompts({})
                 .run()
@@ -1058,7 +1059,11 @@ describe('Cloud foundry generator tests', () => {
                     { cwd: appDir }
                 )
                 .withOptions({
-                    skipInstall: true
+                    skipInstall: true,
+                    apiHubConfig: {
+                        apiHubKey: 'mockApiHubKey',
+                        apiHubType: ApiHubType.apiHubEnterprise
+                    }
                 })
                 .withPrompts({})
                 .run()
