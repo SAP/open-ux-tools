@@ -17,6 +17,7 @@ import * as sysAccess from '@sap-ux/system-access';
 import { t } from '../src/utils/i18n';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import * as inquirerCommon from '@sap-ux/inquirer-common';
+import * as projectAccess from '@sap-ux/project-access';
 
 jest.mock('@sap-ux/system-access');
 jest.mock('@sap-ux/btp-utils');
@@ -94,6 +95,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             showErrorMessage: vsCodeMessageSpy
         }
     };
+    jest.spyOn(projectAccess, 'getAppType').mockResolvedValue('Fiori Adaptation');
 
     beforeEach(() => {
         answers = {
@@ -259,7 +261,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
             })
             .withPrompts(answers);
 
-        await expect(runContext.run()).rejects.toThrow(t('error.cfNotSupported'));
+        await expect(runContext.run()).rejects.toThrow(t('error.projectNotSUpported'));
     });
 
     it('Should throw an error if writing phase fails', async () => {

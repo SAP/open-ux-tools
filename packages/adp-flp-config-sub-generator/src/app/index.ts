@@ -26,7 +26,7 @@ import { getPrompts, type FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { TelemetryHelper, sendTelemetry, isCli, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { FileName } from '@sap-ux/project-access';
+import { FileName, getAppType } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
 import { t, initI18n } from '../utils/i18n';
 import {
@@ -45,7 +45,7 @@ import {
 import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 
 /**
- * Generator for adding a FLP configuration to an Adaptation Project.
+ * Generator for adding a FLP configuration to an adaptation project.
  *
  * @extends Generator
  */
@@ -60,7 +60,6 @@ export default class extends Generator {
     private answers: FLPConfigAnswers;
     private toolsLogger: ToolsLogger;
     private logger: ILogWrapper;
-    public options: FlpConfigOptions;
     private vscode: any;
     private authenticationRequired: boolean = false;
     // Flag to determine if the generator was aborted
@@ -92,9 +91,9 @@ export default class extends Generator {
     }
 
     async initializing(): Promise<void> {
-        // Generator does not support CF projects
-        if (isCFEnvironment(this.projectRootPath)) {
-            throw new Error(t('error.cfNotSupported'));
+        // Check if the project is supported
+        if ((await getAppType(this.projectRootPath)) !== 'Fiori Adaptation' || isCFEnvironment(this.projectRootPath)) {
+            throw new Error(t('error.projectNotSUpported'));
         }
 
         await initI18n();
@@ -358,7 +357,6 @@ export default class extends Generator {
      */
     private _checkAuthRequired(error: Error | AxiosError): boolean {
         if (isAxiosError(error)) {
-            this.authenticationRequired = false;
             if (error.response?.status === 401) {
                 return true;
             }
