@@ -1,6 +1,7 @@
 import {
     initFioriProject,
     initProject,
+    isFioriProjectIntegrityInitialized,
     checkFioriProjectIntegrity,
     checkProjectIntegrity,
     updateFioriProjectIntegrity,
@@ -17,4 +18,5 @@ test('Check public interface for Fiori project integrity', () => {
     expect(typeof initFioriProject).toBe('function');
     expect(typeof checkFioriProjectIntegrity).toBe('function');
     expect(typeof updateFioriProjectIntegrity).toBe('function');
+    expect(typeof isFioriProjectIntegrityInitialized).toBe('function');
 });

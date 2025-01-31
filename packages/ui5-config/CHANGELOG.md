@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.26.1
+
+### Patch Changes
+
+-   19aad96: Delete only one backend entry per service.
+
 ## 0.26.0
 
 ### Minor Changes

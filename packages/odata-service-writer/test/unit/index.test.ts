@@ -483,6 +483,29 @@ describe('generate', () => {
                   "version": "2",
                 }
             `);
+
+            // mainService model already exists
+            fs.writeJSON(join('webapp', 'manifest.json'), {
+                'sap.app': { dataSources: { mainService: { type: 'OData' } } },
+                'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+            });
+            // model called differentService is being added, 'differentService' should be used for model
+            configCopy = cloneDeep(Object.assign({}, config, { name: 'differentService' }));
+            await enhanceData('', configCopy, fs);
+            expect(configCopy).toMatchInlineSnapshot(`
+                Object {
+                  "model": "differentService",
+                  "name": "differentService",
+                  "path": "/V2/Northwind/Northwind.svc/",
+                  "previewSettings": Object {
+                    "path": "/V2",
+                    "url": "https://services.odata.org",
+                  },
+                  "type": "edmx",
+                  "url": "https://services.odata.org",
+                  "version": "2",
+                }
+            `);
         });
     });
 });

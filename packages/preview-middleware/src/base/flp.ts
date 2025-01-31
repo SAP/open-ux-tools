@@ -283,7 +283,7 @@ export class FlpSandbox {
             this.router.get(previewUrl, async (req: Request, res: Response) => {
                 if (!req.query['fiori-tools-rta-mode']) {
                     // Redirect to the same URL but add the necessary parameter
-                    const params = JSON.parse(JSON.stringify(req.query)) as Record<string, string>;
+                    const params = structuredClone(req.query);
                     params['sap-ui-xx-viewCache'] = 'false';
                     params['fiori-tools-rta-mode'] = 'true';
                     params['sap-ui-rta-skip-flex-validation'] = 'true';
@@ -313,6 +313,14 @@ export class FlpSandbox {
             res: Response | http.ServerResponse,
             next: NextFunction
         ) => {
+            // connect API (karma test runner) has no request query property
+            if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
+                // Redirect to the same URL but add the necessary parameter
+                const params = structuredClone(req.query);
+                params['sap-ui-xx-viewCache'] = 'false';
+                res.redirect(302, `${this.config.path}?${new URLSearchParams(params)}`);
+                return;
+            }
             await this.setApplicationDependencies();
             // inform the user if a html file exists on the filesystem
             // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
@@ -322,7 +330,7 @@ export class FlpSandbox {
                 next();
             } else {
                 const ui5Version = await this.getUi5Version(
-                    //use host from request header referer as fallback for karma (connect API)
+                    //use host from request header referer as fallback for connect API (karma test runner)
                     'protocol' in req
                         ? req.protocol
                         : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http',

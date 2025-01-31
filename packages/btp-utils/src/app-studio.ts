@@ -1,8 +1,30 @@
 import axios from 'axios';
-import { cfGetInstanceKeyParameters } from '@sap/cf-tools';
+import {
+    apiCreateServiceInstance,
+    apiGetInstanceCredentials,
+    apiGetServicesInstancesFilteredByType,
+    cfGetInstanceKeyParameters,
+    cfGetTarget
+} from '@sap/cf-tools';
 import type { Logger } from '@sap-ux/logger';
 import { ENV } from './app-studio.env';
-import { isS4HC, type Destination, type ListDestinationOpts } from './destination';
+import {
+    Authentication,
+    type Destination,
+    isS4HC,
+    type ListDestinationOpts,
+    type CloudFoundryServiceInfo,
+    OAuthUrlType,
+    DestinationProxyType,
+    DestinationType
+} from './destination';
+import type { ServiceInfo } from './service-info';
+import { destinations as destinationAPI } from '@sap/bas-sdk';
+
+/**
+ * ABAP Cloud destination instance name.
+ */
+const DESTINATION_INSTANCE_NAME: string = 'abap-cloud-destination-instance';
 
 /**
  * HTTP header that is to be used for encoded credentials when communicating with a destination service instance.
@@ -10,7 +32,7 @@ import { isS4HC, type Destination, type ListDestinationOpts } from './destinatio
 export const BAS_DEST_INSTANCE_CRED_HEADER = 'bas-destination-instance-cred';
 
 /**
- * Check if this is exectued in SAP Business Application Studio.
+ * Check if this is executed in SAP Business Application Studio.
  *
  * @returns true if yes
  */
@@ -81,7 +103,7 @@ export type Destinations = { [name: string]: Destination };
  * Helper function to strip `-api` from the host name.
  *
  * @param host -
- * @returns
+ * @returns an updated string value, with `-api` removed
  */
 function stripS4HCApiHost(host: string): string {
     const [first, ...rest] = host.split('.');
@@ -125,5 +147,142 @@ export async function exposePort(port: number, logger?: Logger): Promise<string>
     } catch (error) {
         logger?.error(`Port ${port} was not exposed!`);
         return '';
+    }
+}
+
+/**
+ * Transform a destination object into a TokenExchangeDestination destination, appended with UAA properties.
+ *
+ * @param destination destination info
+ * @param credentials object representing the Client ID and Client Secret and token endpoint
+ * @returns Populated OAuth destination
+ */
+function transformToBASSDKDestination(
+    destination: Destination,
+    credentials: ServiceInfo['uaa']
+): destinationAPI.DestinationInfo {
+    const BASProperties = {
+        usage: 'odata_abap,dev_abap,abap_cloud',
+        html5DynamicDestination: 'true',
+        html5Timeout: '60000'
+    } as destinationAPI.BASProperties;
+
+    const oauth2UserTokenExchange: destinationAPI.OAuth2UserTokenExchange = {
+        clientId: credentials.clientid,
+        clientSecret: credentials.clientsecret,
+        tokenServiceURL: new URL('/oauth/token', credentials.url).toString(),
+        tokenServiceURLType: OAuthUrlType.DEDICATED
+    };
+
+    return {
+        name: destination.Name,
+        description: destination.Description,
+        url: new URL(credentials.url),
+        type: DestinationType.HTTP,
+        proxyType: DestinationProxyType.INTERNET,
+        basProperties: BASProperties,
+        credentials: {
+            authentication: Authentication.OAUTH2_USER_TOKEN_EXCHANGE as destinationAPI.AuthenticationType,
+            oauth2UserTokenExchange
+        }
+    } as destinationAPI.DestinationInfo;
+}
+
+/**
+ * Generate a destination name representing the CF target the user is logged into i.e. abap-cloud-mydestination-myorg-mydevspace.
+ *
+ * @param name destination name
+ * @returns formatted destination name using target space and target organisation
+ */
+export async function generateABAPCloudDestinationName(name: string): Promise<string> {
+    const target = await cfGetTarget(true);
+    if (!target.space) {
+        throw new Error(`No Dev Space has been created for the subaccount.`);
+    }
+    const formattedInstanceName = `${name}-${target.org}-${target.space}`.replace(/\W/gi, '-').toLowerCase();
+    return `abap-cloud-${formattedInstanceName}`.substring(0, 199);
+}
+
+/**
+ *  Generate a new object representing an OAuth2 token exchange BTP destination.
+ *
+ * @param destination destination info
+ * @param serviceInstanceName name of the service instance, for example, the ABAP Environment service name which is linked to the service technical name i.e. abap-canary
+ * @param logger Logger
+ * @returns Preconfigured OAuth destination
+ */
+async function generateOAuth2UserTokenExchangeDestination(
+    destination: Destination,
+    serviceInstanceName: string,
+    logger?: Logger
+): Promise<destinationAPI.DestinationInfo> {
+    if (!serviceInstanceName) {
+        throw new Error(`No service instance name defined.`);
+    }
+
+    const destinationName: string = await generateABAPCloudDestinationName(destination.Name);
+    const instances: CloudFoundryServiceInfo[] = await apiGetServicesInstancesFilteredByType(['destination']);
+    const destinationInstance = instances.find(
+        (instance: CloudFoundryServiceInfo) => instance.label === DESTINATION_INSTANCE_NAME
+    );
+
+    if (!destinationInstance) {
+        // Create a new abap-cloud destination instance on the target CF subaccount
+        await apiCreateServiceInstance('destination', 'lite', DESTINATION_INSTANCE_NAME, null);
+        logger?.info(`New ABAP destination instance ${DESTINATION_INSTANCE_NAME} created.`);
+    }
+
+    const instanceDetails = await apiGetInstanceCredentials(serviceInstanceName);
+    if (!instanceDetails?.credentials) {
+        throw new Error(`Could not retrieve SAP BTP credentials for ${serviceInstanceName}.`);
+    }
+    return transformToBASSDKDestination(
+        {
+            ...destination,
+            Description: `Destination generated by App Studio for '${destination.Name}', Do not remove.`,
+            Name: destinationName
+        },
+        instanceDetails.credentials as ServiceInfo['uaa']
+    );
+}
+
+/**
+ *  Create a new SAP BTP subaccount destination of type 'OAuth2UserTokenExchange' using cf-tools to populate the UAA properties.
+ *  If the destination already exists, only new or missing properties will be appended, existing fields are not updated with newer values.
+ *  For example: If an existing SAP BTP destination already contains `WebIDEEnabled` and the value is set as `false`, the value will remain `false` even after the update.
+ *
+ *  Exceptions: an exception will be thrown if the user is not logged into Cloud Foundry, ensure you are logged `cf login -a https://my-test-env.hana.ondemand.com -o staging -s qa`
+ *
+ * @param destination destination info
+ * @param serviceInstanceName name of the service instance, for example, the ABAP Environment service name reflecting name of the service created using a supported service technical name i.e. abap | abap-canary
+ * @param logger Logger
+ * @returns the newly generated SAP BTP destination
+ */
+export async function createOAuth2UserTokenExchangeDest(
+    destination: Destination,
+    serviceInstanceName: string,
+    logger?: Logger
+): Promise<Destination> {
+    if (!isAppStudio()) {
+        throw new Error(`Creating a SAP BTP destinations is only supported on SAP Business Application Studio.`);
+    }
+    try {
+        const basSDKDestination: destinationAPI.DestinationInfo = await generateOAuth2UserTokenExchangeDestination(
+            destination,
+            serviceInstanceName,
+            logger
+        );
+        // Destination is created on SAP BTP but nothing is returned to validate this!
+        await destinationAPI.createDestination(basSDKDestination);
+        logger?.debug(`SAP BTP destination ${JSON.stringify(basSDKDestination, null, 2)} created.`);
+        // Return updated destination from SAP BTP
+        const destinations = await listDestinations();
+        const newDestination = destinations?.[basSDKDestination.name];
+        if (!newDestination) {
+            throw new Error('Destination not found on SAP BTP.');
+        }
+        return newDestination;
+    } catch (error) {
+        throw new Error(`An error occurred while generating destination ${destination.Name}: ${error}`);
     }
 }

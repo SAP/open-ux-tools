@@ -316,12 +316,22 @@ describe('FlpSandbox', () => {
                 text: jest.fn(),
                 ok: true
             });
-            const response = await server.get('/test/flp.html').expect(200);
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
         test('test/flp.html', async () => {
-            const response = await server.get('/test/flp.html').expect(200);
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false#app-preview').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html sap-ui-xx-viewCache set to true', async () => {
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=true').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html missing sap-ui-xx-viewCache set to false', async () => {
+            const response = await server.get('/test/flp.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -458,7 +468,7 @@ describe('FlpSandbox', () => {
             const server = await supertest(app);
 
             expect(flp.templateConfig).toMatchSnapshot();
-            const response = await server.get('/test/flp.html').expect(200);
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -521,7 +531,7 @@ describe('FlpSandbox', () => {
         });
 
         test('editor with config', async () => {
-            const response = await server.get('/test/flp.html').expect(200);
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -718,13 +728,13 @@ describe('FlpSandbox', () => {
             const app = express();
             app.use(flp.router);
 
-            server = await supertest(app);
+            server = supertest(app);
         });
 
         test('test/existingFlp.html', async () => {
             logger.info.mockReset();
             mockProject.byPath.mockResolvedValueOnce({});
-            await server.get('/test/existingFlp.html');
+            await server.get('/test/existingFlp.html?sap-ui-xx-viewCache=false');
             expect(logger.info).toBeCalledWith(
                 'HTML file returned at /test/existingFlp.html is loaded from the file system.'
             );
