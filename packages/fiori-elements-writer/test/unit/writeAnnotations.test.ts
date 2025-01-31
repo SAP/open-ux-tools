@@ -18,22 +18,22 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 
 describe('canGenerateAnnotationsForTemplate', () => {
     it('should return true if annotations are enabled and template type is supported with OData v4', () => {
-        const result = canGenerateAnnotationsForTemplate(true, OdataVersion.v4, TemplateType.ListReportObjectPage);
+        const result = canGenerateAnnotationsForTemplate(OdataVersion.v4, TemplateType.ListReportObjectPage, true);
         expect(result).toBe(true);
     });
 
     it('should return false if annotations are enabled but template type is not supported', () => {
-        const result = canGenerateAnnotationsForTemplate(true, OdataVersion.v4, TemplateType.OverviewPage);
+        const result = canGenerateAnnotationsForTemplate(OdataVersion.v4, TemplateType.OverviewPage, true);
         expect(result).toBe(false);
     });
 
     it('should return false if annotations are not enabled', () => {
-        const result = canGenerateAnnotationsForTemplate(false, OdataVersion.v4, TemplateType.ListReportObjectPage);
+        const result = canGenerateAnnotationsForTemplate(OdataVersion.v4, TemplateType.ListReportObjectPage, false);
         expect(result).toBe(false);
     });
 
     it('should return false if OData version is v2', () => {
-        const result = canGenerateAnnotationsForTemplate(true, OdataVersion.v2, TemplateType.ListReportObjectPage);
+        const result = canGenerateAnnotationsForTemplate(OdataVersion.v2, TemplateType.ListReportObjectPage, true);
         expect(result).toBe(false);
     });
 });

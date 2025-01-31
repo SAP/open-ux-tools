@@ -18,12 +18,11 @@ import {
 } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
-import { initI18n } from './i18n';
+import { initI18n, t } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import { t } from './i18n';
 import {
     writeAnnotations,
     canGenerateAnnotationsForTemplate,
@@ -239,7 +238,7 @@ async function generate<T extends {}>(
 
     // Handle annotation writing
     if (
-        canGenerateAnnotationsForTemplate(feApp.appOptions?.addAnnotations, feApp.service.version, feApp.template.type)
+        canGenerateAnnotationsForTemplate(feApp.service.version, feApp.template.type, feApp.appOptions?.addAnnotations)
     ) {
         const { settings } = feApp.template;
         const { capService } = feApp.service;

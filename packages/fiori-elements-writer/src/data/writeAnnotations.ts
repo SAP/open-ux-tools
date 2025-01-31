@@ -37,15 +37,15 @@ function getAnnotationFilePath(appName?: string, capService?: CapServiceCdsInfo)
 /**
  * Determines if annotations can be generated for a given template.
  *
- * @param {boolean} [addAnnotations] - An optional flag indicating whether annotations should be enabled.
  * @param {OdataVersion} odataServiceVersion - The version of the OData service being used.
  * @param {TemplateType} templateType - The type of the template being used by app.
+ * @param {boolean} [addAnnotations] - An optional flag indicating whether annotations should be enabled.
  * @returns {boolean} - Returns `true` if annotations can be generated, otherwise `false`.
  */
 export function canGenerateAnnotationsForTemplate(
-    addAnnotations: boolean = false,
     odataServiceVersion: OdataVersion,
-    templateType: TemplateType
+    templateType: TemplateType,
+    addAnnotations: boolean = false
 ): boolean {
     return addAnnotations && annotationSupportedTemplateTypes.includes(templateType) && odataServiceVersion === '4';
 }
