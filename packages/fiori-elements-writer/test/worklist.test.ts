@@ -168,7 +168,7 @@ describe('Should generate annotations correctly for Worklist projects', () => {
         expect(generateAnnotations).not.toBeCalled();
     });
 
-    test('Should not generate annotations for Worklist projects when service is OData V2 and addAnnotations is disabled', async () => {
+    test('Should not generate annotations for Worklist projects when service is OData V2 and addAnnotations is enabled', async () => {
         const appInfo = applyBaseConfigToFEApp('worklistV2', TemplateType.Worklist);
         const fioriElementsApp = {
             ...appInfo,

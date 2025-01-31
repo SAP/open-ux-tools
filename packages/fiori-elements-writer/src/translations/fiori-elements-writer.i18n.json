@@ -3,7 +3,7 @@
         "mockOnlyWarning": "This application was generated with a local metadata file and does not reference a live server. Please add the required server configuration or start this application with mock data using the target: npm run start-mock"
     },
     "warn": {
-        "invalidTypeForAnnotationGeneration": "Invalid template type '{{ templateType }}' for annotation generation. Supported types are: {{ supportedTypes }}"
+        "invalidTypeForAnnotationGeneration": "The provided option addAnnotations is not supported for the specified template '{{ templateType }}' and odata version '{{ odataVersion }}'. Generation will continue but additional annotations will not added."
     },
     "error": {
         "unsupportedOdataVersion": "OData Version of the specified service: {{ serviceVersion }}, is not supported by the template type: {{ templateType }}",

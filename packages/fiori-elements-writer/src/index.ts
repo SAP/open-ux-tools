@@ -6,7 +6,7 @@ import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
 import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import cloneDeep from 'lodash/cloneDeep';
-import type { FioriElementsApp, EntityConfig } from './types';
+import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
 import { validateApp, validateRequiredProperties } from './validate';
 import { setAppDefaults, setDefaultTemplateSettings, getTemplateOptions } from './data/defaults';
@@ -18,16 +18,12 @@ import {
 } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
-import { initI18n, t } from './i18n';
+import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import {
-    writeAnnotations,
-    canGenerateAnnotationsForTemplate,
-    annotationSupportedTemplateTypes
-} from './data/writeAnnotations';
+import { writeAnnotations } from './writeAnnotations';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -236,33 +232,7 @@ async function generate<T extends {}>(
         await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
 
-    // Handle annotation writing
-    if (
-        canGenerateAnnotationsForTemplate(feApp.service.version, feApp.template.type, feApp.appOptions?.addAnnotations)
-    ) {
-        const { settings } = feApp.template;
-        const { capService } = feApp.service;
-        const { name: packageName } = feApp.package ?? {};
-        const entitySetName = (settings as T & { entityConfig?: EntityConfig })?.entityConfig?.mainEntityName ?? '';
-
-        await writeAnnotations(
-            basePath,
-            {
-                templateType: feApp.template.type,
-                packageName: packageName,
-                entitySetName: entitySetName,
-                capService: capService
-            },
-            fs
-        );
-    } else {
-        log?.warn(
-            t('warn.invalidTypeForAnnotationGeneration', {
-                templateType: feApp.template.type,
-                supportedTypes: annotationSupportedTemplateTypes
-            })
-        );
-    }
+    await writeAnnotations(basePath, feApp, fs, log);
     return fs;
 }
 

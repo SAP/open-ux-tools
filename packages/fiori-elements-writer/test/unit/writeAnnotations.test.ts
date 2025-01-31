@@ -1,10 +1,10 @@
 import { join } from 'path';
-import { canGenerateAnnotationsForTemplate, writeAnnotations } from '../../src/data/writeAnnotations';
+import { canGenerateAnnotationsForTemplate, writeAnnotations } from '../../src/writeAnnotations';
 import { TemplateType } from '../../src/types';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { generateAnnotations } from '@sap-ux/annotation-generator';
 import type { Editor } from 'mem-fs-editor';
-import { sampleCapService } from '../common';
+import { applyBaseConfigToFEApp } from '../common';
 
 jest.mock('@sap-ux/annotation-generator', () => ({
     ...jest.requireActual('@sap-ux/annotation-generator'),
@@ -47,14 +47,14 @@ describe('writeAnnotations', () => {
         } as unknown as Editor;
     });
 
-    it('should call generateAnnotations with correct parameters', async () => {
-        const appInfo = {
-            templateType: TemplateType.ListReportObjectPage,
-            entitySetName: 'MyEntitySet',
-            packageName: 'test',
-            capService: sampleCapService
-        };
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+    });
 
+    it('should call generateAnnotations with correct parameters', async () => {
+        const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
+        appInfo.appOptions.addAnnotations = true;
         await writeAnnotations('base', appInfo, fs);
 
         expect(generateAnnotations).toHaveBeenCalledWith(
@@ -65,7 +65,7 @@ describe('writeAnnotations', () => {
                 project: join('test')
             },
             {
-                entitySetName: 'MyEntitySet',
+                entitySetName: 'Travel',
                 annotationFilePath: join('test', 'path', 'test', 'annotations.cds'),
                 addFacets: true,
                 addLineItems: true,
@@ -75,11 +75,9 @@ describe('writeAnnotations', () => {
     });
 
     it('should call generateAnnotations with correct parameters for non-CAP service', async () => {
-        const appInfo = {
-            templateType: TemplateType.Worklist,
-            entitySetName: 'AnotherEntitySet',
-            packageName: 'anotherApp'
-        };
+        const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
+        appInfo.appOptions.addAnnotations = true;
+        delete appInfo.service.capService;
 
         await writeAnnotations('test', appInfo, fs);
 
@@ -87,11 +85,11 @@ describe('writeAnnotations', () => {
             fs,
             {
                 serviceName: 'mainService',
-                appName: 'anotherApp',
+                appName: 'test',
                 project: join('test')
             },
             {
-                entitySetName: 'AnotherEntitySet',
+                entitySetName: 'Travel',
                 annotationFilePath: join('webapp', 'annotations', 'annotation.xml'),
                 addFacets: true,
                 addLineItems: true,

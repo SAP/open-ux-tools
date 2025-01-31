@@ -139,6 +139,8 @@ type TemplateAttributes = {
         minimumUi5Version: {
             [V in OdataVersion]?: string; // Minimum UI5 Versions required for the specific OdataVersion
         };
+        // Function to determine if annotations can be generated for the specific template type
+        supportsAnnotations: (odataServiceVersion?: OdataVersion) => boolean;
     };
 };
 
@@ -148,39 +150,45 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.99.0'
-        }
+        },
+        supportsAnnotations: (odataServiceVersion?: OdataVersion) => odataServiceVersion === OdataVersion.v4 && true
     },
     [TemplateType.ListReportObjectPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.84.0'
-        }
+        },
+        supportsAnnotations: (odataServiceVersion?: OdataVersion) => odataServiceVersion === OdataVersion.v4 && true
     },
     [TemplateType.AnalyticalListPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.90.0'
-        }
+        },
+        supportsAnnotations: () => false
     },
     [TemplateType.OverviewPage]: {
         supportedODataVersions: [OdataVersion.v2, OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.96.8'
-        }
+        },
+        supportsAnnotations: () => false
     },
     [TemplateType.FormEntryObjectPage]: {
         supportedODataVersions: [OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v4]: '1.90.0'
-        }
+        },
+        supportsAnnotations: () => true
     },
     [TemplateType.FlexibleProgrammingModel]: {
         supportedODataVersions: [OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v4]: '1.94.0'
-        }
+        },
+        supportsAnnotations: () => false
     }
 };
