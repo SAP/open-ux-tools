@@ -10,7 +10,7 @@
         "flpConfigAdded": "FLP Configuration added successfully"
     },
     "error": {
-        "projectNotSupported": "FLP Configuration was not able to find a supported adaptation project",
+        "projectNotSupported": "Unable to find a supported adaptation project",
         "fetchingManifest": "Error fetching merged manifest for base application",
         "destinationNotFound": "Missing destination configuration in ui5.yaml",
         "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}",
