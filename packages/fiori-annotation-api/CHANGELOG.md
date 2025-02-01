@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.2
+
+### Patch Changes
+
+-   1f0bb25: fix: refactor object clones
+
 ## 0.4.1
 
 ### Patch Changes
