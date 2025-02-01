@@ -35,8 +35,8 @@ async function convertPreview(basePath: string, simulate: boolean, convertTests:
         basePath = process.cwd();
     }
 
-    const simulatePromptAnswer = await simulatePrompt().catch((reason: string) => {
-        logger.error(reason);
+    const simulatePromptAnswer = await simulatePrompt().catch((error: Error) => {
+        logger.error(error.message);
         return process.exit(1);
     });
     simulate = simulate || Boolean(simulatePromptAnswer);
@@ -44,8 +44,8 @@ async function convertPreview(basePath: string, simulate: boolean, convertTests:
         setLogLevelVerbose();
     }
 
-    const convertTestsAnswer = await includeTestRunnersPrompt().catch((reason: string) => {
-        logger.error(reason);
+    const convertTestsAnswer = await includeTestRunnersPrompt().catch((error: Error) => {
+        logger.error(error.message);
         return process.exit(1);
     });
     convertTests = convertTests || Boolean(convertTestsAnswer);

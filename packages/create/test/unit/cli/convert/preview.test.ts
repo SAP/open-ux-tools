@@ -108,7 +108,7 @@ describe('Test command convert preview', () => {
 
     test('Test create-fiori convert preview with simulate cancelled from prompt', async () => {
         const mockExit = jest.spyOn(process, 'exit').mockImplementation();
-        simulatePromptSpy.mockResolvedValue(Promise.reject());
+        simulatePromptSpy.mockResolvedValue(Promise.reject(new Error('test error')));
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
@@ -120,7 +120,7 @@ describe('Test command convert preview', () => {
         expect(loggerMock.warn).not.toBeCalled();
         expect(loggerMock.error).toBeCalled();
         expect(spawnSpy).not.toBeCalled();
-        //can't check for fs.commit here as we don't exit on process-exit(1)
+        //can't check for fs.commit here as we don't exit on process.exit(1)
     });
 
     test('Test create-fiori convert preview with simulate and test from prompt', async () => {
@@ -142,7 +142,7 @@ describe('Test command convert preview', () => {
     test('Test create-fiori convert preview with simulate and test cancelled from prompt', async () => {
         const mockExit = jest.spyOn(process, 'exit').mockImplementation();
         simulatePromptSpy.mockResolvedValue(true);
-        includeTestRunnersPromptSpy.mockResolvedValue(Promise.reject());
+        includeTestRunnersPromptSpy.mockResolvedValue(Promise.reject(new Error('test error')));
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
