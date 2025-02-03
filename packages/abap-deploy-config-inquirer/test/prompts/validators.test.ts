@@ -441,13 +441,15 @@ describe('Test validators', () => {
             jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
                 apiExist: false
             });
-            const result = await validatePackageExtended('ZPACKAGE',
+            const result = await validatePackageExtended(
+                'ZPACKAGE',
                 previousAnswers,
                 {
                     additionalValidation: { shouldValidatePackageType: true }
                 },
                 undefined,
-                'SAP Fiori elements');
+                'SAP Fiori elements'
+            );
             expect(result).toBe(true);
         });
     });

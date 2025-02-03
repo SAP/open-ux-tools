@@ -16,7 +16,7 @@ import { getPackageAnswer, getTransportAnswer, reconcileAnswers } from '@sap-ux/
 import { generate as generateAbapDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { initTelemetrySettings } from '@sap-ux/telemetry';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { FileName } from '@sap-ux/project-access';
+import { FileName, getAppType } from '@sap-ux/project-access';
 import { AuthenticationType } from '@sap-ux/store';
 import { t, handleProjectDoesNotExist, indexHtmlExists } from '../utils';
 import { getAbapQuestions } from './questions';
@@ -161,6 +161,7 @@ export default class extends DeploymentGenerator {
             return;
         }
         if (!this.launchDeployConfigAsSubGenerator) {
+            const appType = await getAppType(this.destinationPath());
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
                 appRootPath: this.destinationRoot(),
                 connectedSystem: this.options.connectedSystem,
@@ -174,7 +175,8 @@ export default class extends DeploymentGenerator {
                     this.configExists
                 ),
                 projectType: this.projectType,
-                logger: DeploymentGenerator.logger
+                logger: DeploymentGenerator.logger,
+                appType
             });
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);

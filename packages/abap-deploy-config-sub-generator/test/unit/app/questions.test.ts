@@ -53,7 +53,8 @@ describe('Test getAbapQuestions', () => {
             backendConfig: undefined,
             indexGenerationAllowed: true,
             showOverwriteQuestion: false,
-            logger: DefaultLogger
+            logger: DefaultLogger,
+            appType: 'SAP Fiori elements'
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -72,11 +73,15 @@ describe('Test getAbapQuestions', () => {
                 },
                 ui5AbapRepo: { default: undefined },
                 description: { default: undefined },
-                packageManual: { default: undefined },
+                packageManual: { default: undefined, additionalValidation: { shouldValidatePackageType: false } },
                 transportManual: { default: undefined },
                 index: { indexGenerationAllowed: true },
-                packageAutocomplete: { useAutocomplete: true },
-                overwrite: { hide: true }
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: { shouldValidatePackageType: false }
+                },
+                overwrite: { hide: true },
+                appType: 'SAP Fiori elements'
             },
             expect.any(Object),
             true
@@ -101,7 +106,8 @@ describe('Test getAbapQuestions', () => {
             },
             backendConfig: undefined,
             configFile: 'ui5-deploy.yaml',
-            logger: DefaultLogger
+            logger: DefaultLogger,
+            appType: 'SAP Fiori elements'
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -120,11 +126,15 @@ describe('Test getAbapQuestions', () => {
                 },
                 ui5AbapRepo: { default: undefined },
                 description: { default: undefined },
-                packageManual: { default: undefined },
+                packageManual: { default: undefined, additionalValidation: { shouldValidatePackageType: false } },
                 transportManual: { default: undefined },
                 index: { indexGenerationAllowed: false },
-                packageAutocomplete: { useAutocomplete: true },
-                overwrite: { hide: true }
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: { shouldValidatePackageType: false }
+                },
+                overwrite: { hide: true },
+                appType: 'SAP Fiori elements'
             },
             expect.any(Object),
             false
