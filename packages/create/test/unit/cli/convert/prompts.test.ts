@@ -9,7 +9,7 @@ jest.mock('prompts', () => {
     };
 });
 
-describe('Test command convert preview', () => {
+describe('Test prompts for convert preview', () => {
     test('Test simulatePrompt - true', async () => {
         promptReturnObject = { simulate: true };
         expect(await simulatePrompt()).toBeTruthy();

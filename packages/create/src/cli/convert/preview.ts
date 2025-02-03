@@ -50,7 +50,9 @@ async function convertPreview(basePath: string, simulate: boolean, convertTests:
     });
     convertTests = convertTests || Boolean(convertTestsAnswer);
 
-    logger.debug(`Called convert preview-config for path '${basePath}', simulate is '${simulate}'.`);
+    logger.debug(
+        `Called convert preview-config for path '${basePath}', simulate is '${simulate}', convert tests is '${convertTests}'.`
+    );
     try {
         const fs = await convertToVirtualPreview(basePath, { convertTests, logger });
 
