@@ -153,6 +153,16 @@ describe('Test getCapModelAndServices()', () => {
                                 }
                             ],
                             'runtime': 'Node.js'
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'websocket'
+                                }
+                            ],
+                            'runtime': 'Node.js'
                         }
                     ])
                 }
@@ -231,7 +241,7 @@ describe('Test getCapModelAndServices()', () => {
                             'endpoints': [
                                 {
                                     'path': 'url',
-                                    'kind': 'rest'
+                                    'kind': 'odata'
                                 }
                             ],
                             'runtime': 'Node.js'
@@ -252,14 +262,6 @@ describe('Test getCapModelAndServices()', () => {
         expect(capMS).toEqual({
             model: 'MODEL',
             services: [
-                {
-                    'name': 'Forwardslash',
-                    'urlPath': 'odata/service/with/forwardslash/'
-                },
-                {
-                    'name': 'Backslash',
-                    'urlPath': 'odata/service/with/backslash/'
-                },
                 {
                     'name': 'withRuntime',
                     'urlPath': 'url',
