@@ -5,7 +5,7 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { ActionObject, ActionService } from 'sap/ui/rta/service/Action';
+import { ActionService } from 'sap/ui/rta/service/Action';
 import { getOverlay } from './utils';
 import { getControlById } from '../utils/core';
 
@@ -72,7 +72,7 @@ export class ContextMenuService {
                                     actionName: item.menuItem.id,
                                     name:
                                         typeof item.menuItem.text === 'function'
-                                            ? (item.menuItem.text?.(overlay))
+                                            ? item.menuItem.text?.(overlay)
                                             : item.menuItem.text,
                                     enabled: item.menuItem?.enabled?.([overlay]),
                                     defaultPlugin: false
@@ -87,10 +87,5 @@ export class ContextMenuService {
                 this.sendAction(requestControlActions);
             }
         });
-    }
-
-    public async getContextMenuActionsForControl(controlId: string): Promise<ActionObject[]> {
-        const actions = await this.actionService.get(controlId);
-        return actions;
     }
 }
