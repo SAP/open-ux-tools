@@ -1455,7 +1455,6 @@ describe('FE V2 quick actions', () => {
                     type: 'appDescriptor',
                     value: {
                         changeType: 'appdescr_app_addAnnotationsToOData',
-                        fileName: 'id_1736143853603_addAnnotationsToOData',
                         generator: undefined,
                         parameters: {
                             annotations: ['annotation.annotation_1736143853603'],
@@ -1466,9 +1465,9 @@ describe('FE V2 quick actions', () => {
                                     uri: 'annotations/annotation_1736143853603.xml'
                                 }
                             },
-                            dataSourceId: 'mainService',
-                            reference: undefined
+                            dataSourceId: 'mainService'
                         },
+                        reference: undefined,
                         serviceUrl: 'main/service/url'
                     }
                 });
