@@ -53,14 +53,14 @@ export default class extends Generator {
     setPromptsCallback: (fn: object) => void;
     private prompts: Prompts;
     // Flag to determine if the generator was launched as a sub-generator or standalone
-    private launchAsSubGen: boolean;
-    private appWizard: AppWizard;
+    private readonly launchAsSubGen: boolean;
+    private readonly appWizard: AppWizard;
+    private readonly vscode: any;
+    private readonly toolsLogger: ToolsLogger;
+    private readonly projectRootPath: string = '';
     private manifest: Manifest;
-    private projectRootPath: string = '';
     private answers: FLPConfigAnswers;
-    private toolsLogger: ToolsLogger;
     private logger: ILogWrapper;
-    private vscode: any;
     private authenticationRequired: boolean = false;
     // Flag to determine if the generator was aborted
     private abort: boolean = false;
@@ -143,7 +143,7 @@ export default class extends Generator {
             overwrite: { hide: true },
             createAnotherInbound: { hide: true }
         });
-        this.answers = (await this.prompt(prompts)) as FLPConfigAnswers;
+        this.answers = await this.prompt(prompts);
     }
 
     async writing(): Promise<void> {
