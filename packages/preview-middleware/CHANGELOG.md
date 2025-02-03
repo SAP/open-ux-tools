@@ -1,5 +1,12 @@
 # @sap-ux/preview-middleware
 
+## 0.17.12
+
+### Patch Changes
+
+-   740f4d9: fix: CPE Quick action bug fix in ALP v4 projects. Add Custom Table Action worked incorrectly on Analytical Pages with multiple action toolbars in charts and tables.
+    Some V4 Quick Action code refactoring to optimize
+
 ## 0.17.11
 
 ### Patch Changes
