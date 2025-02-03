@@ -41,7 +41,8 @@ import {
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
-    CONFIGURATION_CHANGE_KIND
+    CONFIGURATION_CHANGE_KIND,
+    requestControlActionList
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -73,6 +74,10 @@ export interface SliceState {
     applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
+    contextMenuItems: {
+        controlId: string;
+        contextMenuActions: { actionName: string; name: string; enabled: boolean; defaultPlugin: boolean }[];
+    }[];
 }
 
 export interface ChangesSlice {
@@ -162,7 +167,8 @@ export const initialState: SliceState = {
     canSave: false,
     applicationRequiresReload: false,
     isAppLoading: true,
-    quickActions: []
+    quickActions: [],
+    contextMenuItems: []
 };
 
 /**
@@ -438,6 +444,18 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                                 return;
                             }
                         }
+                    }
+                }
+            )
+            .addMatcher(
+                requestControlActionList.fulfilled.match,
+                (state: SliceState, action: ReturnType<typeof requestControlActionList.fulfilled>): void => {
+                    const { contextMenuItems, controlId } = action.payload;
+                    if (!state.contextMenuItems.find((item) => item.controlId === action.payload.controlId)) {
+                        state.contextMenuItems.push({
+                            contextMenuActions: contextMenuItems,
+                            controlId
+                        });
                     }
                 }
             )

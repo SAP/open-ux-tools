@@ -178,19 +178,9 @@ export async function transformNodes(
                           propertyIdMap,
                           contextMenuService
                       );
-                // let contextMenuActions: { name: string; actionName: string }[] = [];
-                const actions = await contextMenuService.getContextMenuActionsForControl(current.id);
-                // if (actions.length) {
-
-                // }
                 const node: OutlineNode = {
                     controlId: current.id,
                     controlType: current.technicalName,
-                    contextMenuActions: actions.length
-                        ? actions.map((val) => {
-                              return { actionName: val.id, name: val.text };
-                          })
-                        : [],
                     name: text ?? technicalName,
                     editable,
                     visible: current.visible ?? true,
