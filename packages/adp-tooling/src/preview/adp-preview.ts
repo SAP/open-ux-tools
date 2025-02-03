@@ -227,29 +227,33 @@ export class AdpPreview {
         fs: Editor,
         logger: Logger
     ): Promise<void> {
-        switch (type) {
-            case 'read':
-                if (moduleNameContentMap[change.changeType] && !change.moduleName) {
-                    tryFixChange(change, logger);
-                }
-                break;
-            case 'write':
-                if (isAddXMLChange(change)) {
-                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
-                }
-                if (isAddAnnotationChange(change)) {
-                    await addAnnotationFile(
-                        this.util.getProject().getSourcePath(),
-                        this.util.getProject().getRootPath(),
-                        change,
-                        fs,
-                        logger
-                    );
-                }
-                break;
-            default:
-                // no need to handle delete changes
-                break;
+        try {
+            switch (type) {
+                case 'read':
+                    if (moduleNameContentMap[change.changeType] && !change.moduleName) {
+                        tryFixChange(change, logger);
+                    }
+                    break;
+                case 'write':
+                    if (isAddXMLChange(change)) {
+                        addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                    }
+                    if (isAddAnnotationChange(change)) {
+                        await addAnnotationFile(
+                            this.util.getProject().getSourcePath(),
+                            this.util.getProject().getRootPath(),
+                            change,
+                            fs,
+                            logger
+                        );
+                    }
+                    break;
+                default:
+                    // no need to handle delete changes
+                    break;
+            }
+        } catch (e) {
+            throw e;
         }
     }
 }
