@@ -242,7 +242,7 @@ describe('Test validators', () => {
         it('should return error message when there is a transportConfigError', () => {
             const configError = 'Transport config error';
             PromptState.transportAnswers.transportConfigError = configError;
-            let result = validateUi5AbapRepoName('ZUI5_REPOSITORY');
+            const result = validateUi5AbapRepoName('ZUI5_REPOSITORY');
             expect(result).toBe(
                 t('errors.targetNotDeployable', {
                     systemError: configError
@@ -307,15 +307,20 @@ describe('Test validators', () => {
         it('should return error for invalid package input', async () => {
             const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
 
-            const result = await validatePackage('Zpackage', {
-                ...previousAnswers,
-                ui5AbapRepo: 'ZUI5REPO'
-            });
+            const result = await validatePackage(
+                'Zpackage',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'ZUI5REPO'
+                },
+                undefined,
+                'SAP Fiori elements'
+            );
             expect(result).toBe(true);
             expect(getTransportListFromServiceSpy).toBeCalledWith('ZPACKAGE', 'ZUI5REPO', undefined);
         });
         it('should return error for invalid package input', async () => {
-            const result = await validatePackage(' ', previousAnswers);
+            const result = await validatePackage(' ', previousAnswers, undefined, 'SAP Fiori elements');
             expect(result).toBe(t('warnings.providePackage'));
         });
 
@@ -326,69 +331,123 @@ describe('Test validators', () => {
         });
 
         it('should return error for special characters', async () => {
-            const result = await validatePackage('@TMP', previousAnswers);
+            const result = await validatePackage('@TMP', previousAnswers, undefined, 'SAP Fiori elements');
             expect(result).toBe(t('errors.validators.charactersForbiddenInPackage'));
         });
 
         it('should return error for invalid format', async () => {
-            const result = await validatePackage('namespace/packageName', previousAnswers);
+            const result = await validatePackage(
+                'namespace/packageName',
+                previousAnswers,
+                undefined,
+                'SAP Fiori elements'
+            );
             expect(result).toBe(t('errors.validators.abapPackageInvalidFormat'));
         });
 
         it('should return error for invalid starting prefix', async () => {
-            const result = await validatePackage('namespace', previousAnswers);
+            const result = await validatePackage('namespace', previousAnswers, undefined, 'SAP Fiori elements');
             expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
         });
 
         it('should return error for invalid ui5Repo starting prefix', async () => {
-            const result = await validatePackage('ZPACKAGE', {
-                ...previousAnswers,
-                ui5AbapRepo: 'UI5REPO'
-            });
+            const result = await validatePackage(
+                'ZPACKAGE',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'UI5REPO'
+                },
+                undefined,
+                'SAP Fiori elements'
+            );
             expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
         });
 
         it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
-            const result = await validatePackage('/NAMESPACE/ZPACKAGE', {
-                ...previousAnswers,
-                ui5AbapRepo: 'UI5REPO'
-            });
+            const result = await validatePackage(
+                '/NAMESPACE/ZPACKAGE',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'UI5REPO'
+                },
+                undefined,
+                'SAP Fiori elements'
+            );
             expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
         });
     });
 
     describe('validatePackageExtended', () => {
         it('should return error when base validation fail', async () => {
-            const result = await validatePackageExtended('namespace', previousAnswers, {
-                additionalValidation: { cloudPackage: true }
-            });
+            const result = await validatePackageExtended(
+                'namespace',
+                previousAnswers,
+                {
+                    additionalValidation: { shouldValidatePackageType: true }
+                },
+                undefined,
+                'SAP Fiori elements'
+            );
             expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
         });
 
         it('should return error when package is not cloud', async () => {
             jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
-                adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
-                activeLanguages: []
+                apiExist: true,
+                systemInfo: {
+                    adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
+                    activeLanguages: []
+                }
             });
-            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
-                additionalValidation: { cloudPackage: true }
-            });
+            PromptState.abapDeployConfig.isS4HC = true;
+            const result = await validatePackageExtended(
+                'ZPACKAGE',
+                previousAnswers,
+                {
+                    additionalValidation: { shouldValidatePackageType: true }
+                },
+                undefined,
+                'SAP Fiori elements'
+            );
             expect(result).toBe(t('errors.validators.invalidCloudPackage'));
         });
 
         it('should return true when package meets all validators', async () => {
             jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
-                adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY],
-                activeLanguages: []
+                apiExist: true,
+                systemInfo: {
+                    adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY],
+                    activeLanguages: []
+                }
             });
-            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
-                additionalValidation: { cloudPackage: true }
-            });
+            const result = await validatePackageExtended(
+                'ZPACKAGE',
+                previousAnswers,
+                {
+                    additionalValidation: { shouldValidatePackageType: true }
+                },
+                undefined,
+                'SAP Fiori elements'
+            );
             expect(result).toBe(true);
         });
 
-        it('should return true when package base validation pass and there are no additional validation', async () => {
+        it('should return true when package base validation passes and there are no additional validation', async () => {
             const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+        });
+
+        it('should return true when package base validation passes get systemInfo API is missing in the target system', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                apiExist: false
+            });
+            const result = await validatePackageExtended('ZPACKAGE',
+                previousAnswers,
+                {
+                    additionalValidation: { shouldValidatePackageType: true }
+                },
+                undefined,
+                'SAP Fiori elements');
             expect(result).toBe(true);
         });
     });

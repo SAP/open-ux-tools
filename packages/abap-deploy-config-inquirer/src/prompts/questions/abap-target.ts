@@ -234,7 +234,6 @@ function getClientChoicePrompt(
 /**
  * Returns the client prompt.
  *
- * @param promptOptions - prompt options
  * @returns input question for client
  */
 function getClientPrompt(): Question<AbapDeployConfigAnswersInternal> {

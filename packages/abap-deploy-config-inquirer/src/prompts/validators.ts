@@ -34,6 +34,7 @@ import {
     type PackagePromptOptions
 } from '../types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import type { AppType } from '@sap-ux/project-access';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 /**
@@ -356,12 +357,14 @@ export async function validatePackageChoiceInputForCli(
  * @param input - package name entered
  * @param answers - previous answers
  * @param backendTarget - backend target
+ * @param appType - applicationType
  * @returns boolean or error message as a string
  */
 export async function validatePackage(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    appType?: AppType
 ): Promise<boolean | string> {
     PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
     if (!input?.trim()) {
@@ -380,19 +383,21 @@ export async function validatePackage(
         return t('errors.validators.abapPackageInvalidFormat');
     }
 
-    const startingPrefix = getPackageStartingPrefix(input);
+    if (PromptState.abapDeployConfig?.isS4HC || appType === 'SAP Fiori elements') {
+        const startingPrefix = getPackageStartingPrefix(input);
 
-    //validate package starting prefix
-    if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
-        return t('errors.validators.abapPackageStartingPrefix');
-    }
+        //validate package starting prefix
+        if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
+            return t('errors.validators.abapPackageStartingPrefix');
+        }
 
-    //appName starting prefix
-    if (answers?.ui5AbapRepo && !answers.ui5AbapRepo.startsWith(startingPrefix)) {
-        return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+        //appName starting prefix
+        if (answers?.ui5AbapRepo && !answers.ui5AbapRepo.startsWith(startingPrefix)) {
+            return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+        }
+        // checks if package is a local package and will update prompt state accordingly
+        await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
     }
-    // checks if package is a local package and will update prompt state accordingly
-    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
 
     return true;
 }
@@ -618,11 +623,16 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
         packageType === AdaptationProjectType.CLOUD_READY
             ? t('errors.validators.invalidCloudPackage')
             : t('errors.validators.invalidOnpremPackage');
-    const systemInfo = await getSystemInfo(input, backendTarget);
+    const systemInfoResult = await getSystemInfo(input, backendTarget);
+    if (!systemInfoResult.apiExist) {
+        return true;
+    }
+
+    const systemInfo = systemInfoResult.systemInfo;
     const isValidPackageType =
         systemInfo != undefined &&
-        systemInfo.adaptationProjectTypes.length === 1 &&
-        systemInfo.adaptationProjectTypes[0] === packageType;
+        systemInfo?.adaptationProjectTypes?.length === 1 &&
+        systemInfo?.adaptationProjectTypes[0] === packageType;
 
     return isValidPackageType ? true : errorMsg;
 }
@@ -634,6 +644,7 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
  * @param {AbapDeployConfigAnswersInternal} answers - Configuration answers for ABAP deployment.
  * @param {PackagePromptOptions} [promptOption] - Optional settings for additional package validation.
  * @param {BackendTarget} [backendTarget] - The backend target for validation context.
+ * @param {AppType} appType - the application type
  * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
  *                                        a `string` with an error message if validation fails,
  *                                        or the result of additional cloud package validation if applicable.
@@ -642,9 +653,10 @@ export async function validatePackageExtended(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
-    backendTarget?: BackendTarget
+    backendTarget?: BackendTarget,
+    appType?: AppType
 ): Promise<boolean | string> {
-    const baseValidation = await validatePackage(input, answers, backendTarget);
+    const baseValidation = await validatePackage(input, answers, backendTarget, appType);
     if (typeof baseValidation === 'string') {
         return baseValidation;
     }

@@ -136,7 +136,8 @@ export async function getAbapQuestions({
                 useAutocomplete: true,
                 additionalValidation: { shouldValidatePackageType: appType === 'Fiori Adaptation' }
             },
-            overwrite: { hide: !showOverwriteQuestion }
+            overwrite: { hide: !showOverwriteQuestion },
+            appType: appType
         },
         logger as unknown as Logger,
         getHostEnvironment() !== hostEnvironment.cli

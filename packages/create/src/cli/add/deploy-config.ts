@@ -101,7 +101,7 @@ async function addDeployConfig(
 
             await validateBasePath(basePath);
 
-            let promptOptions: AbapDeployConfigPromptOptions = {
+            const promptOptions: AbapDeployConfigPromptOptions = {
                 packageAutocomplete: {
                     useAutocomplete: true,
                     additionalValidation: { shouldValidatePackageType: isAdp }
@@ -109,16 +109,6 @@ async function addDeployConfig(
                 packageManual: { additionalValidation: { shouldValidatePackageType: isAdp } },
                 appType: appType
             };
-            if (isAdp) {
-                const config = await getAdpConfig(basePath, join(basePath, 'ui5.yaml'));
-                promptOptions = {
-                    ...promptOptions,
-                    backendTarget: {
-                        abapTarget: config.target
-                    }
-                };
-            }
-
             const { prompts: abapPrompts, answers: abapAnswers } = await getAbapDeployConfigPrompts(
                 promptOptions,
                 logger,

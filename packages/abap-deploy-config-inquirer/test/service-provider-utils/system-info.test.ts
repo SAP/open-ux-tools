@@ -1,15 +1,16 @@
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import * as axiosExt from '@sap-ux/axios-extension';
 import { initI18n, t } from '../../src/i18n';
 import LoggerHelper from '../../src/logger-helper';
 import { getSystemInfo } from '../../src/service-provider-utils';
-import { getOrCreateServiceProvider } from '../../src/service-provider-utils/abap-service-provider';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 
 jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
     ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
-    getOrCreateServiceProvider: jest.fn()
+    AbapServiceProviderManager: { getOrCreateServiceProvider: jest.fn() }
 }));
 
-const mockGetOrCreateServiceProvider = getOrCreateServiceProvider as jest.Mock;
+const mockGetOrCreateServiceProvider = AbapServiceProviderManager.getOrCreateServiceProvider as jest.Mock;
 
 describe('Test get system info', () => {
     beforeAll(async () => {
@@ -17,10 +18,6 @@ describe('Test get system info', () => {
     });
 
     const packageName = 'ZPACK';
-    const systemConfig = {
-        url: 'https://mock.url.target1.com',
-        client: '000'
-    };
 
     it('should get system info', async () => {
         const systemInfo = {
@@ -35,17 +32,22 @@ describe('Test get system info', () => {
             getLayeredRepository: jest.fn().mockReturnValue(mockLrepService)
         });
 
-        const result = await getSystemInfo(packageName, systemConfig);
-        expect(result).toStrictEqual(systemInfo);
+        const result = await getSystemInfo(packageName);
+        expect(result).toStrictEqual({ apiExist: true, systemInfo });
     });
 
     it('should log error and return undefined', async () => {
-        const errorObj = new Error('Failed to create service provider');
+        const errorObj = { message: 'Missing API', response: { status: 405 } };
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
-        mockGetOrCreateServiceProvider.mockRejectedValueOnce(errorObj);
-
-        const systemInfo = await getSystemInfo(packageName, systemConfig);
-        expect(systemInfo).toStrictEqual(undefined);
+        const mockLrepService = {
+            getSystemInfo: jest.fn().mockRejectedValueOnce(errorObj)
+        };
+        jest.spyOn(axiosExt, 'isAxiosError').mockReturnValueOnce(true);
+        mockGetOrCreateServiceProvider.mockResolvedValueOnce({
+            getLayeredRepository: jest.fn().mockReturnValue(mockLrepService)
+        });
+        const systemInfo = await getSystemInfo(packageName);
+        expect(systemInfo).toStrictEqual({ apiExist: false });
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'getSystemInfo', error: errorObj.message })
         );

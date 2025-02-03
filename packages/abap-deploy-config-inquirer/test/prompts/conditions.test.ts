@@ -194,11 +194,8 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should not show ui5 app deploy config questions', () => {
-        const promptOptions = {
-            hideIfOnPremise: true
-        };
-        PromptState.abapDeployConfig.scp = false;
-        expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
+        PromptState.abapDeployConfig.scp = true;
+        expect(showUi5AppDeployConfigQuestion()).toBe(false);
     });
 
     test('should show package input choice question', () => {
@@ -240,6 +237,12 @@ describe('Test abap deploy config inquirer conditions', () => {
         PromptState.transportAnswers.transportConfigError = undefined;
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
         expect(showTransportInputChoice()).toBe(true);
+    });
+
+    test('should not show transport input choice question for ADP projects with onPremise system', () => {
+        PromptState.transportAnswers.transportRequired = false;
+        PromptState.abapDeployConfig.isS4HC = false;
+        expect(showTransportInputChoice('Fiori Adaptation')).toBe(false);
     });
 
     test('should not show transport input choice question when transport is not required', () => {

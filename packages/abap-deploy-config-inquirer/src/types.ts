@@ -1,5 +1,5 @@
 import type { AbapTarget } from '@sap-ux/system-access';
-import type { ServiceProvider } from '@sap-ux/axios-extension';
+import type { ServiceProvider, SystemInfo } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AppType } from '@sap-ux/project-access';
 
@@ -258,3 +258,8 @@ export enum TransportChoices {
 }
 
 export type AbapDeployConfigQuestion = YUIQuestion<AbapDeployConfigAnswersInternal>;
+
+export type SystemInfoResult = {
+    systemInfo?: SystemInfo;
+    apiExist: boolean;
+};
