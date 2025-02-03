@@ -1,5 +1,30 @@
 # @sap-ux/preview-middleware
 
+## 0.17.12
+
+### Patch Changes
+
+-   740f4d9: fix: CPE Quick action bug fix in ALP v4 projects. Add Custom Table Action worked incorrectly on Analytical Pages with multiple action toolbars in charts and tables.
+    Some V4 Quick Action code refactoring to optimize
+
+## 0.17.11
+
+### Patch Changes
+
+-   6b55228: Bind i18n models with namespace
+
+## 0.17.10
+
+### Patch Changes
+
+-   1f0bb25: fix: refactor object clones
+
+## 0.17.9
+
+### Patch Changes
+
+-   61edb7b: Fixed "Enable/Disable Semantic Date Range in Filter Bar" quick action in SAP Fiori Elements for OData V2 applications when using UI5 version lower than 1.126.
+
 ## 0.17.8
 
 ### Patch Changes
