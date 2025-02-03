@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.55
+
+### Patch Changes
+
+-   6b55228: Bind i18n models with namespace
+
 ## 0.11.54
 
 ### Patch Changes
