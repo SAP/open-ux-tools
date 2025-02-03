@@ -178,7 +178,7 @@ export default class extends Generator {
     }
 
     /**
-     * Retrieves the manifest for the project.
+     * Retrieves the merged manifest for the project.
      *
      * @returns {Promise<Manifest>} The project manifest.
      */
