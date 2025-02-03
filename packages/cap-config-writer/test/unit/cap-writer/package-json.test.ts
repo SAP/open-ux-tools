@@ -1,4 +1,4 @@
-import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
+import type { CapRuntime } from '../../../src/cap-config/types';
 import { satisfiesMinCdsVersion } from '../../../src/cap-config/package-json';
 import memFs from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';

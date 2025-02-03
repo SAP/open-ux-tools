@@ -587,8 +587,8 @@ importers:
   packages/annotation-generator:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.9.10
-        version: 0.9.10
+        specifier: 0.10.2
+        version: 0.10.2
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -602,8 +602,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.11.7
-        version: 0.11.7
+        specifier: 0.13.0
+        version: 0.13.0
       mem-fs-editor:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
@@ -815,6 +815,9 @@ importers:
 
   packages/btp-utils:
     dependencies:
+      '@sap/bas-sdk':
+        specifier: 3.11.2
+        version: 3.11.2
       '@sap/cf-tools':
         specifier: 3.2.2
         version: 3.2.2
@@ -859,9 +862,6 @@ importers:
         specifier: 1.6.11
         version: 1.6.11
     devDependencies:
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -962,8 +962,8 @@ importers:
         specifier: workspace:*
         version: link:../text-document-utils
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.15.1
-        version: 1.15.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.16.0
+        version: 1.16.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -1559,8 +1559,8 @@ importers:
   packages/fe-fpm-writer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.9.10
-        version: 0.9.10
+        specifier: 0.10.2
+        version: 0.10.2
       '@sap-ux/fiori-annotation-api':
         specifier: workspace:*
         version: link:../fiori-annotation-api
@@ -1568,8 +1568,8 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.11.7
-        version: 0.11.7
+        specifier: 0.13.0
+        version: 0.13.0
       '@xmldom/xmldom':
         specifier: 0.8.10
         version: 0.8.10
@@ -1647,8 +1647,8 @@ importers:
   packages/fiori-annotation-api:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.9.10
-        version: 0.9.10
+        specifier: 0.10.2
+        version: 0.10.2
       '@sap-ux/cds-annotation-parser':
         specifier: workspace:*
         version: link:../cds-annotation-parser
@@ -1674,14 +1674,14 @@ importers:
         specifier: workspace:*
         version: link:../project-access
       '@sap-ux/vocabularies-types':
-        specifier: 0.11.7
-        version: 0.11.7
+        specifier: 0.13.0
+        version: 0.13.0
       '@sap-ux/xml-odata-annotation-converter':
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.15.1
-        version: 1.15.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.16.0
+        version: 1.16.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -1713,6 +1713,9 @@ importers:
 
   packages/fiori-elements-writer:
     dependencies:
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
       '@sap-ux/fe-fpm-writer':
         specifier: workspace:*
         version: link:../fe-fpm-writer
@@ -1780,6 +1783,9 @@ importers:
 
   packages/fiori-freestyle-writer:
     dependencies:
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
@@ -2386,8 +2392,8 @@ importers:
   packages/odata-service-inquirer:
     dependencies:
       '@sap-ux/annotation-converter':
-        specifier: 0.9.10
-        version: 0.9.10
+        specifier: 0.10.2
+        version: 0.10.2
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
@@ -2446,6 +2452,9 @@ importers:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
       '@sap-ux/feature-toggle':
         specifier: workspace:*
         version: link:../feature-toggle
@@ -2459,8 +2468,8 @@ importers:
         specifier: workspace:*
         version: link:../odata-service-writer
       '@sap-ux/vocabularies-types':
-        specifier: 0.11.7
-        version: 0.11.7
+        specifier: 0.13.0
+        version: 0.13.0
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -8263,10 +8272,10 @@ packages:
   /@sap-devx/yeoman-ui-types@1.14.4:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
 
-  /@sap-ux/annotation-converter@0.9.10:
-    resolution: {integrity: sha512-lZNcTLMoGUSGooYfKYLNy0SO0Ma6Z7kdGODPkbph6ur83+C6s+rJJ96jzziZT9gjVK8UoVy8qmZyjEZzEJgkeg==}
+  /@sap-ux/annotation-converter@0.10.2:
+    resolution: {integrity: sha512-3GY8Etb2D+HnCNf2Yy7qfRtZuJ8ITjAGdlnbpmIg5sLtHRfhffEzZOveEWWMJ0apgIedUouvglkw6+oBabTfnA==}
     dependencies:
-      '@sap-ux/vocabularies-types': 0.11.7
+      '@sap-ux/vocabularies-types': 0.13.0
     dev: false
 
   /@sap-ux/edmx-parser@0.9.0:
@@ -8275,9 +8284,25 @@ packages:
       xml-js: 1.6.11
     dev: false
 
-  /@sap-ux/vocabularies-types@0.11.7:
-    resolution: {integrity: sha512-rqRhmPW97dQ8K6nYjL1aP0a4THsUSGK6F5LSOOkSkyTQrBOGu5LNdqi90V2EYKSdIARTvgOnaz1mU+nmkzrsOA==}
+  /@sap-ux/vocabularies-types@0.13.0:
+    resolution: {integrity: sha512-srR9ffXpgvVxsrD/3ZvX6PnxXyY6yeth6LuKfCDgcyDoPeRj1jQknpgVF+k9hHDv7LkGkDiHYvjWY+JP8OlDLw==}
     engines: {node: '>=18.x'}
+
+  /@sap/bas-sdk@3.11.2:
+    resolution: {integrity: sha512-UU7tZNiWg2yvSdS2lqYq8o22GyzFKkqpJnWv1ihGMrfgp7riaZVfSKpO1+VZvmyJl7qbTRP0oyg5DKAoWVyAEw==}
+    dependencies:
+      axios: 1.7.9
+      cross-spawn: 7.0.5
+      fs-extra: 11.1.1
+      jwt-decode: 4.0.0
+      lodash: 4.17.21
+      url-join: 4.0.1
+      ws: 8.17.1
+    transitivePeerDependencies:
+      - bufferutil
+      - debug
+      - utf-8-validate
+    dev: false
 
   /@sap/bas-sdk@3.8.9:
     resolution: {integrity: sha512-ycYttnSTlEPjDrb0svSv0jBgqEvoekD4bNB4IxuKCu5OKk5FycwsOTgufU8CXYf1ag23wTlurN+N7c4Po6PcJQ==}
@@ -8320,13 +8345,13 @@ packages:
       temp-dir: 2.0.0
       which: 2.0.2
 
-  /@sap/ux-cds-compiler-facade@1.15.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
-    resolution: {integrity: sha512-WfKLjNFZa6hfXu7+JUmvbCn110lLyddmBN4n1tpV7sH279bue8JF48ZPSqe70+Gric6YdY7jRoiVEALWRkzZ7w==}
+  /@sap/ux-cds-compiler-facade@1.16.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
+    resolution: {integrity: sha512-6YfFnQhxGsIxsS8k7eYE5r9l+HXtb7o/AaEuvt+1YnDwJypnh63gbMGkVEq1HcxqyEHJp6Md15QVGYVmquI4fA==}
     engines: {node: '>=18.16.0'}
     peerDependencies:
       '@sap-ux/odata-annotation-core': '>=0.2.2'
       '@sap-ux/odata-annotation-core-types': '>=0.4.2'
-      '@sap-ux/project-access': '>=1.28.6'
+      '@sap-ux/project-access': '>=1.29.0'
     dependencies:
       '@sap-ux/odata-annotation-core': link:packages/odata-annotation-core
       '@sap-ux/odata-annotation-core-types': link:packages/odata-annotation-core-types
@@ -11060,6 +11085,16 @@ packages:
       proxy-from-env: 1.1.0
     transitivePeerDependencies:
       - debug
+
+  /axios@1.7.9:
+    resolution: {integrity: sha512-LhLcE7Hbiryz8oMDdDptSrWowmB4Bl6RCt6sIJKpRB4XtVf0iEgewX3au/pJqm+Py1kCASkb/FFKjxQaLtxJvw==}
+    dependencies:
+      follow-redirects: 1.15.6
+      form-data: 4.0.0
+      proxy-from-env: 1.1.0
+    transitivePeerDependencies:
+      - debug
+    dev: false
 
   /b4a@1.6.6:
     resolution: {integrity: sha512-5Tk1HLk6b6ctmjIkAcU/Ujv/1WqiDl0F0JdRCR80VsOcUlHcu7pWeWRlOqQLHfDEsVx9YH/aif5AG4ehoCtTmg==}
@@ -16783,6 +16818,11 @@ packages:
   /just-extend@6.2.0:
     resolution: {integrity: sha512-cYofQu2Xpom82S6qD778jBDpwvvy39s1l/hrYij2u9AMdQcGRpaBu6kY4mVhuno5kJVi1DAz4aiphA2WI1/OAw==}
     dev: true
+
+  /jwt-decode@4.0.0:
+    resolution: {integrity: sha512-+KJGIyHgkGuIq3IEBNftfhW/LfWhXUIY6OmyVWjliu5KH1y0fw7VQ8YndE2O4qZdMSd9SqbnC8GOcZEy0Om7sA==}
+    engines: {node: '>=18'}
+    dev: false
 
   /keyv@4.5.4:
     resolution: {integrity: sha512-oxVHkHR/EJf2CNXnWxRLW6mg7JyCCUcG0DtEGmL2ctUo1PNTin1PUil+r/+4r5MpVgC/fn1kjsx7mjSujKqIpw==}
