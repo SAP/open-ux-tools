@@ -56,14 +56,22 @@ export const Tree = (): ReactElement => {
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
-    const contextMenuItems = useSelector<
+    const contextMenuItem = useSelector<
         RootState,
-        {
-            controlId: string;
-            contextMenuActions: { actionName: string; name: string; enabled: boolean; defaultPlugin: boolean }[];
-        }[]
-    >((state) => state.contextMenuItems);
+        | {
+              controlId: string;
+              contextMenuActions: {
+                  actionName: string;
+                  name: string;
+                  enabled: boolean;
+                  defaultPlugin: boolean;
+                  tooltip?: string;
+              }[];
+          }
+        | undefined
+    >((state) => state.contextMenuItem);
     const model: OutlineNode[] = useSelector<RootState, OutlineNode[]>((state) => state.outline);
+    const isNavigationMode = useSelector<RootState, boolean>((state) => state.appMode === 'navigation');
 
     const { groups, items } = useMemo(() => {
         const items: OutlineNodeItem[] = [];
@@ -278,14 +286,32 @@ export const Tree = (): ReactElement => {
     }
     const onContextMenuAction = (
         e: React.MouseEvent<HTMLSpanElement, MouseEvent>,
-        item: OutlineNodeItem
-        // target: HTMLElement | null
+        cellItem?: OutlineNodeItem,
+        headerItem?: IGroup
     ): void => {
-        if (item.controlType !== 'sap.ui.extensionpoint') {
-            dispatch(requestControlActionList.pending(item.controlId));
-            e.preventDefault();
-            setShowActionContextualMenu(item);
+        let selectAction;
+        const item = cellItem ?? headerItem?.data;
+        const controlId = item.controlId;
+        if (item?.controlType === 'sap.ui.extensionpoint') {
+            return;
         }
+        if (headerItem) {
+            setSelection({
+                group: headerItem,
+                cell: undefined
+            });
+            selectAction = selectControl(headerItem.key);
+        } else {
+            setSelection({
+                group: undefined,
+                cell: item
+            });
+            selectAction = selectControl(controlId);
+        }
+        dispatch(selectAction);
+        dispatch(requestControlActionList.pending(controlId));
+        e.preventDefault();
+        setShowActionContextualMenu(item);
     };
     const onSelectCell = (item: OutlineNodeItem): void => {
         setSelection({
@@ -318,13 +344,15 @@ export const Tree = (): ReactElement => {
      * @returns ReactElement
      */
     const buildMenuItems = function (controlId: string): UIContextualMenuItem[] {
-        const children = contextMenuItems.find((item) => item.controlId === controlId)?.contextMenuActions;
+        const children = contextMenuItem?.contextMenuActions;
         return (children ?? []).map((child, index) => {
             return {
                 key: `${controlId}-${child.actionName}-${index}`,
                 text: child?.name,
-                disabled: !child.enabled,
-                title: child?.name,
+                disabled: isNavigationMode ? true : !child.enabled,
+                title: isNavigationMode
+                    ? t('CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE')
+                    : child?.tooltip ?? child?.name,
                 onClick(): void {
                     dispatch(selectControl(controlId));
                     dispatch(
@@ -473,7 +501,7 @@ export const Tree = (): ReactElement => {
                 aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}
-                onContextMenu={(e) => onContextMenuAction(e, data)}>
+                onContextMenu={(e) => onContextMenuAction(e, undefined, groupHeaderProps?.group)}>
                 <span
                     style={{ paddingLeft: paddingValue }}
                     data-testid="tooltip-container"

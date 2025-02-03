@@ -74,10 +74,18 @@ export interface SliceState {
     applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
-    contextMenuItems: {
-        controlId: string;
-        contextMenuActions: { actionName: string; name: string; enabled: boolean; defaultPlugin: boolean }[];
-    }[];
+    contextMenuItem:
+        | {
+              controlId: string;
+              contextMenuActions: {
+                  actionName: string;
+                  name: string;
+                  enabled: boolean;
+                  defaultPlugin: boolean;
+                  tooltip?: string;
+              }[];
+          }
+        | undefined;
 }
 
 export interface ChangesSlice {
@@ -168,7 +176,7 @@ export const initialState: SliceState = {
     applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: [],
-    contextMenuItems: []
+    contextMenuItem: undefined
 };
 
 /**
@@ -451,12 +459,10 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 requestControlActionList.fulfilled.match,
                 (state: SliceState, action: ReturnType<typeof requestControlActionList.fulfilled>): void => {
                     const { contextMenuItems, controlId } = action.payload;
-                    if (!state.contextMenuItems.find((item) => item.controlId === action.payload.controlId)) {
-                        state.contextMenuItems.push({
-                            contextMenuActions: contextMenuItems,
-                            controlId
-                        });
-                    }
+                    state.contextMenuItem = {
+                        contextMenuActions: contextMenuItems,
+                        controlId
+                    };
                 }
             )
 });

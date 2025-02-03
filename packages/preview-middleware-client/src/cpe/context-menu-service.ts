@@ -8,6 +8,8 @@ import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { ActionService } from 'sap/ui/rta/service/Action';
 import { getOverlay } from './utils';
 import { getControlById } from '../utils/core';
+import { DialogFactory } from '../adp/dialog-factory';
+import { getTextBundle } from '../i18n';
 
 /**
  * A Class of ContextMenuService
@@ -30,6 +32,7 @@ export class ContextMenuService {
     public async init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): Promise<void> {
         this.sendAction = sendAction;
         this.actionService = await this.rta.getService('action');
+        const resourceBundle = await getTextBundle();
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeContextMenuAction.match(action)) {
                 const { actionName, controlId, defaultPlugin } = action.payload;
@@ -57,7 +60,13 @@ export class ContextMenuService {
                 const responsePayload = {
                     controlId: controlId,
                     contextMenuItems: (actions ?? []).map((val) => {
-                        return { actionName: val.id, name: val.text, enabled: val.enabled, defaultPlugin: true };
+                        let enabled = val.enabled;
+                        let tooltip = '';
+                        if (!DialogFactory.canOpenDialog) {
+                            enabled = false;
+                            tooltip = resourceBundle.getText('ADP_QUICK_ACTION_DIALOG_OPEN_MESSAGE');
+                        }
+                        return { actionName: val.id, name: val.text, enabled, defaultPlugin: true, tooltip };
                     })
                 };
                 const control = getControlById(controlId);
@@ -68,14 +77,21 @@ export class ContextMenuService {
                         const customActions = contextMenu._aMenuItems
                             .filter((item) => !item.fromPlugin)
                             .map((item) => {
+                                let enabled = item.menuItem?.enabled?.([overlay]);
+                                let tooltip = '';
+                                if (!DialogFactory.canOpenDialog) {
+                                    enabled = false;
+                                    tooltip = resourceBundle.getText('ADP_QUICK_ACTION_DIALOG_OPEN_MESSAGE');
+                                }
                                 return {
                                     actionName: item.menuItem.id,
                                     name:
                                         typeof item.menuItem.text === 'function'
                                             ? item.menuItem.text?.(overlay)
                                             : item.menuItem.text,
-                                    enabled: item.menuItem?.enabled?.([overlay]),
-                                    defaultPlugin: false
+                                    enabled,
+                                    defaultPlugin: false,
+                                    tooltip
                                 };
                             });
                         if (customActions.length) {

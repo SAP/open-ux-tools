@@ -472,6 +472,7 @@ interface ContextMenuItem {
     actionName: string;
     enabled: boolean;
     name: string;
+    tooltip?: string;
     defaultPlugin: boolean;
 }
 
