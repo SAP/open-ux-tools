@@ -87,7 +87,6 @@ async function addDeployConfig(
     try {
         const appType = await getAppType(basePath);
         const isAdp = isAdpProject(appType);
-        target = 'abap';
 
         if (!isAdp) {
             target = await getTarget(target);
