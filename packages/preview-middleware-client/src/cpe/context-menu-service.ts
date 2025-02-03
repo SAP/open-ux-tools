@@ -52,7 +52,7 @@ export class ContextMenuService {
                 }
             }
             if (requestControlActionList.pending.match(action)) {
-                const controlId = action.payload as string;
+                const controlId = action.payload;
                 const actions = await this.actionService.get(controlId);
                 const responsePayload = {
                     controlId: controlId,
@@ -72,7 +72,7 @@ export class ContextMenuService {
                                     actionName: item.menuItem.id,
                                     name:
                                         typeof item.menuItem.text === 'function'
-                                            ? (item.menuItem.text?.(overlay) as string)
+                                            ? (item.menuItem.text?.(overlay))
                                             : item.menuItem.text,
                                     enabled: item.menuItem?.enabled?.([overlay]),
                                     defaultPlugin: false
