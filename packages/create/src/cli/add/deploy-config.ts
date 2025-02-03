@@ -12,8 +12,6 @@ import { prompt, type PromptObject } from 'prompts';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import type { Command } from 'commander';
 import { promptYUIQuestions } from '../../common';
-import { getAdpConfig } from '@sap-ux/adp-tooling';
-import { join } from 'path';
 
 /**
  * Add the "add deploy config" command to a passed command.
