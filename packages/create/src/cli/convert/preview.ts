@@ -17,7 +17,7 @@ export function addConvertPreviewCommand(cmd: Command): void {
             if (options.verbose === true) {
                 setLogLevelVerbose();
             }
-            await convertPreview(path, !!options.simulate, !!options.tests);
+            await convertPreview(path, options.simulate, options.tests);
         });
 }
 
@@ -28,27 +28,33 @@ export function addConvertPreviewCommand(cmd: Command): void {
  * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
  * @param {boolean} convertTests - If set to true, then test suite and test runners fill be included in the conversion.
  */
-async function convertPreview(basePath: string, simulate: boolean, convertTests: boolean): Promise<void> {
+async function convertPreview(
+    basePath: string,
+    simulate: boolean | undefined,
+    convertTests: boolean | undefined
+): Promise<void> {
     const logger = getLogger();
 
     if (!basePath) {
         basePath = process.cwd();
     }
 
-    const simulatePromptAnswer = await simulatePrompt().catch((error: Error) => {
-        logger.error(error.message);
-        return process.exit(1);
-    });
-    simulate = simulate || Boolean(simulatePromptAnswer);
+    simulate =
+        simulate ??
+        (await simulatePrompt().catch((error: Error) => {
+            logger.error(error.message);
+            return process.exit(1);
+        }));
     if (simulate) {
         setLogLevelVerbose();
     }
 
-    const convertTestsAnswer = await includeTestRunnersPrompt().catch((error: Error) => {
-        logger.error(error.message);
-        return process.exit(1);
-    });
-    convertTests = convertTests || Boolean(convertTestsAnswer);
+    convertTests =
+        convertTests ??
+        (await includeTestRunnersPrompt().catch((error: Error) => {
+            logger.error(error.message);
+            return process.exit(1);
+        }));
 
     logger.debug(
         `Called convert preview-config for path '${basePath}', simulate is '${simulate}', convert tests is '${convertTests}'.`
