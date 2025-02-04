@@ -21,6 +21,8 @@ import { EnableTableFilteringQuickAction } from './lr-enable-table-filtering';
 import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-range-filter-bar';
 import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
 import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
+import { EnableObjectPageVariantManagementQuickAction } from './op-enable-variant-management';
+import { EnableListReportVariantManagementQuickAction } from './lr-enable-variant-management';
 type PageName = 'listReport' | 'objectPage' | 'analyticalListPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
@@ -49,6 +51,7 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                         AddPageActionQuickAction,
                         ToggleClearFilterBarQuickAction,
                         ToggleSemanticDateRangeFilterBar,
+                        EnableListReportVariantManagementQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
@@ -66,6 +69,7 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                         AddPageActionQuickAction,
                         AddHeaderFieldQuickAction,
                         AddCustomSectionQuickAction,
+                        EnableObjectPageVariantManagementQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
@@ -80,8 +84,15 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                     title: 'ANALYTICAL LIST PAGE',
                     definitions: [
                         AddControllerToPageQuickAction,
+                        AddPageActionQuickAction,
+                        ToggleClearFilterBarQuickAction,
+                        ToggleSemanticDateRangeFilterBar,
+                        EnableListReportVariantManagementQuickAction,
                         ChangeTableColumnsQuickAction,
-                        AddTableCustomColumnQuickAction
+                        AddTableActionQuickAction,
+                        AddTableCustomColumnQuickAction,
+                        EnableTableFilteringQuickAction,
+                        AddNewAnnotationFile
                     ],
                     view,
                     key: name + index

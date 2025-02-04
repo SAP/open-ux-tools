@@ -1,8 +1,6 @@
 import { join } from 'path';
-import { prompt } from 'prompts';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
-import type { PromptObject } from 'prompts';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { satisfies, valid } from 'semver';
 
@@ -45,10 +43,16 @@ function isLowerThanMinimalVersion(
  *
  * @param basePath - base path to be used for the conversion
  * @param fs - file system reference
+ * @param convertTests - if set to true, then test suite and test runners fill be included in the conversion
  * @param logger logger to report info to the user
  * @returns indicator if the prerequisites are met
  */
-export async function checkPrerequisites(basePath: string, fs: Editor, logger?: ToolsLogger): Promise<boolean> {
+export async function checkPrerequisites(
+    basePath: string,
+    fs: Editor,
+    convertTests: boolean = false,
+    logger?: ToolsLogger
+): Promise<boolean> {
     const packageJsonPath = join(basePath, 'package.json');
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     let prerequisitesMet = true;
@@ -93,21 +97,11 @@ export async function checkPrerequisites(basePath: string, fs: Editor, logger?: 
         prerequisitesMet = false;
     }
 
-    return prerequisitesMet;
-}
+    if (convertTests && (packageJson?.devDependencies?.['karma-ui5'] ?? packageJson?.dependencies?.['karma-ui5'])) {
+        logger?.warn(
+            "This app seems to use Karma as a test runner. Please note that the converter does not convert any Karma configuration files. Please update your karma configuration ('ui5.configPath' and 'ui5.testpage') according to the new virtual endpoints after the conversion."
+        );
+    }
 
-/**
- * Get the explicit approval form the user to do the conversion.
- *
- * @returns Explicit user approval to do the conversion.
- */
-export async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
-    const question: PromptObject = {
-        type: 'confirm',
-        name: 'approval',
-        initial: false,
-        message:
-            'The converter will rename the HTML files and delete the JS and TS files used for the existing preview functionality and configure virtual endpoints instead. Do you want to proceed with the conversion?'
-    };
-    return Boolean((await prompt([question])).approval);
+    return prerequisitesMet;
 }

@@ -20,6 +20,8 @@
   },
   "scripts": {
     "build": "run-p -l build-app build-interface",
+    "deploy": "fiori verify",
+    "deploy-config": "fiori add deploy-config",
     "start": "fiori run --open \"test-resources/com/sap/tslibrary1/Example.html\"",
     "testsuite": "fiori run --open test-resources/com/sap/tslibrary1/qunit/testsuite.qunit.html",
     "test": "karma start --browsers=ChromeHeadless --singleRun=true",

@@ -53,4 +53,4 @@
         Uri="http://some.host.corp:44444/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='ER9CLNT500')/$value"><edmx:Include
             Namespace="Org.OData.Validation.V1"
             Alias="Validation"
-        /></edmx:Reference></edmx:Edmx>
+        /></edmx:Reference><edmx:DataServices m:DataServiceVersion="4.0"></edmx:DataServices></edmx:Edmx>

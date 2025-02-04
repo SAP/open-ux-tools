@@ -1,5 +1,11 @@
 # @sap-ux/guided-answers-helper
 
+## 0.2.1
+
+### Patch Changes
+
+-   080bda2: Adds new GA link for 504
+
 ## 0.2.0
 
 ### Minor Changes

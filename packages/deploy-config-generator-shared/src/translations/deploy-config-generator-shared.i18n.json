@@ -5,24 +5,15 @@
         }
     },
     "errors": {
-        "abortSignal": "ABORT_SIGNAL",
-        "cannotReadUi5Config": "Cannot read ui5.yaml: {{- reason}}",
+        "abortSignal": "Generator aborted",
         "capDeploymentNoMta": "The SAP Fiori application is within a CAP project and deployment should be configured as part of the CAP project. Please ensure you have a mta.yaml file defined for this project.",
         "fileDoesNotExist": "File does not exist: {{- filePath}}",
         "folderDoesNotExist": "Folder path does not exist: {{- filePath}}",
-        "invalidClient": "[{{- client}}] is invalid. Enter blank or a value between 000-999",
-        "invalidMtaId": "The ID can only contain letters, numbers, dashes, periods and underscores (but no spaces).",
-        "invalidURL": "Invalid URL: [{{- input}}]",
-        "mtaIdAlreadyExists": "A folder with same name already exist at {{- destinationRoot}}",
         "noAppName": "Could not determine app name from manifest",
-        "noUi5Config": "Error: could not read ui5.yaml",
         "noBinary": "Cannot find the \"{{bin}}\" executable. Please add it to the path or use \"npm i -g {{pkg}}\" to install it.",
         "noManifest": "Error: could not read webapp/manifest.json",
-        "noMta": "MTA ID cannot be empty",
-        "noMtaId": "MTA ID cannot be empty",
-        "noMtaInRoot": "Error: no {{mtaFileName}} in {{- root}}",
-        "noPath": "Cannot find \"path\" in backend configuration in ui5.yaml",
-        "unrecognizedTarget": "Unrecognized target: {{target}}"
+        "unrecognizedTarget": "Unrecognized target: {{target}}",
+        "unknownError": "Unknown error"
     },
     "debug": {
         "loggerInitialised": "LogWrapper initialized for DeploymentGenerator"

@@ -1,14 +1,14 @@
 import { initI18n, t } from '../../src/i18n';
 import LoggerHelper from '../../src/logger-helper';
 import { getTransportListFromService, transportName } from '../../src/service-provider-utils';
-import { getOrCreateServiceProvider } from '../../src/service-provider-utils/abap-service-provider';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 
 jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
     ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
-    getOrCreateServiceProvider: jest.fn()
+    AbapServiceProviderManager: { getOrCreateServiceProvider: jest.fn(), deleteExistingServiceProvider: jest.fn() }
 }));
 
-const mockGetOrCreateServiceProvider = getOrCreateServiceProvider as jest.Mock;
+const mockGetOrCreateServiceProvider = AbapServiceProviderManager.getOrCreateServiceProvider as jest.Mock;
 
 describe('Test list transports', () => {
     beforeAll(async () => {
@@ -17,10 +17,6 @@ describe('Test list transports', () => {
 
     const packageName = 'ZPACK';
     const appName = 'MOCK_APP';
-    const systemConfig = {
-        url: 'https://mock.url.target1.com',
-        client: '000'
-    };
 
     it('should return a list of transports', async () => {
         const transports = [
@@ -35,7 +31,7 @@ describe('Test list transports', () => {
             getAdtService: jest.fn().mockResolvedValueOnce(mockGetAdtService)
         });
 
-        const allTransports = await getTransportListFromService(packageName, appName, systemConfig);
+        const allTransports = await getTransportListFromService(packageName, appName);
 
         expect(allTransports).toStrictEqual([
             { transportReqNumber: 'TR122C', transportReqDescription: 'TR1 description' },
@@ -48,7 +44,7 @@ describe('Test list transports', () => {
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
         mockGetOrCreateServiceProvider.mockRejectedValueOnce(errorObj);
 
-        const allTransports = await getTransportListFromService(packageName, appName, systemConfig);
+        const allTransports = await getTransportListFromService(packageName, appName);
         expect(allTransports).toStrictEqual(undefined);
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'getTransportListFromService', error: errorObj.message })

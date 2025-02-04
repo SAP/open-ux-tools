@@ -1,5 +1,25 @@
 # @sap-ux/axios-extension
 
+## 1.18.4
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+
+## 1.18.3
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+
+## 1.18.2
+
+### Patch Changes
+
+-   e516306: Handle partial deployment timeout by updating repo on second retry when timeout occurs.
+
 ## 1.18.1
 
 ### Patch Changes

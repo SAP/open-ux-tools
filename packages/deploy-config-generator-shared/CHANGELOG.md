@@ -1,5 +1,49 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.17
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.25
+
+## 0.0.16
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.24
+-   @sap-ux/nodejs-utils@0.1.6
+
+## 0.0.15
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.23
+
+## 0.0.14
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.22
+-   @sap-ux/nodejs-utils@0.1.5
+
+## 0.0.13
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.21
+
+## 0.0.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.20
+
+## 0.0.11
+
+### Patch Changes
+
+-   6b6c64a: adds new module cf deploy config sub gen
+
 ## 0.0.10
 
 ### Patch Changes

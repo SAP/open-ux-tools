@@ -1,6 +1,7 @@
 import type { Command } from 'commander';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
-import { convertToVirtualPreview } from '@sap-ux/app-config-writer';
+import { convertToVirtualPreview, simulatePrompt, includeTestRunnersPrompt } from '@sap-ux/app-config-writer';
+
 /**
  * Add a new sub-command to convert the preview of a project to virtual files.
  *
@@ -8,14 +9,11 @@ import { convertToVirtualPreview } from '@sap-ux/app-config-writer';
  */
 export function addConvertPreviewCommand(cmd: Command): void {
     cmd.command('preview-config [path]')
-        .option('-s, --simulate', 'simulate only do not write or install')
+        .option('-s, --simulate', 'simulate only do not write')
         .option('-v, --verbose', 'show verbose information')
         .option('-t, --tests', 'also convert test suite and test runners')
         .action(async (path, options) => {
-            if (options.verbose === true || options.simulate) {
-                setLogLevelVerbose();
-            }
-            await convertPreview(path, !!options.simulate, !!options.tests);
+            await convertPreview(path, options.simulate, options.tests, options.verbose);
         });
 }
 
@@ -25,15 +23,42 @@ export function addConvertPreviewCommand(cmd: Command): void {
  * @param {string} basePath - The path to the adaptation project.
  * @param {boolean} simulate - If set to true, then no files will be written to the filesystem.
  * @param {boolean} convertTests - If set to true, then test suite and test runners fill be included in the conversion.
+ * @param {boolean} verbose - If set to true, then verbose information will be logged.
  */
-async function convertPreview(basePath: string, simulate: boolean, convertTests: boolean): Promise<void> {
-    const logger = getLogger();
+async function convertPreview(
+    basePath: string,
+    simulate: boolean | undefined,
+    convertTests: boolean | undefined,
+    verbose = false
+): Promise<void> {
+    let logger = getLogger();
 
     if (!basePath) {
         basePath = process.cwd();
     }
 
-    logger.debug(`Called convert preview for path '${basePath}'. The simulate path is '${simulate}'.`);
+    simulate =
+        simulate ??
+        (await simulatePrompt().catch((error: Error) => {
+            logger.error(error.message);
+            return process.exit(1);
+        }));
+    if (simulate || verbose) {
+        setLogLevelVerbose();
+    }
+    // Reinitialize logger with verbose log level
+    logger = getLogger();
+
+    convertTests =
+        convertTests ??
+        (await includeTestRunnersPrompt().catch((error: Error) => {
+            logger.error(error.message);
+            return process.exit(1);
+        }));
+
+    logger.debug(
+        `Called convert preview-config for path '${basePath}', simulate is '${simulate}', convert tests is '${convertTests}'.`
+    );
     try {
         const fs = await convertToVirtualPreview(basePath, { convertTests, logger });
 

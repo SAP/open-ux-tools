@@ -8,7 +8,7 @@
             "odataServiceUrlName": "OData Service",
             "capProjectName": "Local CAP Project",
             "metadataFileName": "Metadata Document",
-            "noneName": "None",
+            "choiceNone": "$t(texts.choiceNameNone)",
             "projectSpecificDestChoiceText": "Connect to a $t(prompts.datasourceType.projectSpecificDestName)",
             "businessHubChoiceText": "Connect to $t(prompts.datasourceType.businessHubName)",
             "sapSystemChoiceText": "Connect to a $t(prompts.datasourceType.sapSystemName)",
@@ -63,7 +63,9 @@
         "warnings": {
             "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services, or not classified services, are not intended to be used for the generation of SAP Fiori UI applications",
             "noServicesAvailable": "No services available for the selected system, see logs for further details.",
-            "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only"
+            "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only",
+            "noAnnotations": "No backend annotations associated with this service were retrieved and may result in an invalid application being created",
+            "collaborativeDraftMessage": "The selected service is draft enabled but does not support collaborative draft."
         },
         "systemUrl": {
             "message": "System URL",
@@ -101,7 +103,7 @@
         },
         "systemSelection": {
             "newSystemChoiceLabel": "New system",
-            "hint": "Select a system configuration",
+            "hint": "Select a system configuration.",
             "message": "System",
             "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
         },
@@ -113,18 +115,82 @@
         },
         "serviceKey": {
             "message": "Service key file path",
-            "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+            "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
             "incompleteServiceKeyInfo": "Service keys file does not contain the required information",
             "unparseableServiceKey": "Service keys file contents are not a valid JSON format"
         },
         "cloudFoundryAbapSystem": {
             "message": "ABAP environment",
-            "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance"
+            "hint": "Enter the name of the Cloud Foundry service that contains the ABAP Environment instance."
         },
         "destinationServicePath": {
             "message": "Service path",
-            "hint": "Enter the path to the OData service, relative to the selected destination URL",
+            "hint": "Enter the path to the OData service, relative to the selected destination URL.",
             "invalidServicePathWarning": "Please enter a valid service path"
+        },
+        "mainEntitySelection": {
+            "message": "Main entity",
+            "defaultEntityNameNotFoundWarning": "The supplied entity cannot be found in the service. Please choose from the list above.",
+            "noDraftEnabledEntitiesError": "The CAP service you have chosen does not have any entities that are draft enabled. In order to generate a V4 Fiori application using this floor plan for a CAP project, the entity selected must be draft enabled.",
+            "noEntitiesError": "$t(errors.noRelevantEntities)",
+            "noEntitiesAlpV4Error": "The OData V4 service you have provided is not suitable for use in an Analytical List Page application. The service must contain aggregate based entities for this template."
+        },
+        "navigationEntitySelection": {
+            "message": "Navigation entity",
+            "choiceNone": "$t(texts.choiceNameNone)"
+        },
+        "filterEntityType": {
+            "message": "Filter entity",
+            "noEntitiesError": "$t(errors.noRelevantEntities)"
+        },
+        "tableType": {
+            "message": "Table type",
+            "hint": "Defines the table type for the List Report Page.",
+            "choiceNone": "$t(texts.choiceNameNone)",
+            "choiceGrid": "Grid",
+            "choiceAnalytical": "Analytical",
+            "choiceResponsive": "Responsive",
+            "choiceTree": "Tree"
+        },
+        "hierarchyQualifier": {
+            "message": "Hierarchy qualifier",
+            "hint": "Leading property that decides between either a recursive hierarchy or data aggregation.",
+            "qualifierRequiredForV4Warning": "Hierarchy qualifier is required for V4 OData services"
+        },
+        "addFEOPAnnotations": {
+            "message": "Automatically add a form to the generated application if none already exists?",
+            "hint": "Choose the annotation generation method.",
+            "breadcrumb": "Generate Annotations"
+        },
+        "addLineItemAnnotations": {
+            "message": "Automatically add table columns to the list page and a section to the object page if none already exists?",
+            "hint": "Choose the annotation generation method.",
+            "breadcrumb": "Generate Annotations",
+            "valueHelpsAnnotationsInfoMessage": "Basic value helps will also be created."
+        },
+        "presentationQualifier": {
+            "message": "Qualifier",
+            "hint": "Represents the qualifier of the SelectionPresentationVariant. Analytical List Page looks for SelectionPresentationVariant with this qualifier and if not found, it looks for PresentationVariant with this qualifier."
+        },
+        "tableSelectionMode": {
+            "message": "Selection mode",
+            "hint": "Defines different selection modes for the SmartTable in Analytical List Page.",
+            "choiceNone": "$t(texts.choiceNameNone)",
+            "choiceSingle": "Single",
+            "choiceAuto": "Auto",
+            "choiceMulti": "Multi"
+        },
+        "tableMultiSelect": {
+            "message": "Allow multi select",
+            "hint": "Allows you to show a checkbox for selecting multiple items in a table. This setting comes into effect only if there are actions defined either through annotation or manifest."
+        },
+        "tableAutoHide": {
+            "message": "Auto hide",
+            "hint": "Determines chart/table interaction. If set to true, the chart acts as a filter for the table. If set to false, the matching table rows are highlighted but the table is not filtered."
+        },
+        "smartVariantManagement": {
+            "message": "Enable smart variant management",
+            "hint": "Enables page level variant."
         }
     },
     "errors": {
@@ -153,7 +219,14 @@
         "serviceCatalogRequest": "An error occurred requesting services from: {{- catalogRequestUri }} and entity set: {{entitySet}}. {{error}}",
         "storedSystemConnectionError": "An error occurred while validating the stored system connection info. System name: {{-systemName}}, error: {{- error}}",
         "noCatalogOrServiceAvailable": "No active system or OData service endpoint connection available to retrieve service(s).",
-        "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version(s): V{{version}}."
+        "allCatalogServiceRequestsFailed": "All catalog service requests failed for the selected system. OData version(s): V{{version}}.",
+        "unparseableMetadata": "Unable to parse entities from metadata document. {{-error}}",
+        "unparseableOdataVersion": "Unable to parse the odata version from the metadata.",
+        "unparseableXML": "Unparseable XML was specified: {{-error}}",
+        "noRelevantEntities": "The template and service selected have no relevant entities that you can use."
+    },
+    "warnings": {
+        "largeMetadataDocument": "The metadata for this OData service is significantly large. It may take some time before this operation completes."
     },
     "texts": {
         "suggestedSystemNameClient": ", client {{client}}",
@@ -162,6 +235,7 @@
         "systemTypeBTP": "BTP",
         "systemTypeS4HC": "S4HC",
         "httpStatus": "http status {{httpStatus}}",
-        "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration."
+        "checkDestinationAuthConfig": "Please check the SAP BTP destination authentication configuration.",
+        "choiceNameNone": "None"
     }
 }

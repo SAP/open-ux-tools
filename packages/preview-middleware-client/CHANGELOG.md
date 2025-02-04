@@ -1,5 +1,48 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.56
+
+### Patch Changes
+
+-   740f4d9: fix: CPE Quick action bug fix in ALP v4 projects. Add Custom Table Action worked incorrectly on Analytical Pages with multiple action toolbars in charts and tables.
+    Some V4 Quick Action code refactoring to optimize
+
+## 0.11.55
+
+### Patch Changes
+
+-   6b55228: Bind i18n models with namespace
+
+## 0.11.54
+
+### Patch Changes
+
+-   61edb7b: Fixed "Enable/Disable Semantic Date Range in Filter Bar" quick action in SAP Fiori Elements for OData V2 applications when using UI5 version lower than 1.126.
+
+## 0.11.53
+
+### Patch Changes
+
+-   1f98f07: Add stable ids in AddFragment and ControllerExtension forms
+
+## 0.11.52
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
+## 0.11.51
+
+### Patch Changes
+
+-   1586cc3: CPE: Enable Variant Management in Tables and Charts Quick Action
+
+## 0.11.50
+
+### Patch Changes
+
+-   b88531b: fix: Enabled missing quick actions on ALP in V2 adp projects
+
 ## 0.11.49
 
 ### Patch Changes

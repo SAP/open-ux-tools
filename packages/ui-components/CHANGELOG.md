@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.24.2
+
+### Patch Changes
+
+-   dd34d62: UI accessability improvements for disabled elements and in quick action list
+
 ## 1.24.1
 
 ### Patch Changes

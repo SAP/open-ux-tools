@@ -1,4 +1,4 @@
-import { checkPrerequisites, getExplicitApprovalToAdjustFiles } from './prerequisites';
+import { checkPrerequisites } from './prerequisites';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { deleteNoLongerUsedFiles, renameDefaultSandboxes, renameDefaultTestFiles } from './preview-files';
@@ -28,13 +28,8 @@ export async function convertToVirtualPreview(
     const logger = options.logger;
     const convertTests = options.convertTests ?? false;
 
-    if (!(await checkPrerequisites(basePath, fs, logger))) {
+    if (!(await checkPrerequisites(basePath, fs, convertTests, logger))) {
         throw Error('The prerequisites are not met. For more information, see the log messages above.');
-    }
-
-    if (!(await getExplicitApprovalToAdjustFiles())) {
-        logger?.error('You have not approved the conversion. The conversion has been aborted.');
-        return fs;
     }
 
     await updatePreviewMiddlewareConfigs(fs, basePath, convertTests, logger);
@@ -43,7 +38,7 @@ export async function convertToVirtualPreview(
         await renameDefaultTestFiles(fs, basePath, logger);
         await updateDefaultTestConfig(fs, basePath, logger);
     }
-    await deleteNoLongerUsedFiles(fs, basePath, logger);
+    await deleteNoLongerUsedFiles(fs, basePath, convertTests, logger);
     await updateVariantsCreationScript(fs, basePath, logger);
 
     return fs;

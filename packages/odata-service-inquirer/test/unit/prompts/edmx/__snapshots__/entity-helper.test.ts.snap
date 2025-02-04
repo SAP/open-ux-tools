@@ -1,0 +1,517 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Test entity helper functions Test filter entities with aggregate transformation annotation should filter ALP v4 entities 1`] = `
+[
+  {
+    "name": "I_Currency",
+    "value": {
+      "entitySetName": "I_Currency",
+      "entitySetType": "SEPMRA_PROD_MAN.I_CurrencyType",
+    },
+  },
+  {
+    "name": "I_DraftAdministrativeData",
+    "value": {
+      "entitySetName": "I_DraftAdministrativeData",
+      "entitySetType": "SEPMRA_PROD_MAN.I_DraftAdministrativeDataType",
+    },
+  },
+  {
+    "name": "I_Language",
+    "value": {
+      "entitySetName": "I_Language",
+      "entitySetType": "SEPMRA_PROD_MAN.I_LanguageType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_CurrencyValueHelp",
+    "value": {
+      "entitySetName": "SEPMRA_C_CurrencyValueHelp",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_CurrencyValueHelpType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ContactPerson",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ContactPerson",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ContactPersonType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_PoItmCube",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_PoItmCube",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_PoItmCubeType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_Product",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_Product",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductImage",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductImage",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductImageType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductPriceRange",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductPriceRange",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductPriceRangeType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductSalesData",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductSalesData",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductSalesDataType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductStock",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductStock",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductStockType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductText",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductText",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductTextType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_Review",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_Review",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ReviewPost",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ReviewPost",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_StorageBinTP",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_StorageBinTP",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_StorageBinTPType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_Supplier",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_Supplier",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_SupplierType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_Address",
+    "value": {
+      "entitySetName": "SEPMRA_I_Address",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_AddressType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_DimensionUnit",
+    "value": {
+      "entitySetName": "SEPMRA_I_DimensionUnit",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_DimensionUnitType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_OrganizationalUnit",
+    "value": {
+      "entitySetName": "SEPMRA_I_OrganizationalUnit",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_OrganizationalUnitType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_PriceClassification",
+    "value": {
+      "entitySetName": "SEPMRA_I_PriceClassification",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_PriceClassificationType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_ProductCategory",
+    "value": {
+      "entitySetName": "SEPMRA_I_ProductCategory",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_ProductCategoryType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_ProductMainCategory",
+    "value": {
+      "entitySetName": "SEPMRA_I_ProductMainCategory",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_ProductMainCategoryType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_QuantityUnit",
+    "value": {
+      "entitySetName": "SEPMRA_I_QuantityUnit",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_QuantityUnitType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_StockAvailability",
+    "value": {
+      "entitySetName": "SEPMRA_I_StockAvailability",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_StockAvailabilityType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_WeightUnit",
+    "value": {
+      "entitySetName": "SEPMRA_I_WeightUnit",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_WeightUnitType",
+    },
+  },
+]
+`;
+
+exports[`Test entity helper functions Test getEntityChoices should use entity type name as choice name 1`] = `
+[
+  {
+    "name": "I_CurrencyType",
+    "value": {
+      "entitySetName": "I_CurrencyType",
+      "entitySetType": "SEPMRA_PROD_MAN.I_CurrencyType",
+    },
+  },
+  {
+    "name": "I_DraftAdministrativeDataType",
+    "value": {
+      "entitySetName": "I_DraftAdministrativeDataType",
+      "entitySetType": "SEPMRA_PROD_MAN.I_DraftAdministrativeDataType",
+    },
+  },
+  {
+    "name": "I_LanguageType",
+    "value": {
+      "entitySetName": "I_LanguageType",
+      "entitySetType": "SEPMRA_PROD_MAN.I_LanguageType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_CurrencyValueHelpType",
+    "value": {
+      "entitySetName": "SEPMRA_C_CurrencyValueHelpType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_CurrencyValueHelpType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ContactPersonType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ContactPersonType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ContactPersonType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_PoItmCubeType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_PoItmCubeType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_PoItmCubeType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductImageType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductImageType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductImageType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductPriceRangeType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductPriceRangeType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductPriceRangeType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductSalesDataType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductSalesDataType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductSalesDataType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductStockType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductStockType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductStockType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ProductTextType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductTextType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ProductTextType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ReviewType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ReviewType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_ReviewPostType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ReviewPostType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_ReviewPostType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_StorageBinTPType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_StorageBinTPType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_StorageBinTPType",
+    },
+  },
+  {
+    "name": "SEPMRA_C_PD_SupplierType",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_SupplierType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_C_PD_SupplierType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_AddressType",
+    "value": {
+      "entitySetName": "SEPMRA_I_AddressType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_AddressType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_DimensionUnitType",
+    "value": {
+      "entitySetName": "SEPMRA_I_DimensionUnitType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_DimensionUnitType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_OrganizationalUnitType",
+    "value": {
+      "entitySetName": "SEPMRA_I_OrganizationalUnitType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_OrganizationalUnitType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_PriceClassificationType",
+    "value": {
+      "entitySetName": "SEPMRA_I_PriceClassificationType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_PriceClassificationType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_ProductCategoryType",
+    "value": {
+      "entitySetName": "SEPMRA_I_ProductCategoryType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_ProductCategoryType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_ProductMainCategoryType",
+    "value": {
+      "entitySetName": "SEPMRA_I_ProductMainCategoryType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_ProductMainCategoryType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_QuantityUnitType",
+    "value": {
+      "entitySetName": "SEPMRA_I_QuantityUnitType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_QuantityUnitType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_StockAvailabilityType",
+    "value": {
+      "entitySetName": "SEPMRA_I_StockAvailabilityType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_StockAvailabilityType",
+    },
+  },
+  {
+    "name": "SEPMRA_I_WeightUnitType",
+    "value": {
+      "entitySetName": "SEPMRA_I_WeightUnitType",
+      "entitySetType": "SEPMRA_PROD_MAN.SEPMRA_I_WeightUnitType",
+    },
+  },
+]
+`;
+
+exports[`Test entity helper functions Test getNavigationEntityOptions should return v2 navigation entities 1`] = `
+[
+  {
+    "name": "None",
+    "value": {},
+  },
+  {
+    "name": "DraftAdministrativeData",
+    "value": {
+      "entitySetName": "I_DraftAdministrativeData",
+      "navigationPropertyName": "DraftAdministrativeData",
+    },
+  },
+  {
+    "name": "SiblingEntity",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_Product",
+      "navigationPropertyName": "SiblingEntity",
+    },
+  },
+  {
+    "name": "to_CollaborativeReview",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_Review",
+      "navigationPropertyName": "to_CollaborativeReview",
+    },
+  },
+  {
+    "name": "to_CollaborativeReviewPost",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ReviewPost",
+      "navigationPropertyName": "to_CollaborativeReviewPost",
+    },
+  },
+  {
+    "name": "to_Currency",
+    "value": {
+      "entitySetName": "I_Currency",
+      "navigationPropertyName": "to_Currency",
+    },
+  },
+  {
+    "name": "to_CurrencyVH",
+    "value": {
+      "entitySetName": "SEPMRA_C_CurrencyValueHelp",
+      "navigationPropertyName": "to_CurrencyVH",
+    },
+  },
+  {
+    "name": "to_DimensionUnit",
+    "value": {
+      "entitySetName": "SEPMRA_I_DimensionUnit",
+      "navigationPropertyName": "to_DimensionUnit",
+    },
+  },
+  {
+    "name": "to_MainProductCategory",
+    "value": {
+      "entitySetName": "SEPMRA_I_ProductMainCategory",
+      "navigationPropertyName": "to_MainProductCategory",
+    },
+  },
+  {
+    "name": "to_OriginalLanguage",
+    "value": {
+      "entitySetName": "I_Language",
+      "navigationPropertyName": "to_OriginalLanguage",
+    },
+  },
+  {
+    "name": "to_PriceRange",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductPriceRange",
+      "navigationPropertyName": "to_PriceRange",
+    },
+  },
+  {
+    "name": "to_ProductBaseUnit",
+    "value": {
+      "entitySetName": "SEPMRA_I_QuantityUnit",
+      "navigationPropertyName": "to_ProductBaseUnit",
+    },
+  },
+  {
+    "name": "to_ProductCategory",
+    "value": {
+      "entitySetName": "SEPMRA_I_ProductCategory",
+      "navigationPropertyName": "to_ProductCategory",
+    },
+  },
+  {
+    "name": "to_ProductCategoryVH",
+    "value": {
+      "entitySetName": "SEPMRA_I_ProductCategory",
+      "navigationPropertyName": "to_ProductCategoryVH",
+    },
+  },
+  {
+    "name": "to_ProductImage",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductImage",
+      "navigationPropertyName": "to_ProductImage",
+    },
+  },
+  {
+    "name": "to_ProductSalesData",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductSalesData",
+      "navigationPropertyName": "to_ProductSalesData",
+    },
+  },
+  {
+    "name": "to_ProductStock",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductStock",
+      "navigationPropertyName": "to_ProductStock",
+    },
+  },
+  {
+    "name": "to_ProductText",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductText",
+      "navigationPropertyName": "to_ProductText",
+    },
+  },
+  {
+    "name": "to_ProductTextInOriginalLang",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_ProductText",
+      "navigationPropertyName": "to_ProductTextInOriginalLang",
+    },
+  },
+  {
+    "name": "to_StorageBin",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_StorageBinTP",
+      "navigationPropertyName": "to_StorageBin",
+    },
+  },
+  {
+    "name": "to_Supplier",
+    "value": {
+      "entitySetName": "SEPMRA_C_PD_Supplier",
+      "navigationPropertyName": "to_Supplier",
+    },
+  },
+  {
+    "name": "to_WeightUnit",
+    "value": {
+      "entitySetName": "SEPMRA_I_WeightUnit",
+      "navigationPropertyName": "to_WeightUnit",
+    },
+  },
+]
+`;

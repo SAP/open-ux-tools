@@ -31,7 +31,7 @@ export function getDatasourceTypeChoices({
     choices.push({ name: t('prompts.datasourceType.metadataFileChoiceText'), value: DatasourceType.metadataFile });
 
     if (includeNone) {
-        choices.unshift({ name: t('prompts.datasourceType.noneName'), value: DatasourceType.none });
+        choices.unshift({ name: t('prompts.datasourceType.choiceNone'), value: DatasourceType.none });
     }
 
     return choices;

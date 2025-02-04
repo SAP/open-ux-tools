@@ -10,12 +10,14 @@ import {
     type FEOPSettings,
     type FioriElementsApp,
     type LROPSettings,
-    type WorklistSettings
+    type WorklistSettings,
+    TemplateType
 } from '../src/types';
 import { promisify } from 'util';
 import { exec as execCP } from 'child_process';
 const exec = promisify(execCP);
 import { ServiceType } from '@sap-ux/odata-service-writer';
+import { type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
 export const testOutputDir = join(__dirname, 'test-output');
 
@@ -200,4 +202,44 @@ export const projectChecks = async (
         console.log('stderr:', error?.stderr);
         expect(error).toBeUndefined();
     }
+};
+
+export const sampleCapService: CapServiceCdsInfo = {
+    cdsUi5PluginInfo: {
+        isCdsUi5PluginEnabled: true,
+        hasMinCdsVersion: true,
+        isWorkspaceEnabled: true,
+        hasCdsUi5Plugin: true
+    },
+    projectPath: join('test'),
+    serviceName: 'mainService',
+    capType: 'Node.js',
+    appPath: join('test', 'path')
+};
+
+/**
+ *
+ * @param name name of the app
+ * @param templateType template type of the app
+ * @returns a Fiori Elements App of provided template type
+ */
+export const applyBaseConfigToFEApp = (name: string, templateType: TemplateType) => {
+    const addUi5Config = templateType === TemplateType.Worklist;
+    const appInfo = feBaseConfig(name, !addUi5Config);
+    return {
+        ...Object.assign(appInfo, {
+            template: {
+                type: templateType,
+                settings: v4TemplateSettings
+            }
+        }),
+        service: {
+            version: OdataVersion.v4,
+            capService: sampleCapService
+        },
+        package: {
+            ...appInfo.package,
+            sapuxLayer: 'CUSTOMER_BASE'
+        }
+    } as FioriElementsApp<LROPSettings>;
 };

@@ -1,5 +1,137 @@
 # @sap-ux/preview-middleware
 
+## 0.17.15
+
+### Patch Changes
+
+-   5c127cf: fix: ui5 version protocol for karma tests
+
+## 0.17.14
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/adp-tooling@0.12.121
+
+## 0.17.13
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/adp-tooling@0.12.120
+
+## 0.17.12
+
+### Patch Changes
+
+-   740f4d9: fix: CPE Quick action bug fix in ALP v4 projects. Add Custom Table Action worked incorrectly on Analytical Pages with multiple action toolbars in charts and tables.
+    Some V4 Quick Action code refactoring to optimize
+
+## 0.17.11
+
+### Patch Changes
+
+-   6b55228: Bind i18n models with namespace
+
+## 0.17.10
+
+### Patch Changes
+
+-   1f0bb25: fix: refactor object clones
+
+## 0.17.9
+
+### Patch Changes
+
+-   61edb7b: Fixed "Enable/Disable Semantic Date Range in Filter Bar" quick action in SAP Fiori Elements for OData V2 applications when using UI5 version lower than 1.126.
+
+## 0.17.8
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/adp-tooling@0.12.119
+
+## 0.17.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.118
+
+## 0.17.6
+
+### Patch Changes
+
+-   1f98f07: Add stable ids in AddFragment and ControllerExtension forms
+
+## 0.17.5
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/adp-tooling@0.12.117
+
+## 0.17.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.116
+
+## 0.17.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.115
+
+## 0.17.2
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/adp-tooling@0.12.114
+
+## 0.17.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.113
+-   @sap-ux/project-access@1.29.1
+
+## 0.17.0
+
+### Minor Changes
+
+-   0c3964e: add url param viewCache in case it is missing
+
+## 0.16.175
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
+## 0.16.174
+
+### Patch Changes
+
+-   1586cc3: CPE: Enable Variant Management in Tables and Charts Quick Action
+
+## 0.16.173
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.112
+
+## 0.16.172
+
+### Patch Changes
+
+-   b88531b: fix: Enabled missing quick actions on ALP in V2 adp projects
+
 ## 0.16.171
 
 ### Patch Changes

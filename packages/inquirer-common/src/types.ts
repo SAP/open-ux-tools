@@ -7,6 +7,7 @@ import type {
     CheckboxQuestion as BaseCheckBoxQuestion,
     NumberQuestion as BaseNumberQuestion,
     EditorQuestion as BaseEditorQuestion,
+    PasswordQuestion as BasePasswordQuestion,
     ListChoiceOptions,
     PromptFunction,
     PromptModule,
@@ -84,6 +85,12 @@ export type YUIQuestion<A extends Answers = Answers> = Question<A> & {
     additionalMessages?: PromptSeverityMessage;
 };
 
+export interface PasswordQuestion<A extends Answers = Answers> extends BasePasswordQuestion<A> {
+    name: YUIQuestion['name'];
+    guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
+}
+
 export interface FileBrowserQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
     name: YUIQuestion['name'];
     guiType: 'file-browser' | 'folder-browser';
@@ -99,6 +106,7 @@ export interface ListQuestion<A extends Answers = Answers> extends BaseListQuest
 export interface ConfirmQuestion<A extends Answers = Answers> extends BaseConfirmQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: PromptSeverityMessage;
 }
 
 export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQuestion<A> {
@@ -109,6 +117,7 @@ export interface EditorQuestion<A extends Answers = Answers> extends BaseEditorQ
 export interface InputQuestion<A extends Answers = Answers> extends BaseInputQuestion<A> {
     name: YUIQuestion['name'];
     guiOptions?: YUIQuestion['guiOptions'];
+    additionalMessages?: YUIQuestion['additionalMessages'];
 }
 
 export interface CheckBoxQuestion<A extends Answers = Answers> extends BaseCheckBoxQuestion<A> {

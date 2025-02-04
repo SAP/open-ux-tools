@@ -86,7 +86,7 @@ describe('CF Writer', () => {
             await expect(generateAppConfig({ appPath: capPath }, unitTestFs)).rejects.toThrowError(MTABinNotFound);
         });
 
-        test('Validate dependency on CDS', async () => {
+        test('Validate error is thrown if cds fails', async () => {
             spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ error: 1 } as any));
             const capPath = join(outputDir, 'capcds');
             fsExtra.mkdirSync(outputDir, { recursive: true });
@@ -101,7 +101,7 @@ describe('CF Writer', () => {
                     },
                     unitTestFs
                 )
-            ).rejects.toThrowError(CDSBinNotFound);
+            ).rejects.toThrowError(/Something went wrong creating mta.yaml!/);
             expect(spawnMock).not.toHaveBeenCalledWith('');
         });
     });

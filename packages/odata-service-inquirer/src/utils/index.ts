@@ -1,12 +1,15 @@
 import { ODataVersion } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { XMLParser } from 'fast-xml-parser';
 import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import LoggerHelper from '../prompts/logger-helper';
 import { PromptState } from './prompt-state';
-import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
+import { convert } from '@sap-ux/annotation-converter';
+import { parse } from '@sap-ux/edmx-parser';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
 /**
  * Determine if the current prompting environment is cli or a hosted extension (app studio or vscode).
@@ -25,9 +28,40 @@ export function getPromptHostEnvironment(): { name: string; technical: HostEnvir
  * Validate xml and parse the odata version from the metadata xml.
  *
  * @param metadata a metadata string
- * @returns the odata version of the specified metadata, throws an error if the metadata is invalid
+ * @returns the odata version of the specified metadata, along with the converted metadata in case further processing may be required to avoid re-parsing.
+ *  Throws an error if the metadata or odata version is invalid.
  */
-export function parseOdataVersion(metadata: string): OdataVersion {
+export function parseOdataVersion(metadata: string): {
+    odataVersion: OdataVersion;
+    convertedMetadata: ConvertedMetadata;
+} {
+    try {
+        const convertedMetadata = convert(parse(metadata));
+        const parsedOdataVersion = parseInt(convertedMetadata?.version, 10);
+
+        if (Number.isNaN(parsedOdataVersion)) {
+            LoggerHelper.logger.error(t('errors.unparseableOdataVersion'));
+            throw new Error(t('errors.unparseableOdataVersion'));
+        }
+        // Note that odata version > `4` e.g. `4.1`, is not currently supported by `@sap-ux/edmx-converter`
+        const odataVersion = parsedOdataVersion === 4 ? OdataVersion.v4 : OdataVersion.v2;
+        return {
+            odataVersion,
+            convertedMetadata
+        };
+    } catch (error) {
+        LoggerHelper.logger.error(error);
+        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+    }
+}
+
+/**
+ * Convert specified xml string to JSON.
+ *
+ * @param xml - the schema to parse
+ * @returns parsed object representation of passed XML
+ */
+export function xmlToJson(xml: string): any {
     const options = {
         attributeNamePrefix: '',
         ignoreAttributes: false,
@@ -35,14 +69,12 @@ export function parseOdataVersion(metadata: string): OdataVersion {
         parseAttributeValue: true,
         removeNSPrefix: true
     };
-    const parser: XMLParser = new XMLParser(options);
+
     try {
-        const parsed = parser.parse(metadata, true);
-        const odataVersion: OdataVersion = parsed['Edmx']['Version'] === 1 ? OdataVersion.v2 : OdataVersion.v4;
-        return odataVersion;
+        const parser = new XMLParser(options);
+        return parser.parse(xml, true);
     } catch (error) {
-        LoggerHelper.logger.error(error);
-        throw new Error(t('prompts.validationMessages.metadataInvalid'));
+        throw new Error(t('error.unparseableXML', { error }));
     }
 }
 
