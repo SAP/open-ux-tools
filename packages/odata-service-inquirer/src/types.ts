@@ -2,9 +2,9 @@ import type { Annotations, ServiceProvider } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { CdsVersionInfo } from '@sap-ux/project-access';
 import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
+import type { CapService } from '@sap-ux/cap-config-writer';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
 
@@ -202,40 +202,6 @@ export type EntityRelatedAnswers = EntitySelectionAnswers &
     AnnotationGenerationAnswers &
     AlpTableConfigAnswers;
 
-export type CapRuntime = 'Node.js' | 'Java';
-
-export interface CapService {
-    /**
-     * The path to the CAP project.
-     */
-    projectPath: string;
-    /**
-     * The CDS info for the Cds instance that was used to compile the project when determining the service.
-     */
-    cdsVersionInfo?: CdsVersionInfo;
-    /**
-     * The name of the CAP service as identified by the cds model.
-     */
-    serviceName: string;
-    /**
-     * The URL path to the service, as specfied in the manifest.json of generated apps
-     * This is also provided as `OdataServicePromptAnswers` property `servicePath`
-     */
-    urlPath?: string;
-    /**
-     * The relative path (from the `projectPath`) to the service cds file.
-     */
-    serviceCdsPath?: string;
-    /**
-     * The runtime of the Cds instance that was used to compile the project when determining the service.
-     */
-    capType?: CapRuntime;
-    /**
-     * The relative path (from the `projectPath`) to the app folder
-     */
-    appPath?: string;
-}
-
 export interface CapServiceChoice extends ListChoiceOptions {
     value: CapService;
 }
@@ -351,6 +317,11 @@ export type ServiceSelectionPromptOptions = {
      * If the service selection prompt is hidden then the odata service related answer properties will not be returned.
      */
     hide?: boolean;
+    /**
+     * If true, warn the user if the selected service has draft root annotated entity sets but does not have the share action property set.
+     * This is used to indicate that the service does not support collaborative draft.
+     */
+    showCollaborativeDraftWarning?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service selection prompts allow extension with additional messages;
 
 export type SystemNamePromptOptions = {
@@ -366,9 +337,12 @@ export type OdataServiceUrlPromptOptions = {
      * Used to validate the service specified by the url is of the required odata version edmx
      */
     requiredOdataVersion?: OdataVersion;
+    /**
+     * If true, warn the user if the selected service has draft root annotated entity sets but does not have the share action property set.
+     * This is used to indicate that the service does not support collaborative draft.
+     */
+    showCollaborativeDraftWarning?: boolean;
 } & Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL prompts allow extension with additional messages
-
-export type OdataServiceUrlPasswordOptions = Pick<CommonPromptOptions, 'additionalMessages'>; // Service URL password prompts allow extension with additional messages
 
 /**
  * Provide the correct type checking for prompt options
@@ -378,7 +352,6 @@ type odataServiceInquirerPromptOptions = Record<promptNames.datasourceType, Data
     Record<promptNames.capProject, CapProjectPromptOptions> &
     Record<promptNames.capService, CapServicePromptOptions> &
     Record<promptNames.serviceUrl, OdataServiceUrlPromptOptions> &
-    Record<promptNames.serviceUrlPassword, OdataServiceUrlPasswordOptions> &
     Record<promptNames.serviceSelection, ServiceSelectionPromptOptions> &
     Record<promptNames.userSystemName, SystemNamePromptOptions> &
     Record<promptNames.systemSelection, SystemSelectionPromptOptions>;

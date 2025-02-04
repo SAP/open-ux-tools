@@ -371,6 +371,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "breadcrumb": true,
       "hint": "https://<hostname>:<port>/path/to/odata/service/",
@@ -383,6 +384,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "default": false,
     "message": "Do you want to continue generation with the untrusted certificate?",
     "name": "ignoreCertError",
@@ -405,6 +407,7 @@ exports[`getQuestions getQuestions 1`] = `
     "when": [Function],
   },
   {
+    "additionalMessages": [Function],
     "guiOptions": {
       "applyDefaultWhenDirty": true,
       "mandatory": true,

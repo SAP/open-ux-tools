@@ -2,6 +2,7 @@ import type { FioriElementsApp, LROPSettings } from '../src';
 import { generate, TableType, TemplateType } from '../src';
 import { join } from 'path';
 import { removeSync } from 'fs-extra';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import {
     testOutputDir,
     debug,
@@ -17,6 +18,9 @@ import {
 } from './common';
 import { ServiceType } from '@sap-ux/odata-service-writer';
 import { type OdataService } from '@sap-ux/odata-service-writer';
+import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
@@ -30,6 +34,11 @@ jest.mock('read-pkg-up', () => ({
             version: '9.9.9-mocked'
         }
     })
+}));
+
+jest.mock('@sap-ux/cap-config-writer', () => ({
+    ...jest.requireActual('@sap-ux/cap-config-writer'),
+    applyCAPUpdates: jest.fn()
 }));
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
@@ -423,5 +432,90 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         const packageJsonPath = join(curTestOutPath, 'package.json');
         const packageJson = fs.readJSON(packageJsonPath);
         expect((packageJson as any)?.sapuxLayer).toBe('CUSTOMER_BASE');
+    });
+
+    describe('CAP updates', () => {
+        const capProjectSettings = {
+            appRoot: curTestOutPath,
+            packageName: 'felrop1',
+            appId: 'felrop1',
+            sapux: true,
+            enableTypescript: undefined
+        };
+
+        const getFioriElementsApp = (capService?: CapServiceCdsInfo) => {
+            return {
+                ...Object.assign(feBaseConfig('felrop1'), {
+                    template: {
+                        type: TemplateType.ListReportObjectPage,
+                        settings: v4TemplateSettings
+                    }
+                }),
+                service: {
+                    version: OdataVersion.v4,
+                    capService
+                },
+                package: {
+                    ...feBaseConfig('felrop1').package,
+                    sapuxLayer: 'CUSTOMER_BASE'
+                }
+            } as FioriElementsApp<LROPSettings>;
+        };
+
+        afterEach(() => {
+            jest.clearAllMocks();
+            jest.resetAllMocks();
+        });
+
+        test('should perform CAP updates when CAP service is available and cds ui5 plugin is enabled', async () => {
+            const capService: CapServiceCdsInfo = {
+                cdsUi5PluginInfo: {
+                    isCdsUi5PluginEnabled: true,
+                    hasMinCdsVersion: true,
+                    isWorkspaceEnabled: true,
+                    hasCdsUi5Plugin: true
+                },
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js'
+            };
+            const fs = create(createStorage());
+
+            const fioriElementsApp = getFioriElementsApp(capService);
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+
+            expect(applyCAPUpdates).toBeCalledWith(fs, capService, {
+                ...capProjectSettings,
+                enableNPMWorkspaces: true,
+                enableCdsUi5Plugin: true
+            });
+        });
+
+        test('should perform CAP updates when CAP service is available and cds ui5 plugin is disabled', async () => {
+            const fs = create(createStorage());
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js'
+            };
+            const fioriElementsApp = getFioriElementsApp(capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo);
+            await generate(curTestOutPath, fioriElementsApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                enableNPMWorkspaces: false,
+                enableCdsUi5Plugin: false
+            });
+        });
+
+        test('should not perform CAP updates, when no cap service provided', async () => {
+            const fs = create(createStorage());
+
+            const fioriElementsApp = getFioriElementsApp();
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(applyCAPUpdates).toBeCalledTimes(0);
+        });
     });
 });
