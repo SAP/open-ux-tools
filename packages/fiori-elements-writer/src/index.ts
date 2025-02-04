@@ -18,13 +18,12 @@ import {
 } from './data/templateAttributes';
 import { extendManifestJson } from './data/manifestSettings';
 import semVer from 'semver';
-import { initI18n } from './i18n';
+import { initI18n, t } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { writeAnnotations } from './writeAnnotations';
-import { t } from './i18n';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
