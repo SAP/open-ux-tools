@@ -8,9 +8,6 @@ import {
     type GenerateAnnotationsOptions
 } from '@sap-ux/annotation-generator';
 import type { Editor } from 'mem-fs-editor';
-import { TemplateTypeAttributes } from './data/templateAttributes';
-import type { Logger } from '@sap-ux/logger';
-import { t } from './i18n';
 
 /**
  * Generates the annotation file path based on whether the CAP service is available.
@@ -33,54 +30,41 @@ function getAnnotationFilePath(appName?: string, capService?: CapServiceCdsInfo)
  * @param basePath - The base directory path of the project.
  * @param feApp -  to generate the Fiori elements application
  * @param fs - The file system editor instance.
- * @param log - Logger instance.
  */
 export async function writeAnnotations<T extends {}>(
     basePath: string,
     feApp: FioriElementsApp<T>,
-    fs: Editor,
-    log?: Logger
+    fs: Editor
 ): Promise<void> {
-    const annotationGenerationSupport =
-        TemplateTypeAttributes[feApp.template.type]?.annotationGenerationSupport?.[feApp.service.version];
-    if (feApp.appOptions?.addAnnotations && annotationGenerationSupport) {
-        const { settings } = feApp.template;
-        const { capService } = feApp.service;
-        const { name: packageName } = feApp.package ?? {};
-        const entitySetName = (settings as T & { entityConfig?: EntityConfig })?.entityConfig?.mainEntityName ?? '';
+    const { settings } = feApp.template;
+    const { capService } = feApp.service;
+    const { name: packageName } = feApp.package ?? {};
+    const entitySetName = (settings as T & { entityConfig?: EntityConfig })?.entityConfig?.mainEntityName ?? '';
 
-        const addLineItems =
-            feApp.template.type === TemplateType.ListReportObjectPage || feApp.template.type === TemplateType.Worklist;
+    const addLineItems =
+        feApp.template.type === TemplateType.ListReportObjectPage || feApp.template.type === TemplateType.Worklist;
 
-        let serviceName = 'mainService';
-        let projectPath = basePath;
+    let serviceName = 'mainService';
+    let projectPath = basePath;
 
-        if (capService) {
-            serviceName = capService.serviceName;
-            projectPath = capService.projectPath;
-        }
-
-        const options: GenerateAnnotationsOptions = {
-            entitySetName: entitySetName,
-            annotationFilePath: getAnnotationFilePath(packageName, capService),
-            addFacets: true,
-            addLineItems,
-            addValueHelps: !!capService
-        };
-
-        const serviceParameters: AnnotationServiceParameters = {
-            serviceName,
-            appName: packageName,
-            project: projectPath
-        };
-
-        await generateAnnotations(fs, serviceParameters, options);
-    } else {
-        log?.warn(
-            t('warn.invalidTypeForAnnotationGeneration', {
-                templateType: feApp.template.type,
-                odataVersion: feApp.service.version
-            })
-        );
+    if (capService) {
+        serviceName = capService.serviceName;
+        projectPath = capService.projectPath;
     }
+
+    const options: GenerateAnnotationsOptions = {
+        entitySetName: entitySetName,
+        annotationFilePath: getAnnotationFilePath(packageName, capService),
+        addFacets: true,
+        addLineItems,
+        addValueHelps: !!capService
+    };
+
+    const serviceParameters: AnnotationServiceParameters = {
+        serviceName,
+        appName: packageName,
+        project: projectPath
+    };
+
+    await generateAnnotations(fs, serviceParameters, options);
 }

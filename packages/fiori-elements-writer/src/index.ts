@@ -24,6 +24,7 @@ import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { writeAnnotations } from './writeAnnotations';
+import { t } from './i18n';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -232,7 +233,19 @@ async function generate<T extends {}>(
         await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
 
-    await writeAnnotations(basePath, feApp, fs, log);
+    if (
+        feApp.appOptions?.addAnnotations &&
+        TemplateTypeAttributes[feApp.template.type]?.annotationGenerationSupport?.[feApp.service.version]
+    ) {
+        await writeAnnotations(basePath, feApp, fs, log);
+    } else {
+        log?.warn(
+            t('warn.invalidTypeForAnnotationGeneration', {
+                templateType: feApp.template.type,
+                odataVersion: feApp.service.version
+            })
+        );
+    }
     return fs;
 }
 
