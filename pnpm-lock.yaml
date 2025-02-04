@@ -9410,7 +9410,7 @@ packages:
   /@types/prompts@2.4.4:
     resolution: {integrity: sha512-p5N9uoTH76lLvSAaYSZtBCdEXzpOOufsRjnhjVSrZGXikVGHX9+cc9ERtHRV4hvBKHyZb1bg4K+56Bd2TqUn4A==}
     dependencies:
-      '@types/node': 12.20.55
+      '@types/node': 18.11.9
       kleur: 3.0.3
     dev: true
 
