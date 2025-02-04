@@ -36,9 +36,9 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmjs-tile\\\\\\"\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
@@ -3306,6 +3306,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"bundleName\\": \\"fefpmjs.i18n.i18n\\"
         }
       },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
       \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
@@ -3315,10 +3319,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true
         }
-      },
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -3739,9 +3739,9 @@ archive.zip
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#fefpmts-tile\\\\\\"\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
@@ -7137,6 +7137,10 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"bundleName\\": \\"fefpmts.i18n.i18n\\"
         }
       },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
+      },
       \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
@@ -7146,10 +7150,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true
         }
-      },
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {

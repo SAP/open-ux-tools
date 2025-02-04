@@ -77,8 +77,6 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
     // This is done after `generateUi5Project` since defaults are set if values are not provided
     validateApp(feApp);
 
-    await addOdataService(basePath, feApp.service, fs);
-
     const coercedUI5Version = semVer.coerce(feApp.ui5?.version)!;
     // Add new files from templates e.g.
     const rootTemplatesPath = join(__dirname, '..', 'templates');
@@ -166,6 +164,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
 
     // Update manifest.json with template specific settings
     extendManifestJson(fs, basePath, rootTemplatesPath, feApp);
+
+    await addOdataService(basePath, feApp.service, fs);
 
     const packageJson: Package = JSON.parse(fs.read(packagePath));
     // Add tests only if v4, for now, and we have metadata (and therefore a mock server config) or has a cds service
