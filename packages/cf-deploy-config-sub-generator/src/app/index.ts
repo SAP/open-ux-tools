@@ -48,7 +48,6 @@ export default class extends DeploymentGenerator {
     private readonly apiHubConfig?: ApiHubConfig;
     private readonly cloudServiceName?: string;
     private readonly serviceBase?: string;
-
     private answers: CfDeployConfigAnswers & Partial<CFAppConfig> = {};
     private projectRoot: string;
     private mtaPath?: string;
@@ -57,7 +56,6 @@ export default class extends DeploymentGenerator {
     private lcapModeOnly = false;
     private servicePath?: string;
     private destinationName: string;
-
     private abort = false;
     private deployConfigExists = false;
 
