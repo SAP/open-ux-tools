@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.5.25
+
+### Patch Changes
+
+-   80fc126: feat: remove sap-client from start-variants-management script url parameters
+
 ## 0.5.24
 
 ### Patch Changes
