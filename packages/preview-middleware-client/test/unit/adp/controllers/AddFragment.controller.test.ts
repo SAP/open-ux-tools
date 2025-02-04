@@ -1247,7 +1247,7 @@ describe('AddFragment', () => {
             jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({}),
-                    getName: jest.fn().mockReturnValue('sap.ui.mdc.ActionToolbar')
+                    getName: jest.fn().mockReturnValue('sap.ui.mdc.Table')
                 })
             } as unknown as ManagedObject);
 
