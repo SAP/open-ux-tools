@@ -14,13 +14,16 @@ import {
     projectChecks,
     updatePackageJSONDependencyToUseLocalPath,
     v4TemplateSettingsTreeTable,
-    getTestData
+    getTestData,
+    applyBaseConfigToFEApp,
+    sampleCapService
 } from './common';
 import { ServiceType } from '@sap-ux/odata-service-writer';
 import { type OdataService } from '@sap-ux/odata-service-writer';
 import { applyCAPUpdates, type CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { generateAnnotations } from '@sap-ux/annotation-generator';
 
 const TEST_NAME = 'lropTemplates';
 if (debug?.enabled) {
@@ -39,6 +42,11 @@ jest.mock('read-pkg-up', () => ({
 jest.mock('@sap-ux/cap-config-writer', () => ({
     ...jest.requireActual('@sap-ux/cap-config-writer'),
     applyCAPUpdates: jest.fn()
+}));
+
+jest.mock('@sap-ux/annotation-generator', () => ({
+    ...jest.requireActual('@sap-ux/annotation-generator'),
+    generateAnnotations: jest.fn()
 }));
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
@@ -443,49 +451,19 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             enableTypescript: undefined
         };
 
-        const getFioriElementsApp = (capService?: CapServiceCdsInfo) => {
-            return {
-                ...Object.assign(feBaseConfig('felrop1'), {
-                    template: {
-                        type: TemplateType.ListReportObjectPage,
-                        settings: v4TemplateSettings
-                    }
-                }),
-                service: {
-                    version: OdataVersion.v4,
-                    capService
-                },
-                package: {
-                    ...feBaseConfig('felrop1').package,
-                    sapuxLayer: 'CUSTOMER_BASE'
-                }
-            } as FioriElementsApp<LROPSettings>;
-        };
-
         afterEach(() => {
             jest.clearAllMocks();
             jest.resetAllMocks();
         });
 
         test('should perform CAP updates when CAP service is available and cds ui5 plugin is enabled', async () => {
-            const capService: CapServiceCdsInfo = {
-                cdsUi5PluginInfo: {
-                    isCdsUi5PluginEnabled: true,
-                    hasMinCdsVersion: true,
-                    isWorkspaceEnabled: true,
-                    hasCdsUi5Plugin: true
-                },
-                projectPath: 'test/path',
-                serviceName: 'test-service',
-                capType: 'Node.js'
-            };
             const fs = create(createStorage());
 
-            const fioriElementsApp = getFioriElementsApp(capService);
+            const fioriElementsApp = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
             await generate(curTestOutPath, fioriElementsApp, fs);
             expect(applyCAPUpdates).toBeCalledTimes(1);
 
-            expect(applyCAPUpdates).toBeCalledWith(fs, capService, {
+            expect(applyCAPUpdates).toBeCalledWith(fs, sampleCapService, {
                 ...capProjectSettings,
                 enableNPMWorkspaces: true,
                 enableCdsUi5Plugin: true
@@ -499,7 +477,14 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 serviceName: 'test-service',
                 capType: 'Node.js'
             };
-            const fioriElementsApp = getFioriElementsApp(capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo);
+            const appInfo = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                service: {
+                    ...appInfo.service,
+                    capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+                }
+            };
             await generate(curTestOutPath, fioriElementsApp, fs);
 
             expect(applyCAPUpdates).toBeCalledTimes(1);
@@ -512,10 +497,85 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
 
         test('should not perform CAP updates, when no cap service provided', async () => {
             const fs = create(createStorage());
-
-            const fioriElementsApp = getFioriElementsApp();
+            const fioriElementsApp = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
+            delete fioriElementsApp.service.capService;
             await generate(curTestOutPath, fioriElementsApp, fs);
             expect(applyCAPUpdates).toBeCalledTimes(0);
+        });
+    });
+
+    describe('Should generate annotations correctly for LROP projects', () => {
+        const fs = create(createStorage());
+
+        afterEach(() => {
+            jest.clearAllMocks();
+            jest.resetAllMocks();
+        });
+
+        test('Should generate annotations for LROP projects when service is OData V4 and addAnnotations is enabled', async () => {
+            const fioriElementsApp = {
+                ...applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage),
+                appOptions: {
+                    addAnnotations: true
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(generateAnnotations).toBeCalledTimes(1);
+
+            expect(generateAnnotations).toBeCalledWith(
+                fs,
+                {
+                    serviceName: sampleCapService.serviceName,
+                    appName: fioriElementsApp.package.name,
+                    project: sampleCapService.projectPath
+                },
+                {
+                    entitySetName: v4TemplateSettings?.entityConfig?.mainEntityName,
+                    annotationFilePath: join('test', 'path', 'felrop1', 'annotations.cds'),
+                    addFacets: true,
+                    addLineItems: true,
+                    addValueHelps: true
+                }
+            );
+        });
+
+        test('Should not generate annotations for LROP projects when service is OData V4 and addAnnotations is disabled', async () => {
+            const fioriElementsApp = {
+                ...applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage),
+                appOptions: {
+                    addAnnotations: false
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(generateAnnotations).not.toBeCalled();
+        });
+
+        test('Should not generate annotations for LROP projects when service is OData V2 and addAnnotations is enabled', async () => {
+            const appInfo = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                appOptions: {
+                    addAnnotations: true
+                },
+                service: {
+                    ...appInfo.service,
+                    version: OdataVersion.v2
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(generateAnnotations).not.toBeCalled();
+        });
+
+        test('Should not generate annotations for projects unless they are LROP or Worklist with OData V4 service, or an FEOP project', async () => {
+            const appInfo = applyBaseConfigToFEApp('alpV4', TemplateType.AnalyticalListPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                appOptions: {
+                    addAnnotations: true
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+            expect(generateAnnotations).not.toBeCalled();
         });
     });
 });

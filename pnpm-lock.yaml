@@ -1734,6 +1734,9 @@ importers:
 
   packages/fiori-elements-writer:
     dependencies:
+      '@sap-ux/annotation-generator':
+        specifier: workspace:*
+        version: link:../annotation-generator
       '@sap-ux/cap-config-writer':
         specifier: workspace:*
         version: link:../cap-config-writer
@@ -1743,6 +1746,9 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
