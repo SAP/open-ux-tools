@@ -12,7 +12,7 @@ export async function simulatePrompt(): Promise<boolean> {
         name: PROMPT_NAME,
         initial: true,
         message: `The converter renames the local HTML files, deletes the JavaScript and TypeScript files used for the existing preview functionality, and configures virtual endpoints instead.
-Do you want to simulate the conversion first?`
+Do you want to simulate the conversion?`
     };
     const answer = (await prompt([question])) as Answers<typeof PROMPT_NAME>;
     return (
