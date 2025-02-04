@@ -1,5 +1,11 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.1.0
+
+### Minor Changes
+
+-   083f749: Use the semantic object and action as a prefix to flp title and subtitle.
+
 ## 0.0.26
 
 ### Patch Changes
