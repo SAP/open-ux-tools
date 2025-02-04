@@ -87,9 +87,6 @@ export default class extends DeploymentGenerator {
         this.projectRoot = opts.projectRoot ?? this.destinationRoot();
     }
 
-    /**
-     * Initializes the CF generator.
-     */
     public async initializing(): Promise<void> {
         await super.initializing();
         await initI18n();
@@ -165,9 +162,6 @@ export default class extends DeploymentGenerator {
         this.deployConfigExists = this.fs.exists(join(this.appPath, this.options.config ?? FileName.Ui5Yaml));
     }
 
-    /**
-     * Prompting method.
-     */
     public async prompting(): Promise<void> {
         if (this.abort) {
             return;
@@ -247,9 +241,6 @@ export default class extends DeploymentGenerator {
         };
     }
 
-    /**
-     * Writing method.
-     */
     public async writing(): Promise<void> {
         if (this.abort || this.options.overwrite === false) {
             return;
@@ -290,9 +281,6 @@ export default class extends DeploymentGenerator {
         };
     }
 
-    /**
-     * Install method.
-     */
     public async install(): Promise<void> {
         if (!this.launchDeployConfigAsSubGenerator && this.options.overwrite !== false && !this.abort) {
             await this._install();
@@ -334,9 +322,6 @@ export default class extends DeploymentGenerator {
         );
     }
 
-    /**
-     * End method.
-     */
     public async end(): Promise<void> {
         try {
             if ((this.launchDeployConfigAsSubGenerator && !this.abort) || this.options.overwrite === true) {
