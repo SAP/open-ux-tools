@@ -1,4 +1,4 @@
-import { includeTestRunnersPrompt, simulatePrompt } from '../../../../src/cli/convert/prompts';
+import { includeTestRunnersPrompt, simulatePrompt } from '../../../src';
 
 let promptReturnObject: object;
 jest.mock('prompts', () => {

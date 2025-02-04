@@ -1,7 +1,6 @@
 import type { Command } from 'commander';
 import { getLogger, setLogLevelVerbose, traceChanges } from '../../tracing';
-import { convertToVirtualPreview } from '@sap-ux/app-config-writer';
-import { simulatePrompt, includeTestRunnersPrompt } from './prompts';
+import { convertToVirtualPreview, simulatePrompt, includeTestRunnersPrompt } from '@sap-ux/app-config-writer';
 
 /**
  * Add a new sub-command to convert the preview of a project to virtual files.

@@ -6,7 +6,6 @@ import * as appConfigWriter from '@sap-ux/app-config-writer';
 import * as logger from '../../../../src/tracing/logger';
 import * as childProcess from 'child_process';
 import { join } from 'path';
-import * as ownPrompts from '../../../../src/cli/convert/prompts';
 jest.mock('child_process');
 jest.mock('prompts');
 
@@ -16,8 +15,8 @@ describe('Test command convert preview', () => {
     let fsMock: Editor;
     let logLevelSpy: jest.SpyInstance;
     let spawnSpy: jest.SpyInstance;
-    const simulatePromptSpy = jest.spyOn(ownPrompts, 'simulatePrompt');
-    const includeTestRunnersPromptSpy = jest.spyOn(ownPrompts, 'includeTestRunnersPrompt');
+    const simulatePromptSpy = jest.spyOn(appConfigWriter, 'simulatePrompt');
+    const includeTestRunnersPromptSpy = jest.spyOn(appConfigWriter, 'includeTestRunnersPrompt');
 
     const getArgv = (arg: string[]) => ['', '', ...arg];
 
