@@ -270,7 +270,7 @@ export async function createOAuth2UserTokenExchangeDest(
             if (!instanceDetails?.credentials) {
                 throw new Error(`Could not retrieve SAP BTP credentials for ${serviceInstanceName}.`);
             }
-            uaaCredentials = instanceDetails.credentials as ServiceInfo['uaa'];
+            uaaCredentials = instanceDetails.credentials.uaa as ServiceInfo['uaa'];
         }
 
         const basSDKDestination: destinationAPI.DestinationInfo = await generateOAuth2UserTokenExchangeDestination(
