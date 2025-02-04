@@ -264,7 +264,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation === 'columns'
         ) {
             return 'ANALYTICAL_TABLE_COLUMN';
-        } else if (currentControlName === 'sap.ui.mdc.ActionToolbar' && targetAggregation === 'actions') {
+        } else if (currentControlName === 'sap.ui.mdc.Table' && targetAggregation === 'actions') {
             return 'TABLE_ACTION';
         }
         return '';
