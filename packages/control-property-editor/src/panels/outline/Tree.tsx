@@ -354,7 +354,6 @@ export const Tree = (): ReactElement => {
                     ? t('CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE')
                     : child?.tooltip ?? child?.name,
                 onClick(): void {
-                    dispatch(selectControl(controlId));
                     dispatch(
                         executeContextMenuAction({
                             controlId,
