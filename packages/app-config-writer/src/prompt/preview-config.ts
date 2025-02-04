@@ -31,7 +31,7 @@ export async function includeTestRunnersPrompt(): Promise<boolean> {
         type: 'confirm',
         name: PROMPT_NAME,
         initial: false,
-        message: 'Do you want to convert test runners?'
+        message: 'Do you want to convert the test runners?'
     };
     const answer = (await prompt([question])) as Answers<typeof PROMPT_NAME>;
     return (
