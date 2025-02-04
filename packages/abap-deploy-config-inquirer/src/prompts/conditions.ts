@@ -253,9 +253,6 @@ export function showTransportInputChoice(appType?: AppType): boolean {
         return false;
     }
 
-    if (PromptState.transportAnswers.transportRequired === false) {
-        return false;
-    }
     return defaultOrShowTransportQuestion();
 }
 
