@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.9
+
+### Patch Changes
+
+-   61edb7b: Fixed "Enable/Disable Semantic Date Range in Filter Bar" quick action in SAP Fiori Elements for OData V2 applications when using UI5 version lower than 1.126.
+
 ## 0.17.8
 
 ### Patch Changes
