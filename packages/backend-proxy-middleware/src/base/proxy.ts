@@ -1,7 +1,7 @@
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import type { ServerOptions } from 'http-proxy';
 import type { RequestHandler, Options } from 'http-proxy-middleware';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { legacyCreateProxyMiddleware as createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
@@ -25,6 +25,7 @@ import { updateProxyEnv } from './config';
 import type { Url } from 'url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 import { getProxyForUrl } from 'proxy-from-env';
+import type { Socket } from 'net';
 
 /**
  * Collection of custom event handler for the proxy.
@@ -38,7 +39,7 @@ export const ProxyEventHandlers = {
      * @param _res (not used)
      * @param _options (not used)
      */
-    onProxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions) {
+    onProxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', '*');
         }
@@ -51,7 +52,7 @@ export const ProxyEventHandlers = {
      * @param _req (not used) original request
      * @param _res (not used)
      */
-    onProxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse) {
+    onProxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse): void {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {
@@ -78,7 +79,7 @@ export function proxyErrorHandler(
     err: Error & { code?: string },
     req: IncomingMessage & { next?: Function; originalUrl?: string },
     logger: ToolsLogger,
-    _res?: ServerResponse,
+    _res?: ServerResponse | Socket,
     _target?: string | Partial<Url>
 ): void {
     if (err && err.stack?.toLowerCase() !== 'error') {
@@ -294,21 +295,26 @@ export async function generateProxyMiddlewareOptions(
     const proxyOptions: Options & { headers: object } = {
         headers: {},
         ...ProxyEventHandlers,
-        onError: (
-            err: Error & { code?: string },
-            req: IncomingMessage & { next?: Function; originalUrl?: string },
-            res: ServerResponse,
-            target: string | Partial<Url> | undefined
-        ) => {
-            proxyErrorHandler(err, req, logger, res, target);
+        on: {
+            error: (
+                err: Error & { code?: string },
+                req: IncomingMessage & { next?: Function; originalUrl?: string },
+                res: ServerResponse | Socket,
+                target: string | Partial<Url> | undefined
+            ) => {
+                proxyErrorHandler(err, req, logger, res, target);
+            }
         },
-        ...options
+        target: backend.url,
+        changeOrigin: true,
+        ...options,
+        logger
     };
     proxyOptions.changeOrigin = true;
-    proxyOptions.logProvider = () => logger;
+    // proxyOptions.logProvider = () => logger;
 
     // always set the target to the url provided in yaml
-    proxyOptions.target = backend.url;
+    // proxyOptions.target = backend.url;
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
@@ -377,7 +383,7 @@ export async function generateProxyMiddlewareOptions(
 
     // update proxy config with values coming from args or ui5.yaml
     updateProxyEnv(backend.proxy);
-    backend.proxy = getProxyForUrl(proxyOptions.target);
+    backend.proxy = getProxyForUrl(proxyOptions.target as string);
     if (backend.proxy) {
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }

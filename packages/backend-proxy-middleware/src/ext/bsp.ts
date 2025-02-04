@@ -87,7 +87,7 @@ export async function addOptionsForEmbeddedBSP(bspPath: string, proxyOptions: Op
     const regex = new RegExp('(' + bspPath + '/manifest\\.appdescr\\b)');
     proxyOptions.router = (req): string | undefined => {
         // redirects the request for manifest.appdescr to localhost
-        if (req.path.match(regex)) {
+        if (req.url?.match(regex)) {
             return req.protocol + '://' + req.headers.host;
         } else {
             return undefined;

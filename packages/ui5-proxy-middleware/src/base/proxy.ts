@@ -13,6 +13,7 @@ import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { Url } from 'url';
 import { getProxyForUrl } from 'proxy-from-env';
 import { HttpsProxyAgent } from 'https-proxy-agent';
+import type { Socket } from 'net';
 
 /**
  * Function for proxying UI5 sources.
@@ -24,29 +25,42 @@ import { HttpsProxyAgent } from 'https-proxy-agent';
  */
 export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter) => {
     const logger = new ToolsLogger({
+        logLevel: config.logLevel,
         transports: [new UI5ToolingTransport({ moduleName: 'ui5-proxy-middleware' })]
     });
     const today = new Date();
     const etag = `W/"${config.version || 'ui5-latest-' + today.getDate() + today.getMonth() + today.getFullYear()}"`;
     const ui5Ver = config.version ? `/${config.version}` : '';
+
+    let proxyFilter: Filter = filterCompressedHtmlFiles;
+
+    if (filter) {
+        proxyFilter = filter;
+    }
+
     const proxyConfig: Options = {
+        on: {
+            proxyReq: (proxyReq: ClientRequest, _req: IncomingMessage, res: ServerResponse): void => {
+                proxyRequestHandler(proxyReq, res, etag, logger);
+            },
+            proxyRes: (proxyRes: IncomingMessage): void => {
+                proxyResponseHandler(proxyRes, etag);
+            },
+            error: (
+                err: Error & { code?: string },
+                req: IncomingMessage & { next?: Function; originalUrl?: string },
+                res: ServerResponse | Socket,
+                target: string | Partial<Url> | undefined
+            ) => {
+                proxyErrorHandler(err, req, logger, res, target);
+            }
+        },
         target: config.url,
         changeOrigin: true,
-        onProxyReq: (proxyReq: ClientRequest, _req: IncomingMessage, res: ServerResponse): void => {
-            proxyRequestHandler(proxyReq, res, etag, logger);
-        },
         pathRewrite: { [config.path]: ui5Ver + config.path },
-        onProxyRes: (proxyRes: IncomingMessage): void => {
-            proxyResponseHandler(proxyRes, etag);
-        },
-        onError: (
-            err: Error & { code?: string },
-            req: IncomingMessage & { next?: Function; originalUrl?: string },
-            res: ServerResponse,
-            target: string | Partial<Url> | undefined
-        ) => {
-            proxyErrorHandler(err, req, logger, res, target);
-        }
+        pathFilter: proxyFilter,
+        ...options
+        // logger
     };
 
     // update proxy config with values coming from args or ui5.yaml
@@ -56,12 +70,7 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         proxyConfig.agent = new HttpsProxyAgent(corporateProxy);
     }
 
-    Object.assign(proxyConfig, options);
-    let proxyFilter: Filter = filterCompressedHtmlFiles;
+    // Object.assign(proxyConfig, options);
 
-    if (filter) {
-        proxyFilter = filter;
-    }
-
-    return createProxyMiddleware(proxyFilter, proxyConfig);
+    return createProxyMiddleware(proxyConfig);
 };

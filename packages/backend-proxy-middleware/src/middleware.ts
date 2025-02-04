@@ -1,7 +1,7 @@
 import dotenv from 'dotenv';
 import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { RequestHandler } from 'express';
-import { createProxyMiddleware } from 'http-proxy-middleware';
+import { legacyCreateProxyMiddleware as createProxyMiddleware } from 'http-proxy-middleware';
 import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
 import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
 
@@ -52,9 +52,9 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
             })}\noptions: ${JSON.stringify(configOptions)}'`
         );
 
-        return (req, res, next) => {
+        return async (req, res, next) => {
             if (req.path.startsWith(backend.path)) {
-                proxyFn(req, res, next);
+                await proxyFn(req, res, next);
             } else {
                 next();
             }
