@@ -1,3 +1,5 @@
+<img src="docs/images/sap-fiori-tools.svg" width=75px align="right" alt="SAP Fiori tools icon">
+
 # Open UX Tools
 
 [![Build status](https://github.com/SAP/open-ux-tools/actions/workflows/pipeline.yml/badge.svg?branch=main)](https://github.com/SAP/open-ux-tools/actions/workflows/pipeline.yml?query=branch%3Amain)
