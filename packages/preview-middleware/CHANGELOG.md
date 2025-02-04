@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.15
+
+### Patch Changes
+
+-   5c127cf: fix: ui5 version protocol for karma tests
+
 ## 0.17.14
 
 ### Patch Changes
