@@ -12,5 +12,6 @@ export {
     enableFioriProjectIntegrity,
     initFioriProject,
     isFioriProjectIntegrityEnabled,
+    isFioriProjectIntegrityInitialized,
     updateFioriProjectIntegrity
 } from './fiori-project';
