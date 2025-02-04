@@ -11,14 +11,26 @@ import {
     v4TemplateSettings,
     v4Service,
     projectChecks,
-    updatePackageJSONDependencyToUseLocalPath
+    updatePackageJSONDependencyToUseLocalPath,
+    applyBaseConfigToFEApp,
+    sampleCapService
 } from './common';
 import type { WorklistSettings } from '../src/types';
+import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import { generateAnnotations } from '@sap-ux/annotation-generator';
 
 const TEST_NAME = 'worklistTemplate';
 if (debug?.enabled) {
     jest.setTimeout(360000);
 }
+
+jest.mock('@sap-ux/annotation-generator', () => ({
+    ...jest.requireActual('@sap-ux/annotation-generator'),
+    generateAnnotations: jest.fn()
+}));
 
 describe(`Fiori Elements template: ${TEST_NAME}`, () => {
     const curTestOutPath = join(testOutputDir, TEST_NAME);
@@ -106,5 +118,70 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
         }).then(async () => {
             await projectChecks(testPath, config, debug?.debugFull);
         });
+    });
+});
+
+describe('Should generate annotations correctly for Worklist projects', () => {
+    const curTestOutPath = join(testOutputDir, TEST_NAME);
+    const fs = create(createStorage());
+
+    afterEach(() => {
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+    });
+
+    test('Should generate annotations for Worklist projects when service is OData V4 and addAnnotations is enabled', async () => {
+        const fioriElementsApp = {
+            ...applyBaseConfigToFEApp('worklistV4', TemplateType.Worklist),
+            appOptions: {
+                addAnnotations: true
+            }
+        };
+        await generate(curTestOutPath, fioriElementsApp, fs);
+        expect(generateAnnotations).toBeCalledTimes(1);
+
+        expect(generateAnnotations).toBeCalledWith(
+            fs,
+            {
+                serviceName: sampleCapService.serviceName,
+                appName: fioriElementsApp.package.name,
+                project: sampleCapService.projectPath
+            },
+            {
+                entitySetName: v4TemplateSettings?.entityConfig?.mainEntityName,
+                annotationFilePath: join('test', 'path', 'worklistV4', 'annotations.cds'),
+                addFacets: true,
+                addLineItems: true,
+                addValueHelps: true
+            }
+        );
+    });
+
+    test('Should not generate annotations for Worklist projects when service is OData V4 and addAnnotations is disabled', async () => {
+        const fioriElementsApp = {
+            ...applyBaseConfigToFEApp('worklistV4', TemplateType.Worklist),
+            appOptions: {
+                addAnnotations: false
+            }
+        };
+        await generate(curTestOutPath, fioriElementsApp, fs);
+        expect(generateAnnotations).not.toBeCalled();
+    });
+
+    test('Should not generate annotations for Worklist projects when service is OData V2 and addAnnotations is enabled', async () => {
+        const appInfo = applyBaseConfigToFEApp('worklistV2', TemplateType.Worklist);
+        const fioriElementsApp = {
+            ...appInfo,
+            appOptions: {
+                addAnnotations: true
+            },
+            service: {
+                ...appInfo.service,
+                version: OdataVersion.v2
+            }
+        };
+        fioriElementsApp.service.version = OdataVersion.v2;
+        await generate(curTestOutPath, fioriElementsApp, fs);
+        expect(generateAnnotations).not.toBeCalled();
     });
 });
