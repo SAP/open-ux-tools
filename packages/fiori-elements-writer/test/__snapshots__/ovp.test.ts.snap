@@ -36,9 +36,9 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
@@ -1083,11 +1083,9 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"bundleName\\": \\"feovp1.i18n.i18n\\"
         }
       },
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
       \\"mainModel\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
         \\"settings\\": {
           \\"defaultBindingMode\\": \\"TwoWay\\",
           \\"defaultCountMode\\": \\"Inline\\",
@@ -1095,9 +1093,11 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"metadataUrlParams\\": {
             \\"sap-value-list\\": \\"none\\"
           }
-        },
-        \\"dataSource\\": \\"mainService\\",
-        \\"preload\\": true
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -1747,9 +1747,9 @@ archive.zip
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp1-tile\\\\\\"\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
@@ -2879,11 +2879,9 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"bundleName\\": \\"feovp1.i18n.i18n\\"
         }
       },
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
       \\"mainModel\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
         \\"settings\\": {
           \\"defaultBindingMode\\": \\"TwoWay\\",
           \\"defaultCountMode\\": \\"Inline\\",
@@ -2891,9 +2889,11 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"metadataUrlParams\\": {
             \\"sap-value-list\\": \\"none\\"
           }
-        },
-        \\"dataSource\\": \\"mainService\\",
-        \\"preload\\": true
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -3298,9 +3298,9 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
@@ -8817,10 +8817,6 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"feovp2.i18n.i18n\\"
         }
       },
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
       \\"mainModel\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
@@ -8830,6 +8826,10 @@ appDescription=A Fiori application.",
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -9244,9 +9244,9 @@ archive.zip
     \\"ts-typecheck\\": \\"tsc --noEmit\\",
     \\"prestart\\": \\"npm run ts-typecheck\\",
     \\"prebuild\\": \\"npm run ts-typecheck\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#feovp2-tile\\\\\\"\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
@@ -14848,10 +14848,6 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"feovp2.i18n.i18n\\"
         }
       },
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
       \\"mainModel\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
@@ -14861,6 +14857,10 @@ appDescription=A Fiori application.",
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {

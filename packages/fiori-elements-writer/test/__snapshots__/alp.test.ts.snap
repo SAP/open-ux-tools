@@ -36,9 +36,9 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp2-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp2-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp2-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp2-tile\\\\\\"\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
@@ -5331,11 +5331,9 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
           \\"bundleName\\": \\"alp2.i18n.i18n\\"
         }
       },
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
       \\"\\": {
+        \\"dataSource\\": \\"mainService\\",
+        \\"preload\\": true,
         \\"settings\\": {
           \\"defaultBindingMode\\": \\"TwoWay\\",
           \\"defaultCountMode\\": \\"Inline\\",
@@ -5343,9 +5341,11 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
           \\"metadataUrlParams\\": {
             \\"sap-value-list\\": \\"none\\"
           }
-        },
-        \\"dataSource\\": \\"mainService\\",
-        \\"preload\\": true
+        }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
@@ -6016,9 +6016,9 @@ archive.zip
     \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp1-tile\\\\\\"\\",
     \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp1-tile\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp1-tile\\\\\\"\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#alp1-tile\\\\\\"\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
   },
@@ -11529,10 +11529,6 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"alp1.i18n.i18n\\"
         }
       },
-      \\"@i18n\\": {
-        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
-        \\"uri\\": \\"i18n/i18n.properties\\"
-      },
       \\"\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
@@ -11542,6 +11538,10 @@ appDescription=A Fiori application.",
           \\"autoExpandSelect\\": true,
           \\"earlyRequests\\": true
         }
+      },
+      \\"@i18n\\": {
+        \\"type\\": \\"sap.ui.model.resource.ResourceModel\\",
+        \\"uri\\": \\"i18n/i18n.properties\\"
       }
     },
     \\"resources\\": {
