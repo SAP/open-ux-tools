@@ -32,7 +32,7 @@ import { getCFQuestions } from './questions';
 import type { ApiHubConfig, CFAppConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import type { CfDeployConfigOptions } from './types';
-import type { CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-inquirer/dist/types';
+import type { CfDeployConfigAnswers, CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-inquirer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 
 /**
@@ -87,6 +87,9 @@ export default class extends DeploymentGenerator {
         this.projectRoot = opts.projectRoot ?? this.destinationRoot();
     }
 
+    /**
+     * Initializes the CF generator.
+     */
     public async initializing(): Promise<void> {
         await super.initializing();
         await initI18n();
@@ -129,6 +132,10 @@ export default class extends DeploymentGenerator {
         }
     }
 
+    /**
+     * Processes the project paths.
+     * Checks if the project is a CAP project or contains an mta.
+     */
     private async _processProjectPaths(): Promise<void> {
         const mtaPathResult = await getMtaPath(this.appPath);
         this.mtaPath = mtaPathResult?.mtaPath;
@@ -144,6 +151,10 @@ export default class extends DeploymentGenerator {
         }
     }
 
+    /**
+     * Processes the project configurations.
+     * Checks if the base config file exists.
+     */
     private async _processProjectConfigs(): Promise<void> {
         const baseConfigFile = this.options.base ?? FileName.Ui5Yaml;
         const baseConfigExists = this.fs.exists(join(this.appPath, baseConfigFile));
@@ -154,6 +165,9 @@ export default class extends DeploymentGenerator {
         this.deployConfigExists = this.fs.exists(join(this.appPath, this.options.config ?? FileName.Ui5Yaml));
     }
 
+    /**
+     * Prompting method.
+     */
     public async prompting(): Promise<void> {
         if (this.abort) {
             return;
@@ -168,27 +182,16 @@ export default class extends DeploymentGenerator {
 
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._handleApiHubConfig();
-
-            const questions = await getCFQuestions({
-                projectRoot: this.projectRoot,
-                isAbapDirectServiceBinding: this.isAbapDirectServiceBinding,
-                cfDestination: this.destinationName,
-                isCap: this.isCap,
-                addOverwrite: showOverwriteQuestion(
-                    this.deployConfigExists,
-                    this.launchDeployConfigAsSubGenerator,
-                    this.launchStandaloneFromYui,
-                    this.options.overwrite
-                ),
-                apiHubConfig: this.apiHubConfig
-            });
-
+            const questions = await this._getCFQuestions();
             this.answers = await this.prompt(questions);
         }
 
         await this._reconcileAnswersWithOptions();
     }
 
+    /**
+     * Handles specific logic for api hub configurations.
+     */
     private async _handleApiHubConfig(): Promise<void> {
         // generate a new instance dest name for api hub
         if (this.apiHubConfig && this.apiHubConfig.apiHubType === ApiHubType.apiHubEnterprise) {
@@ -201,6 +204,30 @@ export default class extends DeploymentGenerator {
         }
     }
 
+    /**
+     * Fetches the Cloud Foundry deployment configuration questions.
+     *
+     * @returns {Promise<CfDeployConfigQuestions[]>} - Cloud Foundry deployment configuration questions
+     */
+    private async _getCFQuestions(): Promise<CfDeployConfigQuestions[]> {
+        return getCFQuestions({
+            projectRoot: this.projectRoot,
+            isAbapDirectServiceBinding: this.isAbapDirectServiceBinding,
+            cfDestination: this.destinationName,
+            isCap: this.isCap,
+            addOverwrite: showOverwriteQuestion(
+                this.deployConfigExists,
+                this.launchDeployConfigAsSubGenerator,
+                this.launchStandaloneFromYui,
+                this.options.overwrite
+            ),
+            apiHubConfig: this.apiHubConfig
+        });
+    }
+
+    /**
+     * Reconciles the answers with the options which may be passed from the parent generator.
+     */
     private async _reconcileAnswersWithOptions(): Promise<void> {
         const destinationName = this.destinationName || this.answers.destinationName;
         const destination = await getDestination(destinationName);
@@ -220,6 +247,9 @@ export default class extends DeploymentGenerator {
         };
     }
 
+    /**
+     * Writing method.
+     */
     public async writing(): Promise<void> {
         if (this.abort || this.options.overwrite === false) {
             return;
@@ -232,18 +262,7 @@ export default class extends DeploymentGenerator {
 
     private async _writing(): Promise<void> {
         try {
-            const appConfig = {
-                appPath: this.appPath,
-                addManagedAppRouter: this.answers.addManagedAppRouter,
-                destinationName: this.answers.destinationName,
-                destinationAuthentication: this.answers.destinationAuthentication,
-                isDestinationFullUrl: this.answers.isDestinationFullUrl,
-                apiHubConfig: this.apiHubConfig,
-                serviceHost: this.serviceBase,
-                lcapMode: this.lcapModeOnly,
-                addMtaDestination: this.addMtaDestination,
-                cloudServiceName: this.cloudServiceName
-            } satisfies CFAppConfig;
+            const appConfig = this._getAppConfig();
             await generateAppConfig(appConfig, this.fs, DeploymentGenerator.logger as unknown as Logger);
         } catch (error) {
             this.abort = true;
@@ -251,6 +270,29 @@ export default class extends DeploymentGenerator {
         }
     }
 
+    /**
+     * Gets the Cloud Foundry app configuration based on the answers.
+     *
+     * @returns {CFAppConfig} - Cloud Foundry app configuration
+     */
+    private _getAppConfig(): CFAppConfig {
+        return {
+            appPath: this.appPath,
+            addManagedAppRouter: this.answers.addManagedAppRouter,
+            destinationName: this.answers.destinationName,
+            destinationAuthentication: this.answers.destinationAuthentication,
+            isDestinationFullUrl: this.answers.isDestinationFullUrl,
+            apiHubConfig: this.apiHubConfig,
+            serviceHost: this.serviceBase,
+            lcapMode: this.lcapModeOnly,
+            addMtaDestination: this.addMtaDestination,
+            cloudServiceName: this.cloudServiceName
+        };
+    }
+
+    /**
+     * Install method.
+     */
     public async install(): Promise<void> {
         if (!this.launchDeployConfigAsSubGenerator && this.options.overwrite !== false && !this.abort) {
             await this._install();
@@ -259,27 +301,12 @@ export default class extends DeploymentGenerator {
 
     private async _install(): Promise<void> {
         if (!this.options.skipInstall) {
-            const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
             try {
-                // install dependencies in project root
-                await this.spawnCommand(
-                    npm,
-                    ['install', '--no-audit', '--no-fund', '--silent', '--prefer-offline', '--no-progress'],
-                    {
-                        cwd: this.projectRoot
-                    }
-                );
+                await this._runNpmInstall(this.projectRoot);
 
                 // prevent installing twice if the project root is the same as the app path
                 if (this.projectRoot !== this.appPath) {
-                    // install dependencies in the application folder
-                    await this.spawnCommand(
-                        npm,
-                        ['install', '--no-audit', '--no-fund', '--silent', '--prefer-offline', '--no-progress'],
-                        {
-                            cwd: this.appPath
-                        }
-                    );
+                    await this._runNpmInstall(this.appPath);
                 }
             } catch (error) {
                 handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error }) });
@@ -289,6 +316,27 @@ export default class extends DeploymentGenerator {
         }
     }
 
+    /**
+     * Runs npm install in the specified path.
+     *
+     * @param path - the path to run npm install
+     */
+    private async _runNpmInstall(path: string): Promise<void> {
+        const npm = platform() === 'win32' ? 'npm.cmd' : 'npm';
+
+        // install dependencies
+        await this.spawnCommand(
+            npm,
+            ['install', '--no-audit', '--no-fund', '--silent', '--prefer-offline', '--no-progress'],
+            {
+                cwd: path
+            }
+        );
+    }
+
+    /**
+     * End method.
+     */
     public async end(): Promise<void> {
         try {
             if ((this.launchDeployConfigAsSubGenerator && !this.abort) || this.options.overwrite === true) {
@@ -302,18 +350,21 @@ export default class extends DeploymentGenerator {
             ) {
                 this.appWizard?.showInformation(t('cfGen.info.filesGenerated'), MessageType.notification);
             }
-
-            const telemetryData =
-                TelemetryHelper.createTelemetryData({
-                    DeployTarget: 'CF',
-                    ManagedApprouter: this.answers.addManagedAppRouter,
-                    MTA: this.mtaPath ? 'true' : 'false',
-                    ...this.options.telemetryData
-                }) ?? {};
-            await sendTelemetry(EventName.DEPLOY_CONFIG, telemetryData, this.appPath);
+            await this._sendTelemetry();
         } catch (error) {
             DeploymentGenerator.logger?.error(t('cfGen.error.end', { error }));
         }
+    }
+
+    private async _sendTelemetry(): Promise<void> {
+        const telemetryData =
+            TelemetryHelper.createTelemetryData({
+                DeployTarget: 'CF',
+                ManagedApprouter: this.answers.addManagedAppRouter,
+                MTA: this.mtaPath ? 'true' : 'false',
+                ...this.options.telemetryData
+            }) ?? {};
+        await sendTelemetry(EventName.DEPLOY_CONFIG, telemetryData, this.appPath);
     }
 }
 
