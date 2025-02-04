@@ -386,7 +386,7 @@ export async function sanitizeTestScript(
             logger?.info(
                 `Renamed '${basename(testScriptPath)}' to '${basename(
                     filePathRenamed
-                )}'. This file creates the JourneyRunner for OPA5 tests. As the handling of journey runners is not part of the virtual OPA5 test runner endpoint, this file has been renamed and added to the respective UI5 yaml configuration.`
+                )}'. This file creates the JourneyRunner for OPA5 tests. As the handling of journey runners is not part of the virtual OPA5 test runner endpoint, this file has been renamed and added to the respective UI5 YAML configuration.`
             );
         } else {
             await deleteFiles(fs, [testScriptPath]);
@@ -588,7 +588,7 @@ export async function updatePreviewMiddlewareConfigs(
         try {
             await processUi5YamlConfig(fs, basePath, ui5Yaml, emptyScript, logger, true);
         } catch (error) {
-            logger?.warn(`Skipping UI5 yaml configuration file '${ui5Yaml}'. ${error.mesage}`);
+            logger?.warn(`Skipping UI5 YAML configuration file '${ui5Yaml}'. ${error.mesage}`);
         }
         logger?.warn(
             `The UI5 YAML configuration file '${ui5Yaml}', is not used in any preview script. Outdated preview middleware will be adjusted, if necessary.`
