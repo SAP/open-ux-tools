@@ -8,7 +8,6 @@ import {
     type GenerateAnnotationsOptions
 } from '@sap-ux/annotation-generator';
 import type { Editor } from 'mem-fs-editor';
-import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { TemplateTypeAttributes } from './data/templateAttributes';
 import type { Logger } from '@sap-ux/logger';
 import { t } from './i18n';
@@ -29,22 +28,6 @@ function getAnnotationFilePath(appName?: string, capService?: CapServiceCdsInfo)
 }
 
 /**
- * Determines if annotations can be generated for a given template.
- *
- * @param {OdataVersion} odataServiceVersion - The version of the OData service being used.
- * @param {TemplateType} templateType - The type of the template being used by app.
- * @param {boolean} [addAnnotations] - An optional flag indicating whether annotations should be enabled.
- * @returns {boolean} - Returns `true` if annotations can be generated, otherwise `false`.
- */
-export function canGenerateAnnotationsForTemplate(
-    odataServiceVersion: OdataVersion,
-    templateType: TemplateType,
-    addAnnotations: boolean = false
-): boolean | undefined {
-    return addAnnotations && TemplateTypeAttributes[templateType].supportsAnnotations(odataServiceVersion);
-}
-
-/**
  * Writes annotation files for the given application configuration.
  *
  * @param basePath - The base directory path of the project.
@@ -58,10 +41,9 @@ export async function writeAnnotations<T extends {}>(
     fs: Editor,
     log?: Logger
 ): Promise<void> {
-    // Check if annotations should be generated
-    if (
-        canGenerateAnnotationsForTemplate(feApp.service.version, feApp.template.type, feApp.appOptions?.addAnnotations)
-    ) {
+    const annotationGenerationSupport =
+        TemplateTypeAttributes[feApp.template.type]?.annotationGenerationSupport?.[feApp.service.version];
+    if (feApp.appOptions?.addAnnotations && annotationGenerationSupport) {
         const { settings } = feApp.template;
         const { capService } = feApp.service;
         const { name: packageName } = feApp.package ?? {};

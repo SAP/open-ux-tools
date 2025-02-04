@@ -122,7 +122,7 @@ export interface FioriElementsApp<T> extends Ui5App {
         addTests?: boolean;
         /**
          * If addAnnotations is true, annotations are enabled.
-         * However, annotations will only be written if the template type is lrop/worklist or formEntryObject; annotation genration is not uspported for other project types.
+         * However, annotations will only be written if the template type is lrop, worklist, or formEntryObject; annotation generation is unspported for other project types.
          */
         addAnnotations?: boolean;
     };
