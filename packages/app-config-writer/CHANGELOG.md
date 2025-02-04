@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.5.24
+
+### Patch Changes
+
+-   42dee4d: feat: enhance prompt for convert preview config
+
 ## 0.5.23
 
 ### Patch Changes
