@@ -237,7 +237,7 @@ async function generate<T extends {}>(
         feApp.appOptions?.addAnnotations &&
         TemplateTypeAttributes[feApp.template.type]?.annotationGenerationSupport?.[feApp.service.version]
     ) {
-        await writeAnnotations(basePath, feApp, fs, log);
+        await writeAnnotations(basePath, feApp, fs);
     } else {
         log?.warn(
             t('warn.invalidTypeForAnnotationGeneration', {
