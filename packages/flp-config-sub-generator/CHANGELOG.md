@@ -1,5 +1,21 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.1.1
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.5.22
+-   @sap-ux/deploy-config-generator-shared@0.0.16
+-   @sap-ux/fiori-generator-shared@0.7.24
+-   @sap-ux/flp-config-inquirer@0.2.26
+-   @sap-ux/inquirer-common@0.6.11
+
+## 0.1.0
+
+### Minor Changes
+
+-   083f749: Use the semantic object and action as a prefix to flp title and subtitle.
+
 ## 0.0.26
 
 ### Patch Changes

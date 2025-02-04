@@ -1,5 +1,14 @@
 # @sap-ux/inquirer-common
 
+## 0.6.11
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/fiori-generator-shared@0.7.24
+    -   @sap-ux/telemetry@0.5.56
+
 ## 0.6.10
 
 ### Patch Changes
