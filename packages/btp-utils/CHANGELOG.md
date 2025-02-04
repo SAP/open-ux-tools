@@ -1,5 +1,17 @@
 # @sap-ux/btp-utils
 
+## 1.0.0
+
+### Major Changes
+
+-   9980073: Updates generateOAuth2UserTokenExchangeDestination API to accomodate multiple use-cases
+
+## 0.18.0
+
+### Minor Changes
+
+-   df2d965: new functionality to generate OAuth2TokenExchange BTP destination using cf-tools
+
 ## 0.17.2
 
 ### Patch Changes

@@ -1,6 +1,6 @@
 import { createForAbap, type AxiosRequestConfig, type ODataService, type ODataVersion } from '@sap-ux/axios-extension';
-import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { t } from '../../../i18n';
 import { SAP_CLIENT_KEY } from '../../../types';
 import { PromptState, originToRelative } from '../../../utils';
@@ -8,7 +8,13 @@ import { ConnectionValidator } from '../../connectionValidator';
 import LoggerHelper from '../../logger-helper';
 import { errorHandler } from '../../prompt-helpers';
 import { validateODataVersion } from '../../validators';
+import type { ConvertedMetadata } from '@sap-ux/vocabularies-types';
 
+type ValidateServiceUrlResult = {
+    validationResult: boolean | string;
+    showAnnotationWarning?: boolean;
+    convertedMetadata?: ConvertedMetadata;
+};
 /**
  * Validates that a service specified by the service url is accessible, has the required version and returns valid metadata.
  * Retrieves annotations (from Abap backends) if available and stores them in the PromptState.
@@ -26,7 +32,7 @@ export async function validateService(
     { odataService, axiosConfig }: { odataService: ODataService; axiosConfig: AxiosRequestConfig },
     requiredVersion: OdataVersion | undefined = undefined,
     ignoreCertError = false
-): Promise<boolean | string> {
+): Promise<ValidateServiceUrlResult> {
     try {
         if (ignoreCertError === true) {
             ConnectionValidator.setGlobalRejectUnauthorized(!ignoreCertError);
@@ -34,7 +40,9 @@ export async function validateService(
         const metadata = await odataService.metadata();
         const odataVersionValResult = validateODataVersion(metadata, requiredVersion);
         if (odataVersionValResult.validationMsg) {
-            return odataVersionValResult.validationMsg;
+            return {
+                validationResult: odataVersionValResult.validationMsg
+            };
         }
         const serviceOdataVersion = odataVersionValResult.version;
 
@@ -51,6 +59,8 @@ export async function validateService(
         PromptState.odataService.origin = fullUrl.origin;
         PromptState.odataService.sapClient = sapClient;
 
+        let showAnnotationWarning = false;
+
         // Best effort attempt to get annotations but dont throw an error if it fails as this may not even be an Abap system
         try {
             // Create an abap provider instance to get the annotations using the same request config
@@ -63,20 +73,32 @@ export async function validateService(
 
             if (annotations?.length === 0 || !annotations) {
                 LoggerHelper.logger.info(t('prompts.validationMessages.annotationsNotFound'));
+                // Only show the warning if the service is v2, since these are backend annotations
+                showAnnotationWarning = odataVersionValResult.version === OdataVersion.v2;
             }
             PromptState.odataService.annotations = annotations;
         } catch (err) {
             LoggerHelper.logger.info(t('prompts.validationMessages.annotationsNotFound'));
+            // Only show the warning if the service is v2, since these are backend annotations
+            showAnnotationWarning = odataVersionValResult.version === OdataVersion.v2;
         }
-        return true;
+        return {
+            validationResult: true,
+            showAnnotationWarning,
+            convertedMetadata: odataVersionValResult.convertedMetadata
+        };
     } catch (error) {
         delete PromptState.odataService.metadata;
         // Provide a more specific error message if the metadata service URL is not found
         if (ErrorHandler.getErrorType(error) === ERROR_TYPE.NOT_FOUND) {
             // No metadata implies not a valid odata service
-            return ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ODATA_URL_NOT_FOUND) ?? false;
+            return {
+                validationResult: ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ODATA_URL_NOT_FOUND) ?? false
+            };
         }
-        return errorHandler.logErrorMsgs(error);
+        return {
+            validationResult: errorHandler.logErrorMsgs(error)
+        };
     } finally {
         ConnectionValidator.setGlobalRejectUnauthorized(true);
     }

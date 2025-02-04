@@ -64,7 +64,8 @@
             "nonUIServiceTypeWarningMessage": "Please note that {{serviceType}} services, or not classified services, are not intended to be used for the generation of SAP Fiori UI applications",
             "noServicesAvailable": "No services available for the selected system, see logs for further details.",
             "noServicesAvailableForOdataVersion": "There are no V{{odataVersion}} OData services available from the selected system and the template you have chosen supports V{{odataVersion}} OData services only",
-            "noAnnotations": "No backend annotations associated with this service were retrieved and may result in an invalid application being created"
+            "noAnnotations": "No backend annotations associated with this service were retrieved and may result in an invalid application being created",
+            "collaborativeDraftMessage": "The selected service is draft enabled but does not support collaborative draft."
         },
         "systemUrl": {
             "message": "System URL",

@@ -1,5 +1,54 @@
 # @sap-ux/adp-tooling
 
+## 0.12.121
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/odata-service-writer@0.25.5
+    -   @sap-ux/system-access@0.5.29
+    -   @sap-ux/inquirer-common@0.6.12
+
+## 0.12.120
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/inquirer-common@0.6.11
+    -   @sap-ux/system-access@0.5.29
+
+## 0.12.119
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/odata-service-writer@0.25.5
+    -   @sap-ux/system-access@0.5.28
+    -   @sap-ux/inquirer-common@0.6.10
+
+## 0.12.118
+
+### Patch Changes
+
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
+## 0.12.117
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/inquirer-common@0.6.8
+    -   @sap-ux/system-access@0.5.28
+
 ## 0.12.116
 
 ### Patch Changes

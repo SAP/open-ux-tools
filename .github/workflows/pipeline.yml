@@ -82,7 +82,7 @@ jobs:
                 retention-days: 15
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
-              uses: sonarsource/sonarcloud-github-action@master
+              uses: sonarsource/sonarqube-scan-action@v4
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}

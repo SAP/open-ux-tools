@@ -1,5 +1,27 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.3
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/cds-odata-annotation-converter@0.4.0
+
+## 0.4.2
+
+### Patch Changes
+
+-   1f0bb25: fix: refactor object clones
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/cds-odata-annotation-converter@0.4.0
+
 ## 0.4.0
 
 ### Minor Changes

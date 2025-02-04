@@ -1,5 +1,37 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.0.8
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.9.4
+-   @sap-ux/fiori-generator-shared@0.7.25
+-   @sap-ux/odata-service-writer@0.25.5
+-   @sap-ux/ui5-application-writer@1.2.9
+
+## 2.0.7
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.24
+-   @sap-ux/cap-config-writer@0.9.3
+
+## 2.0.6
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.9.2
+-   @sap-ux/fiori-generator-shared@0.7.23
+-   @sap-ux/odata-service-writer@0.25.5
+-   @sap-ux/ui5-application-writer@1.2.9
+
+## 2.0.5
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.22
+-   @sap-ux/cap-config-writer@0.9.1
+
 ## 2.0.4
 
 ### Patch Changes

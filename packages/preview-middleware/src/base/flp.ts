@@ -33,6 +33,7 @@ import {
     addApp,
     getAppName
 } from './config';
+import type connect from 'connect';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -282,7 +283,7 @@ export class FlpSandbox {
             this.router.get(previewUrl, async (req: Request, res: Response) => {
                 if (!req.query['fiori-tools-rta-mode']) {
                     // Redirect to the same URL but add the necessary parameter
-                    const params = JSON.parse(JSON.stringify(req.query)) as Record<string, string>;
+                    const params = structuredClone(req.query);
                     params['sap-ui-xx-viewCache'] = 'false';
                     params['fiori-tools-rta-mode'] = 'true';
                     params['sap-ui-rta-skip-flex-validation'] = 'true';
@@ -307,9 +308,13 @@ export class FlpSandbox {
         this.router.use(PREVIEW_URL.client.path, serveStatic(PREVIEW_URL.client.local));
 
         // add route for the sandbox html
-        this.router.get(this.config.path, (async (req: EnhancedRequest, res: Response, next: NextFunction) => {
-            // karma (connect API) has no request query property
-            if (req.query && !req.query['sap-ui-xx-viewCache']) {
+        this.router.get(this.config.path, (async (
+            req: EnhancedRequest | connect.IncomingMessage,
+            res: Response | http.ServerResponse,
+            next: NextFunction
+        ) => {
+            // connect API (karma test runner) has no request query property
+            if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
                 // Redirect to the same URL but add the necessary parameter
                 const params = structuredClone(req.query);
                 params['sap-ui-xx-viewCache'] = 'false';
@@ -325,9 +330,12 @@ export class FlpSandbox {
                 next();
             } else {
                 const ui5Version = await this.getUi5Version(
-                    req.protocol,
+                    //use protocol from request header referer as fallback for connect API (karma test runner)
+                    'protocol' in req
+                        ? req.protocol
+                        : req.headers.referer?.substring(0, req.headers.referer.indexOf(':')) ?? 'http',
                     req.headers.host,
-                    req['ui5-patched-router']?.baseUrl
+                    'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
                 );
                 const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
                 this.sendResponse(res, 'text/html', 200, html);
@@ -519,7 +527,11 @@ export class FlpSandbox {
         const initTemplate = readFileSync(join(__dirname, '../../templates/test/testsuite.qunit.js'), 'utf-8');
         const config = mergeTestConfigDefaults(testsuiteConfig);
         this.logger.debug(`Add route for ${config.path}`);
-        this.router.get(config.path, (async (_req, res) => {
+        this.router.get(config.path, (async (
+            _req: EnhancedRequest | connect.IncomingMessage,
+            res: Response | http.ServerResponse,
+            _next: NextFunction
+        ) => {
             this.logger.debug(`Serving test route: ${config.path}`);
             const templateConfig = {
                 basePath: this.templateConfig.basePath,
@@ -546,7 +558,11 @@ export class FlpSandbox {
         }
 
         this.logger.debug(`Add route for ${config.init}`);
-        this.router.get(config.init, (async (_req, res, next) => {
+        this.router.get(config.init, (async (
+            _req: EnhancedRequest | connect.IncomingMessage,
+            res: Response | http.ServerResponse,
+            next: NextFunction
+        ) => {
             const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
             if (files?.length > 0) {
                 this.logger.warn(`Script returned at ${config.path} is loaded from the file system.`);
@@ -594,7 +610,11 @@ export class FlpSandbox {
             const config = mergeTestConfigDefaults(testConfig);
             this.logger.debug(`Add route for ${config.path}`);
             // add route for the *.qunit.html
-            this.router.get(config.path, (async (_req, res, next) => {
+            this.router.get(config.path, (async (
+                _req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse,
+                next: NextFunction
+            ) => {
                 this.logger.debug(`Serving test route: ${config.path}`);
                 // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 const file = await this.project.byPath(config.path);
@@ -613,7 +633,11 @@ export class FlpSandbox {
             }
             // add route for the init file
             this.logger.debug(`Add route for ${config.init}`);
-            this.router.get(config.init, (async (_req, res, next) => {
+            this.router.get(config.init, (async (
+                _req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse,
+                next: NextFunction
+            ) => {
                 this.logger.debug(`Serving test init script: ${config.init}`);
 
                 const files = await this.project.byGlob(config.init.replace('.js', '.[jt]s'));
