@@ -383,21 +383,23 @@ export async function validatePackage(
         return t('errors.validators.abapPackageInvalidFormat');
     }
 
-    if (PromptState.abapDeployConfig?.isS4HC || appType === 'SAP Fiori elements') {
-        const startingPrefix = getPackageStartingPrefix(input);
-
-        //validate package starting prefix
-        if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
-            return t('errors.validators.abapPackageStartingPrefix');
-        }
-
-        //appName starting prefix
-        if (answers?.ui5AbapRepo && !answers.ui5AbapRepo.startsWith(startingPrefix)) {
-            return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
-        }
-        // checks if package is a local package and will update prompt state accordingly
-        await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
+    if (appType === 'Fiori Adaptation' && !PromptState.abapDeployConfig?.isS4HC) {
+        return true;
     }
+
+    const startingPrefix = getPackageStartingPrefix(input);
+
+    //validate package starting prefix
+    if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
+        return t('errors.validators.abapPackageStartingPrefix');
+    }
+
+    //appName starting prefix
+    if (answers?.ui5AbapRepo && !answers.ui5AbapRepo.startsWith(startingPrefix)) {
+        return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+    }
+    // checks if package is a local package and will update prompt state accordingly
+    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
 
     return true;
 }
