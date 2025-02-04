@@ -86,9 +86,19 @@ export enum promptNames {
  * Options for the UI5 ABAP repository prompt.
  * If `hide` is set to `true`, the prompt will not be shown, it is required to add a default value in this case.
  */
-export type UI5AbapRepoPromptOptions = {
-    default: string;
-};
+export type UI5AbapRepoPromptOptions =
+    | {
+          hide?: false;
+          default?: string;
+          /**
+           * If set to true, the prompt will be hidden if the target system is on-premise.
+           */
+          hideIfOnPremise?: boolean;
+      }
+    | {
+          hide: true;
+          default: string;
+      };
 
 export type DescriptionPromptOptions = {
     /**

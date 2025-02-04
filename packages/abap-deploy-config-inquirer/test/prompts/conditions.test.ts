@@ -194,8 +194,13 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should not show ui5 app deploy config questions', () => {
-        PromptState.abapDeployConfig.scp = true;
-        expect(showUi5AppDeployConfigQuestion()).toBe(false);
+        const promptOptions = {
+            hideIfOnPremise: true
+        };
+        PromptState.abapDeployConfig.scp = false;
+        expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
+        PromptState.abapDeployConfig.isS4HC = false;
+        expect(showUi5AppDeployConfigQuestion(promptOptions, 'Fiori Adaptation')).toBe(false);
     });
 
     test('should show package input choice question', () => {

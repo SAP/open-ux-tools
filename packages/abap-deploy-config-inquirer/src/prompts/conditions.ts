@@ -10,6 +10,7 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
+    UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget,
@@ -144,11 +145,18 @@ export function showPasswordQuestion(): boolean {
 /**
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
+ * @param ui5AbapPromptOptions - UI5 Abap Repo prompt options
  * @param appType - application type
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(appType?: AppType): boolean {
-    if (PromptState.abapDeployConfig?.scp || (appType === 'Fiori Adaptation' && !PromptState.abapDeployConfig.isS4HC)) {
+export function showUi5AppDeployConfigQuestion(
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
+    appType?: AppType
+): boolean {
+    if (appType === 'Fiori Adaptation' && !PromptState.abapDeployConfig.isS4HC) {
+        return false;
+    }
+    if (!ui5AbapPromptOptions?.hide && ui5AbapPromptOptions?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
