@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.4
+
+### Patch Changes
+
+-   29abc73: feat: support component type
+
 ## 1.29.3
 
 ### Patch Changes
