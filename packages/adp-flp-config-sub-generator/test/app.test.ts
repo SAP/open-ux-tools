@@ -19,6 +19,8 @@ import { MessageType } from '@sap-devx/yeoman-ui-types';
 import * as inquirerCommon from '@sap-ux/inquirer-common';
 import * as projectAccess from '@sap-ux/project-access';
 
+const originalCwd = process.cwd();
+
 jest.mock('@sap-ux/system-access');
 jest.mock('@sap-ux/btp-utils');
 jest.mock('@sap-ux/adp-tooling', () => ({
@@ -63,7 +65,8 @@ const loggerMock: ToolsLogger = {
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 describe('FLPConfigGenerator Integration Tests', () => {
-    jest.setTimeout(100000);
+    jest.setTimeout(60000);
+
     jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValue(false);
     const generatorPath = join(__dirname, '../../src/app/index.ts');
     const testOutputDir = join(__dirname, 'test-output');
@@ -131,6 +134,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     afterAll(() => {
+        process.chdir(originalCwd); // Generation changes the cwd, this breaks sonar report so we restore later
         rimraf.sync(testOutputDir);
     });
 
