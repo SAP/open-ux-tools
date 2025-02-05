@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.18
+
+### Patch Changes
+
+-   9b755fc: adds new cf generator
+
 ## 0.0.17
 
 ### Patch Changes

@@ -1,5 +1,20 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.1.6
+
+### Patch Changes
+
+-   9b755fc: adds new cf generator
+-   Updated dependencies [9b755fc]
+    -   @sap-ux/deploy-config-generator-shared@0.0.18
+
+## 0.1.5
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.2.28
+-   @sap-ux/app-config-writer@0.5.25
+
 ## 0.1.4
 
 ### Patch Changes
