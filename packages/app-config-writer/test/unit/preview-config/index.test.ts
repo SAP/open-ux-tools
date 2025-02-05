@@ -20,7 +20,6 @@ describe('index', () => {
     const updatePreviewMiddlewareConfigsSpy = jest.spyOn(ui5Yaml, 'updatePreviewMiddlewareConfigs');
     const renameDefaultSandboxesSpy = jest.spyOn(previewFiles, 'renameDefaultSandboxes');
     const checkPrerequisitesSpy = jest.spyOn(prerequisites, 'checkPrerequisites');
-    const getExplicitApprovalToAdjustFilesSpy = jest.spyOn(prerequisites, 'getExplicitApprovalToAdjustFiles');
     const deleteNoLongerUsedFilesSpy = jest.spyOn(previewFiles, 'deleteNoLongerUsedFiles');
 
     beforeEach(() => {
@@ -35,11 +34,8 @@ describe('index', () => {
     });
     describe('convertToVirtualPreview', () => {
         test('convert project to virtual preview', async () => {
-            getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
-
             await convertToVirtualPreview(basePath, { convertTests: false, logger, fs });
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
-            expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
             expect(renameDefaultSandboxesSpy).toHaveBeenCalled();
             expect(deleteNoLongerUsedFilesSpy).toHaveBeenCalled();
@@ -65,12 +61,9 @@ describe('index', () => {
             `
             );
 
-            getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
-
             await convertToVirtualPreview(basePath, { convertTests: true, logger, fs });
             expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
-            expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
             expect(renameDefaultSandboxesSpy).toHaveBeenCalled();
             expect(deleteNoLongerUsedFilesSpy).toHaveBeenCalled();
@@ -107,13 +100,11 @@ describe('index', () => {
                       - framework: "OPA5"
             `
             );
-            getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(true);
 
             await convertToVirtualPreview(basePath, { convertTests: true, logger, fs });
             expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
             expect(fs.read(join(basePath, 'ui5-test.yaml'))).toMatchSnapshot();
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
-            expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).toHaveBeenCalled();
             expect(renameDefaultSandboxesSpy).toHaveBeenCalled();
             expect(deleteNoLongerUsedFilesSpy).toHaveBeenCalled();
@@ -131,22 +122,10 @@ describe('index', () => {
                 convertToVirtualPreview(missingPrerequisitesPath, { convertTests: false, logger, fs })
             ).rejects.toThrowError(`The prerequisites are not met. For more information, see the log messages above.`);
             expect(checkPrerequisitesSpy).toHaveBeenCalled();
-            expect(getExplicitApprovalToAdjustFilesSpy).not.toHaveBeenCalled();
             expect(updatePreviewMiddlewareConfigsSpy).not.toHaveBeenCalled();
             expect(renameDefaultSandboxesSpy).not.toHaveBeenCalled();
             expect(deleteNoLongerUsedFilesSpy).not.toHaveBeenCalled();
             expect(updateVariantsCreationScriptSpy).not.toHaveBeenCalled();
-        });
-
-        test('do not convert project to virtual preview - missing approval', async () => {
-            getExplicitApprovalToAdjustFilesSpy.mockResolvedValue(false);
-
-            await convertToVirtualPreview(basePath, { convertTests: false, logger, fs });
-            expect(checkPrerequisitesSpy).toHaveBeenCalled();
-            expect(getExplicitApprovalToAdjustFilesSpy).toHaveBeenCalled();
-            expect(errorLogMock).toHaveBeenCalledWith(
-                'You have not approved the conversion. The conversion has been aborted.'
-            );
         });
     });
 });

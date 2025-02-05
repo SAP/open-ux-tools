@@ -1452,10 +1452,11 @@ describe('FE V2 quick actions', () => {
                 );
                 expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
                     settings: {},
-                    type: 'annotation',
+                    type: 'appDescriptor',
                     value: {
                         changeType: 'appdescr_app_addAnnotationsToOData',
-                        content: {
+                        generator: undefined,
+                        parameters: {
                             annotations: ['annotation.annotation_1736143853603'],
                             annotationsInsertPosition: 'END',
                             dataSource: {
@@ -1464,11 +1465,9 @@ describe('FE V2 quick actions', () => {
                                     uri: 'annotations/annotation_1736143853603.xml'
                                 }
                             },
-                            dataSourceId: 'mainService',
-                            reference: undefined
+                            dataSourceId: 'mainService'
                         },
-                        fileName: 'id_1736143853603_addAnnotationsToOData',
-                        generator: undefined,
+                        reference: undefined,
                         serviceUrl: 'main/service/url'
                     }
                 });

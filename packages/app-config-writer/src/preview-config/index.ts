@@ -1,4 +1,4 @@
-import { checkPrerequisites, getExplicitApprovalToAdjustFiles } from './prerequisites';
+import { checkPrerequisites } from './prerequisites';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { deleteNoLongerUsedFiles, renameDefaultSandboxes, renameDefaultTestFiles } from './preview-files';
@@ -30,11 +30,6 @@ export async function convertToVirtualPreview(
 
     if (!(await checkPrerequisites(basePath, fs, convertTests, logger))) {
         throw Error('The prerequisites are not met. For more information, see the log messages above.');
-    }
-
-    if (!(await getExplicitApprovalToAdjustFiles())) {
-        logger?.error('You have not approved the conversion. The conversion has been aborted.');
-        return fs;
     }
 
     await updatePreviewMiddlewareConfigs(fs, basePath, convertTests, logger);
