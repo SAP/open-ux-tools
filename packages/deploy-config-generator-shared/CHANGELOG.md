@@ -1,5 +1,20 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.19
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/fiori-generator-shared@0.7.26
+    -   @sap-ux/nodejs-utils@0.1.7
+
+## 0.0.18
+
+### Patch Changes
+
+-   9b755fc: adds new cf generator
+
 ## 0.0.17
 
 ### Patch Changes

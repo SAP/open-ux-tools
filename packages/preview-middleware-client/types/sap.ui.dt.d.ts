@@ -138,10 +138,15 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
         text: string | ((overlay: ElementOverlay) => string);
         handler: Function;
         icon?: string;
-        enabled?: Function;
+        enabled: ((overlay: ElementOverlay[]) => boolean);
     }
 
     interface ContextMenu {
+        _aMenuItems: {
+            bPersistOneTime: boolean | undefined;
+            fromPlugin: boolean;
+            menuItem: ContextMenuItem;
+        }[];
         addMenuItem(item: ContextMenuItem);
     }
 

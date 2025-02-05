@@ -11,7 +11,8 @@ import {
     showMessage,
     storageFileChanged,
     updateQuickAction,
-    PropertyType
+    PropertyType,
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -594,6 +595,75 @@ describe('main redux slice', () => {
         ).toStrictEqual({
             fileChanges: [],
             isAppLoading: true
+        });
+    });
+
+    test('requestControlContextMenu.fulfilled', () => {
+        expect(
+            reducer(
+                {
+                    contextMenu: undefined
+                } as any,
+                requestControlContextMenu.fulfilled({
+                    contextMenuItems: [
+                        {
+                            id: 'DEVACTION01',
+                            enabled: true,
+                            title: 'dev action 01',
+                            tooltip: ''
+                        },
+                        {
+                            id: 'DEVACTION02',
+                            enabled: true,
+                            title: 'dev action 02',
+                            tooltip: ''
+                        },
+                        {
+                            id: 'DEFAULTACTION01',
+                            enabled: true,
+                            title: 'default action 01',
+                            tooltip: ''
+                        },
+                        {
+                            id: 'DEFAULTACTION02',
+                            enabled: true,
+                            title: 'default action 02',
+                            tooltip: ''
+                        }
+                    ],
+                    controlId: 'test-control-01'
+                })
+            )
+        ).toStrictEqual({
+            contextMenu: {
+                contextMenuItems: [
+                    {
+                        enabled: true,
+                        id: 'DEVACTION01',
+                        title: 'dev action 01',
+                        tooltip: ''
+                    },
+                    {
+                        enabled: true,
+                        id: 'DEVACTION02',
+                        title: 'dev action 02',
+                        tooltip: ''
+                    },
+                    {
+                        enabled: true,
+                        id: 'DEFAULTACTION01',
+                        title: 'default action 01',
+                        tooltip: ''
+                    },
+                    {
+                        enabled: true,
+                        id: 'DEFAULTACTION02',
+                        title: 'default action 02',
+                        tooltip: ''
+                    }
+                ],
+                controlId: 'test-control-01'
+            }
         });
     });
 
