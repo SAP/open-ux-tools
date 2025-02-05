@@ -9,7 +9,7 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type OdataServicePromptOptions, promptNames } from '../../../../types';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils';
-import type { ValidationResult } from '../../../connectionValidator';
+import type { ValidationResult } from '../../../types';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';

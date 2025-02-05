@@ -1,4 +1,3 @@
-import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import {
     type Destination,
     createOAuth2UserTokenExchangeDest,
@@ -21,6 +20,7 @@ import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '..
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
+import type { ValidationResult } from '../../../types';
 import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames } from '../new-system/types';
 import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
@@ -145,7 +145,7 @@ async function validateCFServiceInfo(
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion,
     isCli = false
-): Promise<boolean | string | IValidationLink> {
+): Promise<ValidationResult> {
     const cfAbapServiceName = abapService.label;
     const uaaCreds = await apiGetInstanceCredentials(cfAbapServiceName); // should be abapService.serviceName in BAS?
 
@@ -153,7 +153,7 @@ async function validateCFServiceInfo(
         return t('errors.cfInstanceCredentialsNotReturned', { serviceInstanceName: cfAbapServiceName });
     }
 
-    let valResult: boolean | string | IValidationLink = true;
+    let valResult: ValidationResult = true;
     let destination: Destination | undefined;
     if (getPromptHostEnvironment() === hostEnvironment.bas) {
         destination = await createOAuth2UserTokenExchangeDest(
@@ -229,7 +229,7 @@ export function getCFDiscoverPrompts(
             },
             default: () => getDefaultChoiceIndex(choices as Answers[]),
             message: t('prompts.cloudFoundryAbapSystem.message'),
-            validate: async (abapService: ServiceInstanceInfo): Promise<string | boolean | IValidationLink> => {
+            validate: async (abapService: ServiceInstanceInfo): Promise<ValidationResult> => {
                 if (abapService) {
                     return await validateCFServiceInfo(
                         abapService,
