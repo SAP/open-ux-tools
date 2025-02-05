@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.7
+
+### Patch Changes
+
+-   4a90030: `@sap-ux/project-access` moved to dependencies.
+
 ## 0.25.6
 
 ### Patch Changes
