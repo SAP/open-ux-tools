@@ -1,5 +1,47 @@
 # @sap-ux/create
 
+## 0.11.60
+
+### Patch Changes
+
+-   80fc126: feat: remove sap-client from start-variants-management script url parameters
+-   Updated dependencies [80fc126]
+    -   @sap-ux/app-config-writer@0.5.25
+
+## 0.11.59
+
+### Patch Changes
+
+-   42dee4d: feat: enhance prompt for convert preview config
+-   Updated dependencies [42dee4d]
+    -   @sap-ux/app-config-writer@0.5.24
+
+## 0.11.58
+
+### Patch Changes
+
+-   Updated dependencies [5c127cf]
+    -   @sap-ux/preview-middleware@0.17.15
+    -   @sap-ux/app-config-writer@0.5.23
+
+## 0.11.57
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/abap-deploy-config-writer@0.0.83
+    -   @sap-ux/adp-tooling@0.12.121
+    -   @sap-ux/app-config-writer@0.5.23
+    -   @sap-ux/cap-config-writer@0.9.4
+    -   @sap-ux/cards-editor-config-writer@0.4.9
+    -   @sap-ux/flp-config-inquirer@0.2.27
+    -   @sap-ux/mockserver-config-writer@0.7.2
+    -   @sap-ux/odata-service-writer@0.25.5
+    -   @sap-ux/preview-middleware@0.17.14
+    -   @sap-ux/system-access@0.5.29
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.9
+
 ## 0.11.56
 
 ### Patch Changes

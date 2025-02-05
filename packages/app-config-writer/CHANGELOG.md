@@ -1,5 +1,25 @@
 # @sap-ux/app-config-writer
 
+## 0.5.25
+
+### Patch Changes
+
+-   80fc126: feat: remove sap-client from start-variants-management script url parameters
+
+## 0.5.24
+
+### Patch Changes
+
+-   42dee4d: feat: enhance prompt for convert preview config
+
+## 0.5.23
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/axios-extension@1.18.4
+
 ## 0.5.22
 
 ### Patch Changes
