@@ -146,10 +146,10 @@ export default class extends Generator {
         }
         const inbounds = getInboundsFromManifest(this.manifest);
         const appId = getRegistrationIdFromManifest(this.manifest);
-
         const prompts: Question<FLPConfigAnswers>[] = await getPrompts(inbounds, appId, {
             overwrite: { hide: true },
-            createAnotherInbound: { hide: true }
+            createAnotherInbound: { hide: true },
+            emptyInboundsInfo: { hide: isCli() }
         });
         this.answers = await this.prompt(prompts);
     }
