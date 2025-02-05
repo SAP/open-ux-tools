@@ -131,7 +131,6 @@ function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
  * @param propertyIdMap ChangeService for change stack event handling.
- * @param contextMenuService ContextMenuService for displaying context menu for outline.
  * @returns transformed outline tree nodes
  */
 export async function transformNodes(
@@ -246,7 +245,6 @@ function fillReuseComponents(
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
  * @param propertyIdMap  Map<string, string[]>.
- * @param contextMenuService ContextMenuService for displaying context menu for outline.
  * @returns transformed outline tree nodes
  */
 export async function handleDuplicateNodes(
