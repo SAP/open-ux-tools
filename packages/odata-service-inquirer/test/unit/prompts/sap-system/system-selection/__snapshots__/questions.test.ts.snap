@@ -82,6 +82,35 @@ exports[`Test system selection prompts should return system selection prompts an
     "validate": [Function],
     "when": [Function],
   },
+  {
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": true,
+    },
+    "message": "ABAP environment",
+    "name": "cfAbapBas:cloudFoundryAbapSystem",
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
+  {
+    "additionalMessages": [Function],
+    "choices": [Function],
+    "default": [Function],
+    "guiOptions": {
+      "applyDefaultWhenDirty": true,
+      "breadcrumb": "Service",
+      "mandatory": true,
+    },
+    "message": [Function],
+    "name": "cfAbapBas:serviceSelection",
+    "source": [Function],
+    "type": "list",
+    "validate": [Function],
+    "when": [Function],
+  },
 ]
 `;
 

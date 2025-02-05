@@ -9,13 +9,14 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type OdataServicePromptOptions, promptNames } from '../../../../types';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils';
-import type { ValidationResult } from '../../../connectionValidator';
+import type { ValidationResult } from '../../../types';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
 import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
+import { getCfAbapBASQuestions } from '../cf-abap/questions';
 import { validateServiceUrl } from '../validators';
 import {
     type CfAbapEnvServiceChoice,
@@ -131,6 +132,13 @@ export async function getSystemSelectionQuestions(
             ...withCondition(
                 getNewSystemQuestions(promptOptions) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
+            )
+        );
+    } else {
+        questions.push(
+            ...withCondition(
+                getCfAbapBASQuestions(promptOptions?.serviceSelection) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
             )
         );
     }
