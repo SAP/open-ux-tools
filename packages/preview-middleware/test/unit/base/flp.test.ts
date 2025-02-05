@@ -16,6 +16,7 @@ import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
+import connect = require('connect');
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -737,6 +738,53 @@ describe('FlpSandbox', () => {
             expect(logger.info).toBeCalledWith(
                 'HTML file returned at /test/existingFlp.html is loaded from the file system.'
             );
+        });
+    });
+
+    describe('router - connect API', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ]
+        };
+        test('GET default routes with connect API (used by karma test runner)', async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = connect();
+            app.use(flp.router as unknown as connect.Server);
+
+            server = await supertest(app);
+            let response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/unitTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/unitTests.qunit.js').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
         });
     });
 });

@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.17.16
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
+## 0.17.15
+
+### Patch Changes
+
+-   5c127cf: fix: ui5 version protocol for karma tests
+
 ## 0.17.14
 
 ### Patch Changes

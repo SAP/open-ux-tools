@@ -40,7 +40,7 @@ export class AddNewAnnotationFile
 
     async initialize(): Promise<void> {
         const version = await getUi5Version();
-        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 132, patch: 0 })) {
+        if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 108, patch: 27 })) {
             this.isApplicable = false;
             return;
         }
@@ -104,7 +104,7 @@ export class AddNewAnnotationFile
                     this.context.flexSettings.layer === 'CUSTOMER_BASE'
                         ? `customer.annotation.${annotationFileNameWithoutExtension}`
                         : `annotation.${annotationFileNameWithoutExtension}`;
-                const content = {
+                const parameters = {
                     dataSourceId: dataSourceId,
                     annotations: [annotationNameSpace],
                     annotationsInsertPosition: 'END',
@@ -119,13 +119,12 @@ export class AddNewAnnotationFile
                     changeType: 'appdescr_app_addAnnotationsToOData',
                     generator: this.context.flexSettings.generator,
                     reference: this.context.flexSettings.projectId,
-                    fileName: `id_${timestamp}_addAnnotationsToOData`,
-                    content: content,
+                    parameters,
                     serviceUrl: dataSource.serviceUrl
                 };
                 const command = await CommandFactory.getCommandFor<FlexCommand>(
                     this.context.view,
-                    'annotation',
+                    'appDescriptor',
                     modifiedValue,
                     null,
                     this.context.flexSettings
