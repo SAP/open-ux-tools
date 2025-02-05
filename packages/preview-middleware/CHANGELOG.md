@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.18
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
 ## 0.17.17
 
 ### Patch Changes
