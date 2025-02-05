@@ -16,6 +16,7 @@ import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentia
 import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
+import { getCfAbapBASQuestions } from '../cf-abap/questions';
 import { validateServiceUrl } from '../validators';
 import {
     type CfAbapEnvServiceChoice,
@@ -131,6 +132,13 @@ export async function getSystemSelectionQuestions(
             ...withCondition(
                 getNewSystemQuestions(promptOptions) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
+            )
+        );
+    } else {
+        questions.push(
+            ...withCondition(
+                getCfAbapBASQuestions(promptOptions?.serviceSelection) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
             )
         );
     }
