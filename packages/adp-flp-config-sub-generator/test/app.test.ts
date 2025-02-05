@@ -130,6 +130,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     beforeAll(async () => {
+        await initI18n();
         fs.mkdirSync(testOutputDir, { recursive: true });
     });
 
@@ -245,36 +246,6 @@ describe('FLPConfigGenerator Integration Tests', () => {
         expect(showInformationSpy).not.toBeCalled();
     });
 
-    it('Should result in an error message if the project is a CF project', async () => {
-        jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValueOnce(true);
-        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
-            target: {
-                destination: 'testDestination'
-            }
-        });
-        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
-        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
-
-        const runContext = yeomanTest
-            .create(
-                adpFlpConfigGenerator,
-                {
-                    resolved: generatorPath
-                },
-                {
-                    cwd: testProjectPath
-                }
-            )
-            .withOptions({
-                vscode,
-                appWizard: mockAppWizard,
-                launchFlpConfigAsSubGenerator: false
-            })
-            .withPrompts(answers);
-
-        await expect(runContext.run()).rejects.toThrow(t('error.projectNotSupported'));
-    });
-
     it('Should throw an error if writing phase fails', async () => {
         jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
             target: {
@@ -303,6 +274,36 @@ describe('FLPConfigGenerator Integration Tests', () => {
             .withPrompts(answers);
 
         await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+    });
+
+    it('Should result in an error message if the project is a CF project', async () => {
+        jest.spyOn(adpTooling, 'isCFEnvironment').mockReturnValueOnce(true);
+        jest.spyOn(adpTooling, 'getAdpConfig').mockResolvedValue({
+            target: {
+                destination: 'testDestination'
+            }
+        });
+        jest.spyOn(btpUtils, 'isAppStudio').mockReturnValue(true);
+        const testProjectPath = join(__dirname, 'fixtures/app.variant1');
+
+        const runContext = yeomanTest
+            .create(
+                adpFlpConfigGenerator,
+                {
+                    resolved: generatorPath
+                },
+                {
+                    cwd: testProjectPath
+                }
+            )
+            .withOptions({
+                vscode,
+                appWizard: mockAppWizard,
+                launchFlpConfigAsSubGenerator: false
+            })
+            .withPrompts(answers);
+        await initI18n();
+        await expect(runContext.run()).rejects.toThrow(t('error.projectNotSupported'));
     });
 
     it('Should throw an error when no destination is configured in Application Studio', async () => {
@@ -486,8 +487,7 @@ describe('FLPConfigGenerator Integration Tests', () => {
                 destination: 'testDestination'
             }
         });
-        const initMergedManifestSpy = jest
-            .spyOn(adpTooling.ManifestService, 'initMergedManifest')
+        jest.spyOn(adpTooling.ManifestService, 'initMergedManifest')
             .mockRejectedValueOnce({
                 isAxiosError: true,
                 response: {

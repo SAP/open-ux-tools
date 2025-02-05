@@ -1,6 +1,7 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from '../translations/adp-flp-config-sub-generator.i18n.json';
+import { addi18nResourceBundle as addInquirerCommonResourceBundle } from '@sap-ux/inquirer-common';
 
 const adpFlpConfigI18nNamespace = 'adp-flp-config-sub-generator';
 
@@ -11,6 +12,8 @@ export async function initI18n(): Promise<void> {
     await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
         i18next.addResourceBundle('en', adpFlpConfigI18nNamespace, translations)
     );
+
+    addInquirerCommonResourceBundle();
 }
 
 /**

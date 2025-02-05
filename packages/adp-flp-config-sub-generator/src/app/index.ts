@@ -39,7 +39,6 @@ import {
     ErrorHandler,
     type CredentialsAnswers,
     getCredentialsPrompts,
-    addi18nResourceBundle,
     type ValidationLink
 } from '@sap-ux/inquirer-common';
 import {
@@ -95,13 +94,12 @@ export default class extends Generator {
     }
 
     async initializing(): Promise<void> {
+        await initI18n();
+
         // Check if the project is supported
         if ((await getAppType(this.projectRootPath)) !== 'Fiori Adaptation' || isCFEnvironment(this.projectRootPath)) {
             throw new Error(t('error.projectNotSupported'));
         }
-
-        await initI18n();
-        addi18nResourceBundle();
 
         // Force the generator to overwrite existing files without additional prompting
         if ((this.env as unknown as YeomanEnvironment).conflicter) {
