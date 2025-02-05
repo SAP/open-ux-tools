@@ -129,6 +129,10 @@ describe('FLPConfigGenerator Integration Tests', () => {
         };
     });
 
+    afterEach(() => {
+        showInformationSpy.mockReset();
+    });
+
     beforeAll(async () => {
         await initI18n();
         fs.mkdirSync(testOutputDir, { recursive: true });
@@ -192,7 +196,6 @@ describe('FLPConfigGenerator Integration Tests', () => {
     });
 
     it('should generate FLP configuration successfully - VS Code', async () => {
-        showInformationSpy.mockReset();
         const testPath = join(testOutputDir, 'test_project2');
         fs.mkdirSync(testPath, { recursive: true });
         fsextra.copySync(join(__dirname, 'fixtures/app.variant1'), join(testPath, 'app.variant1'));
