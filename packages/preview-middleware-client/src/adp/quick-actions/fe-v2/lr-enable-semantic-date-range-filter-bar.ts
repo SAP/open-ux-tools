@@ -4,6 +4,7 @@ import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
 import SmartFilterBar from 'sap/ui/comp/smartfilterbar/SmartFilterBar';
 
 export const ENABLE_SEMANTIC_DATE_RANGE_FILTER_BAR = 'enable-semantic-daterange-filterbar';
@@ -58,10 +59,20 @@ export class ToggleSemanticDateRangeFilterBar
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const entitySet =
-            isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control) || isA<SmartFilterBar>(CONTROL_TYPE_ALP, this.control)
-                ? this.control.getEntitySet()
-                : undefined;
+        const version = await getUi5Version();
+        const isLowerMinimalVersion = isLowerThanMinimalUi5Version(version, { major: 1, minor: 126 });
+        let entitySet;
+        if (isLowerMinimalVersion && isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control)) {
+            // In older versions of UI5, the getEntitySet method is unavailable, so this workaround has been introduced.
+            const regex = /::([^:]+)--/;
+            entitySet = regex.exec(this.control?.getId() ?? '')?.[1];
+        } else {
+            entitySet =
+                isA<SmartFilterBar>(CONTROL_TYPE_LR, this.control) ||
+                isA<SmartFilterBar>(CONTROL_TYPE_ALP, this.control)
+                    ? this.control.getEntitySet()
+                    : undefined;
+        }
         const viewName = this.context.view.getViewName();
         const command = await prepareManifestChange(
             this.context,

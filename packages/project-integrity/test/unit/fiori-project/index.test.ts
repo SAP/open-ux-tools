@@ -5,6 +5,7 @@ import {
     enableFioriProjectIntegrity,
     initFioriProject,
     isFioriProjectIntegrityEnabled,
+    isFioriProjectIntegrityInitialized,
     updateFioriProjectIntegrity
 } from '../../../src';
 import * as persistence from '../../../src/integrity/persistence';
@@ -119,5 +120,21 @@ describe('Test disableFioriProjectIntegrity()', () => {
             'fileIntegrity': [],
             'contentIntegrity': []
         });
+    });
+});
+
+describe('Test isFioriProjectIntegrityInitialized()', () => {
+    afterEach(() => {
+        jest.resetAllMocks();
+    });
+
+    test('Disabled but initialized Fiori project', () => {
+        const projectRoot = join(__dirname, '../../test-input/disabled-fiori-project');
+        expect(isFioriProjectIntegrityInitialized(projectRoot)).toBe(true);
+    });
+
+    test('Uninitialized Fiori project', () => {
+        const projectRoot = join(__dirname, '../../test-input/invalid-fiori-project-no-schema-cds');
+        expect(isFioriProjectIntegrityInitialized(projectRoot)).toBe(false);
     });
 });
