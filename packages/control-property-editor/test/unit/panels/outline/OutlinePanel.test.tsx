@@ -2,7 +2,12 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { controlSelected, outlineChanged, SCENARIO } from '@sap-ux-private/control-property-editor-common';
+import {
+    controlSelected,
+    executeContextMenuAction,
+    outlineChanged,
+    SCENARIO
+} from '@sap-ux-private/control-property-editor-common';
 
 import { render } from '../../utils';
 
@@ -440,5 +445,51 @@ describe('OutlinePanel', () => {
 
         const indicator = container.querySelectorAll('svg circle');
         expect(indicator).toHaveLength(2);
+    });
+
+    test('tree - open context menu for outline nodes', () => {
+        const { dispatch } = render(<OutlinePanel />, {
+            initialState: {
+                outline: getOutlineNodes(true, true),
+                filterQuery: filterInitOptions,
+                contextMenu: {
+                    controlId: '01',
+                    contextMenuItems: [
+                        {
+                            id: 'TESTACTION01',
+                            enabled: true,
+                            title: 'test-action-01'
+                        },
+                        {
+                            id: 'TESTACTION02',
+                            enabled: true,
+                            title: 'test-action-02'
+                        }
+                    ]
+                }
+            }
+        });
+
+        // check one
+        const spanElement = screen.getByText(/^one$/i);
+
+        // Simulate a right-click event
+        fireEvent.contextMenu(spanElement);
+
+        expect(dispatch).nthCalledWith(1, { type: '[ext] select-control', payload: '01' });
+        expect(dispatch).nthCalledWith(2, { type: '[ext] request-control-context-menu <pending>', payload: '01' });
+
+        // find context menu items.
+        const contextMenuItems = screen.getAllByText(/^test-action/i);
+        expect(contextMenuItems.length).toBe(2);
+
+        fireEvent.click(contextMenuItems[0]);
+        expect(dispatch).nthCalledWith(
+            3,
+            executeContextMenuAction({
+                controlId: '01',
+                actionName: 'TESTACTION01'
+            })
+        );
     });
 });
