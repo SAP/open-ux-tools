@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.22
+
+### Patch Changes
+
+-   9bccf03: feat: add support for type component
+
 ## 0.17.21
 
 ### Patch Changes
