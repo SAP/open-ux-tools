@@ -240,6 +240,15 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
             expect(flp.templateConfig.ui5.libs).toMatchSnapshot();
         });
+
+        test('do not add component to applications', async () => {
+            const manifest = {
+                'sap.app': { id: 'my.id', type: 'component' }
+            } as Manifest;
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            await flp.init(manifest);
+            expect(flp.templateConfig.apps).toMatchSnapshot();
+        });
     });
 
     describe('router', () => {
@@ -322,25 +331,6 @@ describe('FlpSandbox', () => {
 
         test('test/flp.html', async () => {
             const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false#app-preview').expect(200);
-            expect(response.text).toMatchSnapshot();
-        });
-
-        test('test/flp.html for component', async () => {
-            const flp = new FlpSandbox(
-                mockConfig as unknown as Partial<MiddlewareConfig>,
-                mockProject,
-                mockUtils,
-                logger
-            );
-            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
-            manifest['sap.app'].type = 'component';
-            await flp.init(manifest);
-
-            const app = express();
-            app.use(flp.router);
-
-            server = await supertest(app);
-            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
