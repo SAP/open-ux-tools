@@ -24,7 +24,13 @@ import { ToolsLogger } from '@sap-ux/logger';
 import { EventName } from '../telemetryEvents';
 import { getPrompts, type FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
-import { TelemetryHelper, sendTelemetry, isCli, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import {
+    TelemetryHelper,
+    sendTelemetry,
+    isCli,
+    type ILogWrapper,
+    type YeomanEnvironment
+} from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { FileName, getAppType } from '@sap-ux/project-access';
 import AdpFlpConfigLogger from '../utils/logger';
@@ -75,8 +81,6 @@ export default class extends Generator {
      * @param {FlpConfigOptions} opts - The options for the generator.
      */
     constructor(args: string | string[], opts: FlpConfigOptions) {
-        // Force the generator to overwrite existing files without additional prompting
-        opts.force = true;
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchAsSubGen = !!opts.launchAsSubGen;
@@ -98,6 +102,12 @@ export default class extends Generator {
 
         await initI18n();
         addi18nResourceBundle();
+
+        // Force the generator to overwrite existing files without additional prompting
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
+
         this._setupFLPConfigPage();
 
         this.ui5Yaml = await getAdpConfig(this.projectRootPath, join(this.projectRootPath, FileName.Ui5Yaml));
