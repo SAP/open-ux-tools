@@ -1,5 +1,9 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { type Destination, createOAuth2UserTokenExchangeDest, generateABAPCloudDestinationName } from '@sap-ux/btp-utils';
+import {
+    type Destination,
+    createOAuth2UserTokenExchangeDest,
+    generateABAPCloudDestinationName
+} from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     type FileBrowserQuestion,
