@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.34
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
 ## 0.5.33
 
 ### Patch Changes
