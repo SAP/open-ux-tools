@@ -1,5 +1,15 @@
 # @sap-ux/adp-tooling
 
+## 0.12.123
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/inquirer-common@0.6.13
+    -   @sap-ux/system-access@0.5.30
+
 ## 0.12.122
 
 ### Patch Changes

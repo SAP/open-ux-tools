@@ -1,5 +1,19 @@
 # @sap-ux/preview-middleware
 
+## 0.17.19
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/adp-tooling@0.12.123
+
+## 0.17.18
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
 ## 0.17.17
 
 ### Patch Changes
