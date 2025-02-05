@@ -18,9 +18,9 @@ import {
     reportTelemetry,
     addExtensionPoint,
     executeContextMenuAction,
-    requestControlActionList
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
-import type { Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
+import type { ContextMenu, Control, OutlineNode } from '@sap-ux-private/control-property-editor-common';
 
 import type { RootState } from '../../store';
 import type { ControlChanges, FilterOptions } from '../../slice';
@@ -56,19 +56,7 @@ export const Tree = (): ReactElement => {
     const filterQuery = useSelector<RootState, FilterOptions[]>((state) => state.filterQuery);
     const selectedControl = useSelector<RootState, Control | undefined>((state) => state.selectedControl);
     const controlChanges = useSelector<RootState, ControlChanges>((state) => state.changes.controls);
-    const contextMenuItem = useSelector<
-        RootState,
-        | {
-              controlId: string;
-              contextMenuActions: {
-                  actionName: string;
-                  name: string;
-                  enabled: boolean;
-                  tooltip?: string;
-              }[];
-          }
-        | undefined
-    >((state) => state.contextMenuItem);
+    const contextMenu = useSelector<RootState, ContextMenu | undefined>((state) => state.contextMenu);
     const model: OutlineNode[] = useSelector<RootState, OutlineNode[]>((state) => state.outline);
     const isNavigationMode = useSelector<RootState, boolean>((state) => state.appMode === 'navigation');
 
@@ -308,7 +296,7 @@ export const Tree = (): ReactElement => {
             selectAction = selectControl(controlId);
         }
         dispatch(selectAction);
-        dispatch(requestControlActionList.pending(controlId));
+        dispatch(requestControlContextMenu.pending(controlId));
         e.preventDefault();
         setShowActionContextualMenu(item);
     };
@@ -337,26 +325,26 @@ export const Tree = (): ReactElement => {
         }
     };
     /**
-     * Build menu items for nested quick actions.
+     * Build menu items for context menu.
      *
      * @param controlId control id.
      * @returns ReactElement
      */
     const buildMenuItems = function (controlId: string): UIContextualMenuItem[] {
-        const children = contextMenuItem?.contextMenuActions;
+        const children = contextMenu?.contextMenuItems;
         return (children ?? []).map((child, index) => {
             return {
-                key: `${controlId}-${child.actionName}-${index}`,
-                text: child?.name,
+                key: `${controlId}-${child.id}-${index}`,
+                text: child?.title,
                 disabled: isNavigationMode ? true : !child.enabled,
                 title: isNavigationMode
                     ? t('CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE')
-                    : child?.tooltip ?? child?.name,
+                    : child?.tooltip ?? child?.title,
                 onClick(): void {
                     dispatch(
                         executeContextMenuAction({
                             controlId,
-                            actionName: child.actionName
+                            actionName: child.id
                         })
                     );
                 }

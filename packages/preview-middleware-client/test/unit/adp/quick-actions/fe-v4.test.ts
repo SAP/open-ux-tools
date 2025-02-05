@@ -178,7 +178,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(
                     rtaMock,
-                    new OutlineService(rtaMock, mockChangeService, {} as any),
+                    new OutlineService(rtaMock, mockChangeService),
                     [registry],
                     { onStackChange: jest.fn() } as any
                 );
@@ -285,7 +285,7 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService, {} as any), [registry], {
+                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
                     onStackChange: jest.fn(),
                     getConfigurationPropertyValue: jest
                         .fn()
@@ -459,7 +459,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(
                     rtaMock,
-                    new OutlineService(rtaMock, mockChangeService, {} as any),
+                    new OutlineService(rtaMock, mockChangeService),
                     [registry],
                     { onStackChange: jest.fn() } as any
                 );
@@ -572,7 +572,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(
                     rtaMock,
-                    new OutlineService(rtaMock, mockChangeService, {} as any),
+                    new OutlineService(rtaMock, mockChangeService),
                     [registry],
                     { onStackChange: jest.fn() } as any
                 );
@@ -720,7 +720,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(
                     rtaMock,
-                    new OutlineService(rtaMock, mockChangeService, {} as any),
+                    new OutlineService(rtaMock, mockChangeService),
                     [registry],
                     { onStackChange: jest.fn() } as any
                 );
@@ -839,7 +839,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(
                     rtaMock,
-                    new OutlineService(rtaMock, mockChangeService, {} as any),
+                    new OutlineService(rtaMock, mockChangeService),
                     [registry],
                     { onStackChange: jest.fn() } as any
                 );
@@ -996,7 +996,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(
                     rtaMock,
-                    new OutlineService(rtaMock, mockChangeService, {} as any),
+                    new OutlineService(rtaMock, mockChangeService),
                     [registry],
                     {
                         onStackChange: jest.fn(),
@@ -1197,7 +1197,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 service = new QuickActionService(
                     rtaMock,
-                    new OutlineService(rtaMock, mockChangeService, {} as any),
+                    new OutlineService(rtaMock, mockChangeService),
                     [registry],
                     {
                         onStackChange: jest.fn(),
@@ -1441,7 +1441,7 @@ describe('FE V4 quick actions', () => {
                 const registry = new FEV4QuickActionRegistry();
                 const service = new QuickActionService(
                     rtaMock,
-                    new OutlineService(rtaMock, mockChangeService, {} as any),
+                    new OutlineService(rtaMock, mockChangeService),
                     [registry],
                     { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                 );
@@ -1614,7 +1614,7 @@ describe('FE V4 quick actions', () => {
                     const registry = new FEV4QuickActionRegistry();
                     const service = new QuickActionService(
                         rtaMock,
-                        new OutlineService(rtaMock, mockChangeService, {} as any),
+                        new OutlineService(rtaMock, mockChangeService),
                         [registry],
                         { onStackChange: jest.fn() } as any
                     );
@@ -1828,7 +1828,7 @@ describe('FE V4 quick actions', () => {
                     const registry = new FEV4QuickActionRegistry();
                     const service = new QuickActionService(
                         rtaMock,
-                        new OutlineService(rtaMock, mockChangeService, {} as any),
+                        new OutlineService(rtaMock, mockChangeService),
                         [registry],
                         {
                             onStackChange: jest.fn()
@@ -2094,7 +2094,7 @@ describe('FE V4 quick actions', () => {
                         const registry = new FEV4QuickActionRegistry();
                         const service = new QuickActionService(
                             rtaMock,
-                            new OutlineService(rtaMock, mockChangeService, {} as any),
+                            new OutlineService(rtaMock, mockChangeService),
                             [registry],
                             {
                                 onStackChange: jest.fn()
@@ -2329,7 +2329,7 @@ describe('FE V4 quick actions', () => {
                     const registry = new FEV4QuickActionRegistry();
                     const service = new QuickActionService(
                         rtaMock,
-                        new OutlineService(rtaMock, mockChangeService, {} as any),
+                        new OutlineService(rtaMock, mockChangeService),
                         [registry],
                         { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                     );

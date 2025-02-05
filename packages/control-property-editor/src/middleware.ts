@@ -16,7 +16,8 @@ import {
     executeQuickAction,
     appLoaded,
     externalFileChange,
-    requestControlActionList
+    requestControlContextMenu,
+    executeContextMenuAction
 } from '@sap-ux-private/control-property-editor-common';
 
 import type reducer from './slice';
@@ -72,7 +73,8 @@ export const communicationMiddleware: Middleware<Dispatch<ExternalAction>, Retur
                 case selectControl.type:
                 case addExtensionPoint.type:
                 case externalFileChange.type:
-                case requestControlActionList.pending.type: {
+                case executeContextMenuAction.type:
+                case requestControlContextMenu.pending.type: {
                     sendAction(action);
                     break;
                 }

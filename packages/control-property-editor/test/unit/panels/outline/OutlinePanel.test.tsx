@@ -447,23 +447,23 @@ describe('OutlinePanel', () => {
         expect(indicator).toHaveLength(2);
     });
 
-    test('tree - open context menu for displaying rta actions', () => {
+    test('tree - open context menu for outline nodes', () => {
         const { dispatch } = render(<OutlinePanel />, {
             initialState: {
                 outline: getOutlineNodes(true, true),
                 filterQuery: filterInitOptions,
-                contextMenuItem: {
+                contextMenu: {
                     controlId: '01',
-                    contextMenuActions: [
+                    contextMenuItems: [
                         {
-                            actionName: 'TESTACTION01',
+                            id: 'TESTACTION01',
                             enabled: true,
-                            name: 'test-action-01'
+                            title: 'test-action-01'
                         },
                         {
-                            actionName: 'TESTACTION02',
+                            id: 'TESTACTION02',
                             enabled: true,
-                            name: 'test-action-02'
+                            title: 'test-action-02'
                         }
                     ]
                 }

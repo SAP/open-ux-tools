@@ -81,7 +81,7 @@ describe('quick action service', () => {
     test('initialize simple action definition', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
         const registry = new MockRegistry();
-        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService, {} as any), [registry], {
+        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
             onStackChange: jest.fn()
         } as any);
         await service.init(sendActionMock, subscribeMock);
@@ -116,7 +116,7 @@ describe('quick action service', () => {
         const onStackChangeMock = {
             onStackChange: jest.fn()
         } as any;
-        const outlineService = new OutlineService(rtaMock, mockChangeService, {} as any);
+        const outlineService = new OutlineService(rtaMock, mockChangeService);
         const onOutlineChangeCbSpy = jest.spyOn(outlineService, 'onOutlineChange');
         const service = new QuickActionService(rtaMock, outlineService, [registry], onStackChangeMock);
         await service.init(sendActionMock, subscribeMock);
@@ -142,7 +142,7 @@ describe('quick action service', () => {
 
     test('initialize simple action definition - update quick action on extenal file change', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-        const outlineService = new OutlineService(rtaMock, mockChangeService, {} as any);
+        const outlineService = new OutlineService(rtaMock, mockChangeService);
         const registry = new MockRegistry();
         const service = new QuickActionService(rtaMock, outlineService, [registry], {
             onStackChange: jest.fn()

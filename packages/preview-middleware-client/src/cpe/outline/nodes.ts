@@ -13,7 +13,6 @@ import { getOverlay, isReuseComponent } from '../utils';
 import { isEditable } from './editable';
 import { ChangeService } from '../changes';
 import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4';
-import { ContextMenuService } from '../context-menu-service';
 
 interface AdditionalData {
     text?: string;
@@ -141,8 +140,7 @@ export async function transformNodes(
     reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
     changeService: ChangeService,
-    propertyIdMap: Map<string, string[]>,
-    contextMenuService: ContextMenuService
+    propertyIdMap: Map<string, string[]>
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
@@ -166,8 +164,7 @@ export async function transformNodes(
                           reuseComponentsIds,
                           controlIndex,
                           changeService,
-                          propertyIdMap,
-                          contextMenuService
+                          propertyIdMap
                       )
                     : await transformNodes(
                           children,
@@ -175,8 +172,7 @@ export async function transformNodes(
                           reuseComponentsIds,
                           controlIndex,
                           changeService,
-                          propertyIdMap,
-                          contextMenuService
+                          propertyIdMap
                       );
                 const node: OutlineNode = {
                     controlId: current.id,
@@ -259,8 +255,7 @@ export async function handleDuplicateNodes(
     reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
     changeService: ChangeService,
-    propertyIdMap: Map<string, string[]>,
-    contextMenuService: ContextMenuService
+    propertyIdMap: Map<string, string[]>
 ): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
@@ -273,13 +268,5 @@ export async function handleDuplicateNodes(
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(
-        uniqueChildren,
-        scenario,
-        reuseComponentsIds,
-        controlIndex,
-        changeService,
-        propertyIdMap,
-        contextMenuService
-    );
+    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex, changeService, propertyIdMap);
 }

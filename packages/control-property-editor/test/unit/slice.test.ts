@@ -12,7 +12,7 @@ import {
     storageFileChanged,
     updateQuickAction,
     PropertyType,
-    requestControlActionList
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -598,36 +598,36 @@ describe('main redux slice', () => {
         });
     });
 
-    test('requestControlActionList.fulfilled', () => {
+    test('requestControlContextMenu.fulfilled', () => {
         expect(
             reducer(
                 {
                     contextMenuItem: undefined
                 } as any,
-                requestControlActionList.fulfilled({
+                requestControlContextMenu.fulfilled({
                     contextMenuItems: [
                         {
-                            actionName: 'DEVACTION01',
+                            id: 'DEVACTION01',
                             enabled: true,
-                            name: 'dev action 01',
+                            title: 'dev action 01',
                             tooltip: ''
                         },
                         {
-                            actionName: 'DEVACTION02',
+                            id: 'DEVACTION02',
                             enabled: true,
-                            name: 'dev action 02',
+                            title: 'dev action 02',
                             tooltip: ''
                         },
                         {
-                            'actionName': 'DEFAULTACTION01',
+                            id: 'DEFAULTACTION01',
                             enabled: true,
-                            name: 'default action 01',
+                            title: 'default action 01',
                             tooltip: ''
                         },
                         {
-                            actionName: 'DEFAULTACTION02',
+                            id: 'DEFAULTACTION02',
                             enabled: true,
-                            name: 'default action 02',
+                            title: 'default action 02',
                             tooltip: ''
                         }
                     ],

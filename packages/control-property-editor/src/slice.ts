@@ -3,6 +3,7 @@ import { createSlice, createAction } from '@reduxjs/toolkit';
 
 import type {
     Control,
+    ContextMenu,
     IconDetails,
     OutlineNode,
     PendingChange,
@@ -42,7 +43,7 @@ import {
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
     CONFIGURATION_CHANGE_KIND,
-    requestControlActionList
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -74,17 +75,7 @@ export interface SliceState {
     applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
-    contextMenuItem:
-        | {
-              controlId: string;
-              contextMenuActions: {
-                  actionName: string;
-                  name: string;
-                  enabled: boolean;
-                  tooltip?: string;
-              }[];
-          }
-        | undefined;
+    contextMenu: ContextMenu | undefined;
 }
 
 export interface ChangesSlice {
@@ -175,7 +166,7 @@ export const initialState: SliceState = {
     applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: [],
-    contextMenuItem: undefined
+    contextMenu: undefined
 };
 
 /**
@@ -455,11 +446,11 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 }
             )
             .addMatcher(
-                requestControlActionList.fulfilled.match,
-                (state: SliceState, action: ReturnType<typeof requestControlActionList.fulfilled>): void => {
+                requestControlContextMenu.fulfilled.match,
+                (state: SliceState, action: ReturnType<typeof requestControlContextMenu.fulfilled>): void => {
                     const { contextMenuItems, controlId } = action.payload;
-                    state.contextMenuItem = {
-                        contextMenuActions: contextMenuItems,
+                    state.contextMenu = {
+                        contextMenuItems,
                         controlId
                     };
                 }

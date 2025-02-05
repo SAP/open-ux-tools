@@ -1,6 +1,6 @@
 import { ContextMenuService } from '../../../src/cpe/context-menu-service';
 import { ActionHandler } from '../../../src/cpe/types';
-import { executeContextMenuAction, requestControlActionList } from '@sap-ux-private/control-property-editor-common';
+import { executeContextMenuAction, requestControlContextMenu } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 import * as coreUtils from '../../../src/utils/core';
@@ -44,7 +44,7 @@ describe('context-menu-service', () => {
         expect(actionServiceExecuteSpy).toBeCalledWith('test-control', 'TESTACTION01');
     });
 
-    test('requestControlActionList', async () => {
+    test('requestControlContextMenu', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
         const actionServiceGetsSpy = jest.fn();
         rtaMock.getService.mockResolvedValue({ get: actionServiceGetsSpy });
@@ -59,7 +59,7 @@ describe('context-menu-service', () => {
         getOverlaySpy.mockReturnValue({ id: 'test-control-01' });
         await contextMenuService.init(sendActionMock, subscribeMock);
 
-        await subscribeMock.mock.calls[0][0](requestControlActionList.pending('test-control-01'));
+        await subscribeMock.mock.calls[0][0](requestControlContextMenu.pending('test-control-01'));
 
         expect(sendActionMock).toBeCalledWith({
             payload: {

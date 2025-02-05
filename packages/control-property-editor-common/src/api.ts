@@ -461,27 +461,26 @@ export const save = createExternalAction<void>('save');
 export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
-export const executeContextMenuAction = createExternalAction<ContextMenuActionExecutionPayload>('execute-quick-action');
+export const executeContextMenuAction =
+    createExternalAction<ContextMenuActionExecutionPayload>('execute-context-menu-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
 export const externalFileChange = createExternalAction<string>('external-file-change');
 
-const createCoreAction = createAsyncActionFactory(EXTERNAL_ACTION_PREFIX);
+const createAsyncExternalAction = createAsyncActionFactory(EXTERNAL_ACTION_PREFIX);
 
 interface ContextMenuItem {
-    actionName: string;
+    id: string;
     enabled: boolean;
-    name: string;
+    title: string;
     tooltip?: string;
 }
 
-interface ControlContextMenuItems {
+export interface ContextMenu {
     controlId: string;
     contextMenuItems: ContextMenuItem[];
 }
 
-export const requestControlActionList = createCoreAction<string, ControlContextMenuItems>(
-    'request-control-action-list'
-);
+export const requestControlContextMenu = createAsyncExternalAction<string, ContextMenu>('request-control-context-menu');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -511,4 +510,4 @@ export type ExternalAction =
     | ReturnType<typeof executeQuickAction>
     | ReturnType<typeof executeContextMenuAction>
     | ReturnType<typeof externalFileChange>
-    | ReturnType<typeof requestControlActionList.fulfilled>;
+    | ReturnType<typeof requestControlContextMenu.fulfilled>;

@@ -1,7 +1,7 @@
 import {
     executeContextMenuAction,
     ExternalAction,
-    requestControlActionList
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -17,7 +17,7 @@ export class ContextMenuService {
     private actionService: ActionService;
     /**
      *
-     * @param options ui5 adaptation options.
+     * @param rta Runtime Authoring instance.
      */
     constructor(private readonly rta: RuntimeAuthoring) {}
 
@@ -36,7 +36,7 @@ export class ContextMenuService {
                 const { actionName, controlId } = action.payload;
                 await this.actionService.execute(controlId, actionName);
             }
-            if (requestControlActionList.pending.match(action)) {
+            if (requestControlContextMenu.pending.match(action)) {
                 const controlId = action.payload;
                 const actions = await this.actionService.get(controlId);
                 const responsePayload = {
@@ -48,10 +48,10 @@ export class ContextMenuService {
                             enabled = false;
                             tooltip = resourceBundle.getText('ADP_QUICK_ACTION_DIALOG_OPEN_MESSAGE');
                         }
-                        return { actionName: val.id, name: val.text, enabled, tooltip };
+                        return { id: val.id, title: val.text, enabled, tooltip };
                     })
                 };
-                const requestControlActions = requestControlActionList.fulfilled(responsePayload);
+                const requestControlActions = requestControlContextMenu.fulfilled(responsePayload);
                 this.sendAction(requestControlActions);
             }
         });
