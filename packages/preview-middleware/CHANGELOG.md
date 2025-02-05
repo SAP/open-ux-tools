@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.16
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
 ## 0.17.15
 
 ### Patch Changes
