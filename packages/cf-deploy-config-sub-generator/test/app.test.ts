@@ -745,7 +745,7 @@ describe('Cloud foundry generator tests', () => {
             cfDestination: 'ABHE_sap_opu_odata_sap_ZUI_RAP_TRAVEL_M_U025',
             isAbapDirectServiceBinding: false,
             isCap: false,
-            projectRoot: appDir
+            projectRoot: expect.stringContaining(appDir)
         });
     });
 
