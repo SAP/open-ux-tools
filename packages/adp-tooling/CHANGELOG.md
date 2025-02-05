@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.12.125
+
+### Patch Changes
+
+-   78bc772: Introduce ADP FLP config generator
+-   Updated dependencies [78bc772]
+    -   @sap-ux/i18n@0.2.1
+    -   @sap-ux/project-access@1.29.5
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/odata-service-writer@0.25.8
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.14
+
 ## 0.12.124
 
 ### Patch Changes
