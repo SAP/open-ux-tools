@@ -9,10 +9,6 @@ describe('runBuildAndClean', () => {
 
     beforeEach(() => {
         commandSpy = jest.spyOn(CommandRunner.prototype, 'run');
-
-        // Mock `console.log` and `console.warn` to suppress output in the terminal
-        console.log = jest.fn();
-        console.warn = jest.fn();
         console.error = jest.fn();
     });
 
