@@ -602,7 +602,7 @@ describe('main redux slice', () => {
         expect(
             reducer(
                 {
-                    contextMenuItem: undefined
+                    contextMenu: undefined
                 } as any,
                 requestControlContextMenu.fulfilled({
                     contextMenuItems: [
@@ -635,30 +635,30 @@ describe('main redux slice', () => {
                 })
             )
         ).toStrictEqual({
-            contextMenuItem: {
-                contextMenuActions: [
+            contextMenu: {
+                contextMenuItems: [
                     {
-                        actionName: 'DEVACTION01',
                         enabled: true,
-                        name: 'dev action 01',
+                        id: 'DEVACTION01',
+                        title: 'dev action 01',
                         tooltip: ''
                     },
                     {
-                        actionName: 'DEVACTION02',
                         enabled: true,
-                        name: 'dev action 02',
+                        id: 'DEVACTION02',
+                        title: 'dev action 02',
                         tooltip: ''
                     },
                     {
-                        'actionName': 'DEFAULTACTION01',
                         enabled: true,
-                        name: 'default action 01',
+                        id: 'DEFAULTACTION01',
+                        title: 'default action 01',
                         tooltip: ''
                     },
                     {
-                        actionName: 'DEFAULTACTION02',
                         enabled: true,
-                        name: 'default action 02',
+                        id: 'DEFAULTACTION02',
+                        title: 'default action 02',
                         tooltip: ''
                     }
                 ],

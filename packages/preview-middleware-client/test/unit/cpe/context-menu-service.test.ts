@@ -65,21 +65,21 @@ describe('context-menu-service', () => {
             payload: {
                 contextMenuItems: [
                     {
-                        'actionName': 'DEFAULTACTION01',
                         enabled: true,
-                        name: 'default action 01',
+                        id : 'DEFAULTACTION01',
+                        title: 'default action 01',
                         tooltip: undefined
                     },
                     {
-                        actionName: 'DEFAULTACTION02',
                         enabled: true,
-                        name: 'default action 02',
+                        id: 'DEFAULTACTION02',
+                        title: 'default action 02',
                         tooltip: undefined
                     }
                 ],
                 controlId: 'test-control-01'
             },
-            type: '[ext] request-control-action-list <fulfilled>'
+            type: '[ext] request-control-context-menu <fulfilled>'
         });
     });
 });

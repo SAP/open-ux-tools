@@ -477,7 +477,7 @@ describe('OutlinePanel', () => {
         fireEvent.contextMenu(spanElement);
 
         expect(dispatch).nthCalledWith(1, { type: '[ext] select-control', payload: '01' });
-        expect(dispatch).nthCalledWith(2, { type: '[ext] request-control-action-list <pending>', payload: '01' });
+        expect(dispatch).nthCalledWith(2, { type: '[ext] request-control-context-menu <pending>', payload: '01' });
 
         // find context menu items.
         const contextMenuItems = screen.getAllByText(/^test-action/i);
