@@ -64,7 +64,6 @@ export const Tree = (): ReactElement => {
                   actionName: string;
                   name: string;
                   enabled: boolean;
-                  defaultPlugin: boolean;
                   tooltip?: string;
               }[];
           }
@@ -357,8 +356,7 @@ export const Tree = (): ReactElement => {
                     dispatch(
                         executeContextMenuAction({
                             controlId,
-                            actionName: child.actionName,
-                            defaultPlugin: child.defaultPlugin
+                            actionName: child.actionName
                         })
                     );
                 }

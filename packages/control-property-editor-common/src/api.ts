@@ -286,7 +286,6 @@ export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | Ne
 export interface ContextMenuActionExecutionPayload {
     controlId: string;
     actionName: string;
-    defaultPlugin: boolean;
 }
 
 /**
@@ -473,7 +472,6 @@ interface ContextMenuItem {
     enabled: boolean;
     name: string;
     tooltip?: string;
-    defaultPlugin: boolean;
 }
 
 interface ControlContextMenuItems {

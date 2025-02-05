@@ -81,7 +81,6 @@ export interface SliceState {
                   actionName: string;
                   name: string;
                   enabled: boolean;
-                  defaultPlugin: boolean;
                   tooltip?: string;
               }[];
           }

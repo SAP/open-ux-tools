@@ -608,28 +608,24 @@ describe('main redux slice', () => {
                     contextMenuItems: [
                         {
                             actionName: 'DEVACTION01',
-                            defaultPlugin: false,
                             enabled: true,
                             name: 'dev action 01',
                             tooltip: ''
                         },
                         {
                             actionName: 'DEVACTION02',
-                            defaultPlugin: false,
                             enabled: true,
                             name: 'dev action 02',
                             tooltip: ''
                         },
                         {
                             'actionName': 'DEFAULTACTION01',
-                            defaultPlugin: true,
                             enabled: true,
                             name: 'default action 01',
                             tooltip: ''
                         },
                         {
                             actionName: 'DEFAULTACTION02',
-                            defaultPlugin: true,
                             enabled: true,
                             name: 'default action 02',
                             tooltip: ''
@@ -643,28 +639,24 @@ describe('main redux slice', () => {
                 contextMenuActions: [
                     {
                         actionName: 'DEVACTION01',
-                        defaultPlugin: false,
                         enabled: true,
                         name: 'dev action 01',
                         tooltip: ''
                     },
                     {
                         actionName: 'DEVACTION02',
-                        defaultPlugin: false,
                         enabled: true,
                         name: 'dev action 02',
                         tooltip: ''
                     },
                     {
                         'actionName': 'DEFAULTACTION01',
-                        defaultPlugin: true,
                         enabled: true,
                         name: 'default action 01',
                         tooltip: ''
                     },
                     {
                         actionName: 'DEFAULTACTION02',
-                        defaultPlugin: true,
                         enabled: true,
                         name: 'default action 02',
                         tooltip: ''

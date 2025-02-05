@@ -457,13 +457,11 @@ describe('OutlinePanel', () => {
                     contextMenuActions: [
                         {
                             actionName: 'TESTACTION01',
-                            defaultPlugin: true,
                             enabled: true,
                             name: 'test-action-01'
                         },
                         {
                             actionName: 'TESTACTION02',
-                            defaultPlugin: true,
                             enabled: true,
                             name: 'test-action-02'
                         }
@@ -490,8 +488,7 @@ describe('OutlinePanel', () => {
             3,
             executeContextMenuAction({
                 controlId: '01',
-                actionName: 'TESTACTION01',
-                defaultPlugin: true
+                actionName: 'TESTACTION01'
             })
         );
     });

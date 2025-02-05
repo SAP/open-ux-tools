@@ -38,68 +38,21 @@ describe('context-menu-service', () => {
         await contextMenuService.init(sendActionMock, subscribeMock);
 
         await subscribeMock.mock.calls[0][0](
-            executeContextMenuAction({ actionName: 'TESTACTION01', controlId: 'test-control', defaultPlugin: true })
+            executeContextMenuAction({ actionName: 'TESTACTION01', controlId: 'test-control' })
         );
 
         expect(actionServiceExecuteSpy).toBeCalledWith('test-control', 'TESTACTION01');
-    });
-
-    test('executeContextMenuAction - developer actions', async () => {
-        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
-        const handler1 = jest.fn();
-        const handler2 = jest.fn();
-        rtaMock.getDefaultPlugins.mockReturnValue({
-            contextMenu: {
-                _aMenuItems: [
-                    { menuItem: { id: 'DEVACTION01', handler: handler1 } },
-                    { menuItem: { id: 'DEVACTION02', handler: handler2 } }
-                ]
-            }
-        });
-        const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
-        getControlByIdSpy.mockReturnValue({ id: 'test-control-01' });
-        getOverlaySpy.mockReturnValue({ id: 'test-control-01' });
-        await contextMenuService.init(sendActionMock, subscribeMock);
-
-        await subscribeMock.mock.calls[0][0](
-            executeContextMenuAction({ actionName: 'DEVACTION01', controlId: 'test-control-01', defaultPlugin: false })
-        );
-
-        expect(handler1).toBeCalledWith([{ id: 'test-control-01' }]);
     });
 
     test('requestControlActionList', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
         const actionServiceGetsSpy = jest.fn();
         rtaMock.getService.mockResolvedValue({ get: actionServiceGetsSpy });
-        const handler1 = jest.fn();
-        const handler2 = jest.fn();
+
         actionServiceGetsSpy.mockResolvedValue([
             { enabled: true, id: 'DEFAULTACTION01', text: 'default action 01' },
             { enabled: true, id: 'DEFAULTACTION02', text: 'default action 02' }
         ]);
-        rtaMock.getDefaultPlugins.mockReturnValue({
-            contextMenu: {
-                _aMenuItems: [
-                    {
-                        menuItem: {
-                            id: 'DEVACTION01',
-                            handler: handler1,
-                            enabled: jest.fn().mockReturnValue(true),
-                            text: 'dev action 01'
-                        }
-                    },
-                    {
-                        menuItem: {
-                            id: 'DEVACTION02',
-                            handler: handler2,
-                            enabled: jest.fn().mockReturnValue(true),
-                            text: jest.fn().mockReturnValue('dev action 02')
-                        }
-                    }
-                ]
-            }
-        });
 
         const contextMenuService = new ContextMenuService(rtaMock as unknown as RuntimeAuthoring);
         getControlByIdSpy.mockReturnValue({ id: 'test-control-01' });
@@ -112,32 +65,16 @@ describe('context-menu-service', () => {
             payload: {
                 contextMenuItems: [
                     {
-                        actionName: 'DEVACTION01',
-                        defaultPlugin: false,
-                        enabled: true,
-                        name: 'dev action 01',
-                        tooltip: ''
-                    },
-                    {
-                        actionName: 'DEVACTION02',
-                        defaultPlugin: false,
-                        enabled: true,
-                        name: 'dev action 02',
-                        tooltip: ''
-                    },
-                    {
                         'actionName': 'DEFAULTACTION01',
-                        defaultPlugin: true,
                         enabled: true,
                         name: 'default action 01',
-                        tooltip: ''
+                        tooltip: undefined
                     },
                     {
                         actionName: 'DEFAULTACTION02',
-                        defaultPlugin: true,
                         enabled: true,
                         name: 'default action 02',
-                        tooltip: ''
+                        tooltip: undefined
                     }
                 ],
                 controlId: 'test-control-01'
