@@ -325,6 +325,25 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
+        test('test/flp.html for component', async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            manifest['sap.app'].type = 'component';
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = await supertest(app);
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
         test('test/flp.html sap-ui-xx-viewCache set to true', async () => {
             const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=true').expect(200);
             expect(response.text).toMatchSnapshot();
