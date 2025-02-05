@@ -192,11 +192,11 @@ export default class extends Generator {
      */
     private async _getManifest(): Promise<Manifest> {
         const { target, ignoreCertErrors = false } = this.ui5Yaml;
-        const requiestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
+        const requestOptions: AxiosRequestConfig & Partial<ProviderConfiguration> = { ignoreCertErrors };
         if (this.credentials) {
-            requiestOptions['auth'] = { username: this.credentials.username, password: this.credentials.password };
+            requestOptions['auth'] = { username: this.credentials.username, password: this.credentials.password };
         }
-        const provider = await createAbapServiceProvider(target, requiestOptions, false, this.toolsLogger);
+        const provider = await createAbapServiceProvider(target, requestOptions, false, this.toolsLogger);
         const variant = getVariant(this.projectRootPath);
         const manifestService = await ManifestService.initMergedManifest(
             provider,
