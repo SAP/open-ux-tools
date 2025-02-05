@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.0
+
+### Minor Changes
+
+-   9b755fc: adds new cf generator
+
 ## 0.1.26
 
 ### Patch Changes
