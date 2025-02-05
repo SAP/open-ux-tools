@@ -52,6 +52,7 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
                 afterTask: 'replaceVersion',
                 configuration: {
                     debug: true,
+                    omitSourceMaps: true,
                     omitTSFromBuildResult: true,
                     transformModulesToUI5: {
                         overridesToOverride: true

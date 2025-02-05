@@ -18,7 +18,7 @@
         "@ui5/cli": "^3.9.2"<%if (locals.options?.enableTypeScript) {%>,
         "@sapui5/types": "~1.131.1",
         "typescript": "^5.7.3",
-        "ui5-tooling-transpile": "^3.5.3"<%}%>
+        "ui5-tooling-transpile": "^3.6.1"<%}%>
     },
     "scripts": {
         "build": "ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest",
