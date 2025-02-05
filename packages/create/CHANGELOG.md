@@ -1,5 +1,16 @@
 # @sap-ux/create
 
+## 0.11.62
+
+### Patch Changes
+
+-   Updated dependencies [f349f56]
+    -   @sap-ux/odata-service-writer@0.25.6
+    -   @sap-ux/adp-tooling@0.12.122
+    -   @sap-ux/flp-config-inquirer@0.2.28
+    -   @sap-ux/preview-middleware@0.17.17
+    -   @sap-ux/app-config-writer@0.5.25
+
 ## 0.11.61
 
 ### Patch Changes
