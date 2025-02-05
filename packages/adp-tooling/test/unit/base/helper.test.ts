@@ -45,6 +45,17 @@ describe('helper', () => {
 
             expect(getVariant(basePath)).toStrictEqual(JSON.parse(mockVariant));
         });
+
+        test('should return variant using fs editor', () => {
+            const fs = {
+                readJSON: jest.fn().mockReturnValue(JSON.parse(mockVariant))
+            } as unknown as Editor;
+
+            const result = getVariant(basePath, fs);
+
+            expect(fs.readJSON).toHaveBeenCalledWith(join(basePath, 'webapp', 'manifest.appdescr_variant'));
+            expect(result).toStrictEqual(JSON.parse(mockVariant));
+        });
     });
 
     describe('updateVariant', () => {
