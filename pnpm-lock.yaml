@@ -2515,6 +2515,9 @@ importers:
       '@sap-ux/mockserver-config-writer':
         specifier: workspace:*
         version: link:../mockserver-config-writer
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -2540,9 +2543,6 @@ importers:
         specifier: 7.5.4
         version: 7.5.4
     devDependencies:
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@types/ejs':
         specifier: 3.1.2
         version: 3.1.2
