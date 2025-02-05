@@ -48,7 +48,7 @@ describe('FLP Configuration Functions', () => {
 
             await generateInboundConfig(basePath, config, fs);
 
-            expect(getVariantMock).toHaveBeenCalledWith(basePath);
+            expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
             expect(fs.writeJSON).toHaveBeenCalledWith(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
@@ -64,7 +64,7 @@ describe('FLP Configuration Functions', () => {
             const fs = await generateInboundConfig(basePath, config);
 
             expect(fs).toBeDefined();
-            expect(getVariantMock).toHaveBeenCalledWith(basePath);
+            expect(getVariantMock).toHaveBeenCalledWith(basePath, expect.any(Object));
             expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'i18n', 'i18n.properties'),
                 expect.any(Array),
