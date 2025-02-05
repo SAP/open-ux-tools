@@ -1,5 +1,37 @@
 # @sap-ux/create
 
+## 0.11.61
+
+### Patch Changes
+
+-   Updated dependencies [5eff701]
+    -   @sap-ux/preview-middleware@0.17.16
+    -   @sap-ux/app-config-writer@0.5.25
+
+## 0.11.60
+
+### Patch Changes
+
+-   80fc126: feat: remove sap-client from start-variants-management script url parameters
+-   Updated dependencies [80fc126]
+    -   @sap-ux/app-config-writer@0.5.25
+
+## 0.11.59
+
+### Patch Changes
+
+-   42dee4d: feat: enhance prompt for convert preview config
+-   Updated dependencies [42dee4d]
+    -   @sap-ux/app-config-writer@0.5.24
+
+## 0.11.58
+
+### Patch Changes
+
+-   Updated dependencies [5c127cf]
+    -   @sap-ux/preview-middleware@0.17.15
+    -   @sap-ux/app-config-writer@0.5.23
+
 ## 0.11.57
 
 ### Patch Changes
