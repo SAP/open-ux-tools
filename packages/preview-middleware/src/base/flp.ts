@@ -479,7 +479,8 @@ export class FlpSandbox {
         for (const app of this.config.apps) {
             let manifest: Manifest | undefined;
             if (app.local) {
-                const webappPath = await getWebappPath(app.local, this.fs ?? create(createStorage()));
+                this.fs = this.fs ?? create(createStorage());
+                const webappPath = await getWebappPath(app.local, this.fs);
                 manifest = JSON.parse(readFileSync(join(webappPath, 'manifest.json'), 'utf-8')) as Manifest | undefined;
                 this.router.use(app.target, serveStatic(webappPath));
                 this.logger.info(`Serving additional application at ${app.target} from ${app.local}`);
@@ -511,9 +512,9 @@ export class FlpSandbox {
     private async flexGetHandler(res: Response): Promise<void> {
         const changes = await readChanges(this.project, this.logger);
         if (this.onChangeRequest) {
-            const fs = this.fs ?? create(createStorage());
+            this.fs = this.fs ?? create(createStorage());
             for (const change of Object.values(changes)) {
-                await this.onChangeRequest('read', change, fs, this.logger);
+                await this.onChangeRequest('read', change, this.fs, this.logger);
             }
         }
         this.sendResponse(res, 'application/json', 200, JSON.stringify(changes));
@@ -527,15 +528,20 @@ export class FlpSandbox {
      * @private
      */
     private async flexPostHandler(req: Request, res: Response): Promise<void> {
-        const fs = this.fs ?? create(createStorage());
+        this.fs = this.fs ?? create(createStorage());
         try {
             const change = req.body as CommonChangeProperties;
             if (this.onChangeRequest) {
-                await this.onChangeRequest('write', change, fs, this.logger);
+                await this.onChangeRequest('write', change, this.fs, this.logger);
             }
-            const { success, message } = writeChange(change, this.utils.getProject().getSourcePath(), fs, this.logger);
+            const { success, message } = writeChange(
+                change,
+                this.utils.getProject().getSourcePath(),
+                this.fs,
+                this.logger
+            );
             if (success) {
-                fs.commit(() => this.sendResponse(res, 'text/plain', 200, message ?? ''));
+                this.fs.commit(() => this.sendResponse(res, 'text/plain', 200, message ?? ''));
             } else {
                 this.sendResponse(res, 'text/plain', 400, 'INVALID_DATA');
             }
