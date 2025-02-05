@@ -158,7 +158,10 @@ async function validateCFServiceInfo(
     if (getPromptHostEnvironment() === hostEnvironment.bas) {
         destination = await createOAuth2UserTokenExchangeDest(
             cfAbapServiceName,
-            uaaCreds.credentials.uaa,
+            {
+                uaaCredentials: uaaCreds.credentials.uaa,
+                hostUrl: uaaCreds.credentials.url
+            },
             LoggerHelper.logger
         );
         valResult = await connectWithDestination(destination, connectionValidator, requiredOdataVersion);

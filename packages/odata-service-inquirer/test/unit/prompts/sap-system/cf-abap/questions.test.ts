@@ -1,7 +1,7 @@
 import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { getCfAbapBASQuestions } from '../../../../../src/prompts/datasources/sap-system/cf-abap/questions';
 import type { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
-import type { Destination } from '@sap-ux/btp-utils';
+import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
 import * as btpUtils from '@sap-ux/btp-utils';
 import { type ServiceInstanceInfo } from '@sap/cf-tools';
 import * as cfTools from '@sap/cf-tools';
@@ -28,7 +28,8 @@ const uaaCredsMock = {
             clientid: 'testClientId',
             clientsecret: 'abcd12345',
             url: 'http://testUrl'
-        } as btpUtils.ServiceInfo['uaa']
+        } as ServiceInfo['uaa'],
+        url: 'http://123abcd-fully-resolved-host-url.abap.somewhereaws.hanavlab.ondemand.com'
     }
 };
 jest.mock('@sap/cf-tools', () => {
@@ -125,7 +126,10 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
         expect(getCredsSpy).toBeCalledWith('test1-cFAbapService');
         expect(createDestSpy).toHaveBeenCalledWith(
             'test1-cFAbapService',
-            uaaCredsMock.credentials.uaa,
+            {
+                uaaCredentials: uaaCredsMock.credentials.uaa,
+                hostUrl: uaaCredsMock.credentials.url
+            },
             expect.any(LoggerHelper.logger.constructor)
         );
         expect(validateDestSpy).toHaveBeenCalledWith(createdDestinationMock, undefined, undefined);
