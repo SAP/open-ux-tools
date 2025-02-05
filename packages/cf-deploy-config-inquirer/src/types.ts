@@ -111,7 +111,7 @@ export interface CfDeployConfigAnswers {
     /** The selected Cloud Foundry destination. */
     destinationName?: string;
     /** Indicates whether the user opted to include a managed application router. */
-    addManagedRouter?: boolean;
+    addManagedAppRouter?: boolean;
     /** Indicates whether the user opted to overwrite the destination. */
     overwrite?: boolean;
 }
@@ -167,7 +167,7 @@ export interface CfSystemChoice {
     /** Value associated with the system choice. */
     value: string;
     /** Flag indicating if the system choice is an SCP destination. */
-    scp: boolean;
+    scp?: boolean;
     /** URL associated with the system choice. */
-    url: string;
+    url?: string;
 }

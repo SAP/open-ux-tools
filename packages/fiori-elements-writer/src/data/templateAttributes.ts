@@ -139,6 +139,14 @@ type TemplateAttributes = {
         minimumUi5Version: {
             [V in OdataVersion]?: string; // Minimum UI5 Versions required for the specific OdataVersion
         };
+        /**
+         * Checks whether annotations can be generated for a given template type and OData version.
+         * Annotation generation is supported for template types: lrop, worklist, or formEntryObject
+         * when using OData version 4.
+         */
+        annotationGenerationSupport?: {
+            [V in OdataVersion]?: boolean;
+        };
     };
 };
 
@@ -148,6 +156,9 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.99.0'
+        },
+        annotationGenerationSupport: {
+            [OdataVersion.v4]: true
         }
     },
     [TemplateType.ListReportObjectPage]: {
@@ -155,6 +166,9 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         minimumUi5Version: {
             [OdataVersion.v2]: minSupportedUI5Version,
             [OdataVersion.v4]: '1.84.0'
+        },
+        annotationGenerationSupport: {
+            [OdataVersion.v4]: true
         }
     },
     [TemplateType.AnalyticalListPage]: {
@@ -175,6 +189,9 @@ export const TemplateTypeAttributes: TemplateAttributes = {
         supportedODataVersions: [OdataVersion.v4],
         minimumUi5Version: {
             [OdataVersion.v4]: '1.90.0'
+        },
+        annotationGenerationSupport: {
+            [OdataVersion.v4]: true
         }
     },
     [TemplateType.FlexibleProgrammingModel]: {

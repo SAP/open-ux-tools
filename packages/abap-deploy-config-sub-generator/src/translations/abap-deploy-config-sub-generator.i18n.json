@@ -11,7 +11,7 @@
         "configNotFound": "No existing deployment configuration file found",
         "indexExists": "'webapp/index.html' already exists and won't be overwritten",
         "initFailed": "Initializing failed, unable to process project configuration. {{- error}}",
-        "initTelemetry": "Initializing telemetry",
+        "initTelemetry": "Initializing telemetry in ABAP deployment configuration generator",
         "appRootPath": "App loaded from {{- appRootPath}}"
     }
 }

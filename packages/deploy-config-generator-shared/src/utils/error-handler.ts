@@ -8,7 +8,6 @@ export enum ERROR_TYPE {
     ABORT_SIGNAL = 'ABORT_SIGNAL',
     NO_MANIFEST = 'NO_MANIFEST',
     NO_APP_NAME = 'NO_APP_NAME',
-    NO_UI5_CONFIG = 'NO_UI5_CONFIG',
     NO_CDS_BIN = 'NO_CDS_BIN',
     NO_MTA_BIN = 'NO_MTA_BIN',
     CAP_DEPLOYMENT_NO_MTA = 'CAP_DEPLOYMENT_NO_MTA'
@@ -37,12 +36,12 @@ export class ErrorHandler {
         [ERROR_TYPE.ABORT_SIGNAL]: () => t('errors.abortSignal'),
         [ERROR_TYPE.NO_MANIFEST]: () => t('errors.noManifest'),
         [ERROR_TYPE.NO_APP_NAME]: () => t('errors.noAppName'),
-        [ERROR_TYPE.NO_UI5_CONFIG]: () => t('errors.noUi5Config'),
         [ERROR_TYPE.NO_CDS_BIN]: () => ErrorHandler.cannotFindBinary(cdsExecutable, cdsPkg),
         [ERROR_TYPE.NO_MTA_BIN]: () => ErrorHandler.cannotFindBinary(mtaExecutable, mtaPkg),
         [ERROR_TYPE.CAP_DEPLOYMENT_NO_MTA]: () => t('errors.capDeploymentNoMta')
     };
 
+    public static readonly noBaseConfig = (baseConfig: string): string => t('errors.noBaseConfig', { baseConfig });
     public static readonly unrecognizedTarget = (target: string): string => t('errors.unrecognizedTarget', { target });
     public static readonly fileDoesNotExist = (filePath: string): string => t('errors.fileDoesNotExist', { filePath });
     public static readonly folderDoesNotExist = (filePath: string): string =>

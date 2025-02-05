@@ -1,5 +1,11 @@
 # @sap-ux/btp-utils
 
+## 1.0.0
+
+### Major Changes
+
+-   9980073: Updates generateOAuth2UserTokenExchangeDestination API to accomodate multiple use-cases
+
 ## 0.18.0
 
 ### Minor Changes

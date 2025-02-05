@@ -1,5 +1,35 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.1.1
+
+### Patch Changes
+
+-   Updated dependencies [f349f56]
+    -   @sap-ux/odata-service-writer@0.25.6
+
+## 2.1.0
+
+### Minor Changes
+
+-   c4d9d0d: Add an option to open source FE writer to enable writing annotations.
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.3
+-   @sap-ux/cap-config-writer@0.9.4
+-   @sap-ux/fe-fpm-writer@0.32.3
+-   @sap-ux/fiori-generator-shared@0.7.25
+-   @sap-ux/odata-service-writer@0.25.5
+-   @sap-ux/ui5-application-writer@1.2.9
+-   @sap-ux/ui5-test-writer@0.4.1
+
+## 2.0.9
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.24
+-   @sap-ux/cap-config-writer@0.9.3
+
 ## 2.0.8
 
 ### Patch Changes
