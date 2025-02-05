@@ -264,6 +264,7 @@ export default class extends Generator {
         try {
             if (
                 !this.options.launchFlpConfigAsSubGenerator &&
+                this.abort !== true &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('info.filesGenerated'), MessageType.notification);

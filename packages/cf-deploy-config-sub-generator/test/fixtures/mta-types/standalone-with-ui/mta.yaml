@@ -1,0 +1,30 @@
+_schema-version: "3.2"
+ID: standalonewithui
+version: 0.0.1
+modules:
+  - name: standalonewithui-approuter
+    type: approuter.nodejs
+    path: standalonewithui-approuter
+    requires:
+      - name: standalonewithui_html_repo_runtime
+    parameters:
+      disk-quota: 256M
+      memory: 256M
+  - name: standalonewithui_ui_deployer
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: standalonewithui_html_repo_host
+        parameters:
+          content-target: true
+resources:
+  - name: standalonewithui_html_repo_runtime
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-runtime
+  - name: standalonewithui_html_repo_host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: html5-apps-repo
+      service-plan: app-host
