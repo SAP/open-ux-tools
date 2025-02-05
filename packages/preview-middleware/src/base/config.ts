@@ -237,6 +237,12 @@ export async function addApp(
 ): Promise<void> {
     const id = manifest['sap.app']?.id ?? '';
 
+    if (manifest['sap.app']?.type === 'component') {
+        logger.debug(`No application added for id '${id}' because its type is 'component'`);
+        templateConfig.apps = templateConfig.apps ?? {};
+        return;
+    }
+
     const appName = getAppName(manifest, app.intent);
     templateConfig.ui5.resources[id] = app.target;
     templateConfig.apps[appName] = {
