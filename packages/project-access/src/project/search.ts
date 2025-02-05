@@ -3,6 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import type {
     AdaptationResults,
     AllAppResults,
+    ComponentResults,
     ExtensionResults,
     FioriArtifactTypes,
     FoundFioriArtifacts,
@@ -26,6 +27,7 @@ import { getWebappPath } from './ui5-config';
 const filterFileMap: Record<FioriArtifactTypes, string[]> = {
     applications: [FileName.Manifest],
     adaptations: [FileName.ManifestAppDescrVar],
+    components: [FileName.Manifest],
     extensions: [FileName.ExtConfigJson],
     libraries: [FileName.Library, FileName.Manifest]
 };
@@ -397,7 +399,7 @@ async function filterDotLibraries(
 }
 
 /**
- * Filter extensions projects from a list of files.
+ * Filter libraries from a list of files.
  *
  * @param pathMap - path to files
  * @param memFs - optional mem-fs-editor instance
@@ -420,6 +422,34 @@ async function filterLibraries(pathMap: FileMapAndCache, memFs?: Editor): Promis
             }
         } catch {
             // ignore exceptions for invalid manifests
+        }
+    }
+    return results;
+}
+
+/**
+ * Filter components from a list of files.
+ *
+ * @param pathMap - path to files
+ * @param memFs - optional mem-fs-editor instance
+ * @returns - results as array of found components.
+ */
+async function filterComponents(pathMap: FileMapAndCache, memFs?: Editor): Promise<ComponentResults[]> {
+    const results: ComponentResults[] = [];
+    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
+    for (const manifestPath of manifestPaths) {
+        try {
+            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
+            const manifest = pathMap[manifestPath] as Manifest;
+            if (manifest['sap.app'] && manifest['sap.app'].type === 'component') {
+                const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath), memFs);
+                const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
+                if (projectRoot) {
+                    results.push({ projectRoot, manifestPath, manifest });
+                }
+            }
+        } catch {
+            // ignore exceptions for invalid components
         }
     }
     return results;
@@ -482,6 +512,9 @@ export async function findFioriArtifacts(options: {
     }
     if (options.artifacts.includes('libraries')) {
         results.libraries = await filterLibraries(pathMap, options.memFs);
+    }
+    if (options.artifacts.includes('components')) {
+        results.components = await filterComponents(pathMap, options.memFs);
     }
     return results;
 }

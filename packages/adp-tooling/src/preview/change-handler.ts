@@ -257,6 +257,7 @@ export async function addAnnotationFile(
         );
     } catch (error) {
         logger.error(`Failed to create Local Annotation File "${fullPath}": ${error}`);
+        throw new Error('Failed to create Local Annotation File' + error.message);
     }
 }
 
