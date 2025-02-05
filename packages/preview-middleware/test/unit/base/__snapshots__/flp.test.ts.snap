@@ -71,6 +71,8 @@ Object {
 }
 `;
 
+exports[`FlpSandbox init do not add component to applications 1`] = `Object {}`;
+
 exports[`FlpSandbox init i18n manifest 1`] = `
 Object {
   "apps": Object {
