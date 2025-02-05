@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.6
+
+### Patch Changes
+
+-   f349f56: Fixed default naming for model.
+
 ## 0.25.5
 
 ### Patch Changes
