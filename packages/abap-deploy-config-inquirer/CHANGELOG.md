@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.12
+
+### Patch Changes
+
+-   c08e1e3: Add option to hide createDuringDeploy list item in getTransportChoices
+
 ## 1.2.11
 
 ### Patch Changes
