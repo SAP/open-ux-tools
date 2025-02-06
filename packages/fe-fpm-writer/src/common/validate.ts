@@ -1,10 +1,9 @@
-import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { coerce, lt } from 'semver';
 import type { Manifest } from './types';
-import { getWebappPath } from '@sap-ux/project-access';
+import { getManifestPath } from './utils';
 
 /**
  * Validate that the UI5 version requirement is valid.
@@ -53,7 +52,7 @@ export async function validateBasePath(
         fs = create(createStorage());
     }
 
-    const manifestPath = join(await getWebappPath(basePath, fs), 'manifest.json');
+    const manifestPath = await getManifestPath(basePath, fs);
     if (!fs.exists(manifestPath)) {
         throw new Error(`Invalid project folder. Cannot find required file ${manifestPath}`);
     } else {
