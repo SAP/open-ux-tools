@@ -16,6 +16,7 @@ import destinationList from './mockResponses/destinations.json';
 import { type ServiceInstanceInfo } from '@sap/cf-tools';
 import { ToolsLogger } from '@sap-ux/logger';
 import * as cfTools from '@sap/cf-tools';
+import * as basSdk from '@sap/bas-sdk';
 
 const destinations: { [key: string]: Destination } = {};
 destinationList.forEach((dest) => {
@@ -33,9 +34,12 @@ let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [
 ];
 
 const credentials = {
-    clientid: 'CLIENT_ID/WITH/STH/TO/ENCODE',
-    clientsecret: 'CLIENT_SECRET',
-    url: 'http://my-server'
+    uaa: {
+        clientid: 'CLIENT_ID/WITH/STH/TO/ENCODE',
+        clientsecret: 'CLIENT_SECRET',
+        url: 'http://my-server'
+    } as ServiceInfo['uaa'],
+    url: 'http://123abcd-fully-resolved-host-url.abap.somewhereaws.hanavlab.ondemand.com'
 };
 let uaaCredentialsMock = {
     credentials
@@ -249,10 +253,10 @@ describe('App Studio', () => {
         test('creation is only supported on BAS', async () => {
             delete process.env[ENV.H2O_URL];
             await expect(
-                createOAuth2UserTokenExchangeDest(
-                    serviceInstanceName,
-                    uaaCredentialsMock.credentials as ServiceInfo['uaa']
-                )
+                createOAuth2UserTokenExchangeDest(serviceInstanceName, {
+                    uaaCredentials: uaaCredentialsMock.credentials.uaa,
+                    hostUrl: uaaCredentialsMock.credentials.url
+                })
             ).rejects.toThrow(/SAP Business Application Studio/);
         });
 
@@ -289,7 +293,10 @@ describe('App Studio', () => {
             await expect(
                 createOAuth2UserTokenExchangeDest(
                     serviceInstanceName,
-                    uaaCredentialsMock.credentials as ServiceInfo['uaa'],
+                    {
+                        uaaCredentials: uaaCredentialsMock.credentials.uaa,
+                        hostUrl: uaaCredentialsMock.credentials.url
+                    },
                     logger
                 )
             ).resolves.toMatchObject(destinations['abap-cloud-my-abap-env-testorg-testspace']);
@@ -302,7 +309,7 @@ describe('App Studio', () => {
                   "Name": "abap-cloud-my-abap-env-testorg-testspace",
                   "ProxyType": "Internet",
                   "Type": "HTTP",
-                  "URL": "http://my-server/",
+                  "URL": "http://123abcd-fully-resolved-host-url.abap.somewhereaws.hanavlab.ondemand.com/",
                   "WebIDEEnabled": "true",
                   "WebIDEUsage": "odata_abap,dev_abap,abap_cloud",
                   "clientId": "CLIENT_ID/WITH/STH/TO/ENCODE",
@@ -310,8 +317,7 @@ describe('App Studio', () => {
                   "tokenServiceURL": "http://my-server/oauth/token",
                   "tokenServiceURLType": "Dedicated",
                 }
-            `
-            );
+            `);
             expect(infoMock).toBeCalledTimes(1);
             expect(debugMock).toBeCalledTimes(1);
         });
@@ -321,10 +327,10 @@ describe('App Studio', () => {
             nock(server).post('/api/createDestination').reply(200);
             nock(server).get('/api/listDestinations').reply(200);
             await expect(
-                createOAuth2UserTokenExchangeDest(
-                    serviceInstanceName,
-                    uaaCredentialsMock.credentials as ServiceInfo['uaa']
-                )
+                createOAuth2UserTokenExchangeDest(serviceInstanceName, {
+                    uaaCredentials: uaaCredentialsMock.credentials.uaa,
+                    hostUrl: uaaCredentialsMock.credentials.url
+                })
             ).rejects.toThrow(/Destination not found on SAP BTP./);
         });
 
@@ -336,6 +342,7 @@ describe('App Studio', () => {
         });
 
         test('retrieve credentials if optionally not provided', async () => {
+            const createDestSpy = jest.spyOn(basSdk.destinations, 'createDestination');
             nock(server).post('/api/createDestination').reply(200);
             nock(server)
                 .get('/api/listDestinations')
@@ -344,15 +351,37 @@ describe('App Studio', () => {
             const dest = await createOAuth2UserTokenExchangeDest(serviceInstanceName);
             expect(dest.Name).toBe('abap-cloud-my-abap-env-testorg-testspace');
             expect(getCredsSpy).toBeCalledWith(serviceInstanceName);
+            expect(createDestSpy).toHaveBeenCalledWith({
+                basProperties: {
+                    html5DynamicDestination: 'true',
+                    html5Timeout: '60000',
+                    usage: 'odata_abap,dev_abap,abap_cloud'
+                },
+                credentials: {
+                    authentication: 'OAuth2UserTokenExchange',
+                    oauth2UserTokenExchange: {
+                        clientId: 'CLIENT_ID/WITH/STH/TO/ENCODE',
+                        clientSecret: 'CLIENT_SECRET',
+                        tokenServiceURL: 'http://my-server/oauth/token',
+                        tokenServiceURLType: 'Dedicated'
+                    }
+                },
+                description:
+                    "Destination generated by App Studio for Cloud Foundry Abap service instance: 'my-abap-env', Do not remove.",
+                name: 'abap-cloud-my-abap-env-testorg-testspace',
+                proxyType: 'Internet',
+                type: 'HTTP',
+                url: new URL('http://123abcd-fully-resolved-host-url.abap.somewhereaws.hanavlab.ondemand.com/')
+            });
         });
 
         test('throw exception if no dev space is created for the respective subaccount', async () => {
             cfTargetMock = {} as any;
             await expect(
-                createOAuth2UserTokenExchangeDest(
-                    serviceInstanceName,
-                    uaaCredentialsMock.credentials as ServiceInfo['uaa']
-                )
+                createOAuth2UserTokenExchangeDest(serviceInstanceName, {
+                    uaaCredentials: uaaCredentialsMock.credentials.uaa,
+                    hostUrl: uaaCredentialsMock.credentials.url
+                })
             ).rejects.toThrow(/No Dev Space has been created for the subaccount./);
         });
     });

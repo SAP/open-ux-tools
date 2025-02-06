@@ -1,5 +1,31 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.12
+
+### Patch Changes
+
+-   c08e1e3: Add option to hide createDuringDeploy list item in getTransportChoices
+
+## 1.2.11
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.5
+-   @sap-ux/fiori-generator-shared@0.7.27
+-   @sap-ux/system-access@0.5.30
+-   @sap-ux/inquirer-common@0.6.14
+
+## 1.2.10
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.26
+    -   @sap-ux/inquirer-common@0.6.13
+    -   @sap-ux/system-access@0.5.30
+
 ## 1.2.9
 
 ### Patch Changes

@@ -8,7 +8,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { ListChoiceOptions, Question } from 'inquirer';
 import { ERROR_TYPE } from '../../../../../src';
 import { initI18nOdataServiceInquirer, t } from '../../../../../src/i18n';
-import type { ValidationResult } from '../../../../../src/prompts/connectionValidator';
+import type { ValidationResult } from '../../../../../src/prompts/types';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import * as promptHelpers from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';

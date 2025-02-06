@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.58
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.11.57
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
 ## 0.11.56
 
 ### Patch Changes

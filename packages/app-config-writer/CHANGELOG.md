@@ -1,5 +1,26 @@
 # @sap-ux/app-config-writer
 
+## 0.5.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/axios-extension@1.18.5
+
+## 0.5.26
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+
+## 0.5.25
+
+### Patch Changes
+
+-   80fc126: feat: remove sap-client from start-variants-management script url parameters
+
 ## 0.5.24
 
 ### Patch Changes
