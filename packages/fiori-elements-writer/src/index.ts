@@ -220,7 +220,9 @@ async function generate<T extends {}>(
         const { hasCdsUi5Plugin, isCdsUi5PluginEnabled, isWorkspaceEnabled } =
             feApp.service.capService.cdsUi5PluginInfo ?? {};
         // if any of the options are enabled, then enable the CDS UI5 plugin
-        const enableCdsUi5Plugin = !!(hasCdsUi5Plugin || isCdsUi5PluginEnabled || isWorkspaceEnabled);
+
+        const enableCdsUi5Plugin =
+            !!feApp?.appOptions?.typescript || !!(hasCdsUi5Plugin || isCdsUi5PluginEnabled || isWorkspaceEnabled);
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: feApp.package.name ?? '',
