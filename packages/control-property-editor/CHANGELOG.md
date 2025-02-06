@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.35
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
 ## 0.5.34
 
 ### Patch Changes

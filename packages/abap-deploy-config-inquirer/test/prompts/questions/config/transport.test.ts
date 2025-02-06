@@ -110,6 +110,42 @@ describe('getTransportRequestPrompts', () => {
         }
     });
 
+    test('should return expected values from transportInputChoice prompt methods', async () => {
+        jest.spyOn(conditions, 'showTransportInputChoice').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateTransportChoiceInput').mockResolvedValueOnce(true);
+
+        const transportPrompts = getTransportRequestPrompts({
+            transportInputChoice: { showCreateDuringDeploy: false }
+        });
+        const transportInputChoicePrompt = transportPrompts.find(
+            (prompt) => prompt.name === promptNames.transportInputChoice
+        );
+
+        if (transportInputChoicePrompt) {
+            expect((transportInputChoicePrompt.when as Function)()).toBe(true);
+            expect(transportInputChoicePrompt.message).toBe(t('prompts.config.transport.transportInputChoice.message'));
+            expect(((transportInputChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
+              Array [
+                Object {
+                  "name": "Enter manually",
+                  "value": "EnterManualChoice",
+                },
+                Object {
+                  "name": "Choose from existing",
+                  "value": "ListExistingChoice",
+                },
+                Object {
+                  "name": "Create new",
+                  "value": "CreateNewChoice",
+                },
+              ]
+          `);
+
+            expect((transportInputChoicePrompt.default as Function)({})).toBe(TransportChoices.EnterManualChoice);
+            expect(await (transportInputChoicePrompt.validate as Function)()).toBe(true);
+        }
+    });
+
     test('should return expected values from transportCliExecution prompt methods', async () => {
         const validateTransportChoiceInputSpy = jest.spyOn(validators, 'validateTransportChoiceInput');
 
