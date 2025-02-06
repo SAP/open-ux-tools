@@ -82,7 +82,7 @@ jobs:
                 retention-days: 15
             - name: Delete node_modules before sonar scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
-              run: npx rimraf --glob **/node_modules               
+              run: npx rimraf --glob **/node_modules/**              
             - name: Run SonarCloud scan
               if: matrix.os == 'ubuntu-latest' && matrix.node-version == '18.x'
               uses: sonarsource/sonarqube-scan-action@v4
