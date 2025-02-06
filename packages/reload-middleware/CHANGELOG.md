@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.2.17
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
 ## 0.2.16
 
 ### Patch Changes
