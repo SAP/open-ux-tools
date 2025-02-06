@@ -38,6 +38,8 @@ import type {
 import { ApiError, ApiErrorCode } from './error';
 import { pathFromUri } from './utils';
 import { ChangeConverter } from './change-converter';
+import { join } from 'path';
+import { pathToFileURL } from 'url';
 
 export interface FioriAnnotationServiceConstructor<T> {
     new (
@@ -48,6 +50,7 @@ export interface FioriAnnotationServiceConstructor<T> {
         options: FioriAnnotationServiceOptions,
         project: Project,
         serviceName: string,
+        externalfs: boolean,
         appName: string
     ): T;
 }
@@ -113,6 +116,7 @@ export class FioriAnnotationService {
      * @param options - API configuration.
      * @param project - Project structure.
      * @param serviceName - Name of the service.
+     * @param externalfs -
      * @param appName - Name of the application
      */
     constructor(
@@ -121,8 +125,9 @@ export class FioriAnnotationService {
         protected changeConverter: ChangeConverter,
         protected fs: Editor,
         protected options: FioriAnnotationServiceOptions,
-        project: Project,
+        private project: Project,
         protected serviceName: string,
+        private externalfs: boolean,
         appName: string
     ) {
         this.projectInfo = {
@@ -188,6 +193,7 @@ export class FioriAnnotationService {
             finalOptions,
             project,
             serviceName,
+            !!fs,
             appName
         );
         return fioriService;
@@ -237,6 +243,13 @@ export class FioriAnnotationService {
         );
         for (const file of files) {
             this.fileCache.set(file.uri, file.content);
+        }
+        if (this.externalfs && (this.project.projectType === 'CAPJava' || this.project.projectType === 'CAPNodejs')) {
+            // include in cache also all the modified files
+            for (const [relativePath, value] of Object.entries(this.fs.dump())) {
+                const absolute = pathToFileURL(join(process.cwd(), relativePath)).toString();
+                this.fileCache.set(absolute, value.contents);
+            }
         }
         await this.adapter.sync(this.fileCache);
         this.isInitialSyncCompleted = true;
