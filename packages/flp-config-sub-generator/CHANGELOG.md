@@ -1,5 +1,43 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.1.9
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/i18n@0.2.1
+    -   @sap-ux/flp-config-inquirer@0.2.31
+    -   @sap-ux/project-access@1.29.5
+    -   @sap-ux/app-config-writer@0.5.27
+    -   @sap-ux/fiori-generator-shared@0.7.27
+    -   @sap-ux/deploy-config-generator-shared@0.0.20
+    -   @sap-ux/inquirer-common@0.6.14
+
+## 0.1.8
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.2.30
+-   @sap-ux/app-config-writer@0.5.26
+
+## 0.1.7
+
+### Patch Changes
+
+-   @sap-ux/app-config-writer@0.5.26
+-   @sap-ux/deploy-config-generator-shared@0.0.19
+-   @sap-ux/fiori-generator-shared@0.7.26
+-   @sap-ux/flp-config-inquirer@0.2.29
+-   @sap-ux/inquirer-common@0.6.13
+
+## 0.1.6
+
+### Patch Changes
+
+-   9b755fc: adds new cf generator
+-   Updated dependencies [9b755fc]
+    -   @sap-ux/deploy-config-generator-shared@0.0.18
+
 ## 0.1.5
 
 ### Patch Changes
