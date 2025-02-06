@@ -5,7 +5,6 @@ import * as systemSelection from '../../src/prompts/datasources/sap-system/syste
 import LoggerHelper from '../../src/prompts/logger-helper';
 import { PromptState } from '../../src/utils';
 import { type BackendSystem } from '@sap-ux/store';
-import Prompt from 'inquirer/lib/prompts/base';
 
 jest.mock('../../src/prompts', () => ({
     __esModule: true, // Workaround for spyOn TypeError: Jest cannot redefine property
