@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.23
+
+### Patch Changes
+
+-   b214776: fix: remove hard coded usage of webapp folder
+
 ## 0.17.22
 
 ### Patch Changes
