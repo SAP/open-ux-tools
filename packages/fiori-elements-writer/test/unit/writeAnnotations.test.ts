@@ -78,22 +78,14 @@ describe('writeAnnotations', () => {
     });
 
     it('should exit gracefully and log an error when generateAnnotations fails', async () => {
-        const log: Logger = {
-            error: jest.fn(),
-            warn: jest.fn(),
-            info: jest.fn(),
-            debug: jest.fn(),
-            log: jest.fn(),
-            add: jest.fn(),
-            remove: jest.fn(),
-            transports: jest.fn(),
-            child: jest.fn()
+        const log = {
+            error: jest.fn()
         };
         const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
         appInfo.appOptions.addAnnotations = true;
         delete appInfo.service.capService;
         (generateAnnotations as jest.Mock).mockRejectedValue(new Error('test error'));
-        await writeAnnotations('test', appInfo, fs, log);
+        await writeAnnotations('test', appInfo, fs, log as unknown as Logger);
         expect(log.error).toHaveBeenCalledWith(`${t('error.errorGeneratingDefaultAnnotations')} Error: test error`);
     });
 });
