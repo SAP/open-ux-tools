@@ -165,20 +165,23 @@ export default class extends DeploymentGenerator {
             return;
         }
 
+        if (!this.launchDeployConfigAsSubGenerator) {
+            await this._prompting();
+        }
+
+        await this._reconcileAnswersWithOptions();
+    }
+
+    private async _prompting(): Promise<void> {
         if (this.isCap && this.projectRoot && !this.mtaPath) {
             // if the user is adding deploy config to a CAP project and there is no mta.yaml in the root, then log error and exit
             this.abort = true;
             handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.CAP_DEPLOYMENT_NO_MTA });
             return;
         }
-
-        if (!this.launchDeployConfigAsSubGenerator) {
-            await this._handleApiHubConfig();
-            const questions = await this._getCFQuestions();
-            this.answers = await this.prompt(questions);
-        }
-
-        await this._reconcileAnswersWithOptions();
+        await this._handleApiHubConfig();
+        const questions = await this._getCFQuestions();
+        this.answers = await this.prompt(questions);
     }
 
     /**
