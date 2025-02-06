@@ -59,7 +59,7 @@
         "@sap-ux/store": "workspace:*",
         "@types/adm-zip": "0.5.5",
         "@types/ejs": "3.1.2",
-        "@types/express": "4.17.21",
+        "@types/express": "5.0.0",
         "@types/inquirer": "8.2.6",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
