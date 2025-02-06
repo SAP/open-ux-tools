@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.29.5
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/i18n@0.2.1
+
+## 1.29.4
+
+### Patch Changes
+
+-   29abc73: feat: support component type
+
 ## 1.29.3
 
 ### Patch Changes

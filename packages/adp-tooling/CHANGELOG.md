@@ -1,5 +1,63 @@
 # @sap-ux/adp-tooling
 
+## 0.12.125
+
+### Patch Changes
+
+-   78bc772: Introduce ADP FLP config generator
+-   Updated dependencies [78bc772]
+    -   @sap-ux/i18n@0.2.1
+    -   @sap-ux/project-access@1.29.5
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/odata-service-writer@0.25.8
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.14
+
+## 0.12.124
+
+### Patch Changes
+
+-   Updated dependencies [4a90030]
+    -   @sap-ux/odata-service-writer@0.25.7
+
+## 0.12.123
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/inquirer-common@0.6.13
+    -   @sap-ux/system-access@0.5.30
+
+## 0.12.122
+
+### Patch Changes
+
+-   Updated dependencies [f349f56]
+    -   @sap-ux/odata-service-writer@0.25.6
+
+## 0.12.121
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/odata-service-writer@0.25.5
+    -   @sap-ux/system-access@0.5.29
+    -   @sap-ux/inquirer-common@0.6.12
+
+## 0.12.120
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/inquirer-common@0.6.11
+    -   @sap-ux/system-access@0.5.29
+
 ## 0.12.119
 
 ### Patch Changes

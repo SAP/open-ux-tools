@@ -18,6 +18,7 @@ import { ChangeService } from '../../../src/cpe/changes';
 import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
 import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
 import { SelectionService } from '../../../src/cpe/selection';
+import { ContextMenuService } from '../../../src/cpe/context-menu-service';
 
 describe('main', () => {
     VersionInfo.load.mockResolvedValue({ version: '1.120.4' });
@@ -37,6 +38,7 @@ describe('main', () => {
     const connectorServiceSpy = jest.spyOn(WorkspaceConnectorService.prototype, 'init');
     const quickActionServiceSpy = jest.spyOn(QuickActionService.prototype, 'init');
     const selectionServiceSpy = jest.spyOn(SelectionService.prototype, 'init');
+    const contextMenuServiceSpy = jest.spyOn(ContextMenuService.prototype, 'init');
 
     beforeAll(() => {
         const apiJson = {
@@ -70,6 +72,7 @@ describe('main', () => {
         connectorServiceSpy.mockClear();
         quickActionServiceSpy.mockClear();
         selectionServiceSpy.mockClear();
+        contextMenuServiceSpy.mockClear();
     });
 
     sapCoreMock.byId.mockReturnValueOnce({
@@ -146,12 +149,14 @@ describe('main', () => {
         connectorServiceSpy.mockResolvedValue();
         selectionServiceSpy.mockResolvedValue('' as never);
         quickActionServiceSpy.mockResolvedValue();
+        contextMenuServiceSpy.mockResolvedValue();
 
         await init(rta);
         await Promise.all([
             initOutlineSpy,
             rtaSpy,
             changesServiceSpy,
+            contextMenuServiceSpy,
             connectorServiceSpy,
             selectionServiceSpy,
             quickActionServiceSpy
