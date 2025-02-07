@@ -1,1 +1,0 @@
-export { ChangeService } from './service';

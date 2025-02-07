@@ -14,7 +14,7 @@ import * as ui5Utils from '../../../src/cpe/ui5-utils';
 import connector from '../../../src/flp/WorkspaceConnector';
 import { CommunicationService } from '../../../src/cpe/communication-service';
 import { RtaService } from '../../../src/cpe/rta-service';
-import { ChangeService } from '../../../src/cpe/changes';
+import { ChangeService } from '../../../src/cpe/changes/service';
 import { WorkspaceConnectorService } from '../../../src/cpe/connector-service';
 import { QuickActionService } from '../../../src/cpe/quick-actions/quick-action-service';
 import { SelectionService } from '../../../src/cpe/selection';

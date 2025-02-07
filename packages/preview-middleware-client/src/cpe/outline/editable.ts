@@ -3,7 +3,7 @@ import { getRuntimeControl } from '../utils';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { getComponent } from '../../utils/core';
-import { ChangeService } from '../changes';
+import { ChangeService } from '../changes/service';
 
 export const isEditable = (changeService: ChangeService, id = ''): boolean => {
     let editable = false;

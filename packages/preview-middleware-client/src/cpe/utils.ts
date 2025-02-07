@@ -10,7 +10,7 @@ import UIComponent from 'sap/ui/core/UIComponent';
 import { getComponent } from '../utils/core';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
-import { ChangeService } from './changes';
+import { ChangeService } from './changes/service';
 import UI5Element from 'sap/ui/core/Element';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
@@ -186,3 +186,6 @@ export const getOverlay = (control: UI5Element): ElementOverlay | undefined => {
 
     return controlOverlay;
 };
+
+// TODO: check why tests fails without this
+export default {};

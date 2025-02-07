@@ -13,7 +13,7 @@ import type {
 
 import type { TextBundle } from '../../i18n';
 import type { ControlTreeIndex } from '../types';
-import { ChangeService } from '../changes';
+import { ChangeService } from '../changes/service';
 
 export interface QuickActionActivationContext {
     controlIndex: ControlTreeIndex;

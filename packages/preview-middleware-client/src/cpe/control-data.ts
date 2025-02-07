@@ -18,7 +18,7 @@ import { getManifestProperties, MergedSetting, type ManagedObjectMetadataPropert
 import { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
 import { getV4PageType } from '../utils/fe-v4';
-import { ChangeService } from './changes';
+import { ChangeService } from './changes/service';
 import { TemplateType } from 'sap/ui/dt/DesignTimeMetadata';
 
 type AnalyzedType = Pick<UI5ControlProperty, 'isArray' | 'primitiveType' | 'ui5Type' | 'enumValues'>;

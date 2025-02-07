@@ -19,7 +19,7 @@ import { QuickActionActivationContext, QuickActionContext, QuickActionDefinition
 import { QuickActionDefinitionRegistry } from './registry';
 import { OutlineService } from '../outline/service';
 import { getTextBundle, TextBundle } from '../../i18n';
-import { ChangeService } from '../changes';
+import { ChangeService } from '../changes/service';
 
 /**
  * Service providing Quick Actions.
@@ -33,7 +33,7 @@ export class QuickActionService implements Service {
     private texts: TextBundle;
 
     /**
-     * Qucik action service constructor.zrf
+     * Quick action service constructor.
      *
      * @param rta - RTA object.
      * @param outlineService - Outline service instance.

@@ -1,3 +1,4 @@
+debugger
 import Log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
@@ -9,7 +10,7 @@ import { getError } from '../../utils/error';
 import { getTextBundle } from '../../i18n';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
-import { ChangeService } from '../changes';
+import { ChangeService } from '../changes/service';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 
@@ -67,7 +68,7 @@ export class OutlineService extends EventTarget {
                         })
                     );
                     hasSentWarning = true;
-                }
+            }
                 await this.changeService.updateConfigurationProps(configPropertyIdMap);
             } catch (error) {
                 Log.error('Outline sync failed!', getError(error));
@@ -81,3 +82,6 @@ export class OutlineService extends EventTarget {
         this.addEventListener(OUTLINE_CHANGE_EVENT, handler as EventListener);
     }
 }
+
+// TODO: check why tests fails without this
+export default OutlineService;

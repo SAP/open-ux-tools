@@ -23,7 +23,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
-import { ChangeService } from './changes';
+import { ChangeService } from './changes/service';
 
 export interface PropertyChangeParams {
     name: string;

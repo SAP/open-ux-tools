@@ -1,0 +1,6 @@
+<mvc:View xmlns="sap.m" xmlns:mvc="sap.ui.core.mvc">
+   <Panel>
+      <Image src="http://www.sap.com/global/ui/images/global/sap-logo.png"/>
+      <Button text="Press Me!"/>
+   </Panel>
+</mvc:View>

@@ -9,7 +9,7 @@ import type { ControlTreeIndex } from '../types';
 import { getOverlay, isReuseComponent } from '../utils';
 
 import { isEditable } from './editable';
-import { ChangeService } from '../changes';
+import { ChangeService } from '../changes/service';
 import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4';
 
 interface AdditionalData {

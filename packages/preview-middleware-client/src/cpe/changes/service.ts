@@ -772,3 +772,6 @@ export class ChangeService extends EventTarget {
         return FlexObjectFactory.createFromFileContent(change) as FlexChange<ChangeContent>;
     }
 }
+
+// TODO: check why tests fails without this
+export default {};
