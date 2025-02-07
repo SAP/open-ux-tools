@@ -93,13 +93,7 @@ export function getPackagePrompts(
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.packageManual?.default),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackageExtended(
-                    input,
-                    answers,
-                    options.packageManual,
-                    options.backendTarget,
-                    options.appType
-                )
+                await validatePackageExtended(input, answers, options.packageManual, options.backendTarget)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
@@ -145,8 +139,7 @@ export function getPackagePrompts(
                     pkgValue,
                     answers,
                     options.packageAutocomplete,
-                    options.backendTarget,
-                    options.appType
+                    options.backendTarget
                 );
             }
         } as AutocompleteQuestionOptions<AbapDeployConfigAnswersInternal>

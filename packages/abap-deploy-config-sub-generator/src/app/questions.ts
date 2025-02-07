@@ -116,6 +116,8 @@ export async function getAbapQuestions({
         ServiceProvider: ${!!serviceProvider}, showOverwriteQuestion ${showOverwriteQuestion}, indexGenerationAllowed ${indexGenerationAllowed}`
     );
 
+    const isAdp = appType === 'Fiori Adaptation';
+
     return getPrompts(
         {
             backendTarget: {
@@ -124,20 +126,26 @@ export async function getAbapQuestions({
                 serviceProvider,
                 type: projectType
             },
-            ui5AbapRepo: { default: deployAppConfig?.name },
+            ui5AbapRepo: { default: deployAppConfig?.name, hideIfOnPremise: isAdp },
             description: { default: deployAppConfig?.description },
             packageManual: {
                 default: deployAppConfig?.package,
-                additionalValidation: { shouldValidatePackageType: appType === 'Fiori Adaptation' }
+                additionalValidation: {
+                    shouldValidatePackageType: isAdp,
+                    shouldValidatePackageForStartingPrefix: isAdp
+                }
             },
             transportManual: { default: deployAppConfig?.transport },
             index: { indexGenerationAllowed },
             packageAutocomplete: {
                 useAutocomplete: true,
-                additionalValidation: { shouldValidatePackageType: appType === 'Fiori Adaptation' }
+                additionalValidation: {
+                    shouldValidatePackageType: isAdp,
+                    shouldValidatePackageForStartingPrefix: isAdp
+                }
             },
             overwrite: { hide: !showOverwriteQuestion },
-            appType: appType
+            transportInputChoice: { hideIfOnPremise: isAdp }
         },
         logger as unknown as Logger,
         getHostEnvironment() !== hostEnvironment.cli

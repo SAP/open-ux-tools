@@ -10,13 +10,13 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
+    TransportInputChoicePromptOptions,
     UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget,
     type TransportListItem
 } from '../types';
-import type { AppType } from '@sap-ux/project-access';
 
 /**
  * Determines if URL question should be shown.
@@ -146,17 +146,15 @@ export function showPasswordQuestion(): boolean {
  * Determines if the UI5 app deploy config question should be shown (UI5 Abap Repo name & Description).
  *
  * @param ui5AbapPromptOptions - UI5 Abap Repo prompt options
- * @param appType - application type
  * @returns boolean
  */
-export function showUi5AppDeployConfigQuestion(
-    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
-    appType?: AppType
-): boolean {
-    if (appType === 'Fiori Adaptation' && !PromptState.abapDeployConfig.isS4HC) {
-        return false;
-    }
-    if (!ui5AbapPromptOptions?.hide && ui5AbapPromptOptions?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
+export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRepoPromptOptions): boolean {
+    if (
+        !ui5AbapPromptOptions?.hide &&
+        ui5AbapPromptOptions?.hideIfOnPremise &&
+        !PromptState.abapDeployConfig?.scp &&
+        !PromptState.abapDeployConfig?.isS4HC
+    ) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
@@ -245,11 +243,11 @@ function defaultOrShowTransportQuestion(): boolean {
 /**
  * Determines if the transport input choice question should be shown.
  *
- * @param appType - applicationType
+ * @param options - abap deploy config prompt options
  * @returns boolean
  */
-export function showTransportInputChoice(appType?: AppType): boolean {
-    if (appType === 'Fiori Adaptation' && !PromptState.abapDeployConfig?.isS4HC) {
+export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
+    if (options?.hideIfOnPremise === true && !PromptState.abapDeployConfig?.isS4HC) {
         return false;
     }
 
@@ -305,16 +303,10 @@ export function defaultOrShowTransportCreatedQuestion(transportInputChoice?: str
  * Determines if the manual transport prompt should be shown.
  *
  * @param transportInputChoice - transportInputChoice from previous answers
- * @param appType - applicationType
  * @returns boolean
  */
-export function defaultOrShowManualTransportQuestion(transportInputChoice?: string, appType?: AppType): boolean {
-    return (
-        (defaultOrShowTransportQuestion() && transportInputChoice === TransportChoices.EnterManualChoice) ||
-        (appType === 'Fiori Adaptation' &&
-            !PromptState.abapDeployConfig?.isS4HC &&
-            PromptState.transportAnswers.transportRequired === true)
-    );
+export function defaultOrShowManualTransportQuestion(transportInputChoice?: string): boolean {
+    return defaultOrShowTransportQuestion() && transportInputChoice === TransportChoices.EnterManualChoice;
 }
 
 /**

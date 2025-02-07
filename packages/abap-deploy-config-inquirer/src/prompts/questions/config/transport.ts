@@ -37,7 +37,7 @@ export function getTransportRequestPrompts(
 
     const questions: Question<AbapDeployConfigAnswersInternal>[] = [
         {
-            when: (): boolean => showTransportInputChoice(options.appType),
+            when: (): boolean => showTransportInputChoice(options.transportInputChoice),
             type: 'list',
             name: promptNames.transportInputChoice,
             message: t('prompts.config.transport.transportInputChoice.message'),
@@ -113,7 +113,7 @@ export function getTransportRequestPrompts(
         } as ListQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowManualTransportQuestion(previousAnswers.transportInputChoice, options.appType),
+                defaultOrShowManualTransportQuestion(previousAnswers.transportInputChoice),
             type: 'input',
             name: promptNames.transportManual,
             message: () =>

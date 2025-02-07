@@ -28,9 +28,6 @@
       "path": "../logger"
     },
     {
-      "path": "../project-access"
-    },
-    {
       "path": "../store"
     },
     {

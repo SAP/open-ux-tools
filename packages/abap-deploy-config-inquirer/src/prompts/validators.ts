@@ -34,7 +34,6 @@ import {
     type PackagePromptOptions
 } from '../types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import type { AppType } from '@sap-ux/project-access';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
 /**
@@ -355,17 +354,9 @@ export async function validatePackageChoiceInputForCli(
  * Validates the package name.
  *
  * @param input - package name entered
- * @param answers - previous answers
- * @param backendTarget - backend target
- * @param appType - applicationType
  * @returns boolean or error message as a string
  */
-export async function validatePackage(
-    input: string,
-    answers: AbapDeployConfigAnswersInternal,
-    backendTarget?: BackendTarget,
-    appType?: AppType
-): Promise<boolean | string> {
+export async function validatePackage(input: string): Promise<boolean | string> {
     PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
     if (!input?.trim()) {
         return t('warnings.providePackage');
@@ -382,24 +373,6 @@ export async function validatePackage(
     if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
         return t('errors.validators.abapPackageInvalidFormat');
     }
-
-    if (appType === 'Fiori Adaptation' && !PromptState.abapDeployConfig?.isS4HC) {
-        return true;
-    }
-
-    const startingPrefix = getPackageStartingPrefix(input);
-
-    //validate package starting prefix
-    if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
-        return t('errors.validators.abapPackageStartingPrefix');
-    }
-
-    //appName starting prefix
-    if (answers?.ui5AbapRepo && !answers.ui5AbapRepo.startsWith(startingPrefix)) {
-        return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
-    }
-    // checks if package is a local package and will update prompt state accordingly
-    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
 
     return true;
 }
@@ -655,16 +628,33 @@ export async function validatePackageExtended(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
-    backendTarget?: BackendTarget,
-    appType?: AppType
+    backendTarget?: BackendTarget
 ): Promise<boolean | string> {
-    const baseValidation = await validatePackage(input, answers, backendTarget, appType);
+    const baseValidation = await validatePackage(input);
     if (typeof baseValidation === 'string') {
         return baseValidation;
+    }
+
+    // checks if package is a local package and will update prompt state accordingly
+    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
+
+    if (promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix && answers?.ui5AbapRepo) {
+        const startingPrefix = getPackageStartingPrefix(input);
+
+        //validate package starting prefix
+        if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
+            return t('errors.validators.abapPackageStartingPrefix');
+        }
+
+        //appName starting prefix
+        if (!answers.ui5AbapRepo.startsWith(startingPrefix)) {
+            return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+        }
     }
 
     if (promptOption?.additionalValidation?.shouldValidatePackageType) {
         return await validatePackageType(input, backendTarget);
     }
+
     return true;
 }

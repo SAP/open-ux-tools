@@ -1,7 +1,6 @@
 import type { AbapTarget } from '@sap-ux/system-access';
 import type { ServiceProvider, SystemInfo } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import type { AppType } from '@sap-ux/project-access';
 
 export const enum TargetSystemType {
     Url = 'Url'
@@ -116,6 +115,11 @@ export type PackagePromptOptions = {
          * Check if the given package is appropriate to the system of the created project
          */
         shouldValidatePackageType?: boolean;
+
+        /**
+         * Check if the given package matches ui5AbapRepo starting preffix or namespace
+         */
+        shouldValidatePackageForStartingPrefix?: boolean;
     };
 };
 
@@ -124,6 +128,13 @@ export type PackageManualPromptOptions = PackagePromptOptions & {
      * Default package value.
      */
     default?: string;
+};
+
+export type TransportInputChoicePromptOptions = {
+    /**
+     * If set to true, the prompt will be hidden if the target system is on-premise.
+     */
+    hideIfOnPremise?: boolean;
 };
 
 export type TransportManualPromptOptions = {
@@ -162,7 +173,8 @@ type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepo
     Record<promptNames.transportManual, TransportManualPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.index, IndexPromptOptions> &
-    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions>;
+    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
+    Record<promptNames.transportInputChoice, TransportInputChoicePromptOptions>;
 
 /**
  * The options which are common for the abap deploy config inquirer.
@@ -175,7 +187,7 @@ type AbapDeployConfigCommonInquirerOptions = {
  * The options for the abap deploy config inquirer & the prompts.
  */
 export type AbapDeployConfigPromptOptions = Partial<abapDeployConfigPromptOptions> &
-    AbapDeployConfigCommonInquirerOptions & { appType?: AppType };
+    AbapDeployConfigCommonInquirerOptions;
 
 export interface TransportAnswers {
     transportRequired?: boolean;
