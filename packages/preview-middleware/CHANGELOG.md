@@ -1,5 +1,53 @@
 # @sap-ux/preview-middleware
 
+## 0.17.25
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
+## 0.17.24
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+-   Updated dependencies [59453ba]
+    -   @sap-ux/adp-tooling@0.12.126
+
+## 0.17.23
+
+### Patch Changes
+
+-   b214776: fix: remove hard coded usage of webapp folder
+
+## 0.17.22
+
+### Patch Changes
+
+-   9bccf03: feat: add support for type component
+
+## 0.17.21
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/adp-tooling@0.12.125
+    -   @sap-ux/project-access@1.29.5
+
+## 0.17.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.124
+
+## 0.17.19
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/adp-tooling@0.12.123
+
 ## 0.17.18
 
 ### Patch Changes

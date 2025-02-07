@@ -1,5 +1,18 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.33.0
+
+### Minor Changes
+
+-   aaaf046: update validateBasePath to use dynamic webapp path from manifest.json instead of hardcoded value
+
+## 0.32.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/fiori-annotation-api@0.4.4
+
 ## 0.32.3
 
 ### Patch Changes
