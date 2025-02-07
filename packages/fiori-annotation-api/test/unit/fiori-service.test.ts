@@ -601,7 +601,7 @@ describe('fiori annotation service', () => {
             expect(convertFilesForSnapshots(PROJECTS.V4_CDS_START.root, files)).toMatchSnapshot();
         });
 
-        test.only('cds layering', async () => {
+        test('cds layering', async () => {
             const service = await testRead(PROJECTS.CDS_LAYERING.root, [], 'TravelService');
             const files = service.getAllFiles();
             expect(convertFilesForSnapshots(PROJECTS.CDS_LAYERING.root, files)).toMatchSnapshot();
