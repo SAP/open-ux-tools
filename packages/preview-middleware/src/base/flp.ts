@@ -31,7 +31,8 @@ import {
     type TemplateConfig,
     createTestTemplateConfig,
     addApp,
-    getAppName
+    getAppName,
+    sanitizeRtaConfig
 } from './config';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
@@ -56,6 +57,7 @@ type OnChangeRequestHandler = (
 ) => Promise<void>;
 
 type RtaConfig = NonNullable<MiddlewareConfig['editors']>['rta'];
+
 /**
  * Class handling preview of a sandbox FLP.
  */
@@ -86,29 +88,9 @@ export class FlpSandbox {
     ) {
         this.config = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
-        this.rta = this.sanitizeRtaConfig(config.rta, config.editors?.rta);
+        this.rta = sanitizeRtaConfig(config.rta, config.editors?.rta);
         logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
-    }
-
-    /**
-     * Convert the deprecated RTA configuration.
-     *
-     * @param rtaDeprecated the deprecated RTA configuration
-     * @param rta the RTA configuration
-     * @returns the sanitized RTA configuration
-     * @private
-     */
-    private sanitizeRtaConfig(
-        rtaDeprecated: MiddlewareConfig['rta'],
-        rta: RtaConfig | undefined
-    ): RtaConfig | undefined {
-        if (rtaDeprecated) {
-            const { editors, ...rta } = rtaDeprecated;
-            return { ...rta, endpoints: editors };
-        } else {
-            return rta;
-        }
     }
 
     /**

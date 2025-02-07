@@ -30,6 +30,8 @@ export interface FlexConnector {
     url?: string;
 }
 
+type RtaConfig = NonNullable<MiddlewareConfig['editors']>['rta'];
+
 type TestTemplateConfig = {
     id: string;
     framework: TestConfig['framework'];
@@ -195,6 +197,26 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
             }
             return editor;
         });
+    }
+}
+
+/**
+ * Convert the deprecated RTA configuration.
+ *
+ * @param rtaDeprecated the deprecated RTA configuration
+ * @param rta the RTA configuration
+ * @returns the sanitized RTA configuration
+ * @private
+ */
+export function sanitizeRtaConfig(
+    rtaDeprecated: MiddlewareConfig['rta'],
+    rta: RtaConfig | undefined
+): RtaConfig | undefined {
+    if (rtaDeprecated) {
+        const { editors, ...rta } = rtaDeprecated;
+        return { ...rta, endpoints: editors };
+    } else {
+        return rta;
     }
 }
 
