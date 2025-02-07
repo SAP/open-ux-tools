@@ -5,6 +5,8 @@ import {
     appRouterPromptNames,
     type CfAppRouterDeployConfigPromptOptions,
     type CfAppRouterDeployConfigQuestions,
+    type CfDeployConfigPromptOptions,
+    type CfDeployConfigQuestions,
     getAppRouterPrompts,
     getPrompts,
     promptNames
@@ -13,7 +15,6 @@ import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-sha
 import { destinationQuestionDefaultOption, getCFChoices } from './utils';
 import { t } from '../utils';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
-import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-inquirer';
 
 /**
  * Fetches the Cloud Foundry deployment configuration questions.
