@@ -1,0 +1,6 @@
+{
+    "debug": {
+        "exit": "Existing the deployment generator",
+        "loadingPrompts": "Loading deploy prompts..."
+    }
+}

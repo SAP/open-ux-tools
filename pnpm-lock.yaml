@@ -1530,6 +1530,127 @@ importers:
         specifier: 5.3.3
         version: 5.3.3
 
+  packages/deploy-config-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.16.9
+        version: 1.16.9
+      '@sap-ux/abap-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-inquirer
+      '@sap-ux/abap-deploy-config-sub-generator':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-sub-generator
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/cf-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-inquirer
+      '@sap-ux/cf-deploy-config-sub-generator':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-sub-generator
+      '@sap-ux/cf-deploy-config-writer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-writer
+      '@sap-ux/deploy-config-generator-shared':
+        specifier: workspace:*
+        version: link:../deploy-config-generator-shared
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      dotenv:
+        specifier: 16.3.1
+        version: 16.3.1
+      hasbin:
+        specifier: 1.2.3
+        version: 1.2.3
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@jest/types':
+        specifier: 29.6.3
+        version: 29.6.3
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap/mta-lib':
+        specifier: 1.7.4
+        version: 1.7.4
+      '@types/hasbin':
+        specifier: 1.2.2
+        version: 1.2.2
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
+      '@types/js-yaml':
+        specifier: 4.0.9
+        version: 4.0.9
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/yeoman-environment':
+        specifier: 2.10.11
+        version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      js-yaml:
+        specifier: 4.1.0
+        version: 4.1.0
+      memfs:
+        specifier: 3.4.13
+        version: 3.4.13
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+
   packages/deploy-tooling:
     dependencies:
       '@sap-ux/axios-extension':
@@ -8382,6 +8503,10 @@ packages:
 
   /@sap-devx/yeoman-ui-types@1.14.4:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
+
+  /@sap-devx/yeoman-ui-types@1.16.9:
+    resolution: {integrity: sha512-GpyTtj2RGWopUWROS3dfAV+0MQzARSRpqoWGDLQflCQpQWCkEFUQlj/dgowrEblj+1oJDTYBEdLu7nPc5lkNMA==}
+    dev: false
 
   /@sap-ux/annotation-converter@0.10.2:
     resolution: {integrity: sha512-3GY8Etb2D+HnCNf2Yy7qfRtZuJ8ITjAGdlnbpmIg5sLtHRfhffEzZOveEWWMJ0apgIedUouvglkw6+oBabTfnA==}
@@ -15637,7 +15762,7 @@ packages:
       ansi-escapes: 4.3.2
       figures: 3.2.0
       inquirer: 8.2.6
-      picocolors: 1.0.1
+      picocolors: 1.1.1
       run-async: 2.4.1
       rxjs: 7.8.1
     dev: false
@@ -17108,6 +17233,7 @@ packages:
 
   /lodash.get@4.4.2:
     resolution: {integrity: sha512-z+Uw/vLuy6gQe8cfaFWD7p0wVv8fJl3mbzXh33RS+0oW2wvUqiRXiQ69gLWSLpgB5/6sU+r6BlQR0MBILadqTQ==}
+    deprecated: This package is deprecated. Use the optional chaining (?.) operator instead.
     dev: true
 
   /lodash.isequal@4.5.0:
