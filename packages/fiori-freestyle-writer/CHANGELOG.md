@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.0.13
+
+### Patch Changes
+
+-   59a24b3: FF & FF writer fix enableNPMWorkspaces option for CAP
+
 ## 2.0.12
 
 ### Patch Changes

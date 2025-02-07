@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.1.7
+
+### Patch Changes
+
+-   59a24b3: FF & FF writer fix enableNPMWorkspaces option for CAP
+
 ## 2.1.6
 
 ### Patch Changes
