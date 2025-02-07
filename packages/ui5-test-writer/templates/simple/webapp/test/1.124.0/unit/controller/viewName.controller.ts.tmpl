@@ -1,0 +1,10 @@
+/*global QUnit*/
+import Controller from "{{simple.parameters.AppIdWithSlash.value}}/controller/{{simple.parameters.ViewName.value}}.controller";
+
+QUnit.module("{{simple.parameters.ViewName.value}} Controller");
+
+QUnit.test("I should test the {{simple.parameters.ViewName.value}} controller", function (assert: Assert) {
+	const oAppController = new Controller("{{simple.parameters.ViewName.value}}");
+	oAppController.onInit();
+	assert.ok(oAppController);
+});
