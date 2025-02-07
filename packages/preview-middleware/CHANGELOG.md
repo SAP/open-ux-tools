@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.25
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
 ## 0.17.24
 
 ### Patch Changes
