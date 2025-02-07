@@ -7,6 +7,7 @@ import type {
     Intent,
     InternalTestConfig,
     MiddlewareConfig,
+    RtaConfig,
     TestConfig
 } from '../types';
 import { render } from 'ejs';
@@ -29,8 +30,6 @@ export interface FlexConnector {
     layers: string[];
     url?: string;
 }
-
-type RtaConfig = NonNullable<MiddlewareConfig['editors']>['rta'];
 
 type TestTemplateConfig = {
     id: string;

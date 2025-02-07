@@ -23,7 +23,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { RtaEditor, FlpConfig, InternalTestConfig, MiddlewareConfig, TestConfig } from '../types';
+import type { RtaEditor, FlpConfig, InternalTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -55,8 +55,6 @@ type OnChangeRequestHandler = (
     fs: MemFsEditor,
     logger: Logger
 ) => Promise<void>;
-
-type RtaConfig = NonNullable<MiddlewareConfig['editors']>['rta'];
 
 /**
  * Class handling preview of a sandbox FLP.
