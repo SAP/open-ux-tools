@@ -147,7 +147,7 @@
             "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve the existing Transport Requests",
             "abapInvalidAppNameNamespaceOrStartingPrefix": "Both the SAPUI5 ABAP Repository and the Package that will be used should start in the same way, i.e. a namespace or capital letters 'Z', 'Y' or 'SAP'",
             "invalidCloudPackage": "The provided package is not intended for cloud deployments.",
-            "invalidOnpremPackage": "The package entered is not meant to be used for On Premise deployments."
+            "invalidOnPremPackage": "The provided package is not intended for on-premise deployments."
         }
     }
 }
