@@ -495,6 +495,62 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             });
         });
 
+        test('should perform CAP updates when CAP service is available and cds ui5 plugin is enabled', async () => {
+            const fs = create(createStorage());
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js',
+                cdsUi5PluginInfo: { hasCdsUi5Plugin: false, isCdsUi5PluginEnabled: true, isWorkspaceEnabled: false }
+            };
+            const appInfo = applyBaseConfigToFEApp('felrop2', TemplateType.ListReportObjectPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                service: {
+                    ...appInfo.service,
+                    capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                appId: 'felrop2',
+                packageName: 'felrop2',
+                enableNPMWorkspaces: true,
+                enableCdsUi5Plugin: true
+            });
+        });
+
+        test('should NOT perform CAP updates when CAP service is available and cds ui5 plugin is disabled', async () => {
+            const fs = create(createStorage());
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js',
+                cdsUi5PluginInfo: { hasCdsUi5Plugin: false, isCdsUi5PluginEnabled: false, isWorkspaceEnabled: false }
+            };
+            const appInfo = applyBaseConfigToFEApp('felrop2', TemplateType.ListReportObjectPage);
+            const fioriElementsApp = {
+                ...appInfo,
+                service: {
+                    ...appInfo.service,
+                    capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+                }
+            };
+            await generate(curTestOutPath, fioriElementsApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                appId: 'felrop2',
+                packageName: 'felrop2',
+                enableNPMWorkspaces: false,
+                enableCdsUi5Plugin: false
+            });
+        });
+
         test('should not perform CAP updates, when no cap service provided', async () => {
             const fs = create(createStorage());
             const fioriElementsApp = applyBaseConfigToFEApp('felrop1', TemplateType.ListReportObjectPage);
