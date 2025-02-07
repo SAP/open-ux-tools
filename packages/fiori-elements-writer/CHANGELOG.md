@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.1.6
+
+### Patch Changes
+
+-   1baff46: Add error handling to fiori elements writer while generating annotations
+
 ## 2.1.5
 
 ### Patch Changes
