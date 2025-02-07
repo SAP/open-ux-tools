@@ -96,7 +96,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed?: boolean;
     showOverwriteQuestion?: boolean;
     projectType?: DeployProjectType;
-    appType?: AppType;
+    isAdp = false;
     logger?: ILogWrapper;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
