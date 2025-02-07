@@ -23,7 +23,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { Editor, FlpConfig, InternalTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type { RtaEditor, FlpConfig, InternalTestConfig, MiddlewareConfig, TestConfig } from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -55,6 +55,7 @@ type OnChangeRequestHandler = (
     logger: Logger
 ) => Promise<void>;
 
+type RtaConfig = NonNullable<MiddlewareConfig['editors']>['rta'];
 /**
  * Class handling preview of a sandbox FLP.
  */
@@ -85,9 +86,29 @@ export class FlpSandbox {
     ) {
         this.config = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
-        this.rta = config.rta;
+        this.rta = this.sanitizeRtaConfig(config.rta, config.editors?.rta);
         logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
+    }
+
+    /**
+     * Convert the deprecated RTA configuration.
+     *
+     * @param rtaDeprecated the deprecated RTA configuration
+     * @param rta the RTA configuration
+     * @returns the sanitized RTA configuration
+     * @private
+     */
+    private sanitizeRtaConfig(
+        rtaDeprecated: MiddlewareConfig['rta'],
+        rta: RtaConfig | undefined
+    ): RtaConfig | undefined {
+        if (rtaDeprecated) {
+            const { editors, ...rta } = rtaDeprecated;
+            return { ...rta, endpoints: editors };
+        } else {
+            return rta;
+        }
     }
 
     /**
@@ -190,7 +211,7 @@ export class FlpSandbox {
      * @param editor editor configuration
      * @returns FLP sandbox html
      */
-    private async generateSandboxForEditor(req: EnhancedRequest, rta: RtaConfig, editor: Editor): Promise<string> {
+    private async generateSandboxForEditor(req: EnhancedRequest, rta: RtaConfig, editor: RtaEditor): Promise<string> {
         const defaultGenerator = editor.developerMode
             ? '@sap-ux/control-property-editor'
             : '@sap-ux/preview-middleware';
@@ -285,7 +306,7 @@ export class FlpSandbox {
         res: Response,
         rta: RtaConfig,
         previewUrl: string,
-        editor: Editor
+        editor: RtaEditor
     ): Promise<void> {
         if (!req.query['fiori-tools-rta-mode']) {
             // Redirect to the same URL but add the necessary parameter
@@ -311,7 +332,7 @@ export class FlpSandbox {
      */
     private addEditorRoutes(rta: RtaConfig): void {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
-        for (const editor of rta.editors) {
+        for (const editor of rta.endpoints) {
             let previewUrl = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
@@ -873,7 +894,7 @@ export async function initAdp(
                 projectId: variant.id,
                 scenario: 'ADAPTATION_PROJECT'
             };
-            for (const editor of flp.rta.editors) {
+            for (const editor of flp.rta.endpoints) {
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';
             }
         }
