@@ -264,7 +264,7 @@ export const Tree = (): ReactElement => {
             return [];
         }
         const { controlId, controlType } = showActionContextualMenu;
-        const isExtensionPoint = controlType === 'sap.ui.extensionpoint' ? true : false;
+        const isExtensionPoint = controlType === 'sap.ui.extensionpoint';
         const children = isExtensionPoint
             ? [
                   {
