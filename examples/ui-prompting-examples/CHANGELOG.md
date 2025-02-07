@@ -1,5 +1,13 @@
 # @sap-ux-private/ui-prompting-examples
 
+## 0.2.29
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+-   Updated dependencies [59453ba]
+    -   @sap-ux/ui-prompting@0.3.15
+
 ## 0.2.28
 
 ### Patch Changes

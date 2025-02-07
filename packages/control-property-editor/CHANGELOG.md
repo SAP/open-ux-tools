@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.36
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
 ## 0.5.35
 
 ### Patch Changes

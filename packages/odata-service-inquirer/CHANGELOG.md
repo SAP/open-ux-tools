@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.2
+
+### Patch Changes
+
+-   cfa9b8c: add param to set isYUI for getSystemSelectionQuestions
+
 ## 2.2.1
 
 ### Patch Changes
