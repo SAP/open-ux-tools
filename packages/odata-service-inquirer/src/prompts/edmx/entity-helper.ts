@@ -101,7 +101,7 @@ export function getEntityChoices(
             }
         });
     } catch (err) {
-        LoggerHelper.logger.log(t('errors.unparseableMetadata', { error: err.message }));
+        LoggerHelper.logger.error(t('errors.unparseableMetadata', { error: err.message }));
     }
 
     return {
