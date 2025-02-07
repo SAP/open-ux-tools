@@ -17,9 +17,9 @@ export function getDeployTargetQuestion(supportedTargets: Target[], projectPath:
             type: 'list',
             name: 'targetName',
             guiOptions: {
-                breadcrumb: t('LABEL_TARGET_SYSTEM_TYPE_BREADCRUMB')
+                breadcrumb: t('prompts.deployTarget.breadcrumb')
             },
-            message: t('PROMPT_APP_CHOOSE_TARGET'),
+            message: t('prompts.deployTarget.message'),
             default: (): string => supportedTargets[0].name,
             validate: (choice: string): boolean | string => isMTAInstalled(choice, projectPath),
             choices: supportedTargets.map((target) => ({ name: target.description, value: target.name }))
