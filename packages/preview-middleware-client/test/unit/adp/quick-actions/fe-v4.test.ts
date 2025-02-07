@@ -674,19 +674,6 @@ describe('FE V4 quick actions', () => {
                         };
                     }
 
-                    if (id == 'ToolbarAction') {
-                        return {
-                            isA: (type: string) => type === 'sap.ui.mdc.ActionToolbar',
-                            getHeader: () => 'MyTable',
-                            getId: () => id,
-                            getDomRef: () => ({
-                                scrollIntoView
-                            }),
-                            getParent: () => pageView,
-                            getBusy: () => false
-                        };
-                    }
-
                     if (id == 'NavContainer') {
                         const container = new NavContainer();
                         const component = new TemplateComponentMock();
@@ -745,11 +732,6 @@ describe('FE V4 quick actions', () => {
                             controlId: 'Table'
                         } as any
                     ],
-                    'sap.ui.mdc.ActionToolbar': [
-                        {
-                            controlId: 'ToolbarAction'
-                        } as any
-                    ],
                     'sap.m.NavContainer': [
                         {
                             controlId: 'NavContainer'
@@ -802,7 +784,7 @@ describe('FE V4 quick actions', () => {
         describe('create table custom column', () => {
             test('initialize and execute action (%s)', async () => {
                 const pageView = new XMLView();
-                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(true);
+                jest.spyOn(FlexRuntimeInfoAPI, 'hasVariantManagement').mockReturnValue(false);
                 const scrollIntoView = jest.fn();
                 const appComponent = new AppComponentMock();
                 const component = new TemplateComponentMock();
@@ -885,6 +867,20 @@ describe('FE V4 quick actions', () => {
                                         {
                                             'children': [],
                                             enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create_table_action',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Action',
+                                    'tooltip': undefined
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'enabled': true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -1035,7 +1031,21 @@ describe('FE V4 quick actions', () => {
                                     'children': [
                                         {
                                             'children': [],
-                                            enabled: true,
+                                            'enabled': true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create_table_action',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Action',
+                                    'tooltip': undefined
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'enabled': true,
                                             'label': `'MyTable' table`
                                         }
                                     ],
@@ -1185,16 +1195,21 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
-                    onStackChange: jest.fn(),
-                    getConfigurationPropertyValue: jest
-                        .fn()
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(true)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValue(undefined)
-                } as any);
+                service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(true)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValue(undefined)
+                    } as any
+                );
             });
 
             test('initialize and execute action', async () => {

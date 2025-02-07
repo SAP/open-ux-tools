@@ -3,6 +3,7 @@ import { createSlice, createAction } from '@reduxjs/toolkit';
 
 import type {
     Control,
+    ContextMenu,
     IconDetails,
     OutlineNode,
     PendingChange,
@@ -41,7 +42,8 @@ import {
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
-    CONFIGURATION_CHANGE_KIND
+    CONFIGURATION_CHANGE_KIND,
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -73,6 +75,7 @@ export interface SliceState {
     applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
+    contextMenu: ContextMenu | undefined;
 }
 
 export interface ChangesSlice {
@@ -162,7 +165,8 @@ export const initialState: SliceState = {
     canSave: false,
     applicationRequiresReload: false,
     isAppLoading: true,
-    quickActions: []
+    quickActions: [],
+    contextMenu: undefined
 };
 
 /**
@@ -439,6 +443,16 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                             }
                         }
                     }
+                }
+            )
+            .addMatcher(
+                requestControlContextMenu.fulfilled.match,
+                (state: SliceState, action: ReturnType<typeof requestControlContextMenu.fulfilled>): void => {
+                    const { contextMenuItems, controlId } = action.payload;
+                    state.contextMenu = {
+                        contextMenuItems,
+                        controlId
+                    };
                 }
             )
 });
