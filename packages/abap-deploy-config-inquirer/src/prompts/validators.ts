@@ -365,10 +365,6 @@ export async function validatePackage(input: string): Promise<boolean | string> 
     if (!/^[A-Za-z0-9$_/]*$/.test(input)) {
         return t('errors.validators.charactersForbiddenInPackage');
     }
-    if (input === DEFAULT_PACKAGE_ABAP) {
-        PromptState.transportAnswers.transportRequired = false;
-        return true;
-    }
     //validate package format
     if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
         return t('errors.validators.abapPackageInvalidFormat');
@@ -633,6 +629,16 @@ export async function validatePackageExtended(
     const baseValidation = await validatePackage(input);
     if (typeof baseValidation === 'string') {
         return baseValidation;
+    }
+    if (input === DEFAULT_PACKAGE_ABAP) {
+        PromptState.transportAnswers.transportRequired = false;
+        if (
+            !promptOption?.additionalValidation ||
+            (promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix === false &&
+                promptOption?.additionalValidation?.shouldValidatePackageType === false)
+        ) {
+            return true;
+        }
     }
 
     // checks if package is a local package and will update prompt state accordingly

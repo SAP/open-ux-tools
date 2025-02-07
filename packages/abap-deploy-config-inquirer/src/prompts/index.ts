@@ -22,8 +22,11 @@ async function getAbapDeployConfigQuestions(
 
     const targetPrompts = await getAbapTargetPrompts(options);
     const authPrompts = getAuthPrompts(options);
-    const appConfigPrompts = getAppConfigPrompts(options);
-    const questions = [...targetPrompts, ...authPrompts, ...appConfigPrompts];
+    const questions = [...targetPrompts, ...authPrompts];
+
+    if (!options.ui5AbapRepo?.hide != true) {
+        questions.push(...getAppConfigPrompts(options));
+    }
 
     const packagePrompts = getPackagePrompts(options, false, PromptState.isYUI);
     const transportRequestPrompts = getTransportRequestPrompts(options, false, PromptState.isYUI);

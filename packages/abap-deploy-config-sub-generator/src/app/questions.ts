@@ -75,7 +75,7 @@ function getAbapTarget(
  * @param params.showOverwriteQuestion - whether the overwrite question should be shown
  * @param params.projectType - the project type
  * @param params.logger - the logger
- * @param params.appType - the application type
+ * @param params.isAdp - the whether application is Adaptation Project
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
@@ -86,7 +86,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed = false,
     showOverwriteQuestion = false,
     projectType = DeployProjectType.Application,
-    appType = 'SAP Fiori elements',
+    isAdp = false,
     logger
 }: {
     appRootPath: string;
@@ -96,7 +96,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed?: boolean;
     showOverwriteQuestion?: boolean;
     projectType?: DeployProjectType;
-    isAdp = false;
+    isAdp?: boolean;
     logger?: ILogWrapper;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
@@ -115,8 +115,6 @@ export async function getAbapQuestions({
         ABAPTarget: ${JSON.stringify(abapTarget)}, SystemName: ${backendSystem?.name}, 
         ServiceProvider: ${!!serviceProvider}, showOverwriteQuestion ${showOverwriteQuestion}, indexGenerationAllowed ${indexGenerationAllowed}`
     );
-
-    const isAdp = appType === 'Fiori Adaptation';
 
     return getPrompts(
         {

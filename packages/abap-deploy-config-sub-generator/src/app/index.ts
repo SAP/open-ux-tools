@@ -176,7 +176,7 @@ export default class extends DeploymentGenerator {
                 ),
                 projectType: this.projectType,
                 logger: DeploymentGenerator.logger,
-                appType
+                isAdp: appType === 'Fiori Adaptation'
             });
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);

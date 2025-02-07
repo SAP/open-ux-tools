@@ -151,7 +151,7 @@ export function showPasswordQuestion(): boolean {
 export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRepoPromptOptions): boolean {
     if (
         !ui5AbapPromptOptions?.hide &&
-        ui5AbapPromptOptions?.hideIfOnPremise &&
+        ui5AbapPromptOptions?.hideIfOnPremise === true &&
         !PromptState.abapDeployConfig?.scp &&
         !PromptState.abapDeployConfig?.isS4HC
     ) {
@@ -247,7 +247,11 @@ function defaultOrShowTransportQuestion(): boolean {
  * @returns boolean
  */
 export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
-    if (options?.hideIfOnPremise === true && !PromptState.abapDeployConfig?.isS4HC) {
+    if (
+        options?.hideIfOnPremise === true &&
+        !PromptState.abapDeployConfig?.isS4HC &&
+        !PromptState.abapDeployConfig?.scp
+    ) {
         return false;
     }
 
