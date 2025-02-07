@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.8.34
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
 ## 0.8.33
 
 ### Patch Changes
