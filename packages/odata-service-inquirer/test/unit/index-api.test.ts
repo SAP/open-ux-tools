@@ -61,6 +61,7 @@ describe('API tests', () => {
     });
 
     test('getSystemSelectionQuestions', async () => {
+        PromptState.isYUI = false;
         jest.spyOn(systemSelection, 'getSystemSelectionQuestions').mockResolvedValue([
             {
                 name: 'prompt1',
@@ -69,10 +70,13 @@ describe('API tests', () => {
         ]);
 
         const { prompts: questions, answers } = await getSystemSelectionQuestions();
-
+        expect(PromptState.isYUI).toBe(false);
         expect(questions).toHaveLength(1);
         (questions[0].validate as Function)();
         expect(answers.servicePath).toBe('/path/to/service');
+
+        await getSystemSelectionQuestions(undefined, true);
+        expect(PromptState.isYUI).toBe(true);
     });
 
     test('getPrompts, i18n is loaded', async () => {
