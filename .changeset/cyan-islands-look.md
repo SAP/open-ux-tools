@@ -3,4 +3,4 @@
 '@sap-ux/ui5-config': patch
 ---
 
-Handle ignoreCertError in proxy middleware coming from service.
+Handling of `ignoreCertError` property from service in proxy middleware.
