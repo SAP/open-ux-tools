@@ -324,7 +324,7 @@ export class UI5Config {
     public addBackendToFioriToolsProxydMiddleware(
         backend: FioriToolsProxyConfigBackend,
         ignoreCertError: boolean = false
-    ): UI5Config {
+    ): this {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {

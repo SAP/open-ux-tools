@@ -281,6 +281,21 @@ describe('UI5Config', () => {
             expect(fioriToolsProxyMiddlewareConfig?.ignoreCertError).toEqual(expectedIgnoreCertError);
         });
 
+        test('add backend and do not update the "ignoreCertError" property', () => {
+            const expectedIgnoreCertError = false;
+            ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, ignoreCertError: false });
+            ui5Config.addBackendToFioriToolsProxydMiddleware(
+                {
+                    url,
+                    path
+                },
+                expectedIgnoreCertError
+            );
+            const fioriToolsProxyMiddlewareConfig =
+                ui5Config.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy)?.configuration;
+            expect(fioriToolsProxyMiddlewareConfig?.ignoreCertError).toEqual(expectedIgnoreCertError);
+        });
+
         test('handle duplicate backend', () => {
             ui5Config.addFioriToolsProxydMiddleware({ backend: [{ url, path }], ui5: {} });
             // Add same backend
