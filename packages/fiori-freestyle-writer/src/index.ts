@@ -168,11 +168,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     }
 
     if (ffApp.service?.capService) {
-        const { hasCdsUi5Plugin, isCdsUi5PluginEnabled, isWorkspaceEnabled } =
-            ffApp.service.capService.cdsUi5PluginInfo ?? {};
-        // if any of the options are enabled, then enable the CDS UI5 plugin
         const enableCdsUi5Plugin =
-            !!ffApp?.appOptions?.typescript || !!(hasCdsUi5Plugin || isCdsUi5PluginEnabled || isWorkspaceEnabled);
+            !!ffApp?.appOptions?.typescript || !!ffApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: ffApp.package.name ?? '',

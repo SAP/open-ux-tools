@@ -466,14 +466,14 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 enableCdsUi5Plugin: false
             });
         });
-        test('should perform CAP updates when CAP service is available, and workspace is enabled', async () => {
+        test('should perform CAP updates when CAP service is available, and isCdsUi5PluginEnabled is enabled', async () => {
             const fs = create(createStorage());
 
             const capServiceWithoutCdsUi5PluginInfo = {
                 projectPath: 'test/path',
                 serviceName: 'test-service',
                 capType: 'Node.js',
-                cdsUi5PluginInfo: { hasCdsUi5Plugin: false, isCdsUi5PluginEnabled: false, isWorkspaceEnabled: true }
+                cdsUi5PluginInfo: { isCdsUi5PluginEnabled: true }
             };
 
             const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
