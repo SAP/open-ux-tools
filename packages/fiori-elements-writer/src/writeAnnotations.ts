@@ -71,8 +71,11 @@ export async function writeAnnotations<T extends {}>(
             appName: packageName,
             project: projectPath
         };
-
-        await generateAnnotations(fs, serviceParameters, options);
+        try {
+            await generateAnnotations(fs, serviceParameters, options);
+        } catch (err) {
+            log?.error(`${t('error.errorGeneratingDefaultAnnotations')} ${err}`);
+        }
     } else {
         log?.warn(
             t('warn.invalidTypeForAnnotationGeneration', {

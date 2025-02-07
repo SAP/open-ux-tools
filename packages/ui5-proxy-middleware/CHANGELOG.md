@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.15
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
 ## 1.4.14
 
 ### Patch Changes
