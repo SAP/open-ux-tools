@@ -1,5 +1,25 @@
 # @sap-ux/preview-middleware
 
+## 0.17.24
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+-   Updated dependencies [59453ba]
+    -   @sap-ux/adp-tooling@0.12.126
+
+## 0.17.23
+
+### Patch Changes
+
+-   b214776: fix: remove hard coded usage of webapp folder
+
+## 0.17.22
+
+### Patch Changes
+
+-   9bccf03: feat: add support for type component
+
 ## 0.17.21
 
 ### Patch Changes
