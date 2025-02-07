@@ -32,7 +32,7 @@ import {
 } from '@sap-ux/deploy-config-generator-shared';
 import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils';
 import { loadManifest, addMtaContinue } from './utils';
-import { getMtaPath, findCapProjectRoot, FileName, getCapProjectType } from '@sap-ux/project-access';
+import { getMtaPath, findCapProjectRoot, FileName } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
 import { getCFApprouterQuestionsForCap, getCFQuestions } from './questions';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
