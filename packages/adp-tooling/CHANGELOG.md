@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.126
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
 ## 0.12.125
 
 ### Patch Changes

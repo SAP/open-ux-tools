@@ -220,7 +220,7 @@ export async function validatePageConfig(
 ): Promise<Editor> {
     // common validators
 
-    validateBasePath(basePath, fs, dependencies);
+    await validateBasePath(basePath, fs, dependencies);
 
     // validate config against the manifest
     if (config.navigation?.sourcePage) {
