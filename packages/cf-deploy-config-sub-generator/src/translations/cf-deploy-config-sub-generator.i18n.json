@@ -12,6 +12,9 @@
             },
             "none": {
                 "name": "None"
+            },
+            "addCapMtaContinue": {
+                "name": "There is no mta.yaml file defined for this project. In order to add deployment configuration for this application, this file must be present. Do you want to create an mta.yaml to continue?"
             }
         },
         "info": {
