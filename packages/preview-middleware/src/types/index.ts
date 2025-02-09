@@ -31,7 +31,7 @@ export interface RtaEditor {
 
 export type CardsEditor = Omit<RtaEditor, 'generator, developerMode, pluginScript'>;
 
-export type RtaConfig = NonNullable<NonNullable<MiddlewareConfig['editors']>['rta']>;
+export type RtaConfig = Omit<InternalRtaConfig, 'editors'> & { endpoints: RtaEditor[] };
 
 interface InternalRtaConfig {
     layer: UI5FlexLayer;
@@ -118,7 +118,7 @@ export interface MiddlewareConfig {
      */
     rta?: InternalRtaConfig;
     editors?: {
-        rta?: Omit<InternalRtaConfig, 'editors'> & { endpoints: RtaEditor[] };
+        rta?: RtaConfig;
         cards?: CardsEditor;
     };
     adp?: AdpPreviewConfig;
