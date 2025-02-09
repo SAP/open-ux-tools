@@ -192,7 +192,6 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
         config.editors.rta = sanitizeRtaConfig(config.rta, logger);
         delete config.rta;
     }
-    delete config.rta;
     if (config.editors?.rta && config.adp === undefined) {
         config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
             if (editor.developerMode) {
