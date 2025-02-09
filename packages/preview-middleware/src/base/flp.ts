@@ -64,7 +64,7 @@ export class FlpSandbox {
     private manifest: Manifest;
     protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
-    public readonly config: FlpConfig;
+    public readonly flpConfig: FlpConfig;
     public readonly rta?: RtaConfig;
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
@@ -84,10 +84,10 @@ export class FlpSandbox {
         private readonly utils: MiddlewareUtils,
         private readonly logger: Logger
     ) {
-        this.config = getFlpConfigWithDefaults(config.flp);
+        this.flpConfig = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
-        this.rta = sanitizeRtaConfig(config.rta, config.editors?.rta);
-        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
+        this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger);
+        logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
     }
 
@@ -115,9 +115,9 @@ export class FlpSandbox {
         adp?: AdpPreview
     ): Promise<void> {
         this.createFlexHandler();
-        this.config.libs ??= await this.hasLocateReuseLibsScript();
+        this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
+        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
         this.adp = adp;
         this.manifest = manifest;
 
@@ -128,7 +128,7 @@ export class FlpSandbox {
                 componentId,
                 target: resources[componentId ?? id] ?? this.templateConfig.basePath,
                 local: '.',
-                intent: this.config.intent
+                intent: this.flpConfig.intent
             },
             this.logger
         );
@@ -234,7 +234,7 @@ export class FlpSandbox {
     private async setApplicationDependencies(): Promise<void> {
         if (this.adp) {
             await this.adp.sync();
-            const appName = getAppName(this.manifest, this.config.intent);
+            const appName = getAppName(this.manifest, this.flpConfig.intent);
             this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
         }
     }
@@ -249,7 +249,7 @@ export class FlpSandbox {
      */
     private async editorGetHandlerDeveloperMode(res: Response, rta: RtaConfig, previewUrl: string): Promise<void> {
         const scenario = rta.options?.scenario;
-        let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
+        let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
         if (scenario === 'ADAPTATION_PROJECT') {
             templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
         }
@@ -351,15 +351,15 @@ export class FlpSandbox {
             // Redirect to the same URL but add the necessary parameter
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
-            res.redirect(302, `${this.config.path}?${new URLSearchParams(params)}`);
+            res.redirect(302, `${this.flpConfig.path}?${new URLSearchParams(params)}`);
             return;
         }
         await this.setApplicationDependencies();
         // inform the user if a html file exists on the filesystem
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const file = await this.project.byPath(this.config.path);
+        const file = await this.project.byPath(this.flpConfig.path);
         if (file) {
-            this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
+            this.logger.info(`HTML file returned at ${this.flpConfig.path} is loaded from the file system.`);
             next();
         } else {
             const ui5Version = await this.getUi5Version(
@@ -384,7 +384,7 @@ export class FlpSandbox {
 
         // add route for the sandbox html
         this.router.get(
-            this.config.path,
+            this.flpConfig.path,
             async (
                 req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
@@ -477,7 +477,7 @@ export class FlpSandbox {
      * Add additional routes for apps also to be shown in the local FLP.
      */
     private async addRoutesForAdditionalApps(): Promise<void> {
-        for (const app of this.config.apps) {
+        for (const app of this.flpConfig.apps) {
             let manifest: Manifest | undefined;
             if (app.local) {
                 this.fs = this.fs ?? create(createStorage());

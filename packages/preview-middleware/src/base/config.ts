@@ -187,8 +187,14 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
  * @param logger logger instance
  */
 export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
-    if (config.rta && config.adp === undefined) {
-        config.rta.editors = config.rta.editors.map((editor) => {
+    if (config.rta) {
+        config.editors ??= {};
+        config.editors.rta = sanitizeRtaConfig(config.rta, logger);
+        delete config.rta;
+    }
+    delete config.rta;
+    if (config.editors?.rta && config.adp === undefined) {
+        config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
             if (editor.developerMode) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
@@ -200,23 +206,20 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
 }
 
 /**
- * Convert the deprecated RTA configuration.
+ * Sanitize the deprecated RTA configuration.
  *
- * @param rtaDeprecated the deprecated RTA configuration
- * @param rta the RTA configuration
- * @returns the sanitized RTA configuration
- * @private
+ * @param deprecatedRtaConfig deprecated RTA configuration
+ * @param logger logger instance
+ * @returns sanitized RTA configuration
  */
-export function sanitizeRtaConfig(
-    rtaDeprecated: MiddlewareConfig['rta'],
-    rta: RtaConfig | undefined
-): RtaConfig | undefined {
-    if (rtaDeprecated) {
-        const { editors, ...rta } = rtaDeprecated;
-        return { ...rta, endpoints: editors };
-    } else {
-        return rta;
+export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger: Logger): RtaConfig | undefined {
+    let rtaConfig: RtaConfig | undefined;
+    if (deprecatedRtaConfig) {
+        const { editors, ...rta } = deprecatedRtaConfig;
+        rtaConfig = { ...rta, endpoints: [...editors] };
+        logger.warn(`The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
     }
+    return rtaConfig;
 }
 
 /**
@@ -392,9 +395,9 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     const flpConfig = getFlpConfigWithDefaults(config.flp);
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
-    if (config.rta?.editors) {
-        config.rta.editors.forEach((editor) => {
-            urls.push({ path: editor.path, type: 'editor' });
+    if (config.editors?.rta) {
+        config.editors.rta.endpoints.forEach((endpoint) => {
+            urls.push({ path: endpoint.path, type: 'editor' });
         });
     }
     // add test urls if configured

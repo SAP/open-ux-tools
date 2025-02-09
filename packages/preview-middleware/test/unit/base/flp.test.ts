@@ -1,7 +1,7 @@
 import type { ReaderCollection } from '@ui5/fs';
 import type { TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
-import type { FlpConfig, MiddlewareConfig } from '../../../src/types';
+import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest } from '@sap-ux/project-access';
@@ -27,7 +27,7 @@ jest.mock('@sap-ux/adp-tooling', () => {
 
 class FlpSandbox extends FlpSandboxUnderTest {
     public declare templateConfig: TemplateConfig;
-    public declare readonly config: FlpConfig;
+    public declare readonly flpConfig: FlpConfig;
 }
 
 describe('FlpSandbox', () => {
@@ -63,10 +63,10 @@ describe('FlpSandbox', () => {
     describe('constructor', () => {
         test('default (no) config', () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
-            expect(flp.config.path).toBe('/test/flp.html');
-            expect(flp.config.apps).toBeDefined();
-            expect(flp.config.apps).toHaveLength(0);
-            expect(flp.config.intent).toStrictEqual({ object: 'app', action: 'preview' });
+            expect(flp.flpConfig.path).toBe('/test/flp.html');
+            expect(flp.flpConfig.apps).toBeDefined();
+            expect(flp.flpConfig.apps).toHaveLength(0);
+            expect(flp.flpConfig.intent).toStrictEqual({ object: 'app', action: 'preview' });
             expect(flp.router).toBeDefined();
         });
 
@@ -83,11 +83,11 @@ describe('FlpSandbox', () => {
                 ]
             };
             const flp = new FlpSandbox({ flp: flpConfig }, mockProject, mockUtils, logger);
-            expect(flp.config.path).toBe(`/${flpConfig.path}`);
-            expect(flp.config.apps).toEqual(flpConfig.apps);
-            expect(flp.config.intent).toStrictEqual({ object: 'movie', action: 'start' });
+            expect(flp.flpConfig.path).toBe(`/${flpConfig.path}`);
+            expect(flp.flpConfig.apps).toEqual(flpConfig.apps);
+            expect(flp.flpConfig.intent).toStrictEqual({ object: 'movie', action: 'start' });
             expect(flp.router).toBeDefined();
-            expect(flp.config.theme).toEqual(flpConfig.theme);
+            expect(flp.flpConfig.theme).toEqual(flpConfig.theme);
         });
     });
 
