@@ -86,7 +86,7 @@ export class FlpSandbox {
     ) {
         this.flpConfig = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
-        this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger);
+        this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
     }

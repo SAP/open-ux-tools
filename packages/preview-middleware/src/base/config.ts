@@ -187,9 +187,10 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
  * @param logger logger instance
  */
 export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
-    if (config.rta) {
+    //prettier-ignore
+    if (config.rta) { //NOSONAR
         config.editors ??= {};
-        config.editors.rta = sanitizeRtaConfig(config.rta, logger);
+        config.editors.rta = sanitizeRtaConfig(config.rta, logger); //NOSONAR
         delete config.rta; //NOSONAR
     }
     if (config.editors?.rta && config.adp === undefined) {
@@ -211,7 +212,8 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
  * @param logger logger instance
  * @returns sanitized RTA configuration
  */
-export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger: Logger): RtaConfig | undefined {
+//prettier-ignore
+export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger: Logger): RtaConfig | undefined { //NOSONAR
     let rtaConfig: RtaConfig | undefined;
     if (deprecatedRtaConfig) {
         const { editors, ...rta } = deprecatedRtaConfig;
