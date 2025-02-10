@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.6
+
+### Patch Changes
+
+-   9e5c80f: fix: cds compile error when adding new files in memfs
+
 ## 0.4.5
 
 ### Patch Changes
