@@ -304,71 +304,74 @@ describe('Test validators', () => {
     });
 
     describe('validatePackage', () => {
-        it('should return error for invalid package input', async () => {
-            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
-
-            const result = await validatePackage('Zpackage', {
-                ...previousAnswers,
-                ui5AbapRepo: 'ZUI5REPO'
-            });
+        it('should return true for valid package input', async () => {
+            const result = await validatePackage('Zpackage');
             expect(result).toBe(true);
-            expect(getTransportListFromServiceSpy).toBeCalledWith('ZPACKAGE', 'ZUI5REPO', undefined);
         });
-        it('should return error for invalid package input', async () => {
-            const result = await validatePackage(' ', previousAnswers);
+        it('should return error for empty package input', async () => {
+            const result = await validatePackage(' ');
             expect(result).toBe(t('warnings.providePackage'));
         });
 
-        it('should return true for default package', async () => {
-            const result = await validatePackage('$TMP', previousAnswers);
-            expect(result).toBe(true);
-            expect(PromptState.transportAnswers.transportRequired).toBe(false);
-        });
-
-        it('should return true for valid package for FIORI ADAPTATION type onPremise system', async () => {
-            PromptState.abapDeployConfig.isS4HC = false;
-            const result = await validatePackage('ZPACKAGE', previousAnswers, undefined, 'Fiori Adaptation');
-            expect(result).toBe(true);
-        });
-
         it('should return error for special characters', async () => {
-            const result = await validatePackage('@TMP', previousAnswers);
+            const result = await validatePackage('@TMP');
             expect(result).toBe(t('errors.validators.charactersForbiddenInPackage'));
         });
 
         it('should return error for invalid format', async () => {
-            const result = await validatePackage('namespace/packageName', previousAnswers);
+            const result = await validatePackage('namespace/packageName');
             expect(result).toBe(t('errors.validators.abapPackageInvalidFormat'));
-        });
-
-        it('should return error for invalid starting prefix', async () => {
-            const result = await validatePackage('namespace', previousAnswers);
-            expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
-        });
-
-        it('should return error for invalid ui5Repo starting prefix', async () => {
-            const result = await validatePackage('ZPACKAGE', {
-                ...previousAnswers,
-                ui5AbapRepo: 'UI5REPO'
-            });
-            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
-        });
-
-        it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
-            const result = await validatePackage('/NAMESPACE/ZPACKAGE', {
-                ...previousAnswers,
-                ui5AbapRepo: 'UI5REPO'
-            });
-            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
         });
     });
 
     describe('validatePackageExtended', () => {
         it('should return error when base validation fail', async () => {
-            const result = await validatePackageExtended('namespace', previousAnswers, {
+            const result = await validatePackageExtended(' ', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
             });
+            expect(result).toBe(t('warnings.providePackage'));
+        });
+
+        it('should return error for invalid starting prefix', async () => {
+            const result = await validatePackageExtended(
+                'namespace',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'UI5REPO'
+                },
+                {
+                    additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                }
+            );
             expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
+        });
+
+        it('should return error for invalid ui5Repo starting prefix', async () => {
+            const result = await validatePackageExtended(
+                'ZPACKAGE',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'UI5REPO'
+                },
+                {
+                    additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                }
+            );
+            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
+        });
+
+        it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
+            const result = await validatePackageExtended(
+                '/NAMESPACE/ZPACKAGE',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'UI5REPO'
+                },
+                {
+                    additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                }
+            );
+            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
         });
 
         it('should return error when package is not cloud', async () => {
@@ -409,15 +412,9 @@ describe('Test validators', () => {
             jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
                 apiExist: false
             });
-            const result = await validatePackageExtended(
-                'ZPACKAGE',
-                previousAnswers,
-                {
-                    additionalValidation: { shouldValidatePackageType: true }
-                },
-                undefined,
-                'SAP Fiori elements'
-            );
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
             expect(result).toBe(true);
         });
     });
