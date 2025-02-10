@@ -161,6 +161,12 @@ async function addDeployConfig(
     }
 }
 
+/**
+ * Checks if the given application type is a Fiori Adaptation project.
+ *
+ * @param {AppType} [appType] - The application type to check.
+ * @returns {boolean} `true` if the app type is 'Fiori Adaptation', otherwise `false`.
+ */
 function isAdpProject(appType?: AppType): boolean {
     return appType === 'Fiori Adaptation';
 }
