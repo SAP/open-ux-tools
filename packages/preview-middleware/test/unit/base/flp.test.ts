@@ -796,6 +796,94 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
     });
+
+    describe('rta with new config', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ],
+            editors: {
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    endpoints: [
+                        {
+                            path: '/my/rta.html'
+                        },
+                        {
+                            path: 'without/slash/rta.html'
+                        },
+                        {
+                            path: '/my/editor.html',
+                            developerMode: true
+                        },
+                        {
+                            path: '/with/plugin.html',
+                            developerMode: true,
+                            pluginScript: 'open/ux/tools/plugin'
+                        },
+                        {
+                            path: '/my/editorWithConfig.html',
+                            generator: 'test-generator'
+                        }
+                    ]
+                }
+            }
+        };
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = await supertest(app);
+        });
+
+        test('rta', async () => {
+            const response = await server.get('/my/rta.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with url parameters', async () => {
+            const response = await server.get('/my/rta.html?fiori-tools-rta-mode=true').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with developerMode=true', async () => {
+            let response = await server.get('/my/editor.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            expect(response.text.includes('livereloadPort: 35729')).toBe(true);
+            response = await server.get('/my/editor.html.inner.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+    });
 });
 
 describe('initAdp', () => {
