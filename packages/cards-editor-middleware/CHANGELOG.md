@@ -1,5 +1,30 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.50
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+
+## 0.4.49
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 0.4.48
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+
+## 0.4.47
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+
 ## 0.4.46
 
 ### Patch Changes

@@ -1,5 +1,100 @@
 # @sap-ux/preview-middleware
 
+## 0.17.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.127
+-   @sap-ux/project-access@1.29.6
+
+## 0.17.25
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
+## 0.17.24
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+-   Updated dependencies [59453ba]
+    -   @sap-ux/adp-tooling@0.12.126
+
+## 0.17.23
+
+### Patch Changes
+
+-   b214776: fix: remove hard coded usage of webapp folder
+
+## 0.17.22
+
+### Patch Changes
+
+-   9bccf03: feat: add support for type component
+
+## 0.17.21
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/adp-tooling@0.12.125
+    -   @sap-ux/project-access@1.29.5
+
+## 0.17.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.124
+
+## 0.17.19
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/adp-tooling@0.12.123
+
+## 0.17.18
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.17.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.122
+
+## 0.17.16
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
+## 0.17.15
+
+### Patch Changes
+
+-   5c127cf: fix: ui5 version protocol for karma tests
+
+## 0.17.14
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/adp-tooling@0.12.121
+
+## 0.17.13
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/adp-tooling@0.12.120
+
 ## 0.17.12
 
 ### Patch Changes

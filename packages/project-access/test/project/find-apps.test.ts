@@ -182,7 +182,7 @@ describe('Test findFioriArtifacts()', () => {
     test('Find all artifacts', async () => {
         const result = await findFioriArtifacts({
             wsFolders: [join(testDataRoot, 'project/find-all-apps')],
-            artifacts: ['adaptations', 'applications', 'extensions', 'libraries']
+            artifacts: ['adaptations', 'applications', 'extensions', 'libraries', 'components']
         });
         expect(result.applications?.length).toBeGreaterThan(0);
         expect(result.adaptations).toEqual([
@@ -222,6 +222,20 @@ describe('Test findFioriArtifacts()', () => {
                     }
                 },
                 projectRoot: join(testDataRoot, 'project/find-all-apps/libraries/valid-library')
+            }
+        ]);
+        expect(result.components).toEqual([
+            {
+                projectRoot: join(testDataRoot, 'project/find-all-apps/components/valid-component/MyComponent'),
+                manifestPath: join(
+                    testDataRoot,
+                    'project/find-all-apps/components/valid-component/MyComponent/MyPlugin/webapp/manifest.json'
+                ),
+                manifest: {
+                    'sap.app': {
+                        'type': 'component'
+                    }
+                }
             }
         ]);
     });

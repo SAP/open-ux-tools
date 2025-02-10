@@ -21,7 +21,7 @@ export async function createPropertiesI18nEntries(
     root?: string,
     fs?: Editor
 ): Promise<boolean> {
-    if (!(await doesExist(i18nFilePath))) {
+    if ((!fs && !(await doesExist(i18nFilePath))) || (fs && !fs.exists(i18nFilePath))) {
         let content = '# Resource bundle \n';
         if (root) {
             content = `# This is the resource bundle for ${basename(root)}\n`;

@@ -1,5 +1,23 @@
 # @sap-ux/control-property-editor
 
+## 0.5.36
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 0.5.35
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.5.34
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
 ## 0.5.33
 
 ### Patch Changes
