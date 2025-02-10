@@ -47,8 +47,7 @@ describe('Change Utils', () => {
         });
 
         const projectPath = 'project';
-        const change = { key: 'value' };
-        const fileName = 'something.change';
+        const change = { key: 'value', fileName: 'something' };
         const writeJsonSpy = jest.fn();
         const mockFs = { writeJSON: writeJsonSpy };
 
@@ -56,11 +55,10 @@ describe('Change Utils', () => {
             writeChangeToFolder(
                 projectPath,
                 change as unknown as ManifestChangeProperties,
-                fileName,
                 mockFs as unknown as Editor
             );
 
-            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(fileName), change);
+            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(change.fileName), change);
         });
 
         it('should write change to the specified folder with subdirectory', () => {
@@ -68,12 +66,11 @@ describe('Change Utils', () => {
             writeChangeToFolder(
                 projectPath,
                 change as unknown as ManifestChangeProperties,
-                fileName,
                 mockFs as unknown as Editor,
                 dir
             );
 
-            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(path.join(dir, fileName)), change);
+            expect(writeJsonSpy).toHaveBeenCalledWith(expect.stringContaining(path.join(dir, change.fileName)), change);
         });
 
         it('should throw error when writing json fails', () => {
@@ -82,13 +79,12 @@ describe('Change Utils', () => {
                 throw new Error(errMsg);
             });
 
-            const expectedPath = path.join('project', 'webapp', 'changes', fileName);
+            const expectedPath = path.join('project', 'webapp', 'changes', `${change.fileName}.change`);
 
             expect(() => {
                 writeChangeToFolder(
                     projectPath,
                     change as unknown as ManifestChangeProperties,
-                    fileName,
                     mockFs as unknown as Editor
                 );
             }).toThrow(
@@ -156,7 +152,7 @@ describe('Change Utils', () => {
             );
 
             expect(result).toEqual({
-                fileName: `id_${mockData.timestamp}`,
+                fileName: expect.stringContaining('_addAnnotationsToOData'),
                 namespace: `${mockData.projectData.namespace}/changes`,
                 layer: mockData.projectData.layer,
                 fileType: 'change',
@@ -328,7 +324,7 @@ describe('Change Utils', () => {
                 dataSource: '/sap/opu/odata/source'
             }
         } as AnnotationsData;
-        const mockChange = { key: 'value' };
+        const mockChange = { key: 'value', fileName: 'id_123456789_addAnnotationsToOData' };
         const writeJsonSpy = jest.fn();
         const writeSpy = jest.fn();
         const copySpy = jest.fn();
