@@ -53,14 +53,6 @@ Array of additional application configurations:
 | `client`      | `string` optional              | sap-client parameter                                                                                                                            |
 | `scp`         | `boolean` optional             | If set to true the proxy will execute the required OAuth routine for the ABAP environment on SAP BTP                                            |
 
-### [`rta.editors`](#configuration-option-rtaeditors)
-🚫 *Deprecated: use 'editors.rta' instead* <br/>
-
-| Option          | Type               | Description                                                                                    |
-| --------------- | -------------------| -----------------------------------------------------------------------------------------------|
-| `path`          | `string` mandatory | The mount point to be used for the editor.                                                     |
-| `developerMode` | `boolean` optional | Enables/disables the runtime adaptation developer mode (only supported for adaptation projects) |
-
 ### [`editors`](#configuration-option-editors)
 | Option                        | Type               | Description                                                                                     |
 |-------------------------------|--------------------|-------------------------------------------------------------------------------------------------|
