@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-Unify contextual menu for all nodes in outline panel.
+fix: unify contextual menu for all nodes in outline panel.
