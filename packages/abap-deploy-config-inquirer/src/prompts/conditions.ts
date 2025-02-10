@@ -10,12 +10,12 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    TransportInputChoicePromptOptions,
-    UI5AbapRepoPromptOptions,
+    type UI5AbapRepoPromptOptions,
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget,
-    type TransportListItem
+    type TransportListItem,
+    type TransportInputChoicePromptOptions
 } from '../types';
 
 /**

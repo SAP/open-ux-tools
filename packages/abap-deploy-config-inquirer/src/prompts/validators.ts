@@ -615,7 +615,6 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
  * @param {AbapDeployConfigAnswersInternal} answers - Configuration answers for ABAP deployment.
  * @param {PackagePromptOptions} [promptOption] - Optional settings for additional package validation.
  * @param {BackendTarget} [backendTarget] - The backend target for validation context.
- * @param {AppType} appType - the application type
  * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
  *                                        a `string` with an error message if validation fails,
  *                                        or the result of additional cloud package validation if applicable.

@@ -1,5 +1,5 @@
 import { getPrompts } from '@sap-ux/abap-deploy-config-inquirer';
-import { FileName, readUi5Yaml, type AppType } from '@sap-ux/project-access';
+import { FileName, readUi5Yaml } from '@sap-ux/project-access';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { ABAP_DEPLOY_TASK } from '../utils/constants';
