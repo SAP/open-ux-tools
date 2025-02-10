@@ -29,8 +29,6 @@ export interface RtaEditor {
     generator?: string;
 }
 
-export type CardsEditor = Omit<RtaEditor, 'generator, developerMode, pluginScript'>;
-
 export type RtaConfig = Omit<InternalRtaConfig, 'editors'> & { endpoints: RtaEditor[] };
 
 interface InternalRtaConfig {
@@ -119,7 +117,6 @@ export interface MiddlewareConfig {
     rta?: InternalRtaConfig;
     editors?: {
         rta?: RtaConfig;
-        cards?: CardsEditor;
     };
     adp?: AdpPreviewConfig;
     debug?: boolean;
