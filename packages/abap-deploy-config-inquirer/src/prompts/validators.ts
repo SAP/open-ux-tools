@@ -593,7 +593,7 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
     const errorMsg =
         packageType === AdaptationProjectType.CLOUD_READY
             ? t('errors.validators.invalidCloudPackage')
-            : t('errors.validators.invalidOnpremPackage');
+            : t('errors.validators.invalidOnPremPackage');
     const systemInfoResult = await getSystemInfo(input, backendTarget);
     if (!systemInfoResult.apiExist) {
         return true;
