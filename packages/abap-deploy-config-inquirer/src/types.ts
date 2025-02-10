@@ -130,13 +130,6 @@ export type PackageManualPromptOptions = PackagePromptOptions & {
     default?: string;
 };
 
-export type TransportInputChoicePromptOptions = {
-    /**
-     * If set to true, the prompt will be hidden if the target system is on-premise.
-     */
-    hideIfOnPremise?: boolean;
-};
-
 export type TransportManualPromptOptions = {
     /**
      * Default transport value.
@@ -168,6 +161,10 @@ export type PackageAutocompletePromptOptions = PackagePromptOptions & {
 };
 
 export type TransportInputChoicePromptOptions = {
+    /**
+     * If set to true, the prompt will be hidden if the target system is on-premise.
+     */
+    hideIfOnPremise?: boolean;
     /**
      * This options determines if createDuringDeploy option should be shown in the list of transport choices.
      */
