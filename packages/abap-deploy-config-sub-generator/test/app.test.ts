@@ -146,6 +146,8 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(deployTask).toStrictEqual({
             app: {
+                description: 'Test Description',
+                name: 'ZFETRAVEL',
                 package: 'ZLOCAL',
                 transport: 'REPLACE_WITH_TRANSPORT'
             },
@@ -352,17 +354,28 @@ describe('Test abap deploy configuration generator', () => {
                     serviceProvider: undefined,
                     type: 'application'
                 },
-                ui5AbapRepo: { default: 'ZUI5_APP' },
+                ui5AbapRepo: { default: 'ZUI5_APP', hideIfOnPremise: false },
                 description: { default: 'Deployment description' },
-                packageManual: { default: 'Z123456', additionalValidation: { shouldValidatePackageType: false } },
+                packageManual: {
+                    default: 'Z123456',
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
                 transportManual: { default: 'ZTESTK900000' },
                 index: { indexGenerationAllowed: false },
                 packageAutocomplete: {
                     useAutocomplete: true,
-                    additionalValidation: { shouldValidatePackageType: false }
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
                 },
                 overwrite: { hide: true },
-                appType: 'SAP Fiori elements'
+                transportInputChoice: {
+                    hideIfOnPremise: false
+                }
             },
             {},
             false // isYUI

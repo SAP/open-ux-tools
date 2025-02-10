@@ -99,12 +99,21 @@ async function addDeployConfig(
             await validateBasePath(basePath);
 
             const promptOptions: AbapDeployConfigPromptOptions = {
+                ui5AbapRepo: { hideIfOnPremise: isAdp },
                 packageAutocomplete: {
                     useAutocomplete: true,
-                    additionalValidation: { shouldValidatePackageType: isAdp }
+                    additionalValidation: {
+                        shouldValidatePackageType: isAdp,
+                        shouldValidatePackageForStartingPrefix: isAdp
+                    }
                 },
-                packageManual: { additionalValidation: { shouldValidatePackageType: isAdp } },
-                appType: appType
+                packageManual: {
+                    additionalValidation: {
+                        shouldValidatePackageType: isAdp,
+                        shouldValidatePackageForStartingPrefix: isAdp
+                    }
+                },
+                transportInputChoice: { hideIfOnPremise: isAdp }
             };
             const { prompts: abapPrompts, answers: abapAnswers } = await getAbapDeployConfigPrompts(
                 promptOptions,

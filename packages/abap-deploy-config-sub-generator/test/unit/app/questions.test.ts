@@ -54,7 +54,7 @@ describe('Test getAbapQuestions', () => {
             indexGenerationAllowed: true,
             showOverwriteQuestion: false,
             logger: DefaultLogger,
-            appType: 'SAP Fiori elements'
+            isAdp: false
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -71,17 +71,26 @@ describe('Test getAbapQuestions', () => {
                     serviceProvider: undefined,
                     type: 'application'
                 },
-                ui5AbapRepo: { default: undefined },
+                ui5AbapRepo: { default: undefined, hideIfOnPremise: false },
                 description: { default: undefined },
-                packageManual: { default: undefined, additionalValidation: { shouldValidatePackageType: false } },
+                packageManual: {
+                    default: undefined,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
                 transportManual: { default: undefined },
                 index: { indexGenerationAllowed: true },
                 packageAutocomplete: {
                     useAutocomplete: true,
-                    additionalValidation: { shouldValidatePackageType: false }
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
                 },
                 overwrite: { hide: true },
-                appType: 'SAP Fiori elements'
+                transportInputChoice: { hideIfOnPremise: false }
             },
             expect.any(Object),
             true
@@ -107,7 +116,7 @@ describe('Test getAbapQuestions', () => {
             backendConfig: undefined,
             configFile: 'ui5-deploy.yaml',
             logger: DefaultLogger,
-            appType: 'SAP Fiori elements'
+            isAdp: false
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -124,17 +133,26 @@ describe('Test getAbapQuestions', () => {
                     serviceProvider: undefined,
                     type: 'application'
                 },
-                ui5AbapRepo: { default: undefined },
+                ui5AbapRepo: { default: undefined, hideIfOnPremise: false },
                 description: { default: undefined },
-                packageManual: { default: undefined, additionalValidation: { shouldValidatePackageType: false } },
+                packageManual: {
+                    default: undefined,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
                 transportManual: { default: undefined },
                 index: { indexGenerationAllowed: false },
                 packageAutocomplete: {
                     useAutocomplete: true,
-                    additionalValidation: { shouldValidatePackageType: false }
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
                 },
                 overwrite: { hide: true },
-                appType: 'SAP Fiori elements'
+                transportInputChoice: { hideIfOnPremise: false }
             },
             expect.any(Object),
             false
