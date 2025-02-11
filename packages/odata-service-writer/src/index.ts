@@ -188,13 +188,15 @@ async function writeLocalServiceFiles(
  * @param {ProjectPaths} paths - locations of the package.json and ui5.yaml, ui5-local.yaml, ui5-mock.yaml
  * @param {string} templateRoot - path to the file templates
  * @param {OdataService} service - the OData service instance with EDMX type
+ * @param updateService - whether the service should only be updated
  */
 async function writeEDMXServiceFiles(
     fs: Editor,
     basePath: string,
     paths: ProjectPaths,
     templateRoot: string,
-    service: EdmxOdataService
+    service: EdmxOdataService,
+    updateService: boolean = false
 ): Promise<void> {
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
@@ -227,7 +229,8 @@ async function writeEDMXServiceFiles(
         }
         await writeLocalServiceFiles(fs, basePath, webappPath, templateRoot, service);
     }
-    if (paths.packageJson && paths.ui5Yaml) {
+    // service update should not trigger the package.json update
+    if (paths.packageJson && paths.ui5Yaml && !updateService) {
         updatePackageJson(paths.packageJson, fs, !!service.metadata);
     }
     if (paths.ui5LocalYaml && ui5LocalConfig) {
@@ -293,7 +296,7 @@ async function update(basePath: string, service: OdataService, fs?: Editor): Pro
     await updateManifest(basePath, service, fs, true);
     // Dont extend backend and mockserver middlewares if service type is CDS
     if (isServiceTypeEdmx) {
-        await writeEDMXServiceFiles(fs, basePath, paths, templateRoot, service as EdmxOdataService);
+        await writeEDMXServiceFiles(fs, basePath, paths, templateRoot, service as EdmxOdataService, true);
     }
     return fs;
 }
