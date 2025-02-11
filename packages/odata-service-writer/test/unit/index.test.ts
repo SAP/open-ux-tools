@@ -73,8 +73,8 @@ describe('generate', () => {
 
         it('No package.json or ui5.yaml - only manifest updates', async () => {
             await generate(root, config, fs);
-            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources?.mainService.uri).toBe(config.path);
         });
 
         it('No ui5-local.yaml should be generated if service type is cds', async () => {
@@ -91,8 +91,8 @@ describe('generate', () => {
             fs.writeJSON(packagePath, {});
 
             await generate(root, config, fs);
-            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources?.mainService.uri).toBe(config.path);
             expect(fs.readJSON(packagePath)).toEqual({});
         });
 
@@ -104,8 +104,8 @@ describe('generate', () => {
             fs.write(join(root, 'ui5.yaml'), ui5YamlWithOutMiddleware);
 
             await generate(root, config, fs);
-            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources?.mainService.uri).toBe(config.path);
             expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
             // verify getWebappPath is called with fs
             expect(getWebappPathMock).toHaveBeenCalledWith(expect.anything(), fs);
@@ -119,8 +119,8 @@ describe('generate', () => {
                 .toString();
             fs.write(join(root, 'ui5.yaml'), ui5YamlWithMiddleware);
             await generate(root, config, fs);
-            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources?.mainService.uri).toBe(config.path);
             expect(fs.exists(join(root, 'ui5-mock.yaml'))).toBe(true);
         });
 
@@ -157,12 +157,12 @@ describe('generate', () => {
             fs.write(join(mainServiceRoot, 'metadata.xml'), '');
             fs.write(join(mainServiceRoot, 'SEPMRA_PROD_MAN.xml'), '');
             await generate(root, service, fs);
-            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as any;
+            const manifest = fs.readJSON(join(root, 'webapp/manifest.json')) as Partial<projectAccess.Manifest>;
             // Check if existing services are restructurized
-            expect(manifest['sap.app'].dataSources.mainService.settings.localUri).toBe(
+            expect(manifest?.['sap.app']?.dataSources?.mainService.settings?.localUri).toBe(
                 'localService/mainService/metadata.xml'
             );
-            expect(manifest['sap.app'].dataSources.SEPMRA_PROD_MAN.settings.localUri).toBe(
+            expect(manifest?.['sap.app']?.dataSources?.SEPMRA_PROD_MAN?.settings?.localUri).toBe(
                 'localService/mainService/SEPMRA_PROD_MAN.xml'
             );
             // No service file in localService
@@ -172,7 +172,7 @@ describe('generate', () => {
             expect(fs.exists(join(root, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
             expect(fs.exists(join(root, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
             // Check if new service is added
-            expect(manifest['sap.app'].dataSources.secondService.settings.localUri).toBe(
+            expect(manifest?.['sap.app']?.dataSources?.secondService?.settings?.localUri).toBe(
                 'localService/secondService/metadata.xml'
             );
             expect(fs.exists(join(root, 'webapp', 'localService', 'secondService', 'metadata.xml'))).toBe(true);
@@ -210,9 +210,9 @@ describe('generate', () => {
             await generate(testDir, config as OdataService, fs);
 
             // verify updated manifest.json
-            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
-            expect(manifest['sap.app'].dataSources[config.annotations.technicalName]).toBeDefined();
+            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest['sap.app']?.dataSources?.mainService.uri).toBe(config.path);
+            expect(manifest['sap.app']?.dataSources?.[config.annotations.technicalName]).toBeDefined();
             // verify local copy of metadata
             expect(fs.read(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(
                 config.metadata
@@ -255,10 +255,10 @@ describe('generate', () => {
             await generate(testDir, config as OdataService, fs);
 
             // verify updated manifest.json
-            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
-            expect(manifest['sap.app'].dataSources[config.annotations[0].technicalName]).toBeDefined();
-            expect(manifest['sap.app'].dataSources[config.annotations[1].technicalName]).toBeDefined();
+            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources?.mainService.uri).toBe(config.path);
+            expect(manifest?.['sap.app']?.dataSources?.[config.annotations[0].technicalName]).toBeDefined();
+            expect(manifest?.['sap.app']?.dataSources?.[config.annotations[1].technicalName]).toBeDefined();
             // verify local copy of metadata
             // mainService should be used in case there is no name defined for service
             expect(fs.read(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(
@@ -298,8 +298,8 @@ describe('generate', () => {
             await generate(testDir, config as OdataService, fs);
 
             // verify updated manifest.json
-            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources[config.name].uri).toBe(config.path);
+            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources?.[config.name].uri).toBe(config.path);
             // verify local copy of metadata
             // first service is always mainService, so we make sure data for it is generated in correct location
             expect(fs.exists(join(testDir, 'webapp', 'localService', 'myService', 'metadata.xml'))).toBe(false);
@@ -340,8 +340,8 @@ describe('generate', () => {
             await generate(testDir, config as OdataService, fs);
 
             // verify updated manifest.json
-            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.uri).toBe(config.path);
+            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources?.mainService.uri).toBe(config.path);
             // verify that the destination is added to the ui5.yaml
             expect(fs.read(join(testDir, 'ui5.yaml'))).toContain(`destination: ${config.destination.name}`);
             // verify that client is set
@@ -423,8 +423,8 @@ describe('generate', () => {
             await generate(testDir, config as OdataService, fs);
 
             // verify updated manifest.json
-            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-            expect(manifest['sap.app'].dataSources.mainService.settings.annotations).toStrictEqual([]);
+            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources?.mainService?.settings?.annotations).toStrictEqual([]);
             // verify that the path is correct in ui5.yaml
             expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('path: /V2');
             // verify the updated package.json
@@ -620,14 +620,14 @@ describe('remove', () => {
                             type: 'OData',
                             settings: {
                                 annotations: ['SEPMRA_PROD_MAN', 'annotation'],
-                                localUri: 'annotations/annotation.xml'
+                                localUri: 'localService/mainService/metadata.xml'
                             }
                         },
                         SEPMRA_PROD_MAN: {
                             uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
                             type: 'ODataAnnotation',
                             settings: {
-                                localUri: 'localService/SEPMRA_PROD_MAN.xml'
+                                localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
                             }
                         },
                         annotation: {
@@ -662,21 +662,21 @@ describe('remove', () => {
             fs
         );
         // verify updated manifest.json
-        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-        expect(manifest['sap.app'].dataSources).toStrictEqual({
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+        expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
             mainService: {
                 uri: '/sap',
                 type: 'OData',
                 settings: {
                     annotations: ['SEPMRA_PROD_MAN', 'annotation'],
-                    localUri: 'annotations/annotation.xml'
+                    localUri: 'localService/mainService/metadata.xml'
                 }
             },
             SEPMRA_PROD_MAN: {
                 uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
                 type: 'ODataAnnotation',
                 settings: {
-                    localUri: 'localService/SEPMRA_PROD_MAN.xml'
+                    localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
                 }
             },
             annotation: {
@@ -687,7 +687,7 @@ describe('remove', () => {
                 }
             }
         });
-        expect(manifest['sap.ui5'].models).toStrictEqual({
+        expect(manifest?.['sap.ui5']?.models).toStrictEqual({
             '': {
                 dataSource: 'mainService'
             }
@@ -713,14 +713,17 @@ describe('remove', () => {
                 path: '/sap',
                 type: ServiceType.EDMX,
                 annotations: [
-                    { technicalName: 'SEPMRA_PROD_MAN', xml: '<?xml version="1.0" encoding="utf-8"?></edmx:Edmx>' }
+                    {
+                        technicalName: 'SEPMRA_PROD_MAN',
+                        xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                    }
                 ] as EdmxAnnotationsInfo[]
             },
             fs
         );
         // verify updated manifest.json
-        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-        expect(manifest['sap.app'].dataSources).toStrictEqual({
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+        expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
             annotation: {
                 type: 'ODataAnnotation',
                 uri: 'annotations/annotation.xml',
@@ -729,7 +732,7 @@ describe('remove', () => {
                 }
             }
         });
-        expect(manifest['sap.ui5'].models).toStrictEqual({});
+        expect(manifest?.['sap.ui5']?.models).toStrictEqual({});
         // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
         expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('- path: /sap\n            url: http://localhost\n');
         expect(fs.read(join(testDir, 'ui5-local.yaml'))).not.toContain(
@@ -785,11 +788,12 @@ describe('update', () => {
                     id: 'testappid',
                     dataSources: {
                         mainService: {
-                            uri: '/sap',
+                            uri: '/sap/uri/',
                             type: 'OData',
                             settings: {
                                 annotations: ['SEPMRA_PROD_MAN', 'annotation'],
-                                localUri: 'annotations/annotation.xml'
+                                localUri: 'localService/mainService/metadata.xml',
+                                odataVersion: '4.0'
                             }
                         },
                         SEPMRA_PROD_MAN: {
@@ -853,27 +857,58 @@ describe('update', () => {
             {
                 name: 'mainService',
                 url: 'https://localhost',
-                path: '/sap',
+                path: '/sap/uri/',
                 type: ServiceType.EDMX,
                 annotations: [
-                    { technicalName: 'SEPMRA_PROD_MAN', xml: '<?xml version="1.0" encoding="utf-8"?></edmx:Edmx>' }
+                    {
+                        technicalName: 'SEPMRA_PROD_MAN',
+                        xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                    }
                 ] as EdmxAnnotationsInfo[],
-                version: OdataVersion.v4
+                metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                version: OdataVersion.v4,
+                localAnnotationsName: 'annotation'
             },
             fs
         );
         // verify updated manifest.json
-        // const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
-        // expect(manifest['sap.app'].dataSources).toStrictEqual({
-        //     annotation: {
-        //         type: 'ODataAnnotation',
-        //         uri: 'annotations/annotation.xml',
-        //         settings: {
-        //             localUri: 'annotations/annotation.xml'
-        //         }
-        //     }
-        // });
-        // expect(manifest['sap.ui5'].models).toStrictEqual({});
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+        expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
+            mainService: {
+                uri: '/sap/uri/',
+                type: 'OData',
+                settings: {
+                    annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                    localUri: 'localService/mainService/metadata.xml',
+                    odataVersion: '4.0'
+                }
+            },
+            SEPMRA_PROD_MAN: {
+                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                type: 'ODataAnnotation',
+                settings: {
+                    localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
+                }
+            },
+            annotation: {
+                type: 'ODataAnnotation',
+                uri: 'annotations/annotation.xml',
+                settings: {
+                    localUri: 'annotations/annotation.xml'
+                }
+            }
+        });
+        expect(manifest?.['sap.ui5']?.models).toStrictEqual({
+            '': {
+                dataSource: 'mainService',
+                preload: true,
+                settings: {
+                    autoExpandSelect: true,
+                    earlyRequests: true,
+                    operationMode: 'Server'
+                }
+            }
+        });
         // // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
         // expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('- path: /sap\n            url: http://localhost\n');
         // expect(fs.read(join(testDir, 'ui5-local.yaml'))).not.toContain(
