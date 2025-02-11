@@ -406,6 +406,7 @@ export function generateFreestyleTestFiles(
     const { appIdWithSlash, enableTypeScript, ui5Version } = config;
     
     const freestyleTemplateDirPath = join(__dirname, '../templates/freestyle/simple/webapp/test', ui5Version);
+    console.log(" --- freestyleTemplateDirPath: ", freestyleTemplateDirPath);
     const testOutDirPath = join(basePath, 'webapp/test');
 
     // get test config 
@@ -413,25 +414,29 @@ export function generateFreestyleTestFiles(
 
     // Get all template files
     const allTemplateFiles = getAllFiles(freestyleTemplateDirPath);
+    console.log(" --- allTemplateFiles: ", allTemplateFiles);
 
+    const typeScript = enableTypeScript === undefined ? false : true;
     // Filter files based on TypeScript setting
     const filteredFiles = allTemplateFiles.filter(filePath => {
         if (filePath.endsWith('.ts')) {
-            return enableTypeScript === true;
+            return typeScript === true;
         } else if (filePath.endsWith('.js')) {
-            return enableTypeScript === false;
+            return typeScript === false;
         }
         return true;
     });
 
+    const testConfig = {
+        ...config,
+        viewNamePage,
+        appIdWithSlash
+    };
+
     // Copy each filtered file using copyTpl
-    filteredFiles.forEach(filePath => {
+    filteredFiles.forEach((filePath: any) => {
         const relativePath = filePath.replace(freestyleTemplateDirPath, '');
-        editor.copyTpl(filePath, join(testOutDirPath, relativePath), {
-            ...config,
-            viewNamePage,
-            appIdWithSlash
-        });
+        editor.copyTpl(filePath, join(testOutDirPath, relativePath), testConfig);
     });
 
     // Update package.json scripts
