@@ -379,69 +379,12 @@ export function writeOPATsconfigJsonUpdates(fsEditor: Editor, destinationRoot: s
     if (tsconfig.compilerOptions.paths === undefined) {
         tsconfig.compilerOptions.paths = {};
     }
-    debugger;
     tsconfig.compilerOptions.paths['unit/*'] = ['./webapp/test/unit/*'];
     tsconfig.compilerOptions.paths['integration/*'] = ['./webapp/test/integration/*'];
 
     fsEditor.writeJSON(join(destinationRoot, 'tsconfig.json'), tsconfig);
 }
 
-// export function generateFreestyleTestFiles(
-//     basePath: string,
-//     testConfig: {
-//         appId?: string;
-//         viewName?: string;
-//         viewNamePage?: string;
-//         ui5Theme?: string;
-//         appIdWithSlash?: string;
-//         applicationTitle?: string;
-//         navigationIntent?: string;
-//         applicationDescription?: string;
-//         enableTypeScript?: boolean;
-//         edmx?: boolean;
-//     },
-//     fsEditor?: Editor
-// ): Editor {
-//     const editor: Editor = fsEditor ?? create(createStorage());
-//     const freestyleTemplateDirPath = join(__dirname, `../templates/freestyle/simple/webapp/test/1.71.0`);
-//     const testOutDirPath = join(basePath, 'webapp/test');
-
-//     // Function to recursively get all files from a directory
-//     const getAllFiles = (dir: any): string[] | [] =>
-//         fs?.readdirSync(dir).reduce((files: any, file: string) => {
-//             const name = path.join(dir, file);
-//             const isDirectory = fs?.statSync(name).isDirectory();
-//             return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name];
-//         }, []);
-
-//     // Get all template files
-//     const allTemplateFiles = getAllFiles(freestyleTemplateDirPath);
-
-//     // Filter files based on TypeScript setting
-//     const filteredFiles = allTemplateFiles.filter(filePath => {
-//         if (filePath.endsWith('.ts')) {
-//             return testConfig.enableTypeScript === true;  // Keep .ts if TypeScript is enabled
-//         } else if (filePath.endsWith('.js')) {
-//             return testConfig.enableTypeScript === false; // Keep .js if TypeScript is disabled
-//         }
-//         return true; // Keep other files (e.g., .html, .json, etc.)
-//     });
-
-//     // Copy each filtered file using copyTpl
-//     filteredFiles.forEach(filePath => {
-//         const relativePath = filePath.replace(freestyleTemplateDirPath, ''); // Preserve folder structure
-//         editor.copyTpl(filePath, join(testOutDirPath, relativePath), testConfig);
-//     });
-    
-//     writeOPAPackageJsonUpdates(editor, basePath, !!testConfig.edmx);
-//     if (testConfig.enableTypeScript === true) {
-//         writeOPATsconfigJsonUpdates(editor, basePath);
-//     }
-
-//     return editor;
-// }
-
-// Function to recursively get all files from a directory
 const getAllFiles = (dir: any): string[] | [] =>
     fs?.readdirSync(dir).reduce((files: any, file: string) => {
         const name = path.join(dir, file);
@@ -450,19 +393,23 @@ const getAllFiles = (dir: any): string[] | [] =>
     }, 
 []);
 
+
 /**
  * Generates and copies freestyle test files based on configuration
  */
 export function generateFreestyleTestFiles(
     basePath: string,
-    testConfig: TestConfig,
+    config: TestConfig,
     fsEditor?: Editor
 ): Editor {
     const editor: Editor = fsEditor ?? create(createStorage());
-    const freestyleTemplateDirPath = join(__dirname, '../templates/freestyle/simple/webapp/test/1.71.0');
+    const { appIdWithSlash, enableTypeScript, ui5Version } = config;
+    
+    const freestyleTemplateDirPath = join(__dirname, '../templates/freestyle/simple/webapp/test', ui5Version);
     const testOutDirPath = join(basePath, 'webapp/test');
 
-    const viewNamePage = `${testConfig.viewName}Page`
+    // get test config 
+    const viewNamePage = `${config.viewName}Page`;
 
     // Get all template files
     const allTemplateFiles = getAllFiles(freestyleTemplateDirPath);
@@ -470,9 +417,9 @@ export function generateFreestyleTestFiles(
     // Filter files based on TypeScript setting
     const filteredFiles = allTemplateFiles.filter(filePath => {
         if (filePath.endsWith('.ts')) {
-            return testConfig.enableTypeScript === true;
+            return enableTypeScript === true;
         } else if (filePath.endsWith('.js')) {
-            return testConfig.enableTypeScript === false;
+            return enableTypeScript === false;
         }
         return true;
     });
@@ -481,16 +428,16 @@ export function generateFreestyleTestFiles(
     filteredFiles.forEach(filePath => {
         const relativePath = filePath.replace(freestyleTemplateDirPath, '');
         editor.copyTpl(filePath, join(testOutDirPath, relativePath), {
-            ...testConfig,
-            viewNamePage
+            ...config,
+            viewNamePage,
+            appIdWithSlash
         });
     });
 
     // Update package.json scripts
-    writeOPAPackageJsonUpdates(editor, basePath, testConfig.hasData ?? false);
-
+    writeOPAPackageJsonUpdates(editor, basePath, config.hasData ?? false);
     // Update tsconfig.json if TypeScript is enabled
-    if (testConfig.enableTypeScript) {
+    if (config.enableTypeScript) {
         writeOPATsconfigJsonUpdates(editor, basePath);
     }
 

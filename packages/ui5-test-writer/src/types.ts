@@ -63,7 +63,7 @@ export class ValidationError extends Error {
  * Configuration interface for generating test files
  */
 export interface TestConfig {
-    appId?: string;
+    appId: string;
     appIdWithSlash?: string;
     applicationTitle?: string;
     applicationDescription?: string;
@@ -73,4 +73,6 @@ export interface TestConfig {
     hasData?: boolean;
     viewName?: string;
     viewNamePage?: string;
+    appIdWihSlash: string;
+    ui5Version: string;
 }
