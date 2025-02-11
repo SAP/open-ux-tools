@@ -511,6 +511,8 @@ describe('getComplexTypeProperty()', () => {
                   "com.sap.vocabularies.UI.v1.ConnectedFields",
                   "com.sap.vocabularies.UI.v1.DataPoint",
                   "com.sap.vocabularies.UI.v1.FieldGroup",
+                  "com.sap.vocabularies.UI.v1.PresentationVariant",
+                  "com.sap.vocabularies.UI.v1.SelectionPresentationVariant",
                 ],
               },
               "description": "Target MUST reference an annotation of terms Communication.Contact, Communication.Address, UI.DataPoint, UI.Chart, UI.FieldGroup, or UI.ConnectedFields",
