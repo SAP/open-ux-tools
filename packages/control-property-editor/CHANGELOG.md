@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.5.37
+
+### Patch Changes
+
+-   7c76e7c: fix: unify contextual menu for all nodes in outline panel.
+
 ## 0.5.36
 
 ### Patch Changes

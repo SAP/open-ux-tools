@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.27
+
+### Patch Changes
+
+-   7c76e7c: fix: unify contextual menu for all nodes in outline panel.
+
 ## 0.17.26
 
 ### Patch Changes
