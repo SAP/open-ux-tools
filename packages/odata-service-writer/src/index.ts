@@ -17,7 +17,7 @@ import {
     EdmxAnnotationsInfo,
     NamespaceAlias
 } from './types';
-import { getWebappPath } from '@sap-ux/project-access';
+import { FileName, getWebappPath } from '@sap-ux/project-access';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles, removeAnnotationXmlFiles } from './delete';
 
@@ -83,7 +83,7 @@ async function generateMockserverMiddlewareBasedOnUi5MockYaml(
     ui5LocalConfig?: UI5Config
 ): Promise<void> {
     // Update ui5-local.yaml with mockserver middleware from ui5-mock.yaml
-    const ui5MockYamlPath = join(dirname(ui5YamlPath), 'ui5-mock.yaml');
+    const ui5MockYamlPath = join(dirname(ui5YamlPath), FileName.Ui5MockYaml);
     const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
     const mockserverMiddlewareFromUi5Mock = ui5MockYamlConfig.findCustomMiddleware(
         'sap-fe-mockserver'
@@ -215,7 +215,11 @@ async function writeEDMXServiceFiles(
         const webappPath = await getWebappPath(basePath, fs);
         if (paths.ui5Yaml && ui5Config) {
             const config = {
-                webappPath: webappPath
+                webappPath: webappPath,
+                // Run overwrite on service update, because some service data could have changed and that could reflect on mockserver configuration
+                ui5MockYamlConfig: {
+                    overwrite: updateService
+                }
             };
             // Generate mockserver middleware for ui5-mock.yaml
             await generateMockserverConfig(basePath, config, fs);

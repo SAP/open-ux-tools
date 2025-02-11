@@ -11,5 +11,6 @@ export interface PackageJsonMockConfig {
 }
 
 export interface Ui5MockYamlConfig {
+    // overwrites all services and annotations based on manifest
     overwrite?: boolean;
 }

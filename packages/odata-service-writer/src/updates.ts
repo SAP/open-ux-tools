@@ -63,29 +63,23 @@ function enhanceManifestModels(
 }
 
 /**
- * Enhances manifest.json dataSources with given service data.
+ * Populates dataSource annotations and creates annotation dataSources.
  *
  * @param {string} serviceName - name of the OData service instance
- * @param {string} servicePath - path of the OData service instance
- * @param {string} serviceVersion - version of the OData service instance
- * @param {Manifest} manifest - the manifest.json of the application
- * @param {string} serviceMetadata - metdata of the OData service instance
  * @param {EdmxAnnotationsInfo | EdmxAnnotationsInfo[]} serviceRemoteAnnotations - remote annotations of the OData service instance
  * @param {string | string[]} serviceLocalAnnotations - local annotations of the OData service instance
+ * @returns annotations list and annotation dataSources.
  */
-function enhanceManifestDatasources(
+function getDataSourceAnnotations(
     serviceName: string,
-    servicePath: string,
-    serviceVersion: string,
-    manifest: Manifest,
-    serviceMetadata?: string,
     serviceRemoteAnnotations?: EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
     serviceLocalAnnotations?: string | string[]
-): void {
-    const dataSources = manifest?.['sap.app'].dataSources ?? {};
-    // Service annotation names to be stored in service settings of dataSource
+): {
+    annotations: string[];
+    annotationDataSources: { [k: string]: ManifestNamespace.DataSource };
+} {
     const annotations: string[] = [];
-    // Annotation dataSources used by service - remote and local annotations are handled differently
+    // Service annotation names to be stored in service settings of dataSource
     const annotationDataSources: { [k: string]: ManifestNamespace.DataSource } = {};
     // Handle remote annotations used by service
     if (Array.isArray(serviceRemoteAnnotations)) {
@@ -137,6 +131,45 @@ function enhanceManifestDatasources(
             }
         };
     }
+    return {
+        annotations,
+        annotationDataSources
+    };
+}
+
+/**
+ * Enhances manifest.json dataSources with given service data.
+ *
+ * @param {string} serviceName - name of the OData service instance
+ * @param {string} servicePath - path of the OData service instance
+ * @param {string} serviceVersion - version of the OData service instance
+ * @param {Manifest} manifest - the manifest.json of the application
+ * @param {string} serviceMetadata - metdata of the OData service instance
+ * @param {EdmxAnnotationsInfo | EdmxAnnotationsInfo[]} serviceRemoteAnnotations - remote annotations of the OData service instance
+ * @param {string | string[]} serviceLocalAnnotations - local annotations of the OData service instance
+ * @param {boolean} updateService - whether the manifest service data should be updated
+ */
+function enhanceManifestDatasources(
+    serviceName: string,
+    servicePath: string,
+    serviceVersion: string,
+    manifest: Manifest,
+    serviceMetadata?: string,
+    serviceRemoteAnnotations?: EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
+    serviceLocalAnnotations?: string | string[],
+    updateService?: boolean
+): void {
+    const dataSources = manifest?.['sap.app'].dataSources ?? {};
+    const { annotations, annotationDataSources } = getDataSourceAnnotations(
+        serviceName,
+        serviceRemoteAnnotations,
+        serviceLocalAnnotations
+    );
+    // Annotation dataSources used by service - remote and local annotations are handled differently
+    let previousAnnotationNames: string[] = [];
+    if (updateService) {
+        previousAnnotationNames = dataSources[serviceName].settings?.annotations ?? [];
+    }
     const settings = {
         annotations
     };
@@ -159,6 +192,12 @@ function enhanceManifestDatasources(
         const annotationDataSource = annotationDataSources[name];
         dataSources[name] = annotationDataSource;
     }
+    // Clean old annotations
+    previousAnnotationNames.forEach((name) => {
+        if (dataSources[name] && !annotations.includes(name)) {
+            delete dataSources[name];
+        }
+    });
     // Update manifest.json dataSources
     manifest['sap.app'].dataSources = dataSources;
 }
@@ -168,8 +207,9 @@ function enhanceManifestDatasources(
  *
  * @param {OdataService} service - the OData service instance
  * @param {Manifest} manifest - the manifest.json of the application
+ * @param {boolean} updateService - whether the manifest service data should be updated
  */
-function enhanceManifest(service: OdataService, manifest: Manifest): void {
+function enhanceManifest(service: OdataService, manifest: Manifest, updateService: boolean): void {
     const minimumUi5Version = getMinimumUI5Version(manifest);
     // Enhance model settings for service
     const serviceSettings = Object.assign(service, getModelSettings(minimumUi5Version));
@@ -181,7 +221,8 @@ function enhanceManifest(service: OdataService, manifest: Manifest): void {
             manifest,
             serviceSettings.metadata,
             serviceSettings.annotations as EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
-            serviceSettings.localAnnotationsName
+            serviceSettings.localAnnotationsName,
+            updateService
         );
         // Add or update existing service model settings for manifest.json
         enhanceManifestModels(
@@ -292,7 +333,7 @@ export async function updateManifest(
     // Check and update existing services in a way that is supported by multiple services
     const modifiedManifest = await updateExistingServices(webappPath, manifest, fs);
     // Add or update manifest.json with service data
-    enhanceManifest(service, modifiedManifest);
+    enhanceManifest(service, modifiedManifest, updateService);
     fs.writeJSON(manifestPath, modifiedManifest);
 }
 

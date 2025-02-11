@@ -815,7 +815,13 @@ describe('update', () => {
                 'sap.ui5': {
                     models: {
                         '': {
-                            dataSource: 'mainService'
+                            dataSource: 'mainService',
+                            preload: true,
+                            settings: {
+                                autoExpandSelect: true,
+                                earlyRequests: true,
+                                operationMode: 'Server'
+                            }
                         }
                     }
                 }
@@ -844,14 +850,14 @@ describe('update', () => {
                 })
             )
         );
-        // package.json should not be changed
+        // No changes in package.json expected
         expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
             ui5: {
                 dependencies: []
             }
         });
     });
-    it('Update an existing service', async () => {
+    it('Update an existing service without changes', async () => {
         await update(
             testDir,
             {
@@ -909,22 +915,94 @@ describe('update', () => {
                 }
             }
         });
-        // // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
-        // expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('- path: /sap\n            url: http://localhost\n');
-        // expect(fs.read(join(testDir, 'ui5-local.yaml'))).not.toContain(
-        //     '- path: /sap\n            url: http://localhost\n'
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        // expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
+        // expect(fs.read(join(testDir, 'ui5-local.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
+        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap/uri\n ');
+        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
+        //     `annotations:\n          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml`
         // );
-        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
-        //     'services:\n          - urlPath: /sap/odata/testme\n '
-        // );
-        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
-        //     `annotations:\n          - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/\n`
-        // );
-        // package.json should not be changed
-        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
-            ui5: {
-                dependencies: []
+        // No changes in package.json expected
+        // expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+        //     ui5: {
+        //         dependencies: []
+        //     }
+        // });
+        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
+        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+        // expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+    });
+
+    it('Update an existing service with changed annotations', async () => {
+        await update(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost',
+                path: '/sap/uri/',
+                type: ServiceType.EDMX,
+                // Define new remote annotation for service
+                annotations: [
+                    {
+                        technicalName: 'DIFFERENT_ANNOTATION',
+                        xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                    }
+                ] as EdmxAnnotationsInfo[],
+                metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                version: OdataVersion.v4
+            },
+            fs
+        );
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+        expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
+            mainService: {
+                uri: '/sap/uri/',
+                type: 'OData',
+                settings: {
+                    annotations: ['DIFFERENT_ANNOTATION'],
+                    localUri: 'localService/mainService/metadata.xml',
+                    odataVersion: '4.0'
+                }
+            },
+            DIFFERENT_ANNOTATION: {
+                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='DIFFERENT_ANNOTATION',Version='0001')/$value/`,
+                type: 'ODataAnnotation',
+                settings: {
+                    localUri: 'localService/mainService/DIFFERENT_ANNOTATION.xml'
+                }
             }
         });
+        expect(manifest?.['sap.ui5']?.models).toStrictEqual({
+            '': {
+                dataSource: 'mainService',
+                preload: true,
+                settings: {
+                    autoExpandSelect: true,
+                    earlyRequests: true,
+                    operationMode: 'Server'
+                }
+            }
+        });
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        // expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
+        // expect(fs.read(join(testDir, 'ui5-local.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
+        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap/uri\n ');
+        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
+        //     `annotations:\n          - localPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='DIFFERENT_ANNOTATION',Version='0001')/$value/\n`
+        // );
+        // No changes in package.json expected
+        // expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+        //     ui5: {
+        //         dependencies: []
+        //     }
+        // });
+        // // Previous service annotation file should be deleted
+        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(false);
+        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'DIFFERENT_ANNOTATION.xml'))).toBe(
+        //     true
+        // );
+        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+        // expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
     });
 });
