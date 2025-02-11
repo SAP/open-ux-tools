@@ -104,7 +104,10 @@ async function generateMockserverMiddlewareBasedOnUi5MockYaml(
  */
 function extendBackendMiddleware(fs: Editor, service: OdataService, ui5Config: UI5Config, ui5ConfigPath: string): void {
     try {
-        ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+        ui5Config.addBackendToFioriToolsProxydMiddleware(
+            service.previewSettings as ProxyBackend,
+            service.ignoreCertError
+        );
     } catch (error: any) {
         if (
             (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||

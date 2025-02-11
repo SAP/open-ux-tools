@@ -70,7 +70,7 @@ export function InfoCenter(): ReactElement {
                         return (
                             <Stack.Item key={index} className={`message-bar ${getMessageType(type)} ${isRead && 'message-read'}`} onMouseOver={() => dispatch(readMessage(index))}>
                                 <UIMessageBar messageBarType={type as MessageBarType}>
-                                    <Text role='status' block={true} className='message-title'>{message.title}</Text>
+                                    <Text block={true} className='message-title'>{message.title}</Text>
                                     {
                                         type !== MessageBarType.error &&
                                         <UIIconButton
@@ -96,7 +96,6 @@ export function InfoCenter(): ReactElement {
                                     </Text>
                                 }
                                 <UIDialog
-                                    
                                     hidden={!isOpenedModal}
                                     dialogContentProps={{
                                         title: 'Error Details'

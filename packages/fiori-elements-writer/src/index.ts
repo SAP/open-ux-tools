@@ -22,6 +22,8 @@ import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { generateFpmConfig } from './fpmConfig';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
+import type { Logger } from '@sap-ux/logger';
+import { writeAnnotations } from './writeAnnotations';
 
 export const V2_FE_TYPES_AVAILABLE = '1.108.0';
 /**
@@ -50,15 +52,22 @@ function getTypeScriptIgnoreGlob<T extends {}>(feApp: FioriElementsApp<T>, coerc
     }
     return ignore;
 }
+
 /**
  * Generate a UI5 application based on the specified Fiori Elements floorplan template.
  *
  * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the Fiori elements application
  * @param fs - an optional reference to a mem-fs editor
+ * @param log - optional logger instance
  * @returns Reference to a mem-fs-editor
  */
-async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T>, fs?: Editor): Promise<Editor> {
+async function generate<T extends {}>(
+    basePath: string,
+    data: FioriElementsApp<T>,
+    fs?: Editor,
+    log?: Logger
+): Promise<Editor> {
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
@@ -208,7 +217,8 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
         );
     }
     if (feApp.service.capService) {
-        const hasCdsUi5PluginInfo = !!feApp.service.capService.cdsUi5PluginInfo;
+        const enableCdsUi5Plugin =
+            !!feApp?.appOptions?.typescript || !!feApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: feApp.package.name ?? '',
@@ -216,13 +226,16 @@ async function generate<T extends {}>(basePath: string, data: FioriElementsApp<T
             sapux: feApp.appOptions?.sapux,
             enableTypescript: feApp.appOptions?.typescript,
             // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
-            enableCdsUi5Plugin: hasCdsUi5PluginInfo,
-            enableNPMWorkspaces: hasCdsUi5PluginInfo
+            enableCdsUi5Plugin: enableCdsUi5Plugin,
+            enableNPMWorkspaces: enableCdsUi5Plugin
         };
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, feApp.service.capService, settings);
     }
 
+    if (feApp.appOptions?.addAnnotations) {
+        await writeAnnotations(basePath, feApp, fs, log);
+    }
     return fs;
 }
 

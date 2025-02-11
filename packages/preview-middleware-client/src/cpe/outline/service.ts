@@ -71,7 +71,7 @@ export class OutlineService extends EventTarget {
                                 title: 'Reuse components detected',
                                 description: message
                             },
-                            type: MessageBarType.info
+                            type: MessageBarType.warning
                         })
                     );
                     hasSentWarning = true;

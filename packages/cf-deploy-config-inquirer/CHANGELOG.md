@@ -1,5 +1,58 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.15
+
+## 0.2.2
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.14
+
+## 0.2.1
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/inquirer-common@0.6.13
+
+## 0.2.0
+
+### Minor Changes
+
+-   9b755fc: adds new cf generator
+
+## 0.1.26
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.12
+
+## 0.1.25
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/inquirer-common@0.6.11
+
+## 0.1.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.10
+
+## 0.1.23
+
+### Patch Changes
+
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
 ## 0.1.22
 
 ### Patch Changes

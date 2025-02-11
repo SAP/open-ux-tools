@@ -45,16 +45,17 @@ describe('CustomPage', () => {
         fs.delete(testDir);
     });
 
-    test('validateBasePath - standard required lib `sap.fe.templates`', () => {
+    test('validateBasePath - standard required lib `sap.fe.templates`', async () => {
         const target = join(testDir, 'validateBasePathRequired');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        expect(() => validateBasePath(target, fs)).toThrowError('Dependency sap.fe.templates is missing');
+
+        await expect(validateBasePath(target, fs)).rejects.toThrowError('Dependency sap.fe.templates is missing');
     });
 
-    test('validateBasePath - required libs `sap.fe.templates` or `sap.fe.core` missing', () => {
+    test('validateBasePath - required libs `sap.fe.templates` or `sap.fe.core` missing', async () => {
         const target = join(testDir, 'validateBasePathRequired');
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
-        expect(() => validateBasePath(target, fs, ['sap.fe.templates', 'sap.fe.core'])).toThrowError(
+        await expect(validateBasePath(target, fs, ['sap.fe.templates', 'sap.fe.core'])).rejects.toThrowError(
             'All of the dependencies sap.fe.templates, sap.fe.core are missing in the manifest.json. Fiori elements FPM requires the SAP FE libraries.'
         );
     });
@@ -64,7 +65,7 @@ describe('CustomPage', () => {
         fs.write(join(target, 'webapp/manifest.json'), testAppManifest);
         expect(validateBasePath(target, fs, [])).toBeTruthy();
 
-        expect(() => validateBasePath(join(testDir, '' + Date.now()), fs, [])).toThrowError();
+        await expect(validateBasePath(join(testDir, '' + Date.now()), fs, [])).rejects.toThrowError();
         await expect(
             async () => await generateCustomPage(join(testDir, '' + Date.now()), {} as CustomPage)
         ).rejects.toThrowError();
@@ -72,7 +73,7 @@ describe('CustomPage', () => {
         const invalidManifest = JSON.parse(testAppManifest);
         delete invalidManifest['sap.ui5'].dependencies?.libs['sap.fe.templates'];
         fs.writeJSON(join(target, 'webapp/manifest.json'), invalidManifest);
-        expect(() => validateBasePath(target, fs, [])).not.toThrowError();
+        await expect(validateBasePath(target, fs, [])).resolves.not.toThrowError();
     });
 
     describe('generateCustomPage: different versions or target folder', () => {

@@ -1,7 +1,7 @@
 {
     "name": "@sap-ux/odata-service-inquirer",
     "description": "Prompts module that can prompt users for inputs required for odata service writing",
-    "version": "2.0.1",
+    "version": "2.2.3",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
@@ -43,7 +43,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/project-input-validator": "workspace:*",
         "@sap-ux/store": "workspace:*",
-        "axios": "1.7.4",
+        "axios": "1.7.9",
         "axios-logger": "2.8.0",
         "fast-xml-parser": "4.4.1",
         "i18next": "23.5.1",

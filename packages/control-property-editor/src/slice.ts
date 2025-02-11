@@ -3,6 +3,7 @@ import { createSlice, createAction } from '@reduxjs/toolkit';
 
 import type {
     Control,
+    ContextMenu,
     IconDetails,
     InfoCenterMessage,
     OutlineNode,
@@ -50,7 +51,8 @@ import {
     PROPERTY_CHANGE_KIND,
     CONFIGURATION_CHANGE_KIND,
     expandableMessage,
-    toggleModalMessage
+    toggleModalMessage,
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -83,6 +85,7 @@ export interface SliceState {
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
     infoCenterMessages: InfoCenterMessage[];
+    contextMenu: ContextMenu | undefined;
 }
 
 export interface ChangesSlice {
@@ -173,7 +176,8 @@ export const initialState: SliceState = {
     applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: [],
-    infoCenterMessages: []
+    infoCenterMessages: [],
+    contextMenu: undefined
 };
 
 /**
@@ -464,12 +468,11 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     state.infoCenterMessages = state.infoCenterMessages.filter((_, index) => index !== action.payload);
                 }
             )
-            .addMatcher(
-                clearAllInfoCenterMessages.match,
-                (state: SliceState): void => {
-                    state.infoCenterMessages = state.infoCenterMessages.filter((info) => info.type === MessageBarType.error);
-                }
-            )
+            .addMatcher(clearAllInfoCenterMessages.match, (state: SliceState): void => {
+                state.infoCenterMessages = state.infoCenterMessages.filter(
+                    (info) => info.type === MessageBarType.error
+                );
+            })
             .addMatcher(
                 toggleExpandMessage.match,
                 (state: SliceState, action: ReturnType<typeof toggleExpandMessage>): void => {
@@ -477,13 +480,10 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     state.infoCenterMessages[index].expanded = !state.infoCenterMessages[index].expanded;
                 }
             )
-            .addMatcher(
-                readMessage.match,
-                (state: SliceState, action: ReturnType<typeof readMessage>): void => {
-                    const index = action.payload;
-                    state.infoCenterMessages[index].read = true;
-                }
-            )
+            .addMatcher(readMessage.match, (state: SliceState, action: ReturnType<typeof readMessage>): void => {
+                const index = action.payload;
+                state.infoCenterMessages[index].read = true;
+            })
             .addMatcher(
                 expandableMessage.match,
                 (state: SliceState, action: ReturnType<typeof expandableMessage>): void => {
@@ -496,6 +496,16 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 (state: SliceState, action: ReturnType<typeof toggleModalMessage>): void => {
                     const index = action.payload;
                     state.infoCenterMessages[index].modal = !state.infoCenterMessages[index].modal;
+                }
+            )    
+            .addMatcher(        
+                requestControlContextMenu.fulfilled.match,
+                (state: SliceState, action: ReturnType<typeof requestControlContextMenu.fulfilled>): void => {
+                    const { contextMenuItems, controlId } = action.payload;
+                    state.contextMenu = {
+                        contextMenuItems,
+                        controlId
+                    };
                 }
             )
 });

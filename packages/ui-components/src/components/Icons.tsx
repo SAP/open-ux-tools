@@ -1240,15 +1240,17 @@ export function initIcons(): void {
             [UiIcons.Info]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"
-                        fill={COLORS.info}
-                    />
-                    <path
+                        id="ico_info"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M7.5 5V4H8.5V5H7.5ZM7.5 12V6H8.5V12H7.5Z"
+                        fill={COLORS.info}
+                    />
+                    <path
+                        id="oval"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
                         fill={COLORS.info}
                     />
                 </svg>

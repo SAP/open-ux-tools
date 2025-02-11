@@ -2,15 +2,15 @@ import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import FlexRuntimeInfoAPI from 'sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { getControlById } from '../../../utils/core';
-import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { MDC_TABLE_TYPE } from '../control-types';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
+import Table from 'sap/ui/mdc/Table';
 
 export const CHANGE_TABLE_COLUMNS = 'change-table-columns';
 const ACTION_ID = 'CTX_SETTINGS0';
-const CONTROL_TYPE = 'sap.ui.mdc.Table';
 
 /**
  * Quick Action for changing table columns.
@@ -25,24 +25,50 @@ export class ChangeTableColumnsQuickAction
         ]);
     }
 
-    async execute(path: string): Promise<FlexCommand[]> {
-        const index = this.tableMap[path];
-        const smartTables = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            CONTROL_TYPE
-        ]);
-        for (let i = 0; i < smartTables.length; i++) {
-            if (i === index) {
-                const section = getControlById(smartTables[i].getId());
-                const controlOverlay = OverlayUtil.getClosestOverlayFor(section);
-                if (controlOverlay) {
-                    controlOverlay.setSelected(true);
-                }
-                const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTables[i] });
-                if (!hasVariantManagement) {
-                    continue;
-                }
-                await this.context.actionService.execute(smartTables[i].getId(), ACTION_ID);
+    async initialize(): Promise<void> {
+        for (const smartTable of getRelevantControlFromActivePage(
+            this.context.controlIndex,
+            this.context.view,
+            this.controlTypes
+        )) {
+            const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: smartTable });
+            if (!hasVariantManagement) {
+                continue;
             }
+
+            const actions = await this.context.actionService.get(smartTable.getId());
+            const changeColumnAction = actions.find((action) => action.id === ACTION_ID);
+            if (changeColumnAction) {
+                this.children.push({
+                    label: `'${(smartTable as Table).getHeader()}' table`,
+                    enabled: true,
+                    children: []
+                });
+                this.tableMap[`${this.children.length - 1}`] = {
+                    table: smartTable,
+                    tableUpdateEventAttachedOnce: false
+                };
+            }
+        }
+
+        if (this.children.length > 0) {
+            this.isApplicable = true;
+        }
+    }
+
+    async execute(path: string): Promise<FlexCommand[]> {
+        const { table } = this.tableMap[path];
+        if (!table) {
+            return [];
+        }
+        const tableControl = getControlById(table.getId());
+        const controlOverlay = OverlayUtil.getClosestOverlayFor(tableControl);
+        if (controlOverlay) {
+            controlOverlay.setSelected(true);
+        }
+        const hasVariantManagement = FlexRuntimeInfoAPI.hasVariantManagement({ element: table });
+        if (hasVariantManagement) {
+            await this.context.actionService.execute(table.getId(), ACTION_ID);
         }
 
         return [];

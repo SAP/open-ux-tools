@@ -1,5 +1,78 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.13
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.28
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.15
+
+## 1.2.12
+
+### Patch Changes
+
+-   c08e1e3: Add option to hide createDuringDeploy list item in getTransportChoices
+
+## 1.2.11
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.5
+-   @sap-ux/fiori-generator-shared@0.7.27
+-   @sap-ux/system-access@0.5.30
+-   @sap-ux/inquirer-common@0.6.14
+
+## 1.2.10
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.26
+    -   @sap-ux/inquirer-common@0.6.13
+    -   @sap-ux/system-access@0.5.30
+
+## 1.2.9
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.4
+-   @sap-ux/fiori-generator-shared@0.7.25
+-   @sap-ux/system-access@0.5.29
+-   @sap-ux/inquirer-common@0.6.12
+
+## 1.2.8
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/fiori-generator-shared@0.7.24
+    -   @sap-ux/inquirer-common@0.6.11
+    -   @sap-ux/system-access@0.5.29
+
+## 1.2.7
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.3
+-   @sap-ux/fiori-generator-shared@0.7.23
+-   @sap-ux/system-access@0.5.28
+-   @sap-ux/inquirer-common@0.6.10
+
+## 1.2.6
+
+### Patch Changes
+
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
 ## 1.2.5
 
 ### Patch Changes
