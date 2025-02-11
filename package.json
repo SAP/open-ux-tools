@@ -6,7 +6,7 @@
     "private": true,
     "devDependencies": {
         "@changesets/cli": "2.27.10",
-        "@playwright/test": "1.39.0",
+        "@playwright/test": "1.50.1",
         "@types/jest": "29.5.5",
         "@types/node": "18.11.9",
         "@typescript-eslint/eslint-plugin": "^7.18.0",
@@ -62,8 +62,8 @@
     "packageManager": "pnpm@8.14.0",
     "pnpm": {
         "overrides": {
-            "router>path-to-regexp": "0.1.10",
-            "cross-spawn": "7.0.5"
+            "router>path-to-regexp": "0.1.12",
+            "@storybook/manager-api>store2": "2.14.4"
         }
     }
 }

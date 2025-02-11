@@ -66,6 +66,7 @@ export const PROJECTS = {
         files: {
             annotations: pathToFileURL(join(V4_CAP_START_ROOT, 'app', 'incidents', 'annotations.cds')).toString(),
             metadata: pathToFileURL(join(V4_CAP_START_ROOT, 'srv', 'common.cds')).toString(),
+            services: pathToFileURL(join(V4_CAP_START_ROOT, 'app', 'services.cds')).toString(),
             schema: pathToFileURL(join(V4_CAP_START_ROOT, 'db', 'schema.cds')).toString()
         }
     },

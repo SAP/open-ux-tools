@@ -1,5 +1,38 @@
 # @sap-ux/preview-middleware
 
+## 0.17.27
+
+### Patch Changes
+
+-   7c76e7c: fix: unify contextual menu for all nodes in outline panel.
+
+## 0.17.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.127
+-   @sap-ux/project-access@1.29.6
+
+## 0.17.25
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
+## 0.17.24
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+-   Updated dependencies [59453ba]
+    -   @sap-ux/adp-tooling@0.12.126
+
+## 0.17.23
+
+### Patch Changes
+
+-   b214776: fix: remove hard coded usage of webapp folder
+
 ## 0.17.22
 
 ### Patch Changes
