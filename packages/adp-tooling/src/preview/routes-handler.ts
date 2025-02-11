@@ -376,8 +376,7 @@ function generateControllerFile(rootPath: string, filePath: string, name: string
 
     renderFile(tmplPath, templateData, {}, (err, str) => {
         if (err) {
-            const templateType = isTsSupported ? 'TypeScript' : 'JavaScript';
-            throw new Error(`Error rendering ${templateType} template: ${err.message}`);
+            throw new Error(`Error rendering ${isTsSupported ? 'TypeScript' : 'JavaScript'} template: ${err.message}`);
         }
 
         fs.writeFileSync(filePath, str, { encoding: 'utf8' });
