@@ -329,11 +329,11 @@ function getApplicationAccessOptions(fs?: Editor | ApplicationAccessOptions): Ap
  * When calling this function, adding or removing a CDS file in memory or changing CDS configuration will not be considered until present on real file system.
  * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
  */
-export async function createApplicationAccessFromProject(
+export function createApplicationAccessFromProject(
     project: Project,
     appId: string,
     fs?: Editor | ApplicationAccessOptions
-): Promise<ApplicationAccess> {
+): ApplicationAccess {
     return new ApplicationAccessImp(project, appId, getApplicationAccessOptions(fs));
 }
 

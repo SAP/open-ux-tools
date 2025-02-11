@@ -362,7 +362,7 @@ describe('Test function createApplicationAccessFromProject()', () => {
     test('App as part of a CAP project', async () => {
         const projectRoot = join(sampleRoot, 'cap-project');
         const project = await getProject(projectRoot);
-        const appAccess = await createApplicationAccessFromProject(project, join('apps/two'));
+        const appAccess = createApplicationAccessFromProject(project, join('apps/two'));
 
         expect(appAccess).toBeDefined();
         expect(appAccess.root).toBe(projectRoot);
@@ -377,7 +377,7 @@ describe('Test function createApplicationAccessFromProject()', () => {
     test('Standalone app', async () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
         const project = await getProject(appRoot);
-        const appAccess = await createApplicationAccessFromProject(project, '');
+        const appAccess = createApplicationAccessFromProject(project, '');
         expect(appAccess.root).toBe(appRoot);
         expect(appAccess.projectType).toBe('EDMXBackend');
         expect(appAccess.getAppId()).toBe('');
@@ -387,7 +387,7 @@ describe('Test function createApplicationAccessFromProject()', () => {
     test('Read access to i18n of standalone app - mem-fs-editor', async () => {
         const appRoot = join(sampleRoot, 'fiori_elements');
         const project = await getProject(appRoot);
-        const appAccess = await createApplicationAccessFromProject(project, '', memFs);
+        const appAccess = createApplicationAccessFromProject(project, '', memFs);
         const i18nBundles = await appAccess.getI18nBundles();
         const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
         const app = i18nBundles['sap.app'];
