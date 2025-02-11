@@ -223,12 +223,12 @@ export default class RoutesHandler {
         try {
             const data = req.body as WriteControllerBody;
 
-            const controllerExtName = sanitize(data.controllerName);
+            const name = sanitize(data.controllerName);
 
             const sourcePath = this.util.getProject().getSourcePath();
             const rootPath = this.util.getProject().getRootPath();
 
-            if (!controllerExtName) {
+            if (!name) {
                 res.status(HttpStatusCodes.BAD_REQUEST).send('Controller extension name was not provided!');
                 this.logger.debug('Bad request. Controller extension name was not provided!');
                 return;
@@ -237,25 +237,23 @@ export default class RoutesHandler {
             const isTsSupported = isTypescriptSupported(rootPath);
 
             const fullPath = path.join(sourcePath, DirName.Changes, DirName.Coding);
-            const filePath = path.join(fullPath, `${controllerExtName}.${isTsSupported ? 'ts' : 'js'}`);
+            const filePath = path.join(fullPath, `${name}.${isTsSupported ? 'ts' : 'js'}`);
 
             if (!fs.existsSync(fullPath)) {
                 fs.mkdirSync(fullPath, { recursive: true });
             }
 
             if (fs.existsSync(filePath)) {
-                res.status(HttpStatusCodes.CONFLICT).send(
-                    `Controller extension with name "${controllerExtName}" already exists`
-                );
-                this.logger.debug(`Controller extension with name "${controllerExtName}" already exists`);
+                res.status(HttpStatusCodes.CONFLICT).send(`Controller extension with name "${name}" already exists`);
+                this.logger.debug(`Controller extension with name "${name}" already exists`);
                 return;
             }
 
-            generateControllerFile(rootPath, filePath, controllerExtName);
+            generateControllerFile(rootPath, filePath, name);
 
             const message = 'Controller extension created!';
             res.status(HttpStatusCodes.CREATED).send(message);
-            this.logger.debug(`Controller extension with name "${controllerExtName}" was created`);
+            this.logger.debug(`Controller extension with name "${name}" was created`);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);
@@ -364,17 +362,17 @@ export default class RoutesHandler {
  *
  * @param {string} rootPath - The root directory of the project.
  * @param {string} filePath - The destination path where the generated controller file should be saved.
- * @param {string} controllerExtName - The name of the controller extension (used in TypeScript templates).
+ * @param {string} name - The name of the controller extension (used in TypeScript templates).
  * @throws {Error} Throws an error if rendering the template fails.
  */
-function generateControllerFile(rootPath: string, filePath: string, controllerExtName: string): void {
+function generateControllerFile(rootPath: string, filePath: string, name: string): void {
     const id = getVariant(rootPath)?.id;
     const isTsSupported = isTypescriptSupported(rootPath);
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
     const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
-    const controllerExtPath = `${id}.${controllerExtName}`;
+    const extensionPath = `${id}.${name}`;
 
-    const templateData = isTsSupported ? { controllerExtName, id } : { controllerExtPath };
+    const templateData = isTsSupported ? { name, ns: id } : { extensionPath };
 
     renderFile(tmplPath, templateData, {}, (err, str) => {
         if (err) {
