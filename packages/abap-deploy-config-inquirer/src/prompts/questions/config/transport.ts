@@ -44,7 +44,7 @@ export function getTransportRequestPrompts(
             guiOptions: {
                 applyDefaultWhenDirty: true
             },
-            choices: () => getTransportChoices(),
+            choices: () => getTransportChoices(options.transportInputChoice?.showCreateDuringDeploy),
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultTransportRequestChoice(
                     previousAnswers.transportInputChoice,

@@ -37,7 +37,7 @@ import {
     createDeleteAnnotationGroupItemsChange,
     DELETE_ANNOTATION_GROUP_ITEMS_CHANGE_TYPE
 } from './change';
-import type { Deletes, CDSDocumentChange } from './change';
+import type { Deletes, CDSDocumentChange, InsertRecord } from './change';
 import { getChildCount, type AstNode, type CDSDocument } from './document';
 import { getAstNodesFromPointer } from './pointer';
 
@@ -112,7 +112,7 @@ class ChangePreprocessor {
             ) {
                 continue;
             }
-            const newChange = JSON.parse(JSON.stringify(change));
+            const newChange = structuredClone(change) as InsertRecord;
             newChange.index = 0;
             this.commands.set(i, {
                 type: 'replace',
