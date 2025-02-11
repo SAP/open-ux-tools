@@ -1433,12 +1433,12 @@ describe('FE V2 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: 'Add Annotation File for \'\'{0}\'\''
+                                            label: `Add Annotation File for ''{0}''`
                                         },
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: 'Show Annotation File for \'\'{0}\'\''
+                                            label: `Show Annotation File for ''{0}''`
                                         }
                                     ]
                                 }
@@ -2722,6 +2722,7 @@ describe('FE V2 quick actions', () => {
             const testCases: {
                 supportedVersion: boolean;
                 isEnabled?: boolean;
+                isCustomTable?: boolean;
                 ui5version?: versionUtils.Ui5VersionInfo;
                 tooltip?: string;
             }[] = [
@@ -2738,9 +2739,12 @@ describe('FE V2 quick actions', () => {
                 {
                     supportedVersion: true,
                     isEnabled: true,
-                    tooltip:
-                        // eslint-disable-next-line quotes
-                        "This option has been disabled because variant management is already enabled for the ''{0}''"
+                    tooltip: `This option has been disabled because variant management is already enabled for the ''{0}''`
+                },
+                {
+                    supportedVersion: true,
+                    isCustomTable: true,
+                    tooltip: `Variant management cannot be set for custom table ''{0}''`
                 }
             ];
             afterEach(() => {
@@ -2786,6 +2790,10 @@ describe('FE V2 quick actions', () => {
                 });
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartTable') {
+                        const tableData: Record<string, any> = {
+                            lineItemQualifier: 'lineItem123',
+                            sectionId: testCase.isCustomTable ? undefined : 'dummySection'
+                        };
                         return {
                             isA: (type: string) => type === SMART_TABLE_TYPE,
                             getHeader: () => 'MyTable',
@@ -2810,19 +2818,11 @@ describe('FE V2 quick actions', () => {
                             getBusy: () => false,
                             selectOverlay: () => ({}),
                             getVariantManagement: () => testCase.isEnabled,
-                            getTable: jest.fn(() => {
-                                return {
-                                    getBindingInfo: jest.fn(() => {
-                                        return {
-                                            path: 'testPath'
-                                        };
-                                    })
-                                };
-                            }),
-                            data: jest.fn(() => {
-                                return {
-                                    lineItemQualifier: 'lineItem123'
-                                };
+                            data: jest.fn((prop: string) => {
+                                if (!prop) {
+                                    return tableData;
+                                }
+                                return tableData[prop];
                             })
                         };
                     }
@@ -2902,12 +2902,21 @@ describe('FE V2 quick actions', () => {
                     }
                 }
 
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({
-                        id: actionId,
-                        kind: 'nested',
-                        path: '0/0'
-                    })
+                let thrown;
+                try {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: actionId,
+                            kind: 'nested',
+                            path: '0/0'
+                        })
+                    );
+                } catch (e) {
+                    thrown = e;
+                }
+
+                expect(thrown?.message).toBe(
+                    testCase.isCustomTable ? 'Internal error. Table sectionId property not found' : undefined
                 );
 
                 expect(sendActionMock).toHaveBeenNthCalledWith(
@@ -2929,7 +2938,10 @@ describe('FE V2 quick actions', () => {
                                                   'children': [
                                                       {
                                                           'children': [],
-                                                          'enabled': testCase.isEnabled ? false : true,
+                                                          'enabled':
+                                                              testCase.isEnabled || testCase.isCustomTable
+                                                                  ? false
+                                                                  : true,
                                                           'label': `'MyTable' table`,
                                                           tooltip: testCase.tooltip
                                                       }
@@ -2944,7 +2956,7 @@ describe('FE V2 quick actions', () => {
                     ])
                 );
 
-                if (!testCase.supportedVersion) {
+                if (!testCase.supportedVersion || testCase.isCustomTable) {
                     expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
                     expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
                     expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
@@ -2959,8 +2971,7 @@ describe('FE V2 quick actions', () => {
                             'parameters': {
                                 'entityPropertyChange': {
                                     'operation': 'UPSERT',
-                                    'propertyPath':
-                                        'component/settings/sections/testPath::com.sap.vocabularies.UI.v1.LineItem#lineItem123/tableSettings',
+                                    'propertyPath': 'component/settings/sections/dummySection/tableSettings',
                                     'propertyValue': {
                                         'variantManagement': true
                                     }
