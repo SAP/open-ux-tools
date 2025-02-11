@@ -4,6 +4,7 @@ export {
     addPackageDevDependency,
     clearCdsModuleCache,
     createApplicationAccess,
+    createApplicationAccessFromProject,
     createProjectAccess,
     deleteCapApp,
     filterDataSourcesByType,

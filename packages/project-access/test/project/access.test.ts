@@ -1,6 +1,11 @@
 import { join } from 'path';
 import type { Manifest, Package } from '../../src';
-import { createApplicationAccess, createProjectAccess } from '../../src';
+import {
+    createApplicationAccess,
+    createProjectAccess,
+    getProject,
+    createApplicationAccessFromProject
+} from '../../src';
 import * as i18nMock from '../../src/project/i18n/write';
 import * as specMock from '../../src/project/specification';
 import { create as createStorage } from 'mem-fs';
@@ -343,6 +348,63 @@ describe('Test function createApplicationAccess()', () => {
         } catch (error) {
             expect(error.message).toContain('non-existing-app');
         }
+    });
+});
+
+describe('Test function createApplicationAccessFromProject()', () => {
+    const memFs = create(createStorage());
+    beforeEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    const sampleRoot = join(__dirname, '../test-data/project/info');
+
+    test('App as part of a CAP project', async () => {
+        const projectRoot = join(sampleRoot, 'cap-project');
+        const project = await getProject(projectRoot);
+        const appAccess = await createApplicationAccessFromProject(project, join('apps/two'));
+
+        expect(appAccess).toBeDefined();
+        expect(appAccess.root).toBe(projectRoot);
+        expect(appAccess.projectType).toBe('CAPNodejs');
+        expect(appAccess.getAppId()).toBe(join('apps/two'));
+        expect(appAccess.getAppRoot()).toBe(join(projectRoot, 'apps/two'));
+        expect(Object.keys(appAccess.project.apps).sort()).toEqual(
+            [join('apps/one'), join('apps/two'), join('apps/freestyle')].sort()
+        );
+    });
+
+    test('Standalone app', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const project = await getProject(appRoot);
+        const appAccess = await createApplicationAccessFromProject(project, '');
+        expect(appAccess.root).toBe(appRoot);
+        expect(appAccess.projectType).toBe('EDMXBackend');
+        expect(appAccess.getAppId()).toBe('');
+        expect(appAccess.getAppRoot()).toBe(appRoot);
+    });
+
+    test('Read access to i18n of standalone app - mem-fs-editor', async () => {
+        const appRoot = join(sampleRoot, 'fiori_elements');
+        const project = await getProject(appRoot);
+        const appAccess = await createApplicationAccessFromProject(project, '', memFs);
+        const i18nBundles = await appAccess.getI18nBundles();
+        const i18nPropertiesPaths = await appAccess.getI18nPropertiesPaths();
+        const app = i18nBundles['sap.app'];
+        expect(app.testTextKey[0].key.value).toBe('testTextKey');
+        expect(app.testTextKey[0].value.value).toBe('Test Text Value');
+        expect(app.testTextKey[0].annotation?.textType.value).toBe(' Test comment');
+        expect(i18nPropertiesPaths).toEqual({
+            'sap.app': join(appRoot, 'webapp/i18n/i18n.properties'),
+            'models': {
+                '@i18n': {
+                    'path': join(appRoot, 'webapp/i18n/i18n.properties')
+                },
+                'modelKey': {
+                    'path': join(appRoot, 'webapp/i18n/i18n.properties')
+                }
+            }
+        });
     });
 });
 
