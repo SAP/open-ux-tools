@@ -1,5 +1,5 @@
 import type { EdmxAnnotationsInfo, OdataService } from '../../src';
-import { generate, remove, OdataVersion, ServiceType } from '../../src';
+import { generate, update, remove, OdataVersion, ServiceType } from '../../src';
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -222,6 +222,19 @@ describe('generate', () => {
                     join(testDir, 'webapp', 'localService', 'mainService', `${config.annotations.technicalName}.xml`)
                 )
             ).toBe(config.annotations.xml);
+            // verify the updated package.json
+            expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+                devDependencies: {
+                    '@sap-ux/ui5-middleware-fe-mockserver': '2',
+                    '@sap/ux-ui5-tooling': '1'
+                },
+                scripts: {
+                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                },
+                ui5: {
+                    dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
+                }
+            });
         });
 
         it('Valid OData V2 service with multiple annotations', async () => {
@@ -261,6 +274,19 @@ describe('generate', () => {
                     join(testDir, 'webapp', 'localService', 'mainService', `${config.annotations[1].technicalName}.xml`)
                 )
             ).toBe(config.annotations[1].xml);
+            // verify the updated package.json
+            expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+                devDependencies: {
+                    '@sap-ux/ui5-middleware-fe-mockserver': '2',
+                    '@sap/ux-ui5-tooling': '1'
+                },
+                scripts: {
+                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                },
+                ui5: {
+                    dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
+                }
+            });
         });
 
         it('Valid OData V4 service', async () => {
@@ -285,6 +311,19 @@ describe('generate', () => {
             expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('destination: ');
             // verify that client is set
             expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('client: ');
+            // verify the updated package.json
+            expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+                devDependencies: {
+                    '@sap-ux/ui5-middleware-fe-mockserver': '2',
+                    '@sap/ux-ui5-tooling': '1'
+                },
+                scripts: {
+                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                },
+                ui5: {
+                    dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
+                }
+            });
         });
 
         it('Valid OData service with destination and no optional parameters', async () => {
@@ -298,7 +337,6 @@ describe('generate', () => {
                 client: '099'
             };
             // no localService folder needed
-
             await generate(testDir, config as OdataService, fs);
 
             // verify updated manifest.json
@@ -310,6 +348,15 @@ describe('generate', () => {
             expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('client: ');
             // verify that no localService folder has been created
             expect(fs.exists(join(testDir, 'webapp', 'localService', 'metadata.xml'))).toBeFalsy();
+            // verify the updated package.json
+            expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+                devDependencies: {
+                    '@sap/ux-ui5-tooling': '1'
+                },
+                ui5: {
+                    dependencies: ['@sap/ux-ui5-tooling']
+                }
+            });
         });
 
         it('Valid OData service with additional optional preview settings', async () => {
@@ -354,6 +401,15 @@ describe('generate', () => {
                             destination: test
                 "
             `);
+            // verify the updated package.json
+            expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+                devDependencies: {
+                    '@sap/ux-ui5-tooling': '1'
+                },
+                ui5: {
+                    dependencies: ['@sap/ux-ui5-tooling']
+                }
+            });
         });
 
         it('Valid service with neither metadata nor annotations and not starting with /sap', async () => {
@@ -371,6 +427,15 @@ describe('generate', () => {
             expect(manifest['sap.app'].dataSources.mainService.settings.annotations).toStrictEqual([]);
             // verify that the path is correct in ui5.yaml
             expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('path: /V2');
+            // verify the updated package.json
+            expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+                devDependencies: {
+                    '@sap/ux-ui5-tooling': '1'
+                },
+                ui5: {
+                    dependencies: ['@sap/ux-ui5-tooling']
+                }
+            });
         });
 
         it('Enhance unspecified input data with defaults', async () => {
@@ -676,5 +741,151 @@ describe('remove', () => {
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
             `annotations:\n          - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/\n`
         );
+    });
+});
+
+describe('update', () => {
+    let fs: Editor;
+    beforeEach(async () => {
+        const ui5Yaml = (await UI5Config.newInstance(''))
+            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+            .toString();
+        const ui5LocalYaml = (await UI5Config.newInstance(''))
+            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+            .addMockServerMiddleware(
+                [{ serviceName: 'mainService', servicePath: '/sap' }],
+                [
+                    {
+                        urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
+                    }
+                ]
+            )
+            .toString();
+        const ui5MockYaml = (await UI5Config.newInstance(''))
+            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+            .addMockServerMiddleware(
+                [{ serviceName: 'mainService', servicePath: '/sap' }],
+                [
+                    {
+                        urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
+                    }
+                ]
+            )
+            .toString();
+        // generate required files
+        fs = create(createStorage());
+        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
+        fs.write(join(testDir, 'ui5-local.yaml'), ui5LocalYaml);
+        fs.write(join(testDir, 'ui5-mock.yaml'), ui5MockYaml);
+        fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
+        fs.write(
+            join(testDir, 'webapp', 'manifest.json'),
+            JSON.stringify({
+                'sap.app': {
+                    id: 'testappid',
+                    dataSources: {
+                        mainService: {
+                            uri: '/sap',
+                            type: 'OData',
+                            settings: {
+                                annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                                localUri: 'annotations/annotation.xml'
+                            }
+                        },
+                        SEPMRA_PROD_MAN: {
+                            uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                            type: 'ODataAnnotation',
+                            settings: {
+                                localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
+                            }
+                        },
+                        annotation: {
+                            type: 'ODataAnnotation',
+                            uri: 'annotations/annotation.xml',
+                            settings: {
+                                localUri: 'annotations/annotation.xml'
+                            }
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            })
+        );
+    });
+    it('Try to update an unexisting service', async () => {
+        await expect(
+            update(
+                testDir,
+                {
+                    name: 'dummyService',
+                    url: 'https://dummyUrl',
+                    path: '/dummyPath',
+                    type: ServiceType.EDMX,
+                    annotations: [{ technicalName: 'dummy-technical-name' }] as EdmxAnnotationsInfo[],
+                    version: OdataVersion.v4
+                },
+                fs
+            )
+        ).rejects.toEqual(
+            Error(
+                t('error.requiredProjectPropertyNotFound', {
+                    property: `'sap.app.dataSources.dummyService'`,
+                    path: join(testDir, 'webapp', 'manifest.json')
+                })
+            )
+        );
+        // package.json should not be changed
+        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+            ui5: {
+                dependencies: []
+            }
+        });
+    });
+    it.skip('Update an existing service', async () => {
+        await update(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost',
+                path: '/sap',
+                type: ServiceType.EDMX,
+                annotations: [
+                    { technicalName: 'SEPMRA_PROD_MAN', xml: '<?xml version="1.0" encoding="utf-8"?></edmx:Edmx>' }
+                ] as EdmxAnnotationsInfo[],
+                version: OdataVersion.v4
+            },
+            fs
+        );
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as any;
+        expect(manifest['sap.app'].dataSources).toStrictEqual({
+            annotation: {
+                type: 'ODataAnnotation',
+                uri: 'annotations/annotation.xml',
+                settings: {
+                    localUri: 'annotations/annotation.xml'
+                }
+            }
+        });
+        expect(manifest['sap.ui5'].models).toStrictEqual({});
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).not.toContain('- path: /sap\n            url: http://localhost\n');
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).not.toContain(
+            '- path: /sap\n            url: http://localhost\n'
+        );
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
+            'services:\n          - urlPath: /sap/odata/testme\n '
+        );
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
+            `annotations:\n          - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/\n`
+        );
+        // package.json should not be changed
+        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({});
     });
 });

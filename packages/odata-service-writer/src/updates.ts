@@ -260,8 +260,14 @@ async function updateExistingServices(webappPath: string, manifest: Manifest, fs
  * @param basePath - the root path of an existing UI5 application
  * @param service - the OData service instance
  * @param fs - the memfs editor instance
+ * @param updateService - whether the service in manifest should be updated
  */
-export async function updateManifest(basePath: string, service: OdataService, fs: Editor): Promise<void> {
+export async function updateManifest(
+    basePath: string,
+    service: OdataService,
+    fs: Editor,
+    updateService: boolean = false
+): Promise<void> {
     const webappPath = await getWebappPath(basePath, fs);
     const manifestPath = join(webappPath, 'manifest.json');
     // Get component app id
@@ -274,9 +280,18 @@ export async function updateManifest(basePath: string, service: OdataService, fs
             t('error.requiredProjectPropertyNotFound', { property: `'${appProp}'.id`, path: manifestPath })
         );
     }
-    // Check and update existing services
+    // Throw if required property is not found manifest.json in case of update and dataSource is not defined
+    if (updateService && service.name && !manifest[appProp]?.dataSources?.[service.name]) {
+        throw new Error(
+            t('error.requiredProjectPropertyNotFound', {
+                property: `'${appProp}.dataSources.${service.name}'`,
+                path: manifestPath
+            })
+        );
+    }
+    // Check and update existing services in a way that is supported by multiple services
     const modifiedManifest = await updateExistingServices(webappPath, manifest, fs);
-    // Add or update manifest.json with service
+    // Add or update manifest.json with service data
     enhanceManifest(service, modifiedManifest);
     fs.writeJSON(manifestPath, modifiedManifest);
 }

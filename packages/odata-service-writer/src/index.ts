@@ -238,7 +238,7 @@ async function writeEDMXServiceFiles(
 }
 
 /**
- * Writes the odata service related file updates to an existing UI5 project specified by the base path.
+ * Writes the odata service related data and files to an existing UI5 project specified by the base path.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
@@ -265,6 +265,35 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     } else if (!isServiceTypeEdmx && service.annotations) {
         // Update cds files with annotations only if service type is CDS and annotations are provided
         await updateCdsFilesWithAnnotations(service.annotations as CdsAnnotationsInfo | CdsAnnotationsInfo[], fs);
+    }
+    return fs;
+}
+
+/**
+ * Writes the odata service related file updates to an existing UI5 project specified by the base path.
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {OdataService} service - the OData service instance
+ * @param {Editor} [fs] - the memfs editor instance
+ * @throws {Error} - if required UI5 project files are not found
+ * @returns {Promise<Editor>} the updated memfs editor instance
+ */
+async function update(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const paths = await findProjectFiles(basePath, fs);
+    ensureExists(basePath, ['webapp/manifest.json'], fs);
+    await enhanceData(basePath, service, fs);
+    // Set isServiceTypeEdmx true if service is EDMX
+    const isServiceTypeEdmx = service.type === ServiceType.EDMX;
+    // Prepare template folder for manifest and xml updates
+    const templateRoot = join(__dirname, '../templates');
+    // Update manifest.json
+    await updateManifest(basePath, service, fs, true);
+    // Dont extend backend and mockserver middlewares if service type is CDS
+    if (isServiceTypeEdmx) {
+        await writeEDMXServiceFiles(fs, basePath, paths, templateRoot, service as EdmxOdataService);
     }
     return fs;
 }
@@ -351,5 +380,5 @@ async function remove(
     return fs;
 }
 
-export { generate, remove, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
+export { generate, update, remove, OdataVersion, OdataService, ServiceType, EdmxAnnotationsInfo, CdsAnnotationsInfo };
 export { getAnnotationNamespaces, NamespaceAlias };
