@@ -1,47 +1,27 @@
 .info-center-header {
     position: absolute;
     z-index: 1;
-    top: 0;
     left: 0;
     right: 0;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 6px 15px 3px 15px;
+    padding: 10px 15px 6px 15px;
     border-bottom: 1px solid var(--vscode-menu-separatorBackground);
     background-color: var(--vscode-sideBar-background);
 }
 
 .info-center-items {
-    padding-top: 42px;
-}
-
-.info-center-item {
-    font-size: 13px;
-    line-height: 22px;
-    display: flex;
-    margin-right: 5px;
+    margin-top: 44px;
 }
 
 .message-bar {
     position: relative;
-    margin-bottom: 1px;
-    padding-top: 1px;
-    padding-bottom: 10px;
-    padding-left: 5px;
-
-    &.warning,
-    &.info,
-    &.error {
-        .message-description {
-            margin-left: -24px;
-        }
-    }
+    padding: 10px 15px;
 
     &.info {
         border-left: 2px solid var(--vscode-editorInfo-foreground);
     }
-
     &.warning {
         border-left: 2px solid var(--vscode-editorWarning-foreground);
 
@@ -49,7 +29,6 @@
             color: var(--vscode-editorWarning-foreground);
         }
     }
-
     &.error {
         border-left: 2px solid var(--vscode-editorError-foreground);
 
@@ -57,12 +36,17 @@
             color: var(--vscode-editorError-foreground);
         }
     }
-
+    .ms-MessageBar-icon, .ms-MessageBar-text {
+        margin: 0;
+    }
+    :first-child {
+        min-height: 0;
+    }
     &::after {
         content: "";
         position: absolute;
         bottom: 0;
-        left: 16px;
+        left: 15px;
         right: 15px;
         border-bottom: 1px solid var(--vscode-menu-separatorBackground);
     }
@@ -72,52 +56,38 @@
     border-left: 2px solid var(--vscode-activityBar-background) !important;
 }
 
-.icon-button-container {
+.remove-message {
     display: none;
     position: absolute;
-    right: 13px;
-    top: 0;
-    margin-top: 7px;
+    right: 15px;
+    top: 8px;
 }
 
-.icon-button-container-expand {
-    display: block;
-    position: absolute;
-    right: 10px;
-    top: 15%;
-    transform: translateY(-50%);
-}
-
-.dismiss-icon-button-container {
-    margin-top: 5px;
-}
-
-.message-bar:hover .icon-button-container {
+.message-bar:hover .remove-message {
     display: block;
     background-color: var(--vscode-activityBar-background);
 }
 
-.icon-button-container:hover {
+.remove-message:hover {
     background-color: var(--vscode-actionBar-toggledBackground) !important;
 }
 
 .message-title {
-    margin-left: -5px;
-    margin-right: 7px;
     font-size: 13px;
     font-weight: bold;
     color: var(--vscode-editor-foreground);
+    padding-left: 5px;
 }
 
 .message-description {
     display: -webkit-box;
+    position: relative;
+    line-height: 1.5;
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
     overflow: hidden;
     font-size: 11px;
     color: var(--vscode-editor-foreground);
-    position: relative;
-    line-height: 1.5;
 }
 
 .message-description::after {
@@ -131,47 +101,31 @@
     -webkit-line-clamp: unset;
 }
 
-.more-less {
+.more-less, .message-details {
     font-size: 11px;
     font-weight: bold;
     color: var(--vscode-textLink-foreground);
-    margin-right: 4px;
-    position: absolute;
-    bottom: 0;
-    right: 0;
-    background-color: var(--vscode-sideBar-background);
-    padding-left: 6px;
-    margin-left: 6px;
+    text-decoration: underline solid;
 
     &:hover {
-        text-decoration: underline solid;
+        text-decoration: unset;
         cursor: pointer;
     }
 }
 
 .ms-Dialog {
     .ms-Dialog-main {
+        width: 700px;
         max-width: 700px;
     }
-    .ms-Dialog-subText {
-        padding: 7px;
-        background-color: var(--vscode-input-background);
+    .modal-text-area {
+        textarea {
+            background-color: var(--vscode-input-background);
+            height: 258px;
+        }
     }
     .ms-Button {
         color: var(--vscode-button-secondaryForeground);
         background-color: var(--vscode-button-secondaryBackground);
-    }
-}
-
-.message-details {
-    font-size: 11px;
-    font-weight: bold;
-    color: var(--vscode-textLink-foreground);
-    background-color: var(--vscode-sideBar-background);
-    padding-left: 2px;
-
-    &:hover {
-        text-decoration: underline solid;
-        cursor: pointer;
     }
 }

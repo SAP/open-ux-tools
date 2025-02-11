@@ -5,7 +5,7 @@ import { Label, Stack, Text } from '@fluentui/react';
 import { useDispatch, useSelector } from 'react-redux';
 import type { InfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
 import { clearInfoCenterMessage, clearAllInfoCenterMessages, MessageBarType, toggleExpandMessage, readMessage, expandableMessage, toggleModalMessage } from '@sap-ux-private/control-property-editor-common';
-import { UIMessageBar, UIIconButton, UiIcons, UIIconButtonSizes, UIDialog } from '@sap-ux/ui-components';
+import { UIMessageBar, UIIconButton, UiIcons, UIDialog, UITextInput } from '@sap-ux/ui-components';
 import type { RootState } from '../../store';
 import { sectionHeaderFontSize } from '../properties/constants';
 import './InfoCenter.scss';
@@ -56,8 +56,12 @@ export function InfoCenter(): ReactElement {
                             {t('INFO CENTER')}
                         </Label>
                     </Stack.Item>
-                    <Stack.Item className='dismiss-icon-button-container'>
-                        <UIIconButton onClick={() => dispatch(clearAllInfoCenterMessages())} iconProps={{ iconName: UiIcons.TextGrammarDismiss }} sizeType={UIIconButtonSizes.Wide} />
+                    <Stack.Item>
+                        <UIIconButton 
+                            aria-label="clear-all" 
+                            onClick={() => dispatch(clearAllInfoCenterMessages())} 
+                            iconProps={{ iconName: UiIcons.TextGrammarDismiss }}
+                        />
                     </Stack.Item>
                 </div>
                 <Stack className='info-center-items'>
@@ -66,40 +70,42 @@ export function InfoCenter(): ReactElement {
                         return (
                             <Stack.Item key={index} className={`message-bar ${getMessageType(type)} ${isRead && 'message-read'}`} onMouseOver={() => dispatch(readMessage(index))}>
                                 <UIMessageBar messageBarType={type as MessageBarType}>
-                                    <Text block={true} className='message-title'>{message.title}</Text>
-                                    <Text accessKey={index.toString()} block={true} className={`message-description ${isExpanded && 'expanded'}`}>
-                                        {message.description}
-                                        {
-                                            isExpandable &&
-                                            <Text className='more-less' onClick={() => dispatch(toggleExpandMessage(index))}>
-                                                {isExpanded ? 'Less' : 'More'}
-                                            </Text>
-                                        }
-                                        {
-                                            message.details &&
-                                            <Text className='message-details' onClick={() => dispatch(toggleModalMessage(index))}>
-                                                {'more details'}
-                                            </Text>
-                                        }
-                                    </Text>
-                                    <UIDialog
-                                        hidden={!isOpenedModal}
-                                        dialogContentProps={{
-                                            title: 'Error Details',
-                                            subText: message.details
-                                        }}
-                                        acceptButtonText='Close'
-                                        onAccept={() => dispatch(toggleModalMessage(index))}
-                                    />
+                                    <Text role='status' block={true} className='message-title'>{message.title}</Text>
                                     {
                                         type !== MessageBarType.error &&
                                         <UIIconButton
-                                            className='icon-button-container'
+                                            className='remove-message'
                                             onClick={() => dispatch(clearInfoCenterMessage(index))}
                                             iconProps={{ iconName: UiIcons.TrashCan }}
                                         />
                                     }
                                 </UIMessageBar>
+                                <Text accessKey={index.toString()} block={true} className={`message-description ${isExpanded && 'expanded'} ${isExpandable && 'expandable'}`}>
+                                    {message.description}
+                                </Text>
+                                {
+                                    isExpandable &&
+                                    <Text className='more-less' onClick={() => dispatch(toggleExpandMessage(index))}>
+                                        {isExpanded ? 'Less' : 'More'}
+                                    </Text>
+                                }
+                                {
+                                    message.details &&
+                                    <Text className='message-details' onClick={() => dispatch(toggleModalMessage(index))}>
+                                        {'View Details'}
+                                    </Text>
+                                }
+                                <UIDialog
+                                    
+                                    hidden={!isOpenedModal}
+                                    dialogContentProps={{
+                                        title: 'Error Details'
+                                    }}
+                                    acceptButtonText='Close'
+                                    onAccept={() => dispatch(toggleModalMessage(index))}
+                                >
+                                    <UITextInput className='modal-text-area' value={message.details} readOnly={true} multiline={true}/>
+                                </UIDialog>
                             </Stack.Item>
                         )
                     })}
