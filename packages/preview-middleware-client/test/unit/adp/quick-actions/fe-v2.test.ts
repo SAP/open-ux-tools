@@ -2730,9 +2730,6 @@ describe('FE V2 quick actions', () => {
                     supportedVersion: true
                 },
                 {
-                    supportedVersion: true
-                },
-                {
                     supportedVersion: false,
                     ui5version: {
                         major: 1,
