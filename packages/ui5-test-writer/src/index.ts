@@ -1,11 +1,13 @@
-import { join } from 'path';
+import { join, parse, basename } from 'path';
+import path from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
-import { SupportedPageTypes, ValidationError } from './types';
+import { SupportedPageTypes, ValidationError, TestConfig } from './types';
 import { t } from './i18n';
+import fs from 'fs';
 
 /**
  * Reads the manifest for an app.
@@ -356,3 +358,143 @@ export function generatePageObjectFile(
 
     return editor;
 }
+
+function writeOPAPackageJsonUpdates(fsEditor: Editor, destinationRoot: string, hasData: boolean): void {
+    const ui5MockYamlScript = hasData ? '--config ./ui5-mock.yaml ' : '';
+    const scripts = {
+        'unit-tests': `fiori run ${ui5MockYamlScript}--open 'test/unit/unitTests.qunit.html'`,
+
+        'int-tests': `fiori run ${ui5MockYamlScript}--open 'test/integration/opaTests.qunit.html'`
+    };
+
+    fsEditor.extendJSON(join(destinationRoot, 'package.json'), { scripts });
+}
+
+export function writeOPATsconfigJsonUpdates(fsEditor: Editor, destinationRoot: string): void {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const tsconfig: any = fsEditor.readJSON(join(destinationRoot, 'tsconfig.json'));
+    if (tsconfig.compilerOptions === undefined) {
+        tsconfig.compilerOptions = {};
+    }
+    if (tsconfig.compilerOptions.paths === undefined) {
+        tsconfig.compilerOptions.paths = {};
+    }
+    debugger;
+    tsconfig.compilerOptions.paths['unit/*'] = ['./webapp/test/unit/*'];
+    tsconfig.compilerOptions.paths['integration/*'] = ['./webapp/test/integration/*'];
+
+    fsEditor.writeJSON(join(destinationRoot, 'tsconfig.json'), tsconfig);
+}
+
+// export function generateFreestyleTestFiles(
+//     basePath: string,
+//     testConfig: {
+//         appId?: string;
+//         viewName?: string;
+//         viewNamePage?: string;
+//         ui5Theme?: string;
+//         appIdWithSlash?: string;
+//         applicationTitle?: string;
+//         navigationIntent?: string;
+//         applicationDescription?: string;
+//         enableTypeScript?: boolean;
+//         edmx?: boolean;
+//     },
+//     fsEditor?: Editor
+// ): Editor {
+//     const editor: Editor = fsEditor ?? create(createStorage());
+//     const freestyleTemplateDirPath = join(__dirname, `../templates/freestyle/simple/webapp/test/1.71.0`);
+//     const testOutDirPath = join(basePath, 'webapp/test');
+
+//     // Function to recursively get all files from a directory
+//     const getAllFiles = (dir: any): string[] | [] =>
+//         fs?.readdirSync(dir).reduce((files: any, file: string) => {
+//             const name = path.join(dir, file);
+//             const isDirectory = fs?.statSync(name).isDirectory();
+//             return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name];
+//         }, []);
+
+//     // Get all template files
+//     const allTemplateFiles = getAllFiles(freestyleTemplateDirPath);
+
+//     // Filter files based on TypeScript setting
+//     const filteredFiles = allTemplateFiles.filter(filePath => {
+//         if (filePath.endsWith('.ts')) {
+//             return testConfig.enableTypeScript === true;  // Keep .ts if TypeScript is enabled
+//         } else if (filePath.endsWith('.js')) {
+//             return testConfig.enableTypeScript === false; // Keep .js if TypeScript is disabled
+//         }
+//         return true; // Keep other files (e.g., .html, .json, etc.)
+//     });
+
+//     // Copy each filtered file using copyTpl
+//     filteredFiles.forEach(filePath => {
+//         const relativePath = filePath.replace(freestyleTemplateDirPath, ''); // Preserve folder structure
+//         editor.copyTpl(filePath, join(testOutDirPath, relativePath), testConfig);
+//     });
+    
+//     writeOPAPackageJsonUpdates(editor, basePath, !!testConfig.edmx);
+//     if (testConfig.enableTypeScript === true) {
+//         writeOPATsconfigJsonUpdates(editor, basePath);
+//     }
+
+//     return editor;
+// }
+
+// Function to recursively get all files from a directory
+const getAllFiles = (dir: any): string[] | [] =>
+    fs?.readdirSync(dir).reduce((files: any, file: string) => {
+        const name = path.join(dir, file);
+        const isDirectory = fs?.statSync(name).isDirectory();
+        return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name];
+    }, 
+[]);
+
+/**
+ * Generates and copies freestyle test files based on configuration
+ */
+export function generateFreestyleTestFiles(
+    basePath: string,
+    testConfig: TestConfig,
+    fsEditor?: Editor
+): Editor {
+    const editor: Editor = fsEditor ?? create(createStorage());
+    const freestyleTemplateDirPath = join(__dirname, '../templates/freestyle/simple/webapp/test/1.71.0');
+    const testOutDirPath = join(basePath, 'webapp/test');
+
+    const viewNamePage = `${testConfig.viewName}Page`
+
+    // Get all template files
+    const allTemplateFiles = getAllFiles(freestyleTemplateDirPath);
+
+    // Filter files based on TypeScript setting
+    const filteredFiles = allTemplateFiles.filter(filePath => {
+        if (filePath.endsWith('.ts')) {
+            return testConfig.enableTypeScript === true;
+        } else if (filePath.endsWith('.js')) {
+            return testConfig.enableTypeScript === false;
+        }
+        return true;
+    });
+
+    // Copy each filtered file using copyTpl
+    filteredFiles.forEach(filePath => {
+        const relativePath = filePath.replace(freestyleTemplateDirPath, '');
+        editor.copyTpl(filePath, join(testOutDirPath, relativePath), {
+            ...testConfig,
+            viewNamePage
+        });
+    });
+
+    // Update package.json scripts
+    writeOPAPackageJsonUpdates(editor, basePath, testConfig.hasData ?? false);
+
+    // Update tsconfig.json if TypeScript is enabled
+    if (testConfig.enableTypeScript) {
+        writeOPATsconfigJsonUpdates(editor, basePath);
+    }
+
+    return editor;
+}
+
+

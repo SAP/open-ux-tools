@@ -58,3 +58,19 @@ export class ValidationError extends Error {
         this.name = this.constructor.name;
     }
 }
+
+/**
+ * Configuration interface for generating test files
+ */
+export interface TestConfig {
+    appId?: string;
+    appIdWithSlash?: string;
+    applicationTitle?: string;
+    applicationDescription?: string;
+    navigationIntent?: string;
+    ui5Theme?: string;
+    enableTypeScript?: boolean;
+    hasData?: boolean;
+    viewName?: string;
+    viewNamePage?: string;
+}

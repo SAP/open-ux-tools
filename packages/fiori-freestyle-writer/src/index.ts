@@ -13,6 +13,7 @@ import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
+import { generateFreestyleTestFiles } from '@sap-ux/ui5-test-writer';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -165,6 +166,38 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addFioriToolsProxydMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
+    }
+
+    
+    const getApplicationIdWithSlash = (): string => {
+        let appIdWihSlash;
+        if (ffApp.appOptions?.typescript=== true) {
+            appIdWihSlash = `${ffApp.app.namespace?.replace(/\./g, '/').replace(/\/$/, '')}${
+                ffApp.app.namespace !== '' ? '/' : ''
+                }${ffApp.package.name?.replace(/[_-]/g, '')}`;
+        } else {
+            appIdWihSlash = `${ffApp.app.namespace?.replace(/\./g, '')}${ffApp.app.namespace !== '' ? '/' : ''}${
+                    ffApp.package.name
+                }`;
+        }
+        return appIdWihSlash;
+    }
+    console.log();
+    if (ffApp.appOptions?.addTests) {
+        generateFreestyleTestFiles(
+            basePath,
+            {
+                appId: ffApp.app.id,
+                viewName: (ffApp.template.settings as BasicAppSettings).viewName,
+                ui5Theme: ffApp.ui5?.ui5Theme,
+                appIdWithSlash: getApplicationIdWithSlash(),
+                applicationTitle: ffApp.app.title,
+                //navigationIntent: string,
+                applicationDescription: ffApp.app.description,
+                hasData: ffApp.service?.hasData,
+            },
+            fs
+        );
     }
 
     if (ffApp.service?.capService) {
