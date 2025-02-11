@@ -54,7 +54,15 @@ describe('Test getAbapQuestions', () => {
             indexGenerationAllowed: true,
             showOverwriteQuestion: false,
             logger: DefaultLogger,
-            isAdp: false
+            promptOptions: {
+                ui5AbapRepo: { hideIfOnPremise: false },
+                transportInputChoice: { hideIfOnPremise: false },
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false
+                },
+                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false }
+            }
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -116,7 +124,15 @@ describe('Test getAbapQuestions', () => {
             backendConfig: undefined,
             configFile: 'ui5-deploy.yaml',
             logger: DefaultLogger,
-            isAdp: false
+            promptOptions: {
+                ui5AbapRepo: { hideIfOnPremise: false },
+                transportInputChoice: { hideIfOnPremise: false },
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false
+                },
+                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false }
+            }
         });
 
         expect(getPromptsSpy).toBeCalledWith(

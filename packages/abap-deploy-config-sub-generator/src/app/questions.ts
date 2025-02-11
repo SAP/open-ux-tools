@@ -10,7 +10,7 @@ import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
-import { DeployProjectType } from './types';
+import { DeployProjectType, type AbapDeployConfigPromptOptions } from './types';
 
 /**
  * Get the ABAP target based on the provided parameters.
@@ -75,7 +75,7 @@ function getAbapTarget(
  * @param params.showOverwriteQuestion - whether the overwrite question should be shown
  * @param params.projectType - the project type
  * @param params.logger - the logger
- * @param params.isAdp - the whether application is Adaptation Project
+ * @param params.promptOptions - A set of optional feature flags to prompts behavior.
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
@@ -86,7 +86,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed = false,
     showOverwriteQuestion = false,
     projectType = DeployProjectType.Application,
-    isAdp = false,
+    promptOptions = {},
     logger
 }: {
     appRootPath: string;
@@ -96,7 +96,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed?: boolean;
     showOverwriteQuestion?: boolean;
     projectType?: DeployProjectType;
-    isAdp?: boolean;
+    promptOptions?: AbapDeployConfigPromptOptions;
     logger?: ILogWrapper;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
@@ -124,13 +124,17 @@ export async function getAbapQuestions({
                 serviceProvider,
                 type: projectType
             },
-            ui5AbapRepo: { default: deployAppConfig?.name, hideIfOnPremise: isAdp },
+            ui5AbapRepo: {
+                default: deployAppConfig?.name,
+                hideIfOnPremise: promptOptions?.ui5AbapRepo?.hideIfOnPremise ?? false
+            },
             description: { default: deployAppConfig?.description },
             packageManual: {
                 default: deployAppConfig?.package,
                 additionalValidation: {
-                    shouldValidatePackageType: isAdp,
-                    shouldValidatePackageForStartingPrefix: isAdp
+                    shouldValidatePackageType: promptOptions?.packageAutocomplete?.shouldValidatePackageType ?? false,
+                    shouldValidatePackageForStartingPrefix:
+                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false
                 }
             },
             transportManual: { default: deployAppConfig?.transport },
@@ -138,12 +142,13 @@ export async function getAbapQuestions({
             packageAutocomplete: {
                 useAutocomplete: true,
                 additionalValidation: {
-                    shouldValidatePackageType: isAdp,
-                    shouldValidatePackageForStartingPrefix: isAdp
+                    shouldValidatePackageType: promptOptions?.packageAutocomplete?.shouldValidatePackageType ?? false,
+                    shouldValidatePackageForStartingPrefix:
+                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false
                 }
             },
             overwrite: { hide: !showOverwriteQuestion },
-            transportInputChoice: { hideIfOnPremise: isAdp }
+            transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false }
         },
         logger as unknown as Logger,
         getHostEnvironment() !== hostEnvironment.cli

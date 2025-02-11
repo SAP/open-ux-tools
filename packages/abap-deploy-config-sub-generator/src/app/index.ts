@@ -28,7 +28,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/constants';
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { AbapDeployConfigOptions } from './types';
+import type { AbapDeployConfigOptions, AbapDeployConfigPromptOptions } from './types';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
 
 /**
@@ -162,6 +162,16 @@ export default class extends DeploymentGenerator {
         }
         if (!this.launchDeployConfigAsSubGenerator) {
             const appType = await getAppType(this.destinationPath());
+            const isAdp = appType === 'Fiori Adaptation';
+            const promptOptions: AbapDeployConfigPromptOptions = {
+                ui5AbapRepo: { hideIfOnPremise: isAdp },
+                transportInputChoice: { hideIfOnPremise: isAdp },
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: isAdp,
+                    shouldValidatePackageType: isAdp
+                },
+                packageManual: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp }
+            };
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
                 appRootPath: this.destinationRoot(),
                 connectedSystem: this.options.connectedSystem,
@@ -176,7 +186,7 @@ export default class extends DeploymentGenerator {
                 ),
                 projectType: this.projectType,
                 logger: DeploymentGenerator.logger,
-                isAdp: appType === 'Fiori Adaptation'
+                promptOptions
             });
             const prompAnswers = await this.prompt(abapDeployConfigPrompts);
             this.answers = reconcileAnswers(prompAnswers, abapAnswers);
@@ -320,4 +330,4 @@ export default class extends DeploymentGenerator {
 
 export { getAbapQuestions } from './questions';
 export { indexHtmlExists } from '../utils';
-export { AbapDeployConfigOptions, DeployProjectType } from './types';
+export { AbapDeployConfigOptions, DeployProjectType, AbapDeployConfigPromptOptions } from './types';
