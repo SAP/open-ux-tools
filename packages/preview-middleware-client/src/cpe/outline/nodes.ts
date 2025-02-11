@@ -173,7 +173,6 @@ export async function transformNodes(
                           changeService,
                           propertyIdMap
                       );
-
                 const node: OutlineNode = {
                     controlId: current.id,
                     controlType: current.technicalName,

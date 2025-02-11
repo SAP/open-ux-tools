@@ -36,7 +36,9 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
 
 let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [];
 const uaaCredsMock = {
-    credentials: {}
+    credentials: {
+        uaa: {}
+    }
 };
 jest.mock('@sap/cf-tools', () => {
     return {

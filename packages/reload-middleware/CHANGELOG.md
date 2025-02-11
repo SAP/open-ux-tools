@@ -1,5 +1,25 @@
 # @sap-ux/reload-middleware
 
+## 0.2.17
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+
+## 0.2.15
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+
 ## 0.2.14
 
 ### Patch Changes

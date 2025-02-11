@@ -25,7 +25,7 @@ export async function generateInboundConfig(
         fs = create(createStorage());
     }
 
-    const variant = getVariant(basePath);
+    const variant = getVariant(basePath, fs);
 
     if (!config?.inboundId) {
         config.addInboundId = true;

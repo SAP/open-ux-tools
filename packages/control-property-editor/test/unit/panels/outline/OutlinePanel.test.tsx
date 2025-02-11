@@ -2,7 +2,13 @@ import React from 'react';
 import { screen, fireEvent } from '@testing-library/react';
 
 import type { OutlineNode } from '@sap-ux-private/control-property-editor-common';
-import { controlSelected, outlineChanged, SCENARIO } from '@sap-ux-private/control-property-editor-common';
+import {
+    addExtensionPoint,
+    controlSelected,
+    executeContextMenuAction,
+    outlineChanged,
+    SCENARIO
+} from '@sap-ux-private/control-property-editor-common';
 
 import { render } from '../../utils';
 
@@ -238,123 +244,47 @@ describe('OutlinePanel', () => {
     });
 
     test('handleOpenTooltip should show and hide the tooltip', () => {
-        const tooltipId = 'tooltip--ExtensionPoint';
-
-        const { container } = render(<OutlinePanel />, {
+        const item = {
+            name: 'ExtensionPoint',
+            controlId: '04',
+            children: [],
+            controlType: 'sap.ui.extensionpoint',
+            hasDefaultContent: true,
+            editable: true,
+            visible: true
+        };
+        const { dispatch } = render(<OutlinePanel />, {
             initialState: {
-                outline: [
-                    {
-                        name: 'ExtensionPoint',
-                        controlId: '04',
-                        children: [],
-                        controlType: 'sap.ui.extensionpoint',
-                        hasDefaultContent: true,
-                        editable: true,
-                        visible: true
-                    }
-                ],
+                outline: [item],
                 filterQuery: filterInitOptions,
                 scenario: SCENARIO.AdaptationProject
             }
         });
-        const spanElement = screen.getByTestId('tooltip-container');
+        const spanElement = screen.getByText(/extensionpoint/i);
 
         // Simulate a right-click event
         fireEvent.contextMenu(spanElement);
 
-        const tooltip = container.querySelector(`#${tooltipId}`);
+        expect(dispatch).nthCalledWith(1, { type: '[ext] select-control', payload: '04' });
 
-        expect(tooltip).toHaveStyle({ visibility: 'visible', opacity: '1' });
+        // shown context menu item.
+        const contextMenuItems = screen.getAllByText(/Add Fragment at Extension Point/i);
+        expect(contextMenuItems.length).toBe(1);
 
-        // Close the tooltip
-        fireEvent.click(document); // Simulate a click outside the tooltip
-
-        expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
-    });
-
-    test('should show and hide tooltip when clicking button to open dialog', () => {
-        const tooltipId = 'tooltip--ExtensionPoint';
-
-        const { container } = render(<OutlinePanel />, {
-            initialState: {
-                outline: [
-                    {
-                        name: 'ExtensionPoint',
-                        controlId: '04',
-                        children: [],
-                        controlType: 'sap.ui.extensionpoint',
-                        editable: true,
-                        visible: true
-                    }
-                ],
-                filterQuery: filterInitOptions,
-                scenario: SCENARIO.AdaptationProject
-            }
-        });
-        const spanElement = screen.getByTestId('tooltip-container');
-        const buttonElement = screen.getByTestId('tooltip-dialog-button');
-
-        // Simulate a right-click event
-        fireEvent.contextMenu(spanElement);
-
-        const tooltip = container.querySelector(`#${tooltipId}`);
-
-        expect(tooltip).toHaveStyle({ visibility: 'visible', opacity: '1' });
-
-        // Close the tooltip
-        fireEvent.click(buttonElement); // Simulate a click on the tooltip button
-
-        expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
-    });
-
-    test('should hide tooltip if another tooltip is already open', () => {
-        const tooltipId = 'tooltip--ExtensionPoint';
-        const tooltipId2 = 'tooltip--ExtensionPoint2';
-
-        const { container } = render(<OutlinePanel />, {
-            initialState: {
-                outline: [
-                    {
-                        name: 'one',
-                        controlId: '01',
-                        children: [
-                            {
-                                name: 'ExtensionPoint',
-                                controlId: '04',
-                                children: [],
-                                controlType: 'sap.ui.extensionpoint',
-                                editable: true,
-                                visible: true
-                            },
-                            {
-                                name: 'ExtensionPoint2',
-                                controlId: '05',
-                                children: [],
-                                controlType: 'sap.ui.extensionpoint',
-                                editable: true,
-                                visible: true
-                            }
-                        ],
-                        controlType: 'name.space.one',
-                        editable: true,
-                        visible: true
-                    }
-                ],
-                filterQuery: filterInitOptions,
-                scenario: SCENARIO.AdaptationProject
-            }
-        });
-        const spanElements = screen.getAllByTestId('tooltip-container'); // Array of three items
-
-        // Simulate a right-click event
-        fireEvent.contextMenu(spanElements[1]);
-        fireEvent.contextMenu(spanElements[2]);
-
-        const tooltip = container.querySelector(`#${tooltipId}`);
-        const tooltip2 = container.querySelector(`#${tooltipId2}`);
-
-        expect(tooltip).toHaveStyle({ visibility: 'hidden', opacity: '0' });
-        expect(tooltip2).toHaveStyle({ visibility: 'visible', opacity: '1' });
+        fireEvent.click(contextMenuItems[0]);
+        expect(dispatch).nthCalledWith(
+            2,
+            addExtensionPoint({
+                children: [],
+                controlId: '04',
+                controlType: 'sap.ui.extensionpoint',
+                editable: true,
+                hasDefaultContent: true,
+                name: 'ExtensionPoint',
+                path: ['0', 'children'],
+                visible: true
+            } as any)
+        );
     });
 
     test('do not expand to previously selected control', () => {
@@ -440,5 +370,51 @@ describe('OutlinePanel', () => {
 
         const indicator = container.querySelectorAll('svg circle');
         expect(indicator).toHaveLength(2);
+    });
+
+    test('tree - open context menu for outline nodes', () => {
+        const { dispatch } = render(<OutlinePanel />, {
+            initialState: {
+                outline: getOutlineNodes(true, true),
+                filterQuery: filterInitOptions,
+                contextMenu: {
+                    controlId: '01',
+                    contextMenuItems: [
+                        {
+                            id: 'TESTACTION01',
+                            enabled: true,
+                            title: 'test-action-01'
+                        },
+                        {
+                            id: 'TESTACTION02',
+                            enabled: true,
+                            title: 'test-action-02'
+                        }
+                    ]
+                }
+            }
+        });
+
+        // check one
+        const spanElement = screen.getByText(/^one$/i);
+
+        // Simulate a right-click event
+        fireEvent.contextMenu(spanElement);
+
+        expect(dispatch).nthCalledWith(1, { type: '[ext] select-control', payload: '01' });
+        expect(dispatch).nthCalledWith(2, { type: '[ext] request-control-context-menu <pending>', payload: '01' });
+
+        // find context menu items.
+        const contextMenuItems = screen.getAllByText(/^test-action/i);
+        expect(contextMenuItems.length).toBe(2);
+
+        fireEvent.click(contextMenuItems[0]);
+        expect(dispatch).nthCalledWith(
+            3,
+            executeContextMenuAction({
+                controlId: '01',
+                actionName: 'TESTACTION01'
+            })
+        );
     });
 });

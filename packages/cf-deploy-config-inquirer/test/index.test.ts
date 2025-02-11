@@ -31,7 +31,7 @@ describe('index', () => {
     it('should prompt with inquirer adapter', async () => {
         const answers: CfDeployConfigAnswers = {
             destinationName: 'testDestination',
-            addManagedRouter: true,
+            addManagedAppRouter: true,
             overwrite: true
         };
 

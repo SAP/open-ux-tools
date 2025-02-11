@@ -1,5 +1,42 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.59
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
+## 0.11.58
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.11.57
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
+## 0.11.56
+
+### Patch Changes
+
+-   740f4d9: fix: CPE Quick action bug fix in ALP v4 projects. Add Custom Table Action worked incorrectly on Analytical Pages with multiple action toolbars in charts and tables.
+    Some V4 Quick Action code refactoring to optimize
+
+## 0.11.55
+
+### Patch Changes
+
+-   6b55228: Bind i18n models with namespace
+
+## 0.11.54
+
+### Patch Changes
+
+-   61edb7b: Fixed "Enable/Disable Semantic Date Range in Filter Bar" quick action in SAP Fiori Elements for OData V2 applications when using UI5 version lower than 1.126.
+
 ## 0.11.53
 
 ### Patch Changes

@@ -116,3 +116,14 @@ export async function disableFioriProjectIntegrity(projectRoot: string): Promise
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
     await disableProjectIntegrity(integrityFilePath);
 }
+
+/**
+ * Check if the Fiori project integrity is initialized for given root path of a project.
+ * This is also true if the Fiori project is disabled, but the integrity data is present.
+ *
+ * @param projectRoot - root folder of the project
+ * @returns - true if the Fiori project integrity is initialized, false otherwise
+ */
+export function isFioriProjectIntegrityInitialized(projectRoot: string): boolean {
+    return existsSync(join(projectRoot, fioriIntegrityDataPath));
+}

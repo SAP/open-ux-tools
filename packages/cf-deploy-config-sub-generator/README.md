@@ -2,7 +2,7 @@
 
 ## Features
 
-1. The Cloud Foundry deployment configuration sub-generator enables users to create deployment configuration for a SAP Fiori application. (Not yet implemented) 
+1. The Cloud Foundry deployment configuration sub-generator enables users to create deployment configuration for a SAP Fiori application.
 
 2. The SAP Fiori Application Router sub-generator enables users to configure and generate a Cloud Foundry Fiori application router.
 

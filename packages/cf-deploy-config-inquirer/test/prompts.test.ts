@@ -187,7 +187,7 @@ describe('Prompt Generation Tests', () => {
         });
     });
 
-    describe('getAddManagedRouterPrompt', () => {
+    describe('getaddManagedAppRouterPrompt', () => {
         beforeEach(() => {
             promptOptions = {
                 ...promptOptions,
