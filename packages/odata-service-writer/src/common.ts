@@ -27,8 +27,6 @@ interface DataSourceUpdateSettings {
  * @param {Editor} fs - the memfs editor instance
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {DataSourceUpdateSettings} dataSourceUpdateSettings - dataSource settings for update
- * @param {EdmxAnnotationsInfo | EdmxAnnotationsInfo[]} serviceRemoteAnnotations - remote annotations of the OData service instance
- * @param {string | string[]} serviceLocalAnnotations - local annotations of the OData service instance
  */
 function enhanceManifestDatasources(
     fs: Editor,
@@ -432,7 +430,6 @@ export async function writeLocalServiceFiles(
  * @param {Editor} fs - the memfs editor instance
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {string} webappPath - the webapp path of an existing UI5 application
- * @param {string} templateRoot - path to the file templates
  * @param {OdataService} service - the OData service instance with EDMX type
  */
 export async function removeLocalServiceFiles(
