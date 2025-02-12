@@ -18,10 +18,11 @@ import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateCompone
  */
 export function getAppComponent(control: ManagedObject): AppComponent | undefined {
     const ownerComponent = Component.getOwnerComponentFor(control);
+    let result;
     if (ownerComponent?.isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent')) {
-        return ownerComponent.getAppComponent();
+        result = ownerComponent.getAppComponent();
     }
-    return undefined;
+    return result;
 }
 
 /**

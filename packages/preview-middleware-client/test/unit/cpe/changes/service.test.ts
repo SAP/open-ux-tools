@@ -1528,6 +1528,21 @@ describe('ChangeService', () => {
                         }
                     ]
                 ])
+            ),
+            createCommand(
+                new Map<string, any>([
+                    ['changeType', 'appdescr_ui_generic_app_changePageConfiguration'],
+                    [
+                        'parameters',
+                        {
+                            'entityPropertyChange': {
+                                'propertyPath': 'controlConfig/settings/useDateRange',
+                                'operation': 'upsert',
+                                'propertyValue': true
+                            }
+                        }
+                    ]
+                ])
             )
         ];
         rtaMock.getCommandStack.mockReturnValue({
@@ -1554,6 +1569,16 @@ describe('ChangeService', () => {
                         kind: 'configuration',
                         propertyName: 'someSetting',
                         propertyPath: 'controlConfig/settings',
+                        value: true
+                    },
+                    {
+                        controlIds: ['ListReport.view.ListReport::SEPMRA_C_PD_Product--app.my-test-button'],
+                        isActive: true,
+                        fileName: 'testFileName',
+                        type: 'pending',
+                        kind: 'configuration',
+                        propertyName: 'useDateRange',
+                        propertyPath: 'controlConfig/settings/useDateRange',
                         value: true
                     }
                 ]

@@ -930,6 +930,12 @@ describe('FE V2 quick actions', () => {
                     isManifestPagesAsArray: true
                 }
             ];
+            jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                return {
+                    isA: (type: string) => type === 'sap.suite.ui.generic.template.lib.TemplateComponent',
+                    getAppComponent: jest.fn().mockReturnValue({} as any)
+                } as unknown as UIComponent;
+            });
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                 sapCoreMock.byId.mockImplementation((id) => {
@@ -1066,6 +1072,7 @@ describe('FE V2 quick actions', () => {
                         'settings': {},
                         'type': 'appDescriptor',
                         'value': {
+                            'appComponent': {},
                             'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
                             'parameters': {
                                 'entityPropertyChange': {
