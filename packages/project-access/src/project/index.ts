@@ -39,6 +39,6 @@ export {
 } from './search';
 export { getWebappPath, readUi5Yaml, getAllUi5YamlFileNames } from './ui5-config';
 export { getMtaPath } from './mta';
-export { createApplicationAccess, createProjectAccess, createApplicationAccessFromProject } from './access';
+export { createApplicationAccess, createProjectAccess } from './access';
 export { updatePackageScript, hasUI5CliV3 } from './script';
 export { getSpecification, getSpecificationPath, refreshSpecificationDistTags } from './specification';

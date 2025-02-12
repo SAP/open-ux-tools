@@ -304,40 +304,6 @@ function isEditor(argument: Editor | ApplicationAccessOptions): argument is Edit
 }
 
 /**
- * Extracts `ApplicationAccessOptions` from the provided `fs` parameter.
- *
- * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node.
- * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.
- * When calling this function, adding or removing a CDS file in memory or changing CDS configuration will not be considered until present on real file system.
- * @returns The extracted `ApplicationAccessOptions`.
- */
-function getApplicationAccessOptions(fs?: Editor | ApplicationAccessOptions): ApplicationAccessOptions | undefined {
-    let options: ApplicationAccessOptions | undefined;
-    if (fs) {
-        options = isEditor(fs) ? { fs } : fs;
-    }
-    return options;
-}
-
-/**
- * Create an instance of ApplicationAccess from passed project that contains information about the application, like paths and services.
- *
- * @param project - Project data
- * @param appId - application ID
- * @param fs optional `mem-fs-editor` instance. If provided, `mem-fs-editor` api is used instead of `fs` of node.
- * In case of CAP project, some CDS APIs are used internally which depends on `fs` of node and not `mem-fs-editor`.
- * When calling this function, adding or removing a CDS file in memory or changing CDS configuration will not be considered until present on real file system.
- * @returns - Instance of ApplicationAccess that contains information about the application, like paths and services
- */
-export function createApplicationAccessFromProject(
-    project: Project,
-    appId: string,
-    fs?: Editor | ApplicationAccessOptions
-): ApplicationAccess {
-    return new ApplicationAccessImp(project, appId, getApplicationAccessOptions(fs));
-}
-
-/**
  * Create an instance of ApplicationAccess that contains information about the application, like paths and services.
  *
  * @param appRoot - Application root path
@@ -351,15 +317,21 @@ export async function createApplicationAccess(
     fs?: Editor | ApplicationAccessOptions
 ): Promise<ApplicationAccess> {
     try {
-        const apps = await findAllApps([appRoot]);
-        const app = apps.find((app) => app.appRoot === appRoot);
-        if (!app) {
-            throw new Error(`Could not find app with root ${appRoot}`);
+        let options: ApplicationAccessOptions | undefined;
+        if (fs) {
+            options = isEditor(fs) ? { fs } : fs;
         }
-        const options = getApplicationAccessOptions(fs);
-        const project = await getProject(app.projectRoot, options?.fs);
+        let project = options?.project;
+        if (!project) {
+            const apps = await findAllApps([appRoot]);
+            const app = apps.find((app) => app.appRoot === appRoot);
+            if (!app) {
+                throw new Error(`Could not find app with root ${appRoot}`);
+            }
+            project = await getProject(app.projectRoot, options?.fs);
+        }
         const appId = relative(project.root, appRoot);
-        return createApplicationAccessFromProject(project, appId, fs);
+        return new ApplicationAccessImp(project, appId, options);
     } catch (error) {
         throw Error(`Error when creating application access for ${appRoot}: ${error}`);
     }

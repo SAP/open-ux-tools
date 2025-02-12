@@ -13,6 +13,7 @@ interface BaseAccess {
 }
 export interface ApplicationAccessOptions extends ProjectAccessOptions {
     fs?: Editor;
+    project?: Project;
 }
 export interface ApplicationAccess extends BaseAccess {
     readonly app: ApplicationStructure;
