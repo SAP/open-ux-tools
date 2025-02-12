@@ -497,8 +497,8 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     const index = action.payload;
                     state.infoCenterMessages[index].modal = !state.infoCenterMessages[index].modal;
                 }
-            )    
-            .addMatcher(        
+            )
+            .addMatcher(
                 requestControlContextMenu.fulfilled.match,
                 (state: SliceState, action: ReturnType<typeof requestControlContextMenu.fulfilled>): void => {
                     const { contextMenuItems, controlId } = action.payload;

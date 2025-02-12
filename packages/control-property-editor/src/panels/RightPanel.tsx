@@ -7,7 +7,7 @@ import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 
 import { PropertiesList } from './properties';
 import { QuickActionList } from './quick-actions';
-import { InfoCenter } from './info-center'
+import { InfoCenter } from './info-center';
 import type { RootState } from '../store';
 import './RightPanel.scss';
 
