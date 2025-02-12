@@ -414,7 +414,6 @@ export function generateFreestyleTestFiles(
 
     // Get all template files
     const allTemplateFiles = getAllFiles(freestyleTemplateDirPath);
-    console.log(" --- allTemplateFiles: ", allTemplateFiles);
 
     const typeScript = enableTypeScript === undefined ? false : true;
     // Filter files based on TypeScript setting
@@ -425,19 +424,84 @@ export function generateFreestyleTestFiles(
             return typeScript === false;
         }
         return true;
+    }).map(filePath => {
+        // Transform the file path to the relative path
+        const relativePath: string = filePath.replace(freestyleTemplateDirPath, '');
+        return relativePath;
     });
+    console.log(" --- filteredFiles: ", filteredFiles);
 
     const testConfig = {
         ...config,
         viewNamePage,
-        appIdWithSlash
+        appIdWithSlash: appIdWithSlash
     };
 
+    console.log(" -- testConfig: ", testConfig);
+
+    function processDestinationPath(filePath: string): string {
+        //return filePath.replace('/1.120.0', '').replace('/1.71.0', '');
+        //console.log(" --- filePath: ", filePath);
+        if(filePath === '/integration/pages/viewName.js'){
+            return filePath.replace(/viewName/g, 'KITTY');
+        }
+        return filePath;
+    }
+
+    
+
     // Copy each filtered file using copyTpl
-    filteredFiles.forEach((filePath: any) => {
-        const relativePath = filePath.replace(freestyleTemplateDirPath, '');
-        editor.copyTpl(filePath, join(testOutDirPath, relativePath), testConfig);
+    console.log(" ---join(freestyleTemplateDirPath, '*.*')", join(freestyleTemplateDirPath, '*.*'))
+    console.log(" ---to join(testOutDirPath, 'integration')", testOutDirPath)
+    // editor.copyTpl(join(freestyleTemplateDirPath, '**', '*.*'), testOutDirPath, testConfig, undefined, {
+    //     globOptions: { dot: true },
+    //     processDestinationPath: processDestinationPath
+    // });
+
+    // Iterate through the filtered files and copy each one
+    filteredFiles.forEach((filePath: string) => {
+        // If the file is 'integration/page/viewName.js', rename it to 'integration/page/kitty.js'
+        let sourceFilePath = join(freestyleTemplateDirPath, filePath);
+        let destinationFilePath = join(testOutDirPath, filePath);
+    
+        // Check if the file is 'integration/page/viewName.js'
+        if (filePath === '/integration/pages/viewName.js') {
+            
+            // Change the file name to 'kitty.js'
+            destinationFilePath = join(testOutDirPath, `integration/pages/${config.viewName}.js`);
+            console.log(" --- match found --- ", destinationFilePath)
+        }
+
+        if (filePath === '/unit/controller/viewName.controller.js') {
+            
+            // Change the file name to 'kitty.js'
+            destinationFilePath = join(testOutDirPath, `unit/controller/${config.viewName}.controller.js`);
+            console.log(" --- match found --- ", destinationFilePath)
+        }
+    
+        // Copy the file using editor.copyTpl
+        editor.copyTpl(
+            sourceFilePath,  // Source file path (no change)
+            destinationFilePath,  // Destination file path (changed if necessary)
+            testConfig,  // Configuration for the template
+            undefined,  // Additional options if needed
+            {
+                globOptions: { dot: true },  // Glob options if needed
+                // processDestinationPath: processDestinationPath  // Apply the custom path processing if needed
+            }
+        );
     });
+    
+
+    // filteredFiles.forEach((filePath: string) => {
+    //     debugger;
+    //     const relativePath: string = filePath.replace(freestyleTemplateDirPath, '');
+    //     console.log(" --- relativePath: ", relativePath);
+
+    //     editor.copyTpl(filePath, join(testOutDirPath, relativePath), testConfig, undefined, {
+    //         processDestinationPath: processDestinationPath
+    //     });
+    // });
 
     // Update package.json scripts
     writeOPAPackageJsonUpdates(editor, basePath, config.hasData ?? false);
