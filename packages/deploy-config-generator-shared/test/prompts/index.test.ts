@@ -12,7 +12,7 @@ describe('prompts', () => {
         expect(result).toEqual([
             {
                 type: 'confirm',
-                name: 'confirmConfigUpdate',
+                name: 'confirmConfigUpate',
                 message: `${configType} configuration is managed centrally as part of the CI pipeline, local updates to the configuration will not be for productive use. Are you sure you want to continue?`,
                 default: false
             }
