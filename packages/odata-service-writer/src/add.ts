@@ -6,7 +6,6 @@ import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import {
     generateMockserverMiddlewareBasedOnUi5MockYaml,
-    updateManifest,
     updatePackageJson,
     writeAnnotationXmlFiles,
     writeLocalServiceFiles
@@ -44,9 +43,8 @@ function extendBackendMiddleware(fs: Editor, service: OdataService, ui5Config: U
 }
 
 /**
- * Adds services data in manifest.json and ui5-*.yaml files.
- * Firstly manifest.json is updated with new service data.
- * Then using manifest dataSources, mockserver configuration for services and annotations is written.
+ * Adds services data to ui5-*.yaml files.
+ * Mockserver configuration for services and annotations are written using dataSources from manifest.json.
  * At the end, XML files for service annotations are created.
  *
  * @param {string} basePath - the root path of an existing UI5 application
@@ -65,7 +63,6 @@ export async function addServicesData(
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
     let ui5MockConfig: UI5Config | undefined;
-    await updateManifest(basePath, service, fs);
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
         // Update ui5.yaml with backend middleware

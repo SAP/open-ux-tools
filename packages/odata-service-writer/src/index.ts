@@ -17,6 +17,7 @@ import {
 import { deleteServiceData, removeAnnotationsFromCDSFiles } from './delete';
 import { addServicesData } from './add';
 import { getWebappPath } from '@sap-ux/project-access';
+import { updateManifest } from './common';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -85,7 +86,8 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     // Prepare template folder for manifest and xml updates
     const templateRoot = join(__dirname, '../templates');
-    // Dont extend backend and mockserver middlewares if service type is CDS
+    await updateManifest(basePath, service, fs);
+    // Dont add backend and mockserver middlewares if service type is CDS
     if (isServiceTypeEdmx) {
         await addServicesData(basePath, paths, templateRoot, service as EdmxOdataService, fs);
     } else if (!isServiceTypeEdmx && service.annotations) {
@@ -116,7 +118,8 @@ async function update(basePath: string, service: OdataService, fs?: Editor): Pro
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     // Prepare template folder for manifest and xml updates
     const templateRoot = join(__dirname, '../templates');
-    // Dont extend backend and mockserver middlewares if service type is CDS
+    await updateManifest(basePath, service, fs, true);
+    // Dont extend/update backend and mockserver middlewares if service type is CDS
     if (isServiceTypeEdmx) {
         await updateServicesData(basePath, paths, templateRoot, service as EdmxOdataService, fs);
     }

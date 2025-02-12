@@ -7,16 +7,14 @@ import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import {
     generateMockserverMiddlewareBasedOnUi5MockYaml,
     removeLocalServiceFiles,
-    updateManifest,
     writeAnnotationXmlFiles,
     writeLocalServiceFiles
 } from './common';
 
 /**
- * Updates services data in manifest.json and ui5-*.yaml files.
- * Firstly manifest.json is updated.
- * Then using manifest dataSources, mockserver configuration for services and annotations is overwritten.
- * At the end, previous annotation files are removed and new annotation files are generated.
+ * Updates services data in ui5-*.yaml files.
+ * Mockserver configuration for services and annotations are updated using dataSources from manifest.json.
+ * At the end, older XML files for service annotations are removed and new annotations are generated.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {ProjectPaths} paths - paths to the project files (package.json, ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
@@ -33,7 +31,6 @@ export async function updateServicesData(
 ): Promise<void> {
     let ui5Config: UI5Config | undefined;
     let ui5LocalConfig: UI5Config | undefined;
-    await updateManifest(basePath, service, fs, true);
     if (paths.ui5Yaml) {
         ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
     }
