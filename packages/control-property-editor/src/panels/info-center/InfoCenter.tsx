@@ -52,98 +52,96 @@ export function InfoCenter(): ReactElement {
                 dispatch(expandableMessage(Number(accessKey)));
             }
         });
-    });
+    }, [messages, dispatch]);
 
     return (
-        <>
-            <Stack>
-                <div className="info-center-header">
-                    <Stack.Item>
-                        <Label
-                            data-aria-label={t('INFO CENTER')}
-                            style={{
-                                color: 'var(--vscode-foreground)',
-                                fontSize: sectionHeaderFontSize,
-                                fontWeight: 'bold',
-                                padding: 0
-                            }}>
-                            {t('INFO CENTER')}
-                        </Label>
-                    </Stack.Item>
-                    <Stack.Item>
-                        <UIIconButton
-                            aria-label="clear-all"
-                            onClick={() => dispatch(clearAllInfoCenterMessages())}
-                            iconProps={{ iconName: UiIcons.TextGrammarDismiss }}
-                        />
-                    </Stack.Item>
-                </div>
-                <Stack className="info-center-items">
-                    {messages.map((info, index) => {
-                        const {
-                            expandable: isExpandable,
-                            expanded: isExpanded,
-                            read: isRead,
-                            modal: isOpenedModal,
-                            message,
-                            type
-                        } = info;
-                        return (
-                            <Stack.Item
-                                key={index}
-                                className={`message-bar ${getMessageType(type)} ${isRead && 'message-read'}`}
-                                onMouseOver={() => dispatch(readMessage(index))}>
-                                <UIMessageBar messageBarType={type as MessageBarType}>
-                                    <Text block={true} className="message-title">
-                                        {message.title}
-                                    </Text>
-                                    {type !== MessageBarType.error && (
-                                        <UIIconButton
-                                            className="remove-message"
-                                            onClick={() => dispatch(clearInfoCenterMessage(index))}
-                                            iconProps={{ iconName: UiIcons.TrashCan }}
-                                        />
-                                    )}
-                                </UIMessageBar>
-                                <Text
-                                    accessKey={index.toString()}
-                                    block={true}
-                                    className={`message-description ${isExpanded && 'expanded'} ${
-                                        isExpandable && 'expandable'
-                                    }`}>
-                                    {message.description}
+        <Stack>
+            <div className="info-center-header">
+                <Stack.Item>
+                    <Label
+                        data-aria-label={t('INFO CENTER')}
+                        style={{
+                            color: 'var(--vscode-foreground)',
+                            fontSize: sectionHeaderFontSize,
+                            fontWeight: 'bold',
+                            padding: 0
+                        }}>
+                        {t('INFO CENTER')}
+                    </Label>
+                </Stack.Item>
+                <Stack.Item>
+                    <UIIconButton
+                        aria-label="clear-all"
+                        onClick={() => dispatch(clearAllInfoCenterMessages())}
+                        iconProps={{ iconName: UiIcons.TextGrammarDismiss }}
+                    />
+                </Stack.Item>
+            </div>
+            <Stack className="info-center-items">
+                {messages.map((info, index) => {
+                    const {
+                        expandable: isExpandable,
+                        expanded: isExpanded,
+                        read: isRead,
+                        modal: isOpenedModal,
+                        message,
+                        type
+                    } = info;
+                    return (
+                        <Stack.Item
+                            key={index}
+                            className={`message-bar ${getMessageType(type)} ${isRead && 'message-read'}`}
+                            onMouseOver={() => dispatch(readMessage(index))}>
+                            <UIMessageBar messageBarType={type as MessageBarType}>
+                                <Text block={true} className="message-title">
+                                    {message.title}
                                 </Text>
-                                {isExpandable && (
-                                    <Text className="more-less" onClick={() => dispatch(toggleExpandMessage(index))}>
-                                        {isExpanded ? 'Less' : 'More'}
-                                    </Text>
-                                )}
-                                {message.details && (
-                                    <Text
-                                        className="message-details"
-                                        onClick={() => dispatch(toggleModalMessage(index))}>
-                                        {'View Details'}
-                                    </Text>
-                                )}
-                                <UIDialog
-                                    hidden={!isOpenedModal}
-                                    dialogContentProps={{
-                                        title: 'Error Details'
-                                    }}
-                                    acceptButtonText="Close"
-                                    onAccept={() => dispatch(toggleModalMessage(index))}>
-                                    <UITextInput
-                                        className="modal-text-area"
-                                        value={message.details}
-                                        readOnly={true}
-                                        multiline={true}
+                                {type !== MessageBarType.error && (
+                                    <UIIconButton
+                                        className="remove-message"
+                                        onClick={() => dispatch(clearInfoCenterMessage(index))}
+                                        iconProps={{ iconName: UiIcons.TrashCan }}
                                     />
-                                </UIDialog>
-                            </Stack.Item>
-                        );
-                    })}
-                </Stack>
+                                )}
+                            </UIMessageBar>
+                            <Text
+                                accessKey={index.toString()}
+                                block={true}
+                                className={`message-description ${isExpanded && 'expanded'} ${
+                                    isExpandable && 'expandable'
+                                }`}>
+                                {message.description}
+                            </Text>
+                            {isExpandable && (
+                                <Text className="more-less" onClick={() => dispatch(toggleExpandMessage(index))}>
+                                    {isExpanded ? 'Less' : 'More'}
+                                </Text>
+                            )}
+                            {message.details && (
+                                <Text
+                                    className="message-details"
+                                    onClick={() => dispatch(toggleModalMessage(index))}>
+                                    {'View Details'}
+                                </Text>
+                            )}
+                            <UIDialog
+                                hidden={!isOpenedModal}
+                                dialogContentProps={{
+                                    title: 'Error Details'
+                                }}
+                                acceptButtonText="Close"
+                                onAccept={() => dispatch(toggleModalMessage(index))}>
+                                <UITextInput
+                                    className="modal-text-area"
+                                    value={message.details}
+                                    readOnly={true}
+                                    multiline={true}
+                                />
+                            </UIDialog>
+                        </Stack.Item>
+                    );
+                })}
             </Stack>
-        </>
+        </Stack>
     );
 }

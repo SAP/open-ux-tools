@@ -492,7 +492,7 @@ export const clearAllInfoCenterMessages = createExternalAction<void>('clear-all-
 export const externalFileChange = createExternalAction<string>('external-file-change');
 export const toggleExpandMessage = createExternalAction<number>('toggle-expand-message');
 export const readMessage = createExternalAction<number>('read-message');
-export const expandableMessage = createExternalAction<number>('expadnable-message');
+export const expandableMessage = createExternalAction<number>('expandable-message');
 export const toggleModalMessage = createExternalAction<number>('toggle-modal-message');
 
 const createAsyncExternalAction = createAsyncActionFactory(EXTERNAL_ACTION_PREFIX);
