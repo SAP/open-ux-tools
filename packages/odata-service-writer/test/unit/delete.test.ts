@@ -170,7 +170,7 @@ describe('deleteServiceFromManifest', () => {
             fs.writeJSON(metadaPath, '');
             // Call deleteServiceFromManifest
             await deleteServiceData('./', {}, service, fs);
-            const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>
+            const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
             expect(manifestJson?.['sap.app']?.dataSources).toEqual({
                 annotation: {
                     type: 'ODataAnnotation',
