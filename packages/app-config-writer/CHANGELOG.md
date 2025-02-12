@@ -1,5 +1,11 @@
 # @sap-ux/app-config-writer
 
+## 0.5.29
+
+### Patch Changes
+
+-   f7e9c9f: feat: add support for test runners
+
 ## 0.5.28
 
 ### Patch Changes
