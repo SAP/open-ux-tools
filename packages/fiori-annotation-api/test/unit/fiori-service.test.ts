@@ -663,6 +663,20 @@ describe('fiori annotation service', () => {
                 const metadata = service.getSchema();
                 expect(serialize(metadata.schema, PROJECTS.V4_CDS_START.root)).toMatchSnapshot();
             });
+
+            test('new file from memfs', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.services);
+                const content = fsEditor.read(path);
+                const newFileName = 'new-file';
+                const testData = `using from './${newFileName}';\n${content}`;
+                fsEditor.write(join(root, 'app', `${newFileName}.cds`), '');
+                fsEditor.write(path, testData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+                expect(() => service.getSchema()).not.toThrowError();
+            });
         });
     });
     describe('insert', () => {

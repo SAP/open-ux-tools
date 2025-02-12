@@ -24,11 +24,13 @@ export function assertInboundsHasConfig(
             },
             semanticObject,
             action,
-            title: i18KeyFormat ? `{{flpTitle}}` : title
+            title: i18KeyFormat ? `{{${semanticObject}-${action}.flpTitle}}` : title
         }
     };
     if (subTitle) {
-        Object.assign(expectedInboundConfig[key], { subTitle: i18KeyFormat ? `{{flpSubtitle}}` : subTitle });
+        Object.assign(expectedInboundConfig[key], {
+            subTitle: i18KeyFormat ? `{{${semanticObject}-${action}.flpSubtitle}}` : subTitle
+        });
     }
     expect(crossNavigation!.inbounds[key]).toBeDefined();
     expect(crossNavigation!.inbounds[key]).toEqual(expect.objectContaining(expectedInboundConfig[key]));

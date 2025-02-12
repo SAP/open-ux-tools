@@ -150,13 +150,21 @@ export type PackageAutocompletePromptOptions = PackagePromptOptions & {
     useAutocomplete?: boolean;
 };
 
+export type TransportInputChoicePromptOptions = {
+    /**
+     * This options determines if createDuringDeploy option should be shown in the list of transport choices.
+     */
+    showCreateDuringDeploy?: boolean;
+};
+
 type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepoPromptOptions> &
     Record<promptNames.description, DescriptionPromptOptions> &
     Record<promptNames.packageManual, PackageManualPromptOptions> &
     Record<promptNames.transportManual, TransportManualPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.index, IndexPromptOptions> &
-    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions>;
+    Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
+    Record<promptNames.transportInputChoice, TransportInputChoicePromptOptions>;
 
 /**
  * The options which are common for the abap deploy config inquirer.

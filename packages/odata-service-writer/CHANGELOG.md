@@ -1,5 +1,34 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.9
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/mockserver-config-writer@0.7.3
+    -   @sap-ux/project-access@1.29.6
+
+## 0.25.8
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/mockserver-config-writer@0.7.2
+
+## 0.25.7
+
+### Patch Changes
+
+-   4a90030: `@sap-ux/project-access` moved to dependencies.
+
+## 0.25.6
+
+### Patch Changes
+
+-   f349f56: Fixed default naming for model.
+
 ## 0.25.5
 
 ### Patch Changes

@@ -76,11 +76,16 @@ async function getPrompts(
  * Get the system selection questions.
  *
  * @param promptOptions - options that can control some of the prompt behavior. See {@link OdataServicePromptOptions} for details
+ * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host. PromptState.isYUI will be set to this value
  * @returns the prompts used to provide input for system selection and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
 async function getSystemSelectionQuestions(
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: OdataServicePromptOptions,
+    isYUI?: boolean
 ): Promise<{ prompts: Question<SystemSelectionAnswers & ServiceAnswer>[]; answers: Partial<OdataServiceAnswers> }> {
+    if (isYUI !== undefined) {
+        PromptState.isYUI = isYUI;
+    }
     return {
         prompts: await getSystemSelectionQuestionsBase(promptOptions),
         answers: PromptState.odataService

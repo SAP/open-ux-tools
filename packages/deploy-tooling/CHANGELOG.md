@@ -1,5 +1,41 @@
 # @sap-ux/deploy-tooling
 
+## 0.15.43
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/system-access@0.5.30
+
+## 0.15.42
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/system-access@0.5.30
+
+## 0.15.41
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/system-access@0.5.29
+
+## 0.15.40
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/system-access@0.5.28
+
 ## 0.15.39
 
 ### Patch Changes

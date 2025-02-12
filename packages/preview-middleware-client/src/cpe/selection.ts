@@ -136,7 +136,9 @@ export class SelectionService implements Service {
                     selectedOverlayControl.setSelected(false); //deselect previously selected control
                 }
 
-                if (!controlOverlay?.getDomRef()) {
+                const controlRef = controlOverlay?.getDomRef?.();
+                controlRef?.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+                if (!controlRef) {
                     //look for closest control in order to highlight in UI the (without firing the selection event)
                     controlOverlay = OverlayUtil.getClosestOverlayFor(control);
                 }

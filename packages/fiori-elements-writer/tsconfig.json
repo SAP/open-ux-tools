@@ -11,6 +11,9 @@
   },
   "references": [
     {
+      "path": "../annotation-generator"
+    },
+    {
       "path": "../cap-config-writer"
     },
     {
@@ -21,6 +24,9 @@
     },
     {
       "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../logger"
     },
     {
       "path": "../odata-service-writer"
