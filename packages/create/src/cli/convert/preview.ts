@@ -9,11 +9,15 @@ import { convertToVirtualPreview, simulatePrompt, includeTestRunnersPrompt } fro
  */
 export function addConvertPreviewCommand(cmd: Command): void {
     cmd.command('preview-config [path]')
-        .option('-s, --simulate', 'simulate only do not write')
+        .option('-s, --simulate <boolean>', 'simulate only do not write')
         .option('-v, --verbose', 'show verbose information')
-        .option('-t, --tests', 'also convert test suite and test runners')
+        .option('-t, --tests <boolean>', 'also convert test suite and test runners')
         .action(async (path, options) => {
-            await convertPreview(path, options.simulate, options.tests, options.verbose);
+            const simulateString = /(?:=)?(true|false)/i.exec(options.simulate)?.[1];
+            const testsString = /(?:=)?(true|false)/i.exec(options.tests)?.[1];
+            const simulate = simulateString ? simulateString.toLowerCase() === 'true' : undefined;
+            const tests = testsString ? testsString.toLowerCase() === 'true' : undefined;
+            await convertPreview(path, simulate, tests, options.verbose);
         });
 }
 

@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.4
+
+### Patch Changes
+
+-   7a6def1: Fix for connected system not returned for Cloud Foundry related prompts
+
 ## 2.2.3
 
 ### Patch Changes
