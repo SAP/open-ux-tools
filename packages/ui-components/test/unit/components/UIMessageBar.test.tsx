@@ -62,7 +62,7 @@ describe('<UIMessageBar />', () => {
         expect(styles.root?.['backgroundColor']).toEqual('transparent');
     });
 
-    it('Test property "messageBarType" - info', () => {
+    it('Test property "messageBarType" - warning', () => {
         wrapper.setProps({
             messageBarType: MessageBarType.warning
         });
