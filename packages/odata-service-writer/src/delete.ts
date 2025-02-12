@@ -201,7 +201,6 @@ function getEDMXAnnotationPaths(edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnot
  * Internal function that deletes service from the manifest.json based on the given service data.
  *
  * @param basePath - the root path of an existing UI5 application
- * @param paths - the root path of an existing UI5 application
  * @param service - name of the OData service instance
  * @param fs - the memfs editor instance
  */
