@@ -1,4 +1,4 @@
-// Last content update: Fri Jan 10 2025 12:27:42 GMT+0100 (Mitteleuropäische Normalzeit)
+// Last content update: Mon Feb 10 2025 23:35:57 GMT+0100 (Mitteleuropäische Normalzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -1175,7 +1175,6 @@ export default {
             '$Collection': true,
             '$Type': 'com.sap.vocabularies.UI.v1.ReferenceFacet',
             '$AppliesTo': ['Action', 'Function', 'ActionImport', 'FunctionImport'],
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Facets that reference UI.FieldGroup annotations to group action or function parameters'
         },
@@ -1935,7 +1934,9 @@ export default {
                     'com.sap.vocabularies.UI.v1.Chart',
                     'com.sap.vocabularies.UI.v1.ConnectedFields',
                     'com.sap.vocabularies.UI.v1.DataPoint',
-                    'com.sap.vocabularies.UI.v1.FieldGroup'
+                    'com.sap.vocabularies.UI.v1.FieldGroup',
+                    'com.sap.vocabularies.UI.v1.PresentationVariant',
+                    'com.sap.vocabularies.UI.v1.SelectionPresentationVariant'
                 ]
             }
         },

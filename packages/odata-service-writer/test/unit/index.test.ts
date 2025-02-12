@@ -325,7 +325,8 @@ describe('generate', () => {
                     apiHub: true,
                     scp: false,
                     pathPrefix: '/~prefix'
-                }
+                },
+                ignoreCertError: true
             };
 
             await generate(testDir, config as OdataService, fs);
@@ -337,7 +338,7 @@ describe('generate', () => {
                     - name: fiori-tools-proxy
                       afterMiddleware: compression
                       configuration:
-                        ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                        ignoreCertError: true # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
                         ui5:
                           path:
                             - /resources
