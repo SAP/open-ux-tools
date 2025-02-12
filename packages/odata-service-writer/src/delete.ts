@@ -198,19 +198,14 @@ function getEDMXAnnotationPaths(edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnot
 }
 
 /**
- * Internal function that deletes service from the manifest.json based on the given service name.
+ * Internal function that deletes service from the manifest.json based on the given service data.
  *
  * @param basePath - the root path of an existing UI5 application
  * @param paths - the root path of an existing UI5 application
  * @param service - name of the OData service instance
  * @param fs - the memfs editor instance
  */
-export async function deleteServiceData(
-    basePath: string,
-    paths: ProjectPaths,
-    service: OdataService,
-    fs: Editor
-): Promise<void> {
+function deleteServiceFromManifest(basePath: string, service: OdataService, fs: Editor): void {
     const serviceName: string = service.name ?? 'mainService';
     const manifestPath = join(basePath, 'webapp', 'manifest.json');
     // Get component app id
@@ -249,6 +244,23 @@ export async function deleteServiceData(
         }
     }
     fs.writeJSON(manifestPath, manifest);
+}
+
+/**
+ * Internal function that deletes service from the manifest.json and ui5-*.yaml files based on the given service data.
+ *
+ * @param basePath - the root path of an existing UI5 application
+ * @param paths - the root path of an existing UI5 application
+ * @param service - name of the OData service instance
+ * @param fs - the memfs editor instance
+ */
+export async function deleteServiceData(
+    basePath: string,
+    paths: ProjectPaths,
+    service: OdataService,
+    fs: Editor
+): Promise<void> {
+    deleteServiceFromManifest(basePath, service, fs);
     if (service.url && service.path && service.name) {
         let ui5Config: UI5Config | undefined;
         let ui5LocalConfig: UI5Config | undefined;
