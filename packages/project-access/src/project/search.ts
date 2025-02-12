@@ -17,6 +17,7 @@ import { fileExists, findBy, findFileUp, readJSON } from '../file';
 import { hasDependency } from './dependencies';
 import { getCapProjectType } from './cap';
 import { getWebappPath } from './ui5-config';
+import { disableSearchCache, enableSearchCache } from './search-cache';
 
 /**
  * Map artifact to file that is specific to the artifact type. Some artifacts can
@@ -484,6 +485,7 @@ export async function findFioriArtifacts(options: {
     artifacts: FioriArtifactTypes[];
     memFs?: Editor;
 }): Promise<FoundFioriArtifacts> {
+    enableSearchCache();
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
@@ -516,6 +518,7 @@ export async function findFioriArtifacts(options: {
     if (options.artifacts.includes('components')) {
         results.components = await filterComponents(pathMap, options.memFs);
     }
+    disableSearchCache();
     return results;
 }
 
