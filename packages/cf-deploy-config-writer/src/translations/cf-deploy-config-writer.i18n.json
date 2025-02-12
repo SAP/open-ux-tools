@@ -2,7 +2,8 @@
     "debug": {
         "logError": "{{method}} error found {{ error }}",
         "mtaLoaded": "MTA {{ type }} loaded",
-        "ui5YamlDoesNotExist": "File ui5.yaml does not exist in the project"
+        "ui5YamlDoesNotExist": "File ui5.yaml does not exist in the project",
+        "capMtaCreated": "CAP MTA Configuration created"
     },
     "error": {
         "unableToLoadMTA": "Unable to load mta.yaml configuration.",

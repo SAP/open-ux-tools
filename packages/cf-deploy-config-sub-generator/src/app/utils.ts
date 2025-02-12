@@ -169,19 +169,3 @@ export async function loadManifest(fs: Editor, appPath: string): Promise<Manifes
 
     return manifest;
 }
-
-/**
- * Generate a new prompt asking if the user wants to create an approuter configuration.
- *
- * @returns the CAP MTA continue questions.
- */
-export function addMtaContinue(): Question[] {
-    return [
-        {
-            type: 'confirm',
-            name: 'addCapMtaContinue',
-            message: t('cfGen.prompts.addCapMtaContinue.name'),
-            default: false
-        }
-    ];
-}

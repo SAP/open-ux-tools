@@ -28,10 +28,11 @@ import {
     mtaExecutable,
     cdsExecutable,
     generateDestinationName,
-    getDestination
+    getDestination,
+    getConfirmMtaContinuePrompt
 } from '@sap-ux/deploy-config-generator-shared';
 import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils';
-import { loadManifest, addMtaContinue } from './utils';
+import { loadManifest } from './utils';
 import { getMtaPath, findCapProjectRoot, FileName } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
 import { getCFApprouterQuestionsForCap, getCFQuestions } from './questions';
@@ -131,12 +132,10 @@ export default class extends DeploymentGenerator {
             this.abort = true;
             handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.NO_MTA_BIN });
         }
-
         await this._processProjectPaths();
         await this._processProjectConfigs();
 
         this.isAbapDirectServiceBinding = await useAbapDirectServiceBinding(this.appPath, false, this.mtaPath);
-
         // restricting local changes is only applicable for CAP flows
         if (!this.isCap) {
             this.lcapModeOnly = false;
@@ -172,7 +171,6 @@ export default class extends DeploymentGenerator {
         if (!baseConfigExists) {
             bail(ErrorHandler.noBaseConfig(baseConfigFile));
         }
-
         this.deployConfigExists = this.fs.exists(join(this.appPath, this.options.config ?? FileName.Ui5Yaml));
     }
 
@@ -180,7 +178,6 @@ export default class extends DeploymentGenerator {
         if (this.abort) {
             return;
         }
-
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._prompting();
         }
@@ -190,16 +187,22 @@ export default class extends DeploymentGenerator {
     private async _prompting(): Promise<void> {
         const isCAPMissingMTA = this.isCap && this.projectRoot && !this.mtaPath;
         if (isCAPMissingMTA) {
-            // If launched as root generator, add a continue prompt to allow user choose decide if they want to add an MTA config
-            let questions = (await this._getCFAppRouterQuestions()) as Question[];
+            DeploymentGenerator.logger?.debug(t('cfGen.debug.capMissingMTA'));
+            // If launched as root generator, add a prompt to allow user decide if they want to add an MTA config
+            let questions = (await getCFApprouterQuestionsForCap({
+                projectRoot: this.projectRoot ?? process.cwd()
+            })) as Question[];
             questions = withCondition(questions, (answers: Answers) => answers.addCapMtaContinue === true);
-            questions.unshift(...addMtaContinue());
+            questions.unshift(...getConfirmMtaContinuePrompt());
             this.appRouterAnswers = (await this.prompt(questions)) as CfAppRouterDeployConfigAnswers;
             if ((this.appRouterAnswers as Answers).addCapMtaContinue !== true) {
                 this.abort = true;
                 return;
             }
+            // Configure defaults
             this.destinationName = DefaultMTADestination;
+            this.options.overwrite = true; // Don't prompt the user to overwrite files we've just written!
+            this.answers = {};
             this.answers.destinationName = this.destinationName;
             this.answers.addManagedAppRouter = false;
         } else {
@@ -207,10 +210,6 @@ export default class extends DeploymentGenerator {
             const questions = await this._getCFQuestions();
             this.answers = await this.prompt(questions);
         }
-
-        await this._handleApiHubConfig();
-        const questions = await this._getCFQuestions();
-        this.answers = await this.prompt(questions);
     }
 
     /**
@@ -235,7 +234,7 @@ export default class extends DeploymentGenerator {
      */
     private async _getCFAppRouterQuestions(): Promise<CfAppRouterDeployConfigQuestions[]> {
         return await getCFApprouterQuestionsForCap({
-            projectRoot: this.destinationRoot() ?? process.cwd()
+            projectRoot: this.projectRoot ?? process.cwd()
         });
     }
 

@@ -84,4 +84,8 @@ export interface CfDeployConfigOptions extends CfDeployConfigAnswers {
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
+    /**
+     * Option to invoke the getConfirmMtaContinue prompt
+     */
+    addCapMtaContinue?: boolean;
 }
