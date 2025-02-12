@@ -928,6 +928,11 @@ describe('FE V2 quick actions', () => {
                     validVersion: true,
                     versionInfo: '1.130',
                     isManifestPagesAsArray: true
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.134.0',
+                    isManifestPagesAsArray: true
                 }
             ];
             jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
@@ -1053,6 +1058,16 @@ describe('FE V2 quick actions', () => {
                                                   : 'listReport0-enable-semantic-daterange-filterbar',
                                               title: 'Enable Semantic Date Range in Filter Bar',
                                               enabled: true
+                                          }
+                                      ]
+                                    : testCase.versionInfo === '1.134.0' && testCase.isManifestPagesAsArray // support manifest pages as array from version 1.134 and above
+                                    ? [
+                                          {
+                                              enabled: true,
+                                              id: 'listReport0-enable-semantic-daterange-filterbar',
+                                              kind: 'simple',
+                                              title: 'Enable Semantic Date Range in Filter Bar',
+                                              tooltip: undefined
                                           }
                                       ]
                                     : []
