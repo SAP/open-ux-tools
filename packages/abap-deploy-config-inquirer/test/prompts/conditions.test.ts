@@ -303,6 +303,10 @@ describe('Test abap deploy config inquirer conditions', () => {
         expect(defaultOrShowManualTransportQuestion(TransportChoices.EnterManualChoice)).toBe(true);
     });
 
+    test('should show manual transport question when transportInput choice is not provided', () => {
+        expect(defaultOrShowManualTransportQuestion()).toBe(true);
+    });
+
     test('should show index question', () => {
         PromptState.abapDeployConfig.index = undefined;
         expect(

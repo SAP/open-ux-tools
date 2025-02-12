@@ -88,6 +88,8 @@ async function addDeployConfig(
 
         if (!isAdp) {
             target = await getTarget(target);
+        } else {
+            target = 'abap';
         }
 
         if (target === 'cf') {

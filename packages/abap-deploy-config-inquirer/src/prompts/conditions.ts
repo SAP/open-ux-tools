@@ -310,7 +310,10 @@ export function defaultOrShowTransportCreatedQuestion(transportInputChoice?: str
  * @returns boolean
  */
 export function defaultOrShowManualTransportQuestion(transportInputChoice?: string): boolean {
-    return defaultOrShowTransportQuestion() && transportInputChoice === TransportChoices.EnterManualChoice;
+    return (
+        defaultOrShowTransportQuestion() &&
+        (transportInputChoice === TransportChoices.EnterManualChoice || !transportInputChoice)
+    );
 }
 
 /**
