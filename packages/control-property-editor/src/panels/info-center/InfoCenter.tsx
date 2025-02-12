@@ -118,9 +118,7 @@ export function InfoCenter(): ReactElement {
                                 </Text>
                             )}
                             {message.details && (
-                                <Text
-                                    className="message-details"
-                                    onClick={() => dispatch(toggleModalMessage(index))}>
+                                <Text className="message-details" onClick={() => dispatch(toggleModalMessage(index))}>
                                     {'View Details'}
                                 </Text>
                             )}
