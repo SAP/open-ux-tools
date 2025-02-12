@@ -19,7 +19,7 @@ export function getConfirmConfigUpdatePrompt(configType?: string): Question[] {
         {
             type: 'confirm',
             name: promptNames.confirmConfigUdate,
-            message: t('prompts.confirmConfigUpdate.message', { configType }),
+            message: t('prompts.confirmConfigUpate.message', { configType }),
             default: false
         }
     ];
