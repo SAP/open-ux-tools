@@ -5,6 +5,24 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getUi5Version, isLowerThanMinimalUi5Version, isVersionEqualOrHasNewerPatch } from '../../../utils/version';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import Component from 'sap/ui/core/Component';
+import AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
+
+/**
+ * Gets app component of a v2 project.
+ *
+ * @param control - ManagedObject.
+ * @returns AppComponent.
+ */
+export function getAppComponent(control: ManagedObject): AppComponent | undefined {
+    const ownerComponent = Component.getOwnerComponentFor(control);
+    if (ownerComponent?.isA<TemplateComponent>('sap/suite/ui/generic/template/lib/TemplateComponent')) {
+        return ownerComponent.getAppComponent();
+    }
+    return undefined;
+}
 
 /**
  * Prepares the change for the manifest setting.
@@ -27,10 +45,11 @@ export async function prepareManifestChange(
     propertyValue: object | string
 ): Promise<FlexCommand[]> {
     const { flexSettings } = context;
-
+    const appComponent = getAppComponent(control);
     const modifiedValue = {
         changeType: 'appdescr_ui_generic_app_changePageConfiguration',
         reference: flexSettings.projectId,
+        appComponent,
         parameters: {
             parentPage: {
                 component,
