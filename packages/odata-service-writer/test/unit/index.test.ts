@@ -33,7 +33,7 @@ describe('generate', () => {
 
         it('no manifest.json', async () => {
             await expect(generate(testDir, config, fs)).rejects.toEqual(
-                Error(t('error.requiredProjectFileNotFound', { path: 'webapp/manifest.json' }))
+                Error(t('error.requiredProjectFileNotFound', { path: 'manifest.json' }))
             );
         });
 
@@ -578,76 +578,7 @@ describe('generate', () => {
 describe('remove', () => {
     let fs: Editor;
     beforeEach(async () => {
-        const ui5Yaml = (await UI5Config.newInstance(''))
-            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
-            .toString();
-        const ui5LocalYaml = (await UI5Config.newInstance(''))
-            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
-            .addMockServerMiddleware(
-                [{ serviceName: 'mainService', servicePath: '/sap' }],
-                [
-                    {
-                        urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
-                    }
-                ]
-            )
-            .toString();
-        const ui5MockYaml = (await UI5Config.newInstance(''))
-            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
-            .addMockServerMiddleware(
-                [{ serviceName: 'mainService', servicePath: '/sap' }],
-                [
-                    {
-                        urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
-                    }
-                ]
-            )
-            .toString();
-        // generate required files
-        fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
-        fs.write(join(testDir, 'ui5-local.yaml'), ui5LocalYaml);
-        fs.write(join(testDir, 'ui5-mock.yaml'), ui5MockYaml);
-        fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
-        fs.write(
-            join(testDir, 'webapp', 'manifest.json'),
-            JSON.stringify({
-                'sap.app': {
-                    id: 'testappid',
-                    dataSources: {
-                        mainService: {
-                            uri: '/sap',
-                            type: 'OData',
-                            settings: {
-                                annotations: ['SEPMRA_PROD_MAN', 'annotation'],
-                                localUri: 'localService/mainService/metadata.xml'
-                            }
-                        },
-                        SEPMRA_PROD_MAN: {
-                            uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
-                            type: 'ODataAnnotation',
-                            settings: {
-                                localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
-                            }
-                        },
-                        annotation: {
-                            type: 'ODataAnnotation',
-                            uri: 'annotations/annotation.xml',
-                            settings: {
-                                localUri: 'annotations/annotation.xml'
-                            }
-                        }
-                    }
-                },
-                'sap.ui5': {
-                    models: {
-                        '': {
-                            dataSource: 'mainService'
-                        }
-                    }
-                }
-            })
-        );
+        fs = await getSingleServiceMock();
     });
     it('Try to remove an unexisting service', async () => {
         await remove(
@@ -657,7 +588,8 @@ describe('remove', () => {
                 url: 'https://dummyUrl',
                 path: '/dummyPath',
                 type: ServiceType.EDMX,
-                annotations: [{ technicalName: 'dummy-technical-name' }] as EdmxAnnotationsInfo[]
+                annotations: [{ technicalName: 'dummy-technical-name' }] as EdmxAnnotationsInfo[],
+                version: OdataVersion.v4
             },
             fs
         );
@@ -703,6 +635,9 @@ describe('remove', () => {
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
             `annotations:\n          - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/\n`
         );
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
     it('Remove an existing service', async () => {
         await remove(
@@ -717,7 +652,8 @@ describe('remove', () => {
                         technicalName: 'SEPMRA_PROD_MAN',
                         xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
                     }
-                ] as EdmxAnnotationsInfo[]
+                ] as EdmxAnnotationsInfo[],
+                version: OdataVersion.v4
             },
             fs
         );
@@ -744,89 +680,17 @@ describe('remove', () => {
         expect(fs.read(join(testDir, 'ui5-mock.yaml'))).not.toContain(
             `annotations:\n          - urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/\n`
         );
+        // Local annotations should not be deleted
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(false);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(false);
     });
 });
 
 describe('update', () => {
     let fs: Editor;
     beforeEach(async () => {
-        const ui5Yaml = (await UI5Config.newInstance(''))
-            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
-            .toString();
-        const ui5LocalYaml = (await UI5Config.newInstance(''))
-            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
-            .addMockServerMiddleware(
-                [{ serviceName: 'mainService', servicePath: '/sap' }],
-                [
-                    {
-                        urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
-                    }
-                ]
-            )
-            .toString();
-        const ui5MockYaml = (await UI5Config.newInstance(''))
-            .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
-            .addMockServerMiddleware(
-                [{ serviceName: 'mainService', servicePath: '/sap' }],
-                [
-                    {
-                        urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
-                    }
-                ]
-            )
-            .toString();
-        // generate required files
-        fs = create(createStorage());
-        fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
-        fs.write(join(testDir, 'ui5-local.yaml'), ui5LocalYaml);
-        fs.write(join(testDir, 'ui5-mock.yaml'), ui5MockYaml);
-        fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
-        fs.write(
-            join(testDir, 'webapp', 'manifest.json'),
-            JSON.stringify({
-                'sap.app': {
-                    id: 'testappid',
-                    dataSources: {
-                        mainService: {
-                            uri: '/sap/uri/',
-                            type: 'OData',
-                            settings: {
-                                annotations: ['SEPMRA_PROD_MAN', 'annotation'],
-                                localUri: 'localService/mainService/metadata.xml',
-                                odataVersion: '4.0'
-                            }
-                        },
-                        SEPMRA_PROD_MAN: {
-                            uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
-                            type: 'ODataAnnotation',
-                            settings: {
-                                localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
-                            }
-                        },
-                        annotation: {
-                            type: 'ODataAnnotation',
-                            uri: 'annotations/annotation.xml',
-                            settings: {
-                                localUri: 'annotations/annotation.xml'
-                            }
-                        }
-                    }
-                },
-                'sap.ui5': {
-                    models: {
-                        '': {
-                            dataSource: 'mainService',
-                            preload: true,
-                            settings: {
-                                autoExpandSelect: true,
-                                earlyRequests: true,
-                                operationMode: 'Server'
-                            }
-                        }
-                    }
-                }
-            })
-        );
+        fs = await getSingleServiceMock();
     });
     it('Try to update an unexisting service', async () => {
         await expect(
@@ -856,6 +720,10 @@ describe('update', () => {
                 dependencies: []
             }
         });
+        // No removed annotation files expected
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
     it('Update an existing service without changes', async () => {
         await update(
@@ -916,21 +784,91 @@ describe('update', () => {
             }
         });
         // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
-        // expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
-        // expect(fs.read(join(testDir, 'ui5-local.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
-        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap/uri\n ');
-        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
-        //     `annotations:\n          - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml`
-        // );
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+            "
+        `);
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap/uri
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap/uri
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/SEPMRA_PROD_MAN.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
+            "
+        `);
         // No changes in package.json expected
-        // expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
-        //     ui5: {
-        //         dependencies: []
-        //     }
-        // });
-        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
-        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
-        // expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+            ui5: {
+                dependencies: []
+            }
+        });
+        // No removed annotation files expected
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
 
     it('Update an existing service with changed annotations', async () => {
@@ -949,7 +887,9 @@ describe('update', () => {
                     }
                 ] as EdmxAnnotationsInfo[],
                 metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
-                version: OdataVersion.v4
+                version: OdataVersion.v4,
+                // No local annotations
+                localAnnotationsName: undefined
             },
             fs
         );
@@ -985,24 +925,174 @@ describe('update', () => {
             }
         });
         // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
-        // expect(fs.read(join(testDir, 'ui5.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
-        // expect(fs.read(join(testDir, 'ui5-local.yaml'))).toContain('- path: /sap\n            url: http://localhost\n');
-        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain('services:\n          - urlPath: /sap/uri\n ');
-        // expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toContain(
-        //     `annotations:\n          - localPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='DIFFERENT_ANNOTATION',Version='0001')/$value/\n`
-        // );
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+            "
+        `);
+        expect(fs.read(join(testDir, 'ui5-local.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap/uri
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/DIFFERENT_ANNOTATION.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='DIFFERENT_ANNOTATION',Version='0001')/$value/
+            "
+        `);
+        expect(fs.read(join(testDir, 'ui5-mock.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+                - name: sap-fe-mockserver
+                  beforeMiddleware: csp
+                  configuration:
+                    mountPath: /
+                    services:
+                      - urlPath: /sap/uri
+                        metadataPath: ./webapp/localService/mainService/metadata.xml
+                        mockdataPath: ./webapp/localService/mainService/data
+                        generateMockData: true
+                    annotations:
+                      - localPath: ./webapp/localService/mainService/DIFFERENT_ANNOTATION.xml
+                        urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='DIFFERENT_ANNOTATION',Version='0001')/$value/
+            "
+        `);
         // No changes in package.json expected
-        // expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
-        //     ui5: {
-        //         dependencies: []
-        //     }
-        // });
-        // // Previous service annotation file should be deleted
-        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(false);
-        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'DIFFERENT_ANNOTATION.xml'))).toBe(
-        //     true
-        // );
-        // expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
-        // expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+            ui5: {
+                dependencies: []
+            }
+        });
+        // Local annotations file should be deleted
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(false);
+        // Previous annotation files should be deleted and new ones generated
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(false);
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'DIFFERENT_ANNOTATION.xml'))).toBe(
+            true
+        );
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
 });
+
+async function getSingleServiceMock(): Promise<Editor> {
+    const fs = create(createStorage());
+    const ui5Yaml = (await UI5Config.newInstance(''))
+        .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+        .toString();
+    const ui5LocalYaml = (await UI5Config.newInstance(''))
+        .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+        .addMockServerMiddleware(
+            [{ serviceName: 'mainService', servicePath: '/sap' }],
+            [
+                {
+                    urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
+                }
+            ]
+        )
+        .toString();
+    const ui5MockYaml = (await UI5Config.newInstance(''))
+        .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+        .addMockServerMiddleware(
+            [{ serviceName: 'mainService', servicePath: '/sap' }],
+            [
+                {
+                    urlPath: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`
+                }
+            ]
+        )
+        .toString();
+    // generate required files
+    fs.write(join(testDir, 'ui5.yaml'), ui5Yaml);
+    fs.write(join(testDir, 'ui5-local.yaml'), ui5LocalYaml);
+    fs.write(join(testDir, 'ui5-mock.yaml'), ui5MockYaml);
+
+    fs.writeJSON(join(testDir, 'package.json'), { ui5: { dependencies: [] } });
+
+    fs.write(
+        join(testDir, 'webapp', 'manifest.json'),
+        JSON.stringify({
+            'sap.app': {
+                id: 'testappid',
+                dataSources: {
+                    mainService: {
+                        uri: '/sap',
+                        type: 'OData',
+                        settings: {
+                            annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                            localUri: 'localService/mainService/metadata.xml'
+                        }
+                    },
+                    SEPMRA_PROD_MAN: {
+                        uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                        type: 'ODataAnnotation',
+                        settings: {
+                            localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
+                        }
+                    },
+                    annotation: {
+                        type: 'ODataAnnotation',
+                        uri: 'annotations/annotation.xml',
+                        settings: {
+                            localUri: 'annotations/annotation.xml'
+                        }
+                    }
+                }
+            },
+            'sap.ui5': {
+                models: {
+                    '': {
+                        dataSource: 'mainService'
+                    }
+                }
+            }
+        })
+    );
+    // Annotations
+    fs.write(join(testDir, 'webapp', 'annotations', 'annotation.xml'), '');
+    fs.write(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'), '');
+    fs.write(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'), '');
+    return fs;
+}

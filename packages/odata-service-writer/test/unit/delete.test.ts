@@ -1,10 +1,11 @@
-import { deleteServiceFromManifest, removeAnnotationsFromCDSFiles, removeAnnotationXmlFiles } from '../../src/delete';
+import { deleteServiceData, removeAnnotationsFromCDSFiles, removeAnnotationXmlFiles } from '../../src/delete';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { dirname, join } from 'path';
-import type { CdsAnnotationsInfo } from '../../src';
-import { updateCdsFilesWithAnnotations } from '../../src/updates';
+import { OdataVersion, type CdsAnnotationsInfo, type OdataService } from '../../src';
+import { updateCdsFilesWithAnnotations } from '../../src/update';
+import type { Manifest } from '@sap-ux/project-access';
 
 describe('removeAnnotationsFromCDSFiles', () => {
     let fs: Editor;
@@ -105,12 +106,15 @@ describe('deleteServiceFromManifest', () => {
                     }
                 }
             };
-
+            const service: OdataService = {
+                name: 'mainService',
+                version: OdataVersion.v4
+            };
             fs.writeJSON('./webapp/manifest.json', testManifest);
             fs.writeJSON(metadaPath, '');
             // Call deleteServiceFromManifest
-            deleteServiceFromManifest('./', 'mainService', fs);
-            const manifestJson = fs.readJSON('./webapp/manifest.json') as any;
+            await deleteServiceData('./', {}, service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
             expect(manifestJson?.['sap.app']?.dataSources).toEqual({});
             expect(manifestJson?.['sap.ui5']?.models).toEqual({});
             // Metadata file for dataSource should be deleted as well
@@ -158,12 +162,15 @@ describe('deleteServiceFromManifest', () => {
                     }
                 }
             };
-
+            const service: OdataService = {
+                name: 'mainService',
+                version: OdataVersion.v4
+            };
             fs.writeJSON('./webapp/manifest.json', testManifest);
             fs.writeJSON(metadaPath, '');
             // Call deleteServiceFromManifest
-            deleteServiceFromManifest('./', 'mainService', fs);
-            const manifestJson = fs.readJSON('./webapp/manifest.json') as any;
+            await deleteServiceData('./', {}, service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>
             expect(manifestJson?.['sap.app']?.dataSources).toEqual({
                 annotation: {
                     type: 'ODataAnnotation',
@@ -205,11 +212,14 @@ describe('deleteServiceFromManifest', () => {
                     }
                 }
             };
-
+            const service: OdataService = {
+                name: 'dummyService',
+                version: OdataVersion.v4
+            };
             fs.writeJSON('./webapp/manifest.json', testManifest);
             fs.writeJSON(metadaPath, '');
             // Call deleteServiceFromManifest
-            deleteServiceFromManifest('./', 'dummyService', fs);
+            await deleteServiceData('./', {}, service, fs);
             const manifestJson = fs.readJSON('./webapp/manifest.json');
             expect(manifestJson).toEqual(testManifest);
             // Metadata files for other services should not be deleted as well

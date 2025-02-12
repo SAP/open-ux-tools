@@ -8,6 +8,8 @@ export interface PackageJsonMockConfig {
     script?: string;
     mockserverModule?: string;
     mockserverVersion?: string;
+    // optional, when set to true, package.json contents won't be changed
+    skip?: boolean;
 }
 
 export interface Ui5MockYamlConfig {

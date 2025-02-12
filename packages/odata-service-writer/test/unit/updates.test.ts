@@ -1,4 +1,4 @@
-import { updateManifest, updatePackageJson, updateCdsFilesWithAnnotations } from '../../src/updates';
+import { updateCdsFilesWithAnnotations } from '../../src/update';
 import path, { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -14,6 +14,7 @@ import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/
 import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations'; // multiple local annotations
 import { expectedEdmxManifesNoAnnotations } from '../test-data/manifest-json/edmx-manifest-no-annotations'; // no any annotations
 import type { Manifest, Package } from '@sap-ux/project-access';
+import { updateManifest, updatePackageJson } from '../../src/common';
 
 describe('updates', () => {
     let fs: Editor;
