@@ -153,7 +153,7 @@ export default class extends Generator {
             const confirmConfigUpdatePrompts = getConfirmConfigUpdatePrompt(
                 this.options.data.additionalPrompts.confirmConfigUpdate.configType
             );
-            questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpate);
+            questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpdate);
             questions.unshift(...confirmConfigUpdatePrompts);
         }
 

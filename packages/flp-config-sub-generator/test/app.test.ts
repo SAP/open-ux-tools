@@ -213,7 +213,7 @@ describe('flp-config generator', () => {
                 .withOptions({
                     data: {
                         additionalPrompts: {
-                            confirmConfigUpate: {
+                            confirmConfigUpdate: {
                                 show: true
                             }
                         }
