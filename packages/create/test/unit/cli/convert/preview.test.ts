@@ -59,11 +59,11 @@ describe('Test command convert preview', () => {
         expect(spawnSpy).not.toBeCalled();
     });
 
-    test('Test create-fiori convert preview <appRoot> --simulate', async () => {
+    test('Test create-fiori convert preview <appRoot> --simulate=true', async () => {
         // Test execution
         const command = new Command('convert');
         addConvertPreviewCommand(command);
-        await command.parseAsync(getArgv(['preview-config', appRoot, '-s']));
+        await command.parseAsync(getArgv(['preview-config', appRoot, '-s=true']));
 
         // Result check
         expect(logLevelSpy).toBeCalled();
@@ -71,6 +71,20 @@ describe('Test command convert preview', () => {
         expect(loggerMock.error).not.toBeCalled();
         expect(spawnSpy).not.toBeCalled();
         expect(fsMock.commit).not.toBeCalled();
+    });
+
+    test('Test create-fiori convert preview <appRoot> --simulate=false --test=FaLsE', async () => {
+        // Test execution
+        const command = new Command('convert');
+        addConvertPreviewCommand(command);
+        await command.parseAsync(getArgv(['preview-config', appRoot, '-s=false', '-t=FaLsE']));
+
+        // Result check
+        expect(logLevelSpy).not.toBeCalled();
+        expect(loggerMock.warn).not.toBeCalled();
+        expect(loggerMock.error).not.toBeCalled();
+        expect(spawnSpy).not.toBeCalled();
+        expect(fsMock.commit).toBeCalled();
     });
 
     test('Test create-fiori convert preview --verbose', async () => {
