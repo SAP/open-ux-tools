@@ -1,5 +1,13 @@
 # @sap-ux/ui-components
 
+## 1.24.3
+
+### Patch Changes
+
+-   ec30d25: Update Icons.tsx
+
+    Shrunken down info icon
+
 ## 1.24.2
 
 ### Patch Changes

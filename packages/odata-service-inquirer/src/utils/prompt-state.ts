@@ -17,4 +17,8 @@ export class PromptState {
             PromptState.odataService[key as keyof OdataServiceAnswers] = undefined;
         });
     }
+
+    static resetConnectedSystem(): void {
+        PromptState.odataService.connectedSystem = undefined;
+    }
 }
