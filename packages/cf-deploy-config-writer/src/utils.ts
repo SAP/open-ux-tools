@@ -283,20 +283,22 @@ export function setMtaDefaults(config: CFBaseConfig): void {
 /**
  * Update the root package.json with scripts to deploy the MTA.
  *
- * @param cfConfig writer configuration
- * @param fs reference to a mem-fs editor
+ * @param {object} Options
+ * @param {string} Options.mtaId - MTA ID to be written to package.json
+ * @param {string} Options.rootPath - MTA project path
+ * @param fs
  */
 export async function updateRootPackage(
-    { mtaId, projectPath }: { mtaId: string; projectPath: string },
+    { mtaId, rootPath }: { mtaId: string; rootPath: string },
     fs: Editor
 ): Promise<void> {
-    const packageExists = fs.exists(join(projectPath, FileName.Package));
+    const packageExists = fs.exists(join(rootPath, FileName.Package));
     // Append mta scripts only if mta.yaml is at a different level to the HTML5 app
     if (packageExists) {
-        await addPackageDevDependency(projectPath, Rimraf, RimrafVersion, fs);
-        await addPackageDevDependency(projectPath, MbtPackage, MbtPackageVersion, fs);
+        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, fs);
+        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, fs);
         let deployArgs: string[] = [];
-        if (fs.exists(join(projectPath, MTAFileExtension))) {
+        if (fs.exists(join(rootPath, MTAFileExtension))) {
             deployArgs = ['-e', MTAFileExtension];
         }
         for (const script of [
@@ -304,7 +306,7 @@ export async function updateRootPackage(
             { name: 'build', run: `${MTABuildScript} --mtar archive` },
             { name: 'deploy', run: rootDeployMTAScript(deployArgs) }
         ]) {
-            await updatePackageScript(projectPath, script.name, script.run, fs);
+            await updatePackageScript(rootPath, script.name, script.run, fs);
         }
     }
 }

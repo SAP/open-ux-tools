@@ -12,7 +12,6 @@ import {
 import type { Manifest } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import type { CfSystemChoice } from '@sap-ux/cf-deploy-config-inquirer';
-import type { Question } from 'inquirer';
 
 /**
  * Get the destination choices from API Hub | Local Store | mta.yaml.

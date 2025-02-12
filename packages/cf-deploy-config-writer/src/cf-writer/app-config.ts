@@ -231,7 +231,7 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
     await updateManifest(config, fs);
     await updateHTML5AppPackage(config, fs);
     if (config.isMtaRoot) {
-        await updateRootPackage({ mtaId: config.mtaId ?? config.appId, projectPath: config.rootPath }, fs);
+        await updateRootPackage({ mtaId: config.mtaId ?? config.appId, rootPath: config.rootPath }, fs);
     }
 }
 

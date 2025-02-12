@@ -29,7 +29,7 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     const cdsOptionalParams: string[] = [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService];
     createCAPMTA(config.mtaPath, cdsOptionalParams);
     await addRoutingConfig(config, fs);
-    await updateRootPackage({ mtaId: config.mtaId, projectPath: config.mtaPath }, fs);
+    await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
     return fs;
 }
 
