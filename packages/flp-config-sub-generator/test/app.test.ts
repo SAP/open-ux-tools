@@ -208,12 +208,13 @@ describe('flp-config generator', () => {
                 )
                 .withPrompts({
                     s4Continue: true,
+                    confirmConfigUpdate: true,
                     ...answers
                 })
                 .withOptions({
                     data: {
                         additionalPrompts: {
-                            confirmConfigUpate: {
+                            confirmConfigUpdate: {
                                 show: true
                             }
                         }
