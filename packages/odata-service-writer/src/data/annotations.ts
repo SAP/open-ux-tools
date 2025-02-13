@@ -154,32 +154,6 @@ export async function removeAnnotationsFromCDSFiles(
 }
 
 /**
- * Removes local copies of metadata.xml and local annotations.
- *
- * @param {Editor} fs - the memfs editor instance
- * @param {string} basePath - the root path of an existing UI5 application
- * @param {string} webappPath - the webapp path of an existing UI5 application
- * @param {OdataService} service - the OData service instance with EDMX type
- */
-export async function removeLocalServiceAnnotationFiles(
-    fs: Editor,
-    basePath: string,
-    webappPath: string,
-    service: EdmxOdataService
-): Promise<void> {
-    const localMetadaPath = join(webappPath, 'localService', service.name ?? 'mainService', 'metadata.xml');
-    if (fs.exists(localMetadaPath)) {
-        fs.delete(localMetadaPath);
-    }
-    if (service.localAnnotationsName) {
-        const localAnnotationsPath = join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`);
-        if (fs.exists(localAnnotationsPath)) {
-            fs.delete(localAnnotationsPath);
-        }
-    }
-}
-
-/**
  * Writes local copies of metadata.xml and local annotations.
  *
  * @param {Editor} fs - the memfs editor instance

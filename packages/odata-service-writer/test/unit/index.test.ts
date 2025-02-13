@@ -887,9 +887,7 @@ describe('update', () => {
                     }
                 ] as EdmxAnnotationsInfo[],
                 metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
-                version: OdataVersion.v4,
-                // No local annotations
-                localAnnotationsName: undefined
+                version: OdataVersion.v4
             },
             fs
         );
@@ -900,7 +898,7 @@ describe('update', () => {
                 uri: '/sap/uri/',
                 type: 'OData',
                 settings: {
-                    annotations: ['DIFFERENT_ANNOTATION'],
+                    annotations: ['DIFFERENT_ANNOTATION', 'annotation'],
                     localUri: 'localService/mainService/metadata.xml',
                     odataVersion: '4.0'
                 }
@@ -910,6 +908,13 @@ describe('update', () => {
                 type: 'ODataAnnotation',
                 settings: {
                     localUri: 'localService/mainService/DIFFERENT_ANNOTATION.xml'
+                }
+            },
+            annotation: {
+                uri: 'annotations/annotation.xml',
+                type: 'ODataAnnotation',
+                settings: {
+                    localUri: 'annotations/annotation.xml'
                 }
             }
         });
@@ -1006,13 +1011,106 @@ describe('update', () => {
                 dependencies: []
             }
         });
-        // Local annotations file should be deleted
-        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(false);
+        // Local annotations file should not be deleted
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
         // Previous annotation files should be deleted and new ones generated
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(false);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'DIFFERENT_ANNOTATION.xml'))).toBe(
             true
         );
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+    });
+
+    it('Update an existing service without ui5-mock.yaml and ui5-local.yaml', async () => {
+        fs.delete(join(testDir, 'ui5-mock.yaml'));
+        fs.delete(join(testDir, 'ui5-local.yaml'));
+        await update(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost',
+                path: '/sap/uri/',
+                type: ServiceType.EDMX,
+                // Define new remote annotation for service
+                annotations: [
+                    {
+                        technicalName: 'SEPMRA_PROD_MAN',
+                        xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                    }
+                ] as EdmxAnnotationsInfo[],
+                metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                version: OdataVersion.v4
+            },
+            fs
+        );
+        // verify updated manifest.json
+        const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+        expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
+            mainService: {
+                uri: '/sap/uri/',
+                type: 'OData',
+                settings: {
+                    annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                    localUri: 'localService/mainService/metadata.xml',
+                    odataVersion: '4.0'
+                }
+            },
+            SEPMRA_PROD_MAN: {
+                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                type: 'ODataAnnotation',
+                settings: {
+                    localUri: 'localService/mainService/SEPMRA_PROD_MAN.xml'
+                }
+            },
+            annotation: {
+                uri: 'annotations/annotation.xml',
+                type: 'ODataAnnotation',
+                settings: {
+                    localUri: 'annotations/annotation.xml'
+                }
+            }
+        });
+        expect(manifest?.['sap.ui5']?.models).toStrictEqual({
+            '': {
+                dataSource: 'mainService',
+                preload: true,
+                settings: {
+                    autoExpandSelect: true,
+                    earlyRequests: true,
+                    operationMode: 'Server'
+                }
+            }
+        });
+        // verify ui5.yaml, ui5-local.yaml, ui5-mock.yaml
+        expect(fs.read(join(testDir, 'ui5.yaml'))).toMatchInlineSnapshot(`
+            "server:
+              customMiddleware:
+                - name: fiori-tools-proxy
+                  afterMiddleware: compression
+                  configuration:
+                    ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
+                    backend:
+                      - path: /sap
+                        url: https://localhost
+                    ui5:
+                      path:
+                        - /resources
+                        - /test-resources
+                      url: https://ui5.sap.com
+            "
+        `);
+        expect(fs.exists(join(testDir, 'ui5-local.yaml'))).toBe(false);
+        expect(fs.exists(join(testDir, 'ui5-mock.yaml'))).toBe(false);
+        // No changes in package.json expected
+        expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+            ui5: {
+                dependencies: []
+            }
+        });
+        // Local annotations file should not be deleted
+        expect(fs.exists(join(testDir, 'webapp', 'annotations', 'annotation.xml'))).toBe(true);
+        // Remote annotation files should be updated
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'SEPMRA_PROD_MAN.xml'))).toBe(true);
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
 });

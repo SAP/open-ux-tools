@@ -5,11 +5,7 @@ import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
-import {
-    removeLocalServiceAnnotationFiles,
-    writeLocalServiceAnnotationXMLFiles,
-    writeRemoteServiceAnnotationXmlFiles
-} from './data/annotations';
+import { writeLocalServiceAnnotationXMLFiles, writeRemoteServiceAnnotationXmlFiles } from './data/annotations';
 import { updatePackageJson } from './data/package';
 
 /**
@@ -135,14 +131,12 @@ export async function addServicesData(
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {ProjectPaths} paths - paths to the project files (package.json, ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
- * @param {string} templateRoot - path to the file templates
  * @param {EdmxOdataService} service - the OData service instance
  * @param {Editor} fs - the memfs editor instance
  */
 export async function updateServicesData(
     basePath: string,
     paths: ProjectPaths,
-    templateRoot: string,
     service: EdmxOdataService,
     fs: Editor
 ): Promise<void> {
@@ -155,32 +149,37 @@ export async function updateServicesData(
         ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
     }
     // For update, updatable files should already exist
-    if (service.metadata && paths.ui5MockYaml) {
+    if (service.metadata) {
         const webappPath = await getWebappPath(basePath, fs);
-        if (paths.ui5Yaml && ui5Config) {
-            const config = {
-                webappPath: webappPath,
-                // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
-                packageJsonConfig: {
-                    skip: true
-                },
-                // Set 'overwrite' to true to overwrite services data in YAML files
-                ui5MockYamlConfig: {
-                    overwrite: true
+        // Generate mockserver only when ui5-mock.yaml already exists
+        if (paths.ui5MockYaml) {
+            if (paths.ui5Yaml && ui5Config) {
+                const config = {
+                    webappPath: webappPath,
+                    // Since ui5-mock.yaml already exists, set 'skip' to skip package.json file updates
+                    packageJsonConfig: {
+                        skip: true
+                    },
+                    // Set 'overwrite' to true to overwrite services data in YAML files
+                    ui5MockYamlConfig: {
+                        overwrite: true
+                    }
+                };
+                // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
+                await generateMockserverConfig(basePath, config, fs);
+                // Update ui5-local.yaml with mockserver middleware from updated ui5-mock.yaml
+                await generateMockserverMiddlewareBasedOnUi5MockYaml(
+                    fs,
+                    paths.ui5Yaml,
+                    paths.ui5LocalYaml,
+                    ui5LocalConfig
+                );
+                if (paths.ui5LocalYaml && ui5LocalConfig) {
+                    // write ui5 local yaml if service type is not CDS
+                    fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
                 }
-            };
-            // Regenerate mockserver middleware for ui5-mock.yaml by overwriting
-            await generateMockserverConfig(basePath, config, fs);
-            // Update ui5-local.yaml with mockserver middleware from updated ui5-mock.yaml
-            await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
-            if (paths.ui5LocalYaml && ui5LocalConfig) {
-                // write ui5 local yaml if service type is not CDS
-                fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
             }
         }
-        // Just in case annotations have changed, remove and write new ones
-        await removeLocalServiceAnnotationFiles(fs, basePath, webappPath, service);
-        await writeLocalServiceAnnotationXMLFiles(fs, basePath, webappPath, templateRoot, service);
     }
     // Write new annotations files
     writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);

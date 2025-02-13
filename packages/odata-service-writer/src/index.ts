@@ -120,12 +120,10 @@ async function update(basePath: string, service: OdataService, fs?: Editor): Pro
     await enhanceData(basePath, service, fs);
     // Set isServiceTypeEdmx true if service is EDMX
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;
-    // Prepare template folder for manifest and xml updates
-    const templateRoot = join(__dirname, '../templates');
     await updateManifest(basePath, service, fs, true);
     // Dont extend/update backend and mockserver middlewares if service type is CDS
     if (isServiceTypeEdmx) {
-        await updateServicesData(basePath, paths, templateRoot, service as EdmxOdataService, fs);
+        await updateServicesData(basePath, paths, service as EdmxOdataService, fs);
     }
     return fs;
 }

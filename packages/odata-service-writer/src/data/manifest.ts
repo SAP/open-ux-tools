@@ -40,18 +40,22 @@ function enhanceManifestDatasources(
         serviceLocalAnnotations
     } = dataSourceUpdateSettings;
     const dataSources = manifest?.['sap.app'].dataSources ?? {};
-    const { annotations, annotationDataSources } = getDataSourceAnnotations(
+    const createdRemoteAnnotationDataSources = addRemoteAnnotationDataSources(
+        fs,
+        webappPath,
+        dataSources,
         serviceName,
         serviceRemoteAnnotations,
-        serviceLocalAnnotations
+        forceServiceUpdate
     );
-    // Annotation dataSources used by service - remote and local annotations are handled differently
-    let previousAnnotationNames: string[] = [];
-    if (dataSources[serviceName]?.settings?.annotations && forceServiceUpdate) {
-        previousAnnotationNames = dataSources[serviceName].settings?.annotations;
-    }
+    const createdLocalAnnotationDataSources = addLocalAnnotationDataSources(
+        dataSources,
+        serviceName,
+        serviceLocalAnnotations,
+        forceServiceUpdate
+    );
     const settings = {
-        annotations
+        annotations: [...createdRemoteAnnotationDataSources, ...createdLocalAnnotationDataSources]
     };
     if (serviceMetadata) {
         settings['localUri'] = `localService/${serviceName}/metadata.xml`;
@@ -67,22 +71,6 @@ function enhanceManifestDatasources(
         type: 'OData',
         settings
     };
-    // Create or update service annotation dataSources in manifest.json for service
-    for (const name in annotationDataSources) {
-        const annotationDataSource = annotationDataSources[name];
-        dataSources[name] = annotationDataSource;
-    }
-    // Clean old annotations in case of an update
-    previousAnnotationNames.forEach((name) => {
-        if (dataSources[name] && !annotations.includes(name)) {
-            const oldAnnotationPath = dataSources[name].settings?.localUri;
-            // Delete old annotation files
-            if (oldAnnotationPath && fs.exists(join(webappPath, oldAnnotationPath))) {
-                fs.delete(join(webappPath, oldAnnotationPath));
-            }
-            delete dataSources[name];
-        }
-    });
     // Update manifest.json dataSources
     manifest['sap.app'].dataSources = dataSources;
 }
@@ -157,30 +145,116 @@ function getModelSettings(minUI5Version: string | undefined): { includeSynchroni
 }
 
 /**
- * Populates annotations as manifest dataSources.
+ * Adds local annotations to manifest dataSources.
  *
- * @param {string} serviceName - name of the OData service instance
- * @param {EdmxAnnotationsInfo | EdmxAnnotationsInfo[]} serviceRemoteAnnotations - remote annotations of the OData service instance
+ * @param dataSources - dataSources from manifest.json
+ * @param serviceName - name of the OData service instance
  * @param {string | string[]} serviceLocalAnnotations - local annotations of the OData service instance
- * @returns annotations list and annotation dataSources.
+ * @param {boolean} useOldAnnotations - if true, uses already existing local annotations for service
+ * @returns created annotation dataSources list for service.
  */
-function getDataSourceAnnotations(
+function addLocalAnnotationDataSources(
+    dataSources: { [k: string]: ManifestNamespace.DataSource },
+    serviceName: string,
+    serviceLocalAnnotations?: string | string[],
+    useOldAnnotations?: boolean
+): string[] {
+    const createdAnnotations: string[] = [];
+    if (useOldAnnotations) {
+        // Update old annotations
+        const serviceAnnotations = dataSources?.[serviceName]?.settings?.annotations ?? [];
+        serviceAnnotations.forEach((name) => {
+            const dataSource = dataSources[name];
+            // make sure we only work with local annotations for current service
+            if (dataSource?.type === 'ODataAnnotation' && dataSource.uri === dataSource.settings?.localUri) {
+                createdAnnotations.push(name);
+            }
+        });
+    } else if (Array.isArray(serviceLocalAnnotations)) {
+        serviceLocalAnnotations.forEach((localAnnotation: string) => {
+            dataSources[localAnnotation] = {
+                type: 'ODataAnnotation',
+                uri: `annotations/${localAnnotation}.xml`,
+                settings: {
+                    localUri: `annotations/${localAnnotation}.xml`
+                }
+            };
+            createdAnnotations.push(localAnnotation);
+        });
+    } else if (serviceLocalAnnotations) {
+        dataSources[serviceLocalAnnotations] = {
+            type: 'ODataAnnotation',
+            uri: `annotations/${serviceLocalAnnotations}.xml`,
+            settings: {
+                localUri: `annotations/${serviceLocalAnnotations}.xml`
+            }
+        };
+        createdAnnotations.push(serviceLocalAnnotations);
+    }
+    return createdAnnotations;
+}
+
+/**
+ * Removes unused service annotations from manifest dataSources and unused annotation files.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} webappPath - the webapp path of an existing UI5 application
+ * @param dataSources - dataSources from manifest.json
+ * @param serviceName - name of the OData service instance
+ * @param createdAnnotations - name of the OData service instance
+ */
+function removeUnusedAnnotations(
+    fs: Editor,
+    webappPath: string,
+    dataSources: { [k: string]: ManifestNamespace.DataSource },
+    serviceName: string,
+    createdAnnotations: string[]
+): void {
+    // Clean unused annotations
+    const serviceAnnotations = dataSources?.[serviceName].settings?.annotations ?? [];
+    serviceAnnotations.forEach((name) => {
+        const dataSource = dataSources[name];
+        // make sure we only work with remote annotations for current service
+        if (
+            dataSource?.type === 'ODataAnnotation' &&
+            dataSource.uri !== dataSource.settings?.localUri &&
+            !createdAnnotations.includes(name)
+        ) {
+            const oldAnnotationPath = dataSource.settings?.localUri;
+            // Delete old annotation files
+            if (oldAnnotationPath && fs.exists(join(webappPath, oldAnnotationPath))) {
+                fs.delete(join(webappPath, oldAnnotationPath));
+            }
+            // Delete old annotation dataSource netry
+            delete dataSources[name];
+        }
+    });
+}
+
+/**
+ * Adds remote annotations to manifest dataSources and removes unused annotations by the service.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} webappPath - the webapp path of an existing UI5 application
+ * @param dataSources - dataSources from manifest.json
+ * @param serviceName - name of the OData service instance
+ * @param {EdmxAnnotationsInfo | EdmxAnnotationsInfo[]} serviceRemoteAnnotations - remote annotations of the OData service instance
+ * @param {boolean} cleanOldAnnotations - if true, checks and updates service annotations
+ * @returns created annotation dataSources list for service.
+ */
+function addRemoteAnnotationDataSources(
+    fs: Editor,
+    webappPath: string,
+    dataSources: { [k: string]: ManifestNamespace.DataSource },
     serviceName: string,
     serviceRemoteAnnotations?: EdmxAnnotationsInfo | EdmxAnnotationsInfo[],
-    serviceLocalAnnotations?: string | string[]
-): {
-    annotations: string[];
-    annotationDataSources: { [k: string]: ManifestNamespace.DataSource };
-} {
-    const annotations: string[] = [];
-    // Service annotation names to be stored in service settings of dataSource
-    const annotationDataSources: { [k: string]: ManifestNamespace.DataSource } = {};
-    // Handle remote annotations used by service
+    cleanOldAnnotations?: boolean
+): string[] {
+    const createdAnnotations: string[] = [];
     if (Array.isArray(serviceRemoteAnnotations)) {
         serviceRemoteAnnotations.forEach((remoteAnnotation) => {
             if (remoteAnnotation.name) {
-                annotations.push(remoteAnnotation.name);
-                annotationDataSources[remoteAnnotation.name] = {
+                dataSources[remoteAnnotation.name] = {
                     uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='${encodeURIComponent(
                         remoteAnnotation.technicalName
                     )}',Version='0001')/$value/`,
@@ -189,11 +263,11 @@ function getDataSourceAnnotations(
                         localUri: `localService/${serviceName}/${remoteAnnotation.technicalName}.xml`
                     }
                 };
+                createdAnnotations.push(remoteAnnotation.name);
             }
         });
     } else if (serviceRemoteAnnotations?.name) {
-        annotations.push(serviceRemoteAnnotations.name);
-        annotationDataSources[serviceRemoteAnnotations.name] = {
+        dataSources[serviceRemoteAnnotations.name] = {
             uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='${encodeURIComponent(
                 serviceRemoteAnnotations.technicalName
             )}',Version='0001')/$value/`,
@@ -202,33 +276,13 @@ function getDataSourceAnnotations(
                 localUri: `localService/${serviceName}/${serviceRemoteAnnotations.technicalName}.xml`
             }
         };
+        createdAnnotations.push(serviceRemoteAnnotations.name);
     }
-    // Handle local annotations used by service
-    if (Array.isArray(serviceLocalAnnotations)) {
-        serviceLocalAnnotations.forEach((localAnnotation: string) => {
-            annotations.push(localAnnotation);
-            annotationDataSources[localAnnotation] = {
-                type: 'ODataAnnotation',
-                uri: `annotations/${localAnnotation}.xml`,
-                settings: {
-                    localUri: `annotations/${localAnnotation}.xml`
-                }
-            };
-        });
-    } else if (serviceLocalAnnotations) {
-        annotations.push(serviceLocalAnnotations);
-        annotationDataSources[serviceLocalAnnotations] = {
-            type: 'ODataAnnotation',
-            uri: `annotations/${serviceLocalAnnotations}.xml`,
-            settings: {
-                localUri: `annotations/${serviceLocalAnnotations}.xml`
-            }
-        };
+    if (cleanOldAnnotations) {
+        // Clean unused annotations
+        removeUnusedAnnotations(fs, webappPath, dataSources, serviceName, createdAnnotations);
     }
-    return {
-        annotations,
-        annotationDataSources
-    };
+    return createdAnnotations;
 }
 
 /**
@@ -360,7 +414,7 @@ function removeFileForDataSource(fs: Editor, manifestPath: string, dataSource: M
  * @param fs - the memfs editor instance
  * @param manifestPath - the root path of an existing UI5 application
  * @param annotations - annotations list
- * @param dataSources - list of dataSources from manifest.json
+ * @param dataSources - dataSources from manifest.json
  */
 function removeAnnotations(
     fs: Editor,
