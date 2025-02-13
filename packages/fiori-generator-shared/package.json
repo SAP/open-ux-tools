@@ -44,7 +44,8 @@
         "@types/mem-fs": "1.1.2",
         "@types/semver": "7.5.2",
         "@types/vscode": "1.73.1",
-        "@types/yeoman-environment": "2.10.11"
+        "@types/yeoman-environment": "2.10.11",
+        "@sap-ux/logger": "workspace:*"
     },
     "engines": {
         "node": ">=18.x"
