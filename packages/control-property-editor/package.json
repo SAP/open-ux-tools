@@ -3,7 +3,7 @@
     "displayName": "Control Property Editor",
     "description": "Control Property Editor",
     "license": "Apache-2.0",
-    "version": "0.5.36",
+    "version": "0.5.37",
     "main": "dist/app.js",
     "repository": {
         "type": "git",
