@@ -299,13 +299,48 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('change table columns', () => {
-            test('initialize and execute', async () => {
+            const testCases: {
+                tableType: typeof SMART_TABLE_TYPE | typeof M_TABLE_TYPE;
+                versionInfo: string;
+                actionId: 'CTX_COMP_VARIANT_CONTENT' | 'CTX_SETTINGS';
+                expectActionAvailable: boolean;
+                isTableNotLoaded?: boolean;
+            }[] = [
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    versionInfo: '1.96.0',
+                    actionId: 'CTX_SETTINGS',
+                    expectActionAvailable: true
+                },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_COMP_VARIANT_CONTENT',
+                    expectActionAvailable: true
+                },
+                {
+                    tableType: M_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_SETTINGS',
+                    expectActionAvailable: true
+                },
+                {
+                    tableType: M_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_SETTINGS',
+                    expectActionAvailable: true,
+                    isTableNotLoaded: true
+                }
+            ];
+            test.each(testCases)('initialize and execute (%s)', async (testCase) => {
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
+                let attachedEvent: (() => Promise<void>) | undefined = undefined;
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartTable') {
                         return {
-                            isA: (type: string) => type === 'sap.ui.comp.smarttable.SmartTable',
+                            isA: (type: string) => type === testCase.tableType,
                             getHeader: () => 'MyTable',
                             getId: () => id,
                             getDomRef: () => ({
@@ -319,7 +354,17 @@ describe('FE V2 quick actions', () => {
                                 ];
                             },
                             getParent: () => pageView,
-                            getBusy: () => false
+                            getBusy: () => false,
+                            getHeaderToolbar: () => ({
+                                getTitleControl: () => ({
+                                    getText: () => 'MyTable'
+                                })
+                            }),
+                            getBindingInfo: () => undefined,
+                            getBindingContext: () => !testCase.isTableNotLoaded,
+                            attachEventOnce: (name: string, handler: () => Promise<void>) => {
+                                attachedEvent = handler;
+                            }
                         };
                     }
                     if (id == 'NavContainer') {
@@ -364,7 +409,7 @@ describe('FE V2 quick actions', () => {
                         return {
                             get: (controlId: string) => {
                                 if (controlId === 'SmartTable') {
-                                    return [{ id: 'CTX_COMP_VARIANT_CONTENT' }];
+                                    return [{ id: testCase.actionId }];
                                 }
                             },
                             execute
@@ -381,7 +426,7 @@ describe('FE V2 quick actions', () => {
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
-                    'sap.ui.comp.smarttable.SmartTable': [
+                    [testCase.tableType]: [
                         {
                             controlId: 'SmartTable'
                         } as any
@@ -448,8 +493,17 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
+                if (testCase.isTableNotLoaded) {
+                    expect(attachedEvent).toBeDefined();
+                    await attachedEvent!();
+                } else {
+                    expect(attachedEvent).toBeUndefined();
+                }
                 expect(scrollIntoView).toHaveBeenCalled();
-                expect(execute).toHaveBeenCalledWith('SmartTable', 'CTX_COMP_VARIANT_CONTENT');
+                expect(execute).toHaveBeenCalledWith(
+                    'SmartTable',
+                    testCase.expectActionAvailable ? testCase.actionId : undefined
+                );
             });
         });
 
