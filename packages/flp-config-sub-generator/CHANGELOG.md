@@ -1,5 +1,13 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.1.13
+
+### Patch Changes
+
+-   7c96039: fix spelling mistake
+-   Updated dependencies [7c96039]
+    -   @sap-ux/deploy-config-generator-shared@0.0.22
+
 ## 0.1.12
 
 ### Patch Changes
