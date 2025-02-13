@@ -16,7 +16,7 @@ import type TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateCo
  * @param control - ManagedObject.
  * @returns AppComponent.
  */
-export function getAppComponent(control: ManagedObject): AppComponent | undefined {
+export function getV2AppComponent(control: ManagedObject): AppComponent | undefined {
     const ownerComponent = Component.getOwnerComponentFor(control);
     let result;
     if (ownerComponent?.isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent')) {
@@ -46,7 +46,7 @@ export async function prepareManifestChange(
     propertyValue: object | string
 ): Promise<FlexCommand[]> {
     const { flexSettings } = context;
-    const appComponent = getAppComponent(control);
+    const appComponent = getV2AppComponent(control);
     const modifiedValue = {
         changeType: 'appdescr_ui_generic_app_changePageConfiguration',
         reference: flexSettings.projectId,
