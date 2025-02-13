@@ -1,10 +1,11 @@
-import { updateCdsFilesWithAnnotations } from '../../src/update';
-import path, { join } from 'path';
+import { deleteServiceData } from '../../src/delete';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import type { OdataService, CdsAnnotationsInfo } from '../../src';
+import type { OdataService } from '../../src';
 import { OdataVersion, ServiceType } from '../../src';
+import type { Manifest } from '@sap-ux/project-access';
+import { updateManifest } from '../../src/data/manifest';
 import { expectedEdmxManifest } from '../test-data/manifest-json/edmx-manifest';
 import { expectedEdmxManifestMultipleAnnotations } from '../test-data/manifest-json/edmx-manifest-multiple-annotations';
 import { expectedEdmxManifestMultipleServices } from '../test-data/manifest-json/edmx-manifest-multiple-services';
@@ -13,15 +14,12 @@ import { expectedCdsManifest } from '../test-data/manifest-json/cap-manifest';
 import { expectedEdmxManifestLocalAnnotation } from '../test-data/manifest-json/edmx-manifest-local-annotation'; // single local annotation
 import { expectedEdmxManifestLocalAnnotations } from '../test-data/manifest-json/edmx-manifest-local-annotations'; // multiple local annotations
 import { expectedEdmxManifesNoAnnotations } from '../test-data/manifest-json/edmx-manifest-no-annotations'; // no any annotations
-import type { Manifest, Package } from '@sap-ux/project-access';
-import { updateManifest, updatePackageJson } from '../../src/common';
 
-describe('updates', () => {
+describe('manifest', () => {
     let fs: Editor;
     beforeEach(async () => {
         fs = create(createStorage());
     });
-
     describe('updateManifest', () => {
         afterEach(() => {
             jest.restoreAllMocks();
@@ -380,77 +378,158 @@ describe('updates', () => {
         });
     });
 
-    describe('update package.json', () => {
-        const packageJsonFile = 'package.json';
-        const testPackageJson = {
-            'devDependencies': {
-                '@ui5/cli': ''
-            },
-            'ui5': {
-                'dependencies': []
-            }
-        };
-        test('Add @sap/ux-ui5-tooling dependency to ui5 if @ui5/cli version is less than 3.0.0', () => {
-            testPackageJson.devDependencies['@ui5/cli'] = '^2.14.1';
-            const path = join('./test1', packageJsonFile);
-            fs.writeJSON(path, testPackageJson);
-            updatePackageJson(path, fs, false);
-            const packageJson = fs.readJSON('./test1/package.json') as Package;
-            expect(packageJson.ui5?.dependencies).toEqual(['@sap/ux-ui5-tooling']);
+    describe('deleteServiceFromManifest', () => {
+        let fs: Editor;
+        beforeEach(async () => {
+            fs = create(createStorage());
         });
+        describe('deleteServiceFromManifest', () => {
+            test('Ensure all references for service are deleted in edmx projects', async () => {
+                const metadaPath = './webapp/localService/mainService/metadata.xml';
+                const testManifest = {
+                    'sap.app': {
+                        id: 'test.update.manifest',
+                        dataSources: {
+                            mainService: {
+                                uri: '/sap/opu/odata/sap/SEPMRA_PROD_MAN/',
+                                type: 'OData',
+                                settings: {
+                                    annotations: [],
+                                    localUri: 'localService/mainService/metadata.xml',
+                                    odataVersion: '2.0'
+                                }
+                            }
+                        }
+                    },
+                    'sap.ui5': {
+                        models: {
+                            '': {
+                                dataSource: 'mainService',
+                                preload: true,
+                                settings: {}
+                            }
+                        }
+                    }
+                };
+                const service: OdataService = {
+                    name: 'mainService',
+                    version: OdataVersion.v4
+                };
+                fs.writeJSON('./webapp/manifest.json', testManifest);
+                fs.writeJSON(metadaPath, '');
+                // Call deleteServiceFromManifest
+                await deleteServiceData('./', {}, service, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson?.['sap.app']?.dataSources).toEqual({});
+                expect(manifestJson?.['sap.ui5']?.models).toEqual({});
+                // Metadata file for dataSource should be deleted as well
+                expect(fs.exists(metadaPath)).toBeFalsy();
+            });
 
-        test('Do not add @sap/ux-ui5-tooling dependency to ui5 if @ui5/cli version is 3.0.0 or greater', () => {
-            testPackageJson.devDependencies['@ui5/cli'] = '^3.0.0';
-            const path = join('./test2', packageJsonFile);
-            fs.writeJSON(path, testPackageJson);
-            updatePackageJson(path, fs, false);
-            const packageJson = fs.readJSON('./test2/package.json') as Package;
-            expect(packageJson.ui5?.dependencies).toEqual([]);
-        });
-    });
+            test('Ensure all references for service with multiple annotations are deleted in edmx projects', async () => {
+                const metadaPath = './webapp/localService/mainService/metadata.xml';
+                const testManifest = {
+                    'sap.app': {
+                        id: 'test.update.manifest',
+                        dataSources: {
+                            mainService: {
+                                uri: '/sap/opu/odata/sap/SEPMRA_PROD_MAN/',
+                                type: 'OData',
+                                settings: {
+                                    annotations: ['SEPMRA_PROD_MAN', 'annotation'],
+                                    localUri: 'localService/mainService/metadata.xml',
+                                    odataVersion: '2.0'
+                                }
+                            },
+                            SEPMRA_PROD_MAN: {
+                                uri: `/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/`,
+                                type: 'ODataAnnotation',
+                                settings: {
+                                    localUri: 'localService/SEPMRA_PROD_MAN.xml'
+                                }
+                            },
+                            annotation: {
+                                type: 'ODataAnnotation',
+                                uri: 'annotations/annotation.xml',
+                                settings: {
+                                    localUri: 'annotations/annotation.xml'
+                                }
+                            }
+                        }
+                    },
+                    'sap.ui5': {
+                        models: {
+                            '': {
+                                dataSource: 'mainService',
+                                preload: true,
+                                settings: {}
+                            }
+                        }
+                    }
+                };
+                const service: OdataService = {
+                    name: 'mainService',
+                    version: OdataVersion.v4
+                };
+                fs.writeJSON('./webapp/manifest.json', testManifest);
+                fs.writeJSON(metadaPath, '');
+                // Call deleteServiceFromManifest
+                await deleteServiceData('./', {}, service, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+                expect(manifestJson?.['sap.app']?.dataSources).toEqual({
+                    annotation: {
+                        type: 'ODataAnnotation',
+                        uri: 'annotations/annotation.xml',
+                        settings: {
+                            localUri: 'annotations/annotation.xml'
+                        }
+                    }
+                });
+                expect(manifestJson?.['sap.ui5']?.models).toEqual({});
+                // Metadata file for dataSource should be deleted as well
+                expect(fs.exists(metadaPath)).toBeFalsy();
+            });
 
-    describe('updates cds files correctly', () => {
-        it('writes annotation cds files correctly', async () => {
-            const annotationsInfo: CdsAnnotationsInfo = {
-                cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',
-                projectPath: 'testProject',
-                appPath: 'webapp',
-                projectName: 'annotations'
-            };
-            const annotationPath = join('./testProject/webapp/annotations', 'annotations.cds');
-            await updateCdsFilesWithAnnotations(annotationsInfo, fs);
-            const annotationCds = fs.read(annotationPath);
-            expect(annotationCds).toEqual(annotationsInfo.cdsFileContents);
-            // Convert the annotation path to the services path
-            const serviceCdsPath = path.join(path.dirname(annotationPath).replace('annotations', ''), 'services.cds');
-            const serviceCds = fs.read(serviceCdsPath);
-            expect(serviceCds).toContain(`using from './annotations/annotations';`);
-        });
-
-        it('writes annotation cds files correctly for multiple annotations', async () => {
-            const annotationsInfo: CdsAnnotationsInfo[] = [
-                {
-                    cdsFileContents: '"using AdminService as service from \'../../srv/admin-service\';"',
-                    projectPath: 'testProject',
-                    appPath: 'webapp',
-                    projectName: 'annotations'
-                },
-                {
-                    cdsFileContents: '"using IncidentService as service from \'../../srv/incidentservice\';"',
-                    projectPath: 'testProject',
-                    appPath: 'webapp',
-                    projectName: 'annotations'
-                }
-            ];
-            const annotationsPath = join('./testProject/webapp/annotations', 'annotations.cds');
-            await updateCdsFilesWithAnnotations(annotationsInfo, fs);
-            const annotationCds = fs.read(annotationsPath);
-            expect(annotationCds).toContain(annotationsInfo[0].cdsFileContents);
-            expect(annotationCds).toContain(annotationsInfo[1].cdsFileContents);
-            // Convert the annotation path to the services path
-            const serviceCdsPath = path.join(path.dirname(annotationsPath).replace('annotations', ''), 'services.cds');
-            const serviceCds = fs.read(serviceCdsPath);
-            expect(serviceCds).toContain(`using from './annotations/annotations';`);
+            test('Ensure other services are not deleted in edmx projects', async () => {
+                const metadaPath = './webapp/localService/mainService/metadata.xml';
+                const testManifest = {
+                    'sap.app': {
+                        id: 'test.update.manifest',
+                        dataSources: {
+                            mainService: {
+                                uri: '/sap/opu/odata/sap/SEPMRA_PROD_MAN/',
+                                type: 'OData',
+                                settings: {
+                                    annotations: [],
+                                    localUri: 'localService/mainService/metadata.xml',
+                                    odataVersion: '2.0'
+                                }
+                            }
+                        }
+                    },
+                    'sap.ui5': {
+                        models: {
+                            '': {
+                                dataSource: 'mainService',
+                                preload: true,
+                                settings: {}
+                            }
+                        }
+                    }
+                };
+                const service: OdataService = {
+                    name: 'dummyService',
+                    version: OdataVersion.v4
+                };
+                fs.writeJSON('./webapp/manifest.json', testManifest);
+                fs.writeJSON(metadaPath, '');
+                // Call deleteServiceFromManifest
+                await deleteServiceData('./', {}, service, fs);
+                const manifestJson = fs.readJSON('./webapp/manifest.json');
+                expect(manifestJson).toEqual(testManifest);
+                // Metadata files for other services should not be deleted as well
+                expect(fs.exists(metadaPath)).toBeTruthy();
+            });
         });
     });
 });

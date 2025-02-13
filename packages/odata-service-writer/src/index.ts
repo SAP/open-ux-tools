@@ -2,8 +2,8 @@ import { join, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
-import { updateCdsFilesWithAnnotations, updateServicesData } from './update';
-import { enhanceData, getAnnotationNamespaces } from './data';
+import { addServicesData, updateServicesData } from './update';
+import { enhanceData, getAnnotationNamespaces, removeAnnotationsFromCDSFiles, updateCdsFilesWithAnnotations } from './data';
 import { t } from './i18n';
 import type { EdmxOdataService, ProjectPaths } from './types';
 import {
@@ -14,10 +14,9 @@ import {
     EdmxAnnotationsInfo,
     NamespaceAlias
 } from './types';
-import { deleteServiceData, removeAnnotationsFromCDSFiles } from './delete';
-import { addServicesData } from './add';
+import { deleteServiceData } from './delete';
 import { getWebappPath } from '@sap-ux/project-access';
-import { updateManifest } from './common';
+import { updateManifest } from './data/manifest';
 
 /**
  * Ensures the existence of the given files in the provided base path. If a file in the provided list does not exit, an error would be thrown.
@@ -41,7 +40,7 @@ function ensureExists(basePath: string, files: string[], fs: Editor): void {
  * @param {Editor} [fs] - the memfs editor instance
  * @returns an object with the optional locations of the package.json and ui5.yaml, ui5-local.yaml, ui5-mock.yaml
  */
-export async function findProjectFiles(basePath: string, fs: Editor): Promise<ProjectPaths> {
+async function findProjectFiles(basePath: string, fs: Editor): Promise<ProjectPaths> {
     const files: ProjectPaths = {};
     const parts = basePath.split(sep);
 

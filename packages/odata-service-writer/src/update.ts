@@ -1,15 +1,132 @@
 import type { Editor } from 'mem-fs-editor';
-import { join, normalize, posix } from 'path';
-import type { CdsAnnotationsInfo, EdmxOdataService, ProjectPaths } from './types';
-import { getWebappPath } from '@sap-ux/project-access';
-import { UI5Config } from '@sap-ux/ui5-config';
+import { dirname, join } from 'path';
+import type { EdmxOdataService, OdataService, ProjectPaths } from './types';
+import { FileName, getWebappPath } from '@sap-ux/project-access';
+import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
+import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
 import {
-    generateMockserverMiddlewareBasedOnUi5MockYaml,
-    removeLocalServiceFiles,
-    writeAnnotationXmlFiles,
-    writeLocalServiceFiles
-} from './common';
+    removeLocalServiceAnnotationFiles,
+    writeLocalServiceAnnotationXMLFiles,
+    writeRemoteServiceAnnotationXmlFiles
+} from './data/annotations';
+import { updatePackageJson } from './data/package';
+
+/**
+ * Generates mockserver middleware config for ui5-local.yaml file based on ui5-mock.yaml.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {OdataService} ui5YamlPath - path pointing to the ui5.yaml file
+ * @param {UI5Config} ui5LocalConfigPath - ui5-local.yaml configuration
+ * @param {string} ui5LocalConfig - path pointing to the ui5-local.yaml file
+ * @returns {Promise<Editor>} the updated memfs editor instance
+ */
+async function generateMockserverMiddlewareBasedOnUi5MockYaml(
+    fs: Editor,
+    ui5YamlPath: string,
+    ui5LocalConfigPath?: string,
+    ui5LocalConfig?: UI5Config
+): Promise<void> {
+    // Update ui5-local.yaml with mockserver middleware from ui5-mock.yaml
+    const ui5MockYamlPath = join(dirname(ui5YamlPath), FileName.Ui5MockYaml);
+    const ui5MockYamlConfig = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+    const mockserverMiddlewareFromUi5Mock = ui5MockYamlConfig.findCustomMiddleware(
+        'sap-fe-mockserver'
+    ) as CustomMiddleware;
+    if (ui5LocalConfigPath && fs.exists(ui5LocalConfigPath) && ui5LocalConfig && mockserverMiddlewareFromUi5Mock) {
+        ui5LocalConfig.updateCustomMiddleware(mockserverMiddlewareFromUi5Mock);
+    }
+}
+
+/**
+ * Extends backend middleware for UI5Config with service data.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {OdataService} service - the OData service instance data
+ * @param {UI5Config} ui5Config - UI5 configuration
+ * @param {string} ui5ConfigPath - path to the YAML config file
+ * @throws {Error} - if required UI5 project files are not found
+ */
+function extendBackendMiddleware(fs: Editor, service: OdataService, ui5Config: UI5Config, ui5ConfigPath: string): void {
+    try {
+        ui5Config.addBackendToFioriToolsProxydMiddleware(
+            service.previewSettings as ProxyBackend,
+            service.ignoreCertError
+        );
+    } catch (error: any) {
+        if (
+            (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||
+            error.message === 'Could not find fiori-tools-proxy'
+        ) {
+            ui5Config.addFioriToolsProxydMiddleware({
+                backend: [service.previewSettings as ProxyBackend],
+                ignoreCertError: service.ignoreCertError
+            });
+        } else {
+            throw error;
+        }
+    }
+    fs.write(ui5ConfigPath, ui5Config.toString());
+}
+
+/**
+ * Adds services data to ui5-*.yaml files.
+ * Mockserver configuration for services and annotations are written using dataSources from manifest.json.
+ * At the end, XML files for service annotations are created.
+ *
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {ProjectPaths} paths - paths to the project files (package.json, ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
+ * @param {string} templateRoot - path to the file templates
+ * @param {EdmxOdataService} service - the OData service instance
+ * @param {Editor} fs - the memfs editor instance
+ */
+export async function addServicesData(
+    basePath: string,
+    paths: ProjectPaths,
+    templateRoot: string,
+    service: EdmxOdataService,
+    fs: Editor
+): Promise<void> {
+    let ui5Config: UI5Config | undefined;
+    let ui5LocalConfig: UI5Config | undefined;
+    let ui5MockConfig: UI5Config | undefined;
+    if (paths.ui5Yaml) {
+        ui5Config = await UI5Config.newInstance(fs.read(paths.ui5Yaml));
+        // Update ui5.yaml with backend middleware
+        extendBackendMiddleware(fs, service, ui5Config, paths.ui5Yaml);
+        // Update ui5-local.yaml with backend middleware
+        if (paths.ui5LocalYaml) {
+            ui5LocalConfig = await UI5Config.newInstance(fs.read(paths.ui5LocalYaml));
+            extendBackendMiddleware(fs, service, ui5LocalConfig, paths.ui5LocalYaml);
+        }
+    }
+    if (service.metadata) {
+        const webappPath = await getWebappPath(basePath, fs);
+        if (paths.ui5Yaml && ui5Config) {
+            const config = {
+                webappPath: webappPath
+            };
+            // Generate mockserver middleware for ui5-mock.yaml
+            await generateMockserverConfig(basePath, config, fs);
+            // Update ui5-local.yaml with mockserver middleware from newly created/updated ui5-mock.yaml
+            await generateMockserverMiddlewareBasedOnUi5MockYaml(fs, paths.ui5Yaml, paths.ui5LocalYaml, ui5LocalConfig);
+            // Update ui5-mock.yaml with backend middleware
+            if (paths.ui5MockYaml) {
+                ui5MockConfig = await UI5Config.newInstance(fs.read(paths.ui5MockYaml));
+                extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml);
+            }
+        }
+        await writeLocalServiceAnnotationXMLFiles(fs, basePath, webappPath, templateRoot, service);
+    }
+    // service update should not trigger the package.json update
+    if (paths.packageJson && paths.ui5Yaml) {
+        updatePackageJson(paths.packageJson, fs, !!service.metadata);
+    }
+    if (paths.ui5LocalYaml && ui5LocalConfig) {
+        fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
+    }
+    writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+}
 
 /**
  * Updates services data in ui5-*.yaml files.
@@ -62,78 +179,9 @@ export async function updateServicesData(
             }
         }
         // Just in case annotations have changed, remove and write new ones
-        await removeLocalServiceFiles(fs, basePath, webappPath, service);
-        await writeLocalServiceFiles(fs, basePath, webappPath, templateRoot, service);
+        await removeLocalServiceAnnotationFiles(fs, basePath, webappPath, service);
+        await writeLocalServiceAnnotationXMLFiles(fs, basePath, webappPath, templateRoot, service);
     }
     // Write new annotations files
-    writeAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
-}
-
-/**
- * Updates the cds index or service file with the provided annotations.
- * This function takes an Editor instance and cds annotations
- * and updates either the index file or the service file with the given annotations.
- *
- * @param {Editor} fs - The memfs editor instance
- * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
- * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
- */
-async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
-    const dirPath = join(annotations.projectName, 'annotations');
-    const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
-    const annotationConfig = `\nusing from './${annotationPath}';`;
-    // get index and service file paths
-    const indexFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'index.cds');
-    const serviceFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'services.cds');
-    // extend index or service file with annotation config
-    if (indexFilePath && fs.exists(indexFilePath)) {
-        fs.append(indexFilePath, annotationConfig);
-    } else if (fs.exists(serviceFilePath)) {
-        fs.append(serviceFilePath, annotationConfig);
-    } else {
-        fs.write(serviceFilePath, annotationConfig);
-    }
-}
-
-/**
- * Updates cds files with the provided annotations.
- * This function takes cds annotations and an Editor instance,
- * then updates the relevant cds files with the given annotations.
- *
- * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
- * @param {Editor} fs - The memfs editor instance
- * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
- */
-export async function updateCdsFilesWithAnnotations(
-    annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
-    fs: Editor
-): Promise<void> {
-    if (Array.isArray(annotations)) {
-        for (const annotationName in annotations) {
-            const annotation = annotations[annotationName];
-            const annotationCdsPath = join(
-                annotation.projectPath,
-                annotation.appPath ?? '',
-                annotation.projectName,
-                'annotations.cds'
-            );
-            // write into annotations.cds file
-            if (fs.exists(annotationCdsPath)) {
-                fs.append(annotationCdsPath, annotation.cdsFileContents);
-            } else {
-                fs.write(annotationCdsPath, annotation.cdsFileContents);
-            }
-            await updateCdsIndexOrServiceFile(fs, annotation);
-        }
-    } else {
-        const annotationCdsPath = join(
-            annotations.projectPath,
-            annotations.appPath ?? '',
-            annotations.projectName,
-            'annotations.cds'
-        );
-        // write into annotations.cds file
-        fs.write(annotationCdsPath, annotations.cdsFileContents);
-        await updateCdsIndexOrServiceFile(fs, annotations);
-    }
+    writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }
