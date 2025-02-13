@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.61
+
+### Patch Changes
+
+-   063a2f4: fix: enable manifest actions for v2 apps with array page structure
+
 ## 0.11.60
 
 ### Patch Changes

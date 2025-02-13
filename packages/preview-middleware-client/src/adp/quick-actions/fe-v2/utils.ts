@@ -70,17 +70,17 @@ export function isManifestArrayStructured(manifest: Manifest): boolean {
  *
  * Returns `false`
  *
- *  - If the manifest is structured is an array
+ *  - If the manifest is structured is an array and is below version 1.134
  *  - If the UI5 version is not supported
  * Otherwise, returns `true`.
  *
  */
 export async function areManifestChangesSupported(manifest: Manifest): Promise<boolean> {
-    if (isManifestArrayStructured(manifest)) {
+    const version = await getUi5Version();
+    if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 134 }) && isManifestArrayStructured(manifest)) {
         return false;
     }
 
-    const version = await getUi5Version();
     const isAboveOrEqualMinimalVersion = !isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 });
     const isSupportedPatchVersion =
         isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 35 }) ||
