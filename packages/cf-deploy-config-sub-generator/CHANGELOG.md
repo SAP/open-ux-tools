@@ -1,5 +1,27 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [7c96039]
+    -   @sap-ux/deploy-config-generator-shared@0.0.22
+
+## 0.1.5
+
+### Patch Changes
+
+-   f9a2d8f: Update app-router version to address security fix
+-   Updated dependencies [f9a2d8f]
+    -   @sap-ux/cf-deploy-config-writer@0.1.9
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [f2d7864]
+    -   @sap-ux/cf-deploy-config-writer@0.1.8
+
 ## 0.1.3
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.22
+
+### Patch Changes
+
+-   7c96039: fix spelling mistake
+
 ## 0.0.21
 
 ### Patch Changes
