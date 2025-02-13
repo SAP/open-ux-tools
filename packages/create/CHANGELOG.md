@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.11.76
+
+### Patch Changes
+
+-   f7e9c9f: feat: add support for test runners
+-   Updated dependencies [f7e9c9f]
+    -   @sap-ux/app-config-writer@0.5.29
+
 ## 0.11.75
 
 ### Patch Changes

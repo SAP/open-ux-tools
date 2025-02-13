@@ -43,6 +43,7 @@ export async function connectWithBackendSystem(
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
     // Create a new connection with the selected system
+    PromptState.resetConnectedSystem();
     let connectValResult: ValidationResult = false;
     if (backendSystem) {
         // Assumption: non-BAS systems are BackendSystems
@@ -110,6 +111,7 @@ export async function connectWithDestination(
     requiredOdataVersion?: OdataVersion,
     addServicePath?: string
 ): Promise<ValidationResult> {
+    PromptState.resetConnectedSystem();
     const { valResult: connectValResult, errorType } = await connectionValidator.validateDestination(
         destination,
         convertODataVersionType(requiredOdataVersion),
