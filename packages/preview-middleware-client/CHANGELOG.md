@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.62
+
+### Patch Changes
+
+-   4d0b026: fix: undo redo issue for v2 manifest changes created via quickactions
+
 ## 0.11.61
 
 ### Patch Changes
