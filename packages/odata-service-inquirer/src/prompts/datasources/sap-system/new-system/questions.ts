@@ -103,6 +103,7 @@ export function getSystemUrlQuestion<T extends Answers>(
             breadcrumb: true
         },
         validate: async (url) => {
+            PromptState.resetConnectedSystem();
             const valResult = await connectValidator.validateUrl(url, {
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion)
