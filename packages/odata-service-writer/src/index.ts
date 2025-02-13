@@ -3,7 +3,12 @@ import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import { addServicesData, updateServicesData } from './update';
-import { enhanceData, getAnnotationNamespaces, removeAnnotationsFromCDSFiles, updateCdsFilesWithAnnotations } from './data';
+import {
+    enhanceData,
+    getAnnotationNamespaces,
+    removeAnnotationsFromCDSFiles,
+    updateCdsFilesWithAnnotations
+} from './data';
 import { t } from './i18n';
 import type { EdmxOdataService, ProjectPaths } from './types';
 import {
