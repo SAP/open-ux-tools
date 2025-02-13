@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.8
+
+### Patch Changes
+
+-   f2d7864: Add additional logging and a retry to save mta
+
 ## 0.1.7
 
 ### Patch Changes
