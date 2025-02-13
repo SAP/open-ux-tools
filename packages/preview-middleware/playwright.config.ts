@@ -31,8 +31,8 @@ const config: PlaywrightTestConfig = {
     /* Configure projects for major browsers */
     projects: [
         {
-            name: 'chromium',
-            use: { ...devices['Desktop Chrome'], viewport: { width: 1720, height: 900 } }
+            name: 'Google Chrome',
+            use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1720, height: 900 } }
         }
     ],
     /* 5 min for npm i + 30000 ms default timeout */

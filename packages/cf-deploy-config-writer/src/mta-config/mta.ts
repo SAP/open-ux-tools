@@ -46,6 +46,7 @@ export class MtaConfig {
     private readonly modules: Map<string, mta.Module> = new Map();
     private readonly resources: Map<string, mta.Resource> = new Map();
     private readonly log: Logger | undefined;
+    private readonly mtaDir: string;
     private dirty = false;
     private mtaId: string;
 
@@ -71,6 +72,7 @@ export class MtaConfig {
     private constructor(mtaDir: string, logger: Logger | undefined) {
         this.mta = new Mta(mtaDir, false);
         this.log = logger;
+        this.mtaDir = mtaDir;
     }
 
     /**
@@ -83,8 +85,8 @@ export class MtaConfig {
             await this.loadMTAResources();
             await this.loadMTAModules();
             this.mtaId = await this.mta.getMtaID();
-        } catch (e) {
-            this.log?.error(t('error.unableToLoadMTA'));
+        } catch (error) {
+            this.log?.error(t('error.unableToLoadMTA', { error, mtaDir: this.mtaDir }));
         }
         return this;
     }
