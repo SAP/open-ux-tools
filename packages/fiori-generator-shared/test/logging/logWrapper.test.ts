@@ -1,14 +1,10 @@
-import { DefaultLogger, createCLILogger, LogWrapper } from '../src/logging/logWrapper';
+import { DefaultLogger, createCLILogger, LogWrapper, type ILogWrapper } from '../../src/logging/logWrapper';
 import type { Logger } from 'yeoman-environment';
 import type { IVSCodeExtLogger } from '@vscode-logging/logger';
+import type { Logger as SapUxLogger } from '@sap-ux/logger';
 
 describe('Test logWrapper', () => {
     test('Test logWrapper functions ', () => {
-        const loggerProps = ['fatal', 'error', 'warn', 'info', 'debug', 'trace', 'getChildLogger', 'getLogLevel'];
-        expect(Object.keys(DefaultLogger)).toEqual(loggerProps);
-
-        expect(Object.keys(DefaultLogger.getChildLogger())).toStrictEqual(loggerProps);
-
         const consoleErrorSpy = jest.spyOn(console, 'error');
         const consoleLogSpy = jest.spyOn(console, 'log');
         const consoleWarnSpy = jest.spyOn(console, 'warn');
@@ -84,5 +80,12 @@ describe('Test logWrapper', () => {
 
         new LogWrapper('ExtensionLogger', {} as Logger, 'info', mockExtensionLogger);
         expect(mockLogger.debug).toHaveBeenCalledWith('Logging has been configured at log level: info');
+    });
+
+    test('should be compatible with `@sap-ux/logger`', () => {
+        const consoleLogSpy = jest.spyOn(console, 'log');
+        const defaultLogger = DefaultLogger;
+        (defaultLogger as SapUxLogger).log('log');
+        expect(consoleLogSpy).toHaveBeenCalled();
     });
 });

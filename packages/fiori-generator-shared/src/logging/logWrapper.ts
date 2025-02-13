@@ -1,8 +1,9 @@
+import type { Log, Logger as SapUxLogger, Transport } from '@sap-ux/logger';
 import type {
     getExtensionLoggerOpts,
+    IChildLogger as ILogWrapper,
     IVSCodeExtLogger,
-    LogLevel,
-    IChildLogger as ILogWrapper
+    LogLevel
 } from '@vscode-logging/logger';
 import { getExtensionLogger } from '@vscode-logging/logger';
 import { format } from 'logform';
@@ -38,7 +39,30 @@ export const DefaultLogger: LogWrapper = {
         console.trace(msg);
     },
     getChildLogger: () => DefaultLogger,
-    getLogLevel: () => 'off'
+    getLogLevel: () => 'off',
+    /**
+     * Limited compatibility with `@sap-ux/logger`
+     *
+     * @param data
+     */
+    log: function (data: string | Log): void {
+        console.log(data);
+    },
+    add: function (): SapUxLogger {
+        console.warn('Log method `add(transport)` not implemented.');
+        return this;
+    },
+    remove: function (): SapUxLogger {
+        console.warn('Log method `remove(transport)` not implemented.');
+        return this;
+    },
+    transports: function (): Transport[] {
+        return this.transports();
+    },
+    child: function (): SapUxLogger {
+        console.warn('Log method `remove(transport)` not implemented.');
+        return this;
+    }
 };
 
 const LOG_LEVEL_KEYS: Record<LogLevel, number> = {
@@ -71,9 +95,9 @@ export function createCLILogger(logName: string, logLevel: LogLevel = 'off'): IL
 /**
  * Log to vscode extension logger and yeoman logger simultaneously.
  * This allows use of Application Wizard log config and log file use but still have a single output channel for
- * App Gen logging.
+ * generator logging.
  */
-export class LogWrapper implements ILogWrapper {
+export class LogWrapper implements ILogWrapper, SapUxLogger {
     private static _vscodeLogger: ILogWrapper;
     private static _yoLogger: Logger | undefined;
     private static _logLevel: LogLevel;
@@ -110,7 +134,11 @@ export class LogWrapper implements ILogWrapper {
         LogWrapper._vscodeLogger?.debug(t('debug.loggingConfigured', { logLevel: LogWrapper._logLevel }));
     }
 
-    static readonly logAtLevel = (level: LogLevel, message: string, ...args: any[]) => {
+    static readonly logAtLevel = (level: LogLevel, message: string | object, ...args: any[]) => {
+        if (typeof message === 'object') {
+            message = JSON.stringify(message);
+        }
+
         if (LogWrapper._vscodeLogger && level !== 'off') {
             LogWrapper._vscodeLogger[level](message, ...args);
         }
@@ -146,7 +174,7 @@ export class LogWrapper implements ILogWrapper {
      * @param msg - message to log
      * @param {...any} args - additional arguments
      */
-    error(msg: string, ...args: any[]): void {
+    error(msg: string | object, ...args: any[]): void {
         LogWrapper.logAtLevel('error', msg, ...args);
     }
     /**
@@ -155,7 +183,7 @@ export class LogWrapper implements ILogWrapper {
      * @param msg - message to log
      * @param {...any} args - additional arguments
      */
-    warn(msg: string, ...args: any[]): void {
+    warn(msg: string | object, ...args: any[]): void {
         LogWrapper.logAtLevel('warn', msg, ...args);
     }
     /**
@@ -164,7 +192,7 @@ export class LogWrapper implements ILogWrapper {
      * @param msg - message to log
      * @param {...any} args - additional arguments
      */
-    info(msg: string, ...args: any[]): void {
+    info(msg: string | object, ...args: any[]): void {
         LogWrapper.logAtLevel('info', msg, ...args);
     }
     /**
@@ -173,7 +201,7 @@ export class LogWrapper implements ILogWrapper {
      * @param msg - message to log
      * @param {...any} args - additional arguments
      */
-    debug(msg: string, ...args: any[]): void {
+    debug(msg: string | object, ...args: any[]): void {
         LogWrapper.logAtLevel('debug', msg, ...args);
     }
     /**
@@ -191,7 +219,7 @@ export class LogWrapper implements ILogWrapper {
      *
      * @param msg - message to log
      */
-    public static log(msg: string): void {
+    public static log(msg: string | object): void {
         LogWrapper.logAtLevel('info', msg);
     }
 
@@ -204,7 +232,58 @@ export class LogWrapper implements ILogWrapper {
         return LogWrapper._logLevel;
     }
 
+    /**
+     * Not implemented method, added to support limited interoperability with @sap-ux/logger.
+     *
+     * @returns {ILogWrapper} - the current logger
+     */
     getChildLogger(/* opts: { label: string } */): ILogWrapper {
-        throw new Error(t('error.methodNotImplemented'));
+        LogWrapper.logAtLevel(`trace`, 'Log method `getChildLogger()` not implemented.');
+        return this;
+    }
+
+    /**
+     * Limited compatibility with `@sap-ux/logger` to use log() method.
+     *
+     * @param data
+     */
+    log(data: string | Log): void {
+        // LogLevel is not supported in this implementation
+        LogWrapper.log((data as Log).message ?? data);
+    }
+    /**
+     * Not implemented method, added to support limited interoperability with @sap-ux/logger.
+     *
+     * @returns {ILogWrapper} - the current logger
+     */
+    add(): SapUxLogger {
+        LogWrapper.logAtLevel(`trace`, 'Log method `add(transport)` not implemented.');
+        return this;
+    }
+    /**
+     * Not implemented method, added to support limited interoperability with @sap-ux/logger.
+     *
+     * @returns {ILogWrapper} - the current logger
+     */
+    remove(): SapUxLogger {
+        LogWrapper.logAtLevel(`trace`, 'Log method `remove(transport)` not implemented.');
+        return this;
+    }
+    /**
+     * Added to support limited interoperability with @sap-ux/logger.
+     *
+     * @returns {ILogWrapper} - the current logger transports
+     */
+    transports(): Transport[] {
+        return this.transports();
+    }
+    /**
+     * Not implemented method, added to support limited interoperability with @sap-ux/logger.
+     *
+     * @returns {ILogWrapper} - the current logger
+     */
+    child(): SapUxLogger {
+        LogWrapper.logAtLevel(`trace`, 'Log method `child(options)` not implemented.');
+        return this;
     }
 }
