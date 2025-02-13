@@ -46,7 +46,7 @@ export const DefaultLogger: LogWrapper = {
      * @param data
      */
     log: function (data: string | Log): void {
-        console.log(data);
+        console.log(data instanceof Object ? data.message : data);
     },
     add: function (): SapUxLogger {
         console.warn('Log method `add(transport)` not implemented.');
@@ -57,10 +57,11 @@ export const DefaultLogger: LogWrapper = {
         return this;
     },
     transports: function (): Transport[] {
-        return this.transports();
+        console.warn('Logger method `transports()` not implemented.');
+        return [];
     },
     child: function (): SapUxLogger {
-        console.warn('Log method `remove(transport)` not implemented.');
+        console.warn('Log method `remove(transport)` not implemented. Returning current logger.');
         return this;
     }
 };
@@ -238,7 +239,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
      * @returns {ILogWrapper} - the current logger
      */
     getChildLogger(/* opts: { label: string } */): ILogWrapper {
-        LogWrapper.logAtLevel(`trace`, 'Log method `getChildLogger()` not implemented.');
+        LogWrapper.logAtLevel(`trace`, 'Log method `getChildLogger()` not implemented. Returning current logger.');
         return this;
     }
 
@@ -249,7 +250,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
      */
     log(data: string | Log): void {
         // LogLevel is not supported in this implementation
-        LogWrapper.log((data as Log).message ?? data);
+        LogWrapper.logAtLevel('info', (data as Log).message ?? data);
     }
     /**
      * Not implemented method, added to support limited interoperability with @sap-ux/logger.
@@ -257,7 +258,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
      * @returns {ILogWrapper} - the current logger
      */
     add(): SapUxLogger {
-        LogWrapper.logAtLevel(`trace`, 'Log method `add(transport)` not implemented.');
+        LogWrapper.logAtLevel(`warn`, 'Log method `add(transport)` not implemented.');
         return this;
     }
     /**
@@ -266,7 +267,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
      * @returns {ILogWrapper} - the current logger
      */
     remove(): SapUxLogger {
-        LogWrapper.logAtLevel(`trace`, 'Log method `remove(transport)` not implemented.');
+        LogWrapper.logAtLevel(`warn`, 'Log method `remove(transport)` not implemented.');
         return this;
     }
     /**
@@ -275,7 +276,8 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
      * @returns {ILogWrapper} - the current logger transports
      */
     transports(): Transport[] {
-        return this.transports();
+        LogWrapper.logAtLevel(`warn`, 'Log method `transports()` not implemented.');
+        return [];
     }
     /**
      * Not implemented method, added to support limited interoperability with @sap-ux/logger.
@@ -283,7 +285,7 @@ export class LogWrapper implements ILogWrapper, SapUxLogger {
      * @returns {ILogWrapper} - the current logger
      */
     child(): SapUxLogger {
-        LogWrapper.logAtLevel(`trace`, 'Log method `child(options)` not implemented.');
+        LogWrapper.logAtLevel(`warn`, 'Log method `child(options)` not implemented. Returning current logger.');
         return this;
     }
 }
