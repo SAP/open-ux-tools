@@ -10,7 +10,7 @@
     "start-local": "node node_modules/@sap/html5-repo-mock/index.js"
   },
   "dependencies": {
-    "@sap/approuter": "^14"
+    "@sap/approuter": "^19"
   },
   "devDependencies": {
     "@sap/html5-repo-mock": "^2.1.0"
