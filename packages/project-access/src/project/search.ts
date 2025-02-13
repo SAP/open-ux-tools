@@ -238,16 +238,6 @@ export async function findRootsForPath(
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
-        if (!cache.capProjectType.has(appRoot)) {
-            cache.capProjectType.set(appRoot, await getCapProjectType(appRoot, memFs));
-        }
-        const capProjectType = cache.capProjectType.get(appRoot);
-
-        if (capProjectType !== undefined) {
-            // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
-            // in root -> not supported
-            return null;
-        }
         // Check if app is included in CAP project
         const projectRoot = await findCapProjectRoot(appRoot, undefined, { memFs, cache });
         if (projectRoot) {
