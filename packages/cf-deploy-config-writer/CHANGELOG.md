@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.9
+
+### Patch Changes
+
+-   f9a2d8f: Update app-router version to address security fix
+
 ## 0.1.8
 
 ### Patch Changes
