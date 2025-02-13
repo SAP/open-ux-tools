@@ -6,9 +6,9 @@ import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-defi
 import { getUi5Version, isLowerThanMinimalUi5Version, isVersionEqualOrHasNewerPatch } from '../../../utils/version';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import Component from 'sap/ui/core/Component';
-import AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
+import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
 
 /**
  * Gets app component of a v2 project.
@@ -81,7 +81,6 @@ export async function prepareManifestChange(
 export function isManifestArrayStructured(manifest: Manifest): boolean {
     return Array.isArray(manifest['sap.ui.generic.app']?.pages);
 }
-
 
 /**
  * Checks if the current UI5 version and manifest structure is supported in v2 applications.
