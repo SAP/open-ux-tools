@@ -644,14 +644,7 @@ export async function validatePackageExtended(
     // checks if package is a local package and will update prompt state accordingly
     await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
 
-    if (
-        promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix &&
-        answers?.ui5AbapRepo &&
-        !ui5AbapPromptOptions?.hide &&
-        ui5AbapPromptOptions?.hideIfOnPremise === true &&
-        PromptState.abapDeployConfig?.isS4HC === false &&
-        PromptState.abapDeployConfig?.scp === false
-    ) {
+    if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions)) {
         const startingPrefix = getPackageStartingPrefix(input);
 
         //validate package starting prefix
@@ -660,7 +653,7 @@ export async function validatePackageExtended(
         }
 
         //appName starting prefix
-        if (!answers.ui5AbapRepo.startsWith(startingPrefix)) {
+        if (!answers.ui5AbapRepo?.startsWith(startingPrefix)) {
             return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
         }
     }
@@ -670,4 +663,31 @@ export async function validatePackageExtended(
     }
 
     return true;
+}
+
+/**
+ * Determines whether the package should be validated for a starting prefix.
+ * based on the provided configuration answers and prompt options.
+ *
+ * @param {AbapDeployConfigAnswersInternal} answers - The user's deployment configuration answers.
+ * @param {PackagePromptOptions} [promptOption] - Optional package prompt options.
+ * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional UI5 ABAP repository prompt options.
+ * @returns {boolean} - Returns `true` if the package should be validated for a starting prefix, otherwise `false`.
+ */
+function shouldValidatePackageForStartingPrefix(
+    answers: AbapDeployConfigAnswersInternal,
+    promptOption?: PackagePromptOptions,
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
+): boolean {
+    const shouldValidatePackageForStartingPrefix = !!(
+        answers.ui5AbapRepo &&
+        promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix &&
+        !ui5AbapPromptOptions?.hide &&
+        !(
+            ui5AbapPromptOptions?.hideIfOnPremise === true &&
+            PromptState.abapDeployConfig?.isS4HC === false &&
+            PromptState.abapDeployConfig?.scp === false
+        )
+    );
+    return shouldValidatePackageForStartingPrefix;
 }
