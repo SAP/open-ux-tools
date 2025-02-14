@@ -191,8 +191,7 @@ describe('Test findFioriArtifacts()', () => {
                 manifestAppdescrVariantPath: join(
                     testDataRoot,
                     'project/find-all-apps/adaptations/valid-adaptation/webapp/manifest.appdescr_variant'
-                ),
-                projectRoot: join(testDataRoot, 'project/find-all-apps/adaptations/valid-adaptation')
+                )
             }
         ]);
         expect(result.extensions).toEqual([

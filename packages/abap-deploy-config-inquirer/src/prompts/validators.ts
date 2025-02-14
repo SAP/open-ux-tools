@@ -31,7 +31,8 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
     type BackendTarget,
-    type PackagePromptOptions
+    type PackagePromptOptions,
+    UI5AbapRepoPromptOptions
 } from '../types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
@@ -601,9 +602,7 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
 
     const systemInfo = systemInfoResult.systemInfo;
     const isValidPackageType =
-        systemInfo != undefined &&
-        systemInfo?.adaptationProjectTypes?.length === 1 &&
-        systemInfo?.adaptationProjectTypes[0] === packageType;
+        systemInfo?.adaptationProjectTypes?.length === 1 && systemInfo?.adaptationProjectTypes[0] === packageType;
 
     return isValidPackageType ? true : errorMsg;
 }
@@ -614,6 +613,7 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
  * @param {string} input - The name of the package to validate.
  * @param {AbapDeployConfigAnswersInternal} answers - Configuration answers for ABAP deployment.
  * @param {PackagePromptOptions} [promptOption] - Optional settings for additional package validation.
+ * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional for ui5AbapRepo.
  * @param {BackendTarget} [backendTarget] - The backend target for validation context.
  * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
  *                                        a `string` with an error message if validation fails,
@@ -623,6 +623,7 @@ export async function validatePackageExtended(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
     backendTarget?: BackendTarget
 ): Promise<boolean | string> {
     const baseValidation = await validatePackage(input);
@@ -643,7 +644,14 @@ export async function validatePackageExtended(
     // checks if package is a local package and will update prompt state accordingly
     await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
 
-    if (promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix && answers?.ui5AbapRepo) {
+    if (
+        promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix &&
+        answers?.ui5AbapRepo &&
+        !ui5AbapPromptOptions?.hide &&
+        ui5AbapPromptOptions?.hideIfOnPremise === true &&
+        PromptState.abapDeployConfig?.isS4HC === false &&
+        PromptState.abapDeployConfig?.scp === false
+    ) {
         const startingPrefix = getPackageStartingPrefix(input);
 
         //validate package starting prefix
