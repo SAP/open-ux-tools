@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.34
+
+### Patch Changes
+
+-   354107e: fix: Fixed bug in CPE. In some ADP projects Change Table Columns Quick Action didn't work
+
 ## 0.17.33
 
 ### Patch Changes
