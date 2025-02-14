@@ -71,7 +71,19 @@ Object {
 }
 `;
 
-exports[`FlpSandbox init do not add component to applications 1`] = `Object {}`;
+exports[`FlpSandbox init do not add component to applications multi 1`] = `
+Object {
+  "testfev2other-preview": Object {
+    "additionalInformation": "SAPUI5.Component=test.fe.v2.other",
+    "applicationType": "URL",
+    "description": "This is a very simple application.",
+    "title": "My Other App",
+    "url": "/yet/another/app",
+  },
+}
+`;
+
+exports[`FlpSandbox init do not add component to applications single 1`] = `Object {}`;
 
 exports[`FlpSandbox init i18n manifest 1`] = `
 Object {

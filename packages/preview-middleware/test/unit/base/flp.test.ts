@@ -241,11 +241,25 @@ describe('FlpSandbox', () => {
             expect(flp.templateConfig.ui5.libs).toMatchSnapshot();
         });
 
-        test('do not add component to applications', async () => {
+        test('do not add component to applications single', async () => {
             const manifest = {
                 'sap.app': { id: 'my.id', type: 'component' }
             } as Manifest;
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            await flp.init(manifest);
+            expect(flp.templateConfig.apps).toMatchSnapshot();
+        });
+
+        test('do not add component to applications multi', async () => {
+            const manifest = {
+                'sap.app': { id: 'my.id', type: 'component' }
+            } as Manifest;
+            const flp = new FlpSandbox(
+                { flp: { apps: [{ target: '/yet/another/app', local: join(fixtures, 'multi-app') }] } },
+                mockProject,
+                mockUtils,
+                logger
+            );
             await flp.init(manifest);
             expect(flp.templateConfig.apps).toMatchSnapshot();
         });
