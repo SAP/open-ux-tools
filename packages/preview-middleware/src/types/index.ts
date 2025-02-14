@@ -22,14 +22,16 @@ export interface App {
     intent?: Intent;
 }
 
-export interface Editor {
+export interface RtaEditor {
     path: string;
     developerMode?: boolean;
     pluginScript?: string;
     generator?: string;
 }
 
-export interface RtaConfig {
+export type RtaConfig = Omit<InternalRtaConfig, 'editors'> & { endpoints: RtaEditor[] };
+
+interface InternalRtaConfig {
     layer: UI5FlexLayer;
     options?: {
         [key: string]: unknown;
@@ -38,7 +40,7 @@ export interface RtaConfig {
         scenario?: string;
         appName?: string;
     };
-    editors: Editor[];
+    editors: RtaEditor[];
 }
 
 /**
@@ -109,7 +111,13 @@ export type TestConfigDefaults = {
 export interface MiddlewareConfig {
     flp?: Partial<FlpConfig>;
     test?: TestConfig[];
-    rta?: RtaConfig;
+    /**
+     * @deprecated use editors.rta instead.
+     */
+    rta?: InternalRtaConfig;
+    editors?: {
+        rta?: RtaConfig;
+    };
     adp?: AdpPreviewConfig;
     debug?: boolean;
 }
