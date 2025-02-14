@@ -54,7 +54,7 @@ export async function checkPrerequisites(
     logger?: ToolsLogger
 ): Promise<boolean> {
     const packageJsonPath = join(basePath, 'package.json');
-    const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
+    const packageJson = fs.readJSON(packageJsonPath);
     let prerequisitesMet = true;
 
     if (!packageJson) {
