@@ -3,12 +3,14 @@ import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { join } from 'path';
 import { ToolsLogger } from '@sap-ux/logger';
+import * as ProjectAccess from '@sap-ux/project-access';
 
 describe('prerequisites', () => {
     const logger = new ToolsLogger();
     const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
     const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/preview-config');
+    jest.spyOn(ProjectAccess, 'findCapProjectRoot').mockImplementation(() => Promise.resolve(basePath));
     const fs = create(createStorage());
 
     beforeEach(() => {
@@ -112,7 +114,7 @@ describe('prerequisites', () => {
 
         expect(await checkPrerequisites(basePath, fs, false, logger)).toBeFalsy();
         expect(errorLogMock).toHaveBeenCalledWith(
-            "Conversion from 'sap/ui/core/util/MockServer' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
+            "Conversion from 'sap/ui/core/util/MockServer' or '@sap/ux-ui5-fe-mockserver-middleware' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
         );
     });
 

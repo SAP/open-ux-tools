@@ -1,6 +1,6 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import type { Package } from '@sap-ux/project-access';
+import { type Package, findCapProjectRoot } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { satisfies, valid } from 'semver';
 
@@ -85,14 +85,22 @@ export async function checkPrerequisites(
         prerequisitesMet = false;
     }
 
+    let cdsPluginUi5Exists = false;
+    const capProjectRootPath = await findCapProjectRoot(basePath, false, fs);
+    if (capProjectRootPath) {
+        const capRootPackageJsonPath = join(capProjectRootPath, 'package.json');
+        const capRootPackageJson = fs.readJSON(capRootPackageJsonPath) as Package | undefined;
+        cdsPluginUi5Exists =
+            !!capRootPackageJson?.devDependencies?.['cds-plugin-ui5'] ||
+            !!capRootPackageJson?.dependencies?.['cds-plugin-ui5'];
+    }
+
     const ui5MiddlewareMockserverExists =
         !!packageJson?.devDependencies?.['@sap-ux/ui5-middleware-fe-mockserver'] ||
         !!packageJson?.dependencies?.['@sap-ux/ui5-middleware-fe-mockserver'];
-    const cdsPluginUi5Exists =
-        !!packageJson?.devDependencies?.['cds-plugin-ui5'] || !!packageJson?.dependencies?.['cds-plugin-ui5'];
     if (!ui5MiddlewareMockserverExists && !cdsPluginUi5Exists) {
         logger?.error(
-            "Conversion from 'sap/ui/core/util/MockServer' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
+            "Conversion from 'sap/ui/core/util/MockServer' or '@sap/ux-ui5-fe-mockserver-middleware' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
         );
         prerequisitesMet = false;
     }
