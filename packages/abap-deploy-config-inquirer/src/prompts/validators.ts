@@ -22,6 +22,7 @@ import { handleTransportConfigError } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
+import type { UI5AbapRepoPromptOptions } from '../types';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -31,8 +32,7 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
     type BackendTarget,
-    type PackagePromptOptions,
-    UI5AbapRepoPromptOptions
+    type PackagePromptOptions
 } from '../types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
