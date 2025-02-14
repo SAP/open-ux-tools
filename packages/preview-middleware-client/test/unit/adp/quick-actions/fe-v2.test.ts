@@ -305,6 +305,7 @@ describe('FE V2 quick actions', () => {
                 actionId: 'CTX_COMP_VARIANT_CONTENT' | 'CTX_SETTINGS';
                 expectActionAvailable: boolean;
                 isTableNotLoaded?: boolean;
+                isWithIconTabBar?: boolean;
             }[] = [
                 {
                     tableType: SMART_TABLE_TYPE,
@@ -317,6 +318,13 @@ describe('FE V2 quick actions', () => {
                     versionInfo: '1.127.0',
                     actionId: 'CTX_COMP_VARIANT_CONTENT',
                     expectActionAvailable: true
+                },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_COMP_VARIANT_CONTENT',
+                    expectActionAvailable: true,
+                    isWithIconTabBar: true
                 },
                 {
                     tableType: M_TABLE_TYPE,
@@ -332,13 +340,15 @@ describe('FE V2 quick actions', () => {
                     isTableNotLoaded: true
                 }
             ];
+            const setSelectedKeyMock = jest.fn();
             test.each(testCases)('initialize and execute (%s)', async (testCase) => {
                 VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 let attachedEvent: (() => Promise<void>) | undefined = undefined;
+                const tableId = 'SmartTable' + testCase.isWithIconTabBar ? '-tab1' : '';
                 sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'SmartTable') {
+                    if (id == tableId) {
                         return {
                             isA: (type: string) => type === testCase.tableType,
                             getHeader: () => 'MyTable',
@@ -400,6 +410,22 @@ describe('FE V2 quick actions', () => {
                         });
                         return container;
                     }
+                    if ((id = 'IconTabBar')) {
+                        return {
+                            getParent: () => pageView,
+                            getId: () => id,
+                            isA: (type: string) => type === 'sap.m.IconTabBar',
+                            setSelectedKey: setSelectedKeyMock,
+                            getItems: () => [
+                                {
+                                    isA: (type: string) =>
+                                        ['sap.m.IconTabFilter', 'sap.ui.base.ManagedObject'].includes(type),
+                                    getKey: () => 'tab1',
+                                    getText: () => 'Tab 1'
+                                }
+                            ]
+                        };
+                    }
                 });
 
                 const execute = jest.fn();
@@ -408,7 +434,7 @@ describe('FE V2 quick actions', () => {
                     if (serviceName === 'action') {
                         return {
                             get: (controlId: string) => {
-                                if (controlId === 'SmartTable') {
+                                if (controlId === tableId) {
                                     return [{ id: testCase.actionId }];
                                 }
                             },
@@ -428,14 +454,22 @@ describe('FE V2 quick actions', () => {
                 await service.reloadQuickActions({
                     [testCase.tableType]: [
                         {
-                            controlId: 'SmartTable'
+                            controlId: tableId
                         } as any
                     ],
                     'sap.m.NavContainer': [
                         {
                             controlId: 'NavContainer'
                         } as any
-                    ]
+                    ],
+
+                    'sap.m.IconTabBar': testCase.isWithIconTabBar
+                        ? [
+                              {
+                                  controlId: 'IconTabBar'
+                              } as any
+                          ]
+                        : []
                 });
 
                 expect(sendActionMock).toHaveBeenCalledWith(
@@ -452,7 +486,7 @@ describe('FE V2 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: `'MyTable' table`
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ]
                                 },
@@ -465,7 +499,7 @@ describe('FE V2 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: `'MyTable' table`
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ]
                                 },
@@ -474,7 +508,7 @@ describe('FE V2 quick actions', () => {
                                         {
                                             'children': [],
                                             enabled: true,
-                                            'label': `'MyTable' table`
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ],
                                     'enabled': true,
@@ -499,9 +533,14 @@ describe('FE V2 quick actions', () => {
                 } else {
                     expect(attachedEvent).toBeUndefined();
                 }
+
+                expect(setSelectedKeyMock.mock.calls[0]).toStrictEqual(
+                    testCase.isWithIconTabBar ? ['tab1'] : undefined
+                );
+
                 expect(scrollIntoView).toHaveBeenCalled();
                 expect(execute).toHaveBeenCalledWith(
-                    'SmartTable',
+                    tableId,
                     testCase.expectActionAvailable ? testCase.actionId : undefined
                 );
             });
