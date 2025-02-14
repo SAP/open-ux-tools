@@ -26,6 +26,7 @@ import {
 } from '../file';
 import { loadModuleFromProject } from './module-loader';
 import { findCapProjectRoot } from './search';
+import { getCache, updateCache } from './search-cache';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -100,7 +101,7 @@ async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Pro
         }
     }
     // Dump the mem-fs state
-    const memFsDump = memFs.dump();
+    const memFsDump = (memFs as any).dump();
     const memFsFiles = Object.keys(memFsDump).filter((filePath) => {
         const normalisedFilePath = resolve(filePath);
         const normalisedSrvPath = resolve(srvFolderPath);
@@ -426,8 +427,16 @@ function findServiceByUri(
  * @returns - environment config for a CAP project
  */
 export async function getCapEnvironment(capProjectPath: string): Promise<CdsEnvironment> {
+    const cachedValue = getCache('capEnvironment', capProjectPath);
+    if (cachedValue) {
+        return cachedValue;
+    }
     const cds = await loadCdsModuleFromProject(capProjectPath);
-    return cds.env.for('cds', capProjectPath);
+    const cdsEnvironment = cds.env.for('cds', capProjectPath);
+    if (cdsEnvironment) {
+        updateCache('capEnvironment', capProjectPath, cdsEnvironment);
+    }
+    return cdsEnvironment;
 }
 
 /**
