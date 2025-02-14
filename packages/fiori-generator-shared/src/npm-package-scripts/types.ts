@@ -10,8 +10,10 @@ export interface PackageJsonScripts {
     'start-noflp'?: string;
     /** Optional command to start the application with a mock server configuration. */
     'start-mock'?: string;
+    /** Optional command to run unit tests. */
+    'unit-tests'?: string;
     /** Optional command to run tests. */
-    'int-test'?: string;
+    'int-tests'?: string;
     /** Optional command to add the variants management script. */
     'start-variants-management'?: string;
 }
@@ -36,4 +38,5 @@ export interface PackageScriptsOptions {
     localStartFile?: string;
     /** If true, a script for starting the app without flp will be generated. Defaults to true. */
     generateIndex?: boolean;
+    hasService?: boolean;
 }

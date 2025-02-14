@@ -120,7 +120,8 @@ export function getPackageScripts({
     flpAppId = '',
     startFile,
     localStartFile,
-    generateIndex = true
+    generateIndex = true,
+    hasService = true
 }: PackageScriptsOptions): PackageJsonScripts {
     const searchParams = buildSearchParams(sapClient);
     const params = buildParams(searchParams, flpAppId);
@@ -140,13 +141,15 @@ export function getPackageScripts({
         scripts['start-mock'] = `fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html${params}"`;
     }
 
-    if (addTest) {
-        scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "test/integration/opaTests.qunit.html"';
-    }
-
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
         : getVariantPreviewAppScript(sapClient);
+
+    if (addTest) {
+        const ui5MockYamlScript = hasService ? '--config ./ui5-mock.yaml ' : '' ;
+        scripts['unit-tests'] = `fiori run ${ui5MockYamlScript}--open 'test/unit/unitTests.qunit.html'`,
+        scripts['int-tests'] = `fiori run ${ui5MockYamlScript}--open 'test/integration/opaTests.qunit.html'`;
+    }
 
     return scripts;
 }

@@ -1,13 +1,13 @@
-import { join, parse, basename } from 'path';
-import path from 'path';
+import { join, basename } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
-import { SupportedPageTypes, ValidationError, TestConfig } from './types';
+import { SupportedPageTypes, ValidationError, FFOPAConfig } from './types';
 import { t } from './i18n';
-import fs from 'fs';
+import type { Logger } from '@sap-ux/logger';
+import { getFilePaths } from '@sap-ux/project-access';
 
 /**
  * Reads the manifest for an app.
@@ -270,7 +270,8 @@ export function generateOPAFiles(
     opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
     fs?: Editor
 ): Editor {
-    const editor = fs || create(createStorage());
+    debugger;
+    const editor = fs ?? create(createStorage());
 
     const manifest = readManifest(editor, basePath);
     const { applicationType, hideFilterBar } = getAppTypeAndHideFilterBarFromManifest(manifest);
@@ -359,158 +360,145 @@ export function generatePageObjectFile(
     return editor;
 }
 
-function writeOPAPackageJsonUpdates(fsEditor: Editor, destinationRoot: string, hasData: boolean): void {
-    const ui5MockYamlScript = hasData ? '--config ./ui5-mock.yaml ' : '';
-    const scripts = {
-        'unit-tests': `fiori run ${ui5MockYamlScript}--open 'test/unit/unitTests.qunit.html'`,
+/**
+ * Updates tsconfig.json to include paths for unit and integration tests.
+ * @param {Editor} fs - The file system editor instance.
+ * @param {string} destinationRoot - The root directory where tsconfig.json exists.
+ */
+function writeOPATsconfigJsonUpdates(fs: Editor, destinationRoot: string, log?: Logger): void {
+    try {
+        const tsconfig:any = fs.readJSON(join(destinationRoot, 'tsconfig.json')) ?? {};
 
-        'int-tests': `fiori run ${ui5MockYamlScript}--open 'test/integration/opaTests.qunit.html'`
-    };
-
-    fsEditor.extendJSON(join(destinationRoot, 'package.json'), { scripts });
-}
-
-export function writeOPATsconfigJsonUpdates(fsEditor: Editor, destinationRoot: string): void {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const tsconfig: any = fsEditor.readJSON(join(destinationRoot, 'tsconfig.json'));
-    if (tsconfig.compilerOptions === undefined) {
-        tsconfig.compilerOptions = {};
+        tsconfig.compilerOptions = tsconfig.compilerOptions || {};
+        tsconfig.compilerOptions.paths = tsconfig.compilerOptions.paths || {};
+        
+        tsconfig.compilerOptions.paths['unit/*'] = ['./webapp/test/unit/*'];
+        tsconfig.compilerOptions.paths['integration/*'] = ['./webapp/test/integration/*'];
+    
+        fs.writeJSON(join(destinationRoot, 'tsconfig.json'), tsconfig);
+    } catch (error) {
+        log?.error(`Error updating tsconfig.json: ${error}`);
     }
-    if (tsconfig.compilerOptions.paths === undefined) {
-        tsconfig.compilerOptions.paths = {};
-    }
-    tsconfig.compilerOptions.paths['unit/*'] = ['./webapp/test/unit/*'];
-    tsconfig.compilerOptions.paths['integration/*'] = ['./webapp/test/integration/*'];
-
-    fsEditor.writeJSON(join(destinationRoot, 'tsconfig.json'), tsconfig);
 }
-
-const getAllFiles = (dir: any): string[] | [] =>
-    fs?.readdirSync(dir).reduce((files: any, file: string) => {
-        const name = path.join(dir, file);
-        const isDirectory = fs?.statSync(name).isDirectory();
-        return isDirectory ? [...files, ...getAllFiles(name)] : [...files, name];
-    }, 
-[]);
-
 
 /**
- * Generates and copies freestyle test files based on configuration
+ * Formats a namespace by replacing dots with slashes.
+ * @param {string} namespace - The namespace to format.
+ * @returns {string} - Formatted namespace.
  */
-export function generateFreestyleTestFiles(
-    basePath: string,
-    config: TestConfig,
-    fsEditor?: Editor
-): Editor {
-    const editor: Editor = fsEditor ?? create(createStorage());
-    const { appIdWithSlash, enableTypeScript, ui5Version } = config;
-    
-    const freestyleTemplateDirPath = join(__dirname, '../templates/freestyle/simple/webapp/test', ui5Version);
-    console.log(" --- freestyleTemplateDirPath: ", freestyleTemplateDirPath);
-    const testOutDirPath = join(basePath, 'webapp/test');
-
-    // get test config 
-    const viewNamePage = `${config.viewName}Page`;
-
-    // Get all template files
-    const allTemplateFiles = getAllFiles(freestyleTemplateDirPath);
-
-    const typeScript = enableTypeScript === undefined ? false : true;
-    // Filter files based on TypeScript setting
-    const filteredFiles = allTemplateFiles.filter(filePath => {
-        if (filePath.endsWith('.ts')) {
-            return typeScript === true;
-        } else if (filePath.endsWith('.js')) {
-            return typeScript === false;
-        }
-        return true;
-    }).map(filePath => {
-        // Transform the file path to the relative path
-        const relativePath: string = filePath.replace(freestyleTemplateDirPath, '');
-        return relativePath;
-    });
-    console.log(" --- filteredFiles: ", filteredFiles);
-
-    const testConfig = {
-        ...config,
-        viewNamePage,
-        appIdWithSlash: appIdWithSlash
-    };
-
-    console.log(" -- testConfig: ", testConfig);
-
-    function processDestinationPath(filePath: string): string {
-        //return filePath.replace('/1.120.0', '').replace('/1.71.0', '');
-        //console.log(" --- filePath: ", filePath);
-        if(filePath === '/integration/pages/viewName.js'){
-            return filePath.replace(/viewName/g, 'KITTY');
-        }
-        return filePath;
-    }
-
-    
-
-    // Copy each filtered file using copyTpl
-    console.log(" ---join(freestyleTemplateDirPath, '*.*')", join(freestyleTemplateDirPath, '*.*'))
-    console.log(" ---to join(testOutDirPath, 'integration')", testOutDirPath)
-    // editor.copyTpl(join(freestyleTemplateDirPath, '**', '*.*'), testOutDirPath, testConfig, undefined, {
-    //     globOptions: { dot: true },
-    //     processDestinationPath: processDestinationPath
-    // });
-
-    // Iterate through the filtered files and copy each one
-    filteredFiles.forEach((filePath: string) => {
-        // If the file is 'integration/page/viewName.js', rename it to 'integration/page/kitty.js'
-        let sourceFilePath = join(freestyleTemplateDirPath, filePath);
-        let destinationFilePath = join(testOutDirPath, filePath);
-    
-        // Check if the file is 'integration/page/viewName.js'
-        if (filePath === '/integration/pages/viewName.js') {
-            
-            // Change the file name to 'kitty.js'
-            destinationFilePath = join(testOutDirPath, `integration/pages/${config.viewName}.js`);
-            console.log(" --- match found --- ", destinationFilePath)
-        }
-
-        if (filePath === '/unit/controller/viewName.controller.js') {
-            
-            // Change the file name to 'kitty.js'
-            destinationFilePath = join(testOutDirPath, `unit/controller/${config.viewName}.controller.js`);
-            console.log(" --- match found --- ", destinationFilePath)
-        }
-    
-        // Copy the file using editor.copyTpl
-        editor.copyTpl(
-            sourceFilePath,  // Source file path (no change)
-            destinationFilePath,  // Destination file path (changed if necessary)
-            testConfig,  // Configuration for the template
-            undefined,  // Additional options if needed
-            {
-                globOptions: { dot: true },  // Glob options if needed
-                // processDestinationPath: processDestinationPath  // Apply the custom path processing if needed
-            }
-        );
-    });
-    
-
-    // filteredFiles.forEach((filePath: string) => {
-    //     debugger;
-    //     const relativePath: string = filePath.replace(freestyleTemplateDirPath, '');
-    //     console.log(" --- relativePath: ", relativePath);
-
-    //     editor.copyTpl(filePath, join(testOutDirPath, relativePath), testConfig, undefined, {
-    //         processDestinationPath: processDestinationPath
-    //     });
-    // });
-
-    // Update package.json scripts
-    writeOPAPackageJsonUpdates(editor, basePath, config.hasData ?? false);
-    // Update tsconfig.json if TypeScript is enabled
-    if (config.enableTypeScript) {
-        writeOPATsconfigJsonUpdates(editor, basePath);
-    }
-
-    return editor;
+function formatNamespace(namespace: string): string {
+    return namespace.replace(/\./g, '/');
 }
 
+/**
+ * Copies filtered test template files from source directory to destination directory,
+ * with file renaming logic based on the view name.
+ * 
+ * @param {string} freestyleTemplateDirPath - The path to the source directory containing template files.
+ * @param {string} testOutDirPath - The path to the destination directory where files should be copied.
+ * @param {string[]} filteredFiles - An array of filtered file paths to copy.
+ * @param {TestConfig} testConfig - The test configuration object to write into template files.
+ * @param {Editor} editor - The editor instance used to copy and render template files.
+ * @param {Logger} [log] - The logger instance.
+ * 
+ * @returns {Promise<boolean>} - A promise that resolves to `true` if the files were copied successfully,
+ * or `false` if there was an error during the process.
+ * 
+ */
+async function copyTestFiles(
+    freestyleTemplateDirPath: string,
+    testOutDirPath: string,
+    filteredFiles: string[],
+    opaConfig: FFOPAConfig,
+    editor: Editor,
+    log?: Logger
+): Promise<boolean> {
+    try {
+        filteredFiles.forEach((filePath: string) => {
+            const sourceFilePath = join(freestyleTemplateDirPath, filePath);
+            let destinationFilePath = join(testOutDirPath, filePath);
+            const viewName = opaConfig.viewName;
+
+            // Rename files:
+            // - viewName.js files are renamed to include the view name in their file path
+            // - viewName.ts files are renamed with the view name appended with 'Page'
+            const renameMap: Record<string, string> = {
+                '/integration/pages/viewName.js': `integration/pages/${viewName}.js`,
+                '/integration/pages/viewName.ts': `integration/pages/${viewName}Page.ts`,
+                '/unit/controller/viewName.controller.js': `unit/controller/${viewName}.controller.js`,
+                '/unit/controller/viewName.controller.ts': `unit/controller/${viewName}Page.controller.ts`
+            };
+
+            if (renameMap[filePath]) {
+                destinationFilePath = join(testOutDirPath, renameMap[filePath]);
+            }
+
+            editor.copyTpl(sourceFilePath, destinationFilePath, { ...opaConfig, formatNamespace }, undefined, {
+                globOptions: { dot: true }
+            });
+        });
+
+        return true;
+    } catch (error) {
+        log?.error(`Error copying files: ${error}`);
+        return false;
+    }
+}
+
+/**
+ * Generates and copies freestyle test files based on configuration.
+ * @param {string} basePath - The base directory path.
+ * @param {object} config - Configuration object.
+ * @param {Editor} fs - Optional file system editor instance.
+ * @returns {Editor} - The modified file system editor.
+ */
+export async function generateFreestyleOPAFiles(
+    basePath: string,
+    opaConfig: FFOPAConfig,
+    fs?: Editor,
+    log?: Logger
+): Promise<Editor> {
+    const fsEditor = fs ?? create(createStorage());
+    const { appIdWithSlash, enableTypeScript, ui5Version, viewName } = opaConfig;
+    const freestyleTemplateDirPath = join(__dirname, '../templates/freestyle/webapp/test');
+    const testOutDirPath = join(basePath, 'webapp/test');
+
+    // Get template files
+    const templateFiles = await getFilePaths(freestyleTemplateDirPath);
+    const isTypeScript = Boolean(enableTypeScript);
+    const commonJSTemplateFiles = ['initFlpSandbox.js', 'flpSandbox.js'];
+
+    // Filter files based on TypeScript setting:
+    // - If TypeScript is enabled, include only .ts files
+    // - If TypeScript is disabled, include only .js files
+    // - Include common JS files regardless of TypeScript setting
+    const filteredFiles = templateFiles
+        .filter((filePath: string) => {
+            if (filePath.endsWith('.ts')) return isTypeScript;
+            if (filePath.endsWith('.js')) {
+                const includeCommonJSTemplate = commonJSTemplateFiles.includes(basename(filePath)) && (ui5Version === '1.71.0');
+                return !isTypeScript || includeCommonJSTemplate;
+            }
+            return true; // keep other .html files
+        })
+        .map((filePath: string) => filePath.replace(freestyleTemplateDirPath, ''));
+    
+    const config = { 
+        ...opaConfig,
+        viewNamePage: `${viewName}Page`,
+        appIdWithSlash,
+        ui5Version,
+        navigationIntent: (
+            '' + opaConfig.appId
+        ).replace(new RegExp('\\.|/|\\\\|-|\\s', 'g'), '')
+    };
+    const filesCopiedSuccessfully = await copyTestFiles(freestyleTemplateDirPath, testOutDirPath, filteredFiles, config, fsEditor, log);
+    
+    // If files are copied successfully, update the package.json and tsconfig files
+    if (filesCopiedSuccessfully && isTypeScript) {
+        writeOPATsconfigJsonUpdates(fsEditor, basePath, log);
+    }
+
+    return fsEditor;
+}
 

@@ -60,18 +60,15 @@ export class ValidationError extends Error {
 }
 
 /**
- * Configuration interface for generating test files
+ * Configuration interface for generating freestyle OPA test files
  */
-export interface TestConfig {
+export interface FFOPAConfig {
     appId: string;
     appIdWithSlash: string;
     applicationTitle?: string;
     applicationDescription?: string;
-    navigationIntent?: string;
-    ui5Theme?: string;
     enableTypeScript?: boolean;
-    hasData?: boolean;
     viewName?: string;
-    viewNamePage?: string;
     ui5Version: string;
+    ui5Theme?: string;
 }

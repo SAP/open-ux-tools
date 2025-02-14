@@ -43,7 +43,6 @@ export interface FreestyleApp<T> extends Ui5App {
     template: Template<T>;
     service?: OdataService & {
         capService?: CapServiceCdsInfo;
-        hasData?: boolean;
     };
     app: FioriApp;
     appOptions: Partial<AppOptions> & {
