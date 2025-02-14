@@ -84,7 +84,7 @@ export class InboundWriter implements IWriter<InboundData> {
             const content = this.constructContent(data);
             const change = getChange(data.variant, timestamp, content, ChangeType.CHANGE_INBOUND);
 
-            writeChangeToFolder(this.projectPath, change, `id_${timestamp}_changeInbound.change`, this.fs);
+            writeChangeToFolder(this.projectPath, change, this.fs);
         } else {
             if (changeWithInboundId.content) {
                 this.getEnhancedContent(data, changeWithInboundId.content);
