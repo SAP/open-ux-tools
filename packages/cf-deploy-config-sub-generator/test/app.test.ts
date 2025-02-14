@@ -847,6 +847,39 @@ describe('Cloud foundry generator tests', () => {
         `);
     });
 
+    it('Should throw error when no mta found for CAP project', async () => {
+        hasbinSyncMock.mockReturnValue(true);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        mockFindCapProjectRoot.mockReturnValueOnce('/capRoot');
+
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
+                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
+            },
+            '/'
+        );
+        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+
+        await expect(
+            yeomanTest
+                .create(
+                    CFGenerator,
+                    {
+                        resolved: cfGenPath
+                    },
+                    { cwd: appDir }
+                )
+                .withOptions({
+                    skipInstall: true
+                })
+                .withPrompts({})
+                .run()
+        ).rejects.toThrowError(
+            `The SAP Fiori application is within a CAP project and deployment should be configured as part of the CAP project. Please ensure you have a mta.yaml file defined for this project.`
+        );
+    });
+
     it('Should throw error when mta executable is not found (CLI)', async () => {
         hasbinSyncMock.mockReturnValue(false);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
