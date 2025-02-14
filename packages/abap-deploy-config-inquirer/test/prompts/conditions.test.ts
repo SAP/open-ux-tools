@@ -199,6 +199,8 @@ describe('Test abap deploy config inquirer conditions', () => {
         };
         PromptState.abapDeployConfig.scp = false;
         expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
+        PromptState.abapDeployConfig.isS4HC = false;
+        expect(showUi5AppDeployConfigQuestion(promptOptions)).toBe(false);
     });
 
     test('should show package input choice question', () => {
@@ -240,6 +242,13 @@ describe('Test abap deploy config inquirer conditions', () => {
         PromptState.transportAnswers.transportConfigError = undefined;
         PromptState.transportAnswers.transportConfigNeedsCreds = false;
         expect(showTransportInputChoice()).toBe(true);
+    });
+
+    test('should not show transport input choice question for onPremise systems', () => {
+        PromptState.transportAnswers.transportRequired = false;
+        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.abapDeployConfig.scp = false;
+        expect(showTransportInputChoice({ hideIfOnPremise: true })).toBe(false);
     });
 
     test('should not show transport input choice question when transport is not required', () => {
@@ -292,6 +301,10 @@ describe('Test abap deploy config inquirer conditions', () => {
 
     test('should show manual transport question', () => {
         expect(defaultOrShowManualTransportQuestion(TransportChoices.EnterManualChoice)).toBe(true);
+    });
+
+    test('should show manual transport question when transportInput choice is not provided', () => {
+        expect(defaultOrShowManualTransportQuestion()).toBe(true);
     });
 
     test('should show index question', () => {
