@@ -83,6 +83,7 @@ describe('CF Writer CAP', () => {
                 logger
             );
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot(); // Ensure it hasn't changed!
             expect(getCapProjectTypeMock).toHaveBeenCalled();
             expect(spawnMock.mock.calls).toHaveLength(2);
             expect(spawnMock).toHaveBeenCalledWith(

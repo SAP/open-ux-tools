@@ -7,7 +7,7 @@ import {
     type Authentication,
     type Destinations
 } from '@sap-ux/btp-utils';
-import { addPackageDevDependency, FileName, type Manifest } from '@sap-ux/project-access';
+import { addPackageDevDependency, FileName, type Manifest, updatePackageScript } from '@sap-ux/project-access';
 import {
     MTAVersion,
     UI5BuilderWebIdePackage,
@@ -18,7 +18,15 @@ import {
     UI5TaskZipperPackageVersion,
     XSSecurityFile,
     RouterModule,
-    XSAppFile
+    XSAppFile,
+    rootDeployMTAScript,
+    undeployMTAScript,
+    MTAFileExtension,
+    Rimraf,
+    RimrafVersion,
+    MbtPackageVersion,
+    MbtPackage,
+    MTABuildScript
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
 import { type MTABaseConfig, type CFConfig, type CFBaseConfig, RouterModuleType } from './types';
@@ -270,4 +278,35 @@ export function setMtaDefaults(config: CFBaseConfig): void {
     config.mtaPath = config.mtaPath.replace(/\/$/, '');
     config.addConnectivityService ||= false;
     config.mtaId = toMtaModuleName(config.mtaId);
+}
+
+/**
+ * Update the root package.json with scripts to deploy the MTA.
+ *
+ * @param {object} Options
+ * @param {string} Options.mtaId - MTA ID to be written to package.json
+ * @param {string} Options.rootPath - MTA project path
+ * @param fs
+ */
+export async function updateRootPackage(
+    { mtaId, rootPath }: { mtaId: string; rootPath: string },
+    fs: Editor
+): Promise<void> {
+    const packageExists = fs.exists(join(rootPath, FileName.Package));
+    // Append mta scripts only if mta.yaml is at a different level to the HTML5 app
+    if (packageExists) {
+        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, fs);
+        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, fs);
+        let deployArgs: string[] = [];
+        if (fs.exists(join(rootPath, MTAFileExtension))) {
+            deployArgs = ['-e', MTAFileExtension];
+        }
+        for (const script of [
+            { name: 'undeploy', run: undeployMTAScript(mtaId) },
+            { name: 'build', run: `${MTABuildScript} --mtar archive` },
+            { name: 'deploy', run: rootDeployMTAScript(deployArgs) }
+        ]) {
+            await updatePackageScript(rootPath, script.name, script.run, fs);
+        }
+    }
 }

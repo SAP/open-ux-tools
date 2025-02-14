@@ -3,6 +3,7 @@
         "logError": "{{method}} error found {{ error }}",
         "mtaLoaded": "MTA {{ type }} loaded",
         "ui5YamlDoesNotExist": "File ui5.yaml does not exist in the project",
+        "capMtaCreated": "CAP MTA Configuration created",
         "mtaCreated": "MTA Configuration created {{mtaPath}}.",
         "mtaSaved": "MTA Configuration has been saved.",
         "mtaSavedFailed": "MTA saved failed with error {{- error }}"

@@ -88,5 +88,6 @@ export {
     RouterModuleType,
     type CfDeployConfigQuestions,
     type CfDeployConfigAnswers,
-    type CfAppRouterDeployConfigAnswers
+    type CfAppRouterDeployConfigAnswers,
+    type CfAppRouterDeployConfigQuestions
 };

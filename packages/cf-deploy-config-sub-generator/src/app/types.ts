@@ -1,5 +1,5 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import type { CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-inquirer';
+import { type CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-inquirer';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 
@@ -84,4 +84,8 @@ export interface CfDeployConfigOptions extends CfDeployConfigAnswers {
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
+    /**
+     * Option to invoke the getConfirmMtaContinue prompt
+     */
+    addCapMtaContinue?: boolean;
 }

@@ -23,7 +23,6 @@ import {
     ResourceMTADestination,
     Rimraf,
     RimrafVersion,
-    rootDeployMTAScript,
     UI5DeployBuildScript,
     undeployMTAScript,
     WelcomeFile,
@@ -35,7 +34,8 @@ import {
     getDestinationProperties,
     getTemplatePath,
     readManifest,
-    toPosixPath
+    toPosixPath,
+    updateRootPackage
 } from '../utils';
 import {
     addMtaDeployParameters,
@@ -230,7 +230,9 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
     await appendCloudFoundryConfigurations(config, fs);
     await updateManifest(config, fs);
     await updateHTML5AppPackage(config, fs);
-    await updateRootPackage(config, fs);
+    if (config.isMtaRoot) {
+        await updateRootPackage({ mtaId: config.mtaId ?? config.appId, rootPath: config.rootPath }, fs);
+    }
 }
 
 /**
@@ -408,31 +410,6 @@ async function updateHTML5AppPackage(cfConfig: CFConfig, fs: Editor): Promise<vo
     }
 }
 
-/**
- * Update the root package.json with scripts to deploy the MTA.
- *
- * @param cfConfig writer configuration
- * @param fs reference to a mem-fs editor
- */
-async function updateRootPackage(cfConfig: CFConfig, fs: Editor): Promise<void> {
-    const packageExists = fs.exists(join(cfConfig.rootPath, FileName.Package));
-    // Append mta scripts only if mta.yaml is at a different level to the HTML5 app
-    if (cfConfig.isMtaRoot && packageExists) {
-        await addPackageDevDependency(cfConfig.rootPath, Rimraf, RimrafVersion, fs);
-        await addPackageDevDependency(cfConfig.rootPath, MbtPackage, MbtPackageVersion, fs);
-        let deployArgs: string[] = [];
-        if (fs.exists(join(cfConfig.rootPath, MTAFileExtension))) {
-            deployArgs = ['-e', MTAFileExtension];
-        }
-        for (const script of [
-            { name: 'undeploy', run: undeployMTAScript(cfConfig.mtaId ?? cfConfig.appId) },
-            { name: 'build', run: `${MTABuildScript} --mtar archive` },
-            { name: 'deploy', run: rootDeployMTAScript(deployArgs) }
-        ]) {
-            await updatePackageScript(cfConfig.rootPath, script.name, script.run, fs);
-        }
-    }
-}
 /**
  * Generate UI5 deploy config.
  *

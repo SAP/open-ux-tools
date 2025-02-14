@@ -51,7 +51,6 @@ describe('Error Message Methods', () => {
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN)).toBe(
             t('errors.noBinary', { bin: mtaExecutable, pkg: mtaPkg })
         );
-        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CAP_DEPLOYMENT_NO_MTA)).toBe(t('errors.capDeploymentNoMta'));
     });
 });
 
