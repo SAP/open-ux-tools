@@ -1,5 +1,13 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.15
+
+### Patch Changes
+
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+    -   @sap-ux/inquirer-common@0.6.17
+
 ## 1.2.14
 
 ### Patch Changes

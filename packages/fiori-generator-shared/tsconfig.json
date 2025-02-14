@@ -13,6 +13,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../logger"
+    },
+    {
       "path": "../project-access"
     },
     {
