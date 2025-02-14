@@ -32,6 +32,7 @@ export interface CodeExtResponse {
     controllerPath: string;
     controllerPathFromRoot: string;
     isRunningInBAS: boolean;
+    isTsSupported: boolean;
 }
 
 export interface AnnotationFileDetails {

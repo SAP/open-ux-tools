@@ -99,7 +99,8 @@ describe('ControllerExtension', () => {
                     controllerExists: true,
                     controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.js',
                     controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js',
-                    isRunningInBAS: false
+                    isRunningInBAS: false,
+                    isTsSupported: false
                 }),
                 text: jest.fn(),
                 ok: true
@@ -150,9 +151,10 @@ describe('ControllerExtension', () => {
             fetchMock.mockResolvedValue({
                 json: jest.fn().mockReturnValue({
                     controllerExists: true,
-                    controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.js',
-                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.js',
-                    isRunningInBAS: true
+                    controllerPath: 'C:/users/projects/adp.app/webapp/changes/coding/share.ts',
+                    controllerPathFromRoot: 'adp.app/webapp/changes/coding/share.ts',
+                    isRunningInBAS: true,
+                    isTsSupported: true
                 }),
                 text: jest.fn(),
                 ok: true
