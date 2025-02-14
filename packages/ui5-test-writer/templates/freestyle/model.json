@@ -1,0 +1,164 @@
+{
+  "neoapp": {
+    "welcomeFile": "/webapp/test/flpSandbox.html",
+    "sendWelcomeFileRedirect": true
+  },
+  "datasource": {
+    "type": "odata",
+    "url": ""
+  },
+  "simple": {
+    "environment": {
+      "internal": "false",
+      "resourcePath": ""
+    },
+    "parameters": {
+      "ManifestVersion": {
+        "value": ""
+      },
+      "ui5Version": {
+        "value": ""
+      },
+      "ProjectName": {
+        "value": ""
+      },
+      "AppId": {
+        "value": ""
+      },
+      "ViewName": {
+        "value": ""
+      },
+      "ViewNamePage": {
+        "value": ""
+      },
+      "UI5Theme": {
+        "value": ""
+      },
+      "sapUiBootstrapSrcUrl": {
+        "value": ""
+      },
+      "AppIdWithSlash": {
+        "value": ""
+      },
+      "ApplicationNamespace": {
+        "type": "string",
+        "value": "",
+        "appDescriptor": {
+          "id": "Namespace"
+        },
+        "wizard": {
+          "control": "TextField",
+          "regExp": "^[a-z][a-z 0-9]*(?:\\.[a-z][a-z 0-9]*)*$",
+          "required": true,
+          "title": "Namespace",
+          "regExpErrorMsg": "A namespace must not start with a digit. After the first character you may use any alphanumeric character or number separated by dots. Two successive dots are also forbidden. A namespace must not end with a dot."
+        }
+      },
+      "ApplicationTitle": {
+        "type": "string",
+        "value": "",
+        "appDescriptor": {
+          "id": "sap.app.title"
+        },
+        "wizard": {
+          "control": "TextField",
+          "required": true,
+          "title": "Title",
+          "regExp": "^[\\w][\\w\\.\\-\\ ]*$"
+        }
+      },
+      "ApplicationDescription": {
+        "type": "string",
+        "value": "",
+        "appDescriptor": {
+          "id": "sap.app.description"
+        },
+        "wizard": {
+          "control": "TextField",
+          "required": false,
+          "title": "Description"
+        }
+      },
+      "FioriID": {
+        "type": "string",
+        "value": "",
+        "appDescriptor": {
+          "id": "sap.fiori.registrationIds"
+        },
+        "wizard": {
+          "control": "TextField",
+          "required": false,
+          "title": "SAP Fiori ID",
+          "internalOnly": true
+        }
+      },
+      "ApplicationComponentHierarchy": {
+        "type": "string",
+        "value": "",
+        "appDescriptor": {
+          "id": "sap.app.ach"
+        },
+        "wizard": {
+          "control": "TextField",
+          "required": false,
+          "title": "Application Component Hierarchy",
+          "internalOnly": true
+        }
+      },
+      "FLP": {
+        "type": "Entity",
+        "multiplicity": "many",
+        "isRoot": true,
+        "binding": [
+          {
+            "name": "SAP Fiori Launchpad Component (optimized for SAP Fiori Launchpad registration)",
+            "value": true
+          },
+          {
+            "name": "Standalone App (optimized for individual deployment)",
+            "value": false
+          }
+        ],
+        "value": "",
+        "wizard": {
+          "control": "ComboBox",
+          "required": true,
+          "title": "App Type",
+          "tooltip": "Choose if your app should run in SAP Fiori Launchpad or standalone"
+        }
+      },
+      "DefineReplacement": {
+        "type": "string",
+        "value": ""
+      }
+    },
+    "forms": [
+      {
+        "type": "appDescriptorGenericStep",
+        "groups": [
+          {
+            "parameters": [
+              "@simple.parameters.ApplicationTitle",
+              "@simple.parameters.ApplicationNamespace",
+              "@simple.parameters.ApplicationDescription",
+              "@simple.parameters.ApplicationComponentHierarchy",
+              "@simple.parameters.FioriID"
+            ]
+          }
+        ]
+      },
+      {
+        "groups": [
+          {
+            "title": "Application Scenario",
+            "parameters": ["@simple.parameters.FLP"]
+          },
+          {
+            "title": "Data Binding",
+            "parameters": []
+          }
+        ]
+      }
+    ]
+  }
+}

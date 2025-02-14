@@ -432,10 +432,16 @@ async function copyTestFiles(
             if (renameMap[filePath]) {
                 destinationFilePath = join(testOutDirPath, renameMap[filePath]);
             }
-
             editor.copyTpl(sourceFilePath, destinationFilePath, { ...opaConfig, formatNamespace }, undefined, {
                 globOptions: { dot: true }
             });
+        });
+        const rootCommonTemplateDirPath = join(__dirname, '../templates/common');
+        editor.copyTpl(rootCommonTemplateDirPath, testOutDirPath, {
+            appId: opaConfig.appId,
+            addUnitTests: true
+        }, undefined, {
+            globOptions: { dot: true }
         });
 
         return true;
