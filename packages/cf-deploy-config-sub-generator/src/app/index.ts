@@ -42,7 +42,6 @@ import { CfDeployConfigOptions } from './types';
 import {
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,
-    type CfAppRouterDeployConfigQuestions,
     CfDeployConfigAnswers
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -225,17 +224,6 @@ export default class extends DeploymentGenerator {
             }
             this.destinationName = generateDestinationName(API_BUSINESS_HUB_ENTERPRISE_PREFIX, this.servicePath);
         }
-    }
-
-    /**
-     * Fetches the Cloud Foundry Approuter configuration questions.
-     *
-     * @returns {Promise<CfAppRouterDeployConfigQuestions[]>} - Cloud Foundry Approuter deployment configuration questions
-     */
-    private async _getCFAppRouterQuestions(): Promise<CfAppRouterDeployConfigQuestions[]> {
-        return await getCFApprouterQuestionsForCap({
-            projectRoot: this.projectRoot ?? process.cwd()
-        });
     }
 
     /**
