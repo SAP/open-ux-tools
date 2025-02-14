@@ -1,5 +1,55 @@
 # @sap-ux/create
 
+## 0.11.77
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/abap-deploy-config-writer@0.0.87
+    -   @sap-ux/adp-tooling@0.12.128
+    -   @sap-ux/app-config-writer@0.5.30
+    -   @sap-ux/cap-config-writer@0.9.8
+    -   @sap-ux/cards-editor-config-writer@0.4.10
+    -   @sap-ux/flp-config-inquirer@0.2.34
+    -   @sap-ux/mockserver-config-writer@0.7.3
+    -   @sap-ux/odata-service-writer@0.25.10
+    -   @sap-ux/preview-middleware@0.17.30
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.14
+
+## 0.11.76
+
+### Patch Changes
+
+-   f7e9c9f: feat: add support for test runners
+-   Updated dependencies [f7e9c9f]
+    -   @sap-ux/app-config-writer@0.5.29
+
+## 0.11.75
+
+### Patch Changes
+
+-   Updated dependencies [063a2f4]
+    -   @sap-ux/preview-middleware@0.17.29
+    -   @sap-ux/app-config-writer@0.5.28
+
+## 0.11.74
+
+### Patch Changes
+
+-   Updated dependencies [d95bade]
+    -   @sap-ux/preview-middleware@0.17.28
+    -   @sap-ux/app-config-writer@0.5.28
+
+## 0.11.73
+
+### Patch Changes
+
+-   Updated dependencies [7c76e7c]
+    -   @sap-ux/preview-middleware@0.17.27
+    -   @sap-ux/app-config-writer@0.5.28
+
 ## 0.11.72
 
 ### Patch Changes

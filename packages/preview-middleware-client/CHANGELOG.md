@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.61
+
+### Patch Changes
+
+-   063a2f4: fix: enable manifest actions for v2 apps with array page structure
+
+## 0.11.60
+
+### Patch Changes
+
+-   d95bade: fix: Fixed various bugs related to Enable Variant Management for Tables quick action. It was unnecessarily disabled in some apps on List Report; changing Object Page table type led to enabling this action again; action is disabled now for custom tables, where it can't be applied.
+
 ## 0.11.59
 
 ### Patch Changes
