@@ -1,5 +1,42 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.8
+
+### Patch Changes
+
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.24
+    -   @sap-ux/inquirer-common@0.6.17
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.5
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/cf-deploy-config-writer@0.1.10
+    -   @sap-ux/fiori-generator-shared@0.7.29
+    -   @sap-ux/deploy-config-generator-shared@0.0.23
+    -   @sap-ux/inquirer-common@0.6.16
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.4
+
+## 0.1.6
+
+### Patch Changes
+
+-   Updated dependencies [7c96039]
+    -   @sap-ux/deploy-config-generator-shared@0.0.22
+
+## 0.1.5
+
+### Patch Changes
+
+-   f9a2d8f: Update app-router version to address security fix
+-   Updated dependencies [f9a2d8f]
+    -   @sap-ux/cf-deploy-config-writer@0.1.9
+
 ## 0.1.4
 
 ### Patch Changes
