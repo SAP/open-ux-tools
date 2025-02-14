@@ -16,7 +16,7 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
  * @param control - ManagedObject.
  * @returns AppComponent.
  */
-export function getAppComponent(control: ManagedObject): AppComponent | undefined {
+export function getV4AppComponent(control: ManagedObject): AppComponent | undefined {
     const ownerComponent = Component.getOwnerComponentFor(control);
     if (ownerComponent?.isA<TemplateComponent>('sap.fe.core.TemplateComponent')) {
         return ownerComponent.getAppComponent();
@@ -31,7 +31,7 @@ export function getAppComponent(control: ManagedObject): AppComponent | undefine
  * @returns string.
  */
 export function getReference(control: ManagedObject): string {
-    const manifest = getAppComponent(control)?.getManifest() as Manifest;
+    const manifest = getV4AppComponent(control)?.getManifest() as Manifest;
     return manifest?.['sap.app']?.id ?? '';
 }
 
