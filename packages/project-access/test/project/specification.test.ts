@@ -13,7 +13,7 @@ import * as moduleMock from '../../src/project/module-loader';
 import * as fileMock from '../../src/file';
 
 jest.mock('fs', () => {
-    const actual = jest.requireActual('fs');
+    const actual = jest.requireActual<typeof fsMock>('fs');
     return { ...actual, existsSync: jest.fn().mockImplementation(actual.existsSync) };
 });
 

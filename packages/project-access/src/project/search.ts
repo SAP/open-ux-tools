@@ -3,6 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import type {
     AdaptationResults,
     AllAppResults,
+    CapProjectType,
     ComponentResults,
     ExtensionResults,
     FioriArtifactTypes,
@@ -34,9 +35,13 @@ const filterFileMap: Record<FioriArtifactTypes, string[]> = {
 
 /**
  * Type that is used locally only to keep list of found files with cache of the
- * content in order to avoid multiple file reads.
+ * content in order to avoid multiple file reads. It also caches result of call
+ * getCapProjectType() this is expensive.
  */
-type FileMapAndCache = { [path: string]: null | string | object };
+type FileMapAndCache = {
+    files: { [path: string]: null | string | object };
+    capProjectType: Map<string, CapProjectType | undefined>;
+};
 
 /**
  * Default folders to exclude from search.
@@ -165,6 +170,41 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
 }
 
 /**
+ * Type guard for Editor or Editor and FileMapAndCache.
+ *
+ * @param argument - argument to check
+ * @returns true if argument is Editor, false if it is FileMapAndCache
+ */
+function isEditor(argument: Editor | { memFs?: Editor; cache?: FileMapAndCache }): argument is Editor {
+    return (argument as Editor).commit !== undefined;
+}
+
+/**
+ * Internal helper function to resolve options for findRootsForPath() and findCapProjectRoot().
+ *
+ * @param options - optional mem-fs-editor instance or options object with optional memFs and cache
+ * @returns memFs and cache
+ */
+function getFindOptions(options?: Editor | { memFs?: Editor; cache?: FileMapAndCache }): {
+    memFs: Editor | undefined;
+    cache: FileMapAndCache;
+} {
+    let memFs: Editor | undefined;
+    let cache: FileMapAndCache = { files: {}, capProjectType: new Map<string, CapProjectType | undefined>() };
+
+    if (options) {
+        // Check if options is Editor or { memFs?: Editor; cache?: FileMapAndCache }
+        if (isEditor(options)) {
+            memFs = options;
+        } else {
+            memFs = options.memFs;
+            cache = options.cache ?? cache;
+        }
+    }
+    return { memFs, cache };
+}
+
+/**
  * Find the app root and project root folder for a given path. In case of apps in non CAP projects they are the same.
  * This function also validates if an app is supported by tools considering Fiori elements apps and SAPUI5
  * freestyle apps. Only if project root and app root can be determined, they are returned, otherwise null is returned.
@@ -177,31 +217,29 @@ export async function getAppRootFromWebappPath(webappPath: string): Promise<stri
  * - Freestyle application (non CAP) has in package.json dependency to @sap/ux-ui5-tooling and <appRoot>/ui5-local.yaml.
  *
  * @param path - path to check, e.g. to the manifest.json
- * @param memFs - optional mem-fs-editor instance
+ * @param options - optional mem-fs-editor instance or options object with optional memFs and cache
  * @returns - in case a supported app is found this function returns the appRoot and projectRoot path
  */
 export async function findRootsForPath(
     path: string,
-    memFs?: Editor
+    options?: Editor | { memFs?: Editor; cache?: FileMapAndCache }
 ): Promise<{ appRoot: string; projectRoot: string } | null> {
     try {
+        const { memFs, cache } = getFindOptions(options);
+
         // Get the root of the app, that is where the package.json is, otherwise not supported
         const appRoot = await findProjectRoot(path, false, false, memFs);
         if (!appRoot) {
             return null;
         }
-        const appPckJson = await readJSON<Package>(join(appRoot, FileName.Package), memFs);
+        cache.files[path] ??= await readJSON<Package>(join(appRoot, FileName.Package), memFs);
+        const appPckJson = cache.files[path] as Package;
         // Check for most common app, Fiori elements with sapux=true in package.json
         if (appPckJson.sapux) {
             return findRootsWithSapux(appPckJson.sapux, path, appRoot);
         }
-        if ((await getCapProjectType(appRoot, memFs)) !== undefined) {
-            // App is part of a CAP project, but doesn't have own package.json and is not mentioned in sapux array
-            // in root -> not supported
-            return null;
-        }
         // Check if app is included in CAP project
-        const projectRoot = await findCapProjectRoot(appRoot, undefined, memFs);
+        const projectRoot = await findCapProjectRoot(appRoot, undefined, { memFs, cache });
         if (projectRoot) {
             // App included in CAP
             return {
@@ -229,22 +267,27 @@ export async function findRootsForPath(
  *
  * @param path - path inside CAP project
  * @param checkForAppRouter - if true, checks for app router in CAP project app folder
- * @param memFs - optional mem-fs-editor instance
+ * @param options - optional mem-fs-editor instance or options object with optional memFs and cache
  * @returns - CAP project root path
  */
 export async function findCapProjectRoot(
     path: string,
     checkForAppRouter = true,
-    memFs?: Editor
+    options?: Editor | { memFs?: Editor; cache?: FileMapAndCache }
 ): Promise<string | null> {
     try {
         if (!isAbsolute(path)) {
             return null;
         }
+        const { memFs, cache } = getFindOptions(options);
         const { root } = parse(path);
         let projectRoot = dirname(path);
         while (projectRoot !== root) {
-            if (await getCapProjectType(projectRoot, memFs)) {
+            if (!cache.capProjectType.has(projectRoot)) {
+                cache.capProjectType.set(projectRoot, await getCapProjectType(projectRoot, memFs));
+            }
+            const capProjectType = cache.capProjectType.get(projectRoot);
+            if (capProjectType) {
                 // We have found a CAP project as root. Check if the found app is not directly in CAP's 'app/' folder.
                 // Sometime there is a <CAP_ROOT>/app/package.json file that is used for app router (not an app)
                 // or skip app router check if checkForAppRouter is false and return the project root.
@@ -285,27 +328,25 @@ export async function findAllApps(
  * @returns - results as path to apps plus files already parsed, e.g. manifest.json
  */
 async function filterApplications(pathMap: FileMapAndCache, memFs?: Editor): Promise<AllAppResults[]> {
-    const filterApplicationByManifest = async (manifestPath: string) => {
-        pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
-        const manifest: Manifest = pathMap[manifestPath] as Manifest; // cast needed as pathMap also allows strings and any other objects
-        // cast allowed, as this is the only place pathMap is filled for manifests
-        if (manifest['sap.app'].id && manifest['sap.app'].type === 'application') {
-            const roots = await findRootsForPath(dirname(manifestPath), memFs);
-            if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig), memFs))) {
-                return { appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest: manifest, manifestPath };
+    const result: AllAppResults[] = [];
+    const manifestPaths = Object.keys(pathMap.files).filter((path) => basename(path) === FileName.Manifest);
+    for (const manifestPath of manifestPaths) {
+        try {
+            // All UI5 apps have at least sap.app: { id: <ID>, type: "application" } in manifest.json
+            pathMap.files[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
+            const manifest = pathMap.files[manifestPath] as Manifest;
+            if (!manifest['sap.app']?.id || manifest['sap.app'].type !== 'application') {
+                continue;
             }
+            const roots = await findRootsForPath(dirname(manifestPath), { memFs, cache: pathMap });
+            if (roots && !(await fileExists(join(roots.appRoot, '.adp', FileName.AdaptationConfig), memFs))) {
+                result.push({ appRoot: roots.appRoot, projectRoot: roots.projectRoot, manifest, manifestPath });
+            }
+        } catch {
+            // ignore exceptions for invalid manifests
         }
-        throw new Error('Not relevant');
-    };
-
-    const isFulFilled = (input: PromiseSettledResult<AllAppResults>): input is PromiseFulfilledResult<AllAppResults> =>
-        input.status === 'fulfilled';
-
-    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
-
-    return (await Promise.allSettled(manifestPaths.map(filterApplicationByManifest)))
-        .filter(isFulFilled) // returning only valid applications
-        .map(({ value }) => value);
+    }
+    return result;
 }
 
 /**
@@ -317,7 +358,9 @@ async function filterApplications(pathMap: FileMapAndCache, memFs?: Editor): Pro
  */
 async function filterAdaptations(pathMap: FileMapAndCache, memFs?: Editor): Promise<AdaptationResults[]> {
     const results: AdaptationResults[] = [];
-    const manifestAppDescrVars = Object.keys(pathMap).filter((path) => path.endsWith(FileName.ManifestAppDescrVar));
+    const manifestAppDescrVars = Object.keys(pathMap.files).filter((path) =>
+        path.endsWith(FileName.ManifestAppDescrVar)
+    );
     for (const manifestAppDescrVar of manifestAppDescrVars) {
         const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestAppDescrVar), memFs);
         const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
@@ -337,7 +380,7 @@ async function filterAdaptations(pathMap: FileMapAndCache, memFs?: Editor): Prom
  */
 async function filterExtensions(pathMap: FileMapAndCache, memFs?: Editor): Promise<ExtensionResults[]> {
     const results: ExtensionResults[] = [];
-    const extensionConfigs = Object.keys(pathMap).filter((path) => basename(path) === FileName.ExtConfigJson);
+    const extensionConfigs = Object.keys(pathMap.files).filter((path) => basename(path) === FileName.ExtConfigJson);
     for (const extensionConfig of extensionConfigs) {
         try {
             let manifest: Manifest | null = null;
@@ -345,8 +388,8 @@ async function filterExtensions(pathMap: FileMapAndCache, memFs?: Editor): Promi
                 (path) => path.startsWith(dirname(extensionConfig) + sep) && basename(path) === FileName.Manifest
             );
             if (manifestPath) {
-                pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
-                manifest = pathMap[manifestPath] as Manifest;
+                pathMap.files[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
+                manifest = pathMap.files[manifestPath] as Manifest;
             } else {
                 const manifests = await findBy({
                     fileNames: [FileName.Manifest],
@@ -383,7 +426,7 @@ async function filterDotLibraries(
     memFs?: Editor
 ): Promise<LibraryResults[]> {
     const dotLibraries: LibraryResults[] = [];
-    const dotLibraryPaths = Object.keys(pathMap)
+    const dotLibraryPaths = Object.keys(pathMap.files)
         .filter((path) => basename(path) === FileName.Library)
         .map((path) => dirname(path))
         .filter((path) => !manifestPaths.map((manifestPath) => dirname(manifestPath)).includes(path));
@@ -407,12 +450,12 @@ async function filterDotLibraries(
  */
 async function filterLibraries(pathMap: FileMapAndCache, memFs?: Editor): Promise<LibraryResults[]> {
     const results: LibraryResults[] = [];
-    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
+    const manifestPaths = Object.keys(pathMap.files).filter((path) => basename(path) === FileName.Manifest);
     results.push(...(await filterDotLibraries(pathMap, manifestPaths, memFs)));
     for (const manifestPath of manifestPaths) {
         try {
-            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
-            const manifest = pathMap[manifestPath] as Manifest;
+            pathMap.files[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
+            const manifest = pathMap.files[manifestPath] as Manifest;
             if (manifest['sap.app'] && manifest['sap.app'].type === 'library') {
                 const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath), memFs);
                 const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
@@ -436,11 +479,11 @@ async function filterLibraries(pathMap: FileMapAndCache, memFs?: Editor): Promis
  */
 async function filterComponents(pathMap: FileMapAndCache, memFs?: Editor): Promise<ComponentResults[]> {
     const results: ComponentResults[] = [];
-    const manifestPaths = Object.keys(pathMap).filter((path) => basename(path) === FileName.Manifest);
+    const manifestPaths = Object.keys(pathMap.files).filter((path) => basename(path) === FileName.Manifest);
     for (const manifestPath of manifestPaths) {
         try {
-            pathMap[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
-            const manifest = pathMap[manifestPath] as Manifest;
+            pathMap.files[manifestPath] ??= await readJSON<Manifest>(manifestPath, memFs);
+            const manifest = pathMap.files[manifestPath] as Manifest;
             if (manifest['sap.app'] && manifest['sap.app'].type === 'component') {
                 const packageJsonPath = await findFileUp(FileName.Package, dirname(manifestPath), memFs);
                 const projectRoot = packageJsonPath ? dirname(packageJsonPath) : null;
@@ -476,7 +519,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @param options - find options
  * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes
- * @param options.memFs
+ * @param options.memFs - optional mem-fs-editor instance
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
 export async function findFioriArtifacts(options: {
@@ -487,7 +530,7 @@ export async function findFioriArtifacts(options: {
     const results: FoundFioriArtifacts = {};
     const fileNames: string[] = getFilterFileNames(options.artifacts);
     const wsRoots = wsFoldersToRootPaths(options.wsFolders);
-    const pathMap: FileMapAndCache = {};
+    const pathMap: FileMapAndCache = { files: {}, capProjectType: new Map<string, CapProjectType | undefined>() };
     for (const root of wsRoots) {
         try {
             const foundFiles = await findBy({
@@ -496,7 +539,7 @@ export async function findFioriArtifacts(options: {
                 excludeFolders,
                 memFs: options.memFs
             });
-            foundFiles.forEach((path) => (pathMap[path] = null));
+            foundFiles.forEach((path) => (pathMap.files[path] = null));
         } catch {
             // ignore exceptions during find
         }

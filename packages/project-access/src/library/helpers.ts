@@ -1,7 +1,14 @@
 import { dirname, join } from 'path';
 import { ui5Libs } from './constants';
-import { ReuseLibType, type LibraryResults, type Manifest, type ReuseLib } from '../types';
-import { findFiles } from '../file';
+import {
+    ReuseLibType,
+    type LibraryResults,
+    type Manifest,
+    type ManifestNamespace,
+    type ReuseLib,
+    type LibraryXml
+} from '../types';
+import { findFiles, readJSON } from '../file';
 import { FileName } from '../constants';
 import { existsSync, promises as fs } from 'fs';
 import { XMLParser } from 'fast-xml-parser';
@@ -61,7 +68,7 @@ const getLibraryFromLibraryFile = async (
     projectRoot: string
 ): Promise<ReuseLib | undefined> => {
     let libEntry;
-    const parsedFile = new XMLParser({ removeNSPrefix: true }).parse(library, false);
+    const parsedFile = new XMLParser({ removeNSPrefix: true }).parse(library, false) as LibraryXml;
     if (parsedFile?.library?.name) {
         const manifestType = parsedFile?.library ? 'library' : 'component';
         if (manifestType === 'component' || manifestType === 'library') {
@@ -72,7 +79,7 @@ const getLibraryFromLibraryFile = async (
                 name: `${parsedFile.library.name}`,
                 path: dirname(libraryPath),
                 type: reuseType,
-                uri: parsedFile.library?.appData?.manifest?.['sap.platform.abap']?.uri || '',
+                uri: parsedFile.library?.appData?.manifest?.['sap.platform.abap']?.uri ?? '',
                 dependencies: libDeps,
                 libRoot: projectRoot,
                 description
@@ -121,7 +128,7 @@ export const getReuseLibs = async (libs?: LibraryResults[]): Promise<ReuseLib[]>
 
             for (const manifestPath of manifestPaths) {
                 const manifestFilePath = join(manifestPath, FileName.Manifest);
-                const manifest = JSON.parse(await fs.readFile(manifestFilePath, { encoding: 'utf8' }));
+                const manifest = await readJSON<Manifest>(manifestFilePath);
                 const library = await getLibraryFromManifest(manifest, manifestFilePath, reuseLibs, lib.projectRoot);
                 if (library) {
                     reuseLibs.push(library);
@@ -186,17 +193,17 @@ export function checkDependencies(answers: ReuseLib[], reuseLibs: ReuseLib[]): s
  * @param libraryPath - library path
  * @returns library description
  */
-export async function getLibraryDesc(library: any, libraryPath: string): Promise<string> {
+export async function getLibraryDesc(library: LibraryXml, libraryPath: string): Promise<string> {
     let libraryDesc = library?.library?.documentation;
     if (typeof libraryDesc === 'string' && libraryDesc.startsWith('{{')) {
         const key = libraryDesc.substring(2, libraryDesc.length - 2);
 
         libraryDesc = await geti18nPropertyValue(
-            join(dirname(libraryPath), library.library?.appData?.manifest?.i18n?.toString()),
+            join(dirname(libraryPath), library.library?.appData?.manifest?.i18n?.toString() ?? ''),
             key
         );
     }
-    return libraryDesc.toString();
+    return libraryDesc?.toString() ?? '';
 }
 
 /**
@@ -205,7 +212,7 @@ export async function getLibraryDesc(library: any, libraryPath: string): Promise
  * @param library - library object
  * @returns array of dependencies
  */
-export function getLibraryDependencies(library: any): string[] {
+export function getLibraryDependencies(library: LibraryXml): string[] {
     const result: string[] = [];
     if (library?.library?.dependencies?.dependency) {
         let deps = library.library.dependencies.dependency;
@@ -275,9 +282,9 @@ export async function getManifestDesc(manifest: Manifest, manifestPath: string):
  */
 export function getManifestDependencies(manifest: Manifest): string[] {
     const result: string[] = [];
-
-    Object.values(['libs', 'components']).forEach((reuseType) => {
-        const dependencies = (manifest['sap.ui5']?.dependencies as { [k: string]: any } | undefined)?.[reuseType];
+    const depTypes: (keyof ManifestNamespace.JSONSchemaForSAPUI5Namespace['dependencies'])[] = ['libs', 'components'];
+    Object.values(depTypes).forEach((reuseType) => {
+        const dependencies = manifest['sap.ui5']?.dependencies?.[reuseType];
         if (dependencies) {
             const libs = manifest?.['sap.ui5']?.dependencies?.libs;
             if (libs) {
