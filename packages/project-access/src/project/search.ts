@@ -519,7 +519,7 @@ function getFilterFileNames(artifacts: FioriArtifactTypes[]): string[] {
  * @param options - find options
  * @param options.wsFolders - list of roots, either as vscode WorkspaceFolder[] or array of paths
  * @param options.artifacts - list of artifacts to search for: 'application', 'adaptation', 'extension' see FioriArtifactTypes
- * @param options.memFs
+ * @param options.memFs - optional mem-fs-editor instance
  * @returns - data structure containing the search results, for app e.g. as path to app plus files already parsed, e.g. manifest.json
  */
 export async function findFioriArtifacts(options: {
