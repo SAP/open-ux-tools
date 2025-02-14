@@ -198,7 +198,7 @@ describe('ADP writer', () => {
                     reference: 'the.original.app'
                 },
                 target: {
-                    destination: 'UYTCLNT902'
+                    destination: 'DUMMY_DESTINATION'
                 }
             };
 

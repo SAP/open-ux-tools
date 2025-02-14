@@ -282,7 +282,7 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         target:
-          destination: UYTCLNT902
+          destination: DUMMY_DESTINATION
         app:
           package: $TMP
 ",
@@ -317,14 +317,14 @@ server:
       configuration:
         adp:
           target:
-            destination: UYTCLNT902
+            destination: DUMMY_DESTINATION
           ignoreCertErrors: false
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - destination: UYTCLNT902
+          - destination: DUMMY_DESTINATION
             url: https://REQUIRED_FOR_VSCODE.example
             path: /sap
         ui5:
@@ -344,7 +344,7 @@ builder:
           - sap: testId
             i18n: testKey
         target:
-          destination: UYTCLNT902
+          destination: DUMMY_DESTINATION
           url: https://REQUIRED_FOR_VSCODE.example
 ",
     "state": "modified",
@@ -1585,7 +1585,7 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         target:
-          destination: UYTCLNT902
+          destination: DUMMY_DESTINATION
         app:
           package: $TMP
 ",
@@ -1620,14 +1620,14 @@ server:
       configuration:
         adp:
           target:
-            destination: UYTCLNT902
+            destination: DUMMY_DESTINATION
           ignoreCertErrors: false
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
       configuration:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
-          - destination: UYTCLNT902
+          - destination: DUMMY_DESTINATION
             url: https://REQUIRED_FOR_VSCODE.example
             path: /sap
         ui5:
@@ -1647,7 +1647,7 @@ builder:
           - sap: testId
             i18n: testKey
         target:
-          destination: UYTCLNT902
+          destination: DUMMY_DESTINATION
           url: https://REQUIRED_FOR_VSCODE.example
 ",
     "state": "modified",
