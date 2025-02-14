@@ -5,7 +5,7 @@ import type { Question } from 'inquirer';
  * Enumeration of prompt names
  */
 enum promptNames {
-    confirmConfigUpate = 'confirmConfigUpate'
+    confirmConfigUpdate = 'confirmConfigUpdate'
 }
 
 /**
@@ -18,8 +18,8 @@ export function getConfirmConfigUpdatePrompt(configType?: string): Question[] {
     return [
         {
             type: 'confirm',
-            name: promptNames.confirmConfigUpate,
-            message: t('prompts.confirmConfigUpate.message', { configType }),
+            name: promptNames.confirmConfigUpdate,
+            message: t('prompts.confirmConfigUpdate.message', { configType }),
             default: false
         }
     ];

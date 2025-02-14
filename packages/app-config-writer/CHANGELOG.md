@@ -1,5 +1,19 @@
 # @sap-ux/app-config-writer
 
+## 0.5.30
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/axios-extension@1.18.5
+
+## 0.5.29
+
+### Patch Changes
+
+-   f7e9c9f: feat: add support for test runners
+
 ## 0.5.28
 
 ### Patch Changes
