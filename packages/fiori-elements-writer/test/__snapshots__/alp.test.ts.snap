@@ -5262,18 +5262,6 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -5286,6 +5274,18 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -11472,6 +11472,13 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/\\",
         \\"type\\": \\"OData\\",
@@ -11481,13 +11488,6 @@ appDescription=A Fiori application.",
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }

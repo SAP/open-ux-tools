@@ -1,6 +1,265 @@
+import type { Editor } from 'mem-fs-editor';
+import { join, normalize, posix } from 'path';
 import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
-import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo } from '../types';
+import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo, EdmxOdataService, CdsAnnotationsInfo } from '../types';
+import prettifyXml from 'prettify-xml';
+
+/**
+ * Updates the cds index or service file with the provided annotations.
+ * This function takes an Editor instance and cds annotations
+ * and updates either the index file or the service file with the given annotations.
+ *
+ * @param {Editor} fs - The memfs editor instance
+ * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
+ * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
+ */
+async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
+    const dirPath = join(annotations.projectName, 'annotations');
+    const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
+    const annotationConfig = `\nusing from './${annotationPath}';`;
+    // get index and service file paths
+    const indexFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'index.cds');
+    const serviceFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'services.cds');
+    // extend index or service file with annotation config
+    if (indexFilePath && fs.exists(indexFilePath)) {
+        fs.append(indexFilePath, annotationConfig);
+    } else if (fs.exists(serviceFilePath)) {
+        fs.append(serviceFilePath, annotationConfig);
+    } else {
+        fs.write(serviceFilePath, annotationConfig);
+    }
+}
+
+/**
+ * Updates cds files with the provided annotations.
+ * This function takes cds annotations and an Editor instance,
+ * then updates the relevant cds files with the given annotations.
+ *
+ * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
+ * @param {Editor} fs - The memfs editor instance
+ * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
+ */
+export async function updateCdsFilesWithAnnotations(
+    annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
+    fs: Editor
+): Promise<void> {
+    if (Array.isArray(annotations)) {
+        for (const annotationName in annotations) {
+            const annotation = annotations[annotationName];
+            const annotationCdsPath = join(
+                annotation.projectPath,
+                annotation.appPath ?? '',
+                annotation.projectName,
+                'annotations.cds'
+            );
+            // write into annotations.cds file
+            if (fs.exists(annotationCdsPath)) {
+                fs.append(annotationCdsPath, annotation.cdsFileContents);
+            } else {
+                fs.write(annotationCdsPath, annotation.cdsFileContents);
+            }
+            await updateCdsIndexOrServiceFile(fs, annotation);
+        }
+    } else {
+        const annotationCdsPath = join(
+            annotations.projectPath,
+            annotations.appPath ?? '',
+            annotations.projectName,
+            'annotations.cds'
+        );
+        // write into annotations.cds file
+        fs.write(annotationCdsPath, annotations.cdsFileContents);
+        await updateCdsIndexOrServiceFile(fs, annotations);
+    }
+}
+
+/**
+ * Removes the cds index or service file with the provided annotations.
+ * This function takes an Editor instance and cds annotations
+ * and deletes either from the index file or the service file with the given annotations.
+ *
+ * @param {Editor} fs - The memfs editor instance
+ * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
+ * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
+ */
+async function removeCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
+    const dirPath = join(annotations.projectName, 'annotations');
+    const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
+    const annotationConfig = `\nusing from './${annotationPath}';`;
+    // Get index and service file paths
+    const indexFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'index.cds');
+    const serviceFilePath = join(annotations.projectPath, annotations.appPath ?? '', 'services.cds');
+    // Remove annotation config from index or service file
+    if (indexFilePath && fs.exists(indexFilePath)) {
+        // Read old annotations content and replace it with empty string
+        const initialIndexContent = fs.read(indexFilePath);
+        const updatedContent = initialIndexContent.replace(annotationConfig, '');
+        fs.write(indexFilePath, updatedContent);
+    } else if (fs.exists(serviceFilePath)) {
+        // Read old annotations content and replace it with empty string
+        const initialServiceFileContent = fs.read(serviceFilePath);
+        const updatedContent = initialServiceFileContent.replace(annotationConfig, '');
+        fs.write(serviceFilePath, updatedContent);
+    }
+}
+
+/**
+ * Removes annotations from CDS files.
+ * This function takes cds annotations and an Editor instance,
+ * then updates the relevant cds files with the given annotations.
+ *
+ * @param {CdsAnnotationsInfo} annotations - The cds annotations info.
+ * @param {Editor} fs - The memfs editor instance
+ * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
+ */
+export async function removeAnnotationsFromCDSFiles(
+    annotations: CdsAnnotationsInfo | CdsAnnotationsInfo[],
+    fs: Editor
+): Promise<void> {
+    if (Array.isArray(annotations)) {
+        for (const annotationName in annotations) {
+            const annotation = annotations[annotationName];
+            const annotationCdsPath = join(
+                annotation.projectPath,
+                annotation.appPath ?? '',
+                annotation.projectName,
+                'annotations.cds'
+            );
+            // Remove from annotations.cds file
+            if (fs.exists(annotationCdsPath)) {
+                // Read old annotations content and replace it with empty string
+                const initialCDSContent = fs.read(annotationCdsPath);
+                const updatedContent = initialCDSContent.replace(annotation.cdsFileContents, '');
+                fs.write(annotationCdsPath, updatedContent);
+            }
+            await removeCdsIndexOrServiceFile(fs, annotation);
+        }
+    } else {
+        const annotationCdsPath = join(
+            annotations.projectPath,
+            annotations.appPath ?? '',
+            annotations.projectName,
+            'annotations.cds'
+        );
+        // Write into annotations.cds file
+        if (fs.exists(annotationCdsPath)) {
+            // Read old annotations content and replace it with empty string
+            const initialCDSContent = fs.read(annotationCdsPath);
+            const updatedContent = initialCDSContent.replace(annotations.cdsFileContents, '');
+            fs.write(annotationCdsPath, updatedContent);
+        }
+        await removeCdsIndexOrServiceFile(fs, annotations);
+    }
+}
+
+/**
+ * Writes local copies of metadata.xml and local annotations.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} basePath - the root path of an existing UI5 application
+ * @param {string} webappPath - the webapp path of an existing UI5 application
+ * @param {string} templateRoot - path to the file templates
+ * @param {OdataService} service - the OData service instance with EDMX type
+ */
+export async function writeLocalServiceAnnotationXMLFiles(
+    fs: Editor,
+    basePath: string,
+    webappPath: string,
+    templateRoot: string,
+    service: EdmxOdataService
+): Promise<void> {
+    // mainService should be used in case there is no name defined for service
+    fs.write(
+        join(webappPath, 'localService', service.name ?? 'mainService', 'metadata.xml'),
+        prettifyXml(service.metadata, { indent: 4 })
+    );
+    // Adds local annotations to datasources section of manifest.json and writes the annotations file
+    if (service.localAnnotationsName) {
+        const namespaces = getAnnotationNamespaces(service);
+        fs.copyTpl(
+            join(templateRoot, 'add', 'annotation.xml'),
+            join(basePath, 'webapp', 'annotations', `${service.localAnnotationsName}.xml`),
+            { ...service, namespaces }
+        );
+    }
+}
+
+/**
+ * Removes annotation XML files for EDMX annotations.
+ *
+ * @param {Editor} fs - The memfs editor instance.
+ * @param {string} basePath - The base path of the project.
+ * @param {string} serviceName - Name of The OData service.
+ * @param {OdataService} edmxAnnotations - The OData service annotations.
+ */
+export function removeRemoteServiceAnnotationXmlFiles(
+    fs: Editor,
+    basePath: string,
+    serviceName: string,
+    edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
+): void {
+    // Write annotation xml if annotations are provided and service type is EDMX
+    if (Array.isArray(edmxAnnotations)) {
+        for (const annotationName in edmxAnnotations) {
+            const annotation = edmxAnnotations[annotationName];
+            const pathToAnnotationFile = join(
+                basePath,
+                'webapp',
+                'localService',
+                serviceName,
+                `${annotation.technicalName}.xml`
+            );
+            if (fs.exists(pathToAnnotationFile)) {
+                fs.delete(pathToAnnotationFile);
+            }
+        }
+    } else if (edmxAnnotations?.xml) {
+        const pathToAnnotationFile = join(
+            basePath,
+            'webapp',
+            'localService',
+            serviceName,
+            `${edmxAnnotations.technicalName}.xml`
+        );
+        if (fs.exists(pathToAnnotationFile)) {
+            fs.delete(pathToAnnotationFile);
+        }
+    }
+}
+
+/**
+ * Writes annotation XML files for EDMX service annotations.
+ *
+ * @param {Editor} fs - The memfs editor instance.
+ * @param {string} basePath - The base path of the project.
+ * @param {string} serviceName - Name of The OData service.
+ * @param {OdataService} edmxAnnotations - The OData service annotations.
+ */
+export function writeRemoteServiceAnnotationXmlFiles(
+    fs: Editor,
+    basePath: string,
+    serviceName: string,
+    edmxAnnotations: EdmxAnnotationsInfo | EdmxAnnotationsInfo[]
+): void {
+    // Write annotation xml if annotations are provided and service type is EDMX
+    if (Array.isArray(edmxAnnotations)) {
+        for (const annotationName in edmxAnnotations) {
+            const annotation = edmxAnnotations[annotationName];
+            if (annotation?.xml) {
+                fs.write(
+                    join(basePath, 'webapp', 'localService', serviceName, `${annotation.technicalName}.xml`),
+                    prettifyXml(annotation.xml, { indent: 4 })
+                );
+            }
+        }
+    } else if (edmxAnnotations?.xml) {
+        fs.write(
+            join(basePath, 'webapp', 'localService', serviceName, `${edmxAnnotations.technicalName}.xml`),
+            prettifyXml(edmxAnnotations.xml, { indent: 4 })
+        );
+    }
+}
 
 /**
  * Returns the namespaces parsed from the specified metadata and single annotation.
