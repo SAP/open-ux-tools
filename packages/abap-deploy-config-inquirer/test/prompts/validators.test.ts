@@ -325,6 +325,10 @@ describe('Test validators', () => {
     });
 
     describe('validatePackageExtended', () => {
+        beforeEach(() => {
+            PromptState.resetTransportAnswers();
+        });
+
         it('should return error when base validation fail', async () => {
             const result = await validatePackageExtended(' ', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
@@ -333,6 +337,8 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid starting prefix', async () => {
+            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.scp = false;
             const result = await validatePackageExtended(
                 'namespace',
                 {
@@ -341,12 +347,17 @@ describe('Test validators', () => {
                 },
                 {
                     additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                },
+                {
+                    hideIfOnPremise: true
                 }
             );
             expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
         });
 
         it('should return error for invalid ui5Repo starting prefix', async () => {
+            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.scp = false;
             const result = await validatePackageExtended(
                 'ZPACKAGE',
                 {
@@ -355,12 +366,17 @@ describe('Test validators', () => {
                 },
                 {
                     additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                },
+                {
+                    hideIfOnPremise: true
                 }
             );
             expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
         });
 
         it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
+            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.scp = false;
             const result = await validatePackageExtended(
                 '/NAMESPACE/ZPACKAGE',
                 {
@@ -369,6 +385,9 @@ describe('Test validators', () => {
                 },
                 {
                     additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                },
+                {
+                    hideIfOnPremise: true
                 }
             );
             expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
