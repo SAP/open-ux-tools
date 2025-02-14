@@ -140,7 +140,6 @@ module.exports = async ({ resources }: MiddlewareParameters<any>): Promise<Reque
             const multipleCards = utils.prepareCardTypesForSaving(manifests);
 
             await promises.writeFile(join(fullPath, file), multipleCards.integration);
-            await promises.writeFile(join(fullPath, 'adaptive-' + file), multipleCards.adaptive);
 
             const oManifest = JSON.parse(await manifest.getString());
 
