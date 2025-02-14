@@ -86,27 +86,24 @@ async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Pro
     if (!memFs) {
         return await fileExists(srvFolderPath);
     }
-    // Load the srv folder and its files into mem-fs
-    // This is necessary as mem-fs operates in-memory and doesn't automatically include files from disk.
-    // By loading the files, we ensure they are available within mem-fs.
+    // Check for files in the file system
     if (await fileExists(srvFolderPath)) {
         const fileSystemFiles = await readDirectory(srvFolderPath);
         for (const file of fileSystemFiles) {
             const filePath = join(srvFolderPath, file);
             if (await fileExists(filePath)) {
-                const fileContent = await readFile(filePath);
-                memFs.write(filePath, fileContent);
+                return true;
             }
         }
     }
-    // Dump the mem-fs state
-    const memFsDump = memFs.dump();
-    const memFsFiles = Object.keys(memFsDump).filter((filePath) => {
-        const normalisedFilePath = resolve(filePath);
-        const normalisedSrvPath = resolve(srvFolderPath);
-        return normalisedFilePath.startsWith(normalisedSrvPath);
-    });
-    return memFsFiles.length > 0;
+    // Check for files not yet witten to the file system or deleted in memory (memFs only)
+    return (
+        Object.keys(
+            memFs.dump(undefined, (file) => {
+                return file.path.includes(resolve(srvFolderPath)) && file.state !== 'deleted';
+            })
+        ).length > 0
+    );
 }
 
 /**
