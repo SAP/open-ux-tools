@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.64
+
+### Patch Changes
+
+-   931e735: Add stable ids to form elements
+
 ## 0.11.63
 
 ### Patch Changes
