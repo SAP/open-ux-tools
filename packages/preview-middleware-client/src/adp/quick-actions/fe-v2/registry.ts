@@ -23,6 +23,7 @@ import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
 import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
 import { EnableObjectPageVariantManagementQuickAction } from './op-enable-variant-management';
 import { EnableListReportVariantManagementQuickAction } from './lr-enable-variant-management';
+import { AddNewObjectPage } from './op-add-new-object-page';
 type PageName = 'listReport' | 'objectPage' | 'analyticalListPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
@@ -74,7 +75,8 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
                         EnableTableEmptyRowModeQuickAction,
-                        AddNewAnnotationFile
+                        AddNewAnnotationFile,
+                        AddNewObjectPage
                     ],
                     view,
                     key: name + index
