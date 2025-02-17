@@ -1,5 +1,31 @@
 # @sap-ux/preview-middleware
 
+## 0.17.39
+
+### Patch Changes
+
+-   5226a61: feat: introduce 'editors' property on config root level
+
+## 0.17.38
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.133
+
+## 0.17.37
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/adp-tooling@0.12.132
+
+## 0.17.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.131
+
 ## 0.17.35
 
 ### Patch Changes
