@@ -47,7 +47,7 @@ export async function enhanceYaml(
         // Ignore local annotations from YAML file, those are linked through manifest file
         if (annotation.settings?.localUri !== annotation.uri) {
             annotationsConfig.push({
-                localPath: `./webapp/${annotation.settings?.localUri}`,
+                localPath: join(webappPath, annotation.settings?.localUri ?? ''),
                 urlPath: annotation.uri
             });
         }
@@ -60,7 +60,7 @@ export async function enhanceYaml(
         dataSourcesConfig.push({
             serviceName: dataSource,
             servicePath: dataSources[dataSource].uri,
-            metadataPath: localUri ? `./webapp/${localUri}` : undefined
+            metadataPath: localUri ? join(webappPath, localUri) : undefined
         });
     }
 

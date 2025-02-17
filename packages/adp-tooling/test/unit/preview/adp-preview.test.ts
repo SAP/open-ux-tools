@@ -476,13 +476,15 @@ describe('AdaptationProject', () => {
                 middlewareUtil,
                 logger
             );
-            jest.spyOn(helper, 'getVariant').mockReturnValue({
-                content: [],
-                id: 'adp/project',
-                layer: 'VENDOR',
-                namespace: 'test',
-                reference: 'adp/project'
-            });
+            jest.spyOn(helper, 'getVariant').mockReturnValue(
+                Promise.resolve({
+                    content: [],
+                    id: 'adp/project',
+                    layer: 'VENDOR',
+                    namespace: 'test',
+                    reference: 'adp/project'
+                })
+            );
 
             jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
                 target: {

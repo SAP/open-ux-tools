@@ -349,7 +349,7 @@ export default class RoutesHandler {
     private async getManifestService(): Promise<ManifestService> {
         const project = this.util.getProject();
         const basePath = project.getRootPath();
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
         const { target, ignoreCertErrors = false } = await getAdpConfig(
             basePath,
             path.join(basePath, FileName.Ui5Yaml)

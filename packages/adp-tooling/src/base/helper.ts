@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import { readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative } from 'path';
-
+import { getWebappPath } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
 
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
@@ -13,11 +13,12 @@ import type { DescriptorVariant, AdpPreviewConfig } from '../types';
  * @param {Editor} fs - The mem-fs editor instance.
  * @returns {DescriptorVariant} The app descriptor variant.
  */
-export function getVariant(basePath: string, fs?: Editor): DescriptorVariant {
+export async function getVariant(basePath: string, fs?: Editor): Promise<DescriptorVariant> {
+    const webappPath = await getWebappPath(basePath);
     if (fs) {
-        return fs.readJSON(join(basePath, 'webapp', 'manifest.appdescr_variant')) as unknown as DescriptorVariant;
+        return fs.readJSON(join(webappPath, 'manifest.appdescr_variant')) as unknown as DescriptorVariant;
     }
-    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
+    return JSON.parse(readFileSync(join(webappPath, 'manifest.appdescr_variant'), 'utf-8'));
 }
 
 /**
@@ -27,8 +28,8 @@ export function getVariant(basePath: string, fs?: Editor): DescriptorVariant {
  * @param {DescriptorVariant} variant - The descriptor variant object.
  * @param {Editor} fs - The mem-fs editor instance.
  */
-export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
-    fs.writeJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
+export async function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor): Promise<void> {
+    fs.writeJSON(join(await getWebappPath(basePath), 'manifest.appdescr_variant'), variant);
 }
 
 /**
@@ -41,9 +42,9 @@ export function updateVariant(basePath: string, variant: DescriptorVariant, fs: 
  * @returns {boolean} Returns `true` if FLP configuration changes exist, otherwise `false`.
  * @throws {Error} Throws an error if the variant could not be retrieved.
  */
-export function flpConfigurationExists(basePath: string): boolean {
+export async function flpConfigurationExists(basePath: string): Promise<boolean> {
     try {
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
         return variant.content?.some(
             ({ changeType }) =>
                 changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
@@ -79,8 +80,8 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
  * @param {string} basePath - The path to the adaptation project.
  * @returns {Array<{ relativePath: string; content: string }>} The files in the webapp folder.
  */
-export function getWebappFiles(basePath: string): { relativePath: string; content: string }[] {
-    const dir = join(basePath, 'webapp');
+export async function getWebappFiles(basePath: string): Promise<{ relativePath: string; content: string }[]> {
+    const dir = await getWebappPath(basePath);
     const files: { relativePath: string; content: string }[] = [];
 
     const getFilesRecursivelySync = (directory: string): void => {

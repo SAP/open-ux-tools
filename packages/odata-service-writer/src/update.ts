@@ -121,7 +121,7 @@ export async function addServicesData(
     if (paths.ui5LocalYaml && ui5LocalConfig) {
         fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
-    writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }
 
 /**
@@ -182,5 +182,5 @@ export async function updateServicesData(
         }
     }
     // Write new annotations files
-    writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }

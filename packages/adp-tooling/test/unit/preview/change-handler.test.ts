@@ -545,13 +545,15 @@ id=\\"btn-30303030\\""
                 }
             })
         } as any);
-        jest.spyOn(helper, 'getVariant').mockReturnValue({
-            content: [],
-            id: 'adp/project',
-            layer: 'VENDOR',
-            namespace: 'test',
-            reference: 'adp/project'
-        });
+        jest.spyOn(helper, 'getVariant').mockReturnValue(
+            Promise.resolve({
+                content: [],
+                id: 'adp/project',
+                layer: 'VENDOR',
+                namespace: 'test',
+                reference: 'adp/project'
+            })
+        );
         jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'

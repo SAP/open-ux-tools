@@ -2,7 +2,7 @@ import type { ListQuestion, FileBrowserQuestion, YUIQuestion } from '@sap-ux/inq
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
-import { filterDataSourcesByType } from '@sap-ux/project-access';
+import { filterDataSourcesByType, getWebappPath } from '@sap-ux/project-access';
 import { existsSync } from 'fs';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { join, isAbsolute, sep } from 'path';
@@ -60,7 +60,7 @@ export function getPrompts(
             default: '',
             when: (answers: AddAnnotationsAnswers) =>
                 answers.id !== '' && answers.fileSelectOption === AnnotationFileSelectType.ExistingFile,
-            validate: (value) => {
+            validate: async (value: string) => {
                 const validationResult = validateEmptyString(value);
                 if (typeof validationResult === 'string') {
                     return validationResult;
@@ -71,8 +71,8 @@ export function getPrompts(
                     return t('validators.fileDoesNotExist');
                 }
 
-                const fileName = filePath.split(sep).pop();
-                if (existsSync(join(basePath, 'webapp', 'changes', 'annotations', fileName))) {
+                const fileName = filePath.split(sep).pop()!;
+                if (existsSync(join(await getWebappPath(basePath), 'changes', 'annotations', fileName))) {
                     return t('validators.annotationFileAlreadyExists');
                 }
 
