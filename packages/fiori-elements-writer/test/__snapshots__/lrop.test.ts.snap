@@ -2902,18 +2902,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -2926,6 +2914,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -6525,18 +6525,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -6549,6 +6537,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -10251,18 +10251,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -10275,6 +10263,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -13935,6 +13935,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -13944,13 +13951,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -17615,6 +17615,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -17624,13 +17631,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -21296,6 +21296,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -21305,13 +21312,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -22114,6 +22114,13 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -22122,13 +22129,6 @@ appDescription=A Fiori application.",
             \\"annotation\\"
           ],
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -22998,6 +22998,13 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -23006,13 +23013,6 @@ appDescription=A Fiori application.",
             \\"annotation\\"
           ],
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -24340,6 +24340,13 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -24349,13 +24356,6 @@ xmlns:edmx=\\"http://docs.oasis-open.org/odata/ns/edmx\\">
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -28212,6 +28212,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -28221,13 +28228,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -31892,6 +31892,13 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -31901,13 +31908,6 @@ EntityType=\\"com.sap.gateway.srvd.dmo.sd_travel_mduu.v0001.TravelAgencyType\\">
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -35287,18 +35287,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -35311,6 +35299,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -38912,18 +38912,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -38936,6 +38924,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -42297,18 +42297,6 @@ appDescription=A Fiori application.",
       \\"toolsId\\": \\"toolsId:1234abcd\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -42321,6 +42309,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -45921,18 +45921,6 @@ appDescription=A Fiori application.",
       \\"toolsId\\": \\"toolsId:1234abcd\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -45945,6 +45933,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -49647,18 +49647,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -49671,6 +49659,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -53137,18 +53137,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -53161,6 +53149,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -56627,18 +56627,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -56651,6 +56639,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -57314,6 +57314,13 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/dmo/sb_travel_mduu_o4/srvd/dmo/sd_travel_mduu/0001/\\",
         \\"type\\": \\"OData\\",
@@ -57322,13 +57329,6 @@ appDescription=A Fiori application.",
             \\"annotation\\"
           ],
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -60427,18 +60427,6 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"SEPMRA_PROD_MAN_ANNO_MDL\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN_ANNO_MDL',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -60451,6 +60439,18 @@ appDescription=A Fiori application.",
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/SEPMRA_PROD_MAN/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"SEPMRA_PROD_MAN_ANNO_MDL\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
