@@ -1,5 +1,12 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.8.0
+
+### Minor Changes
+
+-   fb4e328: Adds interoperability between `@vscode-logging/logger` and `@sap-ux/logger` to prevent crashes where non-implemented log functions were being called.
+    Fix entity-helper.ts to log error at correct level.
+
 ## 0.7.29
 
 ### Patch Changes
