@@ -164,6 +164,18 @@ describe('helper', () => {
         });
 
         test('should return webapp files', async () => {
+            jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+                findCustomMiddleware: jest.fn().mockReturnValue({
+                    configuration: {
+                        adp: mockAdp
+                    }
+                } as Partial<CustomMiddleware> as CustomMiddleware<object>),
+                getConfiguration: jest.fn().mockReturnValue({
+                    paths: {
+                        webapp: 'webapp'
+                    }
+                })
+            } as Partial<UI5Config> as UI5Config);
             expect(await getWebappFiles(basePath)).toEqual([
                 {
                     relativePath: join('i18n', 'i18n.properties'),
