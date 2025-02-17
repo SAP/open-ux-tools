@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.8
+
+### Patch Changes
+
+-   c50e09f: Improve performance and fix code smells
+
 ## 1.29.7
 
 ### Patch Changes
