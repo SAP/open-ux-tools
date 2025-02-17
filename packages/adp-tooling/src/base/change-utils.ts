@@ -265,8 +265,7 @@ export function getChange(
     content: object,
     changeType: ChangeType
 ): ManifestChangeProperties {
-    const threeDigits = Math.floor(100 + Math.random() * 300).toString();
-    const fileName = `id_${timestamp}_${threeDigits}_${changeType.split('_')?.[2]}`;
+    const fileName = `id_${timestamp}_${changeType.split('_')?.[2]}`;
 
     return {
         fileName,
