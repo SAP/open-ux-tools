@@ -45,7 +45,7 @@ import { join } from 'path';
 import { getWebappPath } from '@sap-ux/project-access';
 
 const PROJECT_ROOT = 'absolute/path/to/project';
-const i18nFilePath = join(PROJECT_ROOT, await getWebappPath(PROJECT_ROOT), 'i18n', 'i18n.properties');
+const i18nFilePath = join(await getWebappPath(PROJECT_ROOT), 'i18n', 'i18n.properties');
 const bundle = await getPropertiesI18nBundle(i18nFilePath);
 
 ```
@@ -92,7 +92,7 @@ const newEntries = [
     }
 ];
 const PROJECT_ROOT = 'absolute/path/to/project';
-const i18nFilePath = join(PROJECT_ROOT, getWebappPath(PROJECT_ROOT), 'i18n', 'i18n.properties');
+const i18nFilePath = join(getWebappPath(PROJECT_ROOT), 'i18n', 'i18n.properties');
 
 const result = await createPropertiesI18nEntries(i18nFilePath, newEntries, PROJECT_ROOT);
 ```
