@@ -1,4 +1,4 @@
-import { join, relative, sep } from 'path';
+import { join, posix, relative, sep } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { UI5Config } from '@sap-ux/ui5-config';
 import type { CustomMiddleware, DataSourceConfig } from '@sap-ux/ui5-config';
@@ -48,7 +48,9 @@ export async function enhanceYaml(
         if (annotation.settings?.localUri !== annotation.uri) {
             const localUri = annotation.settings?.localUri;
             annotationsConfig.push({
-                localPath: localUri ? `.${sep}${relative(basePath, join(webappPath, localUri))}` : undefined,
+                localPath: localUri
+                    ? `.${posix.sep}${relative(basePath, join(webappPath, localUri)).replaceAll(sep, posix.sep)}`
+                    : undefined,
                 urlPath: annotation.uri
             });
         }
@@ -61,7 +63,9 @@ export async function enhanceYaml(
         dataSourcesConfig.push({
             serviceName: dataSource,
             servicePath: dataSources[dataSource].uri,
-            metadataPath: localUri ? `.${sep}${relative(basePath, join(webappPath, localUri))}` : undefined
+            metadataPath: localUri
+                ? `.${posix.sep}${relative(basePath, join(webappPath, localUri)).replaceAll(sep, posix.sep)}`
+                : undefined
         });
     }
 
