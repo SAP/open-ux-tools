@@ -18,6 +18,7 @@ export type PromptDefaults = {
     ft?: boolean;
     package?: string;
     transport?: string;
+    ts?: boolean;
 };
 
 /**
