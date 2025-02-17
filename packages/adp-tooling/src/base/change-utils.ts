@@ -11,7 +11,8 @@ import {
     type DescriptorVariant,
     type InboundContent,
     type ManifestChangeProperties,
-    type PropertyValueType
+    type PropertyValueType,
+    ChangeTypeMap
 } from '../types';
 import { renderFile } from 'ejs';
 
@@ -265,12 +266,7 @@ export function getChange(
     content: object,
     changeType: ChangeType
 ): ManifestChangeProperties {
-    const segments = changeType?.split('_');
-    const changeName = segments?.at(-1);
-    if (!changeName) {
-        throw new Error(`Could not extract the change name from the change type: ${changeType}`);
-    }
-
+    const changeName = ChangeTypeMap[changeType];
     const fileName = `id_${timestamp}_${changeName}`;
 
     return {
