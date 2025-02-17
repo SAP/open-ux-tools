@@ -75,12 +75,12 @@ interface BaseChange {
     selector: ChangeSelector;
 }
 
-const PROPRTY_CHANGE = 'propertyChange';
-const PROPRTY_BINDING_CHANGE = 'propertyBindingChange';
+const PROPERTY_CHANGE = 'propertyChange';
+const PROPERTY_BINDING_CHANGE = 'propertyBindingChange';
 const MANIFEST_V4_CHANGE = 'appdescr_fe_changePageConfiguration';
 
 interface PropertyChange extends BaseChange {
-    changeType: typeof PROPRTY_CHANGE | typeof PROPRTY_BINDING_CHANGE;
+    changeType: typeof PROPERTY_CHANGE | typeof PROPERTY_BINDING_CHANGE;
     controlId: string;
     propertyName: string;
     content: ChangeContent;
@@ -578,10 +578,12 @@ export class ChangeService extends EventTarget {
             };
             page: string;
         };
-        const propertyName = Object.keys(entityPropertyChange.propertyValue)[0];
-        const propertyValue = entityPropertyChange.propertyValue[propertyName];
-        const controlId = this.getCommandSelectorId(command) ?? '';
         const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
+        const propertyName =
+            Object.keys(entityPropertyChange.propertyValue)?.[0] ??
+            propertyPathSegments[propertyPathSegments.length - 1];
+        const propertyValue = entityPropertyChange.propertyValue?.[propertyName] ?? entityPropertyChange.propertyValue;
+        const controlId = this.getCommandSelectorId(command) ?? '';
 
         const key = getConfigMapControlIdMap(page, propertyPathSegments);
 
