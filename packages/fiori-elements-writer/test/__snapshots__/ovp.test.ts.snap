@@ -95,11 +95,11 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
+          - localPath: webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
 ",
     "state": "modified",
@@ -142,11 +142,11 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
+          - localPath: webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
 ",
     "state": "modified",
@@ -1597,8 +1597,8 @@ if (parseInt(version[0], 10) <= 1 && parseInt(version[1], 10) < 78) {
     };
 })(sap);
 
-function registerSAPFonts() {  
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+function registerSAPFonts() {
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -1633,7 +1633,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization 
+        // setting the app title with internationalization
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -1660,7 +1660,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text 
+                // setting the app title with the i18n text
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -1682,7 +1682,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5 
+                    // support older versions of ui5
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -1843,11 +1843,11 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
+          - localPath: webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
 builder:
   customTasks:
@@ -1906,11 +1906,11 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/GWSAMPLE_BASIC
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/mainService/GWSAMPLE_BASIC.xml
+          - localPath: webapp/localService/mainService/GWSAMPLE_BASIC.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/
 builder:
   customTasks:
@@ -3354,7 +3354,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -3399,7 +3399,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -9094,8 +9094,8 @@ appDescription=A Fiori application.",
     };
 })(sap);
 
-function registerSAPFonts() {  
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+function registerSAPFonts() {
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -9130,7 +9130,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization 
+        // setting the app title with internationalization
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -9157,7 +9157,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text 
+                // setting the app title with the i18n text
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -9179,7 +9179,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5 
+                    // support older versions of ui5
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -9337,7 +9337,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -9398,7 +9398,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []

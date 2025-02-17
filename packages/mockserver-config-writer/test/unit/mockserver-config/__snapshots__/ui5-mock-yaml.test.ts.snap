@@ -92,7 +92,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: webapp\\\\localService\\\\SEPMRA_PROD_MAN.xml
+          - localPath: webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
 "
 `;
@@ -148,7 +148,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: webapp\\\\localService\\\\SEPMRA_PROD_MAN.xml
+          - localPath: webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
     - name: middleware-after
 "
@@ -200,7 +200,7 @@ server:
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: webapp\\\\localService\\\\SEPMRA_PROD_MAN.xml
+          - localPath: webapp/localService/SEPMRA_PROD_MAN.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/
     - name: middleware-after
 "

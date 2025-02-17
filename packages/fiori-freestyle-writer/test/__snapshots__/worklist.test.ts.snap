@@ -92,7 +92,7 @@ server:
         mountPath: /
         services:
           - urlPath: /here/goes/your/serviceurl
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -137,7 +137,7 @@ server:
         mountPath: /
         services:
           - urlPath: /here/goes/your/serviceurl
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -6232,7 +6232,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-], 
+],
 function (JSONModel, Device) {
     \\"use strict\\";
 
@@ -6487,8 +6487,8 @@ function (JSONModel, Device) {
     };
 })(sap);
 
-function registerSAPFonts() {  
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+function registerSAPFonts() {
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -6523,7 +6523,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization 
+        // setting the app title with internationalization
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -6550,7 +6550,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text 
+                // setting the app title with the i18n text
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -6572,7 +6572,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5 
+                    // support older versions of ui5
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -6855,7 +6855,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -6903,7 +6903,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -7621,7 +7621,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
+
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -9592,7 +9592,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-], 
+],
 function (JSONModel, Device) {
     \\"use strict\\";
 
@@ -9847,8 +9847,8 @@ function (JSONModel, Device) {
     };
 })(sap);
 
-function registerSAPFonts() {  
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+function registerSAPFonts() {
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -9883,7 +9883,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization 
+        // setting the app title with internationalization
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -9910,7 +9910,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text 
+                // setting the app title with the i18n text
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -9932,7 +9932,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5 
+                    // support older versions of ui5
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -10222,7 +10222,7 @@ server:
         mountPath: /
         services:
           - urlPath: /catalog-admin-noauth
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -10267,7 +10267,7 @@ server:
         mountPath: /
         services:
           - urlPath: /catalog-admin-noauth
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -12543,7 +12543,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-], 
+],
 function (JSONModel, Device) {
     \\"use strict\\";
 
@@ -12798,8 +12798,8 @@ function (JSONModel, Device) {
     };
 })(sap);
 
-function registerSAPFonts() {  
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+function registerSAPFonts() {
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -12834,7 +12834,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization 
+        // setting the app title with internationalization
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -12861,7 +12861,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text 
+                // setting the app title with the i18n text
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -12883,7 +12883,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5 
+                    // support older versions of ui5
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -13221,7 +13221,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -13285,7 +13285,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -13458,7 +13458,7 @@ export default class BaseController extends Controller {
     public readonly formatter = {
         numberUnit
     };
-    
+
     /**
      * Convenience method for accessing the owner component.
      *
@@ -13511,7 +13511,7 @@ export default class BaseController extends Controller {
      * Event handler for navigating back.
      * It there is a history entry we go one step back in the browser history
      * If not, it will replace the current entry of the browser history with the list route.
-     * 
+     *
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
@@ -13524,7 +13524,7 @@ export default class BaseController extends Controller {
 
     /**
      * Event handler when the share by E-Mail button has been clicked.
-     * 
+     *
      */
     public onShareEmailPress() {
         const viewModel = (this.getModel(\\"objectView\\") || this.getModel(\\"worklistView\\"));
@@ -13977,7 +13977,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
+
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -16183,8 +16183,8 @@ export function createDeviceModel () {
     };
 })(sap);
 
-function registerSAPFonts() {  
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+function registerSAPFonts() {
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -16219,7 +16219,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization 
+        // setting the app title with internationalization
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -16246,7 +16246,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text 
+                // setting the app title with the i18n text
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -16268,7 +16268,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5 
+                    // support older versions of ui5
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -16612,7 +16612,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -16676,7 +16676,7 @@ server:
         mountPath: /
         services:
           - urlPath: /sap/opu/odata/sap/SEPMRA_PROD_MAN
-            metadataPath: ./webapp/localService/mainService/metadata.xml
+            metadataPath: webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -16849,7 +16849,7 @@ export default class BaseController extends Controller {
     public readonly formatter = {
         numberUnit
     };
-    
+
     /**
      * Convenience method for accessing the owner component.
      *
@@ -16902,7 +16902,7 @@ export default class BaseController extends Controller {
      * Event handler for navigating back.
      * It there is a history entry we go one step back in the browser history
      * If not, it will replace the current entry of the browser history with the list route.
-     * 
+     *
      */
      protected onNavBack() {
         if (History.getInstance().getPreviousHash() !== undefined) {
@@ -16915,7 +16915,7 @@ export default class BaseController extends Controller {
 
     /**
      * Event handler when the share by E-Mail button has been clicked.
-     * 
+     *
      */
     public onShareEmailPress() {
         const viewModel = (this.getModel(\\"objectView\\") || this.getModel(\\"worklistView\\"));
@@ -17368,7 +17368,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     <edmx:Reference Uri=\\"../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='')/$value\\">
         <edmx:Include Namespace=\\"com.sap.vocabularies.Communication.v1\\" Alias=\\"Communication\\"/>
     </edmx:Reference>
-    
+
     <edmx:DataServices m:DataServiceVersion=\\"2.0\\">
         <Schema Namespace=\\"SEPMRA_PROD_MAN\\" xml:lang=\\"en\\" sap:schema-version=\\"1\\" xmlns=\\"http://schemas.microsoft.com/ado/2008/09/edm\\">
             <EntityType Name=\\"I_CurrencyType\\" sap:label=\\"Currency\\" sap:content-version=\\"1\\">
@@ -19569,8 +19569,8 @@ export function createDeviceModel () {
     };
 })(sap);
 
-function registerSAPFonts() {  
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
+function registerSAPFonts() {
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -19605,7 +19605,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization 
+        // setting the app title with internationalization
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -19632,7 +19632,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text 
+                // setting the app title with the i18n text
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -19654,7 +19654,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5 
+                    // support older versions of ui5
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
