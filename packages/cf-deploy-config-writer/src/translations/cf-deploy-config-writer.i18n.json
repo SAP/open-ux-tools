@@ -9,7 +9,7 @@
         "mtaSavedFailed": "MTA saved failed with error {{- error }}"
     },
     "error": {
-        "unableToLoadMTA": "Unable to load mta.yaml configuration {{ mtaDir }}, error thrown {{ error }}.",
+        "unableToLoadMTA": "Unable to load mta.yaml configuration {{- mtaDir }}, error thrown {{- error }}.",
         "updatingMTAExtensionFailed": "Unable to add mta extension configuration to file: {{mtaExtFilePath}}.",
         "cannotFindBinary": "Cannot find the \"{{bin}}\" executable. Please add it to the path or use \"npm i -g {{- pkg}}\" to install it.",
         "mtaExtensionFailed": "Unable to create or update the mta extension file for Api Hub Enterprise destination configuration: {{error}}.",
