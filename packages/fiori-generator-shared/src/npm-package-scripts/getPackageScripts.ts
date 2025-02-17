@@ -120,8 +120,7 @@ export function getPackageScripts({
     flpAppId = '',
     startFile,
     localStartFile,
-    generateIndex = true,
-    hasService = true
+    generateIndex = true
 }: PackageScriptsOptions): PackageJsonScripts {
     const searchParams = buildSearchParams(sapClient);
     const params = buildParams(searchParams, flpAppId);
@@ -146,9 +145,7 @@ export function getPackageScripts({
         : getVariantPreviewAppScript(sapClient);
 
     if (addTest) {
-        const ui5MockYamlScript = hasService ? '--config ./ui5-mock.yaml ' : '' ;
-        scripts['unit-tests'] = `fiori run ${ui5MockYamlScript}--open 'test/unit/unitTests.qunit.html'`,
-        scripts['int-tests'] = `fiori run ${ui5MockYamlScript}--open 'test/integration/opaTests.qunit.html'`;
+        scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "test/integration/opaTests.qunit.html"';
     }
 
     return scripts;

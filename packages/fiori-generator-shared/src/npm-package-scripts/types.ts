@@ -11,9 +11,9 @@ export interface PackageJsonScripts {
     /** Optional command to start the application with a mock server configuration. */
     'start-mock'?: string;
     /** Optional command to run unit tests. */
-    'unit-tests'?: string;
+    'unit-test'?: string;
     /** Optional command to run tests. */
-    'int-tests'?: string;
+    'int-test'?: string;
     /** Optional command to add the variants management script. */
     'start-variants-management'?: string;
 }

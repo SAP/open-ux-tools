@@ -13,8 +13,36 @@ import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
-import { writeTestFiles } from './writeTestFiles';
 import type { Logger } from '@sap-ux/logger';
+import { generateFreestyleOPAFiles } from '../../ui5-test-writer';
+
+/**
+ * Generates and writes OPA test files based on the provided application configuration.
+ *
+ * @template T
+ * @param {string} basePath - The base path where test files will be generated.
+ * @param {FreestyleApp<T>} ffApp - The freestyle application configuration.
+ * @param {Editor} [fs] - The file system editor instance.
+ * @param {Logger} [log] - The logger instance.
+ */
+export async function writeOPATestFiles<T>(
+    basePath: string,
+    ffApp: FreestyleApp<T>,
+    fs?: Editor,
+    log?: Logger
+): Promise<void> {
+    const config = {
+        appId: ffApp.app.id,
+        applicationDescription: ffApp.app.description,
+        applicationTitle: ffApp.app.title,
+        namespace: ffApp.app.namespace,
+        viewName: (ffApp.template.settings as BasicAppSettings).viewName,
+        ui5Theme: ffApp.ui5?.ui5Theme,
+        ui5Version: ffApp.ui5?.version,
+        enableTypeScript: ffApp.appOptions?.typescript
+    };
+    await generateFreestyleOPAFiles(basePath, config, fs, log);
+}
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -22,6 +50,7 @@ import type { Logger } from '@sap-ux/logger';
  * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the freestyle application
  * @param fs - an optional reference to a mem-fs editor
+ * @param log - optional logger
  * @returns Reference to a mem-fs-editor
  */
 async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor, log?: Logger): Promise<Editor> {
@@ -139,22 +168,30 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     const packageJson: Package = JSON.parse(fs.read(packagePath));
     
     if (isEdmxProjectType) {
+        const addMock = !!ffApp.service?.metadata;
         // Add scripts for non-CAP applications
         packageJson.scripts = {
             ...packageJson.scripts,
             ...getPackageScripts({
                 localOnly: !!ffApp.service && !ffApp.service?.url,
-                addMock: !!ffApp.service?.metadata,
+                addMock,
                 sapClient: ffApp.service?.client,
                 flpAppId: ffApp.app.flpAppId,
                 startFile: data?.app?.startFile,
                 localStartFile: data?.app?.localStartFile,
                 generateIndex: ffApp.appOptions?.generateIndex,
-                addTest: addTests,
-                // revist this
-                hasService: !!ffApp.service?.metadata
+                addTest: addTests
             })
         };
+        if (addTests) {
+            const ui5MockYamlScript = addMock ? '--config ./ui5-mock.yaml ' : '';
+            // Note: 'ui5MockYamlScript' is empty when no data source is selected.
+            packageJson.scripts['unit-test'] = `fiori run ${ui5MockYamlScript}--open 'test/unit/unitTests.qunit.html'`;
+            packageJson.scripts[
+                'int-test'
+            ] = `fiori run ${ui5MockYamlScript}--open 'test/integration/opaTests.qunit.html'`;
+            await writeOPATestFiles(basePath, ffApp, fs, log);
+        }
     } else {
         // Add deploy-config for CAP applications
         packageJson.scripts = {
@@ -172,10 +209,6 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));
         ui5LocalConfig.addFioriToolsProxydMiddleware({});
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
-    }
-    
-    if (addTests && isEdmxProjectType) {
-        await writeTestFiles(basePath, ffApp, fs, log);   
     }
 
     if (ffApp.service?.capService) {

@@ -3,6 +3,7 @@
         "cannotReadManifest": "Cannot read manifest file {{ filePath }}",
         "cannotReadAppID": "Cannot read appID in the manifest file",
         "badApplicationType": "Cannot determine application type from the manifest, or unsupported type",
-        "cannotGeneratePageFile": "Cannot generate page file for target {{ targetKey }}"
+        "cannotGeneratePageFile": "Cannot generate page file for target {{ targetKey }}",
+        "cannotReadPackage": "Cannot read package.json file {{ filePath }}"
     }
 }

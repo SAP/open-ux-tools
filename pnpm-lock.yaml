@@ -3818,6 +3818,9 @@ importers:
 
   packages/ui5-test-writer:
     dependencies:
+      '@sap-ux/ui5-application-writer':
+        specifier: workspace:*
+        version: link:../ui5-application-writer
       ejs:
         specifier: 3.1.10
         version: 3.1.10

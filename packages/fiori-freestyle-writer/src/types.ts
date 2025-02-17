@@ -1,7 +1,7 @@
 import type { Ui5App, App } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
-import { AppOptions } from '@sap-ux/ui5-application-writer';
+import type { AppOptions } from '@sap-ux/ui5-application-writer';
 
 export const TemplateType = {
     Basic: 'basic',

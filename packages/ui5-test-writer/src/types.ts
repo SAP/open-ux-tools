@@ -64,11 +64,11 @@ export class ValidationError extends Error {
  */
 export interface FFOPAConfig {
     appId: string;
-    appIdWithSlash: string;
+    namespace?: string;
     applicationTitle?: string;
     applicationDescription?: string;
     enableTypeScript?: boolean;
     viewName?: string;
-    ui5Version: string;
+    ui5Version?: string;
     ui5Theme?: string;
 }

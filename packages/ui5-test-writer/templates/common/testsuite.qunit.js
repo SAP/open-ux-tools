@@ -1,6 +1,7 @@
-<% if (addUnitTests) { %>/* global window, parent, location */
+<% if (addUnitTests === true) { %>/* global window, parent, location */
 
-// eslint-disable-next-line fiori-custom/sap-no-global-define<% } %>
+// eslint-disable-next-line fiori-custom/sap-no-global-define
+<% } -%>
 window.suite = function() {
 	"use strict";
 
