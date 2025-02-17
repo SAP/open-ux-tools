@@ -114,7 +114,7 @@ describe('prerequisites', () => {
 
         expect(await checkPrerequisites(basePath, fs, false, logger)).toBeFalsy();
         expect(errorLogMock).toHaveBeenCalledWith(
-            "Conversion from 'sap/ui/core/util/MockServer' or '@sap/ux-ui5-fe-mockserver-middleware' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
+            "Conversion from 'sap/ui/core/util/MockServer' or '@sap/ux-ui5-fe-mockserver-middleware' is not supported. You must migrate to '@sap-ux/ui5-middleware-fe-mockserver' first. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
         );
     });
 

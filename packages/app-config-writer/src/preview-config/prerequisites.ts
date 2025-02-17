@@ -1,8 +1,18 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { type Package, findCapProjectRoot } from '@sap-ux/project-access';
+import { type Package, findCapProjectRoot, FileName } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { satisfies, valid } from 'semver';
+
+const packageName = {
+    WDIO_QUNIT_SERVICE: 'wdio-qunit-service',
+    KARMA_UI5: 'karma-ui5',
+    UI5_CLI: '@ui5/cli',
+    SAP_UX_UI5_TOOLING: '@sap/ux-ui5-tooling',
+    SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER: '@sap-ux/ui5-middleware-fe-mockserver',
+    CDS_PLUGIN_UI5: 'cds-plugin-ui5',
+    SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD: '@sap/grunt-sapui5-bestpractice-build'
+} as const;
 
 /**
  * Check if the version of the given package is lower than the minimal version.
@@ -36,6 +46,26 @@ function isLowerThanMinimalVersion(
 }
 
 /**
+ * Check if the project is a CAP project that uses 'cds-plugin-ui5'.
+ *
+ * @param basePath - base path of the app
+ * @param fs - file system reference
+ * @returns indicator if the project is a CAP project that uses 'cds-plugin-ui5'
+ */
+async function isUsingCdsPluginUi5(basePath: string, fs: Editor): Promise<boolean> {
+    const capProjectRootPath = await findCapProjectRoot(basePath, false, fs);
+    if (!capProjectRootPath) {
+        return false;
+    }
+    const capRootPackageJsonPath = join(capProjectRootPath, FileName.Package);
+    const capRootPackageJson = fs.readJSON(capRootPackageJsonPath) as Package | undefined;
+    return (
+        !!capRootPackageJson?.devDependencies?.[packageName.CDS_PLUGIN_UI5] ||
+        !!capRootPackageJson?.dependencies?.[packageName.CDS_PLUGIN_UI5]
+    );
+}
+
+/**
  * Check if the prerequisites for the conversion are met.
  * - UI5 CLI version 3.0.0 or higher is being used.
  * - '@sap/grunt-sapui5-bestpractice-build' is not being used.
@@ -53,59 +83,52 @@ export async function checkPrerequisites(
     convertTests: boolean = false,
     logger?: ToolsLogger
 ): Promise<boolean> {
-    const packageJsonPath = join(basePath, 'package.json');
+    const packageJsonPath = join(basePath, FileName.Package);
     const packageJson = fs.readJSON(packageJsonPath) as Package | undefined;
     let prerequisitesMet = true;
 
     if (!packageJson) {
-        throw Error(`File 'package.json' not found at '${basePath}'`);
+        throw Error(`File '${FileName.Package}' not found at '${basePath}'`);
     }
 
     const sapui5BestpracticeBuildExists =
-        !!packageJson?.devDependencies?.['@sap/grunt-sapui5-bestpractice-build'] ||
-        !!packageJson?.dependencies?.['@sap/grunt-sapui5-bestpractice-build'];
+        !!packageJson?.devDependencies?.[packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD] ||
+        !!packageJson?.dependencies?.[packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD];
     if (sapui5BestpracticeBuildExists) {
         logger?.error(
-            "Conversion from '@sap/grunt-sapui5-bestpractice-build' is not supported. You must migrate to UI5 CLI version 3.0.0 or higher. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3."
+            `Conversion from '${packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD}' is not supported. You must migrate to UI5 CLI version 3.0.0 or higher. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3.`
         );
         prerequisitesMet = false;
     }
 
-    if (isLowerThanMinimalVersion(packageJson, '@ui5/cli', '3.0.0')) {
+    if (isLowerThanMinimalVersion(packageJson, packageName.UI5_CLI, '3.0.0')) {
         logger?.error(
             'UI5 CLI version 3.0.0 or higher is required to convert the preview to virtual files. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3.'
         );
         prerequisitesMet = false;
     }
 
-    if (isLowerThanMinimalVersion(packageJson, '@sap/ux-ui5-tooling', '1.15.4', false)) {
+    if (isLowerThanMinimalVersion(packageJson, packageName.SAP_UX_UI5_TOOLING, '1.15.4', false)) {
         logger?.error(
             'UX UI5 Tooling version 1.15.4 or higher is required to convert the preview to virtual files. For more information, see https://www.npmjs.com/package/@sap/ux-ui5-tooling.'
         );
         prerequisitesMet = false;
     }
 
-    let cdsPluginUi5Exists = false;
-    const capProjectRootPath = await findCapProjectRoot(basePath, false, fs);
-    if (capProjectRootPath) {
-        const capRootPackageJsonPath = join(capProjectRootPath, 'package.json');
-        const capRootPackageJson = fs.readJSON(capRootPackageJsonPath) as Package | undefined;
-        cdsPluginUi5Exists =
-            !!capRootPackageJson?.devDependencies?.['cds-plugin-ui5'] ||
-            !!capRootPackageJson?.dependencies?.['cds-plugin-ui5'];
-    }
-
     const ui5MiddlewareMockserverExists =
-        !!packageJson?.devDependencies?.['@sap-ux/ui5-middleware-fe-mockserver'] ||
-        !!packageJson?.dependencies?.['@sap-ux/ui5-middleware-fe-mockserver'];
-    if (!ui5MiddlewareMockserverExists && !cdsPluginUi5Exists) {
+        !!packageJson?.devDependencies?.[packageName.SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER] ||
+        !!packageJson?.dependencies?.[packageName.SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER];
+    if (!ui5MiddlewareMockserverExists && !(await isUsingCdsPluginUi5(basePath, fs))) {
         logger?.error(
-            "Conversion from 'sap/ui/core/util/MockServer' or '@sap/ux-ui5-fe-mockserver-middleware' is not supported. You must migrate from '@sap-ux/ui5-middleware-fe-mockserver'. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver."
+            `Conversion from 'sap/ui/core/util/MockServer' or '@sap/ux-ui5-fe-mockserver-middleware' is not supported. You must migrate to '${packageName.SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER}' first. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver.`
         );
         prerequisitesMet = false;
     }
 
-    if (convertTests && (packageJson?.devDependencies?.['karma-ui5'] ?? packageJson?.dependencies?.['karma-ui5'])) {
+    if (
+        convertTests &&
+        (packageJson?.devDependencies?.[packageName.KARMA_UI5] ?? packageJson?.dependencies?.[packageName.KARMA_UI5])
+    ) {
         logger?.warn(
             "This app seems to use Karma as a test runner. Please note that the converter does not convert any Karma configuration files. Please update your karma configuration ('ui5.configPath' and 'ui5.testpage') according to the new virtual endpoints after the conversion."
         );
@@ -113,7 +136,8 @@ export async function checkPrerequisites(
 
     if (
         convertTests &&
-        (packageJson?.devDependencies?.['wdio-qunit-service'] ?? packageJson?.dependencies?.['wdio-qunit-service'])
+        (packageJson?.devDependencies?.[packageName.WDIO_QUNIT_SERVICE] ??
+            packageJson?.dependencies?.[packageName.WDIO_QUNIT_SERVICE])
     ) {
         logger?.warn(
             'This app seems to use the WebdriverIO QUnit Service as a test runner. Please note that the converter does not convert any WebdriverIO configuration files. Please update your WebdriverIO QUnit Service test paths according to the new virtual endpoints after the conversion.'
