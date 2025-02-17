@@ -44,7 +44,7 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
             basePath = process.cwd();
         }
         await validateAdpProject(basePath);
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
         const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
         const provider = await createAbapServiceProvider(
             target,
