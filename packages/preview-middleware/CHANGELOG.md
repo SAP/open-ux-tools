@@ -1,5 +1,43 @@
 # @sap-ux/preview-middleware
 
+## 0.17.35
+
+### Patch Changes
+
+-   931e735: Add stable ids to form elements
+
+## 0.17.34
+
+### Patch Changes
+
+-   354107e: fix: Fixed bug in CPE. In some ADP projects Change Table Columns Quick Action didn't work
+
+## 0.17.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.130
+
+## 0.17.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.129
+
+## 0.17.31
+
+### Patch Changes
+
+-   4d0b026: fix: undo redo issue for v2 manifest changes created via quickactions
+
+## 0.17.30
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/adp-tooling@0.12.128
+
 ## 0.17.29
 
 ### Patch Changes

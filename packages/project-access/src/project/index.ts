@@ -17,7 +17,7 @@ export {
 } from './cap';
 export { filterDataSourcesByType } from './service';
 export { addPackageDevDependency, getNodeModulesPath } from './dependencies';
-export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
+export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n';
 export {
     getAppProgrammingLanguage,
     getAppType,

@@ -308,13 +308,20 @@ function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: Mta
 }
 
 /**
- * Apply changes to mta.yaml.
+ * Apply changes to mta.yaml, will retry if an exception is thrown.
  *
  * @param cfConfig writer configuration
  * @param mtaInstance MTA configuration instance
  */
 async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void> {
-    if (await mtaInstance.save()) {
+    let isMtaSaved = false;
+    try {
+        isMtaSaved = await mtaInstance.save();
+    } catch (error) {
+        LoggerHelper.logger?.debug(t('debug.mtaSavedFailed', { error }));
+        isMtaSaved = await mtaInstance.save();
+    }
+    if (isMtaSaved) {
         // Add mtaext if required for API Hub Enterprise connectivity
         if (cfConfig.apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise) {
             try {
@@ -326,6 +333,7 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void
                 LoggerHelper.logger?.error(t('error.mtaExtensionFailed', { error }));
             }
         }
+        LoggerHelper.logger?.debug(t('debug.mtaSaved'));
     }
 }
 
@@ -428,7 +436,7 @@ async function updateRootPackage(cfConfig: CFConfig, fs: Editor): Promise<void> 
 /**
  * Generate UI5 deploy config.
  *
- * @param cfConfig - the deploy config
+ * @param cfConfig - the deployment config
  * @param fs reference to a mem-fs editor
  * @returns the deploy config
  */
