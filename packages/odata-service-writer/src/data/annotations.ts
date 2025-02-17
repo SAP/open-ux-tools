@@ -4,7 +4,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
 import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo, EdmxOdataService, CdsAnnotationsInfo } from '../types';
 import prettifyXml from 'prettify-xml';
-import { getWebappPath } from "@sap-ux/project-access";
+import { getWebappPath } from '@sap-ux/project-access';
 
 /**
  * Updates the cds index or service file with the provided annotations.
@@ -158,14 +158,12 @@ export async function removeAnnotationsFromCDSFiles(
  * Writes local copies of metadata.xml and local annotations.
  *
  * @param {Editor} fs - the memfs editor instance
- * @param {string} basePath - the root path of an existing UI5 application
  * @param {string} webappPath - the webapp path of an existing UI5 application
  * @param {string} templateRoot - path to the file templates
  * @param {OdataService} service - the OData service instance with EDMX type
  */
 export async function writeLocalServiceAnnotationXMLFiles(
     fs: Editor,
-    basePath: string,
     webappPath: string,
     templateRoot: string,
     service: EdmxOdataService
@@ -180,7 +178,7 @@ export async function writeLocalServiceAnnotationXMLFiles(
         const namespaces = getAnnotationNamespaces(service);
         fs.copyTpl(
             join(templateRoot, 'add', 'annotation.xml'),
-            join(basePath, webappPath, 'annotations', `${service.localAnnotationsName}.xml`),
+            join(webappPath, 'annotations', `${service.localAnnotationsName}.xml`),
             { ...service, namespaces }
         );
     }
@@ -206,7 +204,6 @@ export async function removeRemoteServiceAnnotationXmlFiles(
         for (const annotationName in edmxAnnotations) {
             const annotation = edmxAnnotations[annotationName];
             const pathToAnnotationFile = join(
-                basePath,
                 webappPath,
                 'localService',
                 serviceName,
@@ -218,7 +215,6 @@ export async function removeRemoteServiceAnnotationXmlFiles(
         }
     } else if (edmxAnnotations?.xml) {
         const pathToAnnotationFile = join(
-            basePath,
             webappPath,
             'localService',
             serviceName,
@@ -251,14 +247,14 @@ export async function writeRemoteServiceAnnotationXmlFiles(
             const annotation = edmxAnnotations[annotationName];
             if (annotation?.xml) {
                 fs.write(
-                    join(basePath, webappPath, 'localService', serviceName, `${annotation.technicalName}.xml`),
+                    join(webappPath, 'localService', serviceName, `${annotation.technicalName}.xml`),
                     prettifyXml(annotation.xml, { indent: 4 })
                 );
             }
         }
     } else if (edmxAnnotations?.xml) {
         fs.write(
-            join(basePath, webappPath, 'localService', serviceName, `${edmxAnnotations.technicalName}.xml`),
+            join(webappPath, 'localService', serviceName, `${edmxAnnotations.technicalName}.xml`),
             prettifyXml(edmxAnnotations.xml, { indent: 4 })
         );
     }

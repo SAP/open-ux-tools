@@ -112,7 +112,7 @@ export async function addServicesData(
                 extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml);
             }
         }
-        await writeLocalServiceAnnotationXMLFiles(fs, basePath, webappPath, templateRoot, service);
+        await writeLocalServiceAnnotationXMLFiles(fs, webappPath, templateRoot, service);
     }
     // service update should not trigger the package.json update
     if (paths.packageJson && paths.ui5Yaml) {
