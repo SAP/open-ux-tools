@@ -87,7 +87,7 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: webapp/localService/mainService/metadata.xml
+            metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -132,7 +132,7 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: webapp/localService/mainService/metadata.xml
+            metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -219,7 +219,7 @@ sap.ui.define([
     ],
     function(BaseController) {
       \\"use strict\\";
-
+  
       return BaseController.extend(\\"test.me.controller.App\\", {
         onInit: function() {
         }
@@ -984,7 +984,7 @@ title=My Test App",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-],
+], 
 function (JSONModel, Device) {
     \\"use strict\\";
 
@@ -1203,7 +1203,7 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: webapp/localService/mainService/metadata.xml
+            metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -1248,7 +1248,7 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: webapp/localService/mainService/metadata.xml
+            metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -1297,7 +1297,7 @@ server:
     \\"./model/models\\",
     \\"./controller/ListSelector\\",
     \\"./controller/ErrorHandler\\"
-],
+], 
 function (UIComponent, Device, models, ListSelector, ErrorHandler) {
     \\"use strict\\";
 
@@ -1533,7 +1533,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
             );
         },
 
-
+        
         /**
          * Updates the item count within the line item table's header
          * @param {object} oEvent an event containing the total number of items in the list
@@ -1940,7 +1940,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
          * @public
          */
         onConfirmViewSettingsDialog: function (oEvent) {
-
+            
             var aFilterItems = oEvent.getParameters().filterItems,
                 aFilters = [],
                 aCaptions = [];
@@ -1977,7 +1977,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
                 sPath,
                 bDescending,
                 aSorters = [];
-
+            
             // apply sorter to binding
             // (grouping comes before sorting)
             if (mParams.groupItem) {
@@ -1986,7 +1986,7 @@ function (UIComponent, Device, models, ListSelector, ErrorHandler) {
                 var vGroup = this._oGroupFunctions[sPath];
                 aSorters.push(new Sorter(sPath, bDescending, vGroup));
             }
-
+            
             sPath = mParams.sortItem.getKey();
             bDescending = mParams.sortDescending;
             aSorters.push(new Sorter(sPath, bDescending));
@@ -2290,10 +2290,10 @@ listFilterName=UnitsInStock
 listFilterNone=none
 
 #XSEL: Option to filter the list by  if the value is less than 100
-listFilter1=<100
+listFilter1=<100 
 
 #XSEL: Option to filter the list by  if the value is greater than 100
-listFilter2=>100
+listFilter2=>100 
 
 #YMSG: Filter text that is displayed above the list
 listFilterBarText=Filtered by {0}
@@ -3137,7 +3137,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-],
+], 
 function (JSONModel, Device) {
     \\"use strict\\";
 
@@ -3392,8 +3392,8 @@ function (JSONModel, Device) {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -3428,7 +3428,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -3455,7 +3455,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -3477,7 +3477,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });
@@ -3876,7 +3876,7 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: webapp/localService/mainService/metadata.xml
+            metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -3921,7 +3921,7 @@ server:
         mountPath: /
         services:
           - urlPath: /V2/Northwind/Northwind.svc
-            metadataPath: webapp/localService/mainService/metadata.xml
+            metadataPath: ./webapp/localService/mainService/metadata.xml
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations: []
@@ -5352,7 +5352,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
     "contents": "sap.ui.define([
     \\"sap/ui/model/json/JSONModel\\",
     \\"sap/ui/Device\\"
-],
+], 
 function (JSONModel, Device) {
     \\"use strict\\";
 
@@ -5607,8 +5607,8 @@ function (JSONModel, Device) {
     };
 })(sap);
 
-function registerSAPFonts() {
-    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {
+function registerSAPFonts() {  
+    sap.ui.require([\\"sap/ui/core/IconPool\\"], function (IconPool) {  
     //Fiori Theme font family and URI
     var fioriTheme = {
         fontFamily: \\"SAP-icons-TNT\\",
@@ -5643,7 +5643,7 @@ sap.registerComponentDependencyPaths(manifestUri)
     })
     .finally(function () {
 
-        // setting the app title with internationalization
+        // setting the app title with internationalization 
         sap.ui.getCore().attachInit(function () {
             var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
             sap.ui.require([\\"sap/base/i18n/ResourceBundle\\"], function (ResourceBundle) {
@@ -5670,7 +5670,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                 // Requiring the ComponentSupport module automatically executes the component initialisation for all declaratively defined components
                 sap.ui.require([\\"sap/ui/core/ComponentSupport\\"]);
 
-                // setting the app title with the i18n text
+                // setting the app title with the i18n text 
                 sap.ui.getCore().attachInit(function () {
                     registerSAPFonts();
                     var sLocale = sap.ui.getCore().getConfiguration().getLanguage();
@@ -5692,7 +5692,7 @@ sap.registerComponentDependencyPaths(manifestUri)
                         component.placeAt(\\"content\\");
                     });
                 } catch {
-                    // support older versions of ui5
+                    // support older versions of ui5 
                     sap.ushell.Container.createRenderer().placeAt(\\"content\\");
                 }
             });

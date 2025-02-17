@@ -64,7 +64,7 @@ describe('Test enhanceYaml()', () => {
         });
         expect(mockserverConfig?.configuration.annotations).toEqual([
             {
-                localPath: join('webapp', 'localService', 'SEPMRA_PROD_MAN.xml'),
+                localPath: './webapp/localService/SEPMRA_PROD_MAN.xml',
                 urlPath:
                     "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/"
             }
@@ -107,7 +107,7 @@ describe('Test enhanceYaml()', () => {
             ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver')?.configuration.annotations
         ).toEqual([
             {
-                localPath: join('webapp', 'localService', 'SEPMRA_PROD_MAN.xml'),
+                localPath: './webapp/localService/SEPMRA_PROD_MAN.xml',
                 urlPath:
                     "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/"
             }
