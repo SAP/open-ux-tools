@@ -143,6 +143,20 @@ describe('Change Utils', () => {
         };
         const mockContent = { key: 'value' };
 
+        it('should throw error when changeType is an empty string', () => {
+            const invalidChangeType = '' as unknown as ChangeType;
+            expect(() =>
+                getChange(mockData.projectData, mockData.timestamp, mockContent, invalidChangeType)
+            ).toThrowError(`Could not extract the change name from the change type: ${invalidChangeType}`);
+        });
+
+        it('should throw error when changeType is undefined', () => {
+            const invalidChangeType = undefined as unknown as ChangeType;
+            expect(() =>
+                getChange(mockData.projectData, mockData.timestamp, mockContent, invalidChangeType)
+            ).toThrowError(`Could not extract the change name from the change type: ${invalidChangeType}`);
+        });
+
         it('should return the correct change object structure', () => {
             const result = getChange(
                 mockData.projectData,
