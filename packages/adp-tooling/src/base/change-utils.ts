@@ -267,6 +267,11 @@ export function getChange(
     changeType: ChangeType
 ): ManifestChangeProperties {
     const changeName = ChangeTypeMap[changeType];
+
+    if (!changeName) {
+        throw new Error(`Could not extract the change name from the change type: ${changeType}`);
+    }
+
     const fileName = `id_${timestamp}_${changeName}`;
 
     return {
