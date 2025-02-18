@@ -184,10 +184,9 @@ export async function updateServicesData(
                 }
             }
         }
+        // Write metadata.xml file
+        await writeMetadata(fs, webappPath, service);
     }
-    // Write metadata.xml file
-    await writeMetadata(fs, basePath, service);
-
     // Write new annotations files
     writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }
