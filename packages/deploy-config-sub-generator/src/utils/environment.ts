@@ -18,6 +18,7 @@ export function isMTAInstalled(choice: string, projectPath: string): boolean | s
         (choice === 'abap' && !hasbin.sync(mtaExecutable) && isMTAFound(projectPath))
     ) {
         ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN);
+        return ' ';
     }
     return true;
 }

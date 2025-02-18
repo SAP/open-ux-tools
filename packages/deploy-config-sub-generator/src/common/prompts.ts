@@ -5,11 +5,11 @@ import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { Target } from '../types';
 
 /**
- * Returns the deploy target question.
+ * Returns the deployment target question.
  *
  * @param supportedTargets - supported targets
  * @param projectPath - path to the project
- * @returns - the deploy target question
+ * @returns - the deployment target question
  */
 export function getDeployTargetQuestion(supportedTargets: Target[], projectPath: string): Question[] {
     return [

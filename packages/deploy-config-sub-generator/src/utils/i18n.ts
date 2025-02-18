@@ -3,7 +3,7 @@ import translations from '../translations/deploy-config-sub-generator.i18n.json'
 import { addi18nResourceBundle as addInquirerCommonTexts } from '@sap-ux/inquirer-common';
 import type { TOptions } from 'i18next';
 
-const cfAppRouterGenNs = 'deploy-config-generator';
+const cfAppRouterGenNs = 'deploy-config-sub-generator';
 
 /**
  * Initialize i18next with the translations for this module.
