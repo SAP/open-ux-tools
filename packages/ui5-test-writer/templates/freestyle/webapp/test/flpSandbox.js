@@ -62,7 +62,7 @@ sap.ui.define([
 								"resolutionResult": {
 									"applicationType": "SAPUI5",
 									"additionalInformation": "SAPUI5.Component=<%= appId %>",
-									"url": sap.ui.require.toUrl("<%= formatNamespace(appId) %>")
+									"url": sap.ui.require.toUrl("<%= appIdWithSlash %>")
 								}
 							}
 						}
