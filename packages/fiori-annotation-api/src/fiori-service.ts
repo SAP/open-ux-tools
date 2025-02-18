@@ -38,6 +38,8 @@ import type {
 import { ApiError, ApiErrorCode } from './error';
 import { pathFromUri } from './utils';
 import { ChangeConverter } from './change-converter';
+import { join } from 'path';
+import { pathToFileURL } from 'url';
 
 export interface FioriAnnotationServiceConstructor<T> {
     new (
@@ -121,7 +123,7 @@ export class FioriAnnotationService {
         protected changeConverter: ChangeConverter,
         protected fs: Editor,
         protected options: FioriAnnotationServiceOptions,
-        project: Project,
+        private project: Project,
         protected serviceName: string,
         appName: string
     ) {
@@ -238,6 +240,13 @@ export class FioriAnnotationService {
         for (const file of files) {
             this.fileCache.set(file.uri, file.content);
         }
+
+        // all the modified files should also be included in the cache
+        for (const [relativePath, value] of Object.entries(this.fs.dump())) {
+            const absolute = pathToFileURL(join(process.cwd(), relativePath)).toString();
+            this.fileCache.set(absolute, value.contents);
+        }
+
         await this.adapter.sync(this.fileCache);
         this.isInitialSyncCompleted = true;
     }
