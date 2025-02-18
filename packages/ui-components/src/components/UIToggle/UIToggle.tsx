@@ -218,7 +218,8 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
             return {
                 root: {
                     ...(labelFlexGrow && {
-                        flexGrow: 1
+                        flexGrow: 1,
+                        justifyContent: 'space-between'
                     }),
                     margin: sizeInfo?.margin,
                     marginBottom: this.getMarginBottom(messageInfo.message)
@@ -235,7 +236,10 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                         marginRight: 10
                     }),
                     ...(labelFlexGrow && {
-                        flexGrow: 1
+                        flexShrink: 1,
+                        flexBasis: 'auto',
+                        cursor: 'pointer',
+                        margin: 0
                     }),
                     opacity: this.props.disabled ? DISABLED_OPACITY : 'inherit'
                 },
