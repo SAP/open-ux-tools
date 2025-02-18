@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.24.4
+
+### Patch Changes
+
+-   1215e5b: fix(ui-components): UIButtonAction underline in normal mode
+
 ## 1.24.3
 
 ### Patch Changes
