@@ -75,3 +75,100 @@ This document lists the version overrides for vulnerable (nested) dependencies a
 │ More info           │ https://github.com/advisories/GHSA-w5hq-hm5m-4548      │
 └─────────────────────┴────────────────────────────────────────────────────────┘
 ```
+
+    "@octokit/rest@18": ">=21.1.1"
+
+No fix available yet. Would need to update yeoman-generator@5.10.0 and  github-username@6.0.0
+
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ @octokit/request-error has a Regular Expression in     │
+│                     │ index that Leads to ReDoS Vulnerability Due to         │
+│                     │ Catastrophic Backtracking                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ @octokit/request-error                                 │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=1.0.0 <5.1.1                                         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=5.1.1                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/core@3.6.0 > @octokit/graphql@4.8.0 >         │
+│                     │ @octokit/request@5.6.3 > @octokit/request-error@2.1.0  │
+│                     │                                                        │
+│                     │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/core@3.6.0 > @octokit/request@5.6.3 >         │
+│                     │ @octokit/request-error@2.1.0                           │
+│                     │                                                        │
+│                     │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/core@3.6.0 > @octokit/request-error@2.1.0     │
+│                     │                                                        │
+│                     │ ... Found 192 paths, run `pnpm why                     │
+│                     │ @octokit/request-error` for more information           │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-xx4v-prfh-6cgc      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ @octokit/request has a Regular Expression in           │
+│                     │ fetchWrapper that Leads to ReDoS Vulnerability Due to  │
+│                     │ Catastrophic Backtracking                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ @octokit/request                                       │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=1.0.0 <9.2.1                                         │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=9.2.1                                                │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/core@3.6.0 > @octokit/graphql@4.8.0 >         │
+│                     │ @octokit/request@5.6.3                                 │
+│                     │                                                        │
+│                     │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/core@3.6.0 > @octokit/request@5.6.3           │
+│                     │                                                        │
+│                     │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/plugin-paginate-rest@2.21.3 >                 │
+│                     │ @octokit/core@3.6.0 > @octokit/graphql@4.8.0 >         │
+│                     │ @octokit/request@5.6.3                                 │
+│                     │                                                        │
+│                     │ ... Found 128 paths, run `pnpm why @octokit/request`   │
+│                     │ for more information                                   │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-rmvr-2pp2-xj38      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
+┌─────────────────────┬────────────────────────────────────────────────────────┐
+│ moderate            │ @octokit/plugin-paginate-rest has a Regular Expression │
+│                     │ in iterator Leads to ReDoS Vulnerability Due to        │
+│                     │ Catastrophic Backtracking                              │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Package             │ @octokit/plugin-paginate-rest                          │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Vulnerable versions │ >=1.0.0 <11.4.1                                        │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Patched versions    │ >=11.4.1                                               │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ Paths               │ examples/simple-generator > yeoman-generator@5.10.0 >  │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/plugin-paginate-rest@2.21.3                   │
+│                     │                                                        │
+│                     │ packages/abap-deploy-config-sub-generator >            │
+│                     │ @sap-ux/deploy-config-generator-shared@link:../deploy- │
+│                     │ config-generator-shared > yeoman-generator@5.10.0 >    │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/plugin-paginate-rest@2.21.3                   │
+│                     │                                                        │
+│                     │ packages/abap-deploy-config-sub-generator >            │
+│                     │ yeoman-test@6.3.0 > yeoman-generator@5.10.0 >          │
+│                     │ github-username@6.0.0 > @octokit/rest@18.12.0 >        │
+│                     │ @octokit/plugin-paginate-rest@2.21.3                   │
+│                     │                                                        │
+│                     │ ... Found 16 paths, run `pnpm why                      │
+│                     │ @octokit/plugin-paginate-rest` for more information    │
+├─────────────────────┼────────────────────────────────────────────────────────┤
+│ More info           │ https://github.com/advisories/GHSA-h5c3-5r3r-rr8q      │
+└─────────────────────┴────────────────────────────────────────────────────────┘
