@@ -165,7 +165,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
 
     const addTests = ffApp.appOptions?.addTests;
     const packageJson: Package = JSON.parse(fs.read(packagePath));
-    
+
     if (isEdmxProjectType) {
         const addMock = !!ffApp.service?.metadata;
         // Add scripts for non-CAP applications
