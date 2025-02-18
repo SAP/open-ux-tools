@@ -8,8 +8,8 @@
         <Text id="<%- ids.columnTitle %>" text="New column" />
 
         <customData>
-			<core:CustomData key="p13nData" id="<%- ids.customData %>"
-				value='\{"columnKey": "<%- ids.column %>", "columnIndex": "<%- ids.index %>"}' />
-		</customData>
+            <core:CustomData key="p13nData" id="<%- ids.customData %>"
+                value='\{"columnKey": "<%- ids.column %>", "columnIndex": "<%- ids.index %>"}' />
+        </customData>
     </Column>
 </core:FragmentDefinition>
