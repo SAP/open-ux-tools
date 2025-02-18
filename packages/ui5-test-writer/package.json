@@ -36,7 +36,8 @@
         "i18next": "20.6.1",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
-        "@sap-ux/ui5-application-writer": "workspace:*"
+        "@sap-ux/ui5-application-writer": "workspace:*",
+        "@sap-ux/logger": "workspace:*"
     },
     "devDependencies": {
         "@sap-ux/project-access": "workspace:*",
