@@ -282,12 +282,14 @@ export class FlpSandbox {
      * @private
      */
     private async editorGetHandler(
-        req: Request,
+        req: EnhancedRequest,
         res: Response,
         rta: RtaConfig,
         previewUrl: string,
         editor: RtaEditor
     ): Promise<void> {
+        const url =
+            'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl) : previewUrl;
         if (!req.query['fiori-tools-rta-mode']) {
             // Redirect to the same URL but add the necessary parameter
             const params = structuredClone(req.query);
@@ -295,7 +297,7 @@ export class FlpSandbox {
             params['fiori-tools-rta-mode'] = 'true';
             params['sap-ui-rta-skip-flex-validation'] = 'true';
             params['sap-ui-xx-condense-changes'] = 'true';
-            res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
+            res.redirect(302, `${url}?${new URLSearchParams(params)}`);
             return;
         }
         const html = (await this.generateSandboxForEditor(req, rta, editor)).replace(
@@ -348,10 +350,14 @@ export class FlpSandbox {
     ): Promise<void> {
         // connect API (karma test runner) has no request query property
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
+            const url =
+                'ui5-patched-router' in req
+                    ? join(req['ui5-patched-router']?.baseUrl ?? '', this.flpConfig.path)
+                    : this.flpConfig.path;
             // Redirect to the same URL but add the necessary parameter
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
-            res.redirect(302, `${this.flpConfig.path}?${new URLSearchParams(params)}`);
+            res.redirect(302, `${url}?${new URLSearchParams(params)}`);
             return;
         }
         await this.setApplicationDependencies();
