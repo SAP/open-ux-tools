@@ -61,7 +61,7 @@ export class DialogFactory {
         switch (dialogName) {
             case DialogNames.ADD_FRAGMENT:
                 controller = new AddFragment(`open.ux.preview.client.adp.controllers.${dialogName}`, overlay, rta, {
-                    ...('aggregation' in options && { aggregation: options.aggregation }),
+                    ...('aggregation' in options && { aggregation: options.aggregation, defaultAggregationArrayIndex: options.defaultAggregationArrayIndex }),
                     title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                 });
                 break;

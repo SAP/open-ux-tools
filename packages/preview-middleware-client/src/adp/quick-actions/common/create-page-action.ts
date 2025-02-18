@@ -31,11 +31,13 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     }
 
     async execute(): Promise<FlexCommand[]> {
+        const appType = getApplicationType(this.context.rta.getRootControlInstance().getManifest());
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
             await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
                 aggregation: 'actions',
-                title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
+                title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
+                ...(appType === 'fe-v2' && { defaultAggregationArrayIndex: 1 }) // only for
             });
         }
         return [];

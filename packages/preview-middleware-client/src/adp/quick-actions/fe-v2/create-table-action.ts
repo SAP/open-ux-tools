@@ -57,7 +57,8 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
             const overlay = OverlayRegistry.getOverlay(headerToolbar as UI5Element) || [];
             await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
                 aggregation: 'content',
-                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION',
+                defaultAggregationArrayIndex: 1
             });
         }
         return [];
