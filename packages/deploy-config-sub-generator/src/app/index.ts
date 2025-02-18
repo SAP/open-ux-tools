@@ -1,7 +1,6 @@
 import { basename, dirname, join } from 'path';
 import dotenv from 'dotenv';
 import autocomplete from 'inquirer-autocomplete-prompt';
-import { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { withCondition } from '@sap-ux/inquirer-common';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { FileName, getMtaPath, findCapProjectRoot } from '@sap-ux/project-access';
@@ -40,9 +39,7 @@ import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
  * The main deployment configuration generator.
  */
 export default class extends DeploymentGenerator {
-    private readonly appWizard: AppWizard;
     private readonly launchDeployConfigAsSubGenerator: boolean;
-
     private launchStandaloneFromYui = false;
     private abapChoice: Target = { name: TargetName.ABAP, description: 'ABAP' };
     private cfChoice: Target = { name: TargetName.CF, description: 'Cloud Foundry' };
@@ -62,7 +59,6 @@ export default class extends DeploymentGenerator {
         super(args, opts);
         // this.env.adapter.promptModule is undefined when running in YUI
         this.env.adapter.promptModule?.registerPrompt('autocomplete', autocomplete);
-        this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.target = parseTarget(args, opts);
 
@@ -75,6 +71,7 @@ export default class extends DeploymentGenerator {
 
         // Load .env file for api hub config
         dotenv.config();
+
         // Application Modeler launches Deployment Configuration Generator YUI.
         // Pass project folder from command palette input during launching.
         if (this.options.data?.destinationRoot) {
@@ -95,7 +92,7 @@ export default class extends DeploymentGenerator {
     public async prompting(): Promise<void> {
         const { target, answers } = await this._prompting();
 
-        if ((answers as Answers)?.confirmConfigUpate !== false && target) {
+        if ((answers as Answers)?.confirmConfigUpdate !== false && target) {
             this._composeWithSubGenerator(target, answers);
         } else {
             DeploymentGenerator.logger?.debug(t('debug.exist'));
@@ -114,7 +111,7 @@ export default class extends DeploymentGenerator {
     }> {
         let target: Target | undefined;
         let answers: AbapDeployConfigAnswersInternal | CfDeployConfigAnswers = {};
-        const configUpdatePrompts = await this._getConfirmConifgUpdatePrompts();
+        const configUpdatePrompts = await this._getConfirmConfigUpdatePrompts();
         const supportedTargets = await this._getSupportedTargets(this.options.appRootPath);
 
         if (this.target) {
@@ -130,11 +127,11 @@ export default class extends DeploymentGenerator {
     }
 
     /**
-     * Get prompt to confirm the configuration is to be updateed.
+     * Get prompt to confirm the configuration is to be updated.
      *
-     * @returns - the confirm config update prompt
+     * @returns - confirm config update prompt
      */
-    private async _getConfirmConifgUpdatePrompts(): Promise<Question[]> {
+    private async _getConfirmConfigUpdatePrompts(): Promise<Question[]> {
         const configUpdatePrompts: Question[] = [];
         // Show confirm prompt only if launched standalone or on CLI since Fiori gen will show UI warn message in previous step
         if (
@@ -380,7 +377,7 @@ export default class extends DeploymentGenerator {
         questions.push(...withCondition(cfPrompts, (answers: Answers) => answers.targetName === TargetName.CF));
 
         if (configUpdatePrompts.length > 0) {
-            questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpate);
+            questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpdate);
             questions.unshift(...configUpdatePrompts);
         }
 
@@ -422,7 +419,7 @@ export default class extends DeploymentGenerator {
         if (configUpdatePrompts.length > 0) {
             questions = withCondition(
                 getDeployTargetQuestion(supportedTargets, this.options.projectRoot),
-                (answers: Answers) => answers.confirmConfigUpate
+                (answers: Answers) => answers.confirmConfigUpdate
             );
             questions.unshift(...configUpdatePrompts);
         }
