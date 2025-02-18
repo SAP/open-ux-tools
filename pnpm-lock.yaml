@@ -1898,6 +1898,9 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
@@ -3818,6 +3821,9 @@ importers:
 
   packages/ui5-test-writer:
     dependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/ui5-application-writer':
         specifier: workspace:*
         version: link:../ui5-application-writer

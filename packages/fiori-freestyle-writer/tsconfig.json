@@ -20,6 +20,9 @@
       "path": "../fiori-generator-shared"
     },
     {
+      "path": "../logger"
+    },
+    {
       "path": "../odata-service-writer"
     },
     {
