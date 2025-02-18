@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.134
+
+### Patch Changes
+
+-   8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
+
 ## 0.12.133
 
 ### Patch Changes
