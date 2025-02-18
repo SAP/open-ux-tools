@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.24.5
+
+### Patch Changes
+
+-   b410041: fix(ui-components): UIButtonAction set margin left icon to zero
+
 ## 1.24.4
 
 ### Patch Changes

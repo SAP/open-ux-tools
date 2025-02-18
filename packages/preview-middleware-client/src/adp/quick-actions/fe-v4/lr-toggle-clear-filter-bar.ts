@@ -25,7 +25,7 @@ export class ToggleClearFilterBarQuickAction
     readonly forceRefreshAfterExecution = true;
     private isClearButtonEnabled = false;
 
-    initialize(): void {
+    initialize(): Promise<void> {
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
@@ -39,6 +39,7 @@ export class ToggleClearFilterBarQuickAction
                 this.isClearButtonEnabled = value === undefined ? filterBar.getShowClearButton() : (value as boolean);
             }
         }
+        return Promise.resolve();
     }
 
     protected get textKey() {
