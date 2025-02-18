@@ -47,7 +47,9 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
 
         let headerToolbar;
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
-            headerToolbar = (table.getAggregation('items') as ManagedObject[])[0].getAggregation('headerToolbar');
+            const firstItem = (table.getAggregation('items') as ManagedObject[])[0];
+            headerToolbar = firstItem.getAggregation('headerToolbar') ?? firstItem;
+
         } else if (isA<Table>(M_TABLE_TYPE, table)) {
             headerToolbar = table.getAggregation('headerToolbar');
         }

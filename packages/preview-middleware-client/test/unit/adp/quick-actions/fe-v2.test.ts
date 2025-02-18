@@ -547,7 +547,16 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('create table action', () => {
-            test('initialize and execute', async () => {
+            const testCases = [
+                {
+                    tableType: M_TABLE_TYPE
+                },
+                {
+                    tableType: SMART_TABLE_TYPE
+                },
+                { tableType: SMART_TABLE_TYPE, headerToolbar: true }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
@@ -569,6 +578,28 @@ describe('FE V2 quick actions', () => {
                                     }
                                 };
                             }
+                        };
+                    }
+                    if (id == 'smartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        isA: (type: string) => type === testCase.tableType,
+                                        getAggregation: () => (testCase.headerToolbar ? 'headerToolbar' : null)
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
                         };
                     }
                     if (id == 'NavContainer') {
@@ -615,18 +646,35 @@ describe('FE V2 quick actions', () => {
                 );
                 await service.init(sendActionMock, subscribeMock);
 
-                await service.reloadQuickActions({
-                    'sap.m.Table': [
-                        {
-                            controlId: 'mTable'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
+                if (testCase.tableType === M_TABLE_TYPE) {
+                    await service.reloadQuickActions({
+                        'sap.m.Table': [
+                            {
+                                controlId: 'mTable'
+                            } as any
+                        ],
+
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                } else if (testCase.tableType === SMART_TABLE_TYPE) {
+                    await service.reloadQuickActions({
+                        'sap.ui.comp.smarttable.SmartTable': [
+                            {
+                                controlId: 'smartTable'
+                            } as any
+                        ],
+
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                }
 
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
