@@ -72,14 +72,9 @@ function copyTemplates(
         filteredFiles.forEach((filePath: string) => {
             const destFilePath = filePath.replace(sourceDir, '');
             const destinationFilePath = join(ouputDir, renameMap?.[destFilePath] ?? destFilePath);
-            editor.copyTpl(
-                filePath, 
-                destinationFilePath, 
-                opaConfig, 
-                undefined, {
-                    globOptions: { dot: true }
-                }
-            );
+            editor.copyTpl(filePath, destinationFilePath, opaConfig, undefined, {
+                globOptions: { dot: true }
+            });
         });
         return true;
     } catch (error) {
