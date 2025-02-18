@@ -38,5 +38,4 @@ export interface PackageScriptsOptions {
     localStartFile?: string;
     /** If true, a script for starting the app without flp will be generated. Defaults to true. */
     generateIndex?: boolean;
-    hasService?: boolean;
 }
