@@ -37,7 +37,6 @@ export interface Template<T = {}> {
 }
 export interface FioriApp extends App {
     flpAppId?: string;
-    namespace?: string;
 }
 export interface FreestyleApp<T> extends Ui5App {
     template: Template<T>;

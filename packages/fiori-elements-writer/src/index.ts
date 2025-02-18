@@ -4,7 +4,7 @@ import { render } from 'ejs';
 import type { App, Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService, OdataVersion, ServiceType } from '@sap-ux/odata-service-writer';
-import { generateFioriElementsOPAFiles } from '@sap-ux/ui5-test-writer';
+import { generateOPAFiles } from '@sap-ux/ui5-test-writer';
 import cloneDeep from 'lodash/cloneDeep';
 import type { FioriElementsApp } from './types';
 import { TemplateType } from './types';
@@ -206,7 +206,7 @@ async function generate<T extends {}>(
     fs.writeJSON(packagePath, packageJson);
 
     if (addTest) {
-        generateFioriElementsOPAFiles(
+        generateOPAFiles(
             basePath,
             {
                 htmlTarget: feApp.appOptions?.generateIndex

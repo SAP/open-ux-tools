@@ -14,7 +14,7 @@ import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-gener
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import { generateFreestyleOPAFiles } from '../../ui5-test-writer';
+import { generateFreestyleOPAFiles } from '@sap-ux/ui5-test-writer';
 
 /**
  * Generates and writes OPA test files based on the provided application configuration.
@@ -35,7 +35,6 @@ export async function writeOPATestFiles<T>(
         appId: ffApp.app.id,
         applicationDescription: ffApp.app.description,
         applicationTitle: ffApp.app.title,
-        namespace: ffApp.app.namespace,
         viewName: (ffApp.template.settings as BasicAppSettings).viewName,
         ui5Theme: ffApp.ui5?.ui5Theme,
         ui5Version: ffApp.ui5?.version,

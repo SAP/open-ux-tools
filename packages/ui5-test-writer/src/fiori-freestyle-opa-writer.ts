@@ -126,7 +126,7 @@ async function copyTestFiles(
             testOutDirPath,
             {
                 appId: opaConfig.appId,
-                addUnitTests: false
+                addUnitTests: Boolean(true) // EJS requires value to be explicitly set to Boolean(true) to render as true
             },
             undefined,
             {
@@ -144,19 +144,13 @@ async function copyTestFiles(
 /**
  * Generates formatted application ID with slashes based on namespace, name, and TypeScript settings.
  *
- * @param {string} [name] - The application name.
- * @param {string} [namespace] - The application namespace.
+ * @param {string} [appId] - The application id.
  * @param {boolean} [enableTypescript] - Whether TypeScript is enabled.
  * @returns {string} The formatted application ID with slashes.
  */
-function getAppIdWithSlash(name: string = '', namespace: string = '', enableTypescript: boolean = false): string {
-    // Replace dots with slashes in the namespace and remove any trailing slash
-    const formattedNamespace = namespace.replace(/\./g, '/').replace(/\/$/, '');
-
+function getAppIdWithSlash(appId: string = '', enableTypescript: boolean = false): string {
     // Construct the AppIdWithSlash based on the conditions
-    const appIdWithSlash = enableTypescript
-        ? `${formattedNamespace}${namespace ? '/' : ''}${name.replace(/[_-]/g, '')}`
-        : `${namespace.replace(/\./g, '')}${namespace ? '/' : ''}${name}`;
+    const appIdWithSlash = enableTypescript ? appId.replace(/\_/g, '') : appId;
 
     return appIdWithSlash;
 }
@@ -177,13 +171,13 @@ export async function generateFreestyleOPAFiles(
     log?: Logger
 ): Promise<Editor> {
     const fsEditor = fs ?? create(createStorage());
-    const { enableTypeScript, ui5Version, viewName, namespace } = opaConfig;
+    const { enableTypeScript, ui5Version, viewName } = opaConfig;
 
     const freestyleTemplateDirPath = join(__dirname, '../templates/freestyle/webapp/test');
     const testOutDirPath = join(basePath, 'webapp/test');
     const templateUi5Version = getTemplateUi5Version(ui5Version);
     const projectName = readPackage(fsEditor, basePath).name;
-    const appIdWithSlash = getAppIdWithSlash(projectName, namespace, enableTypeScript);
+    const appIdWithSlash = getAppIdWithSlash(projectName, enableTypeScript);
 
     // Get template files
     const templateFiles = await getFilePaths(freestyleTemplateDirPath);

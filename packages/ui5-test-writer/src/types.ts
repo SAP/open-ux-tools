@@ -64,7 +64,6 @@ export class ValidationError extends Error {
  */
 export interface FFOPAConfig {
     appId: string;
-    namespace?: string;
     applicationTitle?: string;
     applicationDescription?: string;
     enableTypeScript?: boolean;

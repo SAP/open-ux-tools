@@ -262,7 +262,7 @@ function writePageObject(
  * @param fs - an optional reference to a mem-fs editor
  * @returns Reference to a mem-fs-editor
  */
-export function generateFioriElementsOPAFiles(
+export function generateOPAFiles(
     basePath: string,
     opaConfig: { scriptName?: string; appID?: string; htmlTarget?: string },
     fs?: Editor
@@ -279,7 +279,16 @@ export function generateFioriElementsOPAFiles(
     const testOutDirPath = join(basePath, 'webapp/test');
 
     // Common test files
-    editor.copy(join(rootCommonTemplateDirPath), testOutDirPath);
+    editor.copyTpl(
+        join(rootCommonTemplateDirPath),
+        testOutDirPath,
+        // unit tests are not added for Fiori elements app
+        { appId: config.appID, addUnitTests: false },
+        undefined,
+        {
+            globOptions: { dot: true }
+        }
+    );
 
     // Integration (OPA) test files - version-specific
     editor.copyTpl(
