@@ -29,7 +29,7 @@ export abstract class SimpleQuickActionDefinitionBase<
         super(type, SIMPLE_QUICK_ACTION_KIND, defaultTextKey, context, enablementValidators);
     }
 
-    initialize(): void {
+    initialize(): Promise<void> {
         for (const control of getRelevantControlFromActivePage<T>(
             this.context.controlIndex,
             this.context.view,
@@ -38,6 +38,7 @@ export abstract class SimpleQuickActionDefinitionBase<
             this.control = control;
             break;
         }
+        return Promise.resolve();
     }
 
     getActionObject(): SimpleQuickAction {
