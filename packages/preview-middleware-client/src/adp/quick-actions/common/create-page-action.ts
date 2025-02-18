@@ -15,7 +15,7 @@ const CONTROL_TYPES = ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 's
  * Quick Action for adding a custom page action.
  */
 export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase implements SimpleQuickActionDefinition {
-    private appType: ApplicationType;
+    private readonly appType: ApplicationType;
     constructor(context: QuickActionContext) {
         super(ADD_PAGE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION', context, [
             DIALOG_ENABLEMENT_VALIDATOR
