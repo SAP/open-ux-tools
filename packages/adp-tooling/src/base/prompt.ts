@@ -94,6 +94,13 @@ export async function promptGeneratorInput(
             message: 'Enable Fiori tools?',
             initial: defaults.ft !== false,
             validate: (input) => input?.length > 0
+        },
+        {
+            type: 'confirm',
+            name: 'enableTypeScript',
+            message: 'Enable TypeScript?',
+            initial: defaults.ts !== false,
+            validate: (input) => input?.length > 0
         }
     ]);
 
