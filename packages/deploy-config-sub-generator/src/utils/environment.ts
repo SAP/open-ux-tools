@@ -1,9 +1,7 @@
 // Legacy package, dependent on external dependencies for async operations and no 'type: module' defined in package.json
 import hasbin = require('hasbin');
-import { isMTAFound } from '@sap-ux/cf-deploy-config-writer';
+import { isMTAFound, ApiHubType, type ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import { ERROR_TYPE, ErrorHandler, mtaExecutable } from '@sap-ux/deploy-config-generator-shared';
-import { ApiHubType } from '@sap-ux/cf-deploy-config-writer';
-import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 
 /**
  * Check if the MTA is installed.
