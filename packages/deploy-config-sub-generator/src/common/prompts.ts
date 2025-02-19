@@ -1,5 +1,4 @@
-import { t } from '../utils/i18n';
-import { isMTAInstalled } from '../utils';
+import { isMTAInstalled, t } from '../utils';
 import type { Question } from 'inquirer';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { Target } from '../types';
