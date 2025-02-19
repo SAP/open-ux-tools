@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.44
+
+### Patch Changes
+
+-   583c4cd: Fix: Default aggregation array index to 1 for create page action and create table action
+
 ## 0.17.43
 
 ### Patch Changes
