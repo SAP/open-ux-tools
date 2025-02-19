@@ -64,7 +64,7 @@ function getAppTypeAndHideFilterBarFromManifest(manifest: Manifest): {
  * @returns appID and appPath
  */
 function getAppFromManifest(manifest: Manifest, forcedAppID?: string): { appID: string; appPath: string } {
-    const appID = forcedAppID || manifest['sap.app']?.id;
+    const appID = forcedAppID ?? manifest['sap.app']?.id;
     const appPath = appID?.split('.').join('/');
 
     if (!appID || !appPath) {
@@ -187,7 +187,7 @@ function findLROP(
 
     const appTargets = manifest['sap.ui5']?.routing?.targets;
     const appRoutes = (manifest['sap.ui5']?.routing?.routes ?? []) as any[];
-    const target = (appTargets && appTargets[pageLR.targetKey]) as FEV4ManifestTarget;
+    const target = appTargets?.[pageLR.targetKey] as FEV4ManifestTarget;
 
     if (!target?.options?.settings?.navigation) {
         return { pageLR }; // No navigation from LR
