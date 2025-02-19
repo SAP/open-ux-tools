@@ -27,9 +27,11 @@ function writeOPATsconfigJsonUpdates(fs: Editor, destinationRoot: string, log?: 
 
         fs.writeJSON(join(destinationRoot, 'tsconfig.json'), tsconfig);
     } catch (error) {
-        log?.error(t('error.errorWritingTsConfig', {
-            error: error
-        }));
+        log?.error(
+            t('error.errorWritingTsConfig', {
+                error: error
+            })
+        );
     }
 }
 
@@ -80,9 +82,11 @@ function copyTemplates(
         });
         return true;
     } catch (error) {
-        log?.error(t('error.errorCopyingFreestyleTestTemplates', {
-            error: error 
-        }));
+        log?.error(
+            t('error.errorCopyingFreestyleTestTemplates', {
+                error: error
+            })
+        );
         return false;
     }
 }
