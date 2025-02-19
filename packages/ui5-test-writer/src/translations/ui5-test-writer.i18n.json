@@ -4,6 +4,7 @@
         "cannotReadAppID": "Cannot read appID in the manifest file",
         "badApplicationType": "Cannot determine application type from the manifest, or unsupported type",
         "cannotGeneratePageFile": "Cannot generate page file for target {{ targetKey }}",
-        "errorCopyingFreestyleTestTemplates": "Error copying freestyle test templates"
+        "errorCopyingFreestyleTestTemplates": "Error copying freestyle test templates: {{ error }}",
+        "errorWritingTsConfig": "Error writing tsconfig.json: {{ error }}"
     }
 }

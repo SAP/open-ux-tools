@@ -27,7 +27,9 @@ function writeOPATsconfigJsonUpdates(fs: Editor, destinationRoot: string, log?: 
 
         fs.writeJSON(join(destinationRoot, 'tsconfig.json'), tsconfig);
     } catch (error) {
-        log?.error(`Error updating tsconfig.json: ${error}`);
+        log?.error(t('error.errorWritingTsConfig', {
+            error: error
+        }));
     }
 }
 
@@ -72,18 +74,15 @@ function copyTemplates(
         filteredFiles.forEach((filePath: string) => {
             const destFilePath = filePath.replace(sourceDir, '');
             const destinationFilePath = join(ouputDir, renameMap?.[destFilePath] ?? destFilePath);
-            editor.copyTpl(
-                filePath, 
-                destinationFilePath, 
-                opaConfig, 
-                undefined, {
-                    globOptions: { dot: true }
-                }
-            );
+            editor.copyTpl(filePath, destinationFilePath, opaConfig, undefined, {
+                globOptions: { dot: true }
+            });
         });
         return true;
     } catch (error) {
-        log?.error(t('error.errorCopyingFreestyleTestTemplates: ', error));
+        log?.error(t('error.errorCopyingFreestyleTestTemplates', {
+            error: error 
+        }));
         return false;
     }
 }
@@ -139,7 +138,8 @@ export async function generateFreestyleOPAFiles(
         viewNamePage: `${viewName}Page`,
         appIdWithSlash,
         ui5Version: templateUi5Version,
-        navigationIntent
+        navigationIntent,
+        ui5Theme: opaConfig.ui5Theme ?? ''
     };
 
     // Rename files:
