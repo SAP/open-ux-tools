@@ -552,9 +552,12 @@ describe('FE V2 quick actions', () => {
                     tableType: M_TABLE_TYPE
                 },
                 {
-                    tableType: SMART_TABLE_TYPE
+                    tableType: SMART_TABLE_TYPE,
+                    overflowTable: true,
+                    headerToolbar: false
                 },
-                { tableType: SMART_TABLE_TYPE, headerToolbar: true }
+                { tableType: SMART_TABLE_TYPE, headerToolbar: true },
+                { tableType: SMART_TABLE_TYPE, showTooltip: true }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
@@ -589,13 +592,36 @@ describe('FE V2 quick actions', () => {
                                 scrollIntoView
                             }),
 
-                            getAggregation: () => {
-                                return [
-                                    {
-                                        isA: (type: string) => type === testCase.tableType,
-                                        getAggregation: () => (testCase.headerToolbar ? 'headerToolbar' : null)
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    if (testCase.headerToolbar) {
+                                        return [
+                                            {
+                                                isA: (type: string) => type === testCase.tableType,
+                                                getAggregation: (aggregationName: string) => {
+                                                    if (aggregationName === 'headerToolbar') {
+                                                        return 'headerToolbar'; // Return a simple string for headerToolbar
+                                                    }
+                                                }
+                                            }
+                                        ];
+                                    } else if (testCase.overflowTable) {
+                                        return [
+                                            {
+                                                getAggregation: () => null,
+                                                isA: (type: string) => type === 'sap.m.OverflowToolbar'
+                                            }
+                                        ];
+                                    } else {
+                                        return [
+                                            {
+                                                getAggregation: () => null,
+                                                isA: (type: string) => type === 'test'
+                                            }
+                                        ];
                                     }
-                                ];
+                                }
+                                return [];
                             },
                             getParent: () => pageView,
                             getBusy: () => false,
@@ -676,56 +702,62 @@ describe('FE V2 quick actions', () => {
                     });
                 }
 
-                expect(sendActionMock).toHaveBeenCalledWith(
-                    quickActionListChanged([
-                        {
-                            title: 'LIST REPORT',
-                            actions: [
-                                {
-                                    'kind': 'nested',
-                                    id: 'listReport0-create-table-action',
-                                    title: 'Add Custom Table Action',
-                                    enabled: true,
-                                    children: [
-                                        {
-                                            children: [],
-                                            enabled: true,
-                                            label: `'MyTable' table`
-                                        }
-                                    ]
-                                },
-                                {
-                                    'children': [
-                                        {
-                                            'children': [],
-                                            enabled: true,
-                                            'label': `'MyTable' table`
-                                        }
-                                    ],
-                                    'enabled': true,
-                                    'id': 'listReport0-create-table-custom-column',
-                                    'kind': 'nested',
-                                    'title': 'Add Custom Table Column'
-                                }
-                            ]
-                        }
-                    ])
-                );
+                const expectedActions = (showTooltip: boolean) => [
+                    {
+                        title: 'LIST REPORT',
+                        actions: [
+                            {
+                                kind: 'nested',
+                                id: 'listReport0-create-table-action',
+                                title: 'Add Custom Table Action',
+                                enabled: true,
+                                children: [
+                                    {
+                                        children: [],
+                                        enabled: !showTooltip,
+                                        label: `'MyTable' table`,
+                                        ...(showTooltip && {
+                                            tooltip:
+                                                'This option has been disabled because the table does not have a header toolbar.'
+                                        })
+                                    }
+                                ]
+                            },
+                            {
+                                children: [
+                                    {
+                                        children: [],
+                                        enabled: true,
+                                        label: `'MyTable' table`
+                                    }
+                                ],
+                                enabled: true,
+                                id: 'listReport0-create-table-custom-column',
+                                kind: 'nested',
+                                title: 'Add Custom Table Column'
+                            }
+                        ]
+                    }
+                ];
 
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged(expectedActions(testCase.showTooltip as boolean) as any)
+                );
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
-
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-                    mockOverlay,
-                    rtaMock,
-                    'AddFragment',
-                    undefined,
-                    {
-                        aggregation: 'content',
-                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                    }
-                );
+                if (!testCase.showTooltip) {
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        'AddFragment',
+                        undefined,
+                        {
+                            aggregation: 'content',
+                            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                        }
+                    );
+                }
             });
         });
 
