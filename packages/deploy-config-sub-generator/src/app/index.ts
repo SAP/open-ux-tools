@@ -40,11 +40,11 @@ import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
  */
 export default class extends DeploymentGenerator {
     private readonly launchDeployConfigAsSubGenerator: boolean;
-    private launchStandaloneFromYui = false;
-    private abapChoice: Target = { name: TargetName.ABAP, description: 'ABAP' };
-    private cfChoice: Target = { name: TargetName.CF, description: 'Cloud Foundry' };
+    private readonly launchStandaloneFromYui: boolean;
+    private readonly abapChoice: Target = { name: TargetName.ABAP, description: 'ABAP' };
+    private readonly cfChoice: Target = { name: TargetName.CF, description: 'Cloud Foundry' };
+    private readonly apiHubConfig: ApiHubConfig;
     private isLibrary = false;
-    private apiHubConfig: ApiHubConfig;
     private target?: string;
     private indexGenerationAllowed = false;
     private cfDestination: string;
@@ -60,6 +60,7 @@ export default class extends DeploymentGenerator {
         // this.env.adapter.promptModule is undefined when running in YUI
         this.env.adapter.promptModule?.registerPrompt('autocomplete', autocomplete);
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
+        this.launchStandaloneFromYui = false; // By default
         this.target = parseTarget(args, opts);
 
         if (this.options.projectPath && this.options.projectName) {
