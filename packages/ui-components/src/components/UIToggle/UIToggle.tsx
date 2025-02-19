@@ -235,12 +235,7 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                         marginLeft: 0,
                         marginRight: 10
                     }),
-                    ...(labelFlexGrow && {
-                        flexShrink: 1,
-                        flexBasis: 'auto',
-                        cursor: 'pointer',
-                        margin: 0
-                    }),
+                    ...(labelFlexGrow && {}),
                     opacity: this.props.disabled ? DISABLED_OPACITY : 'inherit'
                 },
                 pill: {
