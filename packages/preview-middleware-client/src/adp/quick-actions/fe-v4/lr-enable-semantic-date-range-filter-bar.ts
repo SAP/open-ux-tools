@@ -28,7 +28,7 @@ export class ToggleSemanticDateRangeFilterBar
     readonly forceRefreshAfterExecution = true;
     private isUseDateRangeTypeEnabled = false;
 
-    initialize(): void {
+    initialize(): Promise<void> {
         const controls = this.context.controlIndex[CONTROL_TYPE] ?? [];
         for (const control of controls) {
             const isActionApplicable = pageHasControlId(this.context.view, control.controlId);
@@ -43,6 +43,7 @@ export class ToggleSemanticDateRangeFilterBar
                     value === undefined ? boolMap[this.control.data('useSemanticDateRange')] : (value as boolean);
             }
         }
+        return Promise.resolve();
     }
 
     protected get textKey() {

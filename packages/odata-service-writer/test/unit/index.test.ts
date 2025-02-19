@@ -871,6 +871,30 @@ describe('update', () => {
         expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
     });
 
+    it('Update an existing service without metadata.xml', async () => {
+        fs.delete(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'));
+        await update(
+            testDir,
+            {
+                name: 'mainService',
+                url: 'https://localhost',
+                path: '/sap/uri/',
+                type: ServiceType.EDMX,
+                annotations: [
+                    {
+                        technicalName: 'SEPMRA_PROD_MAN',
+                        xml: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>'
+                    }
+                ] as EdmxAnnotationsInfo[],
+                metadata: '<edmx:Edmx><?xml version="1.0" encoding="utf-8"?></edmx:Edmx>',
+                version: OdataVersion.v4,
+                localAnnotationsName: 'annotation'
+            },
+            fs
+        );
+        expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(true);
+    });
+
     it('Update an existing service with changed annotations', async () => {
         await update(
             testDir,
