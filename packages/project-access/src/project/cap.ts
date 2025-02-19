@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { basename, dirname, join, normalize, relative, sep, resolve } from 'path';
+import { basename, dirname, join, normalize, relative, sep } from 'path';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import { FileName } from '../constants';
@@ -18,6 +18,7 @@ import {
     deleteDirectory,
     deleteFile,
     fileExists,
+    findBy,
     readDirectory,
     readFile,
     readJSON,
@@ -83,27 +84,11 @@ export async function isCapJavaProject(
  * @returns {Promise<boolean>} - Resolves to `true` if files are found in the `srv` folder; otherwise, `false`.
  */
 async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Promise<boolean> {
-    if (!memFs) {
-        return await fileExists(srvFolderPath);
+    try {
+        return (await findBy({ root: srvFolderPath, memFs })).length > 0;
+    } catch (error) {
+        return false;
     }
-    // Check for files in the file system
-    if (await fileExists(srvFolderPath)) {
-        const fileSystemFiles = await readDirectory(srvFolderPath);
-        for (const file of fileSystemFiles) {
-            const filePath = join(srvFolderPath, file);
-            if (await fileExists(filePath)) {
-                return true;
-            }
-        }
-    }
-    // Check for files not yet witten to the file system or deleted in memory (memFs only)
-    return (
-        Object.keys(
-            memFs.dump(undefined, (file) => {
-                return file.path.includes(resolve(srvFolderPath)) && file.state !== 'deleted';
-            })
-        ).length > 0
-    );
 }
 
 /**

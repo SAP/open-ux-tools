@@ -3,6 +3,7 @@ import { basename, dirname, extname, join } from 'path';
 import { default as find } from 'findit2';
 import { fileExists } from './file-access';
 import { promises as fs } from 'fs';
+import type { Finder } from '../types/file';
 
 /**
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
@@ -10,17 +11,22 @@ import { promises as fs } from 'fs';
  * @param changes - memfs editor changes, usually retrieved by fs.dump()
  * @param fileNames - array of file names to search for
  * @param extensionNames - array of extensions names to search for
+ * @param root - path to root folder
  * @returns - array of deleted and modified files filtered by query
  */
 function getMemFsChanges(
     changes: FileMap,
     fileNames: string[],
-    extensionNames: string[]
+    extensionNames: string[],
+    root: string
 ): { deleted: string[]; modified: string[] } {
     const deleted: string[] = [];
     const modified: string[] = [];
     const filteredChanges = Object.keys(changes).filter(
-        (f) => fileNames.includes(basename(f)) || extensionNames.includes(extname(f))
+        (f) =>
+            fileNames.includes(basename(f)) ||
+            extensionNames.includes(extname(f)) ||
+            (fileNames.length === 0 && extensionNames.length === 0 && f.includes(root))
     );
     for (const file of filteredChanges) {
         if (changes[file].state === 'deleted') {
@@ -35,6 +41,7 @@ function getMemFsChanges(
 
 /**
  * Find function to search for files by names or file extensions.
+ * Empty name and extension option returns all files in the given folder.
  *
  * @param options - find options
  * @param [options.fileNames] - optional array of file names to search for
@@ -60,7 +67,7 @@ export function findBy(options: {
         const excludeFolders = Array.isArray(options.excludeFolders) ? options.excludeFolders : [];
         const noTraversal = options.noTraversal ?? false;
 
-        const finder = find(options.root);
+        const finder = find(options.root) as Finder;
         finder.on('directory', (dir: string, _stat: unknown, stop: () => void) => {
             const base = basename(dir);
             if (excludeFolders.includes(base) || (noTraversal && dir !== options.root)) {
@@ -68,14 +75,23 @@ export function findBy(options: {
             }
         });
         finder.on('file', (file: string) => {
-            if (extensionNames.includes(extname(file)) || fileNames.includes(basename(file))) {
+            if (
+                extensionNames.includes(extname(file)) ||
+                fileNames.includes(basename(file)) ||
+                (fileNames.length === 0 && extensionNames.length === 0)
+            ) {
                 results.push(file);
             }
         });
         finder.on('end', () => {
             let searchResult: string[] = results;
             if (options.memFs) {
-                const { modified, deleted } = getMemFsChanges(options.memFs.dump(''), fileNames, extensionNames);
+                const { modified, deleted } = getMemFsChanges(
+                    options.memFs.dump(''),
+                    fileNames,
+                    extensionNames,
+                    options.root
+                );
                 const merged = Array.from(new Set([...results, ...modified]));
                 searchResult = merged.filter((f) => !deleted.includes(f));
             }
