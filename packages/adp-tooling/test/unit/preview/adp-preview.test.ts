@@ -8,7 +8,7 @@ import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
 import * as fs from 'fs';
 
-import { AdpPreview } from '../../../src/preview/adp-preview';
+import { AdpPreview } from '../../../src';
 import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
@@ -476,15 +476,13 @@ describe('AdaptationProject', () => {
                 middlewareUtil,
                 logger
             );
-            jest.spyOn(helper, 'getVariant').mockReturnValue(
-                Promise.resolve({
-                    content: [],
-                    id: 'adp/project',
-                    layer: 'VENDOR',
-                    namespace: 'test',
-                    reference: 'adp/project'
-                })
-            );
+            jest.spyOn(helper, 'getVariant').mockResolvedValue({
+                content: [],
+                id: 'adp/project',
+                layer: 'VENDOR',
+                namespace: 'test',
+                reference: 'adp/project'
+            });
 
             jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
                 target: {

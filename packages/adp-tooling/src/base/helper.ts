@@ -1,9 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
 import { readdirSync, readFileSync } from 'fs';
-import { join, isAbsolute, relative } from 'path';
-import { getWebappPath } from '@sap-ux/project-access';
-import { UI5Config } from '@sap-ux/ui5-config';
-
+import { join, isAbsolute, relative, basename, dirname } from 'path';
+import { getWebappPath, FileName, readUi5Yaml } from '@sap-ux/project-access';
+import type { UI5Config } from '@sap-ux/ui5-config';
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
 /**
@@ -16,9 +15,9 @@ import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 export async function getVariant(basePath: string, fs?: Editor): Promise<DescriptorVariant> {
     const webappPath = await getWebappPath(basePath);
     if (fs) {
-        return fs.readJSON(join(webappPath, 'manifest.appdescr_variant')) as unknown as DescriptorVariant;
+        return fs.readJSON(join(webappPath, FileName.ManifestAppDescrVar)) as unknown as DescriptorVariant;
     }
-    return JSON.parse(readFileSync(join(webappPath, 'manifest.appdescr_variant'), 'utf-8'));
+    return JSON.parse(readFileSync(join(webappPath, FileName.ManifestAppDescrVar), 'utf-8'));
 }
 
 /**
@@ -29,7 +28,7 @@ export async function getVariant(basePath: string, fs?: Editor): Promise<Descrip
  * @param {Editor} fs - The mem-fs editor instance.
  */
 export async function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor): Promise<void> {
-    fs.writeJSON(join(await getWebappPath(basePath), 'manifest.appdescr_variant'), variant);
+    fs.writeJSON(join(await getWebappPath(basePath), FileName.ManifestAppDescrVar), variant);
 }
 
 /**
@@ -63,13 +62,19 @@ export async function flpConfigurationExists(basePath: string): Promise<boolean>
  */
 export async function getAdpConfig(basePath: string, yamlPath: string): Promise<AdpPreviewConfig> {
     const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
-    const ui5Conf = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf-8'));
-    const customMiddlerware =
-        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
-        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
-    const adp = customMiddlerware?.configuration?.adp;
+    let ui5Conf: UI5Config;
+    let adp: AdpPreviewConfig | undefined;
+    try {
+        ui5Conf = await readUi5Yaml(dirname(ui5ConfigPath), basename(ui5ConfigPath));
+        const customMiddleware =
+            ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
+            ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
+        adp = customMiddleware?.configuration?.adp;
+    } catch (error) {
+        // do nothing here
+    }
     if (!adp) {
-        throw new Error('No system configuration found in ui5.yaml');
+        throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);
     }
     return adp;
 }

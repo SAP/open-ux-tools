@@ -4,7 +4,7 @@ import { XMLParser } from 'fast-xml-parser';
 import { t } from '../i18n';
 import type { NamespaceAlias, OdataService, EdmxAnnotationsInfo, EdmxOdataService, CdsAnnotationsInfo } from '../types';
 import prettifyXml from 'prettify-xml';
-import { getWebappPath } from '@sap-ux/project-access';
+import { getWebappPath, DirName } from '@sap-ux/project-access';
 
 /**
  * Updates the cds index or service file with the provided annotations.
@@ -16,7 +16,7 @@ import { getWebappPath } from '@sap-ux/project-access';
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
 async function updateCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
-    const dirPath = join(annotations.projectName, 'annotations');
+    const dirPath = join(annotations.projectName, DirName.Annotations);
     const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
     const annotationConfig = `\nusing from './${annotationPath}';`;
     // get index and service file paths
@@ -85,7 +85,7 @@ export async function updateCdsFilesWithAnnotations(
  * @returns {Promise<void>} A promise that resolves when the cds files have been updated.
  */
 async function removeCdsIndexOrServiceFile(fs: Editor, annotations: CdsAnnotationsInfo): Promise<void> {
-    const dirPath = join(annotations.projectName, 'annotations');
+    const dirPath = join(annotations.projectName, DirName.Annotations);
     const annotationPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
     const annotationConfig = `\nusing from './${annotationPath}';`;
     // Get index and service file paths
@@ -170,7 +170,7 @@ export async function writeLocalServiceAnnotationXMLFiles(
 ): Promise<void> {
     // mainService should be used in case there is no name defined for service
     fs.write(
-        join(webappPath, 'localService', service.name ?? 'mainService', 'metadata.xml'),
+        join(webappPath, DirName.LocalService, service.name ?? 'mainService', 'metadata.xml'),
         prettifyXml(service.metadata, { indent: 4 })
     );
     // Adds local annotations to datasources section of manifest.json and writes the annotations file
@@ -178,7 +178,7 @@ export async function writeLocalServiceAnnotationXMLFiles(
         const namespaces = getAnnotationNamespaces(service);
         fs.copyTpl(
             join(templateRoot, 'add', 'annotation.xml'),
-            join(webappPath, 'annotations', `${service.localAnnotationsName}.xml`),
+            join(webappPath, DirName.Annotations, `${service.localAnnotationsName}.xml`),
             { ...service, namespaces }
         );
     }
@@ -205,7 +205,7 @@ export async function removeRemoteServiceAnnotationXmlFiles(
             const annotation = edmxAnnotations[annotationName];
             const pathToAnnotationFile = join(
                 webappPath,
-                'localService',
+                DirName.LocalService,
                 serviceName,
                 `${annotation.technicalName}.xml`
             );
@@ -216,7 +216,7 @@ export async function removeRemoteServiceAnnotationXmlFiles(
     } else if (edmxAnnotations?.xml) {
         const pathToAnnotationFile = join(
             webappPath,
-            'localService',
+            DirName.LocalService,
             serviceName,
             `${edmxAnnotations.technicalName}.xml`
         );
@@ -247,14 +247,14 @@ export async function writeRemoteServiceAnnotationXmlFiles(
             const annotation = edmxAnnotations[annotationName];
             if (annotation?.xml) {
                 fs.write(
-                    join(webappPath, 'localService', serviceName, `${annotation.technicalName}.xml`),
+                    join(webappPath, DirName.LocalService, serviceName, `${annotation.technicalName}.xml`),
                     prettifyXml(annotation.xml, { indent: 4 })
                 );
             }
         }
     } else if (edmxAnnotations?.xml) {
         fs.write(
-            join(webappPath, 'localService', serviceName, `${edmxAnnotations.technicalName}.xml`),
+            join(webappPath, DirName.LocalService, serviceName, `${edmxAnnotations.technicalName}.xml`),
             prettifyXml(edmxAnnotations.xml, { indent: 4 })
         );
     }

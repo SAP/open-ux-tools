@@ -2,10 +2,10 @@ import type { ListQuestion, FileBrowserQuestion, YUIQuestion } from '@sap-ux/inq
 import type { ManifestNamespace } from '@sap-ux/project-access';
 import { AnnotationFileSelectType, type AddAnnotationsAnswers } from '../../types';
 import { t } from '../../i18n';
-import { filterDataSourcesByType, getWebappPath } from '@sap-ux/project-access';
+import { filterDataSourcesByType, getWebappPath, DirName } from '@sap-ux/project-access';
 import { existsSync } from 'fs';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { join, isAbsolute, sep } from 'path';
+import { join, isAbsolute, basename } from 'path';
 
 /**
  * Gets the prompts for adding annotations to OData service.
@@ -71,8 +71,11 @@ export function getPrompts(
                     return t('validators.fileDoesNotExist');
                 }
 
-                const fileName = filePath.split(sep).pop()!;
-                if (existsSync(join(await getWebappPath(basePath), 'changes', 'annotations', fileName))) {
+                if (
+                    existsSync(
+                        join(await getWebappPath(basePath), DirName.Changes, DirName.Annotations, basename(filePath))
+                    )
+                ) {
                     return t('validators.annotationFileAlreadyExists');
                 }
 

@@ -545,15 +545,13 @@ id=\\"btn-30303030\\""
                 }
             })
         } as any);
-        jest.spyOn(helper, 'getVariant').mockReturnValue(
-            Promise.resolve({
-                content: [],
-                id: 'adp/project',
-                layer: 'VENDOR',
-                namespace: 'test',
-                reference: 'adp/project'
-            })
-        );
+        jest.spyOn(helper, 'getVariant').mockResolvedValue({
+            content: [],
+            id: 'adp/project',
+            layer: 'VENDOR',
+            namespace: 'test',
+            reference: 'adp/project'
+        });
         jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
             target: {
                 destination: 'testDestination'
@@ -575,7 +573,6 @@ id=\\"btn-30303030\\""
             error: jest.fn()
         };
 
-        const fragmentName = 'Share';
         const change = {
             changeType: 'appdescr_app_addAnnotationsToOData',
             content: {
