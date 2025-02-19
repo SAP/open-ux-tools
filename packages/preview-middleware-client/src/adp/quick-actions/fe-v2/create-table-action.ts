@@ -10,6 +10,8 @@ import { getControlById, isA } from '../../../utils/core';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import type OverflowToolbar from 'sap/m/OverflowToolbar';
+import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
@@ -25,6 +27,25 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         ]);
     }
 
+    async initialize(): Promise<void> {
+        const processChild = (child: NestedQuickActionChild, mapKey: string) => {
+            const table = this.tableMap[mapKey]?.table;
+            if (table) {
+                const headerToolbar = this.getHeaderToolbar(table);
+                if (!headerToolbar) {
+                    child.enabled = false;
+                    child.tooltip = this.context.resourceBundle.getText('NO_TABLE_HEADER_TOOLBAR');
+                }
+            }
+
+            child.children.forEach((nestedChild, idx) => processChild(nestedChild, `${mapKey}/${idx.toFixed(0)}`));
+        };
+
+        await super.initialize();
+
+        // disable nested actions based on conditions
+        this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
+    }
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
@@ -45,12 +66,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
             this.iconTabBar.setSelectedKey(iconTabBarFilterKey);
         }
 
-        let headerToolbar;
-        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
-            headerToolbar = (table.getAggregation('items') as ManagedObject[])[0].getAggregation('headerToolbar');
-        } else if (isA<Table>(M_TABLE_TYPE, table)) {
-            headerToolbar = table.getAggregation('headerToolbar');
-        }
+        const headerToolbar = this.getHeaderToolbar(table);
 
         // open dialogBox to add, and content is selected ByDefault
         if (headerToolbar) {
@@ -62,5 +78,20 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
             });
         }
         return [];
+    }
+
+    getHeaderToolbar(table: UI5Element): ManagedObject | ManagedObject[] | OverflowToolbar | null | undefined {
+        let headerToolbar;
+        if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
+            headerToolbar = (table.getAggregation('items') as ManagedObject[]).find((item) => {
+                if (item.getAggregation('headerToolbar')) {
+                    return true;
+                }
+                return isA<OverflowToolbar>('sap.m.OverflowToolbar', item);
+            });
+        } else if (isA<Table>(M_TABLE_TYPE, table)) {
+            headerToolbar = table.getAggregation('headerToolbar');
+        }
+        return headerToolbar;
     }
 }
