@@ -318,7 +318,7 @@ export async function getCdsServices(projectRoot: string, ignoreErrors = true): 
             model = await cds.load(roots, { root: projectRoot });
         } catch (e) {
             if (ignoreErrors && e.model) {
-                model = e.model;
+                model = e.model as csn;
             } else {
                 throw e;
             }
@@ -451,14 +451,14 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
         // First approach, load @sap/cds from project
         module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
     } catch (error) {
-        loadProjectError = error;
+        loadProjectError = error as Error;
     }
     if (!module) {
         try {
             // Second approach, load @sap/cds from @sap/cds-dk
             module = await loadGlobalCdsModule();
         } catch (error) {
-            loadError = error;
+            loadError = error as Error;
         }
     }
     if (!module) {
@@ -611,11 +611,10 @@ async function getPackageNameInFolder(
 async function readPackageNameForFolder(baseUri: string, relativeUri: string): Promise<string> {
     let packageName = '';
     try {
-        const path = normalize(baseUri + '/' + relativeUri + '/' + 'package.json');
-        const content = await readFile(path);
-        if (content) {
-            const parsed = JSON.parse(content);
-            packageName = parsed.name;
+        const path = normalize(baseUri + '/' + relativeUri + '/' + FileName.Package);
+        const content = await readJSON<Package>(path);
+        if (typeof content?.name === 'string') {
+            packageName = content.name;
         }
     } catch (e) {
         packageName = '';

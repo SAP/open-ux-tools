@@ -296,12 +296,15 @@ id="<%- ids.toolbarActionButton %>`);
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: `V2_SMART_TABLE_COLUMN`
+                        templateName: `V2_SMART_TABLE_COLUMN`,
+                        index: 1
                     }
                 } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.column %>
 id="<%- ids.columnTitle %>
+id="<%- ids.customData %>
+id="<%- ids.index %>
 `);
                 addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
 
@@ -320,6 +323,8 @@ id="<%- ids.columnTitle %>
                     "
                     id=\\"column-30303030
                     id=\\"column-title-30303030
+                    id=\\"custom-data-30303030
+                    id=\\"1
                     "
                 `);
 
