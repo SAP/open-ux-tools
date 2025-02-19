@@ -168,11 +168,9 @@ export async function writeLocalServiceAnnotationXMLFiles(
     templateRoot: string,
     service: EdmxOdataService
 ): Promise<void> {
-    // mainService should be used in case there is no name defined for service
-    fs.write(
-        join(webappPath, DirName.LocalService, service.name ?? 'mainService', 'metadata.xml'),
-        prettifyXml(service.metadata, { indent: 4 })
-    );
+    // Write metadata.xml file
+    await writeMetadata(fs, webappPath, service);
+
     // Adds local annotations to datasources section of manifest.json and writes the annotations file
     if (service.localAnnotationsName) {
         const namespaces = getAnnotationNamespaces(service);
@@ -180,6 +178,23 @@ export async function writeLocalServiceAnnotationXMLFiles(
             join(templateRoot, 'add', 'annotation.xml'),
             join(webappPath, DirName.Annotations, `${service.localAnnotationsName}.xml`),
             { ...service, namespaces }
+        );
+    }
+}
+
+/**
+ * Writes local copy of metadata.xml.
+ *
+ * @param {Editor} fs - the memfs editor instance
+ * @param {string} webappPath - the webapp path of an existing UI5 application
+ * @param {OdataService} service - the OData service instance with EDMX type
+ */
+export async function writeMetadata(fs: Editor, webappPath: string, service: EdmxOdataService): Promise<void> {
+    if (service.metadata) {
+        // mainService should be used in case there is no name defined for service
+        fs.write(
+            join(webappPath, DirName.LocalService, service.name ?? 'mainService', 'metadata.xml'),
+            prettifyXml(service.metadata, { indent: 4 })
         );
     }
 }

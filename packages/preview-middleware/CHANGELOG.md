@@ -1,5 +1,32 @@
 # @sap-ux/preview-middleware
 
+## 0.17.42
+
+### Patch Changes
+
+-   Updated dependencies [bb38bef]
+    -   @sap-ux/adp-tooling@0.12.136
+
+## 0.17.41
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.135
+
+## 0.17.40
+
+### Patch Changes
+
+-   8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
+-   Updated dependencies [8930179]
+    -   @sap-ux/adp-tooling@0.12.134
+
+## 0.17.39
+
+### Patch Changes
+
+-   5226a61: feat: introduce 'editors' property on config root level
+
 ## 0.17.38
 
 ### Patch Changes

@@ -80,12 +80,15 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
     },
     [V2_SMART_TABLE_COLUMN]: {
         path: 'v2/m-table-custom-column.xml',
-        getData: () => {
+        getData: (change: AddXMLChange) => {
             const uuid = randomBytes(4).toString('hex');
+            const columnIndex = change.content.index;
             return {
                 ids: {
                     column: `column-${uuid}`,
-                    columnTitle: `column-title-${uuid}`
+                    columnTitle: `column-title-${uuid}`,
+                    customData: `custom-data-${uuid}`,
+                    index: columnIndex.toFixed(0)
                 }
             };
         }
