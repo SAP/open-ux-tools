@@ -5,7 +5,11 @@ import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
-import { writeLocalServiceAnnotationXMLFiles, writeRemoteServiceAnnotationXmlFiles } from './data/annotations';
+import {
+    writeLocalServiceAnnotationXMLFiles,
+    writeMetadata,
+    writeRemoteServiceAnnotationXmlFiles
+} from './data/annotations';
 import { updatePackageJson } from './data/package';
 
 /**
@@ -180,6 +184,8 @@ export async function updateServicesData(
                 }
             }
         }
+        // Write metadata.xml file
+        await writeMetadata(fs, webappPath, service);
     }
     // Write new annotations files
     writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
