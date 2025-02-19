@@ -28,7 +28,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
         if (this.appType === 'fe-v4' && isLowerThanMinimalUi5Version(version, { major: 1, minor: 130 })) {
             return;
         }
-        super.initialize();
+        await super.initialize();
     }
 
     async execute(): Promise<FlexCommand[]> {
