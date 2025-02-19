@@ -37,7 +37,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
             await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
                 aggregation: 'actions',
                 title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
-                ...(this.appType === 'fe-v2' && { defaultAggregationArrayIndex: 1 })
+                defaultAggregationArrayIndex: 1
             });
         }
         return [];

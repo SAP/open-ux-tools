@@ -806,6 +806,7 @@ describe('FE V2 quick actions', () => {
                     undefined,
                     {
                         aggregation: 'actions',
+                        'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                     }
                 );
