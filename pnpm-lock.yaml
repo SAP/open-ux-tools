@@ -2722,6 +2722,9 @@ importers:
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
       ejs:
         specifier: 3.1.10
         version: 3.1.10

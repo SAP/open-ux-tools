@@ -34,6 +34,7 @@ import {
     getAppName,
     sanitizeRtaConfig
 } from './config';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -846,6 +847,26 @@ function serializeUi5Configuration(config: Map<string, string>): string {
 }
 
 /**
+ * Determines if the given ADP project is an ABAP Cloud project.
+ *
+ * @param adpConfig - The configuration object for the ADP preview.
+ * @param logger - The logger instance to use for logging.
+ * @returns A promise that resolves to a boolean indicating whether the project is an ABAP Cloud project.
+ */
+async function isCloudAdpProject(adpConfig: AdpPreviewConfig, logger: ToolsLogger): Promise<boolean> {
+    const { target, ignoreCertErrors } = adpConfig;
+    const provider = await createAbapServiceProvider(
+        target,
+        {
+            ignoreCertErrors
+        },
+        true,
+        logger
+    );
+    return await provider.isAbapCloud();
+}
+
+/**
  * Initialize the preview for an adaptation project.
  *
  * @param rootProject reference to the project
@@ -866,13 +887,15 @@ export async function initAdp(
     if (appVariant) {
         const adp = new AdpPreview(config, rootProject, util, logger);
         const variant = JSON.parse(await appVariant.getString()) as DescriptorVariant;
+        const isCloud = await isCloudAdpProject(config, logger);
         const layer = await adp.init(variant);
         if (flp.rta) {
             flp.rta.layer = layer;
             flp.rta.options = {
                 ...flp.rta.options,
                 projectId: variant.id,
-                scenario: 'ADAPTATION_PROJECT'
+                scenario: 'ADAPTATION_PROJECT',
+                isCloud
             };
             for (const editor of flp.rta.endpoints) {
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';
