@@ -557,7 +557,7 @@ describe('FE V2 quick actions', () => {
                     headerToolbar: false
                 },
                 { tableType: SMART_TABLE_TYPE, headerToolbar: true },
-                { tableType: SMART_TABLE_TYPE, showTooltip: true }
+                { tableType: SMART_TABLE_TYPE, isTableWithoutToolbar: true }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
@@ -702,51 +702,51 @@ describe('FE V2 quick actions', () => {
                     });
                 }
 
-                const expectedActions = (showTooltip: boolean) => [
-                    {
-                        title: 'LIST REPORT',
-                        actions: [
-                            {
-                                kind: 'nested',
-                                id: 'listReport0-create-table-action',
-                                title: 'Add Custom Table Action',
-                                enabled: true,
-                                children: [
-                                    {
-                                        children: [],
-                                        enabled: !showTooltip,
-                                        label: `'MyTable' table`,
-                                        ...(showTooltip && {
-                                            tooltip:
-                                                'This option has been disabled because the table does not have a header toolbar.'
-                                        })
-                                    }
-                                ]
-                            },
-                            {
-                                children: [
-                                    {
-                                        children: [],
-                                        enabled: true,
-                                        label: `'MyTable' table`
-                                    }
-                                ],
-                                enabled: true,
-                                id: 'listReport0-create-table-custom-column',
-                                kind: 'nested',
-                                title: 'Add Custom Table Column'
-                            }
-                        ]
-                    }
-                ];
-
                 expect(sendActionMock).toHaveBeenCalledWith(
-                    quickActionListChanged(expectedActions(testCase.showTooltip as boolean) as any)
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: !testCase.isTableWithoutToolbar,
+                                            label: `'MyTable' table`,
+                                            ...(testCase.isTableWithoutToolbar && {
+                                                tooltip:
+                                                    'This option has been disabled because the table does not have a header toolbar.'
+                                            })
+                                        }
+                                    ]
+                                },
+                                {
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: true,
+                                            label: `'MyTable' table`
+                                        }
+                                    ],
+                                    enabled: true,
+                                    id: 'listReport0-create-table-custom-column',
+                                    kind: 'nested',
+                                    title: 'Add Custom Table Column'
+                                }
+                            ]
+                        }
+                    ])
                 );
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
-                if (!testCase.showTooltip) {
+                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.isTableWithoutToolbar ? 0 : 1);
+
+                if (!testCase.isTableWithoutToolbar) {
                     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
                         mockOverlay,
                         rtaMock,
