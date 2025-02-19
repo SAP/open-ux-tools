@@ -788,12 +788,12 @@ describe('toReferenceUri', () => {
     });
     test('toReferenceUri with refUri starting with "../"', async () => {
         // mock reading of package json in root folder of sibling project
-        jest.spyOn(file, 'readFile').mockImplementation(async (uri) => {
+        jest.spyOn(file, 'readJSON').mockImplementation(async (uri) => {
             return uri ===
                 (os.platform() === 'win32'
                     ? '\\globalRoot\\monoRepo\\bookshop\\package.json'
                     : '/globalRoot/monoRepo/bookshop/package.json')
-                ? '{"name": "@capire/bookshop"}'
+                ? { 'name': '@capire/bookshop' }
                 : '';
         });
         // prepare

@@ -25,7 +25,7 @@ export class ToggleClearFilterBarQuickAction
 
     private isClearButtonEnabled = false;
 
-    initialize(): void {
+    initialize(): Promise<void> {
         const controls = [
             ...(this.context.controlIndex[CONTROL_TYPE_LR] ?? []),
             ...(this.context.controlIndex[CONTROL_TYPE_ALP] ?? [])
@@ -38,6 +38,7 @@ export class ToggleClearFilterBarQuickAction
                 this.control = modifiedControl;
             }
         }
+        return Promise.resolve();
     }
 
     protected get textKey() {

@@ -1,5 +1,37 @@
 # @sap-ux/odata-service-writer
 
+## 0.26.3
+
+### Patch Changes
+
+-   dbd725a: Write metadata.xml in update in odata-service-writer
+
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [c244f60]
+    -   @sap-ux/mockserver-config-writer@0.8.1
+
+## 0.26.1
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
+## 0.26.0
+
+### Minor Changes
+
+-   f1f9cbe: Service update support.
+
+### Patch Changes
+
+-   Updated dependencies [f1f9cbe]
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
 ## 0.25.10
 
 ### Patch Changes
