@@ -1,5 +1,67 @@
 # @sap-ux/adp-tooling
 
+## 0.12.135
+
+### Patch Changes
+
+-   Updated dependencies [dbd725a]
+    -   @sap-ux/odata-service-writer@0.26.3
+
+## 0.12.134
+
+### Patch Changes
+
+-   8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
+
+## 0.12.133
+
+### Patch Changes
+
+-   @sap-ux/odata-service-writer@0.26.2
+
+## 0.12.132
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/odata-service-writer@0.26.1
+    -   @sap-ux/system-access@0.5.31
+    -   @sap-ux/inquirer-common@0.6.18
+
+## 0.12.131
+
+### Patch Changes
+
+-   Updated dependencies [4fd3029]
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/system-access@0.5.31
+
+## 0.12.130
+
+### Patch Changes
+
+-   Updated dependencies [f1f9cbe]
+    -   @sap-ux/odata-service-writer@0.26.0
+
+## 0.12.129
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.17
+
+## 0.12.128
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/odata-service-writer@0.25.10
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.16
+
 ## 0.12.127
 
 ### Patch Changes

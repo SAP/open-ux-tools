@@ -8,6 +8,7 @@ import { generateSupportingConfig } from '../../src/utils';
 import type { CFConfig } from '../../src/types';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import { Mta } from '@sap/mta-lib';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -80,6 +81,9 @@ describe('CF Writer App', () => {
     });
 
     test('Generate deployment configs - HTML5 App and destination read from ui5.yaml', async () => {
+        const mockWriteFileSync = jest.spyOn(Mta.prototype, 'save').mockImplementationOnce(() => {
+            throw new Error();
+        });
         isAppStudioMock.mockResolvedValue(true);
         listDestinationsMock.mockResolvedValue(destinationsMock);
         const appName = 'basicapp01';
@@ -93,6 +97,7 @@ describe('CF Writer App', () => {
         expect(localFs.dump(appPath)).toMatchSnapshot();
         // Since mta.yaml is not in memfs, read from disk
         expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(mockWriteFileSync).toHaveBeenCalledTimes(2);
     });
 
     test('Generate deployment configs - HTML5 App with managed approuter attached with no destination available', async () => {
