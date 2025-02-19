@@ -44,7 +44,7 @@ export interface FreestyleApp<T> extends Ui5App {
         capService?: CapServiceCdsInfo;
     };
     app: FioriApp;
-    appOptions: Partial<AppOptions> & {
+    appOptions?: Partial<AppOptions> & {
         /**
          * Generate OPA based tests, for Simple template.
          * This will eventually move up to {@link Ui5App.appOptions}
