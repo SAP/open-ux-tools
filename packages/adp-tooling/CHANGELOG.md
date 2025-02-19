@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.136
+
+### Patch Changes
+
+-   bb38bef: fix: Change fileName for the manifest change editors writers differs from the actual real file name
+
 ## 0.12.135
 
 ### Patch Changes
