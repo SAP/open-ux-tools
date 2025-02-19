@@ -9,7 +9,8 @@ import { readFileSync } from 'fs';
 import { join } from 'path';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
-import express from 'express';
+import express, { type Response, type NextFunction } from 'express';
+import type { EnhancedRequest } from '../../../src/base/flp';
 import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
@@ -896,6 +897,94 @@ describe('FlpSandbox', () => {
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
             response = await server.get('/my/editor.html.inner.html').expect(302);
             expect(response.text).toMatchSnapshot();
+        });
+    });
+
+    describe('cds-plugin-ui5', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ],
+            editors: {
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    endpoints: [
+                        {
+                            path: '/my/rta.html'
+                        },
+                        {
+                            path: 'without/slash/rta.html'
+                        },
+                        {
+                            path: '/my/editor.html',
+                            developerMode: true
+                        },
+                        {
+                            path: '/with/plugin.html',
+                            developerMode: true,
+                            pluginScript: 'open/ux/tools/plugin'
+                        },
+                        {
+                            path: '/my/editorWithConfig.html',
+                            generator: 'test-generator'
+                        }
+                    ]
+                }
+            }
+        };
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use([
+                function (req: EnhancedRequest, _res: Response, next: NextFunction) {
+                    req['ui5-patched-router'] = { baseUrl: '/base' };
+                    next();
+                },
+                flp.router
+            ]);
+
+            server = await supertest(app);
+        });
+
+        test('rta', async () => {
+            const response = await server.get('/my/rta.html').expect(302);
+            expect(response.header.location).toEqual(
+                `\\base\\my\\rta.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true`
+            );
+        });
+
+        test('test/flp.html', async () => {
+            const response = await server.get('/test/flp.html#app-preview').expect(302);
+            expect(response.header.location).toEqual(`\\base\\test\\flp.html?sap-ui-xx-viewCache=false`);
         });
     });
 });

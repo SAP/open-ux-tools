@@ -47,7 +47,7 @@ export type EnhancedRouter = Router & {
 /**
  * Enhanced request object that contains additional properties from cds-plugin-ui5.
  */
-type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: string } };
+export type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: string } };
 
 type OnChangeRequestHandler = (
     type: OperationType,
