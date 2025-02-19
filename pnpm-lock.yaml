@@ -2406,6 +2406,9 @@ importers:
 
   packages/mockserver-config-writer:
     dependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -2419,9 +2422,6 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2

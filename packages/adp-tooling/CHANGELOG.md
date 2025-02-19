@@ -1,5 +1,30 @@
 # @sap-ux/adp-tooling
 
+## 0.12.136
+
+### Patch Changes
+
+-   bb38bef: fix: Change fileName for the manifest change editors writers differs from the actual real file name
+
+## 0.12.135
+
+### Patch Changes
+
+-   Updated dependencies [dbd725a]
+    -   @sap-ux/odata-service-writer@0.26.3
+
+## 0.12.134
+
+### Patch Changes
+
+-   8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
+
+## 0.12.133
+
+### Patch Changes
+
+-   @sap-ux/odata-service-writer@0.26.2
+
 ## 0.12.132
 
 ### Patch Changes

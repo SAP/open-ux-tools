@@ -357,6 +357,18 @@ export const enum ChangeType {
 }
 
 /**
+ * A mapping of ChangeType values to their respective change names.
+ */
+export const ChangeTypeMap: Record<ChangeType, string> = {
+    [ChangeType.ADD_NEW_MODEL]: 'addNewModel',
+    [ChangeType.ADD_ANNOTATIONS_TO_ODATA]: 'addAnnotationsToOData',
+    [ChangeType.CHANGE_DATA_SOURCE]: 'changeDataSource',
+    [ChangeType.ADD_COMPONENT_USAGES]: 'addComponentUsages',
+    [ChangeType.ADD_LIBRARY_REFERENCE]: 'addLibraries',
+    [ChangeType.CHANGE_INBOUND]: 'changeInbound'
+} as const;
+
+/**
  * Maps a ChangeType to the corresponding data structure needed for that type of change.
  * This conditional type ensures type safety by linking each change type with its relevant data model.
  *
