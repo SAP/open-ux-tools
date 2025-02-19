@@ -111,8 +111,17 @@ export default class extends DeploymentGenerator {
     }> {
         let target: Target | undefined;
         let answers: AbapDeployConfigAnswersInternal | CfDeployConfigAnswers = {};
+        const projectPath = this.options.appRootPath ?? process.cwd();
         const configUpdatePrompts = await this._getConfirmConfigUpdatePrompts();
-        const supportedTargets = await this._getSupportedTargets(this.options.appRootPath);
+        const isCapProject = !!(await findCapProjectRoot(projectPath)); // CAP only supports CF
+        const isCF = await getMtaPath(projectPath);
+        const isCapAndMissingMta = isCapProject && !isCF?.mtaPath;
+        const supportedTargets = await this._getSupportedTargets(this.options.appRootPath, isCapProject, !!isCF);
+
+        if (isCapAndMissingMta) {
+            // For CAP flow, the S4 prompting is not required, soo go straight to CF sub generator
+            this.target = TargetName.CF;
+        }
 
         if (this.target) {
             target = supportedTargets.find((t) => t.name === this.target);
@@ -149,37 +158,36 @@ export default class extends DeploymentGenerator {
      * Determines the supported targets for deployment based on the project.
      *
      * @param cwd - the current working directory
+     * @param isCap - whether cwd is a CAP project
+     * @param isCf - whether cwd is a CF project
      * @returns - the supported targets
      */
-    private async _getSupportedTargets(cwd = process.cwd()): Promise<Target[]> {
+    private async _getSupportedTargets(cwd: string, isCap: boolean, isCf: boolean): Promise<Target[]> {
         if (this.launchDeployConfigAsSubGenerator && this.options.appRootPath) {
             // Use default destination root if projectPath and projectName are not available.
             // E.g. destinationRoot (appRoot) is passed from Application Modeler launched command.
             cwd = this.options.appRootPath;
         }
-
         const isApiHubEnt = this.apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise;
-        const isCapProject = !!(await findCapProjectRoot(cwd)); // CAP only supports CF for now
-        const possiblyCF = !!(await getMtaPath(cwd));
         const isProjectExtension = this.fs.exists(join(cwd, '.extconfig.json'));
         const ui5Config = await UI5Config.newInstance(this.fs.read(join(cwd, this.options.base ?? FileName.Ui5Yaml)));
         this.isLibrary = ui5Config.getType() === 'library';
 
-        if (isApiHubEnt || isCapProject) {
+        if (isApiHubEnt || isCap) {
             return [this.cfChoice];
         } else if (this.isLibrary || isProjectExtension) {
             return [this.abapChoice]; // Extension projects, Library and systems using Reentrance tickets for auth
         } else {
             // If there's an mta.yaml in the hierarchy, it's probably a CF project
             // Offer that first and let the user decide
-            return possiblyCF ? [this.cfChoice, this.abapChoice] : [this.abapChoice, this.cfChoice];
+            return isCf ? [this.cfChoice, this.abapChoice] : [this.abapChoice, this.cfChoice];
         }
     }
 
     /**
      * Returns the answers from the prompts.
      * When ran as a subgenerator, all ABAP and CF prompts are merged and prompted in one step.
-     * Otherwise, only the target deployment is prompted and the respective subgenerator is ran accordingly.
+     * Otherwise, only the target deployment is prompted and the respective subgenerator is executed accordingly.
      *
      * @param supportedTargets - supported targets for deployment
      * @param configUpdatePrompts - config update prompts

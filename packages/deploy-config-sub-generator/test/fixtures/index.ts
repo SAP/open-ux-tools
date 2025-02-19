@@ -17,3 +17,5 @@ export class TestFixture {
         return this.fileContents[relativePath];
     }
 }
+
+export { mockDestinations } from './destinations';
