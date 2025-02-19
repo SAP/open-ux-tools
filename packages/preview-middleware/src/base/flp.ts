@@ -288,10 +288,10 @@ export class FlpSandbox {
         previewUrl: string,
         editor: RtaEditor
     ): Promise<void> {
-        const url =
-            'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl) : previewUrl;
         if (!req.query['fiori-tools-rta-mode']) {
             // Redirect to the same URL but add the necessary parameter
+            const url =
+                'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl) : previewUrl;
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
             params['fiori-tools-rta-mode'] = 'true';
