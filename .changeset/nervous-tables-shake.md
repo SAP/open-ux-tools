@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-CEP: fix the issue with create custom table action for V2 apps
+fix: "Add Table Custom Action" quick action not being working in some V2 apps
