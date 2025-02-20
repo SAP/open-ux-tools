@@ -31,7 +31,12 @@ import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, TREE_TABLE_TYPE } from '../quick-actions/control-types';
+import {
+    ANALYTICAL_TABLE_TYPE,
+    GRID_TABLE_TYPE,
+    MDC_TABLE_TYPE,
+    TREE_TABLE_TYPE
+} from '../quick-actions/control-types';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -262,13 +267,18 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             return 'CUSTOM_ACTION';
         } else if (this.isObjectPageHeaderField(currentControlName, targetAggregation)) {
             return 'OBJECT_PAGE_HEADER_FIELD';
-        } else if (currentControlName === 'sap.ui.mdc.Table' && targetAggregation === 'columns') {
-            return 'V4_MDC_TABLE_COLUMN';
-        } else if (
-            [TREE_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE].includes(currentControlName) &&
-            targetAggregation === 'columns'
-        ) {
-            return 'ANALYTICAL_TABLE_COLUMN';
+        } else if (targetAggregation === 'columns') {
+            switch (currentControlName) {
+                case MDC_TABLE_TYPE:
+                    return 'V4_MDC_TABLE_COLUMN';
+                case TREE_TABLE_TYPE:
+                case GRID_TABLE_TYPE:
+                    return 'GRID_TREE_TABLE_COLUMN';
+                case ANALYTICAL_TABLE_TYPE:
+                    return 'ANALYTICAL_TABLE_COLUMN';
+                default:
+                    return '';
+            }
         } else if (currentControlName === 'sap.ui.mdc.Table' && targetAggregation === 'actions') {
             return 'TABLE_ACTION';
         }

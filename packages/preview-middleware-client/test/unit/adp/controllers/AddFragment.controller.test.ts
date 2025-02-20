@@ -19,6 +19,7 @@ import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
+    MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from 'open/ux/preview/client/adp/quick-actions/control-types';
 
@@ -1577,14 +1578,38 @@ describe('AddFragment', () => {
                 });
             });
 
-            const tableTypes = [TREE_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE];
-            test.each(tableTypes)(
+            const testCases: {
+                tableType:
+                    | typeof TREE_TABLE_TYPE
+                    | typeof GRID_TABLE_TYPE
+                    | typeof ANALYTICAL_TABLE_TYPE
+                    | typeof MDC_TABLE_TYPE;
+                templateName: 'ANALYTICAL_TABLE_COLUMN' | 'GRID_TREE_TABLE_COLUMN' | 'V4_MDC_TABLE_COLUMN';
+            }[] = [
+                {
+                    tableType: MDC_TABLE_TYPE,
+                    templateName: 'V4_MDC_TABLE_COLUMN'
+                },
+                {
+                    tableType: GRID_TABLE_TYPE,
+                    templateName: 'GRID_TREE_TABLE_COLUMN'
+                },
+                {
+                    tableType: TREE_TABLE_TYPE,
+                    templateName: 'GRID_TREE_TABLE_COLUMN'
+                },
+                {
+                    tableType: ANALYTICAL_TABLE_TYPE,
+                    templateName: 'ANALYTICAL_TABLE_COLUMN'
+                }
+            ];
+            test.each(testCases)(
                 'creates new analytical custom column fragment and a change (%s)',
-                async (tableType) => {
+                async (testCase) => {
                     jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                         getMetadata: jest.fn().mockReturnValue({
                             getAllAggregations: jest.fn().mockReturnValue({}),
-                            getName: jest.fn().mockReturnValue(tableType)
+                            getName: jest.fn().mockReturnValue(testCase.tableType)
                         })
                     } as unknown as ManagedObject);
                     await addFragment.setup({
@@ -1609,7 +1634,7 @@ describe('AddFragment', () => {
 
                     expect(setContentSpy).toHaveBeenCalledWith({
                         ...dummyContent,
-                        templateName: 'ANALYTICAL_TABLE_COLUMN'
+                        templateName: testCase.templateName
                     });
                 }
             );
