@@ -132,10 +132,10 @@ describe('index', () => {
             type: '[ext] show-info-center-message',
             payload: {
                 message: {
+                    type: MessageBarType.warning,
                     title: 'Reuse components detected',
                     description: 'Reuse components are detected for some views in this application. Controller extensions, adding fragments and manifest changes are not supported for such views and will be disabled.'
-                },
-                type: MessageBarType.warning
+                }
             }
         });
     });
