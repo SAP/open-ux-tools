@@ -58,7 +58,12 @@ describe('DialogFactory', () => {
         await DialogFactory.createDialog(
             {} as unknown as UI5Element,
             rtaMock as unknown as RuntimeAuthoring,
-            DialogNames.ADD_FRAGMENT
+            DialogNames.ADD_FRAGMENT,
+            undefined,
+            {
+                aggregation: 'actions',
+                defaultAggregationArrayIndex: 1
+            }
         );
         // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddFragment');
