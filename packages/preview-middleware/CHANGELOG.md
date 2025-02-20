@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.45
+
+### Patch Changes
+
+-   ef57432: fix: re-route issue with cds-plugin-ui5
+
 ## 0.17.44
 
 ### Patch Changes
