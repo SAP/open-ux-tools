@@ -1,5 +1,23 @@
 # @sap-ux/preview-middleware
 
+## 0.17.45
+
+### Patch Changes
+
+-   ef57432: fix: re-route issue with cds-plugin-ui5
+
+## 0.17.44
+
+### Patch Changes
+
+-   583c4cd: Fix: Default aggregation array index to 1 for create page action and create table action
+
+## 0.17.43
+
+### Patch Changes
+
+-   fd3bfb0: fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
 ## 0.17.42
 
 ### Patch Changes
