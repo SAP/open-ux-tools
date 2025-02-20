@@ -140,13 +140,13 @@ export function getPackageScripts({
         scripts['start-mock'] = `fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html${params}"`;
     }
 
-    scripts['start-variants-management'] = localOnly
-        ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : getVariantPreviewAppScript(sapClient);
-
     if (addTest) {
         scripts['int-test'] = 'fiori run --config ./ui5-mock.yaml --open "test/integration/opaTests.qunit.html"';
     }
+
+    scripts['start-variants-management'] = localOnly
+        ? `echo \\"${t('info.mockOnlyWarning')}\\"`
+        : getVariantPreviewAppScript(sapClient);
 
     return scripts;
 }
