@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.26.2
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+
 ## 0.26.1
 
 ### Patch Changes

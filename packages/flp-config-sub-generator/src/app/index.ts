@@ -145,7 +145,7 @@ export default class extends Generator {
             createAnotherInbound: { hide: true }
         })) as Question[];
 
-        // Show specific prompt for config update when launched standalone or on CLI. Otherwise it should be handled by consuming generator in YUI.
+        // Show specific prompt for config update when launched standalone or on CLI. Otherwise, it should be handled by consuming generator in YUI.
         if (
             (getHostEnvironment() === hostEnvironment.cli || !this.options.launchFlpConfigAsSubGenerator) &&
             this.options.data?.additionalPrompts?.confirmConfigUpdate?.show
@@ -153,7 +153,7 @@ export default class extends Generator {
             const confirmConfigUpdatePrompts = getConfirmConfigUpdatePrompt(
                 this.options.data.additionalPrompts.confirmConfigUpdate.configType
             );
-            questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpate);
+            questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpdate);
             questions.unshift(...confirmConfigUpdatePrompts);
         }
 

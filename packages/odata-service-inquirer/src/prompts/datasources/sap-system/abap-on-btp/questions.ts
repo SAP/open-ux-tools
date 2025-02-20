@@ -146,6 +146,7 @@ async function validateCFServiceInfo(
     requiredOdataVersion?: OdataVersion,
     isCli = false
 ): Promise<ValidationResult> {
+    PromptState.resetConnectedSystem();
     const cfAbapServiceName = abapService.label;
     const uaaCreds = await apiGetInstanceCredentials(cfAbapServiceName); // should be abapService.serviceName in BAS?
 
@@ -188,6 +189,9 @@ async function validateCFServiceInfo(
     if (connectionValidator.serviceProvider && getPromptHostEnvironment() !== hostEnvironment.bas) {
         // Connected system name is only used for VSCode as a default stored system name
         connectionValidator.connectedSystemName = await generateABAPCloudDestinationName(cfAbapServiceName);
+        PromptState.odataService.connectedSystem = {
+            serviceProvider: connectionValidator.serviceProvider
+        };
     }
     return true;
 }
@@ -283,6 +287,7 @@ function getServiceKeyPrompt(connectionValidator: ConnectionValidator): FileBrow
             mandatory: true
         },
         validate: async (keyPath) => {
+            PromptState.resetConnectedSystem();
             const serviceKeyValResult = validateServiceKey(keyPath);
             if (typeof serviceKeyValResult === 'string' || typeof serviceKeyValResult === 'boolean') {
                 return serviceKeyValResult;

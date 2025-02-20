@@ -211,7 +211,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     }
 
     if (ffApp.service?.capService) {
-        const hasCdsUi5PluginInfo = !!ffApp.service.capService.cdsUi5PluginInfo;
+        const enableCdsUi5Plugin =
+            !!ffApp?.appOptions?.typescript || !!ffApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: ffApp.package.name ?? '',
@@ -219,14 +220,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             sapux: ffApp.appOptions?.sapux,
             enableTypescript: ffApp.appOptions?.typescript,
             // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
-            enableCdsUi5Plugin: hasCdsUi5PluginInfo,
-            enableNPMWorkspaces: hasCdsUi5PluginInfo
+            enableCdsUi5Plugin: enableCdsUi5Plugin,
+            enableNPMWorkspaces: enableCdsUi5Plugin
         };
-        // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
-        if (ffApp.service?.capService.cdsUi5PluginInfo) {
-            settings.enableCdsUi5Plugin = true;
-            settings.enableNPMWorkspaces = true;
-        }
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, ffApp.service.capService, settings);
     }

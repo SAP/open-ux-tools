@@ -1,5 +1,55 @@
 # @sap-ux/odata-service-writer
 
+## 0.26.3
+
+### Patch Changes
+
+-   dbd725a: Write metadata.xml in update in odata-service-writer
+
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [c244f60]
+    -   @sap-ux/mockserver-config-writer@0.8.1
+
+## 0.26.1
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
+## 0.26.0
+
+### Minor Changes
+
+-   f1f9cbe: Service update support.
+
+### Patch Changes
+
+-   Updated dependencies [f1f9cbe]
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
+## 0.25.10
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/mockserver-config-writer@0.7.3
+
+## 0.25.9
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/mockserver-config-writer@0.7.3
+    -   @sap-ux/project-access@1.29.6
+
 ## 0.25.8
 
 ### Patch Changes
