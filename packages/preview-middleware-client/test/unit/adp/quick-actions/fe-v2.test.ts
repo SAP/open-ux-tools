@@ -547,18 +547,24 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('create table action', () => {
-            const testCases = [
+            type TableToolbar = 'None' | 'toolbarAggregation' | 'ItemAggregation' | 'smartTableProperty';
+
+            interface TestCase {
+                tableType: string;
+                tableToolbar: TableToolbar;
+            }
+            const testCases: TestCase[] = [
                 {
-                    tableType: M_TABLE_TYPE
+                    tableType: M_TABLE_TYPE,
+                    tableToolbar: 'toolbarAggregation'
                 },
                 {
                     tableType: SMART_TABLE_TYPE,
-                    overflowTable: true,
-                    headerToolbar: false
+                    tableToolbar: 'toolbarAggregation'
                 },
-                { tableType: SMART_TABLE_TYPE, headerToolbar: true },
-                { tableType: SMART_TABLE_TYPE, isTableWithoutToolbar: true },
-                { tableType: SMART_TABLE_TYPE, tableToolBar: true },
+                { tableType: SMART_TABLE_TYPE, tableToolbar: 'smartTableProperty' },
+                { tableType: SMART_TABLE_TYPE, tableToolbar: 'None' },
+                { tableType: SMART_TABLE_TYPE, tableToolbar: 'ItemAggregation' } 
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
@@ -592,17 +598,17 @@ describe('FE V2 quick actions', () => {
                             getDomRef: () => ({
                                 scrollIntoView
                             }),
-                            
+
                             getToolbar: () => {
-                                if(testCase.tableToolBar) {
-                                    return 'tableToolBar'
+                                if (testCase.tableToolbar == 'ItemAggregation') {
+                                    return 'tableToolBar';
                                 } else {
                                     return null;
                                 }
                             },
                             getAggregation: (aggregationName: string) => {
                                 if (aggregationName === 'items') {
-                                    if (testCase.headerToolbar) {
+                                    if (testCase.tableToolbar === 'toolbarAggregation') {
                                         return [
                                             {
                                                 isA: (type: string) => type === testCase.tableType,
@@ -613,7 +619,7 @@ describe('FE V2 quick actions', () => {
                                                 }
                                             }
                                         ];
-                                    } else if (testCase.overflowTable) {
+                                    } else if (testCase.tableToolbar === 'smartTableProperty') {
                                         return [
                                             {
                                                 getAggregation: () => null,
@@ -723,9 +729,9 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
-                                            enabled: !testCase.isTableWithoutToolbar,
+                                            enabled: !(testCase.tableToolbar === 'None') ,
                                             label: `'MyTable' table`,
-                                            ...(testCase.isTableWithoutToolbar && {
+                                            ...(testCase.tableToolbar === 'None' && {
                                                 tooltip:
                                                     'This option has been disabled because the table does not have a header toolbar.'
                                             })
@@ -752,9 +758,9 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
-                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.isTableWithoutToolbar ? 0 : 1);
+                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.tableToolbar === 'None' ? 0 : 1);
 
-                if (!testCase.isTableWithoutToolbar) {
+                if (testCase.tableToolbar !== 'None') {
                     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
                         mockOverlay,
                         rtaMock,
@@ -767,7 +773,6 @@ describe('FE V2 quick actions', () => {
                         }
                     );
                 }
-
             });
         });
 
