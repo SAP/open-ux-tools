@@ -7,3 +7,4 @@ export * from './library';
 export * from './package';
 export * from './vscode';
 export * from './webapp';
+export * from './mta';

@@ -2,6 +2,9 @@ import { parseTarget } from '../src/app/utils';
 import { isMTAInstalled, getEnvApiHubConfig } from '../src/utils';
 import type { DeployConfigOptions } from '../src/types';
 import hasbin from 'hasbin';
+import mockFs from 'fs';
+
+jest.mock('fs');
 
 jest.mock('hasbin', () => ({
     sync: jest.fn()
@@ -9,18 +12,12 @@ jest.mock('hasbin', () => ({
 
 const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
 
-jest.mock('@sap-ux/cf-deploy-config-writer', () => {
-    return {
-        ...(jest.requireActual('@sap-ux/cf-deploy-config-writer') as object),
-        isMTAFound: () => jest.fn().mockReturnValue(true)
-    };
-});
-
 describe('Test utils - Deploy', () => {
     beforeEach(() => {});
 
     beforeAll(() => {
         jest.clearAllMocks();
+        jest.spyOn(mockFs, 'existsSync').mockImplementation(() => true);
     });
 
     afterAll(() => {

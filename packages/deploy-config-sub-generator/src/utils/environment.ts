@@ -1,7 +1,9 @@
 // Legacy package, dependent on external dependencies for async operations and no 'type: module' defined in package.json
 import hasbin = require('hasbin');
-import { isMTAFound, ApiHubType, type ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
+import { ApiHubType, type ApiHubConfig } from '@sap-ux/cf-deploy-config-sub-generator';
 import { ERROR_TYPE, ErrorHandler, mtaExecutable } from '@sap-ux/deploy-config-generator-shared';
+import { existsSync } from 'fs';
+import { join } from 'path';
 
 /**
  * Check if the MTA is installed.
@@ -13,7 +15,7 @@ import { ERROR_TYPE, ErrorHandler, mtaExecutable } from '@sap-ux/deploy-config-g
 export function isMTAInstalled(choice: string, projectPath: string): boolean | string {
     if (
         (choice === 'cf' && !hasbin.sync(mtaExecutable)) ||
-        (choice === 'abap' && !hasbin.sync(mtaExecutable) && isMTAFound(projectPath))
+        (choice === 'abap' && !hasbin.sync(mtaExecutable) && existsSync(join(projectPath, 'mta.yaml')))
     ) {
         ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN);
         return ' ';
