@@ -320,7 +320,6 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         const testOutputPath = join(basePath, 'webapp/test');
         fs = await generateFreestyleOPAFiles(basePath, opaConfig, fs);
 
-        //console.log("--fs.dump", fs.dump())
         const expectedFiles = [
             'integration/NavigationJourney.js',
             'integration/opaTests.qunit.html',
