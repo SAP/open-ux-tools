@@ -114,7 +114,7 @@ export async function generateFreestyleOPAFiles(
     const testOutDir = join(basePath, 'webapp/test');
 
     const templateUi5Version = getTemplateUi5Version(ui5Version);
-    const appIdWithSlash = appId.replace(/\./g, '/'); // Replace all dots with slashes
+    const appIdWithSlash = appId.replace(/[.]/g, '/'); // Replace all dots with slashes
     const navigationIntent = appId.replace(/[./\\\-\s]/g, ''); // Remove all dots, slashes, dashes, and spaces
 
     const templateFiles = await getFilePaths(freestyleTemplateDir);
