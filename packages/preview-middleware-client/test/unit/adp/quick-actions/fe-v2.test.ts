@@ -26,6 +26,7 @@ import FlexUtils from 'mock/sap/ui/fl/Utils';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import { fetchMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
+import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import ManagedObject from 'mock/sap/ui/base/ManagedObject';
 import {
     ANALYTICAL_TABLE_TYPE,
@@ -547,7 +548,37 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('create table action', () => {
-            test('initialize and execute', async () => {
+            type TableToolbar = 'None' | 'toolbarAggregation' | 'ItemAggregation' | 'smartTableProperty';
+
+            interface TestCase {
+                tableType: string;
+                tableToolbar: TableToolbar;
+                expectedToolbarID: string;
+            }
+            const testCases: TestCase[] = [
+                {
+                    tableType: M_TABLE_TYPE,
+                    tableToolbar: 'toolbarAggregation',
+                    expectedToolbarID: 'dummyMTableToolbar'
+                },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    tableToolbar: 'toolbarAggregation',
+                    expectedToolbarID: 'dummyToolbar'
+                },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    tableToolbar: 'smartTableProperty',
+                    expectedToolbarID: 'dummyPropertyToolbar'
+                },
+                { tableType: SMART_TABLE_TYPE, tableToolbar: 'None', expectedToolbarID: '' },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    tableToolbar: 'ItemAggregation',
+                    expectedToolbarID: 'dummyOverflowToolbar'
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
@@ -558,7 +589,11 @@ describe('FE V2 quick actions', () => {
                             getDomRef: () => ({
                                 scrollIntoView
                             }),
-                            getAggregation: () => 'headerToolbar',
+                            getAggregation: () => {
+                                return {
+                                    id: 'dummyMTableToolbar'
+                                }; // Return a simple string for headerToolbar
+                            },
                             getParent: () => pageView,
                             getHeaderToolbar: () => {
                                 return {
@@ -569,6 +604,63 @@ describe('FE V2 quick actions', () => {
                                     }
                                 };
                             }
+                        };
+                    }
+                    if (id == 'smartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getToolbar: () => {
+                                if (testCase.tableToolbar == 'smartTableProperty') {
+                                    return {
+                                        id: 'dummyPropertyToolbar'
+                                    };
+                                } else {
+                                    return null;
+                                }
+                            },
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    if (testCase.tableToolbar === 'toolbarAggregation') {
+                                        return [
+                                            {
+                                                isA: (type: string) => type === testCase.tableType,
+                                                getAggregation: (aggregationName: string) => {
+                                                    if (aggregationName === 'headerToolbar') {
+                                                        return {
+                                                            id: 'dummyToolbar'
+                                                        }; // Return a simple string for headerToolbar
+                                                    }
+                                                }
+                                            }
+                                        ];
+                                    } else if (testCase.tableToolbar === 'ItemAggregation') {
+                                        return [
+                                            {
+                                                getAggregation: () => null,
+                                                isA: (type: string) => type === 'sap.m.OverflowToolbar',
+                                                id: 'dummyOverflowToolbar'
+                                            }
+                                        ];
+                                    } else {
+                                        return [
+                                            {
+                                                getAggregation: () => null,
+                                                isA: (type: string) => type === 'test'
+                                            }
+                                        ];
+                                    }
+                                }
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
                         };
                     }
                     if (id == 'NavContainer') {
@@ -605,6 +697,7 @@ describe('FE V2 quick actions', () => {
                         return container;
                     }
                 });
+
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
                 const service = new QuickActionService(
@@ -615,69 +708,96 @@ describe('FE V2 quick actions', () => {
                 );
                 await service.init(sendActionMock, subscribeMock);
 
-                await service.reloadQuickActions({
-                    'sap.m.Table': [
-                        {
-                            controlId: 'mTable'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
+                if (testCase.tableType === M_TABLE_TYPE) {
+                    await service.reloadQuickActions({
+                        'sap.m.Table': [
+                            {
+                                controlId: 'mTable'
+                            } as any
+                        ],
 
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                } else if (testCase.tableType === SMART_TABLE_TYPE) {
+                    await service.reloadQuickActions({
+                        'sap.ui.comp.smarttable.SmartTable': [
+                            {
+                                controlId: 'smartTable'
+                            } as any
+                        ],
+
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                }
+               
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
                             title: 'LIST REPORT',
                             actions: [
                                 {
-                                    'kind': 'nested',
+                                    kind: 'nested',
                                     id: 'listReport0-create-table-action',
                                     title: 'Add Custom Table Action',
                                     enabled: true,
                                     children: [
                                         {
                                             children: [],
-                                            enabled: true,
-                                            label: `'MyTable' table`
+                                            enabled: !(testCase.tableToolbar === 'None'),
+                                            label: `'MyTable' table`,
+                                            ...(testCase.tableToolbar === 'None' && {
+                                                tooltip:
+                                                    'This option has been disabled because the table does not have a header toolbar.'
+                                            })
                                         }
                                     ]
                                 },
                                 {
-                                    'children': [
+                                    children: [
                                         {
-                                            'children': [],
+                                            children: [],
                                             enabled: true,
-                                            'label': `'MyTable' table`
+                                            label: `'MyTable' table`
                                         }
                                     ],
-                                    'enabled': true,
-                                    'id': 'listReport0-create-table-custom-column',
-                                    'kind': 'nested',
-                                    'title': 'Add Custom Table Column'
+                                    enabled: true,
+                                    id: 'listReport0-create-table-custom-column',
+                                    kind: 'nested',
+                                    title: 'Add Custom Table Column'
                                 }
                             ]
                         }
                     ])
                 );
-
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
+               
+                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.tableToolbar === 'None' ? 0 : 1);
 
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-                    mockOverlay,
-                    rtaMock,
-                    'AddFragment',
-                    undefined,
-                    {
-                        aggregation: 'content',
-                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                    }
-                );
+                if (testCase.tableToolbar !== 'None') {
+                    expect(OverlayRegistry.getOverlay.mock.calls[0][0].id).toBe(testCase.expectedToolbarID);
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        'AddFragment',
+                        undefined,
+                        {
+                            aggregation: 'content',
+                            defaultAggregationArrayIndex: 1,
+                            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                        }
+                    );
+
+                };
             });
         });
 
@@ -805,6 +925,7 @@ describe('FE V2 quick actions', () => {
                     undefined,
                     {
                         aggregation: 'actions',
+                        'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                     }
                 );
@@ -2227,6 +2348,7 @@ describe('FE V2 quick actions', () => {
                     undefined,
                     {
                         aggregation: 'content',
+                        defaultAggregationArrayIndex: 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                     }
                 );
