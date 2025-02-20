@@ -1,3 +1,5 @@
+import type { WorkspaceConfiguration } from 'vscode';
+
 /**
  * Interface for the yeoman environment.
  */
@@ -15,6 +17,7 @@ export interface YeomanEnvironment {
  */
 export interface VSCodeInstance {
     commands: { executeCommand: (command: string, ...rest: any[]) => Promise<void> };
+    workspace: WorkspaceConfiguration;
 }
 
 type HostEnvironment = 'vscode' | 'bas' | 'cli';

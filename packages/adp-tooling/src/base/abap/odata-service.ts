@@ -4,7 +4,7 @@ import type { AbapServiceProvider, Ui5AppInfoContent } from '@sap-ux/axios-exten
 
 import { fetchMetadata, fetchFallbackMetadata } from './metadata-fetchers';
 
-type DataSources = Record<string, ManifestNamespace.DataSource>;
+export type DataSources = Record<string, ManifestNamespace.DataSource>;
 
 /**
  * Retrieves all data sources from the manifest.

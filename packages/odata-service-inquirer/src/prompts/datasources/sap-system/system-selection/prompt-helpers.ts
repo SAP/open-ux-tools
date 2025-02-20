@@ -16,9 +16,10 @@ import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
 import { type DestinationFilters } from '../../../../types';
 import { convertODataVersionType, PromptState } from '../../../../utils';
-import type { ConnectionValidator, ValidationResult } from '../../../connectionValidator';
+import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { type SystemSelectionAnswerType } from './questions';
+import type { ValidationResult } from '../../../types';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -71,7 +72,11 @@ export async function connectWithBackendSystem(
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
-            if (errorType === ERROR_TYPE.AUTH && backendSystem.username && backendSystem.password) {
+            if (
+                errorType === ERROR_TYPE.AUTH &&
+                typeof backendSystem.username === 'string' &&
+                typeof backendSystem.password === 'string'
+            ) {
                 LoggerHelper.logger.error(
                     t('errors.storedSystemConnectionError', { systemName: backendSystem.name, error: connectValResult })
                 );

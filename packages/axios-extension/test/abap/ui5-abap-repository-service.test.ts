@@ -5,6 +5,8 @@ import mockErrorDetails from './mockResponses/errordetails.json';
 import type { ToolsLogger } from '@sap-ux/logger';
 import * as Logger from '@sap-ux/logger';
 import { WebIDEUsage as WebIDEUsageType, type Destination } from '@sap-ux/btp-utils';
+import { type AxiosRequestConfig, type AxiosResponse } from 'axios';
+import { info } from 'console';
 
 const loggerMock: ToolsLogger = {
     debug: jest.fn(),
@@ -218,7 +220,6 @@ describe('Ui5AbapRepositoryService', () => {
                 .reply(401, 'Deployment failed');
             await expect(service.deploy({ archive, bsp: { name: validApp } })).rejects.toThrowError();
         });
-
         it.each([{ code: 408 }, { code: 504 }])('retry deployment based on error codes', async ({ code }) => {
             const badService = createForAbap({ baseURL: server }).getUi5AbapRepository();
             const mockPut = jest.fn().mockRejectedValue({
@@ -253,6 +254,57 @@ describe('Ui5AbapRepositoryService', () => {
                 // in case of 504 we retry 2 times
                 expect(mockPut).toHaveBeenCalledTimes(3);
             }
+        });
+
+        test('should retry to update repo on timeout with partial data from getInfo on second attempt', async () => {
+            // Create a subclass that exposes the protected updateRepoRequest method for testing only
+            class TestableUi5AbapRepositoryService extends Ui5AbapRepositoryService {
+                public async testUpdateRepoRequest(
+                    isExisting: boolean,
+                    appName: string,
+                    payload: string,
+                    config: AxiosRequestConfig,
+                    tryCount: number
+                ): Promise<AxiosResponse | undefined> {
+                    return this.updateRepoRequest(isExisting, appName, payload, config, tryCount);
+                }
+            }
+
+            const service = new Ui5AbapRepositoryService();
+            service.log = { warn: jest.fn(), info: jest.fn() } as any;
+            const testUi5AbapRepositoryService = new TestableUi5AbapRepositoryService();
+            const appName = 'test ';
+            const payload = '{ "some" : "data" }';
+            const config = {};
+            testUi5AbapRepositoryService.getInfo = jest.fn().mockResolvedValue({});
+            testUi5AbapRepositoryService.put = jest.fn().mockResolvedValue({ status: 200 });
+            testUi5AbapRepositoryService.log = {
+                warn: jest.fn(),
+                info: jest.fn()
+            } as any;
+
+            // Call the testUpdateRepoRequest method with tryCount = 2 to simulate the second attempt
+            const response = await testUi5AbapRepositoryService.testUpdateRepoRequest(
+                false,
+                appName,
+                payload,
+                config,
+                2
+            );
+            expect(response).toBeDefined();
+            // Test if the put method was called to update the existing repo
+            expect(testUi5AbapRepositoryService.put).toHaveBeenCalledWith(
+                `/Repositories('${encodeURIComponent(appName)}')`,
+                payload,
+                config
+            );
+            // Check that the warning message was logged
+            expect(testUi5AbapRepositoryService.log.warn).toHaveBeenCalledWith(
+                'Warning: The BSP application deployment timed out while waiting for a response from the backend. This may indicate the deployment was not finished. To resolve this, consider increasing the value of the HTML5.Timeout property for the destination.'
+            );
+            expect(testUi5AbapRepositoryService.log.info).toHaveBeenCalledWith(
+                `${appName} found on target system: true`
+            );
         });
 
         test('testMode enabled', async () => {
@@ -408,6 +460,10 @@ describe('Ui5AbapRepositoryService', () => {
             expect(xmlPayload).toContain(`<id>${publicUrl}/Repositories('special&amp;name')</id>`);
             // ABAP frontend reflects
             expect(service.getAbapFrontendUrl()).toEqual(publicUrl);
+
+            const publicS4HanaCloudUrl = 'https://my12345-api.lab.s4hana.cloud.sap';
+            const s4HanaCloudService = new ServiceForTesting({ publicUrl: publicS4HanaCloudUrl });
+            expect(s4HanaCloudService.getAbapFrontendUrl()).toEqual('https://my12345.lab.s4hana.cloud.sap');
         });
     });
 });

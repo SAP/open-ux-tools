@@ -1,5 +1,51 @@
 # @sap-ux/axios-extension
 
+## 1.18.5
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+
+## 1.18.4
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+
+## 1.18.3
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+
+## 1.18.2
+
+### Patch Changes
+
+-   e516306: Handle partial deployment timeout by updating repo on second retry when timeout occurs.
+
+## 1.18.1
+
+### Patch Changes
+
+-   1559aee: add entry for s4 hana cloud urls with .lab
+
+## 1.18.0
+
+### Minor Changes
+
+-   2e3c15e: Proper check for cloud ABAP systems
+
+## 1.17.8
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+
 ## 1.17.7
 
 ### Patch Changes

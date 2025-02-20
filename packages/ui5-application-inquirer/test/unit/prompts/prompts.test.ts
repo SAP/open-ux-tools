@@ -8,7 +8,7 @@ import { promptNames } from '../../../src/types';
 import { initI18nUi5AppInquirer } from '../../../src/i18n';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import { defaultVersion, minUi5VersionSupportingCodeAssist, ui5ThemeIds } from '@sap-ux/ui5-info';
-import { type ListQuestion } from '@sap-ux/inquirer-common';
+import { ui5VersionsGrouped, type ListQuestion } from '@sap-ux/inquirer-common';
 import { inc } from 'semver';
 
 jest.mock('@sap-ux/project-input-validator', () => {
@@ -303,7 +303,7 @@ describe('getQuestions', () => {
 
         // This choice is not a maintained version and so the closest maintained version should be added
         const defaultChoice = {
-            'name': '1.120.99',
+            'name': '1.120.99 (Source system version)',
             'value': '1.120.99'
         };
         questions = getQuestions(ui5Vers, {
@@ -318,6 +318,14 @@ describe('getQuestions', () => {
             ...expectedUI5VerChoices
         ]);
         expect((ui5VersionPrompt?.default as Function)()).toEqual('1.120.99');
+
+        //'createPromptOptions - sap system UI5 version is set as default choice'
+        expect(((ui5VersionPrompt as ListQuestion)?.choices as Function)()).toEqual([
+            { 'name': '1.120.99 (Source system version)', 'value': '1.120.99' },
+            { 'name': '1.118.0 - (Maintained version)', 'value': '1.118.0' },
+            { 'name': '1.117.0 - (Maintained version)', 'value': '1.117.0' },
+            { 'name': '1.116.0 - (Out of maintenance version)', 'value': '1.116.0' }
+        ]);
     });
 
     test('getQuestions, prompt: `addDeployConfig` conditions and message based on mta.yaml discovery', async () => {

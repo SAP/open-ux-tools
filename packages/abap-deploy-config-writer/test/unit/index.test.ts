@@ -54,6 +54,11 @@ describe('generate', () => {
                 deployFile: 'deploy-config.yaml'
             },
             isAppStudio: false
+        },
+        {
+            name: 'test.ui5.typescript.library1',
+            config,
+            isAppStudio: false
         }
     ];
 

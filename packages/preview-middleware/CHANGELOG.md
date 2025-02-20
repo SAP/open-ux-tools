@@ -1,5 +1,385 @@
 # @sap-ux/preview-middleware
 
+## 0.17.28
+
+### Patch Changes
+
+-   d95bade: fix: Fixed various bugs related to Enable Variant Management for Tables quick action. It was unnecessarily disabled in some apps on List Report; changing Object Page table type led to enabling this action again; action is disabled now for custom tables, where it can't be applied.
+
+## 0.17.27
+
+### Patch Changes
+
+-   7c76e7c: fix: unify contextual menu for all nodes in outline panel.
+
+## 0.17.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.127
+-   @sap-ux/project-access@1.29.6
+
+## 0.17.25
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
+## 0.17.24
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+-   Updated dependencies [59453ba]
+    -   @sap-ux/adp-tooling@0.12.126
+
+## 0.17.23
+
+### Patch Changes
+
+-   b214776: fix: remove hard coded usage of webapp folder
+
+## 0.17.22
+
+### Patch Changes
+
+-   9bccf03: feat: add support for type component
+
+## 0.17.21
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/adp-tooling@0.12.125
+    -   @sap-ux/project-access@1.29.5
+
+## 0.17.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.124
+
+## 0.17.19
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/adp-tooling@0.12.123
+
+## 0.17.18
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.17.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.122
+
+## 0.17.16
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
+## 0.17.15
+
+### Patch Changes
+
+-   5c127cf: fix: ui5 version protocol for karma tests
+
+## 0.17.14
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/adp-tooling@0.12.121
+
+## 0.17.13
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/adp-tooling@0.12.120
+
+## 0.17.12
+
+### Patch Changes
+
+-   740f4d9: fix: CPE Quick action bug fix in ALP v4 projects. Add Custom Table Action worked incorrectly on Analytical Pages with multiple action toolbars in charts and tables.
+    Some V4 Quick Action code refactoring to optimize
+
+## 0.17.11
+
+### Patch Changes
+
+-   6b55228: Bind i18n models with namespace
+
+## 0.17.10
+
+### Patch Changes
+
+-   1f0bb25: fix: refactor object clones
+
+## 0.17.9
+
+### Patch Changes
+
+-   61edb7b: Fixed "Enable/Disable Semantic Date Range in Filter Bar" quick action in SAP Fiori Elements for OData V2 applications when using UI5 version lower than 1.126.
+
+## 0.17.8
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/adp-tooling@0.12.119
+
+## 0.17.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.118
+
+## 0.17.6
+
+### Patch Changes
+
+-   1f98f07: Add stable ids in AddFragment and ControllerExtension forms
+
+## 0.17.5
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/adp-tooling@0.12.117
+
+## 0.17.4
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.116
+
+## 0.17.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.115
+
+## 0.17.2
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/adp-tooling@0.12.114
+
+## 0.17.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.113
+-   @sap-ux/project-access@1.29.1
+
+## 0.17.0
+
+### Minor Changes
+
+-   0c3964e: add url param viewCache in case it is missing
+
+## 0.16.175
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
+## 0.16.174
+
+### Patch Changes
+
+-   1586cc3: CPE: Enable Variant Management in Tables and Charts Quick Action
+
+## 0.16.173
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.112
+
+## 0.16.172
+
+### Patch Changes
+
+-   b88531b: fix: Enabled missing quick actions on ALP in V2 adp projects
+
+## 0.16.171
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.111
+
+## 0.16.170
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/adp-tooling@0.12.110
+
+## 0.16.169
+
+### Patch Changes
+
+-   2a9c788: Fixed wrong initial state for "Disable Semantic Date Range in Filter Bar" Quick Action.
+
+## 0.16.168
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.109
+
+## 0.16.167
+
+### Patch Changes
+
+-   1358041: fix: Manifest change for enabling semantic date range has no effect on running app with UI5 latest snapshot (=>1.132)
+
+## 0.16.166
+
+### Patch Changes
+
+-   f115bfa: fix: update quick action list on external changes
+-   Updated dependencies [f115bfa]
+    -   @sap-ux/adp-tooling@0.12.108
+
+## 0.16.165
+
+### Patch Changes
+
+-   Updated dependencies [030857d]
+    -   @sap-ux/adp-tooling@0.12.107
+
+## 0.16.164
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.106
+
+## 0.16.163
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+-   Updated dependencies [19d51f3]
+    -   @sap-ux/adp-tooling@0.12.105
+
+## 0.16.162
+
+### Patch Changes
+
+-   8b7ed76: Fixed outline not being displayed in SAP Fiori Elements for OData V4 applications with multiple views.
+
+## 0.16.161
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.104
+
+## 0.16.160
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.103
+
+## 0.16.159
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.102
+
+## 0.16.158
+
+### Patch Changes
+
+-   d964a24: feat: add option to convert test runners to preview-config command
+
+## 0.16.157
+
+### Patch Changes
+
+-   d529c38: Fixed Quick Actions not working after trying to open multiple dialogs and Quick Actions that create manifest changes in SAP Fiori Elements for OData V2 applications not showing correct state when there are unsaved manifest changes.
+
+## 0.16.156
+
+### Patch Changes
+
+-   0633837: Added quick action to enable Inline Rows Creation in the Object Page tables
+
+## 0.16.155
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.101
+
+## 0.16.154
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.100
+
+## 0.16.153
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.99
+
+## 0.16.152
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/adp-tooling@0.12.98
+
+## 0.16.151
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/adp-tooling@0.12.97
+
+## 0.16.150
+
+### Patch Changes
+
+-   5c4dc74: feat: add a more precise method to determine the current UI5 version
+
+## 0.16.149
+
+### Patch Changes
+
+-   77cf576: Load changes from workspace in Preview after deployment
+
+## 0.16.148
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/adp-tooling@0.12.96
+
+## 0.16.147
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/adp-tooling@0.12.95
+
 ## 0.16.146
 
 ### Patch Changes

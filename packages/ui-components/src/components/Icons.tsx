@@ -7,7 +7,9 @@ const COLORS = {
     warning: 'var(--vscode-notificationsWarningIcon-foreground)',
     error: 'var( --vscode-notificationsErrorIcon-foreground)',
     info: 'var(--vscode-notificationsInfoIcon-foreground)',
-    focus: 'var(--vscode-focusBorder)'
+    focus: 'var(--vscode-focusBorder)',
+    thumbOn: 'var(--vscode-button-foreground)',
+    thumbOff: 'var(--vscode-button-secondaryForeground)'
 };
 
 export enum UiIcons {
@@ -140,6 +142,8 @@ export enum UiIcons {
     Star = 'Star',
     StarActive = 'StarActive',
     Success = 'Success',
+    SwitchOff = 'SwitchOff',
+    SwitchOn = 'SwitchOn',
     Table = 'Table',
     Tags = 'Tags',
     Task = 'Task',
@@ -1236,15 +1240,17 @@ export function initIcons(): void {
             [UiIcons.Info]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        fillRule="evenodd"
-                        clipRule="evenodd"
-                        d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 16C12.4183 16 16 12.4183 16 8C16 3.58172 12.4183 0 8 0C3.58172 0 0 3.58172 0 8C0 12.4183 3.58172 16 8 16Z"
-                        fill={COLORS.info}
-                    />
-                    <path
+                        id="ico_info"
                         fillRule="evenodd"
                         clipRule="evenodd"
                         d="M7.5 5V4H8.5V5H7.5ZM7.5 12V6H8.5V12H7.5Z"
+                        fill={COLORS.info}
+                    />
+                    <path
+                        id="oval"
+                        fillRule="evenodd"
+                        clipRule="evenodd"
+                        d="M8 15C11.866 15 15 11.866 15 8C15 4.13401 11.866 1 8 1C4.13401 1 1 4.13401 1 8C1 11.866 4.13401 15 8 15ZM8 14C11.3137 14 14 11.3137 14 8C14 4.68629 11.3137 2 8 2C4.68629 2 2 4.68629 2 8C2 11.3137 4.68629 14 8 14Z"
                         fill={COLORS.info}
                     />
                 </svg>
@@ -1875,6 +1881,21 @@ export function initIcons(): void {
                     />
                 </svg>
             ),
+            [UiIcons.SwitchOff]: (
+                <svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M1 1L7 1" stroke={COLORS.thumbOff} strokeLinecap="round" />
+                </svg>
+            ),
+            [UiIcons.SwitchOn]: (
+                <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M0.5 3.5L2.5 5.5L7.5 0.5"
+                        stroke={COLORS.thumbOn}
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                    />
+                </svg>
+            ),
             [UiIcons.Table]: (
                 <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
                     <path
@@ -1941,10 +1962,15 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.TextGrammarDismiss]: (
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path 
-                        d="M17.5 12C20.5376 12 23 14.4624 23 17.5C23 20.5376 20.5376 23 17.5 23C14.4624 23 12 20.5376 12 17.5C12 14.4624 14.4624 12 17.5 12ZM15.0238 15.0241C14.8285 15.2194 14.8285 15.536 15.0238 15.7312L16.793 17.501L15.0264 19.2675C14.8311 19.4628 14.8311 19.7793 15.0264 19.9746C15.2217 20.1699 15.5382 20.1699 15.7335 19.9746L17.5 18.208L19.2694 19.9768C19.4647 20.1721 19.7812 20.1721 19.9765 19.9768C20.1718 19.7816 20.1718 19.465 19.9765 19.2697L18.208 17.501L19.9793 15.7313C20.1745 15.536 20.1745 15.2194 19.9793 15.0242C19.784 14.8289 19.4674 14.8289 19.2722 15.0242L17.501 16.794L15.7309 15.0241C15.5356 14.8289 15.2191 14.8289 15.0238 15.0241ZM11.0189 17H2.75L2.64823 17.0068C2.28215 17.0565 2 17.3703 2 17.75C2 18.1642 2.33579 18.5 2.75 18.5H11.0764C11.0261 18.174 11 17.8401 11 17.5C11 17.3318 11.0064 17.165 11.0189 17ZM11.7322 14.5H2.75C2.33579 14.5 2 14.1642 2 13.75C2 13.3703 2.28215 13.0565 2.64823 13.0068L2.75 13H12.8096C12.3832 13.4443 12.0194 13.949 11.7322 14.5ZM21.25 9H2.75L2.64823 9.00685C2.28215 9.05651 2 9.3703 2 9.75C2 10.1642 2.33579 10.5 2.75 10.5H21.25L21.3518 10.4932C21.7178 10.4435 22 10.1297 22 9.75C22 9.33579 21.6642 9 21.25 9ZM21.25 5H2.75L2.64823 5.00685C2.28215 5.05651 2 5.3703 2 5.75C2 6.16421 2.33579 6.5 2.75 6.5H21.25L21.3518 6.49315C21.7178 6.44349 22 6.1297 22 5.75C22 5.33579 21.6642 5 21.25 5Z" 
-                        fill={COLORS.default} 
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 1H1V2H15V1Z" fill={COLORS.default} />
+                    <path d="M15 4H1V5H15V4Z" fill={COLORS.default} />
+                    <path d="M1 7H15V8H1V7Z" fill={COLORS.default} />
+                    <path d="M9 10H1V11H9V10Z" fill={COLORS.default} />
+                    <path d="M1 13H9V14H1V13Z" fill={COLORS.default} />
+                    <path
+                        d="M10.1465 13.1465L11.7929 11.5L10.1465 9.85359L10.8536 9.14648L12.5 10.7929L14.1465 9.14648L14.8536 9.85359L13.2071 11.5L14.8536 13.1465L14.1465 13.8536L12.5 12.2071L10.8536 13.8536L10.1465 13.1465Z"
+                        fill={COLORS.default}
                     />
                 </svg>
             ),

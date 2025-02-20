@@ -1,4 +1,8 @@
-import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
+import {
+    type Destination,
+    createOAuth2UserTokenExchangeDest,
+    generateABAPCloudDestinationName
+} from '@sap-ux/btp-utils';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     type FileBrowserQuestion,
@@ -7,17 +11,20 @@ import {
     getCFAbapInstanceChoices,
     withCondition
 } from '@sap-ux/inquirer-common';
-import { type ServiceInstanceInfo, apiGetInstanceCredentials, cfGetTarget } from '@sap/cf-tools';
+import type { OdataVersion } from '@sap-ux/odata-service-writer';
+import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
-import { PromptState, getDefaultChoiceIndex, getPromptHostEnvironment } from '../../../../utils';
+import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
+import type { ValidationResult } from '../../../types';
 import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames } from '../new-system/types';
 import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
+import { connectWithDestination } from '../system-selection/prompt-helpers';
 import { validateServiceKey } from '../validators';
 
 const abapOnBtpPromptNamespace = 'abapOnBtp';
@@ -40,7 +47,7 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
 }
 
 /**
- * Get the questions for the ABAP on BTP system. The questions will prompt the user for the system type (Cloud Foundry, Service Key, Re-entrance Ticket).
+ * Get the questions for the ABAP on BTP system within the VSCode platform. The questions will prompt the user for the system type (Cloud Foundry, Service Key, Re-entrance Ticket).
  *
  * @param promptOptions The prompt options which control the service selection and system name]
  * @returns The list of questions for the ABAP on BTP system
@@ -117,26 +124,51 @@ export function getAbapOnBTPSystemQuestions(
     }
 
     // Service selection prompt
-    questions.push(...getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions));
+    questions.push(
+        ...getSystemServiceQuestion(connectValidator, abapOnBtpPromptNamespace, promptOptions?.serviceSelection)
+    );
     return questions;
 }
 
 /**
- * Validate the service info for the ABAP on BTP system. This function will validate the service key file and the connection to the ABAP system.
- * Updates the prompt state with the connected system.
+ * Validate the service info (returned from cf-tools APIs) for an ABAP on BTP system. This function will validate the service key file, or on BAS will create a new destination,
+ * and validate the connection to the ABAP system. Updates the prompt state with the connected system to be later used for catalog service selection.
  *
- * @param abapService the abap service as provided by CF tools
+ * @param abapService the abap service as provided by CF tools {@link ServiceInstanceInfo}
  * @param connectionValidator connection validator instance
+ * @param requiredOdataVersion
  * @param isCli validation on CLI ill throw rather than returning a validation message as users cannot change previous answers on CLI
  * @returns true if the service info is valid, a validation message if the service info is invalid, or a validation link if the service info is not validated but some help is available
  */
-async function validateServiceInfo(
+async function validateCFServiceInfo(
     abapService: ServiceInstanceInfo,
     connectionValidator: ConnectionValidator,
+    requiredOdataVersion?: OdataVersion,
     isCli = false
-): Promise<boolean | string | IValidationLink> {
-    const uaaCreds = await apiGetInstanceCredentials(abapService.label);
-    const valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
+): Promise<ValidationResult> {
+    const cfAbapServiceName = abapService.label;
+    const uaaCreds = await apiGetInstanceCredentials(cfAbapServiceName); // should be abapService.serviceName in BAS?
+
+    if (!uaaCreds?.credentials?.uaa) {
+        return t('errors.cfInstanceCredentialsNotReturned', { serviceInstanceName: cfAbapServiceName });
+    }
+
+    let valResult: ValidationResult = true;
+    let destination: Destination | undefined;
+    if (getPromptHostEnvironment() === hostEnvironment.bas) {
+        destination = await createOAuth2UserTokenExchangeDest(
+            cfAbapServiceName,
+            {
+                uaaCredentials: uaaCreds.credentials.uaa,
+                hostUrl: uaaCreds.credentials.url
+            },
+            LoggerHelper.logger
+        );
+        valResult = await connectWithDestination(destination, connectionValidator, requiredOdataVersion);
+    } else {
+        valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
+    }
+
     if (!isCli && valResult !== true) {
         return valResult;
     }
@@ -153,15 +185,9 @@ async function validateServiceInfo(
     }
     // CLI only ^^^
 
-    if (connectionValidator.serviceProvider) {
-        // Create a unique connected system name based on the selected ABAP service
-        const cfTarget = await cfGetTarget(true);
-        connectionValidator.connectedSystemName = `abap-cloud-${abapService.label}-${cfTarget.org}-${cfTarget.space}`
-            .replace(/[^\w]/gi, '-')
-            .toLowerCase();
-        PromptState.odataService.connectedSystem = {
-            serviceProvider: connectionValidator.serviceProvider
-        };
+    if (connectionValidator.serviceProvider && getPromptHostEnvironment() !== hostEnvironment.bas) {
+        // Connected system name is only used for VSCode as a default stored system name
+        connectionValidator.connectedSystemName = await generateABAPCloudDestinationName(cfAbapServiceName);
     }
     return true;
 }
@@ -171,14 +197,22 @@ async function validateServiceInfo(
  * If the Cloud Foundry connection fails, a warning message will be displayed.
  *
  * @param connectionValidator The connection validator
+ * @param promptNamespace
+ * @param requiredOdataVersion
  * @returns The Cloud Foundry ABAP system discovery prompt
  */
-export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): Question[] {
+export function getCFDiscoverPrompts(
+    connectionValidator: ConnectionValidator,
+    promptNamespace?: string,
+    requiredOdataVersion?: OdataVersion
+): Question[] {
     let choices: ListChoiceOptions<ServiceInstanceInfo>[] = [];
+    const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${abapOnBtpPromptNames.cloudFoundryAbapSystem}`;
+
     const questions: Question[] = [
         {
             type: 'list',
-            name: abapOnBtpPromptNames.cloudFoundryAbapSystem,
+            name: promptName,
             guiOptions: {
                 breadcrumb: true,
                 applyDefaultWhenDirty: true
@@ -195,9 +229,14 @@ export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): 
             },
             default: () => getDefaultChoiceIndex(choices as Answers[]),
             message: t('prompts.cloudFoundryAbapSystem.message'),
-            validate: async (abapService: ServiceInstanceInfo): Promise<string | boolean | IValidationLink> => {
+            validate: async (abapService: ServiceInstanceInfo): Promise<ValidationResult> => {
                 if (abapService) {
-                    return await validateServiceInfo(abapService, connectionValidator);
+                    return await validateCFServiceInfo(
+                        abapService,
+                        connectionValidator,
+                        requiredOdataVersion,
+                        getPromptHostEnvironment() === hostEnvironment.cli
+                    );
                 }
                 const errorType = errorHandler.getCurrentErrorType();
                 if (errorType === ERROR_TYPE.NO_ABAP_ENVS) {
@@ -216,7 +255,7 @@ export function getCFDiscoverPrompts(connectionValidator: ConnectionValidator): 
             when: async (answers: AbapOnBtpAnswers): Promise<boolean> => {
                 const abapService = answers?.[abapOnBtpPromptNames.cloudFoundryAbapSystem];
                 if (abapService) {
-                    await validateServiceInfo(abapService, connectionValidator, true);
+                    await validateCFServiceInfo(abapService, connectionValidator, requiredOdataVersion, true);
                 }
                 return false;
             },

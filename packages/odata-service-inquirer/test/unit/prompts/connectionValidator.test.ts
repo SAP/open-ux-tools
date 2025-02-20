@@ -637,7 +637,8 @@ describe('ConnectionValidator', () => {
                         text: 'Need help with this error?',
                         url: `https://ga.support.sap.com/dtp/viewer/index.html#/tree/${HELP_TREE.FIORI_TOOLS}/actions/${HELP_NODES.DESTINATION_NOT_FOUND}`
                     },
-                    message: t('errors.urlNotFound')
+                    message:
+                        'The destination target URL cannot be found. The request failed with status code 404. Please check the destination target URL connectivity in your BTP cockpit.'
                 }
             })
         );

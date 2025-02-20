@@ -1,5 +1,6 @@
 const path = require('path');
 let pathMappingFn = null;
+let ui5VersionCache = null;
 
 /**
  * Retrieves the file map from the UI5 project.
@@ -64,7 +65,7 @@ module.exports = {
      */
     initUi5MappingStrategy: async function (options) {
         if (pathMappingFn && !options.force) {
-            return pathMappingFn;
+            return { pathMappingFn, ui5VersionInfo: ui5VersionCache };
         }
 
         const { graphFromPackageDependencies } = await import('@ui5/project/graph');
@@ -76,7 +77,7 @@ module.exports = {
         const rootProject = graph.getRoot();
 
         let { ui5PathMapping, ui5VersionInfo } = await getFileMapFromUI5(graph, rootProject);
-
+        ui5VersionCache = ui5VersionInfo;
         pathMappingFn = (path) => {
             let targetPath = ui5PathMapping[path];
             if (!targetPath) {

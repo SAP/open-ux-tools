@@ -1,5 +1,23 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.5.11
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.5.10
+
+### Patch Changes
+
+-   f115bfa: fix: update quick action list on external changes
+
+## 0.5.9
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
 ## 0.5.8
 
 ### Patch Changes

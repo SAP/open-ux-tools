@@ -1,0 +1,14 @@
+<?xml version="1.0" ?>
+<library xmlns="http://www.sap.com/sap.ui.library.xsd">
+	<name><%= libraryNamespace %></name>
+	<vendor><%= author %></vendor>
+	<version>${version}</version>
+	<copyright>${copyright}</copyright>
+	<title><%= libraryName %></title>
+	<documentation>Some description about <%= libraryName %></documentation>
+	<dependencies>
+		<dependency>
+			<libraryName>sap.ui.core</libraryName>
+		</dependency>
+	</dependencies>
+</library>

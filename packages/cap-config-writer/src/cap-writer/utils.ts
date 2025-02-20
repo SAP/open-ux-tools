@@ -1,5 +1,5 @@
 import { t } from '../i18n';
-import type { CapRuntime } from '@sap-ux/odata-service-inquirer';
+import type { CapRuntime } from '../cap-config/types';
 
 /**
  * Returns the url to the specified cap app as served by `cds serve` or `cds watch`.

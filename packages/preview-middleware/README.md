@@ -188,7 +188,7 @@ return flp.router
 
 
 ## [Migration](#migration)
-If you have no custom modifications in the local Fiori Launchpad sandbox files (`webapp/test/flpSandbox.html` or `webapp/test/flpSandboxMockserver.html`), the conversion is finished.
+If you have no custom modifications in the local Fiori Launchpad sandbox files (`<webapp>/test/flpSandbox.html` or `<webapp>/test/flpSandboxMockserver.html`), the conversion is finished.
 
 If you have custom modifications in the local Fiori Launchpad sandbox files, you need to migrate them into a custom .js or .ts file (depending on your setup) and integrate this file as a custom `init` script into the configuration options of the middleware.
 

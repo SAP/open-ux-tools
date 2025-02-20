@@ -5,7 +5,7 @@ import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
 import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
-import { readFileSync, existsSync, writeFileSync } from 'fs';
+import * as fs from 'fs';
 
 import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
@@ -13,7 +13,12 @@ import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import { ManifestService, ODataService } from '../../../src';
 import { AdpPreview } from '../../../src/preview/adp-preview';
 import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
+import * as helper from '../../../src/base/helper';
+import * as editors from '../../../src/writer/editors';
+import * as manifestService from '../../../src/base/abap/manifest-service';
 import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
+import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
+import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -93,12 +98,12 @@ jest.mock('fs', () => ({
     copyFileSync: jest.fn()
 }));
 
-const mockWriteFileSync = writeFileSync as jest.Mock;
-const mockExistsSync = existsSync as jest.Mock;
+const mockWriteFileSync = fs.writeFileSync as jest.Mock;
+const mockExistsSync = fs.existsSync as jest.Mock;
 
 describe('AdaptationProject', () => {
     const backend = 'https://sap.example';
-    const descriptorVariant = readFileSync(
+    const descriptorVariant = fs.readFileSync(
         join(__dirname, '../../fixtures/adaptation-project/webapp', 'manifest.appdescr_variant'),
         'utf-8'
     );
@@ -143,6 +148,9 @@ describe('AdaptationProject', () => {
                 },
                 getName() {
                     return 'adp.project';
+                },
+                getNamespace() {
+                    return 'adp/project';
                 }
             };
         }
@@ -496,7 +504,61 @@ describe('AdaptationProject', () => {
                 middlewareUtil,
                 logger
             );
+            jest.spyOn(helper, 'getVariant').mockReturnValue({
+                content: [],
+                id: 'adp/project',
+                layer: 'VENDOR',
+                namespace: 'test',
+                reference: 'adp/project'
+            });
 
+            jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
+                target: {
+                    destination: 'testDestination'
+                },
+                ignoreCertErrors: false
+            });
+            jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
+            jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
+                getDataSourceMetadata: jest.fn().mockResolvedValue(`
+                    <?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+    <edmx:DataServices>
+        <Schema Namespace="com.sap.gateway.srvd.c_salesordermanage_sd.v0001" Alias="SAP__self">
+         </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>`),
+                getManifestDataSources: jest.fn().mockReturnValue({
+                    mainService: {
+                        type: 'OData',
+                        uri: 'main/service/uri',
+                        settings: {
+                            annotations: ['annotation0']
+                        }
+                    },
+                    annotation0: {
+                        type: 'ODataAnnotation',
+                        uri: `ui5://adp/project/annotation0.xml`
+                    },
+                    secondaryService: {
+                        type: 'OData',
+                        uri: 'secondary/service/uri',
+                        settings: {
+                            annotations: []
+                        }
+                    }
+                })
+            } as any);
+            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValue(false);
+            jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
+                {
+                    namespace: 'com.sap.gateway.srvd.c_salesordermanage_sd.v0001',
+                    alias: 'test'
+                }
+            ]);
+            jest.spyOn(editors, 'generateChange').mockResolvedValue({
+                commit: jest.fn().mockResolvedValue('commited')
+            } as any);
             const app = express();
             app.use(express.json());
             adp.addApis(app);
@@ -709,6 +771,15 @@ describe('AdaptationProject', () => {
 
             const data = JSON.parse(response.text) as MetadataResponse;
             expect(data.message).toEqual('No data sources found in the manifest');
+        });
+
+        test('GET /adp/api/annotation', async () => {
+            const response = await server.get('/adp/api/annotation').send().expect(200);
+
+            const message = response.text;
+            expect(message).toMatchInlineSnapshot(
+                `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`
+            );
         });
     });
 });

@@ -4,6 +4,13 @@ import { RouterModuleType, appRouterPromptNames } from '../src/types';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
 import { getAppRouterQuestions } from '../src/prompts/app-router-prompts';
 
+let cfAbapServices: any[] = [];
+
+jest.mock('@sap/cf-tools', () => ({
+    ...jest.requireActual('@sap/cf-tools'),
+    apiGetServicesInstancesFilteredByType: jest.fn().mockImplementation(() => cfAbapServices)
+}));
+
 describe('App Router Prompt Generation Tests', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -232,7 +239,8 @@ describe('App Router Prompt Generation Tests', () => {
     });
 
     describe('getServiceProvider', () => {
-        it('should return a valid service provider prompt when enabled', async () => {
+        it('should handle flow when no service provider found', async () => {
+            cfAbapServices = [];
             const promptOptions: CfAppRouterDeployConfigPromptOptions = {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.addABAPServiceBinding]: true
@@ -252,7 +260,71 @@ describe('App Router Prompt Generation Tests', () => {
                 })
             ).toEqual(true);
             expect((addServiceProviderPrompt?.validate as Function)('choice')).toBe(true);
-            expect((addServiceProviderPrompt as ListQuestion)?.choices).toBeDefined();
+            expect(await ((addServiceProviderPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
+                [
+                  {
+                    "name": "errors.abapEnvsUnavailable",
+                    "value": "NO_ABAP_ENVS",
+                  },
+                ]
+            `);
+        });
+
+        it('should return a valid service provider prompt when enabled', async () => {
+            // Services
+            cfAbapServices = [
+                {
+                    guid: '658bd07a-eda6-40bc-b17a-AAAA',
+                    serviceName: 'serviceName1',
+                    label: 'serviceLabel1',
+                    plan: 'standard',
+                    'tags': []
+                },
+                {
+                    guid: '658bd07a-eda6-40bc-b17a-BBBB',
+                    serviceName: 'serviceName2',
+                    label: 'serviceLabel2',
+                    plan: 'standard',
+                    'tags': []
+                }
+            ];
+            const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+                [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+                [appRouterPromptNames.addABAPServiceBinding]: true
+            };
+            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
+            const addServiceProviderPrompt = questions.find(
+                (question) => question.name === appRouterPromptNames.abapServiceProvider
+            );
+            expect(addServiceProviderPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.abapEnvBindingBreadcrumbMessage'));
+            expect(addServiceProviderPrompt?.message).toBe(t('prompts.selectServiceMessage'));
+            expect(addServiceProviderPrompt?.type).toBe('list');
+            expect((addServiceProviderPrompt?.default as Function)()).toBe(t('errors.abapEnvsUnavailable'));
+            expect(
+                (addServiceProviderPrompt?.when as Function)({
+                    [appRouterPromptNames.routerType]: RouterModuleType.Standard,
+                    [appRouterPromptNames.addABAPServiceBinding]: true
+                })
+            ).toEqual(true);
+            expect((addServiceProviderPrompt?.validate as Function)('choice')).toBe(true);
+            expect(await ((addServiceProviderPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
+                [
+                  {
+                    "name": "serviceLabel1",
+                    "value": {
+                      "label": "serviceLabel1",
+                      "service": "serviceName1",
+                    },
+                  },
+                  {
+                    "name": "serviceLabel2",
+                    "value": {
+                      "label": "serviceLabel2",
+                      "service": "serviceName2",
+                    },
+                  },
+                ]
+            `);
         });
 
         it('should not return service provider prompt when disabled', async () => {

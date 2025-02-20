@@ -10,7 +10,6 @@ import { getOverlay } from '../cpe/utils';
 import UI5Element from 'sap/ui/core/Element';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-
 /**
  * Gets app component of a v4 project.
  *
@@ -85,20 +84,29 @@ export function getConfigMapControlIdMap(page: string | undefined, propertyPathS
 }
 
 /**
-* Get the modified value for a control.
-* @param modifiedControl - The modified control.
-* @param flexSettings - Flex Settings of the control.
-* @param propertyChanges - The change object
-* 
-* @returns  A Promise resolving to an array of FlexCommand objects.
-*/
-export async function createManifestPropertyChange(modifiedControl: UI5Element, flexSettings: FlexSettings, propertyChanges: Record<string, string | string[] | boolean | number | object | undefined>): Promise<FlexCommand | undefined> {
+ * Get the modified value for a control.
+ * @param modifiedControl - The modified control.
+ * @param flexSettings - Flex Settings of the control.
+ * @param propertyChanges - The change object
+ * @param propertyPathExtraSegments - optional path segments which are added to the default modified control manifest path
+ *
+ * @returns  A Promise resolving to an array of FlexCommand objects.
+ */
+export async function createManifestPropertyChange(
+    modifiedControl: UI5Element,
+    flexSettings: FlexSettings,
+    propertyChanges: Record<string, string | string[] | boolean | number | object | undefined>,
+    propertyPathExtraSegments?: string[]
+): Promise<FlexCommand | undefined> {
     const overlay = getOverlay(modifiedControl);
     if (!overlay) {
         return undefined;
     }
     const overlayData = overlay?.getDesignTimeMetadata().getData();
-    const manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
+    let manifestPropertyPath = overlayData.manifestPropertyPath(modifiedControl);
+    if (propertyPathExtraSegments) {
+        manifestPropertyPath += '/' + propertyPathExtraSegments.join('/');
+    }
     const [manifestPropertyChange] = overlayData.manifestPropertyChange(
         propertyChanges,
         manifestPropertyPath,

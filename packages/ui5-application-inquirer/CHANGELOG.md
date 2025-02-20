@@ -1,5 +1,155 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.9.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/inquirer-common@0.6.15
+
+## 0.9.14
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/inquirer-common@0.6.14
+
+## 0.9.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.13
+
+## 0.9.12
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/inquirer-common@0.6.12
+
+## 0.9.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.11
+
+## 0.9.10
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/inquirer-common@0.6.10
+
+## 0.9.9
+
+### Patch Changes
+
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
+## 0.9.8
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.8
+
+## 0.9.7
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/inquirer-common@0.6.7
+
+## 0.9.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/inquirer-common@0.6.6
+
+## 0.9.5
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 0.9.4
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/inquirer-common@0.6.4
+
+## 0.9.3
+
+### Patch Changes
+
+-   Updated dependencies [40ba546]
+    -   @sap-ux/inquirer-common@0.6.3
+
+## 0.9.2
+
+### Patch Changes
+
+-   Updated dependencies [dac696a]
+    -   @sap-ux/inquirer-common@0.6.2
+
+## 0.9.1
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.1
+
+## 0.9.0
+
+### Minor Changes
+
+-   112d29a: Include the name label for default UI5 choice
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 0.8.14
+
+### Patch Changes
+
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 0.8.13
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/inquirer-common@0.5.14
+
+## 0.8.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.13
+
+## 0.8.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.5.12
+
+## 0.8.10
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
 ## 0.8.9
 
 ### Patch Changes

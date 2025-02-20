@@ -104,7 +104,6 @@ export async function initTransportConfig({
     backendTarget,
     scp,
     url,
-    client,
     destination,
     credentials,
     errorHandler
@@ -122,18 +121,11 @@ export async function initTransportConfig({
         return result;
     }
 
-    const systemConfig = {
-        url,
-        client,
-        destination
-    };
-
     try {
         result = await getTransportConfigInstance({
             backendTarget,
             scp,
-            credentials,
-            systemConfig
+            credentials
         });
     } catch (e) {
         result.error = e;
@@ -163,6 +155,7 @@ export async function queryPackages(
     backendTarget?: BackendTarget
 ): Promise<string[]> {
     const uppercaseInput = (input ?? '').toUpperCase();
+
     return listPackages(uppercaseInput, inputSystemConfig, backendTarget);
 }
 
@@ -279,4 +272,26 @@ export function reconcileAnswers(
     }
 
     return reconciledAnswers;
+}
+
+/**
+ * If the prompts are being use standalone then the system configuration is derived from the prompt options rather than the state.
+ *
+ * @param useStandalone - whether the prompts are used standalone
+ * @param abapDeployConfig - abap deploy config answers derived from the state i.e system selection prompt answers
+ * @param backendTarget - backend target from abap deploy config prompt options
+ * @returns system configuration
+ */
+export function getSystemConfig(
+    useStandalone: boolean,
+    abapDeployConfig?: Partial<AbapDeployConfigAnswersInternal>,
+    backendTarget?: BackendTarget
+): SystemConfig {
+    const configSource = useStandalone ? backendTarget?.abapTarget : abapDeployConfig;
+
+    return {
+        url: configSource?.url,
+        client: configSource?.client,
+        destination: configSource?.destination
+    };
 }

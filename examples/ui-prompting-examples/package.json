@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux-private/ui-prompting-examples",
-    "version": "0.2.20",
+    "version": "0.2.30",
     "description": "This project contains UI storybook stories with exampleS with prompt ui and FPM based building blocks.",
     "license": "Apache-2.0",
     "private": true,
@@ -38,7 +38,7 @@
         "@sap-ux/fe-fpm-writer": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
-        "@storybook/addons": "7.6.17",
+        "@storybook/addons": "7.6.20",
         "@storybook/components": "8.4.2",
         "@storybook/react": "8.4.2",
         "@storybook/react-webpack5": "8.4.2",

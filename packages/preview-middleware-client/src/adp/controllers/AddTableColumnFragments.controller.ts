@@ -66,7 +66,6 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
         this.model = new JSONModel({
             title: options.title
         }) as AddTableColumnsFragmentsModel;
-        this.ui5Version = sap.ui.version;
         this.commandExecutor = new CommandExecutor(this.rta);
     }
 

@@ -1,14 +1,14 @@
 import { initI18n, t } from '../../src/i18n';
 import LoggerHelper from '../../src/logger-helper';
 import { createTransportNumberFromService } from '../../src/service-provider-utils';
-import { getOrCreateServiceProvider } from '../../src/service-provider-utils/abap-service-provider';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 
 jest.mock('../../src/service-provider-utils/abap-service-provider', () => ({
     ...jest.requireActual('../../src/service-provider-utils/abap-service-provider'),
-    getOrCreateServiceProvider: jest.fn()
+    AbapServiceProviderManager: { getOrCreateServiceProvider: jest.fn() }
 }));
 
-const mockGetOrCreateServiceProvider = getOrCreateServiceProvider as jest.Mock;
+const mockGetOrCreateServiceProvider = AbapServiceProviderManager.getOrCreateServiceProvider as jest.Mock;
 
 describe('Test create transport', () => {
     beforeAll(async () => {
@@ -20,10 +20,6 @@ describe('Test create transport', () => {
         ui5AppName: 'mockApp',
         description: 'mockDescription'
     };
-    const systemConfig = {
-        url: 'https://mock.url.target1.com',
-        client: '000'
-    };
 
     it('should return a new transport number', async () => {
         const mockGetAdtService = {
@@ -34,7 +30,7 @@ describe('Test create transport', () => {
             getAdtService: jest.fn().mockResolvedValueOnce(mockGetAdtService)
         });
 
-        const transportNumber = await createTransportNumberFromService(createTransportParams, systemConfig);
+        const transportNumber = await createTransportNumberFromService(createTransportParams);
         expect(transportNumber).toBe('NEWTR123');
     });
 
@@ -43,7 +39,7 @@ describe('Test create transport', () => {
         const loggerSpy = jest.spyOn(LoggerHelper.logger, 'debug');
         mockGetOrCreateServiceProvider.mockRejectedValueOnce(errorObj);
 
-        const transportNumber = await createTransportNumberFromService(createTransportParams, systemConfig);
+        const transportNumber = await createTransportNumberFromService(createTransportParams);
         expect(transportNumber).toBe(undefined);
         expect(loggerSpy).toBeCalledWith(
             t('errors.debugAbapTargetSystem', { method: 'createTransportNumberFromService', error: errorObj.message })

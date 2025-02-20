@@ -54,7 +54,9 @@ export function getAbapOnPremQuestions(
         requiredOdataVersion
     );
 
-    questions.push(...getSystemServiceQuestion(connectValidator, abapOnPremPromptNamespace, promptOptions));
+    questions.push(
+        ...getSystemServiceQuestion(connectValidator, abapOnPremPromptNamespace, promptOptions?.serviceSelection)
+    );
 
     return questions;
 }

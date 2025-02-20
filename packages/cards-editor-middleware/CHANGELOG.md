@@ -1,5 +1,70 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.50
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+
+## 0.4.49
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 0.4.48
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+
+## 0.4.47
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+
+## 0.4.46
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+
+## 0.4.45
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+
+## 0.4.44
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+
+## 0.4.43
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+
+## 0.4.42
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+
+## 0.4.41
+
+### Patch Changes
+
+-   b7c346c: fix: Moving Init.js functionality inline in flpSandbox.html
+
 ## 0.4.40
 
 ### Patch Changes

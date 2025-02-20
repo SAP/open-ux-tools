@@ -9,6 +9,7 @@ import { appRouterPromptNames, RouterModuleType } from '../types';
 import { validateMtaPath, validateMtaId, validateAbapService } from './validators';
 import type { Logger } from '@sap-ux/logger';
 import { getCFAbapInstanceChoices, ErrorHandler } from '@sap-ux/inquirer-common';
+import type { ListChoiceOptions } from 'inquirer';
 
 /**
  * Generates a prompt for selecting the MTA path.
@@ -167,7 +168,21 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
         guiOptions: {
             breadcrumb: t('prompts.abapEnvBindingBreadcrumbMessage')
         },
-        choices: () => getCFAbapInstanceChoices(errorHandler),
+        choices: async () => {
+            const abapChoices = await getCFAbapInstanceChoices(errorHandler);
+            const choices: ListChoiceOptions[] = [];
+            if (abapChoices.length > 0) {
+                abapChoices.forEach((choice) => {
+                    choices.push({
+                        name: choice.name,
+                        value: { label: choice.value['label'], service: choice.value['serviceName'] }
+                    });
+                });
+            } else {
+                choices.push({ name: t('errors.abapEnvsUnavailable'), value: 'NO_ABAP_ENVS' });
+            }
+            return choices;
+        },
         message: t('prompts.selectServiceMessage'),
         default: () => t('errors.abapEnvsUnavailable'),
         validate: (choice: string): string | boolean => validateAbapService(choice, errorHandler)

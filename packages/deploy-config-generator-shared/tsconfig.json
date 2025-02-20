@@ -19,6 +19,9 @@
       "path": "../fiori-generator-shared"
     },
     {
+      "path": "../nodejs-utils"
+    },
+    {
       "path": "../store"
     }
   ]

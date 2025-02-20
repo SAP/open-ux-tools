@@ -36,7 +36,9 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
 
 let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [];
 const uaaCredsMock = {
-    credentials: {}
+    credentials: {
+        uaa: {}
+    }
 };
 jest.mock('@sap/cf-tools', () => {
     return {
@@ -101,7 +103,7 @@ describe('questions', () => {
               },
               {
                 "guiOptions": {
-                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform",
+                  "hint": "Select a local file that defines the service connection for an ABAP Environment on SAP Business Technology Platform.",
                   "mandatory": true,
                 },
                 "guiType": "file-browser",

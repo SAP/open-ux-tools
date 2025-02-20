@@ -15,6 +15,7 @@ export default {
                     getChangeType: jest.fn().mockReturnValue(oFileContent.changeType),
                     getLayer: jest.fn().mockReturnValue(oFileContent.layer),
                     getDefinition: jest.fn(),
+                    getJson: jest.fn(),
                     getContent: jest.fn(),
                     setContent: jest.fn()
                 };

@@ -1,7 +1,4 @@
-import {
-    getOrCreateServiceProvider,
-    deleteCachedServiceProvider
-} from '../../src/service-provider-utils/abap-service-provider';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { PromptState } from '../../src/prompts/prompt-state';
@@ -23,7 +20,7 @@ const mockIsAppStudio = isAppStudio as jest.Mock;
 
 describe('getOrCreateServiceProvider', () => {
     afterEach(() => {
-        deleteCachedServiceProvider();
+        AbapServiceProviderManager.deleteExistingServiceProvider();
     });
 
     it('should return an instance of AbapServiceProvider (VSCode)', async () => {
@@ -41,7 +38,7 @@ describe('getOrCreateServiceProvider', () => {
             password: 'password1'
         };
 
-        const serviceProvider = await getOrCreateServiceProvider({}, undefined, credentials);
+        const serviceProvider = await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials);
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
         expect(mockCreateAbapServiceProvider).toBeCalledWith(
@@ -57,14 +54,7 @@ describe('getOrCreateServiceProvider', () => {
         );
 
         // use existing provider when called again
-        const serviceProvider2 = await getOrCreateServiceProvider(
-            {
-                url: 'http://target.url',
-                client: '100'
-            },
-            undefined,
-            credentials
-        );
+        const serviceProvider2 = await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials);
         expect(serviceProvider2).toBe(serviceProvider);
     });
 
@@ -75,7 +65,7 @@ describe('getOrCreateServiceProvider', () => {
             destination: 'MOCK_DESTINATION'
         };
 
-        const serviceProvider = await getOrCreateServiceProvider({});
+        const serviceProvider = await AbapServiceProviderManager.getOrCreateServiceProvider();
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
         expect(mockCreateAbapServiceProvider).toBeCalledWith(
@@ -100,7 +90,7 @@ describe('getOrCreateServiceProvider', () => {
             serviceProvider: abapServiceProvider
         };
 
-        const serviceProvider = await getOrCreateServiceProvider(systemConfig, backendTarget);
+        const serviceProvider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget);
         expect(serviceProvider).toBe(abapServiceProvider);
     });
 });

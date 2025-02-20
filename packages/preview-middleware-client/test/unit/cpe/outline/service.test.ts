@@ -6,6 +6,7 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -128,11 +129,13 @@ describe('index', () => {
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
         expect(mockSendAction).toHaveBeenNthCalledWith(2, {
-            type: '[ext] show-dialog-message',
+            type: '[ext] show-info-center-message',
             payload: {
-                message:
-                    'Reuse components are detected for some views in this application. Controller extensions and adding fragments are not supported for such views and will be disabled.',
-                shouldHideIframe: false
+                message: {
+                    title: 'Reuse components detected',
+                    description: 'Reuse components are detected for some views in this application. Controller extensions, adding fragments and manifest changes are not supported for such views and will be disabled.'
+                },
+                type: MessageBarType.warning
             }
         });
     });

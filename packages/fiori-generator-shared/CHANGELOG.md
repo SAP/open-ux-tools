@@ -1,5 +1,110 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/telemetry@0.5.60
+
+## 0.7.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/telemetry@0.5.59
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/telemetry@0.5.58
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/telemetry@0.5.57
+
+## 0.7.24
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/telemetry@0.5.56
+
+## 0.7.23
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/telemetry@0.5.55
+
+## 0.7.22
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/telemetry@0.5.54
+
+## 0.7.21
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/telemetry@0.5.53
+
+## 0.7.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/telemetry@0.5.52
+
+## 0.7.19
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/telemetry@0.5.51
+
+## 0.7.18
+
+### Patch Changes
+
+-   fe0878d: feat(flp-config): adds new flp config generator
+
+## 0.7.17
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/telemetry@0.5.50
+
+## 0.7.16
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/telemetry@0.5.49
+
+## 0.7.15
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.48
+
 ## 0.7.14
 
 ### Patch Changes

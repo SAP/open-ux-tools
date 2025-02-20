@@ -54,15 +54,23 @@ async function setDefaultServiceName(basePath: string, service: OdataService, fs
 async function setDefaultServiceModel(basePath: string, service: OdataService, fs: Editor): Promise<void> {
     const manifestPath = join(await getWebappPath(basePath, fs), 'manifest.json');
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
-    // Check if manifest has already any dataSource models defined, empty string '' should be used for the first service
-    const models = manifest?.['sap.ui5']?.models;
-    if (models) {
-        // Filter dataSource models by dataSource property
-        const servicesModels = Object.values(models).filter((model) => model.dataSource);
-        service.model = servicesModels.length === 0 ? '' : service.model ?? service.name;
+    if (!service.model) {
+        // Check if manifest has already any dataSource models defined, empty string '' should be used for the first service
+        const models = manifest?.['sap.ui5']?.models;
+        if (models) {
+            // Filter dataSource models by dataSource property
+            const servicesModels = Object.values(models).filter((model) => model.dataSource);
+            service.model =
+                servicesModels.length === 0 ||
+                (servicesModels.find((serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME) &&
+                    service.name === DEFAULT_DATASOURCE_NAME) // model for mainService is ""
+                    ? ''
+                    : service.name;
+        } else {
+            // No models defined, that means first one is being added, set model to ''
+            service.model = '';
+        }
     }
-    // No models defined, that means first one is being added, set model to ''
-    service.model ??= '';
 }
 
 /**
@@ -117,7 +125,7 @@ export async function enhanceData(basePath: string, service: OdataService, fs: E
     // set service type to EDMX if not defined
     service.type = service.type ?? ServiceType.EDMX;
     /**
-     * In the manifest EJS template, annotation names are used to add annotations to the manifest.json.
+     * In the manifest annotation names are used to add annotations to the manifest.json.
      * For CAP projects, annotations are added to the annotations.cds file instead of the manifest.json.
      * If the service type is EDMX, this function sets the default annotation names to be included in the manifest.json.
      */

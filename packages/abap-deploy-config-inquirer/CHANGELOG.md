@@ -1,5 +1,231 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.13
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.28
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.15
+
+## 1.2.12
+
+### Patch Changes
+
+-   c08e1e3: Add option to hide createDuringDeploy list item in getTransportChoices
+
+## 1.2.11
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.5
+-   @sap-ux/fiori-generator-shared@0.7.27
+-   @sap-ux/system-access@0.5.30
+-   @sap-ux/inquirer-common@0.6.14
+
+## 1.2.10
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.26
+    -   @sap-ux/inquirer-common@0.6.13
+    -   @sap-ux/system-access@0.5.30
+
+## 1.2.9
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.4
+-   @sap-ux/fiori-generator-shared@0.7.25
+-   @sap-ux/system-access@0.5.29
+-   @sap-ux/inquirer-common@0.6.12
+
+## 1.2.8
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/fiori-generator-shared@0.7.24
+    -   @sap-ux/inquirer-common@0.6.11
+    -   @sap-ux/system-access@0.5.29
+
+## 1.2.7
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.3
+-   @sap-ux/fiori-generator-shared@0.7.23
+-   @sap-ux/system-access@0.5.28
+-   @sap-ux/inquirer-common@0.6.10
+
+## 1.2.6
+
+### Patch Changes
+
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
+## 1.2.5
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/fiori-generator-shared@0.7.22
+    -   @sap-ux/inquirer-common@0.6.8
+    -   @sap-ux/system-access@0.5.28
+
+## 1.2.4
+
+### Patch Changes
+
+-   Updated dependencies [e516306]
+    -   @sap-ux/axios-extension@1.18.2
+    -   @sap-ux/system-access@0.5.27
+
+## 1.2.3
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.1
+-   @sap-ux/fiori-generator-shared@0.7.21
+-   @sap-ux/system-access@0.5.26
+-   @sap-ux/inquirer-common@0.6.7
+
+## 1.2.2
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/fiori-generator-shared@0.7.20
+    -   @sap-ux/system-access@0.5.26
+    -   @sap-ux/inquirer-common@0.6.6
+
+## 1.2.1
+
+### Patch Changes
+
+-   Updated dependencies [080bda2]
+    -   @sap-ux/guided-answers-helper@0.2.1
+    -   @sap-ux/inquirer-common@0.6.5
+
+## 1.2.0
+
+### Minor Changes
+
+-   fc5916a: exposes getpackageprompts and gettransportrequest prompts
+
+## 1.1.21
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.1
+-   @sap-ux/fiori-generator-shared@0.7.19
+-   @sap-ux/system-access@0.5.26
+-   @sap-ux/inquirer-common@0.6.4
+
+## 1.1.20
+
+### Patch Changes
+
+-   Updated dependencies [1559aee]
+    -   @sap-ux/axios-extension@1.18.1
+    -   @sap-ux/system-access@0.5.26
+
+## 1.1.19
+
+### Patch Changes
+
+-   Updated dependencies [40ba546]
+    -   @sap-ux/inquirer-common@0.6.3
+
+## 1.1.18
+
+### Patch Changes
+
+-   Updated dependencies [dac696a]
+    -   @sap-ux/guided-answers-helper@0.2.0
+    -   @sap-ux/inquirer-common@0.6.2
+
+## 1.1.17
+
+### Patch Changes
+
+-   Updated dependencies [2e3c15e]
+    -   @sap-ux/axios-extension@1.18.0
+    -   @sap-ux/system-access@0.5.25
+
+## 1.1.16
+
+### Patch Changes
+
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+    -   @sap-ux/inquirer-common@0.6.1
+
+## 1.1.15
+
+### Patch Changes
+
+-   Updated dependencies [112d29a]
+    -   @sap-ux/inquirer-common@0.6.0
+
+## 1.1.14
+
+### Patch Changes
+
+-   Updated dependencies [f8dda3b]
+    -   @sap-ux/inquirer-common@0.5.15
+
+## 1.1.13
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.17.8
+-   @sap-ux/fiori-generator-shared@0.7.17
+-   @sap-ux/system-access@0.5.24
+-   @sap-ux/inquirer-common@0.5.14
+
+## 1.1.12
+
+### Patch Changes
+
+-   Updated dependencies [cb54b44]
+    -   @sap-ux/btp-utils@0.17.2
+    -   @sap-ux/axios-extension@1.17.8
+    -   @sap-ux/fiori-generator-shared@0.7.16
+    -   @sap-ux/inquirer-common@0.5.13
+    -   @sap-ux/system-access@0.5.24
+
+## 1.1.11
+
+### Patch Changes
+
+-   Updated dependencies [3ebd767]
+    -   @sap-ux/store@1.0.0
+    -   @sap-ux/system-access@0.5.23
+    -   @sap-ux/ui5-config@0.26.0
+    -   @sap-ux/fiori-generator-shared@0.7.15
+    -   @sap-ux/inquirer-common@0.5.12
+
+## 1.1.10
+
+### Patch Changes
+
+-   Updated dependencies [0c64478]
+    -   @sap-ux/inquirer-common@0.5.11
+
 ## 1.1.9
 
 ### Patch Changes

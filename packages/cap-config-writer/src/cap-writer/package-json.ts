@@ -1,11 +1,10 @@
 import type { Package } from '@sap-ux/project-access';
 import { getCapCustomPaths } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
-import path, { join } from 'path';
-import type { CdsUi5PluginInfo, CapServiceCdsInfo } from '../cap-config/types';
-import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled, satisfiesMinCdsVersion, minCdsVersion } from '../cap-config';
+import { dirname, join, normalize, posix } from 'path';
+import type { CapServiceCdsInfo } from '../cap-config/types';
+import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled } from '../cap-config';
 import type { Logger } from '@sap-ux/logger';
-import { t } from '../i18n';
 
 /**
  * Retrieves the CDS watch script for the CAP app.
@@ -47,8 +46,6 @@ function updatePackageJsonWithScripts(fs: Editor, packageJsonPath: string, scrip
  * @param {string} projectName - The project's name, which is the module name.
  * @param {string} appId - The application's ID, including its namespace and the module name.
  * @param {boolean} [enableNPMWorkspaces] - Whether to enable npm workspaces.
- * @param {CapServiceCdsInfo} cdsUi5PluginInfo - cds Ui5 plugin info.
- * @param {Logger} [log] - The logger instance for logging warnings.
  * @returns {Promise<void>} A Promise that resolves once the scripts are updated.
  */
 async function updateScripts(
@@ -56,31 +53,18 @@ async function updateScripts(
     packageJsonPath: string,
     projectName: string,
     appId: string,
-    enableNPMWorkspaces?: boolean,
-    cdsUi5PluginInfo?: CdsUi5PluginInfo,
-    log?: Logger
+    enableNPMWorkspaces?: boolean
 ): Promise<void> {
-    const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
-    const hasNPMworkspaces = await checkCdsUi5PluginEnabled(packageJsonPath, fs);
-    // Determine whether to add cds watch scripts for the app based on the availability of minimum CDS version information.
-    // If 'cdsUi5PluginInfo' contains version information and it satisfies the minimum required CDS version,
-    // or if 'cdsUi5PluginInfo' is not available and the version specified in 'package.json' satisfies the minimum required version,
-    // then set 'addScripts' to true. Otherwise, set it to false.
-    const addScripts = cdsUi5PluginInfo?.hasMinCdsVersion
-        ? cdsUi5PluginInfo.hasMinCdsVersion
-        : satisfiesMinCdsVersion(packageJson);
+    const hasNPMworkspaces = await checkCdsUi5PluginEnabled(dirname(packageJsonPath), fs);
     let cdsScript;
-    if (addScripts) {
-        if (enableNPMWorkspaces ?? hasNPMworkspaces) {
-            // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
-            cdsScript = getCDSWatchScript(projectName, appId);
-        } else {
-            cdsScript = getCDSWatchScript(projectName);
-        }
-        updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    if (enableNPMWorkspaces || hasNPMworkspaces) {
+        // If the project uses npm workspaces (and specifically cds-plugin-ui5 ) then the project is served using the appId
+        cdsScript = getCDSWatchScript(projectName, appId);
     } else {
-        log?.warn(t('warn.cdsDKNotInstalled', { minCdsVersion: minCdsVersion }));
+        cdsScript = getCDSWatchScript(projectName);
     }
+    updatePackageJsonWithScripts(fs, packageJsonPath, cdsScript);
 }
 
 /**
@@ -114,20 +98,12 @@ export async function updateRootPackageJson(
         await enableCdsUi5Plugin(capService.projectPath, fs);
     }
     if (capService?.capType === capNodeType) {
-        await updateScripts(
-            fs,
-            packageJsonPath,
-            projectName,
-            appId,
-            enableNPMWorkspaces,
-            capService.cdsUi5PluginInfo,
-            log
-        );
+        await updateScripts(fs, packageJsonPath, projectName, appId, enableNPMWorkspaces);
     }
     if (sapux) {
         const dirPath = join(capService.appPath ?? (await getCapCustomPaths(capService.projectPath)).app, projectName);
         // Converts a directory path to a POSIX-style path.
-        const capProjectPath = path.normalize(dirPath).split(/[\\/]/g).join(path.posix.sep);
+        const capProjectPath = normalize(dirPath).split(/[\\/]/g).join(posix.sep);
         const sapuxExt = Array.isArray(packageJson?.sapux) ? [...packageJson.sapux, capProjectPath] : [capProjectPath];
         fs.extendJSON(packageJsonPath, { sapux: sapuxExt });
     }

@@ -42,10 +42,16 @@ export async function enhanceYaml(
     const manifest = fs.readJSON(join(webappPath, 'manifest.json')) as Partial<Manifest> as Manifest;
     // Prepare annotations list to be used in mockserver middleware config annotations
     const annotationSource = Object.values(getODataSources(manifest, 'ODataAnnotation'));
-    const annotationsConfig = annotationSource.map((annotation) => ({
-        localPath: `./webapp/${annotation.settings?.localUri}`,
-        urlPath: annotation.uri
-    }));
+    const annotationsConfig: { localPath?: string; urlPath: string }[] = [];
+    annotationSource.forEach((annotation) => {
+        // Ignore local annotations from YAML file, those are linked through manifest file
+        if (annotation.settings?.localUri !== annotation.uri) {
+            annotationsConfig.push({
+                localPath: `./webapp/${annotation.settings?.localUri}`,
+                urlPath: annotation.uri
+            });
+        }
+    });
     // Prepare dataSources list to be used in mockserver middleware config services
     const dataSources = getODataSources(manifest);
     const dataSourcesConfig: DataSourceConfig[] = [];

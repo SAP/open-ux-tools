@@ -9,13 +9,14 @@ import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type OdataServicePromptOptions, promptNames } from '../../../../types';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils';
-import type { ValidationResult } from '../../../connectionValidator';
+import type { ValidationResult } from '../../../types';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
 import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
+import { getCfAbapBASQuestions } from '../cf-abap/questions';
 import { validateServiceUrl } from '../validators';
 import {
     type CfAbapEnvServiceChoice,
@@ -64,7 +65,9 @@ async function validateSystemSelection(
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
     PromptState.reset();
-    if (systemSelection.type === 'newSystemChoice') {
+    if (systemSelection.type === 'newSystemChoice' || systemSelection.type === 'cfAbapEnvService') {
+        // Reset the connection state
+        connectionValidator.resetConnectionState(true);
         return true;
     }
     let connectValResult: ValidationResult = false;
@@ -110,13 +113,18 @@ export async function getSystemSelectionQuestions(
     );
 
     // Existing system (BackendSystem or Destination) selected,
-    // In future, make the service prompt optional by wrapping in condition `[promptOptions?.serviceSelection?.hide]`
-    questions.push(
-        ...withCondition(
-            getSystemServiceQuestion(connectValidator, systemSelectionPromptNamespace, promptOptions) as Question[],
-            (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
-        )
-    );
+    if (!promptOptions?.serviceSelection?.hide) {
+        questions.push(
+            ...withCondition(
+                getSystemServiceQuestion(
+                    connectValidator,
+                    systemSelectionPromptNamespace,
+                    promptOptions?.serviceSelection
+                ) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type !== 'newSystemChoice'
+            )
+        );
+    }
 
     // Create new system connection for storage only supported on non-App Studio environments
     if (!isAppStudio()) {
@@ -124,6 +132,13 @@ export async function getSystemSelectionQuestions(
             ...withCondition(
                 getNewSystemQuestions(promptOptions) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
+            )
+        );
+    } else {
+        questions.push(
+            ...withCondition(
+                getCfAbapBASQuestions(promptOptions?.serviceSelection) as Question[],
+                (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'cfAbapEnvService'
             )
         );
     }
@@ -155,6 +170,9 @@ export async function getSystemConnectionQuestions(
         promptOptions?.systemSelection?.defaultChoice
     );
 
+    const shouldOnlyShowDefaultChoice =
+        promptOptions?.systemSelection?.onlyShowDefaultChoice && promptOptions?.systemSelection?.defaultChoice;
+
     const questions: Question[] = [
         {
             type: promptOptions?.systemSelection?.useAutoComplete ? 'autocomplete' : 'list',
@@ -165,8 +183,8 @@ export async function getSystemConnectionQuestions(
                 hint: t('prompts.systemSelection.hint')
             },
             source: (prevAnswers: unknown, input: string) => searchChoices(input, systemChoices as ListChoiceOptions[]),
-            choices: systemChoices,
-            default: defaultChoiceIndex,
+            choices: shouldOnlyShowDefaultChoice ? [systemChoices[defaultChoiceIndex]] : systemChoices,
+            default: shouldOnlyShowDefaultChoice ? 0 : defaultChoiceIndex,
             validate: async (
                 selectedSystem: SystemSelectionAnswerType | ListChoiceOptions<SystemSelectionAnswerType>
             ): Promise<ValidationResult> => {

@@ -104,7 +104,10 @@ async function generateMockserverMiddlewareBasedOnUi5MockYaml(
  */
 function extendBackendMiddleware(fs: Editor, service: OdataService, ui5Config: UI5Config, ui5ConfigPath: string): void {
     try {
-        ui5Config.addBackendToFioriToolsProxydMiddleware(service.previewSettings as ProxyBackend);
+        ui5Config.addBackendToFioriToolsProxydMiddleware(
+            service.previewSettings as ProxyBackend,
+            service.ignoreCertError
+        );
     } catch (error: any) {
         if (
             (error instanceof YAMLError && error.code === yamlErrorCode.nodeNotFound) ||
@@ -255,7 +258,7 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
     // Prepare template folder for manifest and xml updates
     const templateRoot = join(__dirname, '../templates');
     // Update manifest.json
-    await updateManifest(basePath, service, fs, templateRoot);
+    await updateManifest(basePath, service, fs);
     // Dont extend backend and mockserver middlewares if service type is CDS
     if (isServiceTypeEdmx) {
         await writeEDMXServiceFiles(fs, basePath, paths, templateRoot, service as EdmxOdataService);

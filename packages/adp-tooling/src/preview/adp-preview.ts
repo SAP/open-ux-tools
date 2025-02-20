@@ -10,8 +10,15 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { LayeredRepositoryService, MergedAppDescriptor } from '@sap-ux/axios-extension';
 
 import RoutesHandler from './routes-handler';
-import { addXmlFragment, isAddXMLChange, moduleNameContentMap, tryFixChange } from './change-handler';
 import type { AdpPreviewConfig, CommonChangeProperties, DescriptorVariant, OperationType } from '../types';
+import {
+    addAnnotationFile,
+    addXmlFragment,
+    isAddAnnotationChange,
+    isAddXMLChange,
+    moduleNameContentMap,
+    tryFixChange
+} from './change-handler';
 declare global {
     // false positive, const can't be used here https://github.com/eslint/eslint/issues/15896
     // eslint-disable-next-line no-var
@@ -22,7 +29,8 @@ export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
     CODE_EXT = '/adp/api/code_ext/:controllerName',
-    METADATA = '/adp/api/metadata'
+    METADATA = '/adp/api/metadata',
+    ANNOTATION = '/adp/api/annotation'
 }
 
 /**
@@ -205,6 +213,11 @@ export class AdpPreview {
             async (req: Request, res: Response, next: NextFunction) =>
                 await this.routesHandler.handleMetadataCheck(req, res, next)
         );
+
+        router.get(
+            ApiRoutes.ANNOTATION,
+            this.routesHandler.handleGetAllAnnotationFilesMappedByDataSource as RequestHandler
+        );
     }
 
     /**
@@ -231,6 +244,15 @@ export class AdpPreview {
             case 'write':
                 if (isAddXMLChange(change)) {
                     addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                }
+                if (isAddAnnotationChange(change)) {
+                    await addAnnotationFile(
+                        this.util.getProject().getSourcePath(),
+                        this.util.getProject().getRootPath(),
+                        change,
+                        fs,
+                        logger
+                    );
                 }
                 break;
             default:

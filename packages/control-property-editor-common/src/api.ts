@@ -160,6 +160,7 @@ export interface PendingOtherChange {
     type: typeof PENDING_CHANGE_TYPE;
     kind: typeof UNKNOWN_CHANGE_KIND;
     isActive: boolean;
+    title?: string;
     changeType: string;
     fileName: string;
 }
@@ -171,6 +172,7 @@ export interface PendingControlChange {
     changeType: string;
     controlId: string;
     fileName: string;
+    title?: string;
 }
 
 export type PendingChange =
@@ -199,6 +201,7 @@ export interface UnknownSavedChange {
     kind: typeof UNKNOWN_CHANGE_KIND;
     fileName: string;
     changeType: string;
+    title?: string;
     controlId?: string;
     timestamp?: number;
 }
@@ -209,6 +212,7 @@ export interface SavedControlChange {
     controlId: string;
     fileName: string;
     changeType: string;
+    title?: string;
     timestamp?: number;
 }
 
@@ -266,7 +270,6 @@ export interface QuickActionGroup {
     title: string;
     actions: QuickAction[];
 }
-
 export interface SimpleQuickActionExecutionPayload {
     kind: typeof SIMPLE_QUICK_ACTION_KIND;
     id: string;
@@ -285,7 +288,12 @@ export interface InfoCenterMessage {
     message: {
         title: string;
         description: string;
+        details?: string;
     };
+    expandable?: boolean;
+    expanded?: boolean;
+    read?: boolean;
+    modal?: boolean;
 }
 
 export enum MessageBarType {
@@ -295,6 +303,11 @@ export enum MessageBarType {
     error = 1,
     /** Warning styled MessageBar */
     warning = 5
+}
+
+export interface ContextMenuActionExecutionPayload {
+    controlId: string;
+    actionName: string;
 }
 
 /**
@@ -357,6 +370,87 @@ function createActionFactory(prefix: string) {
     };
 }
 
+export interface ErrorAction<T extends string, U> extends PayloadAction<T, U> {
+    error: { message: string };
+    showMessage: boolean;
+}
+export const PENDING_SUFFIX = '<pending>';
+export const FULFILLED_SUFFIX = '<fulfilled>';
+export const REJECTED_SUFFIX = '<rejected>';
+
+/**
+ * Factory for creating  request response actions.
+ *
+ * @param prefix action prefix
+ * @returns Function
+ */
+export function createAsyncActionFactory(prefix: string) {
+    return function createAction<T, F = T, R = T>(
+        name: string
+    ): { pending: typeof pending; fulfilled: typeof fulfilled; rejected: typeof rejected } {
+        const pendingType = [prefix, name, PENDING_SUFFIX].join(' ');
+
+        /**
+         * Pending action.
+         *
+         * @param payload action payload
+         * @returns PayloadAction<typeof pendingType, T>
+         */
+        function pending(payload: T): PayloadAction<typeof pendingType, T> {
+            return {
+                type: pendingType,
+                payload
+            };
+        }
+
+        pending.type = pendingType;
+        pending.match = createMatcher<PayloadAction<typeof pendingType, T>>(pendingType);
+        const fulfilledType = [prefix, name, FULFILLED_SUFFIX].join(' ');
+
+        /**
+         * Fulfill action.
+         *
+         * @param payload action payload
+         * @returns PayloadAction<typeof fulfilledType, F>
+         */
+        function fulfilled(payload: F): PayloadAction<typeof fulfilledType, F> {
+            return {
+                type: fulfilledType,
+                payload
+            };
+        }
+
+        fulfilled.type = fulfilledType;
+        fulfilled.match = createMatcher<PayloadAction<typeof fulfilledType, F>>(fulfilledType);
+        const rejectedType = [prefix, name, REJECTED_SUFFIX].join(' ');
+        /**
+         * Reject action.
+         *
+         * @param message error message
+         * @param payload R
+         * @returns ErrorAction<typeof rejectedType, F>
+         */
+        function rejected(message: string, payload: R): ErrorAction<typeof rejectedType, R> {
+            return {
+                type: rejectedType,
+                payload,
+                error: {
+                    message
+                },
+                showMessage: true
+            };
+        }
+        rejected.type = rejectedType;
+        rejected.match = createMatcher<PayloadAction<typeof rejectedType, T>>(rejectedType);
+
+        return {
+            pending,
+            fulfilled,
+            rejected
+        };
+    };
+}
+
 export const EXTERNAL_ACTION_PREFIX = '[ext]';
 
 const createExternalAction = createActionFactory(EXTERNAL_ACTION_PREFIX);
@@ -389,10 +483,33 @@ export const save = createExternalAction<void>('save');
 export const quickActionListChanged = createExternalAction<QuickActionGroup[]>('quick-action-list-changed');
 export const updateQuickAction = createExternalAction<QuickAction>('update-quick-action');
 export const executeQuickAction = createExternalAction<QuickActionExecutionPayload>('execute-quick-action');
+export const executeContextMenuAction =
+    createExternalAction<ContextMenuActionExecutionPayload>('execute-context-menu-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
 export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
 export const clearInfoCenterMessage = createExternalAction<number>('clear-info-center-message');
 export const clearAllInfoCenterMessages = createExternalAction<void>('clear-all-info-center-message');
+export const externalFileChange = createExternalAction<string>('external-file-change');
+export const toggleExpandMessage = createExternalAction<number>('toggle-expand-message');
+export const readMessage = createExternalAction<number>('read-message');
+export const expandableMessage = createExternalAction<number>('expandable-message');
+export const toggleModalMessage = createExternalAction<number>('toggle-modal-message');
+
+const createAsyncExternalAction = createAsyncActionFactory(EXTERNAL_ACTION_PREFIX);
+
+interface ContextMenuItem {
+    id: string;
+    enabled: boolean;
+    title: string;
+    tooltip?: string;
+}
+
+export interface ContextMenu {
+    controlId: string;
+    contextMenuItems: ContextMenuItem[];
+}
+
+export const requestControlContextMenu = createAsyncExternalAction<string, ContextMenu>('request-control-context-menu');
 
 export type ExternalAction =
     | ReturnType<typeof iconsLoaded>
@@ -422,4 +539,12 @@ export type ExternalAction =
     | ReturnType<typeof executeQuickAction>
     | ReturnType<typeof showInfoCenterMessage>
     | ReturnType<typeof clearInfoCenterMessage>
-    | ReturnType<typeof clearAllInfoCenterMessages>;
+    | ReturnType<typeof clearAllInfoCenterMessages>
+    | ReturnType<typeof externalFileChange>
+    | ReturnType<typeof toggleExpandMessage>
+    | ReturnType<typeof readMessage>
+    | ReturnType<typeof expandableMessage>
+    | ReturnType<typeof toggleModalMessage>
+    | ReturnType<typeof executeContextMenuAction>
+    | ReturnType<typeof externalFileChange>
+    | ReturnType<typeof requestControlContextMenu.fulfilled>;

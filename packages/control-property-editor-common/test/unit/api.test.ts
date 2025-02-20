@@ -5,6 +5,7 @@ import {
     changeStackModified,
     controlSelected,
     deletePropertyChanges,
+    externalFileChange,
     iconsLoaded,
     outlineChanged,
     propertyChangeFailed,
@@ -167,5 +168,13 @@ describe('createExternalAction', () => {
         const changedProp = addExtensionPoint(payload);
         expect(changedProp.type).toBe('[ext] add-extension-point');
         expect(changedProp.payload).toStrictEqual(payload);
+    });
+
+    test('externalFileChange', () => {
+        const payload = 'filePath';
+
+        const externalFile = externalFileChange(payload);
+        expect(externalFile.type).toBe('[ext] external-file-change');
+        expect(externalFile.payload).toStrictEqual('filePath');
     });
 });

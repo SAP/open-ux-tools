@@ -1,5 +1,131 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.86
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/project-access@1.29.6
+    -   @sap-ux/system-access@0.5.30
+
+## 0.0.85
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/system-access@0.5.30
+
+## 0.0.84
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.30
+
+## 0.0.83
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/system-access@0.5.29
+
+## 0.0.82
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.29
+
+## 0.0.81
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/system-access@0.5.28
+
+## 0.0.80
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.28
+
+## 0.0.79
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.27
+
+## 0.0.78
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/system-access@0.5.26
+
+## 0.0.77
+
+### Patch Changes
+
+-   ccb96dd: enhancements for deploying ui5 libs
+
+## 0.0.76
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/project-access@1.29.1
+    -   @sap-ux/system-access@0.5.26
+
+## 0.0.75
+
+### Patch Changes
+
+-   71e5a5e: fix issues for library deployment
+
+## 0.0.74
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/system-access@0.5.26
+
+## 0.0.73
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.26
+
+## 0.0.72
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.25
+
+## 0.0.71
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/system-access@0.5.24
+
+## 0.0.70
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.24
+
+## 0.0.69
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.23
+-   @sap-ux/ui5-config@0.26.0
+
 ## 0.0.68
 
 ### Patch Changes

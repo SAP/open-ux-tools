@@ -14,12 +14,12 @@ import * as commandMock from '../../src/command/npm-command';
 import { ToolsLogger } from '@sap-ux/logger';
 
 jest.mock('fs', () => {
-    const actual = jest.requireActual('fs');
+    const actual = jest.requireActual<typeof fsMock>('fs');
     return { ...actual, existsSync: jest.fn().mockImplementation(actual.existsSync) };
 });
 
 jest.mock('fs/promises', () => {
-    const actual = jest.requireActual('fs');
+    const actual = jest.requireActual<typeof fsMock>('fs');
     return {
         ...actual,
         rm: jest.fn().mockImplementation(actual.rm),
@@ -66,7 +66,6 @@ describe('Test getModule()', () => {
         const rmSpy = jest.spyOn(promisesMock, 'rm').mockResolvedValueOnce();
         const mkdirSpy = jest.spyOn(promisesMock, 'mkdir').mockResolvedValueOnce('');
         const npmCommandSpy = jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('');
-        const writeFileSpy = jest.spyOn(promisesMock, 'writeFile').mockResolvedValueOnce();
 
         // Test execution
         const logger = new ToolsLogger();
@@ -76,8 +75,7 @@ describe('Test getModule()', () => {
         expect(module.exec()).toBe('works');
         expect(rmSpy).toBeCalledWith(modulePath, { recursive: true });
         expect(mkdirSpy).toBeCalledWith(modulePath, { recursive: true });
-        expect(writeFileSpy).toBeCalledWith(join(modulePath, FileName.Package), '{}');
-        expect(npmCommandSpy).toBeCalledWith(['install', '@scope/module@1.2.3'], {
+        expect(npmCommandSpy).toBeCalledWith(['install', '--prefix', modulePath, '@scope/module@1.2.3'], {
             'cwd': modulePath,
             logger
         });

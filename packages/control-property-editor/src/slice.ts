@@ -3,6 +3,7 @@ import { createSlice, createAction } from '@reduxjs/toolkit';
 
 import type {
     Control,
+    ContextMenu,
     IconDetails,
     InfoCenterMessage,
     OutlineNode,
@@ -41,12 +42,17 @@ import {
     showInfoCenterMessage,
     clearInfoCenterMessage,
     clearAllInfoCenterMessages,
+    toggleExpandMessage,
+    readMessage,
     MessageBarType,
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
-    CONFIGURATION_CHANGE_KIND
+    CONFIGURATION_CHANGE_KIND,
+    expandableMessage,
+    toggleModalMessage,
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -68,6 +74,7 @@ export interface SliceState {
     changes: ChangesSlice;
     dialogMessage: ShowMessage | undefined;
     fileChanges?: string[];
+    lastExternalFileChangeTimestamp?: number;
     appMode: 'navigation' | 'adaptation';
     changeStack: {
         canUndo: boolean;
@@ -77,7 +84,8 @@ export interface SliceState {
     applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
-    infoCenter: InfoCenterMessage[];
+    infoCenterMessages: InfoCenterMessage[];
+    contextMenu: ContextMenu | undefined;
 }
 
 export interface ChangesSlice {
@@ -168,7 +176,8 @@ export const initialState: SliceState = {
     applicationRequiresReload: false,
     isAppLoading: true,
     quickActions: [],
-    infoCenter: [{message: {title: 'Error message', description: "this is the error message"},  type: MessageBarType.error}, {message: {title: 'Warning message', description: "this is the warning message"}, type: MessageBarType.warning}, {message: {title: 'Info message', description: "this is the info message"}, type: MessageBarType.info}]
+    infoCenterMessages: [],
+    contextMenu: undefined
 };
 
 /**
@@ -372,6 +381,9 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                     }
                     return idx < 0;
                 });
+                if (newFileChanges.length) {
+                    state.lastExternalFileChangeTimestamp = Date.now();
+                }
                 if (!state.fileChanges) {
                     state.fileChanges = newFileChanges;
                 } else {
@@ -447,19 +459,53 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(
                 showInfoCenterMessage.match,
                 (state: SliceState, action: ReturnType<typeof showInfoCenterMessage>): void => {
-                    state.infoCenter.unshift(action.payload);
+                    state.infoCenterMessages.unshift(action.payload);
                 }
             )
             .addMatcher(
                 clearInfoCenterMessage.match,
                 (state: SliceState, action: ReturnType<typeof clearInfoCenterMessage>): void => {
-                    state.infoCenter = state.infoCenter.filter((_, index) => index !== action.payload);
+                    state.infoCenterMessages = state.infoCenterMessages.filter((_, index) => index !== action.payload);
+                }
+            )
+            .addMatcher(clearAllInfoCenterMessages.match, (state: SliceState): void => {
+                state.infoCenterMessages = state.infoCenterMessages.filter(
+                    (info) => info.type === MessageBarType.error
+                );
+            })
+            .addMatcher(
+                toggleExpandMessage.match,
+                (state: SliceState, action: ReturnType<typeof toggleExpandMessage>): void => {
+                    const index = action.payload;
+                    state.infoCenterMessages[index].expanded = !state.infoCenterMessages[index].expanded;
+                }
+            )
+            .addMatcher(readMessage.match, (state: SliceState, action: ReturnType<typeof readMessage>): void => {
+                const index = action.payload;
+                state.infoCenterMessages[index].read = true;
+            })
+            .addMatcher(
+                expandableMessage.match,
+                (state: SliceState, action: ReturnType<typeof expandableMessage>): void => {
+                    const index = action.payload;
+                    state.infoCenterMessages[index].expandable = true;
                 }
             )
             .addMatcher(
-                clearAllInfoCenterMessages.match,
-                (state: SliceState): void => {
-                    state.infoCenter = state.infoCenter.filter((info) => info.type === MessageBarType.error);
+                toggleModalMessage.match,
+                (state: SliceState, action: ReturnType<typeof toggleModalMessage>): void => {
+                    const index = action.payload;
+                    state.infoCenterMessages[index].modal = !state.infoCenterMessages[index].modal;
+                }
+            )
+            .addMatcher(
+                requestControlContextMenu.fulfilled.match,
+                (state: SliceState, action: ReturnType<typeof requestControlContextMenu.fulfilled>): void => {
+                    const { contextMenuItems, controlId } = action.payload;
+                    state.contextMenu = {
+                        contextMenuItems,
+                        controlId
+                    };
                 }
             )
 });

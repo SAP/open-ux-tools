@@ -16,6 +16,7 @@ import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
+import connect = require('connect');
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -239,6 +240,15 @@ describe('FlpSandbox', () => {
             await flp.init(manifest);
             expect(flp.templateConfig.ui5.libs).toMatchSnapshot();
         });
+
+        test('do not add component to applications', async () => {
+            const manifest = {
+                'sap.app': { id: 'my.id', type: 'component' }
+            } as Manifest;
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            await flp.init(manifest);
+            expect(flp.templateConfig.apps).toMatchSnapshot();
+        });
     });
 
     describe('router', () => {
@@ -315,12 +325,22 @@ describe('FlpSandbox', () => {
                 text: jest.fn(),
                 ok: true
             });
-            const response = await server.get('/test/flp.html').expect(200);
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
         test('test/flp.html', async () => {
-            const response = await server.get('/test/flp.html').expect(200);
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false#app-preview').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html sap-ui-xx-viewCache set to true', async () => {
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=true').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html missing sap-ui-xx-viewCache set to false', async () => {
+            const response = await server.get('/test/flp.html').expect(302);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -415,6 +435,52 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
+        test('rta with adp instance - preview', async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            const componendId = 'myComponent';
+            const resources = {
+                'myResources1': 'myResourcesUrl1',
+                'myResources2': 'myResourcesUrl2'
+            };
+            const url = 'http://sap.example';
+            const syncSpy = jest.fn().mockResolvedValueOnce({});
+            const adpToolingMock = {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn()
+            } as unknown as adpTooling.AdpPreview;
+
+            await flp.init(manifest, componendId, resources, adpToolingMock as unknown as adpTooling.AdpPreview);
+            const app = express();
+            app.use(flp.router);
+            const server = await supertest(app);
+
+            expect(flp.templateConfig).toMatchSnapshot();
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
         test('livereload port from environment', async () => {
             process.env.FIORI_TOOLS_LIVERELOAD_PORT = '8080';
             let response = await server.get('/my/editor.html').expect(200);
@@ -474,7 +540,7 @@ describe('FlpSandbox', () => {
         });
 
         test('editor with config', async () => {
-            const response = await server.get('/test/flp.html').expect(200);
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
             expect(response.text).toMatchSnapshot();
         });
 
@@ -671,16 +737,63 @@ describe('FlpSandbox', () => {
             const app = express();
             app.use(flp.router);
 
-            server = await supertest(app);
+            server = supertest(app);
         });
 
         test('test/existingFlp.html', async () => {
             logger.info.mockReset();
             mockProject.byPath.mockResolvedValueOnce({});
-            await server.get('/test/existingFlp.html');
+            await server.get('/test/existingFlp.html?sap-ui-xx-viewCache=false');
             expect(logger.info).toBeCalledWith(
                 'HTML file returned at /test/existingFlp.html is loaded from the file system.'
             );
+        });
+    });
+
+    describe('router - connect API', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ]
+        };
+        test('GET default routes with connect API (used by karma test runner)', async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = connect();
+            app.use(flp.router as unknown as connect.Server);
+
+            server = await supertest(app);
+            let response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/unitTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/unitTests.qunit.js').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
         });
     });
 });

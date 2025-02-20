@@ -465,6 +465,116 @@ describe('<Sections />', () => {
                     }
                 }).toEqual(result);
             });
+
+            const getSizes = () => {
+                const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
+                const middleSection: HTMLElement = wrapper.find('.sections__item').at(1).getDOMNode();
+                const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
+                return {
+                    first: {
+                        left: firstSection.style.left,
+                        right: firstSection.style.right
+                    },
+                    middle: {
+                        left: middleSection.style.left,
+                        right: middleSection.style.right
+                    },
+                    last: {
+                        left: lastSection.style.left,
+                        right: lastSection.style.right
+                    }
+                };
+            };
+
+            const resetTestCases = [
+                {
+                    name: 'Reset - different size',
+                    resetSizes: [500, 1000, 1000],
+                    expectedResult: {
+                        first: {
+                            left: '0px',
+                            right: '2000px'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        },
+                        middle: {
+                            left: '1000px',
+                            right: '1000px'
+                        }
+                    }
+                },
+                {
+                    name: 'No reset - sizes are same',
+                    resetSizes: [1000, 1000, 1000],
+                    expectedResult: {
+                        first: {
+                            left: '0px',
+                            right: '2050px'
+                        },
+                        middle: {
+                            left: '950px',
+                            right: '1000px'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Reset - different length',
+                    resetSizes: [1000, 1000, 1000, 1000],
+                    expectedResult: {
+                        first: {
+                            left: '0px',
+                            right: '2000px'
+                        },
+                        middle: {
+                            left: '',
+                            right: '1000px'
+                        },
+                        last: {
+                            left: '',
+                            right: '0px'
+                        }
+                    }
+                }
+            ];
+
+            test.each(resetTestCases)('Handle update of external sizes. $name', ({ resetSizes, expectedResult }) => {
+                const move = {
+                    index: 0,
+                    start: 100,
+                    end: 50
+                };
+                wrapper.setProps({
+                    sizes: [1000, 1000, 1000],
+                    minSectionSize: [200, 1000, 1000]
+                });
+                simulateSplitterResize(wrapper, move.start, move.end, move.index);
+                expect(getSizes()).toEqual({
+                    first: {
+                        left: '0px',
+                        right: '2050px'
+                    },
+                    middle: {
+                        left: '950px',
+                        right: '1000px'
+                    },
+                    last: {
+                        left: '2000px',
+                        right: '0px'
+                    }
+                });
+
+                // Reset sizes
+                wrapper.setProps({
+                    sizes: resetSizes
+                });
+                expect(getSizes()).toEqual(expectedResult);
+            });
         });
     });
 

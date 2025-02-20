@@ -67,6 +67,7 @@ export interface CFConfig extends CFAppConfig, CFBaseConfig {
     firstServicePathSegment?: string;
     isMtaRoot?: boolean;
 }
+export interface CAPConfig extends Omit<CFBaseConfig, 'abapServiceProvider'> {}
 export const enum ApiHubType {
     apiHub = 'API_HUB',
     apiHubEnterprise = 'API_HUB_ENTERPRISE'

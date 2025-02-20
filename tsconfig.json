@@ -33,6 +33,9 @@
       "path": "packages/abap-deploy-config-writer"
     },
     {
+      "path": "packages/adp-flp-config-sub-generator"
+    },
+    {
       "path": "packages/adp-tooling"
     },
     {
@@ -67,6 +70,9 @@
     },
     {
       "path": "packages/cf-deploy-config-inquirer"
+    },
+    {
+      "path": "packages/cf-deploy-config-sub-generator"
     },
     {
       "path": "packages/cf-deploy-config-writer"
@@ -115,6 +121,9 @@
     },
     {
       "path": "packages/flp-config-inquirer"
+    },
+    {
+      "path": "packages/flp-config-sub-generator"
     },
     {
       "path": "packages/guided-answers-helper"
@@ -175,6 +184,9 @@
     },
     {
       "path": "packages/project-input-validator"
+    },
+    {
+      "path": "packages/project-integrity"
     },
     {
       "path": "packages/reload-middleware"

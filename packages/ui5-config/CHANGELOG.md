@@ -1,5 +1,17 @@
 # @sap-ux/ui5-config
 
+## 0.26.2
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+
+## 0.26.1
+
+### Patch Changes
+
+-   19aad96: Delete only one backend entry per service.
+
 ## 0.26.0
 
 ### Minor Changes

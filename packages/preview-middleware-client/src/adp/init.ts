@@ -1,12 +1,7 @@
 import log from 'sap/base/Log';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-import {
-    showMessage,
-    enableTelemetry,
-    showInfoCenterMessage,
-    MessageBarType
-} from '@sap-ux-private/control-property-editor-common';
+import { showMessage, enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 
 import { getUi5Version, getUI5VersionValidationMessage, isLowerThanMinimalUi5Version } from '../utils/version';
 
@@ -47,15 +42,6 @@ export default async function (rta: RuntimeAuthoring) {
         CommunicationService.sendAction(
             showMessage({ message: getUI5VersionValidationMessage(ui5VersionInfo), shouldHideIframe: true })
         );
-        CommunicationService.sendAction(
-            showInfoCenterMessage({
-                message: {
-                    title: 'UI5 Validation message',
-                    description: getUI5VersionValidationMessage(ui5VersionInfo)
-                },
-                type: MessageBarType.info
-            })
-        );
         return;
     }
 
@@ -65,15 +51,6 @@ export default async function (rta: RuntimeAuthoring) {
             showMessage({
                 message: bundle.getText('ADP_SYNC_VIEWS_MESSAGE'),
                 shouldHideIframe: false
-            })
-        );
-        CommunicationService.sendAction(
-            showInfoCenterMessage({
-                message: {
-                    title: 'Synchronous views are detected',
-                    description: bundle.getText('ADP_SYNC_VIEWS_MESSAGE')
-                },
-                type: MessageBarType.info
             })
         );
     }

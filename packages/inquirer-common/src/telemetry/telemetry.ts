@@ -68,7 +68,7 @@ function createTelemetryEvent(eventName: string, telemetryData: TelemetryPropert
 /**
  * Used only to generate telemetry events in the case of destination errors.
  *
- * @param destination
+ * @param destination the destination used to set the telemetry destination type
  * @returns the telemetry property destination type
  */
 export function getTelemPropertyDestinationType(destination: Destination): TelemPropertyDestinationType {

@@ -5,7 +5,8 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import {
     SimpleQuickAction,
     quickActionListChanged,
-    executeQuickAction
+    executeQuickAction,
+    externalFileChange
 } from '@sap-ux-private/control-property-editor-common';
 
 import type { ChangeService } from '../../../../src/cpe/changes/service';
@@ -46,6 +47,8 @@ class MockDefinition implements SimpleQuickActionDefinition {
             } as unknown as FlexCommand
         ];
     }
+
+    runEnablementValidators(): void | Promise<void> {}
 }
 
 class MockRegistry extends QuickActionDefinitionRegistry<string> {
@@ -72,6 +75,7 @@ describe('quick action service', () => {
     beforeEach(() => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
+        sendActionMock.mockClear();
     });
 
     test('initialize simple action definition', async () => {
@@ -134,5 +138,46 @@ describe('quick action service', () => {
         } as any);
         onStackChangeMock.onStackChange.mock.calls[0][0]();
         expect(reloadQuickActions).toHaveBeenNthCalledWith(2, controlIndex);
+    });
+
+    test('initialize simple action definition - update quick action on extenal file change', async () => {
+        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+        const outlineService = new OutlineService(rtaMock, mockChangeService);
+        const registry = new MockRegistry();
+        const service = new QuickActionService(rtaMock, outlineService, [registry], {
+            onStackChange: jest.fn()
+        } as any);
+        const onOutlineChangeCbSpy = jest.spyOn(outlineService, 'onOutlineChange');
+        const reloadQuickActions = jest.spyOn(service, 'reloadQuickActions');
+        await service.init(sendActionMock, subscribeMock);
+        const controlIndex = {
+            filterBar: [
+                {
+                    controlId: 'filterBar-1v4',
+                    children: [],
+                    controlType: 'control.FilterBar',
+                    editable: true,
+                    name: 'test',
+                    visible: true
+                }
+            ]
+        };
+        onOutlineChangeCbSpy.mock.calls[0][0]({
+            detail: { controlIndex }
+        } as any);
+
+        await subscribeMock.mock.calls[0][0](externalFileChange('file_path'));
+        expect(reloadQuickActions).toHaveBeenNthCalledWith(2, {
+            filterBar: [
+                {
+                    children: [],
+                    controlId: 'filterBar-1v4',
+                    controlType: 'control.FilterBar',
+                    editable: true,
+                    name: 'test',
+                    visible: true
+                }
+            ]
+        });
     });
 });

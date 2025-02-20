@@ -2,13 +2,13 @@ import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { NestedQuickActionDefinition, QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import Table from 'sap/ui/mdc/Table';
-import { TableQuickActionDefinitionBase } from './table-quick-action-base';
+import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import { createManifestPropertyChange } from '../../../utils/fe-v4';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import { MDC_TABLE_TYPE } from '../control-types';
 
 export const ENABLE_TABLE_FILTERING = 'enable-table-filtering';
-const CONTROL_TYPE = 'sap.ui.mdc.Table';
 
 type Personalization = {
     sort: boolean;
@@ -26,7 +26,7 @@ export class EnableTableFilteringQuickAction
     implements NestedQuickActionDefinition
 {
     constructor(context: QuickActionContext) {
-        super(ENABLE_TABLE_FILTERING, 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
+        super(ENABLE_TABLE_FILTERING, [MDC_TABLE_TYPE], 'QUICK_ACTION_ENABLE_TABLE_FILTERING', context);
     }
     readonly forceRefreshAfterExecution = true;
 
@@ -38,9 +38,9 @@ export class EnableTableFilteringQuickAction
         }
 
         const tooltipText = this.context.resourceBundle.getText('TABLE_FILTERING_CHANGE_HAS_ALREADY_BEEN_MADE');
-        let index = 0;
+
         for (const smartTable of getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            CONTROL_TYPE
+            MDC_TABLE_TYPE
         ])) {
             const personalizationData = (smartTable as Table).getP13nMode();
             const value = this.context.changeService.getConfigurationPropertyValue(
@@ -54,27 +54,22 @@ export class EnableTableFilteringQuickAction
                 tooltip: isFilterEnabled ? tooltipText : undefined,
                 children: []
             });
-            this.tableMap[`${this.children.length - 1}`] = index;
-            index++;
+            this.tableMap[`${this.children.length - 1}`] = {
+                table: smartTable,
+                tableUpdateEventAttachedOnce: false
+            };
         }
 
         if (this.children.length > 0) {
             this.isApplicable = true;
         }
-
-        return Promise.resolve();
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
         const { flexSettings } = this.context;
-        const index = this.tableMap[path];
+        const { table } = this.tableMap[path];
 
-        const smartTables = getRelevantControlFromActivePage(this.context.controlIndex, this.context.view, [
-            CONTROL_TYPE
-        ]);
-
-        const modifiedControl = smartTables[index];
-        if (!modifiedControl) {
+        if (!table) {
             return [];
         }
         const propertyChange = {
@@ -86,7 +81,7 @@ export class EnableTableFilteringQuickAction
                 aggregate: true
             }
         };
-        const command = await createManifestPropertyChange(modifiedControl, flexSettings, propertyChange);
+        const command = await createManifestPropertyChange(table, flexSettings, propertyChange);
         if (command) {
             return [command];
         } else {

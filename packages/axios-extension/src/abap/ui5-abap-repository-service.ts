@@ -76,7 +76,8 @@ export interface AppInfo {
 export const abapUrlReplaceMap = new Map([
     [/\.abap\./, '.abap-web.'],
     [/-api\.s4hana\.ondemand\.com/, '.s4hana.ondemand.com'],
-    [/-api\.saps4hanacloud\.cn/, '.saps4hanacloud.cn']
+    [/-api\.saps4hanacloud\.cn/, '.saps4hanacloud.cn'],
+    [/-api\.lab\.s4hana\.cloud\.sap/, '.lab.s4hana.cloud.sap']
 ]);
 
 const xmlReplaceMap = {
@@ -373,20 +374,26 @@ export class Ui5AbapRepositoryService extends ODataService {
             // Was the app deployed after the first failed attempt?
             if (tryCount === 2) {
                 this.log.warn(
-                    'Warning: The application was deployed despite a time out response from the backend. Increasing the value of the HTML5.Timeout property for the destination may solve the issue'
+                    'Warning: The BSP application deployment timed out while waiting for a response from the backend. This may indicate the deployment was not finished. To resolve this, consider increasing the value of the HTML5.Timeout property for the destination.'
                 );
             }
-            // If its already deployed, then dont try to create it again
-            if (tryCount !== 1 && !isExisting && (await this.getInfo(appName)) !== undefined) {
-                // We've nothing to return as we dont want to show the exception to the user!
-                return Promise.resolve(undefined);
-            } else {
-                this.log.info(`${appName} found on target system: ${isExisting}`);
-                const response = isExisting
-                    ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
-                    : await this.post('/Repositories', payload, config);
-                return response;
+            let hasBeenUpdated = isExisting; // Default for first request
+            if (tryCount !== 1) {
+                /**
+                 * On the second try (tryCount = 2), the `getInfo` method may
+                 * retrieve partial information because some data may now exist in the
+                 * app after an initial timeout during the first attempt.
+                 *
+                 * We then attempt to update repository and return a response.
+                 * If this attempt also fails, then on the third try (tryCount = 3),
+                 * the user will receive an error.
+                 */
+                hasBeenUpdated = (await this.getInfo(appName)) !== undefined;
             }
+            this.log.info(`${appName} found on target system: ${hasBeenUpdated}`);
+            return hasBeenUpdated
+                ? await this.put(`/Repositories('${encodeURIComponent(appName)}')`, payload, config)
+                : await this.post('/Repositories', payload, config);
         } catch (error) {
             // Known ABAP timeout exception codes should re-trigger a deployment again to confirm the app was deployed
             if ([504, 408].includes(error?.response?.status)) {

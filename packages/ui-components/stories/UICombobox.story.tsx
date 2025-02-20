@@ -154,6 +154,47 @@ export const MultiSelectSearchHighlight = (): JSX.Element => {
     );
 };
 
+export const DynamicError = () => {
+    const [selectedKey, setSelectedKey] = React.useState<string | number>('OK');
+    const selectOptions = [
+        {
+            key: 'OK',
+            text: 'No Error Message'
+        },
+        {
+            key: 'ERROR',
+            text: 'With Error Message'
+        }
+    ];
+
+    function onCbChange(
+        event: React.FormEvent<IComboBox>,
+        option?: IComboBoxOption | undefined,
+        index?: number | undefined,
+        value?: string | undefined
+    ) {
+        if (option) {
+            setSelectedKey(option.key);
+        }
+    }
+
+    return (
+        <div style={{ width: '300px' }}>
+            <UIComboBox
+                options={selectOptions}
+                label="Dynamic Validation Error"
+                highlight={true}
+                allowFreeform={true}
+                useComboBoxAsMenuMinWidth={true}
+                autoComplete="on"
+                selectedKey={selectedKey}
+                onChange={onCbChange}
+                errorMessage={selectedKey === 'OK' ? undefined : 'Error Message'}
+            />
+        </div>
+    );
+};
+
 export const Messages = (): JSX.Element => (
     <div style={{ width: '300px' }}>
         <UIComboBox
@@ -163,7 +204,7 @@ export const Messages = (): JSX.Element => (
             allowFreeform={true}
             useComboBoxAsMenuMinWidth={true}
             autoComplete="on"
-            errorMessage="Dummy Error"
+            errorMessage={'Dummy Error'}
         />
         <UIComboBox
             options={data}

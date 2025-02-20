@@ -17,3 +17,7 @@ server:
               path: test
               port: 35729
               delay: 300
+builder:
+    customTasks:
+        - name: ui5-task-flatten-library
+          afterTask: generateResourcesJson

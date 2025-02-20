@@ -6,7 +6,6 @@ import type { ExternalAction } from '@sap-ux-private/control-property-editor-com
 import {
     outlineChanged,
     SCENARIO,
-    showMessage,
     showInfoCenterMessage,
     MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
@@ -67,18 +66,12 @@ export class OutlineService extends EventTarget {
                 sendAction(outlineChanged(outlineNodes));
                 if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning) {
                     sendAction(
-                        showMessage({
-                            message,
-                            shouldHideIframe: false
-                        })
-                    );
-                    sendAction(
                         showInfoCenterMessage({
                             message: {
                                 title: 'Reuse components detected',
                                 description: message
                             },
-                            type: MessageBarType.info
+                            type: MessageBarType.warning
                         })
                     );
                     hasSentWarning = true;

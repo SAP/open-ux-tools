@@ -45,7 +45,7 @@ export async function generateBuildingBlock<T extends BuildingBlock>(
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs, []);
+    await validateBasePath(basePath, fs, []);
 
     if (!fs.exists(join(basePath, viewOrFragmentPath))) {
         throw new Error(`Invalid view path ${viewOrFragmentPath}.`);

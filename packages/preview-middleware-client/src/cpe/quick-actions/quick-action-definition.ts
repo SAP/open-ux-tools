@@ -62,9 +62,13 @@ interface QuickActionDefinitionBase {
      */
     isApplicable: boolean;
     /**
-     * Initializes the action and checks if it should be enabled in current context.
+     * Initializes the action and checks if it should be displayed in current context.
      */
     initialize: () => void | Promise<void>;
+    /**
+     * Runs enablement validators to check if the action should be enabled.
+     */
+    runEnablementValidators: () => void | Promise<void>;
 }
 
 export interface SimpleQuickActionDefinition extends QuickActionDefinitionBase {

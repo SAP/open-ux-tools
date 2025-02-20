@@ -53,6 +53,7 @@ declare module 'sap/ui/fl/Change' {
     class Change<ContentType> {
         constructor(file: object): void;
         getDefinition: () => ChangeDefinition;
+        getJson: () => unknown;
         getSelector: () => Selector;
         getChangeType: () => string;
         getLayer: () => Layer;

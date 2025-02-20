@@ -1,5 +1,80 @@
 # @sap-ux/odata-service-writer
 
+## 0.25.9
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/mockserver-config-writer@0.7.3
+    -   @sap-ux/project-access@1.29.6
+
+## 0.25.8
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/mockserver-config-writer@0.7.2
+
+## 0.25.7
+
+### Patch Changes
+
+-   4a90030: `@sap-ux/project-access` moved to dependencies.
+
+## 0.25.6
+
+### Patch Changes
+
+-   f349f56: Fixed default naming for model.
+
+## 0.25.5
+
+### Patch Changes
+
+-   9910e7f: Improved set function for the default service model.
+
+## 0.25.4
+
+### Patch Changes
+
+-   Updated dependencies [19aad96]
+    -   @sap-ux/ui5-config@0.26.1
+    -   @sap-ux/mockserver-config-writer@0.7.2
+
+## 0.25.3
+
+### Patch Changes
+
+-   625bca8: Removed local annotation definitions from mockserver middleware in ui5-local.yaml and ui5-mock.yaml files.
+-   Updated dependencies [625bca8]
+    -   @sap-ux/mockserver-config-writer@0.7.1
+
+## 0.25.2
+
+### Patch Changes
+
+-   326cd59: Uses "" model for mainService during generation if model for mainService already exists.
+
+## 0.25.1
+
+### Patch Changes
+
+-   0f1b457: Improved update function for manifest by reducing JSON write calls for manifest file.
+
+## 0.25.0
+
+### Minor Changes
+
+-   036b48b: Removed ejs for manifest enhancements.
+
+## 0.24.2
+
+### Patch Changes
+
+-   9f14de1: Improved manifest.json template to allow services with empty remote annotations array and added support for multiple local annotations.
+
 ## 0.24.1
 
 ### Patch Changes

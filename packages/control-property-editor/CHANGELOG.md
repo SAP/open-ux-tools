@@ -1,5 +1,59 @@
 # @sap-ux/control-property-editor
 
+## 0.5.37
+
+### Patch Changes
+
+-   7c76e7c: fix: unify contextual menu for all nodes in outline panel.
+
+## 0.5.36
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 0.5.35
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.5.34
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
+## 0.5.33
+
+### Patch Changes
+
+-   dd34d62: UI accessability improvements for disabled elements and in quick action list
+
+## 0.5.32
+
+### Patch Changes
+
+-   f115bfa: fix: update quick action list on external changes
+
+## 0.5.31
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
+## 0.5.30
+
+### Patch Changes
+
+-   d529c38: Fixed Quick Actions not working after trying to open multiple dialogs and Quick Actions that create manifest changes in SAP Fiori Elements for OData V2 applications not showing correct state when there are unsaved manifest changes.
+
+## 0.5.29
+
+### Patch Changes
+
+-   60d5f85: Added tooltip for funnel and copy icon
+
 ## 0.5.28
 
 ### Patch Changes

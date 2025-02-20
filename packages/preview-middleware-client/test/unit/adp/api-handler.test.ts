@@ -3,6 +3,7 @@ import {
     MetadataResponse,
     RequestMethod,
     checkMetadata,
+    getDataSourceAnnotationFileMap,
     getFragments,
     getManifestAppdescr,
     request,
@@ -125,24 +126,59 @@ describe('API Handler', () => {
         });
     });
 
-    describe('checkMetadata', () => {
+    describe('checkMetadata', async () => {
+        fetchMock.mockResolvedValue({
+            json: jest.fn().mockReturnValue({
+                results: { dataSource1: { metadata: '<xml>data</xml>', success: true } },
+                success: true,
+                message: ''
+            } as MetadataResponse),
+            ok: true
+        });
+
+        const data = await checkMetadata();
+
+        expect(Object.values(data.results)?.[0]?.metadata).toBe('<xml>data</xml>');
+    });
+
+    describe('getDataSourceAnnotationFileMap', () => {
         afterEach(() => {
             fetchMock.mockRestore();
         });
 
         test('request is called and correct data is returned', async () => {
             fetchMock.mockResolvedValue({
-                json: jest.fn().mockReturnValue({
-                    results: { dataSource1: { metadata: '<xml>data</xml>', success: true } },
-                    success: true,
-                    message: ''
-                } as MetadataResponse),
+                json: jest.fn().mockReturnValue(
+                    JSON.stringify({
+                        mainService: {
+                            serviceUrl: 'main/service/url',
+                            annotationDetails: {
+                                annotationExistsInWS: false,
+                                annotationPath: 'c/drive/main/service/url',
+                                annotationPathFromRoot: '/main/service/url',
+                                isRunningInBAS: false
+                            }
+                        }
+                    })
+                ),
                 ok: true
             });
 
-            const data = await checkMetadata();
+            const data = await getDataSourceAnnotationFileMap();
 
-            expect(Object.values(data.results)?.[0]?.metadata).toBe('<xml>data</xml>');
+            expect(data).toEqual(
+                JSON.stringify({
+                    mainService: {
+                        serviceUrl: 'main/service/url',
+                        annotationDetails: {
+                            annotationExistsInWS: false,
+                            annotationPath: 'c/drive/main/service/url',
+                            annotationPathFromRoot: '/main/service/url',
+                            isRunningInBAS: false
+                        }
+                    }
+                })
+            );
         });
     });
 });

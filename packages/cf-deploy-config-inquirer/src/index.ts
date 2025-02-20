@@ -5,7 +5,8 @@ import type {
     CfSystemChoice,
     CfDeployConfigAnswers,
     CfAppRouterDeployConfigPromptOptions,
-    CfAppRouterDeployConfigQuestions
+    CfAppRouterDeployConfigQuestions,
+    CfAppRouterDeployConfigAnswers
 } from './types';
 import { promptNames, appRouterPromptNames, RouterModuleType } from './types';
 import { initI18nCfDeployConfigInquirer } from './i18n';
@@ -84,5 +85,8 @@ export {
     appRouterPromptNames,
     getAppRouterPrompts,
     type CfAppRouterDeployConfigPromptOptions,
-    RouterModuleType
+    RouterModuleType,
+    type CfDeployConfigQuestions,
+    type CfDeployConfigAnswers,
+    type CfAppRouterDeployConfigAnswers
 };

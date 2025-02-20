@@ -1,5 +1,114 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.60
+
+### Patch Changes
+
+-   d95bade: fix: Fixed various bugs related to Enable Variant Management for Tables quick action. It was unnecessarily disabled in some apps on List Report; changing Object Page table type led to enabling this action again; action is disabled now for custom tables, where it can't be applied.
+
+## 0.11.59
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
+## 0.11.58
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.11.57
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
+## 0.11.56
+
+### Patch Changes
+
+-   740f4d9: fix: CPE Quick action bug fix in ALP v4 projects. Add Custom Table Action worked incorrectly on Analytical Pages with multiple action toolbars in charts and tables.
+    Some V4 Quick Action code refactoring to optimize
+
+## 0.11.55
+
+### Patch Changes
+
+-   6b55228: Bind i18n models with namespace
+
+## 0.11.54
+
+### Patch Changes
+
+-   61edb7b: Fixed "Enable/Disable Semantic Date Range in Filter Bar" quick action in SAP Fiori Elements for OData V2 applications when using UI5 version lower than 1.126.
+
+## 0.11.53
+
+### Patch Changes
+
+-   1f98f07: Add stable ids in AddFragment and ControllerExtension forms
+
+## 0.11.52
+
+### Patch Changes
+
+-   34bfb02: fix: parameter type of fakeConnector create function
+
+## 0.11.51
+
+### Patch Changes
+
+-   1586cc3: CPE: Enable Variant Management in Tables and Charts Quick Action
+
+## 0.11.50
+
+### Patch Changes
+
+-   b88531b: fix: Enabled missing quick actions on ALP in V2 adp projects
+
+## 0.11.49
+
+### Patch Changes
+
+-   2a9c788: Fixed wrong initial state for "Disable Semantic Date Range in Filter Bar" Quick Action.
+
+## 0.11.48
+
+### Patch Changes
+
+-   f115bfa: fix: update quick action list on external changes
+
+## 0.11.47
+
+### Patch Changes
+
+-   19d51f3: feat: Quick Action For Add New Annotation File
+
+## 0.11.46
+
+### Patch Changes
+
+-   8b7ed76: Fixed outline not being displayed in SAP Fiori Elements for OData V4 applications with multiple views.
+
+## 0.11.45
+
+### Patch Changes
+
+-   d529c38: Fixed Quick Actions not working after trying to open multiple dialogs and Quick Actions that create manifest changes in SAP Fiori Elements for OData V2 applications not showing correct state when there are unsaved manifest changes.
+
+## 0.11.44
+
+### Patch Changes
+
+-   0633837: Added quick action to enable Inline Rows Creation in the Object Page tables
+
+## 0.11.43
+
+### Patch Changes
+
+-   5c4dc74: feat: add a more precise method to determine the current UI5 version
+
 ## 0.11.42
 
 ### Patch Changes

@@ -1,5 +1,121 @@
 # @sap-ux/cap-config-writer
 
+## 0.9.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/fiori-generator-shared@0.7.28
+
+## 0.9.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/fiori-generator-shared@0.7.27
+
+## 0.9.5
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.26
+
+## 0.9.4
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/fiori-generator-shared@0.7.25
+
+## 0.9.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.24
+
+## 0.9.2
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/fiori-generator-shared@0.7.23
+
+## 0.9.1
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.22
+
+## 0.9.0
+
+### Minor Changes
+
+-   d6b7440: Move `CapService` and `CapRuntime` types from `@sap-ux/odata-service-inquirer` to `@sap-ux/cap-config-writer` for better relevance; add CAP updates to generate functions of Fiori Elements and Freestyle writers
+
+## 0.8.4
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/fiori-generator-shared@0.7.21
+
+## 0.8.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/fiori-generator-shared@0.7.20
+
+## 0.8.2
+
+### Patch Changes
+
+-   1309fec: Fix writing watch script for CAP project where npm workspaces is already enabled
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/fiori-generator-shared@0.7.19
+
+## 0.8.0
+
+### Minor Changes
+
+-   45c01b0: Remove cds version check when adding a cds watch script to root package.json
+
+## 0.7.68
+
+### Patch Changes
+
+-   Updated dependencies [fe0878d]
+    -   @sap-ux/fiori-generator-shared@0.7.18
+
+## 0.7.67
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/fiori-generator-shared@0.7.17
+
+## 0.7.66
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.16
+
+## 0.7.65
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.15
+
 ## 0.7.64
 
 ### Patch Changes

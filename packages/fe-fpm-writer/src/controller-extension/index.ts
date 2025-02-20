@@ -217,7 +217,7 @@ export async function generateControllerExtension(
     if (!fs) {
         fs = create(createStorage());
     }
-    validateBasePath(basePath, fs);
+    await validateBasePath(basePath, fs);
 
     const { path: manifestPath, content: manifest } = await getManifest(basePath, fs);
 

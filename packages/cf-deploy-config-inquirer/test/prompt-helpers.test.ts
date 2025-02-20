@@ -11,6 +11,7 @@ import LoggerHelper from '../src/logger-helper';
 import { t } from '../src/i18n';
 
 jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
     isAppStudio: jest.fn(),
     listDestinations: jest.fn(),
     getDisplayName: jest.fn(),

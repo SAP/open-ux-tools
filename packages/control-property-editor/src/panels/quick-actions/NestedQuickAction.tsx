@@ -37,7 +37,7 @@ export function NestedQuickActionListItem({
     actionIndex
 }: Readonly<NestedQuickActionListItemProps>): ReactElement {
     const dispatch = useDispatch();
-    const isDisabled = useSelector<RootState, boolean>((state) => state.appMode === 'navigation');
+    const isDisabled = useSelector<RootState, boolean>((state) => state.appMode === 'navigation') || !action.enabled;
     const [showContextualMenu, setShowContextualMenu] = useState(false);
     const [target, setTarget] = useState<(EventTarget & (HTMLAnchorElement | HTMLElement | HTMLButtonElement)) | null>(
         null

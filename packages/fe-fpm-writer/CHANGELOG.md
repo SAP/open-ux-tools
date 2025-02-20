@@ -1,5 +1,109 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.33.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.4.7
+
+## 0.33.2
+
+### Patch Changes
+
+-   Updated dependencies [9e5c80f]
+    -   @sap-ux/fiori-annotation-api@0.4.6
+
+## 0.33.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/fiori-annotation-api@0.4.5
+
+## 0.33.0
+
+### Minor Changes
+
+-   aaaf046: update validateBasePath to use dynamic webapp path from manifest.json instead of hardcoded value
+
+## 0.32.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/fiori-annotation-api@0.4.4
+
+## 0.32.3
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/fiori-annotation-api@0.4.3
+
+## 0.32.2
+
+### Patch Changes
+
+-   Updated dependencies [1f0bb25]
+    -   @sap-ux/fiori-annotation-api@0.4.2
+
+## 0.32.1
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/fiori-annotation-api@0.4.1
+
+## 0.32.0
+
+### Minor Changes
+
+-   e6f42df: Update @sap-ux/annotation-converter, @sap-ux/vocabularies-types, @sap/ux-cds-compiler-facade dependencies
+
+### Patch Changes
+
+-   Updated dependencies [e6f42df]
+    -   @sap-ux/fiori-annotation-api@0.4.0
+
+## 0.31.27
+
+### Patch Changes
+
+-   Updated dependencies [93ef8c1]
+    -   @sap-ux/project-access@1.29.2
+    -   @sap-ux/fiori-annotation-api@0.3.8
+
+## 0.31.26
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.1
+-   @sap-ux/fiori-annotation-api@0.3.7
+
+## 0.31.25
+
+### Patch Changes
+
+-   Updated dependencies [88bf030]
+    -   @sap-ux/project-access@1.29.0
+    -   @sap-ux/fiori-annotation-api@0.3.6
+
+## 0.31.24
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.3.5
+
+## 0.31.23
+
+### Patch Changes
+
+-   Updated dependencies [e1edcd7]
+    -   @sap-ux/project-access@1.28.10
+    -   @sap-ux/fiori-annotation-api@0.3.4
+
 ## 0.31.22
 
 ### Patch Changes

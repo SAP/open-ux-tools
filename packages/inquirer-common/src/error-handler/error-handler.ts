@@ -1,5 +1,11 @@
 import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
-import { isAppStudio, isHTML5DynamicConfigured, isOnPremiseDestination, type Destination } from '@sap-ux/btp-utils';
+import {
+    Authentication,
+    isAppStudio,
+    isHTML5DynamicConfigured,
+    isOnPremiseDestination,
+    type Destination
+} from '@sap-ux/btp-utils';
 import { getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { type HostEnvironmentId } from '@sap-ux/fiori-generator-shared/src/types';
 import {
@@ -31,6 +37,7 @@ export enum ERROR_TYPE {
     CERT_UKNOWN_OR_INVALID = 'CERT_UKNOWN_OR_INVALID',
     CERT_EXPIRED = 'CERT_EXPIRED',
     CERT_SELF_SIGNED_CERT_IN_CHAIN = 'CERT_SELF_SIGNED_CERT_IN_CHAIN',
+    INVALID_SSL_CERTIFICATE = 'INVALID_SSL_CERTIFICATE',
     UNKNOWN = 'UNKNOWN',
     INVALID_URL = 'INVALID_URL',
     TIMEOUT = 'TIMEOUT',
@@ -42,9 +49,10 @@ export enum ERROR_TYPE {
     NO_SUCH_HOST = 'NO_SUCH_HOST',
     NOT_FOUND = 'NOT_FOUND',
     ODATA_URL_NOT_FOUND = 'ODATA_URL_NOT_FOUND',
-    BAD_GATEWAY = 'BAD_GATEWAY', // Can be caused by either local issue or endpoint configuration
+    BAD_GATEWAY = 'BAD_GATEWAY', // Can be caused by either local issue or endpoint configuration,
+    GATEWAY_TIMEOUT = 'GATEWAY_TIMEOUT',
     INTERNAL_SERVER_ERROR = 'INTERNAL_SERVER_ERROR',
-    DESTINATION_BAD_GATEWAY_503 = 'DESTINATION_BAD_GATEWAY_503', // Caused by endpoint using a firewall or proxy
+    DESTINATION_SERVICE_UNAVAILABLE = 'DESTINATION_SERVICE_UNAVAILABLE', // Caused by endpoint using a firewall or proxy
     DESTINATION_UNAVAILABLE = 'DESTINATION_UNAVAILABLE',
     DESTINATION_NOT_FOUND = 'DESTINATION_NOT_FOUND',
     DESTINATION_MISCONFIGURED = 'DESTINATION_MISCONFIGURED',
@@ -75,6 +83,7 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.CERT_EXPIRED]: [/CERT_HAS_EXPIRED/],
     [ERROR_TYPE.CERT_SELF_SIGNED]: [/DEPTH_ZERO_SELF_SIGNED_CERT/],
     [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: [/SELF_SIGNED_CERT_IN_CHAIN/],
+    [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: [/526/, /Invalid SSL Certificate/], // Cloud Foundry and Cloudflare specific
     [ERROR_TYPE.UNKNOWN]: [],
     [ERROR_TYPE.CONNECTION]: [/ENOTFOUND/, /ECONNRESET/, /ECONNREFUSED/, /ConnectionError/],
     [ERROR_TYPE.SERVICES_UNAVAILABLE]: [],
@@ -92,7 +101,8 @@ export const ERROR_MAP: Record<ERROR_TYPE, RegExp[]> = {
     [ERROR_TYPE.ODATA_URL_NOT_FOUND]: [],
     [ERROR_TYPE.INTERNAL_SERVER_ERROR]: [/500/],
     [ERROR_TYPE.BAD_GATEWAY]: [/502/],
-    [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: [],
+    [ERROR_TYPE.GATEWAY_TIMEOUT]: [/504/],
+    [ERROR_TYPE.DESTINATION_SERVICE_UNAVAILABLE]: [],
     [ERROR_TYPE.DESTINATION_UNAVAILABLE]: [],
     [ERROR_TYPE.DESTINATION_NOT_FOUND]: [],
     [ERROR_TYPE.DESTINATION_MISCONFIGURED]: [],
@@ -172,6 +182,20 @@ export class ErrorHandler {
         );
     };
 
+    /**
+     * Get the localized error message for the specified server error.
+     *
+     * @param error the error object or message that was returned from the server (5xx)
+     * @param subTextKey an i18next key used to provide additional context to the error message
+     * @returns the localized error message
+     */
+    private static readonly serverErrorMessage = (error: Error | object | string | undefined, subTextKey?: string) =>
+        t('errors.serverReturnedAnError', {
+            errorDesc: subTextKey
+                ? t(subTextKey, { errorMsg: ErrorHandler.getMessageFromError(error) })
+                : ErrorHandler.getMessageFromError(error)
+        });
+
     // Get the localized parameterized error message for the specified error type
     private static readonly _errorTypeToMsg: Record<ERROR_TYPE, (error?: Error | object | string) => string> = {
         [ERROR_TYPE.CERT]: (error) =>
@@ -190,6 +214,10 @@ export class ErrorHandler {
             t('errors.urlCertValidationError', {
                 certErrorReason: t('texts.anUntrustedRootCert')
             }),
+        [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: () =>
+            t('errors.urlCertValidationError', {
+                certErrorReason: t('texts.anUnknownOrInvalidCert')
+            }),
         [ERROR_TYPE.AUTH]: (error) =>
             t('errors.authenticationFailed', {
                 error: ErrorHandler.getMessageFromError(error)
@@ -206,25 +234,13 @@ export class ErrorHandler {
                 error: ErrorHandler.getMessageFromError(error)
             }),
         [ERROR_TYPE.SERVICES_UNAVAILABLE]: () => t('errors.servicesUnavailable'),
-        [ERROR_TYPE.SERVICE_UNAVAILABLE]: (error) =>
-            t('errors.serverReturnedAnError', {
-                errorMsg: ErrorHandler.getMessageFromError(error)
-            }),
+        [ERROR_TYPE.SERVICE_UNAVAILABLE]: (error) => ErrorHandler.serverErrorMessage(error),
         [ERROR_TYPE.CATALOG_SERVICE_NOT_ACTIVE]: () => t('errors.catalogServiceNotActive'),
-        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) => {
-            const errorMsg = ErrorHandler.getMessageFromError(error);
-            return t('errors.serverReturnedAnError', {
-                errorDesc: t('errors.internalServerError', { errorMsg })
-            });
-        },
+        [ERROR_TYPE.INTERNAL_SERVER_ERROR]: (error) =>
+            ErrorHandler.serverErrorMessage(error, 'errors.internalServerError'),
         [ERROR_TYPE.NOT_FOUND]: () => t('errors.urlNotFound'),
         [ERROR_TYPE.ODATA_URL_NOT_FOUND]: () => t('errors.odataServiceUrlNotFound'),
-        [ERROR_TYPE.BAD_GATEWAY]: (error) => {
-            const errorMsg = ErrorHandler.getMessageFromError(error);
-            return t('errors.serverReturnedAnError', {
-                errorDesc: t('errors.badGateway', { errorMsg })
-            });
-        },
+        [ERROR_TYPE.BAD_GATEWAY]: (error) => ErrorHandler.serverErrorMessage(error, 'errors.badGateway'),
         [ERROR_TYPE.DESTINATION_UNAVAILABLE]: () => t('errors.destination.unavailable'),
         [ERROR_TYPE.DESTINATION_NOT_FOUND]: () => t('errors.destination.notFound'),
         [ERROR_TYPE.DESTINATION_MISCONFIGURED]: (error) =>
@@ -233,21 +249,14 @@ export class ErrorHandler {
             }),
         [ERROR_TYPE.NO_V2_SERVICES]: () => t('errors.noServicesAvailable', { version: '2' }),
         [ERROR_TYPE.NO_V4_SERVICES]: () => t('errors.noServicesAvailable', { version: '4' }),
-        [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: () => t('errors.destination.unavailable'),
+        [ERROR_TYPE.DESTINATION_SERVICE_UNAVAILABLE]: () => t('errors.destination.unavailable'),
         [ERROR_TYPE.REDIRECT]: () => t('errors.redirectError'),
         [ERROR_TYPE.NO_SUCH_HOST]: () => t('errors.noSuchHostError'),
         [ERROR_TYPE.NO_ABAP_ENVS]: () => t('errors.abapEnvsUnavailable'),
-        [ERROR_TYPE.BAD_REQUEST]: (error) => {
-            const errorMsg = ErrorHandler.getMessageFromError(error);
-            return t('errors.serverReturnedAnError', {
-                errorDesc: t('errors.badRequest', { errorMsg })
-            });
-        },
+        [ERROR_TYPE.BAD_REQUEST]: (error) => ErrorHandler.serverErrorMessage(error, 'errors.badRequest'),
         [ERROR_TYPE.DESTINATION_CONNECTION_ERROR]: () => t('errors.systemConnectionValidationFailed'),
-        [ERROR_TYPE.SERVER_HTTP_ERROR]: (error) =>
-            t('errors.serverReturnedAnError', {
-                errorDesc: ErrorHandler.getMessageFromError(error)
-            })
+        [ERROR_TYPE.SERVER_HTTP_ERROR]: (error) => ErrorHandler.serverErrorMessage(error),
+        [ERROR_TYPE.GATEWAY_TIMEOUT]: (error) => ErrorHandler.serverErrorMessage(error)
     };
     /**
      *
@@ -266,20 +275,21 @@ export class ErrorHandler {
      * @returns The Guided Answers node for the specified error type
      */
     private static readonly getHelpNode = (errorType: ERROR_TYPE): number | undefined => {
+        const isBAS = isAppStudio();
         const errorToHelp: Record<ERROR_TYPE, number | undefined> = {
-            [ERROR_TYPE.SERVICES_UNAVAILABLE]: isAppStudio()
-                ? HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED
-                : undefined,
+            [ERROR_TYPE.SERVICES_UNAVAILABLE]: isBAS ? HELP_NODES.BAS_CATALOG_SERVICES_REQUEST_FAILED : undefined,
             [ERROR_TYPE.CERT]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_SELF_SIGNED]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_UKNOWN_OR_INVALID]: HELP_NODES.CERTIFICATE_ERROR,
+            [ERROR_TYPE.INVALID_SSL_CERTIFICATE]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN]: HELP_NODES.CERTIFICATE_ERROR,
             [ERROR_TYPE.DESTINATION_MISCONFIGURED]: HELP_NODES.DESTINATION_MISCONFIGURED,
             [ERROR_TYPE.DESTINATION_UNAVAILABLE]: HELP_NODES.DESTINATION_UNAVAILABLE,
             [ERROR_TYPE.DESTINATION_NOT_FOUND]: HELP_NODES.DESTINATION_NOT_FOUND,
             [ERROR_TYPE.BAD_GATEWAY]: HELP_NODES.BAD_GATEWAY,
-            [ERROR_TYPE.DESTINATION_BAD_GATEWAY_503]: HELP_NODES.DESTINATION_BAD_GATEWAY_503,
+            [ERROR_TYPE.DESTINATION_SERVICE_UNAVAILABLE]: HELP_NODES.DESTINATION_SERVICE_UNAVAILBLE,
             [ERROR_TYPE.NO_V4_SERVICES]: HELP_NODES.NO_V4_SERVICES,
+            [ERROR_TYPE.GATEWAY_TIMEOUT]: isBAS ? HELP_NODES.DESTINATION_GATEWAY_TIMEOUT : undefined,
             [ERROR_TYPE.AUTH]: undefined,
             [ERROR_TYPE.AUTH_TIMEOUT]: undefined,
             [ERROR_TYPE.REDIRECT]: undefined,
@@ -525,7 +535,7 @@ export class ErrorHandler {
             this.currentErrorMsg = null;
             this.currentErrorType = null;
         }
-        return errorHelp ?? resolvedErrorMsg; // We mau not have a help link, so return the resolvedend user message
+        return errorHelp ?? resolvedErrorMsg; // We may not have a help link, so return the resolved end user message
     }
     /**
      * Get a more specific error type for the specified destination.
@@ -546,15 +556,18 @@ export class ErrorHandler {
             destErrorMsg = this.getErrorMsgFromType(destErrorType, 'HTML5.DynamicDestination');
         } else if (errorType === ERROR_TYPE.SERVICE_UNAVAILABLE) {
             if (isOnPremiseDestination(destination)) {
-                destErrorType = ERROR_TYPE.DESTINATION_BAD_GATEWAY_503; // Remap to specific gateway to allow GA link to be associated
+                destErrorType = ERROR_TYPE.DESTINATION_SERVICE_UNAVAILABLE; // Remap to specific gateway to allow GA link to be associated
             } else {
                 destErrorType = ERROR_TYPE.DESTINATION_CONNECTION_ERROR; // General destination connection error, GA link to connection page
             }
         } else if (errorType === ERROR_TYPE.NOT_FOUND) {
             destErrorType = ERROR_TYPE.DESTINATION_NOT_FOUND;
+            destErrorMsg = this.getErrorMsgFromType(ERROR_TYPE.DESTINATION_NOT_FOUND);
         } else if (ERROR_TYPE.INTERNAL_SERVER_ERROR === errorType || ERROR_TYPE.SERVER_HTTP_ERROR === errorType) {
-            // We cannot tell in BAS what this means, so we will just say the connection failed
             destErrorType = ERROR_TYPE.DESTINATION_CONNECTION_ERROR;
+        } else if (errorType === ERROR_TYPE.AUTH && destination.Authentication !== Authentication.NO_AUTHENTICATION) {
+            // Auth errors for destinations are usually misconfiguration, unless the `Authentication` property is set to `NoAuthentication`
+            destErrorMsg = this.getErrorMsgFromType(ERROR_TYPE.AUTH, t('texts.checkDestinationAuthConfig'));
         }
         // Always raise a telemetry event for destination related errors
         sendTelemetryEvent(telemBasError, {

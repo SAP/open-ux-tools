@@ -11,7 +11,8 @@ import {
     showMessage,
     storageFileChanged,
     updateQuickAction,
-    PropertyType
+    PropertyType,
+    requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 
 import reducer, {
@@ -21,11 +22,9 @@ import reducer, {
     changeDeviceType,
     setProjectScenario,
     fileChanged,
-    initialState,
     setFeatureToggles
 } from '../../src/slice';
 import { DeviceType } from '../../src/devices';
-import { features } from 'process';
 
 describe('main redux slice', () => {
     describe('property changed', () => {
@@ -534,6 +533,7 @@ describe('main redux slice', () => {
         });
 
         test('external changes (scenario 1)', () => {
+            jest.spyOn(Date, 'now').mockReturnValue(1736392383604);
             expect(
                 reducer(
                     {
@@ -548,11 +548,13 @@ describe('main redux slice', () => {
                 )
             ).toStrictEqual({
                 'changes': { 'controls': [], 'pending': [], 'pendingChangeIds': ['testFile1'], 'saved': [] },
-                'fileChanges': ['testFile2']
+                'fileChanges': ['testFile2'],
+                'lastExternalFileChangeTimestamp': 1736392383604
             });
         });
 
         test('external changes (scenario 2)', () => {
+            jest.spyOn(Date, 'now').mockReturnValue(12333434312);
             expect(
                 reducer(
                     {
@@ -568,7 +570,8 @@ describe('main redux slice', () => {
                 )
             ).toStrictEqual({
                 'changes': { 'controls': [], 'pending': [], 'pendingChangeIds': ['testFile1'], 'saved': [] },
-                'fileChanges': ['testFile3', 'testFile2']
+                'fileChanges': ['testFile3', 'testFile2'],
+                'lastExternalFileChangeTimestamp': 12333434312
             });
         });
     });
@@ -592,6 +595,75 @@ describe('main redux slice', () => {
         ).toStrictEqual({
             fileChanges: [],
             isAppLoading: true
+        });
+    });
+
+    test('requestControlContextMenu.fulfilled', () => {
+        expect(
+            reducer(
+                {
+                    contextMenu: undefined
+                } as any,
+                requestControlContextMenu.fulfilled({
+                    contextMenuItems: [
+                        {
+                            id: 'DEVACTION01',
+                            enabled: true,
+                            title: 'dev action 01',
+                            tooltip: ''
+                        },
+                        {
+                            id: 'DEVACTION02',
+                            enabled: true,
+                            title: 'dev action 02',
+                            tooltip: ''
+                        },
+                        {
+                            id: 'DEFAULTACTION01',
+                            enabled: true,
+                            title: 'default action 01',
+                            tooltip: ''
+                        },
+                        {
+                            id: 'DEFAULTACTION02',
+                            enabled: true,
+                            title: 'default action 02',
+                            tooltip: ''
+                        }
+                    ],
+                    controlId: 'test-control-01'
+                })
+            )
+        ).toStrictEqual({
+            contextMenu: {
+                contextMenuItems: [
+                    {
+                        enabled: true,
+                        id: 'DEVACTION01',
+                        title: 'dev action 01',
+                        tooltip: ''
+                    },
+                    {
+                        enabled: true,
+                        id: 'DEVACTION02',
+                        title: 'dev action 02',
+                        tooltip: ''
+                    },
+                    {
+                        enabled: true,
+                        id: 'DEFAULTACTION01',
+                        title: 'default action 01',
+                        tooltip: ''
+                    },
+                    {
+                        enabled: true,
+                        id: 'DEFAULTACTION02',
+                        title: 'default action 02',
+                        tooltip: ''
+                    }
+                ],
+                controlId: 'test-control-01'
+            }
         });
     });
 

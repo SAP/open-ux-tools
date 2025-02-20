@@ -200,6 +200,22 @@ export interface CodeExtChange extends CommonChangeProperties {
     };
 }
 
+export interface AnnotationFileChange extends CommonChangeProperties {
+    changeType: 'appdescr_app_addAnnotationsToOData';
+    creation: string;
+    content: {
+        dataSourceId: string;
+        annotations: string[];
+        annotationsInsertPosition: 'END';
+        dataSource: {
+            [fileName: string]: {
+                uri: string;
+                type: 'ODataAnnotation';
+            };
+        };
+    };
+}
+
 export interface ParamCheck {
     shouldApply: boolean;
     value: string | undefined;
@@ -357,6 +373,8 @@ export type GeneratorData<T extends ChangeType> = T extends ChangeType.ADD_ANNOT
 
 export interface AnnotationsData {
     variant: DescriptorVariant;
+    /** Flag for differentiating the annotation creation call from CLI and from CPE */
+    isCommand: boolean;
     annotation: {
         /** Optional name of the annotation file. */
         fileName?: string;
