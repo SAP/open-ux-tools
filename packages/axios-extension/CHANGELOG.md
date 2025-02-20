@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.18.6
+
+### Patch Changes
+
+-   4fd3029: Allow using an alias for the reentrance url
+
 ## 1.18.5
 
 ### Patch Changes

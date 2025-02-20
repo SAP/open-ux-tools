@@ -52,6 +52,7 @@ export type AddFragmentModel = JSONModel & {
 export interface AddFragmentOptions {
     title: string;
     aggregation?: string;
+    defaultAggregationArrayIndex?: number;
 }
 
 /**
@@ -203,6 +204,10 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         this.model.setProperty('/selectedIndex', indexArray.length - 1);
         this.model.setProperty('/targetAggregation', controlAggregation);
         this.model.setProperty('/index', indexArray);
+        const defaultIndex = Number(this.options.defaultAggregationArrayIndex);
+        if (defaultIndex >= 0) {
+            this.model.setProperty('/selectedIndex', indexArray.length - 1 > 0 ? defaultIndex : 0);
+        }
     }
 
     /**
