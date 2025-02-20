@@ -119,20 +119,16 @@ export async function generateFreestyleOPAFiles(
 
     const templateFiles = await getFilePaths(freestyleTemplateDir);
     const isTypeScript = Boolean(enableTypeScript);
-    const commonJSTemplates = ['initFlpSandbox.js', 'flpSandbox.js'];
 
     // Filter files based on TypeScript setting:
     // - If TypeScript is enabled, include only .ts files
     // - If TypeScript is disabled, include only .js files
-    // - Include common JS files regardless of TypeScript setting
     const filteredFiles = templateFiles.filter((filePath: string) => {
         if (filePath.endsWith('.ts')) {
             return isTypeScript;
         }
         if (filePath.endsWith('.js')) {
-            const includeCommonJSTemplate =
-                commonJSTemplates.includes(basename(filePath)) && templateUi5Version === '1.71.0';
-            return !isTypeScript || includeCommonJSTemplate;
+            return !isTypeScript;
         }
         return true; // keep other .html files
     });

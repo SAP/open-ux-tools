@@ -32,8 +32,6 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         fs = await generateFreestyleOPAFiles(basePath, opaConfig, fs);
 
         const expectedFiles = [
-            'flpSandbox.js',
-            'initFlpSandbox.js',
             'integration/NavigationJourney.ts',
             'integration/opaTests.qunit.html',
             'integration/pages/AppPage.ts',
@@ -308,133 +306,6 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
             });
         `)
         );
-
-        // check initFlpSandbox.js
-        const initFlpSandbox = fs?.read(join(testOutputPath, 'initFlpSandbox.js'));
-        expect(removeSpaces(initFlpSandbox)).toBe(
-            removeSpaces(`
-            sap.ui.define([
-                "./flpSandbox",
-                "sap/ui/fl/FakeLrepConnectorLocalStorage",
-                "sap/m/MessageBox"
-            ], function (flpSandbox, FakeLrepConnectorLocalStorage, MessageBox) {
-                "use strict";
-            
-                flpSandbox.init().then(function () {
-                        FakeLrepConnectorLocalStorage.enableFakeConnector();
-                }, function (oError) {
-                        MessageBox.error(oError.message);
-                });
-            });
-        `)
-        );
-
-        // check flpSandbox.js
-        const flpSandbox = fs?.read(join(testOutputPath, 'flpSandbox.js'));
-        expect(removeSpaces(flpSandbox)).toBe(
-            removeSpaces(`
-            sap.ui.define([
-                "sap/base/util/ObjectPath",
-                "sap/ushell/services/Container"
-            ], function (ObjectPath) {
-                "use strict";
-            
-                // define ushell config
-                ObjectPath.set(["sap-ushell-config"], {
-                        defaultRenderer: "fiori2",
-                        bootstrapPlugins: {
-                                "RuntimeAuthoringPlugin": {
-                                        component: "sap.ushell.plugins.rta",
-                                        config: {
-                                                validateAppVersion: false
-                                        }
-                                },
-                                "PersonalizePlugin": {
-                                        component: "sap.ushell.plugins.rta-personalize",
-                                        config: {
-                                                validateAppVersion: false
-                                        }
-                                }
-                        },
-                        renderers: {
-                                fiori2: {
-                                        componentData: {
-                                                config: {
-                                                        enableSearch: false,
-                                                        rootIntent: "Shell-home"
-                                                }
-                                        }
-                                }
-                        },
-                        services: {
-                                "LaunchPage": {
-                                        "adapter": {
-                                                "config": {
-                                                        "groups": [{
-                                                                "tiles": [{
-                                                                        "tileType": "sap.ushell.ui.tile.StaticTile",
-                                                                        "properties": {
-                                                                                "title": "${opaConfig.applicationTitle}",
-                                                                                "targetURL": "#testapptypescript-display"
-                                                                        }
-                                                                }]
-                                                        }]
-                                                }
-                                        }
-                                },
-                                "ClientSideTargetResolution": {
-                                        "adapter": {
-                                                "config": {
-                                                        "inbounds": {
-                                                                "testapptypescript-display": {
-                                                                        "semanticObject": "testapptypescript",
-                                                                        "action": "display",
-                                                                        "description": "${opaConfig.applicationDescription}",
-                                                                        "title": "${opaConfig.applicationTitle}",
-                                                                        "signature": {
-                                                                                "parameters": {}
-                                                                        },
-                                                                        "resolutionResult": {
-                                                                                "applicationType": "SAPUI5",
-                                                                                "additionalInformation": "SAPUI5.Component=test-app-typescript",
-                                                                                "url": sap.ui.require.toUrl("test-app-typescript")
-                                                                        }
-                                                                }
-                                                        }
-                                                }
-                                        }
-                                },
-                                NavTargetResolution: {
-                                        config: {
-                                                "enableClientSideTargetResolution": true
-                                        }
-                                }
-                        }
-                });
-            
-                var oFlpSandbox = {
-                        init: function () {
-                                /**
-                                 * Initializes the FLP sandbox
-                                 * @returns {Promise} a promise that is resolved when the sandbox bootstrap has finshed
-                                 */
-            
-                                // sandbox is a singleton, so we can start it only once
-                                if (!this._oBootstrapFinished) {
-                                        this._oBootstrapFinished = sap.ushell.bootstrap("local");
-                                        this._oBootstrapFinished.then(function () {
-                                                sap.ushell.Container.createRenderer().placeAt("content");
-                                        });
-                                }
-            
-                                return this._oBootstrapFinished;
-                        }
-                };
-            
-                return oFlpSandbox;
-            });
-        `)
-        );
     });
 
     test('Generate OPA test files correctly when typescript is not enabled', async () => {
@@ -451,8 +322,6 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
 
         //console.log("--fs.dump", fs.dump())
         const expectedFiles = [
-            'flpSandbox.js',
-            'initFlpSandbox.js',
             'integration/NavigationJourney.js',
             'integration/opaTests.qunit.html',
             'integration/pages/App.js',
@@ -668,10 +537,6 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
         expectedFiles.map((file: string) => {
             expect(fs?.exists(join(testOutputPath, file))).toBe(true);
         });
-
-        // check that flpSandbox & initFlpSandbox are not generated for ui5Version 1.120.0
-        expect(fs.exists(join(testOutputPath, 'flpSandbox.js'))).toBe(false);
-        expect(fs.exists(join(testOutputPath, 'initFlpSandbox.js'))).toBe(false);
 
         // check unit/unitTests.qunit.ts
         const unitTestQUnit = fs?.read(join(testOutputPath, 'unit/unitTests.qunit.ts'));
