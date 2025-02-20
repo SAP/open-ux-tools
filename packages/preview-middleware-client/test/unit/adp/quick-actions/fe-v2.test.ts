@@ -557,7 +557,8 @@ describe('FE V2 quick actions', () => {
                     headerToolbar: false
                 },
                 { tableType: SMART_TABLE_TYPE, headerToolbar: true },
-                { tableType: SMART_TABLE_TYPE, isTableWithoutToolbar: true }
+                { tableType: SMART_TABLE_TYPE, isTableWithoutToolbar: true },
+                { tableType: SMART_TABLE_TYPE, tableToolBar: true },
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
@@ -591,7 +592,14 @@ describe('FE V2 quick actions', () => {
                             getDomRef: () => ({
                                 scrollIntoView
                             }),
-
+                            
+                            getToolbar: () => {
+                                if(testCase.tableToolBar) {
+                                    return 'tableToolBar'
+                                } else {
+                                    return null;
+                                }
+                            },
                             getAggregation: (aggregationName: string) => {
                                 if (aggregationName === 'items') {
                                     if (testCase.headerToolbar) {

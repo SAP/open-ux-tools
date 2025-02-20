@@ -89,6 +89,9 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                 }
                 return isA<OverflowToolbar>('sap.m.OverflowToolbar', item);
             });
+            if(!headerToolbar) {
+                headerToolbar = table.getToolbar();
+            }
         } else if (isA<Table>(M_TABLE_TYPE, table)) {
             headerToolbar = table.getAggregation('headerToolbar');
         }
