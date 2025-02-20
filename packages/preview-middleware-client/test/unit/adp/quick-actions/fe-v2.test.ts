@@ -600,7 +600,7 @@ describe('FE V2 quick actions', () => {
                             }),
 
                             getToolbar: () => {
-                                if (testCase.tableToolbar == 'ItemAggregation') {
+                                if (testCase.tableToolbar == 'smartTableProperty') {
                                     return 'tableToolBar';
                                 } else {
                                     return null;
@@ -619,7 +619,7 @@ describe('FE V2 quick actions', () => {
                                                 }
                                             }
                                         ];
-                                    } else if (testCase.tableToolbar === 'smartTableProperty') {
+                                    } else if (testCase.tableToolbar === 'ItemAggregation') {
                                         return [
                                             {
                                                 getAggregation: () => null,
