@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.17.46
+
+### Patch Changes
+
+-   1bcd64f: Fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
 ## 0.17.45
 
 ### Patch Changes
