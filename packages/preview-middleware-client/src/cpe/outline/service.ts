@@ -40,6 +40,7 @@ export class OutlineService extends EventTarget {
         const resourceBundle = await getTextBundle();
         const key = 'ADP_REUSE_COMPONENTS_MESSAGE';
         const message = resourceBundle.getText(key) ?? key;
+        const [title, description] = message.split('|');
         let hasSentWarning = false;
         const reuseComponentsIds = new Set<string>();
         const syncOutline = async () => {
@@ -67,11 +68,9 @@ export class OutlineService extends EventTarget {
                 if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning) {
                     sendAction(
                         showInfoCenterMessage({
-                            message: {
-                                title: 'Reuse components detected',
-                                description: message
-                            },
-                            type: MessageBarType.warning
+                            type: MessageBarType.warning,
+                            title: title,
+                            description: description
                         })
                     );
                     hasSentWarning = true;

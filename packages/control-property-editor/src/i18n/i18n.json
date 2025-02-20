@@ -93,5 +93,11 @@
   "NAVIGATE": "Navigate",
   "LIST": "list",
   "QUICK_ACTIONS": "{{title}} QUICK ACTIONS",
-  "CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE": "This action is disabled in navigation mode"
+  "CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE": "This action is disabled in navigation mode",
+  "INFO_CENTER": "INFO CENTER",
+  "MORE": "More",
+  "LESS": "Less",
+  "CLOSE": "Close",
+  "VIEW_DETAILS": "View Detatils",
+  "ERROR_DETAILS": "Error Details"
 }

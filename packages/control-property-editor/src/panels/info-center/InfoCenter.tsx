@@ -1,21 +1,13 @@
 import type { ReactElement } from 'react';
 import React, { useEffect } from 'react';
 import { useTranslation } from 'react-i18next';
-import { Label, Stack, Text } from '@fluentui/react';
+import { Label, Stack } from '@fluentui/react';
 import { useDispatch, useSelector } from 'react-redux';
-import type { InfoCenterMessage } from '@sap-ux-private/control-property-editor-common';
-import {
-    clearInfoCenterMessage,
-    clearAllInfoCenterMessages,
-    MessageBarType,
-    toggleExpandMessage,
-    readMessage,
-    expandableMessage,
-    toggleModalMessage
-} from '@sap-ux-private/control-property-editor-common';
-import { UIMessageBar, UIIconButton, UiIcons, UIDialog, UITextInput } from '@sap-ux/ui-components';
+import type { InfoCenterItem } from '../../slice';
+import { clearAllInfoCenterMessages, expandableMessage } from '../../slice';
+import { UIIconButton, UiIcons } from '@sap-ux/ui-components';
 import type { RootState } from '../../store';
-import { sectionHeaderFontSize } from '../properties/constants';
+import { InfoMessageItem } from './InfoMessageItem';
 import './InfoCenter.scss';
 
 /**
@@ -26,30 +18,25 @@ import './InfoCenter.scss';
 export function InfoCenter(): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const messages = useSelector<RootState, InfoCenterMessage[]>((state) => state.infoCenterMessages);
+    const messages = useSelector<RootState, InfoCenterItem[]>((state) => state.infoCenterMessages);
 
     /**
-     * Returns the corresponding string representation of the message type.
+     * This effect selects all elements with the class "message-description" (which represent message descriptions)
+     * and checks if their content is clamped (i.e. truncated) by comparing each element's scrollHeight with its clientHeight.
+     * If an element's content is clamped and it is not already marked as expandable, the effect dispatches an action
+     * to mark the corresponding message as expandable.
      *
-     * @param {MessageBarType} type - The type of the message.
-     * @returns {'error' | 'warning' | 'info'} The string representation of the message type.
+     * @returns {void} This effect does not return a value.
      */
-    function getMessageType(type: MessageBarType) {
-        switch (type) {
-            case MessageBarType.error:
-                return 'error';
-            case MessageBarType.warning:
-                return 'warning';
-            default:
-                return 'info';
-        }
-    }
-
     useEffect(() => {
         document.querySelectorAll('.message-description').forEach((element) => {
-            const { scrollHeight, clientHeight, accessKey } = element as HTMLElement;
-            if (scrollHeight > clientHeight) {
-                dispatch(expandableMessage(Number(accessKey)));
+            const htmlElement = element as HTMLElement;
+            const isExpandable = htmlElement.classList.contains('expandable');
+            const { scrollHeight, clientHeight } = htmlElement;
+            const id = String(htmlElement.dataset.index);
+
+            if (scrollHeight > clientHeight && !isExpandable) {
+                dispatch(expandableMessage(id));
             }
         });
     }, [messages, dispatch]);
@@ -58,16 +45,7 @@ export function InfoCenter(): ReactElement {
         <Stack>
             <div className="info-center-header">
                 <Stack.Item>
-                    <Label
-                        data-aria-label={t('INFO CENTER')}
-                        style={{
-                            color: 'var(--vscode-foreground)',
-                            fontSize: sectionHeaderFontSize,
-                            fontWeight: 'bold',
-                            padding: 0
-                        }}>
-                        {t('INFO CENTER')}
-                    </Label>
+                    <Label data-aria-label={t('INFO_CENTER')}>{t('INFO_CENTER')}</Label>
                 </Stack.Item>
                 <Stack.Item>
                     <UIIconButton
@@ -77,71 +55,11 @@ export function InfoCenter(): ReactElement {
                     />
                 </Stack.Item>
             </div>
-            <Stack className="info-center-items">
-                {messages.map((info, index) => {
-                    const {
-                        expandable: isExpandable,
-                        expanded: isExpanded,
-                        read: isRead,
-                        modal: isOpenedModal,
-                        message,
-                        type
-                    } = info;
-                    return (
-                        <Stack.Item
-                            key={index}
-                            className={`message-bar ${getMessageType(type)} ${isRead && 'message-read'}`}
-                            onMouseOver={() => dispatch(readMessage(index))}>
-                            <UIMessageBar messageBarType={type as MessageBarType}>
-                                <Text block={true} className="message-title">
-                                    {message.title}
-                                </Text>
-                                {type !== MessageBarType.error && (
-                                    <UIIconButton
-                                        className="remove-message"
-                                        onClick={() => dispatch(clearInfoCenterMessage(index))}
-                                        iconProps={{ iconName: UiIcons.TrashCan }}
-                                    />
-                                )}
-                            </UIMessageBar>
-                            <Text
-                                accessKey={index.toString()}
-                                block={true}
-                                className={`message-description ${isExpanded && 'expanded'} ${
-                                    isExpandable && 'expandable'
-                                }`}>
-                                {message.description}
-                            </Text>
-                            {isExpandable && (
-                                <Text className="more-less" onClick={() => dispatch(toggleExpandMessage(index))}>
-                                    {isExpanded ? 'Less' : 'More'}
-                                </Text>
-                            )}
-                            {message.details && (
-                                <Text
-                                    className="message-details"
-                                    onClick={() => dispatch(toggleModalMessage(index))}>
-                                    {'View Details'}
-                                </Text>
-                            )}
-                            <UIDialog
-                                hidden={!isOpenedModal}
-                                dialogContentProps={{
-                                    title: 'Error Details'
-                                }}
-                                acceptButtonText="Close"
-                                onAccept={() => dispatch(toggleModalMessage(index))}>
-                                <UITextInput
-                                    className="modal-text-area"
-                                    value={message.details}
-                                    readOnly={true}
-                                    multiline={true}
-                                />
-                            </UIDialog>
-                        </Stack.Item>
-                    );
+            <div className="info-center-items auto-element-scroller">
+                {messages.map((messageItem) => {
+                    return <InfoMessageItem key={messageItem.id} {...messageItem} />;
                 })}
-            </Stack>
+            </div>
         </Stack>
     );
 }

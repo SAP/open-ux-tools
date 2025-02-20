@@ -3,16 +3,28 @@
     z-index: 1;
     left: 0;
     right: 0;
+    top: 4px;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 10px 15px 6px 15px;
+    padding: 10px 15px;
     border-bottom: 1px solid var(--vscode-menu-separatorBackground);
     background-color: var(--vscode-sideBar-background);
+
+    label {
+        color: var(--vscode-foreground);
+        font-size: 11px;
+        font-weight: bold;
+        padding: 0;
+    }
+}
+
+.editor__infocenter {
+    margin-top: 4px;
 }
 
 .info-center-items {
-    margin-top: 39px;
+    margin-top: 44px;
 }
 
 .message-bar {
@@ -86,7 +98,7 @@
     -webkit-box-orient: vertical;
     -webkit-line-clamp: 4;
     overflow: hidden;
-    font-size: 11px;
+    font-size: 12px;
     color: var(--vscode-editor-foreground);
 }
 

@@ -1,5 +1,6 @@
 import type { PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit';
 import { createSlice, createAction } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 import type {
     Control,
@@ -39,20 +40,14 @@ import {
     updateQuickAction,
     quickActionListChanged,
     applicationModeChanged,
-    showInfoCenterMessage,
-    clearInfoCenterMessage,
-    clearAllInfoCenterMessages,
-    toggleExpandMessage,
-    readMessage,
     MessageBarType,
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
     CONFIGURATION_CHANGE_KIND,
-    expandableMessage,
-    toggleModalMessage,
-    requestControlContextMenu
+    requestControlContextMenu,
+    showInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -84,7 +79,7 @@ export interface SliceState {
     applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
-    infoCenterMessages: InfoCenterMessage[];
+    infoCenterMessages: InfoCenterItem[];
     contextMenu: ContextMenu | undefined;
 }
 
@@ -134,6 +129,15 @@ const filterInitOptions: FilterOptions[] = [
     { name: FilterName.showEditableProperties, value: true }
 ];
 
+export interface InfoCenterItem {
+    message: InfoCenterMessage;
+    id: string;
+    expandable?: boolean;
+    expanded?: boolean;
+    read?: boolean;
+    modal?: boolean;
+}
+
 export const changeProperty = createAction<PropertyChange, 'app/change-property'>('app/change-property');
 export const changePreviewScale = createAction<number>('app/change-preview-scale');
 export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-preview-scale-mode');
@@ -150,6 +154,12 @@ interface LivereloadOptions {
     url?: string;
 }
 export const initializeLivereload = createAction<LivereloadOptions>('app/initialize-livereload');
+export const clearInfoCenterMessage = createAction<string>('clear-info-center-message');
+export const clearAllInfoCenterMessages = createAction<void>('clear-all-info-center-message');
+export const toggleExpandMessage = createAction<string>('toggle-expand-message');
+export const readMessage = createAction<string>('read-message');
+export const expandableMessage = createAction<string>('expandable-message');
+export const toggleModalMessage = createAction<string>('toggle-modal-message');
 export const initialState: SliceState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
@@ -459,43 +469,56 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
             .addMatcher(
                 showInfoCenterMessage.match,
                 (state: SliceState, action: ReturnType<typeof showInfoCenterMessage>): void => {
-                    state.infoCenterMessages.unshift(action.payload);
+                    state.infoCenterMessages.unshift({
+                        id: uuidv4(),
+                        message: action.payload
+                    });
                 }
             )
             .addMatcher(
                 clearInfoCenterMessage.match,
                 (state: SliceState, action: ReturnType<typeof clearInfoCenterMessage>): void => {
-                    state.infoCenterMessages = state.infoCenterMessages.filter((_, index) => index !== action.payload);
+                    state.infoCenterMessages = state.infoCenterMessages.filter(
+                        (message) => message.id !== action.payload
+                    );
                 }
             )
             .addMatcher(clearAllInfoCenterMessages.match, (state: SliceState): void => {
                 state.infoCenterMessages = state.infoCenterMessages.filter(
-                    (info) => info.type === MessageBarType.error
+                    (info) => info.message.type === MessageBarType.error
                 );
             })
             .addMatcher(
                 toggleExpandMessage.match,
                 (state: SliceState, action: ReturnType<typeof toggleExpandMessage>): void => {
-                    const index = action.payload;
-                    state.infoCenterMessages[index].expanded = !state.infoCenterMessages[index].expanded;
+                    const id = action.payload;
+                    state.infoCenterMessages = state.infoCenterMessages.map((message) =>
+                        message.id === id ? { ...message, expanded: !message.expanded } : message
+                    );
                 }
             )
             .addMatcher(readMessage.match, (state: SliceState, action: ReturnType<typeof readMessage>): void => {
-                const index = action.payload;
-                state.infoCenterMessages[index].read = true;
+                const id = action.payload;
+                state.infoCenterMessages = state.infoCenterMessages.map((message) =>
+                    message.id === id ? { ...message, read: true } : message
+                );
             })
             .addMatcher(
                 expandableMessage.match,
                 (state: SliceState, action: ReturnType<typeof expandableMessage>): void => {
-                    const index = action.payload;
-                    state.infoCenterMessages[index].expandable = true;
+                    const id = action.payload;
+                    state.infoCenterMessages = state.infoCenterMessages.map((message) =>
+                        message.id === id ? { ...message, expandable: true } : message
+                    );
                 }
             )
             .addMatcher(
                 toggleModalMessage.match,
                 (state: SliceState, action: ReturnType<typeof toggleModalMessage>): void => {
-                    const index = action.payload;
-                    state.infoCenterMessages[index].modal = !state.infoCenterMessages[index].modal;
+                    const id = action.payload;
+                    state.infoCenterMessages = state.infoCenterMessages.map((message) =>
+                        message.id === id ? { ...message, modal: !message.modal } : message
+                    );
                 }
             )
             .addMatcher(

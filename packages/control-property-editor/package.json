@@ -62,6 +62,7 @@
         "autoprefixer": "10.4.7",
         "postcss": "8.5.1",
         "yargs-parser": "21.1.1",
-        "@sap-ux-private/control-property-editor-common": "workspace:*"
+        "@sap-ux-private/control-property-editor-common": "workspace:*",
+        "uuid": "11.0.5"
     }
 }

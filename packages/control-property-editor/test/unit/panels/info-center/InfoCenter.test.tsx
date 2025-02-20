@@ -5,10 +5,10 @@ import { InfoCenter } from '../../../../src/panels/info-center';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import {
     clearAllInfoCenterMessages,
-    toggleExpandMessage,
     readMessage,
-    toggleModalMessage
-} from '@sap-ux-private/control-property-editor-common';
+    toggleModalMessage,
+    toggleExpandMessage
+} from '../../../../src/slice';
 
 describe('InfoCenter Component', () => {
     test('renders the InfoCenter component correctly', () => {
@@ -16,19 +16,24 @@ describe('InfoCenter Component', () => {
             initialState: {
                 infoCenterMessages: [
                     {
-                        message: { title: 'Title 1', description: 'Test Description 1', details: 'Details 1' },
-                        type: MessageBarType.info,
+                        message: {
+                            type: MessageBarType.info,
+                            title: 'Title 1',
+                            description: 'Test Description 1',
+                            details: 'Details 1'
+                        },
                         expandable: true,
                         expanded: false,
                         read: false,
-                        modal: false
+                        modal: false,
+                        id: 'testid1'
                     },
                     {
-                        message: { title: 'Title 2', description: 'Test Description 2' },
-                        type: MessageBarType.warning,
+                        message: { type: MessageBarType.warning, title: 'Title 2', description: 'Test Description 2' },
                         expandable: false,
                         read: true,
-                        modal: false
+                        modal: false,
+                        id: 'testid2'
                     }
                 ]
             }
@@ -51,12 +56,17 @@ describe('InfoCenter Component', () => {
             initialState: {
                 infoCenterMessages: [
                     {
-                        message: { title: 'Title', description: 'Expandable Message', details: 'More Details' },
-                        type: MessageBarType.info,
+                        message: {
+                            type: MessageBarType.info,
+                            title: 'Title',
+                            description: 'Expandable Message',
+                            details: 'More Details'
+                        },
                         expandable: true,
                         expanded: false,
                         read: false,
-                        modal: false
+                        modal: false,
+                        id: 'testid'
                     }
                 ]
             }
@@ -68,16 +78,16 @@ describe('InfoCenter Component', () => {
         // Simulate expanding the message
         const expandButton = screen.getByText(/more/i);
         fireEvent.click(expandButton);
-        expect(dispatch).toBeCalledWith(toggleExpandMessage(0));
+        expect(dispatch).toBeCalledWith(toggleExpandMessage('testid'));
 
         // Simulate open the message detatils in modal
         const modalButton = screen.getByText(/view details/i);
         fireEvent.click(modalButton);
-        expect(dispatch).toBeCalledWith(toggleModalMessage(0));
+        expect(dispatch).toBeCalledWith(toggleModalMessage('testid'));
 
         // Simulate marking the message as read
         fireEvent.mouseOver(expandableMessage);
-        expect(dispatch).toBeCalledWith(readMessage(0));
+        expect(dispatch).toBeCalledWith(readMessage('testid'));
     });
 
     test('close modal with message details correctly', () => {
@@ -85,21 +95,29 @@ describe('InfoCenter Component', () => {
             initialState: {
                 infoCenterMessages: [
                     {
-                        message: { title: 'Title', description: 'Message', details: 'More Details' },
-                        type: MessageBarType.info,
-                        expandable: false,
+                        message: {
+                            type: MessageBarType.info,
+                            title: 'Title',
+                            description: 'Message',
+                            details: 'More Details'
+                        },
+                        expandable: true,
                         expanded: false,
                         read: false,
-                        modal: true
+                        modal: false,
+                        id: 'testid'
                     }
                 ]
             }
         });
 
+        // Simulate open the message detatils in modal
+        const modalButton = screen.getByText(/view details/i);
+        fireEvent.click(modalButton);
         // Simulate closing of modal
         const closeModalButton = screen.getByText(/close/i);
         fireEvent.click(closeModalButton);
-        expect(dispatch).toBeCalledWith(toggleModalMessage(0));
+        expect(dispatch).toBeCalledWith(toggleModalMessage('testid'));
     });
 
     test('clears messages correctly', () => {
@@ -107,11 +125,11 @@ describe('InfoCenter Component', () => {
             initialState: {
                 infoCenterMessages: [
                     {
-                        message: { title: 'Test Message 1', description: 'Description 1' },
-                        type: MessageBarType.error,
+                        message: { type: MessageBarType.error, title: 'Test Message 1', description: 'Description 1' },
                         expandable: false,
                         read: false,
-                        modal: false
+                        modal: false,
+                        id: 'testid'
                     }
                 ]
             }

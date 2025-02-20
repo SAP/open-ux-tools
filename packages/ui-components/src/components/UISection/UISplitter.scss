@@ -19,7 +19,6 @@ $splitter-focus-border: 1px solid var(--vscode-focusBorder);
     background-color: var(--vscode-panelSection-border);
     position: absolute;
     outline: none;
-    z-index: 2;
 
     &--horizontal {
         top: 0;

@@ -285,15 +285,9 @@ export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | Ne
 
 export interface InfoCenterMessage {
     type: MessageBarType;
-    message: {
-        title: string;
-        description: string;
-        details?: string;
-    };
-    expandable?: boolean;
-    expanded?: boolean;
-    read?: boolean;
-    modal?: boolean;
+    title: string;
+    description: string;
+    details?: string;
 }
 
 export enum MessageBarType {
@@ -486,14 +480,8 @@ export const executeQuickAction = createExternalAction<QuickActionExecutionPaylo
 export const executeContextMenuAction =
     createExternalAction<ContextMenuActionExecutionPayload>('execute-context-menu-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
-export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
-export const clearInfoCenterMessage = createExternalAction<number>('clear-info-center-message');
-export const clearAllInfoCenterMessages = createExternalAction<void>('clear-all-info-center-message');
 export const externalFileChange = createExternalAction<string>('external-file-change');
-export const toggleExpandMessage = createExternalAction<number>('toggle-expand-message');
-export const readMessage = createExternalAction<number>('read-message');
-export const expandableMessage = createExternalAction<number>('expandable-message');
-export const toggleModalMessage = createExternalAction<number>('toggle-modal-message');
+export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
 
 const createAsyncExternalAction = createAsyncActionFactory(EXTERNAL_ACTION_PREFIX);
 
@@ -538,13 +526,6 @@ export type ExternalAction =
     | ReturnType<typeof updateQuickAction>
     | ReturnType<typeof executeQuickAction>
     | ReturnType<typeof showInfoCenterMessage>
-    | ReturnType<typeof clearInfoCenterMessage>
-    | ReturnType<typeof clearAllInfoCenterMessages>
     | ReturnType<typeof externalFileChange>
-    | ReturnType<typeof toggleExpandMessage>
-    | ReturnType<typeof readMessage>
-    | ReturnType<typeof expandableMessage>
-    | ReturnType<typeof toggleModalMessage>
     | ReturnType<typeof executeContextMenuAction>
-    | ReturnType<typeof externalFileChange>
     | ReturnType<typeof requestControlContextMenu.fulfilled>;
