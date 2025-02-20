@@ -11,6 +11,8 @@ import { getAdpConfig, getVariant } from '../base/helper';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { generateChange } from '../writer/editors';
+import { ODataService, getDataSources } from '../base/abap';
+import { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
@@ -236,10 +238,15 @@ export async function addAnnotationFile(
     annotationUriSegments.shift();
     const fullPath = join(basePath, DirName.Changes, ...annotationUriSegments);
     try {
-        const manifestService = await getManifestService(projectRoot, logger);
-        const metadata = await manifestService.getDataSourceMetadata(dataSourceId);
-        const datasoruces = await manifestService.getManifestDataSources();
+        const { manifestService, provider } = await getManifestService(projectRoot, logger);
+        const manifest = manifestService.getManifest();
+
+        const metadataService = new ODataService(manifest, manifestService.getAppInfo(), provider, logger);
+        const metadata = await metadataService.getMetadataWithFallback(dataSourceId);
+
+        const dataSources = getDataSources(manifestService.getManifest());
         const namespaces = getAnnotationNamespaces({ metadata });
+
         await generateChange<ChangeType.ADD_ANNOTATIONS_TO_ODATA>(
             projectRoot,
             ChangeType.ADD_ANNOTATIONS_TO_ODATA,
@@ -247,7 +254,7 @@ export async function addAnnotationFile(
                 annotation: {
                     dataSource: dataSourceId,
                     namespaces,
-                    serviceUrl: datasoruces[dataSourceId].uri,
+                    serviceUrl: dataSources[dataSourceId].uri,
                     fileName: basename(dataSource[annotationDataSourceKey].uri)
                 },
                 variant: getVariant(projectRoot),
@@ -268,9 +275,22 @@ export async function addAnnotationFile(
  * @param {Logger} logger - The logging instance.
  * @returns Promise<ManifestService>
  */
-async function getManifestService(basePath: string, logger: Logger): Promise<ManifestService> {
+async function getManifestService(
+    basePath: string,
+    logger: Logger
+): Promise<{ manifestService: ManifestService; provider: AbapServiceProvider }> {
     const variant = getVariant(basePath);
     const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
     const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
-    return await ManifestService.initMergedManifest(provider, basePath, variant, logger as unknown as ToolsLogger);
+    const manifestService = await ManifestService.initMergedManifest(
+        provider,
+        basePath,
+        variant,
+        logger as unknown as ToolsLogger
+    );
+
+    return {
+        manifestService,
+        provider
+    };
 }
