@@ -754,10 +754,12 @@ describe('FE V2 quick actions', () => {
                         undefined,
                         {
                             aggregation: 'content',
+                            defaultAggregationArrayIndex: 1,
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                         }
                     );
                 }
+
             });
         });
 
@@ -885,6 +887,7 @@ describe('FE V2 quick actions', () => {
                     undefined,
                     {
                         aggregation: 'actions',
+                        'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                     }
                 );
@@ -2307,6 +2310,7 @@ describe('FE V2 quick actions', () => {
                     undefined,
                     {
                         aggregation: 'content',
+                        defaultAggregationArrayIndex: 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                     }
                 );
