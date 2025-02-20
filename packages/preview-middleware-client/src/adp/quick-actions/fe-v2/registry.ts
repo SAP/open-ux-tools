@@ -23,6 +23,7 @@ import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
 import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
 import { EnableObjectPageVariantManagementQuickAction } from './op-enable-variant-management';
 import { EnableListReportVariantManagementQuickAction } from './lr-enable-variant-management';
+import { isA } from '../../../utils/core';
 type PageName = 'listReport' | 'objectPage' | 'analyticalListPage';
 
 const OBJECT_PAGE_TYPE = 'sap.suite.ui.generic.template.ObjectPage.view.Details';
@@ -104,8 +105,8 @@ export default class FEV2QuickActionRegistry extends QuickActionDefinitionRegist
 
     protected getComponentContainerFromPage(page: Control): ComponentContainer | undefined {
         // in ui5 version 1.71 there is no XMLView wrapper around ComponentContainer
-        const componentContainer = page instanceof XMLView ? page.getContent()[0] : page;
-        if (componentContainer instanceof ComponentContainer) {
+        const componentContainer = isA<XMLView>('sap.ui.core.mvc.XMLView', page) ? page.getContent()[0] : page;
+        if (isA<ComponentContainer>('sap.ui.core.ComponentContainer', componentContainer)) {
             return componentContainer;
         }
         return undefined;

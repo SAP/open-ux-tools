@@ -9,7 +9,7 @@ import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import { QuickActionActivationContext, QuickActionDefinitionGroup } from './quick-action-definition';
 
 import type { ControlTreeIndex } from '../types';
-import { getControlById } from '../../utils/core';
+import { getControlById, isA } from '../../utils/core';
 import { getRootControlFromComponentContainer } from '../utils';
 
 const NAV_CONTAINER_CONTROL_TYPE = 'sap.m.NavContainer';
@@ -46,7 +46,7 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
      * @returns ComponentContainer control.
      */
     protected getComponentContainerFromPage(page: Control): ComponentContainer | undefined {
-        if (page instanceof ComponentContainer) {
+        if (isA<ComponentContainer>('sap.ui.core.ComponentContainer', page) ) {
             return page;
         }
         return undefined;
@@ -108,7 +108,7 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
         const navContainerNode = controlIndex[NAV_CONTAINER_CONTROL_TYPE]?.[0];
         if (navContainerNode) {
             const control = getControlById(navContainerNode.controlId);
-            if (control instanceof NavContainer) {
+            if (isA<NavContainer>('sap.m.NavContainer', control)) {
                 return [control.getCurrentPage()];
             }
         }

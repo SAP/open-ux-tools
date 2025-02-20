@@ -2804,12 +2804,18 @@ importers:
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n
+      '@sap-ux/jest-environment-ui5':
+        specifier: workspace:*
+        version: link:../jest-environment-ui5
       '@sapui5/types':
         specifier: 1.120.5
         version: 1.120.5
       '@ui5/cli':
         specifier: 3.8.0
         version: 3.8.0
+      babel-jest:
+        specifier: 29.7.0
+        version: 29.7.0(@babel/core@7.22.20)
       npm-run-all2:
         specifier: 6.2.0
         version: 6.2.0

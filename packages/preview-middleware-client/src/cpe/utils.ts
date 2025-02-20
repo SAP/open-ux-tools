@@ -7,7 +7,7 @@ import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import UIComponent from 'sap/ui/core/UIComponent';
 
-import { getComponent } from '../utils/core';
+import { getComponent, isA } from '../utils/core';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
 import { ChangeService } from './changes';
@@ -118,9 +118,9 @@ export function getRootControlFromComponentContainer(container?: ComponentContai
     if (container) {
         const componentId = container.getComponent();
         const component = getComponent(componentId);
-        if (component instanceof UIComponent) {
+        if (isA<UIComponent>('sap.ui.core.UIComponent', component)) {
             const rootControl = component.getRootControl();
-            if (rootControl instanceof XMLView) {
+            if (isA<XMLView>('sap.ui.core.mvc.XMLView', rootControl)) {
                 return rootControl;
             }
         }

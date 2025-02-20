@@ -6,6 +6,6 @@ export const mockOverlay = {
     getElementInstance: jest.fn()
 };
 
-export default {
-    getOverlay: jest.fn().mockReturnValue(mockOverlay)
+export default class OverlayRegistry {
+    getOverlay = jest.fn().mockReturnValue(mockOverlay)
 };
