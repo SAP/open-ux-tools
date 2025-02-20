@@ -1,5 +1,5 @@
 export * from './ui5/middleware';
-export { FlpSandbox, initAdp, generatePreviewFiles, getPreviewPaths } from './base';
+export { FlpSandbox, initAdp, generatePreviewFiles, getPreviewPaths, sanitizeRtaConfig } from './base';
 export {
     FlpConfig,
     RtaConfig,
