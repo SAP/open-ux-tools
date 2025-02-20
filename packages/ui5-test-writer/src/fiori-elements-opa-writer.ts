@@ -6,6 +6,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import type { FEV4OPAConfig, FEV4OPAPageConfig, FEV4ManifestTarget } from './types';
 import { SupportedPageTypes, ValidationError } from './types';
 import { t } from './i18n';
+import { FileName, DirName } from '@sap-ux/project-access';
 
 /**
  * Reads the manifest for an app.
@@ -15,11 +16,11 @@ import { t } from './i18n';
  * @returns the manifest object. An exception is thrown if the manifest cannot be read.
  */
 export function readManifest(fs: Editor, basePath: string): Manifest {
-    const manifest = fs.readJSON(join(basePath, 'webapp/manifest.json')) as any as Manifest;
+    const manifest = fs.readJSON(join(basePath, DirName.Webapp, FileName.Manifest)) as any as Manifest;
     if (!manifest) {
         throw new ValidationError(
             t('error.cannotReadManifest', {
-                filePath: join(basePath, 'webapp/manifest.json')
+                filePath: join(basePath, DirName.Webapp, FileName.Manifest)
             })
         );
     }

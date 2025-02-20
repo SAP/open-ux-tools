@@ -7,6 +7,7 @@ import type { Logger } from '@sap-ux/logger';
 import { getFilePaths } from '@sap-ux/project-access';
 import { t } from './i18n';
 import { compareUI5VersionGte, ui5LtsVersion_1_71 } from '@sap-ux/ui5-application-writer';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Updates tsconfig.json to include paths for unit and integration tests.
@@ -17,7 +18,7 @@ import { compareUI5VersionGte, ui5LtsVersion_1_71 } from '@sap-ux/ui5-applicatio
  */
 function writeOPATsconfigJsonUpdates(fs: Editor, destinationRoot: string, log?: Logger): void {
     try {
-        const tsconfig: any = fs.readJSON(join(destinationRoot, 'tsconfig.json')) ?? {};
+        const tsconfig: any = fs.readJSON(join(destinationRoot, FileName.Tsconfig)) ?? {};
 
         tsconfig.compilerOptions = tsconfig.compilerOptions || {};
         tsconfig.compilerOptions.paths = tsconfig.compilerOptions.paths || {};
@@ -25,7 +26,7 @@ function writeOPATsconfigJsonUpdates(fs: Editor, destinationRoot: string, log?: 
         tsconfig.compilerOptions.paths['unit/*'] = ['./webapp/test/unit/*'];
         tsconfig.compilerOptions.paths['integration/*'] = ['./webapp/test/integration/*'];
 
-        fs.writeJSON(join(destinationRoot, 'tsconfig.json'), tsconfig);
+        fs.writeJSON(join(destinationRoot, FileName.Tsconfig), tsconfig);
     } catch (error) {
         log?.error(
             t('error.errorWritingTsConfig', {
