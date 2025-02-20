@@ -53,7 +53,7 @@ export class EnableListReportVariantManagementQuickAction
         if (!manifestChangesSupported) {
             return;
         }
-        super.initialize();
+        await super.initialize();
         if (this.control) {
             this.ownerComponent = Component.getOwnerComponentFor(this.control) as unknown as ListReportComponent;
             if (

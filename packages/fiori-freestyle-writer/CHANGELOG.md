@@ -1,5 +1,68 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.0.20
+
+### Patch Changes
+
+-   Updated dependencies [dbd725a]
+    -   @sap-ux/odata-service-writer@0.26.3
+
+## 2.0.19
+
+### Patch Changes
+
+-   @sap-ux/odata-service-writer@0.26.2
+
+## 2.0.18
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.9.10
+-   @sap-ux/fiori-generator-shared@0.8.1
+-   @sap-ux/odata-service-writer@0.26.1
+-   @sap-ux/ui5-application-writer@1.2.10
+
+## 2.0.17
+
+### Patch Changes
+
+-   Updated dependencies [f1f9cbe]
+    -   @sap-ux/odata-service-writer@0.26.0
+
+## 2.0.16
+
+### Patch Changes
+
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+    -   @sap-ux/cap-config-writer@0.9.9
+
+## 2.0.15
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.9.8
+-   @sap-ux/fiori-generator-shared@0.7.29
+-   @sap-ux/odata-service-writer@0.25.10
+-   @sap-ux/ui5-application-writer@1.2.10
+
+## 2.0.14
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/odata-service-writer@0.25.9
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/ui5-application-writer@1.2.10
+    -   @sap-ux/cap-config-writer@0.9.7
+    -   @sap-ux/fiori-generator-shared@0.7.28
+
+## 2.0.13
+
+### Patch Changes
+
+-   59a24b3: FF & FF writer fix enableNPMWorkspaces option for CAP
+
 ## 2.0.12
 
 ### Patch Changes

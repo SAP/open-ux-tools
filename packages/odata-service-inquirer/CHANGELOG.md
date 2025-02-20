@@ -1,5 +1,60 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.8
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/fiori-generator-shared@0.8.1
+    -   @sap-ux/telemetry@0.5.62
+    -   @sap-ux/inquirer-common@0.6.18
+
+## 2.2.7
+
+### Patch Changes
+
+-   Updated dependencies [4fd3029]
+    -   @sap-ux/axios-extension@1.18.6
+
+## 2.2.6
+
+### Patch Changes
+
+-   fb4e328: Adds interoperability between `@vscode-logging/logger` and `@sap-ux/logger` to prevent crashes where non-implemented log functions were being called.
+    Fix entity-helper.ts to log error at correct level.
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+    -   @sap-ux/inquirer-common@0.6.17
+
+## 2.2.5
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.29
+    -   @sap-ux/telemetry@0.5.61
+    -   @sap-ux/inquirer-common@0.6.16
+
+## 2.2.4
+
+### Patch Changes
+
+-   7a6def1: Fix for connected system not returned for Cloud Foundry related prompts
+
+## 2.2.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/telemetry@0.5.60
+-   @sap-ux/axios-extension@1.18.5
+-   @sap-ux/fiori-generator-shared@0.7.28
+-   @sap-ux/inquirer-common@0.6.15
+
 ## 2.2.2
 
 ### Patch Changes

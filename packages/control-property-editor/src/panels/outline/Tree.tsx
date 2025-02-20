@@ -69,9 +69,6 @@ export const Tree = (): ReactElement => {
     const selectedClassName =
         localStorage.getItem('theme') === 'high contrast' ? 'app-panel-hc-selected-bg' : 'app-panel-selected-bg';
 
-    const tooltipEventListeners: Record<string, (event: MouseEvent) => void> = {};
-    let currentOpenTooltipId: string | null = null;
-
     useEffect(() => {
         if (selection.cell === undefined && selection.group === undefined && selectedControl !== undefined) {
             updateSelectionFromPreview(selectedControl);
@@ -107,72 +104,6 @@ export const Tree = (): ReactElement => {
             }, 0);
         }
     }, []);
-
-    /**
-     * Closes a tooltip and removes the associated event listener.
-     *
-     * @param tooltipId The unique identifier for the tooltip.
-     * @param eventListener The specific event listener to remove (optional).
-     */
-    const closeTooltip = (tooltipId: string, eventListener?: (event: MouseEvent) => void) => {
-        const tooltip = document.getElementById(tooltipId);
-
-        if (tooltip) {
-            tooltip.style.visibility = 'hidden';
-            tooltip.style.opacity = '0';
-        }
-
-        if (eventListener) {
-            document.removeEventListener('click', eventListener);
-        } else if (tooltipId in tooltipEventListeners) {
-            document.removeEventListener('click', tooltipEventListeners[tooltipId]);
-            delete tooltipEventListeners[tooltipId];
-        }
-
-        if (currentOpenTooltipId === tooltipId) {
-            currentOpenTooltipId = null;
-        }
-    };
-
-    /**
-     * Handles the opening of a tooltip and associates an event listener with it.
-     *
-     * @param e The click event that triggered the tooltip.
-     * @param tooltipId The unique identifier for the tooltip.
-     */
-    const handleOpenTooltip = (e: React.MouseEvent<HTMLSpanElement, MouseEvent>, tooltipId: string) => {
-        e.preventDefault();
-        const tooltip = document.getElementById(tooltipId);
-
-        if (currentOpenTooltipId && currentOpenTooltipId !== tooltipId) {
-            closeTooltip(currentOpenTooltipId);
-        }
-
-        if (tooltip) {
-            tooltip.style.visibility = 'visible';
-            tooltip.style.opacity = '1';
-            currentOpenTooltipId = tooltipId;
-
-            const handleCloseTooltip = (event: MouseEvent) => {
-                if (!tooltip.contains(event.target as Node)) {
-                    closeTooltip(tooltipId, handleCloseTooltip);
-                }
-            };
-
-            tooltipEventListeners[tooltipId] = handleCloseTooltip;
-
-            document.addEventListener('click', handleCloseTooltip);
-        } else {
-            console.warn(`Tooltip with id ${tooltipId} not found`);
-        }
-    };
-
-    const handleOpenFragmentDialog = (data: OutlineNode, tooltipId: string) => {
-        if (data.controlType === 'sap.ui.extensionpoint') {
-            closeTooltip(tooltipId);
-            dispatch(addExtensionPoint(data));
-        }
-    };
 
     /**
      * Find in group.
@@ -276,12 +207,10 @@ export const Tree = (): ReactElement => {
         cellItem?: OutlineNodeItem,
         headerItem?: IGroup
     ): void => {
+        e.preventDefault();
         let selectAction;
         const item = cellItem ?? headerItem?.data;
         const controlId = item.controlId;
-        if (item?.controlType === 'sap.ui.extensionpoint') {
-            return;
-        }
         if (headerItem) {
             setSelection({
                 group: headerItem,
@@ -296,8 +225,9 @@ export const Tree = (): ReactElement => {
             selectAction = selectControl(controlId);
         }
         dispatch(selectAction);
-        dispatch(requestControlContextMenu.pending(controlId));
-        e.preventDefault();
+        if (item?.controlType !== 'sap.ui.extensionpoint') {
+            dispatch(requestControlContextMenu.pending(controlId));
+        }
         setShowActionContextualMenu(item);
     };
     const onSelectCell = (item: OutlineNodeItem): void => {
@@ -327,11 +257,23 @@ export const Tree = (): ReactElement => {
     /**
      * Build menu items for context menu.
      *
-     * @param controlId control id.
      * @returns ReactElement
      */
-    const buildMenuItems = function (controlId: string): UIContextualMenuItem[] {
-        const children = contextMenu?.contextMenuItems;
+    const buildMenuItems = function (): UIContextualMenuItem[] {
+        if (!showActionContextualMenu) {
+            return [];
+        }
+        const { controlId, controlType } = showActionContextualMenu;
+        const isExtensionPoint = controlType === 'sap.ui.extensionpoint';
+        const children = isExtensionPoint
+            ? [
+                  {
+                      id: '',
+                      title: t('ADD_FRAGMENT_AT_EXTENSION_POINT'),
+                      enabled: true
+                  }
+              ]
+            : contextMenu?.contextMenuItems;
         return (children ?? []).map((child, index) => {
             return {
                 key: `${controlId}-${child.id}-${index}`,
@@ -341,12 +283,16 @@ export const Tree = (): ReactElement => {
                     ? t('CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE')
                     : child?.tooltip ?? child?.title,
                 onClick(): void {
-                    dispatch(
-                        executeContextMenuAction({
-                            controlId,
-                            actionName: child.id
-                        })
-                    );
+                    if (isExtensionPoint) {
+                        dispatch(addExtensionPoint(showActionContextualMenu));
+                    } else {
+                        dispatch(
+                            executeContextMenuAction({
+                                controlId,
+                                actionName: child.id
+                            })
+                        );
+                    }
                 }
             };
         });
@@ -377,7 +323,6 @@ export const Tree = (): ReactElement => {
         const isExtensionPoint = item?.controlType === 'sap.ui.extensionpoint';
         const hasDefaultContent = item?.hasDefaultContent || false;
 
-        const tooltipId = `tooltip--${item?.name}`;
         const cellName = hasDefaultContent
             ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: item?.name })
             : item?.name;
@@ -385,16 +330,11 @@ export const Tree = (): ReactElement => {
             <div
                 aria-hidden
                 id={item.controlId}
-                data-control-id={item.controlId}
+                data-control-id={isExtensionPoint ? `${item.controlId}--extensionPoint` : item.controlId}
                 className={classNames.join(' ')}
                 onClick={(): void => onSelectCell(item)}
                 onContextMenu={(e) => onContextMenuAction(e, item)}>
-                <span
-                    {...props}
-                    data-testid={isExtensionPoint ? 'tooltip-container' : ''}
-                    style={{ paddingLeft: paddingValue }}
-                    className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
-                    onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
+                <span {...props} style={{ paddingLeft: paddingValue }} className="tree-cell">
                     {isExtensionPoint && <Icon className="extension-icon" iconName={UiIcons.DataSource} />}
 
                     <div
@@ -407,16 +347,6 @@ export const Tree = (): ReactElement => {
                         title={isExtensionPoint ? item?.name : ''}>
                         {cellName}
                     </div>
-
-                    {isExtensionPoint && (
-                        <div id={tooltipId} className="tooltip">
-                            <button
-                                data-testid="tooltip-dialog-button"
-                                onClick={() => handleOpenFragmentDialog(item, tooltipId)}>
-                                {t('ADD_FRAGMENT_AT_EXTENSION_POINT')}
-                            </button>
-                        </div>
-                    )}
                 </span>
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
@@ -475,26 +405,21 @@ export const Tree = (): ReactElement => {
             <></>
         );
 
-        const tooltipId = `tooltip--${groupName}`;
         const headerName = hasDefaultContent
             ? t('EXTENSION_POINT_HAS_DEFAULT_CONTENT_TEXT', { name: groupName })
             : groupName;
         return (
             <div
-                data-control-id={data.controlId}
+                data-control-id={isExtensionPoint ? `${data.controlId}--extensionPoint` : data.controlId}
                 {...refProps}
                 aria-hidden
                 className={`${selectNode} tree-row ${focusEditable}`}
                 onClick={(): void => onSelectHeader(groupHeaderProps?.group)}
                 onContextMenu={(e) => onContextMenuAction(e, undefined, groupHeaderProps?.group)}>
-                <span
-                    style={{ paddingLeft: paddingValue }}
-                    data-testid="tooltip-container"
-                    className={`tree-cell ${isExtensionPoint ? 'tooltip-container' : ''}`}
-                    onContextMenu={(e) => isExtensionPoint && handleOpenTooltip(e, tooltipId)}>
+                <span style={{ paddingLeft: paddingValue }} className="tree-cell">
                     {groupHeaderProps?.group?.count !== 0 && (
                         <Icon
-                            className={`${chevronTransform}`}
+                            className={chevronTransform}
                             iconName={UiIcons.Chevron}
                             onClick={(event) => {
                                 onToggleCollapse(groupHeaderProps);
@@ -514,16 +439,6 @@ export const Tree = (): ReactElement => {
                         title={isExtensionPoint ? groupName : ''}>
                         {headerName}
                     </div>
-
-                    {isExtensionPoint && (
-                        <div id={tooltipId} className="tooltip">
-                            <button
-                                data-testid="tooltip-dialog-button"
-                                onClick={() => handleOpenFragmentDialog(groupHeaderProps?.group?.data, tooltipId)}>
-                                {t('ADD_FRAGMENT_AT_EXTENSION_POINT')}
-                            </button>
-                        </div>
-                    )}
                 </span>
                 <div style={{ marginLeft: '10px', marginRight: '10px' }}>{indicator}</div>
             </div>
@@ -558,9 +473,13 @@ export const Tree = (): ReactElement => {
                 <UIContextualMenu
                     layoutType={UIContextualMenuLayoutType.ContextualMenu}
                     showSubmenuBeneath={true}
-                    target={`[data-control-id="${showActionContextualMenu.controlId}"]`}
+                    target={`[data-control-id="${
+                        showActionContextualMenu.controlType === 'sap.ui.extensionpoint'
+                            ? `${showActionContextualMenu.controlId}--extensionPoint`
+                            : showActionContextualMenu.controlId
+                    }"]`}
                     isBeakVisible={true}
-                    items={buildMenuItems(showActionContextualMenu.controlId)}
+                    items={buildMenuItems()}
                     directionalHint={UIDirectionalHint.bottomRightEdge}
                     onDismiss={() => setShowActionContextualMenu(undefined)}
                     iconToLeft={true}
@@ -624,11 +543,4 @@ function getGroups(model: OutlineNode[], items: OutlineNodeItem[], level = 0, pa
         }
     }
     return group;
-}
-
-export interface ContextMenuItems {
-    label: string;
-    tooltip?: string;
-    // enabled: boolean;
-    children: ContextMenuItems[];
 }

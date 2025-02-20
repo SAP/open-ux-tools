@@ -299,13 +299,58 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('change table columns', () => {
-            test('initialize and execute', async () => {
+            const testCases: {
+                tableType: typeof SMART_TABLE_TYPE | typeof M_TABLE_TYPE;
+                versionInfo: string;
+                actionId: 'CTX_COMP_VARIANT_CONTENT' | 'CTX_SETTINGS';
+                expectActionAvailable: boolean;
+                isTableNotLoaded?: boolean;
+                isWithIconTabBar?: boolean;
+            }[] = [
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    versionInfo: '1.96.0',
+                    actionId: 'CTX_SETTINGS',
+                    expectActionAvailable: true
+                },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_COMP_VARIANT_CONTENT',
+                    expectActionAvailable: true
+                },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_COMP_VARIANT_CONTENT',
+                    expectActionAvailable: true,
+                    isWithIconTabBar: true
+                },
+                {
+                    tableType: M_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_SETTINGS',
+                    expectActionAvailable: true
+                },
+                {
+                    tableType: M_TABLE_TYPE,
+                    versionInfo: '1.127.0',
+                    actionId: 'CTX_SETTINGS',
+                    expectActionAvailable: true,
+                    isTableNotLoaded: true
+                }
+            ];
+            const setSelectedKeyMock = jest.fn();
+            test.each(testCases)('initialize and execute (%s)', async (testCase) => {
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
+                let attachedEvent: (() => Promise<void>) | undefined = undefined;
+                const tableId = 'SmartTable' + testCase.isWithIconTabBar ? '-tab1' : '';
                 sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'SmartTable') {
+                    if (id == tableId) {
                         return {
-                            isA: (type: string) => type === 'sap.ui.comp.smarttable.SmartTable',
+                            isA: (type: string) => type === testCase.tableType,
                             getHeader: () => 'MyTable',
                             getId: () => id,
                             getDomRef: () => ({
@@ -319,7 +364,17 @@ describe('FE V2 quick actions', () => {
                                 ];
                             },
                             getParent: () => pageView,
-                            getBusy: () => false
+                            getBusy: () => false,
+                            getHeaderToolbar: () => ({
+                                getTitleControl: () => ({
+                                    getText: () => 'MyTable'
+                                })
+                            }),
+                            getBindingInfo: () => undefined,
+                            getBindingContext: () => !testCase.isTableNotLoaded,
+                            attachEventOnce: (name: string, handler: () => Promise<void>) => {
+                                attachedEvent = handler;
+                            }
                         };
                     }
                     if (id == 'NavContainer') {
@@ -355,6 +410,22 @@ describe('FE V2 quick actions', () => {
                         });
                         return container;
                     }
+                    if ((id = 'IconTabBar')) {
+                        return {
+                            getParent: () => pageView,
+                            getId: () => id,
+                            isA: (type: string) => type === 'sap.m.IconTabBar',
+                            setSelectedKey: setSelectedKeyMock,
+                            getItems: () => [
+                                {
+                                    isA: (type: string) =>
+                                        ['sap.m.IconTabFilter', 'sap.ui.base.ManagedObject'].includes(type),
+                                    getKey: () => 'tab1',
+                                    getText: () => 'Tab 1'
+                                }
+                            ]
+                        };
+                    }
                 });
 
                 const execute = jest.fn();
@@ -363,8 +434,8 @@ describe('FE V2 quick actions', () => {
                     if (serviceName === 'action') {
                         return {
                             get: (controlId: string) => {
-                                if (controlId === 'SmartTable') {
-                                    return [{ id: 'CTX_COMP_VARIANT_CONTENT' }];
+                                if (controlId === tableId) {
+                                    return [{ id: testCase.actionId }];
                                 }
                             },
                             execute
@@ -381,16 +452,24 @@ describe('FE V2 quick actions', () => {
                 await service.init(sendActionMock, subscribeMock);
 
                 await service.reloadQuickActions({
-                    'sap.ui.comp.smarttable.SmartTable': [
+                    [testCase.tableType]: [
                         {
-                            controlId: 'SmartTable'
+                            controlId: tableId
                         } as any
                     ],
                     'sap.m.NavContainer': [
                         {
                             controlId: 'NavContainer'
                         } as any
-                    ]
+                    ],
+
+                    'sap.m.IconTabBar': testCase.isWithIconTabBar
+                        ? [
+                              {
+                                  controlId: 'IconTabBar'
+                              } as any
+                          ]
+                        : []
                 });
 
                 expect(sendActionMock).toHaveBeenCalledWith(
@@ -407,7 +486,7 @@ describe('FE V2 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: `'MyTable' table`
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ]
                                 },
@@ -420,7 +499,7 @@ describe('FE V2 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: `'MyTable' table`
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ]
                                 },
@@ -429,7 +508,7 @@ describe('FE V2 quick actions', () => {
                                         {
                                             'children': [],
                                             enabled: true,
-                                            'label': `'MyTable' table`
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ],
                                     'enabled': true,
@@ -448,13 +527,39 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
+                if (testCase.isTableNotLoaded) {
+                    expect(attachedEvent).toBeDefined();
+                    await attachedEvent!();
+                } else {
+                    expect(attachedEvent).toBeUndefined();
+                }
+
+                expect(setSelectedKeyMock.mock.calls[0]).toStrictEqual(
+                    testCase.isWithIconTabBar ? ['tab1'] : undefined
+                );
+
                 expect(scrollIntoView).toHaveBeenCalled();
-                expect(execute).toHaveBeenCalledWith('SmartTable', 'CTX_COMP_VARIANT_CONTENT');
+                expect(execute).toHaveBeenCalledWith(
+                    tableId,
+                    testCase.expectActionAvailable ? testCase.actionId : undefined
+                );
             });
         });
 
         describe('create table action', () => {
-            test('initialize and execute', async () => {
+            const testCases = [
+                {
+                    tableType: M_TABLE_TYPE
+                },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    overflowTable: true,
+                    headerToolbar: false
+                },
+                { tableType: SMART_TABLE_TYPE, headerToolbar: true },
+                { tableType: SMART_TABLE_TYPE, isTableWithoutToolbar: true }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 sapCoreMock.byId.mockImplementation((id) => {
@@ -478,6 +583,51 @@ describe('FE V2 quick actions', () => {
                             }
                         };
                     }
+                    if (id == 'smartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    if (testCase.headerToolbar) {
+                                        return [
+                                            {
+                                                isA: (type: string) => type === testCase.tableType,
+                                                getAggregation: (aggregationName: string) => {
+                                                    if (aggregationName === 'headerToolbar') {
+                                                        return 'headerToolbar'; // Return a simple string for headerToolbar
+                                                    }
+                                                }
+                                            }
+                                        ];
+                                    } else if (testCase.overflowTable) {
+                                        return [
+                                            {
+                                                getAggregation: () => null,
+                                                isA: (type: string) => type === 'sap.m.OverflowToolbar'
+                                            }
+                                        ];
+                                    } else {
+                                        return [
+                                            {
+                                                getAggregation: () => null,
+                                                isA: (type: string) => type === 'test'
+                                            }
+                                        ];
+                                    }
+                                }
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
                     if (id == 'NavContainer') {
                         const container = new NavContainer();
                         const component = new UIComponentMock();
@@ -522,18 +672,35 @@ describe('FE V2 quick actions', () => {
                 );
                 await service.init(sendActionMock, subscribeMock);
 
-                await service.reloadQuickActions({
-                    'sap.m.Table': [
-                        {
-                            controlId: 'mTable'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
+                if (testCase.tableType === M_TABLE_TYPE) {
+                    await service.reloadQuickActions({
+                        'sap.m.Table': [
+                            {
+                                controlId: 'mTable'
+                            } as any
+                        ],
+
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                } else if (testCase.tableType === SMART_TABLE_TYPE) {
+                    await service.reloadQuickActions({
+                        'sap.ui.comp.smarttable.SmartTable': [
+                            {
+                                controlId: 'smartTable'
+                            } as any
+                        ],
+
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                }
 
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
@@ -541,50 +708,58 @@ describe('FE V2 quick actions', () => {
                             title: 'LIST REPORT',
                             actions: [
                                 {
-                                    'kind': 'nested',
+                                    kind: 'nested',
                                     id: 'listReport0-create-table-action',
                                     title: 'Add Custom Table Action',
                                     enabled: true,
                                     children: [
                                         {
                                             children: [],
-                                            enabled: true,
-                                            label: `'MyTable' table`
+                                            enabled: !testCase.isTableWithoutToolbar,
+                                            label: `'MyTable' table`,
+                                            ...(testCase.isTableWithoutToolbar && {
+                                                tooltip:
+                                                    'This option has been disabled because the table does not have a header toolbar.'
+                                            })
                                         }
                                     ]
                                 },
                                 {
-                                    'children': [
+                                    children: [
                                         {
-                                            'children': [],
+                                            children: [],
                                             enabled: true,
-                                            'label': `'MyTable' table`
+                                            label: `'MyTable' table`
                                         }
                                     ],
-                                    'enabled': true,
-                                    'id': 'listReport0-create-table-custom-column',
-                                    'kind': 'nested',
-                                    'title': 'Add Custom Table Column'
+                                    enabled: true,
+                                    id: 'listReport0-create-table-custom-column',
+                                    kind: 'nested',
+                                    title: 'Add Custom Table Column'
                                 }
                             ]
                         }
                     ])
                 );
-
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
+                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.isTableWithoutToolbar ? 0 : 1);
 
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-                    mockOverlay,
-                    rtaMock,
-                    'AddFragment',
-                    undefined,
-                    {
-                        aggregation: 'content',
-                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                    }
-                );
+                if (!testCase.isTableWithoutToolbar) {
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        'AddFragment',
+                        undefined,
+                        {
+                            aggregation: 'content',
+                            defaultAggregationArrayIndex: 1,
+                            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                        }
+                    );
+                }
+
             });
         });
 
@@ -712,6 +887,7 @@ describe('FE V2 quick actions', () => {
                     undefined,
                     {
                         aggregation: 'actions',
+                        'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                     }
                 );
@@ -928,8 +1104,19 @@ describe('FE V2 quick actions', () => {
                     validVersion: true,
                     versionInfo: '1.130',
                     isManifestPagesAsArray: true
+                },
+                {
+                    validVersion: true,
+                    versionInfo: '1.134.0',
+                    isManifestPagesAsArray: true
                 }
             ];
+            jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                return {
+                    isA: (type: string) => type === 'sap.suite.ui.generic.template.lib.TemplateComponent',
+                    getAppComponent: jest.fn().mockReturnValue({} as any)
+                } as unknown as UIComponent;
+            });
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
                 sapCoreMock.byId.mockImplementation((id) => {
@@ -1049,6 +1236,16 @@ describe('FE V2 quick actions', () => {
                                               enabled: true
                                           }
                                       ]
+                                    : testCase.versionInfo === '1.134.0' && testCase.isManifestPagesAsArray // support manifest pages as array from version 1.134 and above
+                                    ? [
+                                          {
+                                              enabled: true,
+                                              id: 'listReport0-enable-semantic-daterange-filterbar',
+                                              kind: 'simple',
+                                              title: 'Enable Semantic Date Range in Filter Bar',
+                                              tooltip: undefined
+                                          }
+                                      ]
                                     : []
                         }
                     ])
@@ -1066,6 +1263,7 @@ describe('FE V2 quick actions', () => {
                         'settings': {},
                         'type': 'appDescriptor',
                         'value': {
+                            'appComponent': {},
                             'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
                             'parameters': {
                                 'entityPropertyChange': {
@@ -1433,12 +1631,12 @@ describe('FE V2 quick actions', () => {
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: 'Add Annotation File for \'\'{0}\'\''
+                                            label: `Add Annotation File for ''{0}''`
                                         },
                                         {
                                             children: [],
                                             enabled: true,
-                                            label: 'Show Annotation File for \'\'{0}\'\''
+                                            label: `Show Annotation File for ''{0}''`
                                         }
                                     ]
                                 }
@@ -2112,6 +2310,7 @@ describe('FE V2 quick actions', () => {
                     undefined,
                     {
                         aggregation: 'content',
+                        defaultAggregationArrayIndex: 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                     }
                 );
@@ -2722,6 +2921,7 @@ describe('FE V2 quick actions', () => {
             const testCases: {
                 supportedVersion: boolean;
                 isEnabled?: boolean;
+                isCustomTable?: boolean;
                 ui5version?: versionUtils.Ui5VersionInfo;
                 tooltip?: string;
             }[] = [
@@ -2738,9 +2938,12 @@ describe('FE V2 quick actions', () => {
                 {
                     supportedVersion: true,
                     isEnabled: true,
-                    tooltip:
-                        // eslint-disable-next-line quotes
-                        "This option has been disabled because variant management is already enabled for the ''{0}''"
+                    tooltip: `This option has been disabled because variant management is already enabled for the ''{0}''`
+                },
+                {
+                    supportedVersion: true,
+                    isCustomTable: true,
+                    tooltip: `Variant management cannot be set for custom table ''{0}''`
                 }
             ];
             afterEach(() => {
@@ -2786,6 +2989,10 @@ describe('FE V2 quick actions', () => {
                 });
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'SmartTable') {
+                        const tableData: Record<string, any> = {
+                            lineItemQualifier: 'lineItem123',
+                            sectionId: testCase.isCustomTable ? undefined : 'dummySection'
+                        };
                         return {
                             isA: (type: string) => type === SMART_TABLE_TYPE,
                             getHeader: () => 'MyTable',
@@ -2810,19 +3017,11 @@ describe('FE V2 quick actions', () => {
                             getBusy: () => false,
                             selectOverlay: () => ({}),
                             getVariantManagement: () => testCase.isEnabled,
-                            getTable: jest.fn(() => {
-                                return {
-                                    getBindingInfo: jest.fn(() => {
-                                        return {
-                                            path: 'testPath'
-                                        };
-                                    })
-                                };
-                            }),
-                            data: jest.fn(() => {
-                                return {
-                                    lineItemQualifier: 'lineItem123'
-                                };
+                            data: jest.fn((prop: string) => {
+                                if (!prop) {
+                                    return tableData;
+                                }
+                                return tableData[prop];
                             })
                         };
                     }
@@ -2902,12 +3101,21 @@ describe('FE V2 quick actions', () => {
                     }
                 }
 
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({
-                        id: actionId,
-                        kind: 'nested',
-                        path: '0/0'
-                    })
+                let thrown;
+                try {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: actionId,
+                            kind: 'nested',
+                            path: '0/0'
+                        })
+                    );
+                } catch (e) {
+                    thrown = e;
+                }
+
+                expect(thrown?.message).toBe(
+                    testCase.isCustomTable ? 'Internal error. Table sectionId property not found' : undefined
                 );
 
                 expect(sendActionMock).toHaveBeenNthCalledWith(
@@ -2929,7 +3137,10 @@ describe('FE V2 quick actions', () => {
                                                   'children': [
                                                       {
                                                           'children': [],
-                                                          'enabled': testCase.isEnabled ? false : true,
+                                                          'enabled':
+                                                              testCase.isEnabled || testCase.isCustomTable
+                                                                  ? false
+                                                                  : true,
                                                           'label': `'MyTable' table`,
                                                           tooltip: testCase.tooltip
                                                       }
@@ -2944,7 +3155,7 @@ describe('FE V2 quick actions', () => {
                     ])
                 );
 
-                if (!testCase.supportedVersion) {
+                if (!testCase.supportedVersion || testCase.isCustomTable) {
                     expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
                     expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
                     expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
@@ -2959,8 +3170,7 @@ describe('FE V2 quick actions', () => {
                             'parameters': {
                                 'entityPropertyChange': {
                                     'operation': 'UPSERT',
-                                    'propertyPath':
-                                        'component/settings/sections/testPath::com.sap.vocabularies.UI.v1.LineItem#lineItem123/tableSettings',
+                                    'propertyPath': 'component/settings/sections/dummySection/tableSettings',
                                     'propertyValue': {
                                         'variantManagement': true
                                     }
