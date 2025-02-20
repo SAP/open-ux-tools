@@ -5,7 +5,7 @@ import { getPrompts, promptNames } from '@sap-ux/cf-deploy-config-inquirer';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { destinationQuestionDefaultOption, getCFChoices } from './utils';
 import { t } from '../utils';
-import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
+import { ApiHubConfig, useAbapDirectServiceBinding } from '@sap-ux/cf-deploy-config-writer';
 import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-inquirer';
 
 /**
@@ -13,7 +13,6 @@ import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions } from '@sap-
  *
  * @param options - the options required for retrieving the prompts.
  * @param options.projectRoot - the root path of the project.
- * @param options.isAbapDirectServiceBinding - whether the destination is an ABAP direct service binding.
  * @param options.cfDestination - the Cloud Foundry destination.
  * @param options.isCap - whether the project is a CAP project.
  * @param options.addOverwrite - whether to add the overwrite prompt.
@@ -22,20 +21,19 @@ import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions } from '@sap-
  */
 export async function getCFQuestions({
     projectRoot,
-    isAbapDirectServiceBinding,
     cfDestination,
     isCap,
     addOverwrite,
     apiHubConfig
 }: {
     projectRoot: string;
-    isAbapDirectServiceBinding: boolean;
     cfDestination: string;
     isCap: boolean;
     addOverwrite: boolean;
     apiHubConfig?: ApiHubConfig;
 }): Promise<CfDeployConfigQuestions[]> {
     const isBAS = isAppStudio();
+    const isAbapDirectServiceBinding = await useAbapDirectServiceBinding(projectRoot, true);
     const mtaYamlExists = !!(await getMtaPath(projectRoot));
     const cfChoices = await getCFChoices({
         projectRoot,

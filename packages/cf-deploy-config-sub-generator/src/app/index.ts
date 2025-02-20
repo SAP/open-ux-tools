@@ -11,7 +11,7 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isFullUrlDestination } from '@sap-ux/btp-utils';
-import { generateAppConfig, ApiHubType, useAbapDirectServiceBinding } from '@sap-ux/cf-deploy-config-writer';
+import { generateAppConfig, ApiHubType } from '@sap-ux/cf-deploy-config-writer';
 import {
     DeploymentGenerator,
     showOverwriteQuestion,
@@ -52,7 +52,6 @@ export default class extends DeploymentGenerator {
     private projectRoot: string;
     private mtaPath?: string;
     private isCap = false;
-    private isAbapDirectServiceBinding = false;
     private lcapModeOnly = false;
     private servicePath?: string;
     private destinationName: string;
@@ -118,8 +117,6 @@ export default class extends DeploymentGenerator {
 
         await this._processProjectPaths();
         await this._processProjectConfigs();
-
-        this.isAbapDirectServiceBinding = await useAbapDirectServiceBinding(this.appPath, false, this.mtaPath);
 
         // restricting local changes is only applicable for CAP flows
         if (!this.isCap) {
@@ -204,7 +201,6 @@ export default class extends DeploymentGenerator {
     private async _getCFQuestions(): Promise<CfDeployConfigQuestions[]> {
         return getCFQuestions({
             projectRoot: this.projectRoot,
-            isAbapDirectServiceBinding: this.isAbapDirectServiceBinding,
             cfDestination: this.destinationName,
             isCap: this.isCap,
             addOverwrite: showOverwriteQuestion(
@@ -351,6 +347,6 @@ export default class extends DeploymentGenerator {
     }
 }
 
-export { getCFQuestions, loadManifest };
+export { getCFQuestions, loadManifest, CfDeployConfigQuestions, ApiHubConfig, ApiHubType };
 export { API_BUSINESS_HUB_ENTERPRISE_PREFIX, DESTINATION_AUTHTYPE_NOTFOUND };
 export { CfDeployConfigOptions, CfDeployConfigAnswers };

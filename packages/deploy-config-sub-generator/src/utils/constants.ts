@@ -1,3 +1,10 @@
 // When deployment generator is bundled the namespacing is relative to the root generator
+import type { Target } from '../types';
+import { TargetName } from '@sap-ux/deploy-config-generator-shared';
+
 export const bundledRootGeneratorName = '@sap/fiori:fiori-deployment';
 export const generatorNamespace = (subGenName: string): string => `${bundledRootGeneratorName}_${subGenName}`;
+export const abapChoice: Target = { name: TargetName.ABAP, description: 'ABAP' };
+export const cfChoice: Target = { name: TargetName.CF, description: 'Cloud Foundry' };
+
+export const generatorTitle = 'Deployment Configuration Generator';

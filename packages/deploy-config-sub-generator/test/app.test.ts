@@ -16,6 +16,11 @@ import * as envUtils from '@sap-ux/fiori-generator-shared';
 import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
 
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    existsSync: jest.fn().mockReturnValue(true)
+}));
+
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
     const Union = require('unionfs').Union;
