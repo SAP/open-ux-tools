@@ -546,7 +546,8 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
             
             // import all your QUnit tests here
             void Promise.all([
-                import("sap/ui/core/Core"), // Required to wait until Core has booted to start the QUnit tests import("unit/controller/view-testPage.controller")
+                import("sap/ui/core/Core"), // Required to wait until Core has booted to start the QUnit tests 
+                import("unit/controller/view-testPage.controller")
             ]).then(([{ default: Core }]) => {
                 QUnit.start();
             });`)
