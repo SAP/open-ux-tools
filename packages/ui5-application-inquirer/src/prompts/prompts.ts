@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/prefer-nullish-coalescing */
 // Nullish coalescing operator lint warnings disabled as its not appropriate in most cases where empty strings are not considered valid
-import { type CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
+import { type CdsUi5PluginInfo } from '@sap-ux/project-access';
 import {
     getUI5ThemesChoices,
     searchChoices,
