@@ -80,7 +80,7 @@ describe('InfoCenter Component', () => {
         fireEvent.click(expandButton);
         expect(dispatch).toBeCalledWith(toggleExpandMessage('testid'));
 
-        // Simulate open the message detatils in modal
+        // Simulate open the message details in modal
         const modalButton = screen.getByText(/view details/i);
         fireEvent.click(modalButton);
         expect(dispatch).toBeCalledWith(toggleModalMessage('testid'));
@@ -111,7 +111,7 @@ describe('InfoCenter Component', () => {
             }
         });
 
-        // Simulate open the message detatils in modal
+        // Simulate open the message details in modal
         const modalButton = screen.getByText(/view details/i);
         fireEvent.click(modalButton);
         // Simulate closing of modal

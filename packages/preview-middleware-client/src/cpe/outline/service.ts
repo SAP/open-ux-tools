@@ -69,8 +69,8 @@ export class OutlineService extends EventTarget {
                     sendAction(
                         showInfoCenterMessage({
                             type: MessageBarType.warning,
-                            title: title,
-                            description: description
+                            title: title.trim(),
+                            description: description?.trim()
                         })
                     );
                     hasSentWarning = true;
