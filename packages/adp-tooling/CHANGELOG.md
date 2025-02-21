@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.12.137
+
+### Patch Changes
+
+-   df8d790: fix: 'Add Custom Table Column' CPE quick action is generating incorrect column fragment for Grid and Tree tables
+
 ## 0.12.136
 
 ### Patch Changes
