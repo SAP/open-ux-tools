@@ -1,9 +1,28 @@
 {
-    "extends": "../../tsconfig.json",
-    "include": ["src", "src/**/*.json"],
-    "compilerOptions": {
-        "rootDir": "src",
-        "outDir": "generators"
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "dist"
+  },
+  "references": [
+    {
+      "path": "../abap-deploy-config-inquirer"
     },
-    "references": []
+    {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../jest-file-matchers"
+    },
+    {
+      "path": "../odata-service-inquirer"
+    }
+  ]
 }

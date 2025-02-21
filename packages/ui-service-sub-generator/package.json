@@ -1,0 +1,52 @@
+{
+    "name": "@sap-ux/ui-service-sub-generator",
+    "description": "Generator for creating UI Service",
+    "version": "0.0.1",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/ui-service-sub-generator"
+    },
+    "bugs": {
+        "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue"
+    },
+    "scripts": {
+        "build": "tsc --build",
+        "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",
+        "watch": "tsc --watch",
+        "lint": "eslint . --ext .ts",
+        "lint:fix": "eslint . --ext .ts --fix",
+        "test": "jest --ci --forceExit --detectOpenHandles --colors --passWithNoTests",
+        "test-u": "jest --ci --forceExit --detectOpenHandles --colors -u",
+        "link": "pnpm link --global",
+        "unlink": "pnpm unlink --global"
+    },
+    "license": "Apache-2.0",
+    "main": "generators/app/index.js",
+    "files": [
+        "LICENSE",
+        "generators",
+        "!generators/*.map",
+        "!generators/**/*.map"
+    ],
+    "dependencies": {
+        "@types/yeoman-environment": "2.10.11",
+        "@types/yeoman-generator": "5.2.11",
+        "@sap-ux/fiori-generator-shared": "workspace:*",
+        "@sap-devx/yeoman-ui-types": "1.14.4",
+        "i18next": "23.5.1",
+        "yeoman-generator": "5.10.0"
+    },
+    "devDependencies": {
+        "@sap-ux/jest-file-matchers": "workspace:*",
+        "@types/yeoman-test": "4.0.6",
+        "@vscode-logging/logger": "2.0.0",
+        "jest-extended": "4.0.2",
+        "rimraf": "5.0.5",
+        "typescript": "5.3.3",
+        "yeoman-test": "6.3.0"
+    },
+    "engines": {
+        "node": ">=18.x"
+    }
+}
