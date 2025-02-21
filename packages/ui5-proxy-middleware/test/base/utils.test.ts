@@ -422,7 +422,6 @@ describe('utils', () => {
                 data-sap-ui-preload="async"
                 data-sap-ui-theme="sap_fiori_3"
                 data-sap-ui-compatVersion="edge"
-                data-sap-ui-language="en"
                 data-sap-ui-resourceroots='{"project": "../"}'
                 data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
                 </script>
@@ -455,7 +454,6 @@ describe('utils', () => {
                 data-sap-ui-preload="async"
                 data-sap-ui-theme="sap_fiori_3"
                 data-sap-ui-compatVersion="edge"
-                data-sap-ui-language="en"
                 data-sap-ui-resourceroots='{"project": "../"}'
                 data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
                 </script>
