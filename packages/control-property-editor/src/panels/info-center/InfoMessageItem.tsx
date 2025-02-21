@@ -34,14 +34,7 @@ const getMessageType = (type: MessageBarType) => {
 export function InfoMessageItem(item: Readonly<InfoCenterItem>): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const {
-        expandable: isExpandable,
-        expanded: isExpanded,
-        read: isRead,
-        modal: isOpenedModal,
-        message,
-        id
-    } = item;
+    const { expandable: isExpandable, expanded: isExpanded, read: isRead, modal: isOpenedModal, message, id } = item;
 
     return (
         <Stack.Item

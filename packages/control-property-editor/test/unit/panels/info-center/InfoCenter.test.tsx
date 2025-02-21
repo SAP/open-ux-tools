@@ -180,11 +180,11 @@ describe('InfoCenter Component', () => {
         fireEvent.mouseOver(message);
 
         await waitFor(() => {
-          expect(dispatch).toHaveBeenCalledWith(expandableMessage('testid'));
+            expect(dispatch).toHaveBeenCalledWith(expandableMessage('testid'));
         });
-      });
-    
-      test('does not dispatch expandableMessage when element is already marked as expandable', async () => {
+    });
+
+    test('does not dispatch expandableMessage when element is already marked as expandable', async () => {
         const { dispatch } = render(<InfoCenter />, {
             initialState: {
                 infoCenterMessages: [
@@ -213,9 +213,9 @@ describe('InfoCenter Component', () => {
         Object.defineProperty(message, 'clientHeight', { value: 100, configurable: true });
 
         fireEvent.mouseOver(message);
-    
+
         await waitFor(() => {
-          expect(dispatch).not.toHaveBeenCalledWith(expandableMessage('testid'));
+            expect(dispatch).not.toHaveBeenCalledWith(expandableMessage('testid'));
         });
-      });
+    });
 });
