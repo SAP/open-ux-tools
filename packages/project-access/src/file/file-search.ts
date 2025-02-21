@@ -1,5 +1,5 @@
 import type { Editor, FileMap } from 'mem-fs-editor';
-import { basename, dirname, extname, join } from 'path';
+import { basename, dirname, extname, join, sep, posix } from 'path';
 import { default as find, type FindError } from 'findit2';
 import { fileExists } from './file-access';
 import { promises as fs } from 'fs';
@@ -23,7 +23,7 @@ function getMemFsChanges(
     const modified: string[] = [];
     const filteredChanges = Object.keys(changes).filter(
         (f) =>
-            f.startsWith(root) &&
+            f.startsWith(root.replaceAll(sep, posix.sep)) &&
             (fileNames.includes(basename(f)) ||
                 extensionNames.includes(extname(f)) ||
                 (fileNames.length === 0 && extensionNames.length === 0))
