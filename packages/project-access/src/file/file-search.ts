@@ -134,7 +134,8 @@ export function findBy(options: {
             if (fatalErrors.length === 0) {
                 resolve(searchResult);
             } else {
-                reject(fatalErrors satisfies Error[]);
+                // eslint-disable-next-line prefer-promise-reject-errors
+                reject(fatalErrors);
             }
         });
         finder.on('error', (error: FindError) => {
