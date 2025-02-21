@@ -401,13 +401,26 @@ id="<%- ids.text %>
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
 
-            it('should create custom table column fragment (analytical table)', () => {
+            const testCases: {
+                tableType: 'ANALYTICAL_TABLE_COLUMN' | 'GRID_TREE_TABLE_COLUMN';
+                fragmentFileName: string;
+            }[] = [
+                {
+                    tableType: 'ANALYTICAL_TABLE_COLUMN',
+                    fragmentFileName: 'templates/rta/common/analytical-custom-column.xml'
+                },
+                {
+                    tableType: 'GRID_TREE_TABLE_COLUMN',
+                    fragmentFileName: 'templates/rta/common/grid-tree-custom-column.xml'
+                }
+            ];
+            it.each(testCases)('should create custom table column fragment (%s table)', (testCase) => {
                 mockFs.exists.mockReturnValue(false);
                 const updatedChange = {
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: `ANALYTICAL_TABLE_COLUMN`,
+                        templateName: testCase.tableType,
                         index: 1
                     }
                 } as unknown as AddXMLChange;
@@ -422,9 +435,7 @@ id="<%- ids.index %>
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
-                    (mockFs.read.mock.calls[0][0] as string)
-                        .replace(/\\/g, '/')
-                        .endsWith('templates/rta/common/analytical-custom-column.xml')
+                    (mockFs.read.mock.calls[0][0] as string).replace(/\\/g, '/').endsWith(testCase.fragmentFileName)
                 ).toBe(true);
 
                 expect(mockFs.write).toHaveBeenCalled();
