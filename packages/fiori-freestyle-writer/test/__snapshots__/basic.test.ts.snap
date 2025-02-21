@@ -4504,7 +4504,9 @@ title=App Title",
         \\"transition\\": \\"slide\\",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
-        \\"path\\": \\"nods1.view\\"
+        \\"path\\": \\"nods1.view\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
@@ -4525,7 +4527,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }
@@ -5028,7 +5031,9 @@ title=App Title",
         \\"transition\\": \\"slide\\",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
-        \\"path\\": \\"nods1.view\\"
+        \\"path\\": \\"nods1.view\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
@@ -5049,7 +5054,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }
@@ -5577,7 +5583,9 @@ title=App Title",
         \\"transition\\": \\"slide\\",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
-        \\"path\\": \\"nods1.view\\"
+        \\"path\\": \\"nods1.view\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
@@ -5598,7 +5606,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }

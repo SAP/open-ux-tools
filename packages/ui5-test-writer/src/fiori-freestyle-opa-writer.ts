@@ -50,51 +50,6 @@ function getTemplateUi5Version(ui5Version?: string): string {
 }
 
 /**
- * Copies filtered test template files from source directory to destination directory,
- * with file renaming logic based on the view name.
- *
- * @param {string} sourceDir - The path to the source directory containing template files.
- * @param {string} ouputDir - The path to the destination directory where files should be copied.
- * @param {string[]} filteredFiles - An array of filtered file paths to copy.
- * @param {FFOPAConfig} opaConfig - The OPA test configuration object to write into template files.
- * @param {Editor} editor - The editor instance used to copy and render template files.
- * @param {Logger} [log] - The logger instance.
- * @param {Record<string, string>} [renameMap] - Optional rename mapping for file paths.
- * @param {string} [templateUi5Version] - The template UI5 version.
- * @returns {boolean} - resolves to `true` if the files were copied successfully,
- * or `false` if there was an error during the process.
- */
-function copyTemplates(
-    sourceDir: string,
-    ouputDir: string,
-    filteredFiles: string[],
-    opaConfig: FFOPAConfig & { addUnitTests?: boolean },
-    editor: Editor,
-    log?: Logger,
-    renameMap?: Record<string, string>,
-    templateUi5Version?: string
-): boolean {
-    try {
-        filteredFiles.forEach((filePath: string) => {
-            // remove template UI5 version from the path
-            const destFilePath = filePath.replace(sourceDir, '').replace(`/${templateUi5Version}/`, '/');
-            const destinationFilePath = join(ouputDir, renameMap?.[destFilePath] ?? destFilePath);
-            editor.copyTpl(filePath, destinationFilePath, opaConfig, undefined, {
-                globOptions: { dot: true }
-            });
-        });
-        return true;
-    } catch (error) {
-        log?.error(
-            t('error.errorCopyingFreestyleTestTemplates', {
-                error: error
-            })
-        );
-        return false;
-    }
-}
-
-/**
  * Filters files based on the template UI5 version.
  *
  * @param files - Array of file paths.
@@ -133,6 +88,30 @@ function filterByTypeScript(files: string[], isTypeScript: boolean): string[] {
 }
 
 /**
+ * Determines the destination file path based on the provided file path.
+ *
+ * @param {string} filePath - The original file path.
+ * @param {string} freestyleTemplateDir - The directory file path to be removed from the path.
+ * @param {string} commonTemplateDir - The directory file to be removed for common templates path.
+ * @param {string} templateUi5Version - The UI5 version to be replaced in the path.
+ * @returns {string} - The transformed destination file path.
+ */
+function getDestFilePath(
+    filePath: string,
+    freestyleTemplateDir: string,
+    commonTemplateDir: string,
+    templateUi5Version: string
+): string {
+    if (filePath.includes(freestyleTemplateDir)) {
+        return filePath.replace(freestyleTemplateDir, '').replace(`/${templateUi5Version}/`, '/');
+    } else if (filePath.includes(commonTemplateDir)) {
+        return filePath.replace(commonTemplateDir, '');
+    } else {
+        return filePath;
+    }
+}
+
+/**
  * Generates and copies freestyle test files based on configuration.
  *
  * @param {string} basePath - The base directory path.
@@ -164,6 +143,11 @@ export async function generateFreestyleOPAFiles(
     const templateFilteredFiles = filterByUi5Version(templateFiles, templateUi5Version);
     const filteredFiles = filterByTypeScript(templateFilteredFiles, isTypeScript);
 
+    // copy common templates
+    const commonFiles = await getFilePaths(commonTemplateDir);
+    const filteredCommonFiles = commonFiles.filter((filePath: string) => filePath.endsWith('.html'));
+    filteredFiles.push(...filteredCommonFiles);
+
     const config = {
         ...opaConfig,
         viewNamePage: `${viewName}Page`,
@@ -181,31 +165,27 @@ export async function generateFreestyleOPAFiles(
         '/unit/controller/viewName.controller.js': `unit/controller/${viewName}.controller.js`,
         '/unit/controller/viewName.controller.ts': `unit/controller/${viewName}Page.controller.ts`
     };
-    // copy freestyle templates
-    const freestyleTestTemplatesCopied = copyTemplates(
-        freestyleTemplateDir,
-        testOutDir,
-        filteredFiles,
-        config,
-        fsEditor,
-        log,
-        renameMap,
-        templateUi5Version
-    );
+    // copy templates
+    let freestyleTestTemplatesCopied = false;
+    try {
+        filteredFiles.forEach((filePath: string) => {
+            // remove template UI5 version from the path
+            const destFilePath = getDestFilePath(filePath, freestyleTemplateDir, commonTemplateDir, templateUi5Version);
+            const destinationFilePath = join(testOutDir, renameMap?.[destFilePath] ?? destFilePath);
+            fsEditor.copyTpl(filePath, destinationFilePath, config, undefined, {
+                globOptions: { dot: true }
+            });
+        });
+        freestyleTestTemplatesCopied = true;
+    } catch (error) {
+        log?.error(
+            t('error.errorCopyingFreestyleTestTemplates', {
+                error: error
+            })
+        );
+    }
 
-    // copy common templates
-    const commonFiles = await getFilePaths(commonTemplateDir);
-    const filteredCommonFiles = commonFiles.filter((filePath: string) => filePath.endsWith('.html'));
-
-    const commonTemplatesCopied = copyTemplates(
-        commonTemplateDir,
-        testOutDir,
-        filteredCommonFiles,
-        { appId },
-        fsEditor,
-        log
-    );
-    if (commonTemplatesCopied && freestyleTestTemplatesCopied && isTypeScript) {
+    if (freestyleTestTemplatesCopied && isTypeScript) {
         writeOPATsconfigJsonUpdates(fsEditor, basePath, log);
     }
 

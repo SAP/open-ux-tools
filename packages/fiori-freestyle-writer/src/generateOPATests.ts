@@ -1,7 +1,6 @@
 import { generateFreestyleOPAFiles } from '@sap-ux/ui5-test-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
-import type { FreestyleApp } from './types';
-import type { BasicAppSettings } from './types';
+import type { FreestyleApp, BasicAppSettings } from './types';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 
