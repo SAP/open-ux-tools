@@ -19,7 +19,7 @@ import { generateFreestyleOPAFiles } from '@sap-ux/ui5-test-writer';
 /**
  * Adds test scripts to the package.json object.
  *
- * @param {object} packageJson - The package.json object to update.
+ * @param {Package} packageJson - The package.json object to update.
  * @param {boolean} addMock - Whether to include the UI5 mock YAML configuration.
  */
 function addTestScripts(packageJson: Package, addMock: boolean): void {
