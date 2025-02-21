@@ -253,4 +253,4 @@ export type CdsUi5PluginInfo = {
      * True if the CDS ui5 plugin is specified as a dependency
      */
     hasCdsUi5Plugin: boolean;
-}
+};
