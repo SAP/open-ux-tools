@@ -4,10 +4,9 @@ import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
 import type { FFOPAConfig } from './types';
 import type { Logger } from '@sap-ux/logger';
-import { getFilePaths } from '@sap-ux/project-access';
+import { getFilePaths, FileName } from '@sap-ux/project-access';
 import { t } from './i18n';
 import { compareUI5VersionGte, ui5LtsVersion_1_71 } from '@sap-ux/ui5-application-writer';
-import { FileName } from '@sap-ux/project-access';
 
 /**
  * Updates tsconfig.json to include paths for unit and integration tests.
