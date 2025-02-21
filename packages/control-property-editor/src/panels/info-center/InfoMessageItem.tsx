@@ -35,12 +35,12 @@ export function InfoMessageItem(item: Readonly<InfoCenterItem>): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const {
-        id: id,
         expandable: isExpandable,
         expanded: isExpanded,
         read: isRead,
         modal: isOpenedModal,
-        message
+        message,
+        id
     } = item;
 
     return (
@@ -53,6 +53,7 @@ export function InfoMessageItem(item: Readonly<InfoCenterItem>): ReactElement {
                 </Text>
                 {message.type !== MessageBarType.error && (
                     <UIIconButton
+                        aria-label="remove-message"
                         className="remove-message"
                         onClick={() => dispatch(clearInfoCenterMessage(id))}
                         iconProps={{ iconName: UiIcons.TrashCan }}

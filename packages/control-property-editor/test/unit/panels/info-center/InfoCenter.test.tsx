@@ -1,5 +1,5 @@
 import React from 'react';
-import { screen, fireEvent } from '@testing-library/react';
+import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { render } from '../../utils';
 import { InfoCenter } from '../../../../src/panels/info-center';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
@@ -7,7 +7,9 @@ import {
     clearAllInfoCenterMessages,
     readMessage,
     toggleModalMessage,
-    toggleExpandMessage
+    toggleExpandMessage,
+    clearInfoCenterMessage,
+    expandableMessage
 } from '../../../../src/slice';
 
 describe('InfoCenter Component', () => {
@@ -88,6 +90,12 @@ describe('InfoCenter Component', () => {
         // Simulate marking the message as read
         fireEvent.mouseOver(expandableMessage);
         expect(dispatch).toBeCalledWith(readMessage('testid'));
+
+        // Simulate remove the single message
+        fireEvent.mouseOver(expandableMessage);
+        const deleteButton = await screen.findByLabelText(/remove-message/i);
+        fireEvent.click(deleteButton);
+        expect(dispatch).toBeCalledWith(clearInfoCenterMessage('testid'));
     });
 
     test('close modal with message details correctly', () => {
@@ -140,4 +148,74 @@ describe('InfoCenter Component', () => {
         fireEvent.click(clearAllButton);
         expect(dispatch).toBeCalledWith(clearAllInfoCenterMessages());
     });
+
+    test('dispatches expandableMessage when element overflows and is not marked expandable', async () => {
+        const { dispatch } = render(<InfoCenter />, {
+            initialState: {
+                infoCenterMessages: [
+                    {
+                        message: {
+                            type: MessageBarType.info,
+                            title: 'Title',
+                            description: 'Expandable Message',
+                            details: 'More Details'
+                        },
+                        expandable: false,
+                        expanded: false,
+                        read: false,
+                        modal: false,
+                        id: 'testid'
+                    }
+                ]
+            }
+        });
+
+        const message = screen.getByText(/expandable message/i);
+        expect(message).toBeInTheDocument();
+
+        // Simulate overflow: scrollHeight > clientHeight.
+        Object.defineProperty(message, 'scrollHeight', { value: 200, configurable: true });
+        Object.defineProperty(message, 'clientHeight', { value: 100, configurable: true });
+
+        fireEvent.mouseOver(message);
+
+        await waitFor(() => {
+          expect(dispatch).toHaveBeenCalledWith(expandableMessage('testid'));
+        });
+      });
+    
+      test('does not dispatch expandableMessage when element is already marked as expandable', async () => {
+        const { dispatch } = render(<InfoCenter />, {
+            initialState: {
+                infoCenterMessages: [
+                    {
+                        message: {
+                            type: MessageBarType.info,
+                            title: 'Title',
+                            description: 'Expandable Message',
+                            details: 'More Details'
+                        },
+                        expandable: true,
+                        expanded: false,
+                        read: false,
+                        modal: false,
+                        id: 'testid'
+                    }
+                ]
+            }
+        });
+
+        const message = screen.getByText(/expandable message/i);
+        expect(message).toBeInTheDocument();
+
+        // Simulate overflow: scrollHeight > clientHeight.
+        Object.defineProperty(message, 'scrollHeight', { value: 200, configurable: true });
+        Object.defineProperty(message, 'clientHeight', { value: 100, configurable: true });
+
+        fireEvent.mouseOver(message);
+    
+        await waitFor(() => {
+          expect(dispatch).not.toHaveBeenCalledWith(expandableMessage('testid'));
+        });
+      });
 });
