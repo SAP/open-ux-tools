@@ -47,7 +47,13 @@ export {
     readUi5Yaml,
     refreshSpecificationDistTags,
     toReferenceUri,
-    updatePackageScript
+    updatePackageScript,
+    hasCdsPluginUi5,
+    getWorkspaceInfo,
+    getWorkspacePackages,
+    minCdsVersion,
+    hasMinCdsVersion,
+    checkCdsUi5PluginEnabled
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';

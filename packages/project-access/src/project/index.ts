@@ -13,7 +13,13 @@ export {
     isCapJavaProject,
     isCapNodeJsProject,
     readCapServiceMetadataEdmx,
-    toReferenceUri
+    toReferenceUri,
+    hasCdsPluginUi5,
+    getWorkspaceInfo,
+    getWorkspacePackages,
+    minCdsVersion,
+    hasMinCdsVersion,
+    checkCdsUi5PluginEnabled
 } from './cap';
 export { filterDataSourcesByType } from './service';
 export { addPackageDevDependency, getNodeModulesPath } from './dependencies';

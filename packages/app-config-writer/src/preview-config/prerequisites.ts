@@ -1,6 +1,6 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { type Package, findCapProjectRoot, FileName } from '@sap-ux/project-access';
+import { type Package, findCapProjectRoot, FileName, checkCdsUi5PluginEnabled } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { satisfies, valid } from 'semver';
 
@@ -10,7 +10,6 @@ const packageName = {
     UI5_CLI: '@ui5/cli',
     SAP_UX_UI5_TOOLING: '@sap/ux-ui5-tooling',
     SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER: '@sap-ux/ui5-middleware-fe-mockserver',
-    CDS_PLUGIN_UI5: 'cds-plugin-ui5',
     SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD: '@sap/grunt-sapui5-bestpractice-build'
 } as const;
 
@@ -57,12 +56,7 @@ async function isUsingCdsPluginUi5(basePath: string, fs: Editor): Promise<boolea
     if (!capProjectRootPath) {
         return false;
     }
-    const capRootPackageJsonPath = join(capProjectRootPath, FileName.Package);
-    const capRootPackageJson = fs.readJSON(capRootPackageJsonPath) as Package | undefined;
-    return (
-        !!capRootPackageJson?.devDependencies?.[packageName.CDS_PLUGIN_UI5] ||
-        !!capRootPackageJson?.dependencies?.[packageName.CDS_PLUGIN_UI5]
-    );
+    return await checkCdsUi5PluginEnabled(capProjectRootPath, fs);
 }
 
 /**

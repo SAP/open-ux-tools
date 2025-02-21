@@ -10,12 +10,13 @@ describe('prerequisites', () => {
     const errorLogMock = jest.spyOn(ToolsLogger.prototype, 'error').mockImplementation(() => {});
     const warnLogMock = jest.spyOn(ToolsLogger.prototype, 'warn').mockImplementation(() => {});
     const basePath = join(__dirname, '../../fixtures/preview-config');
-    jest.spyOn(ProjectAccess, 'findCapProjectRoot').mockImplementation(() => Promise.resolve(basePath));
+    jest.spyOn(ProjectAccess, 'findCapProjectRoot').mockResolvedValue(basePath);
     const fs = create(createStorage());
 
     beforeEach(() => {
         jest.clearAllMocks();
         fs.delete(join(basePath, 'various-configs', 'package.json'));
+        jest.spyOn(ProjectAccess, 'checkCdsUi5PluginEnabled').mockResolvedValue(true);
     });
 
     test('check prerequisites w/o package.json', async () => {
@@ -44,19 +45,13 @@ describe('prerequisites', () => {
     });
 
     test('check prerequisites with UI5 cli ^3 dependency', async () => {
-        fs.write(
-            join(basePath, 'package.json'),
-            JSON.stringify({ devDependencies: { '@ui5/cli': '^3', 'cds-plugin-ui5': '6.6.6' } })
-        );
+        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '^3' } }));
 
         expect(await checkPrerequisites(basePath, fs, false, logger)).toBeTruthy();
     });
 
     test('check prerequisites with UI5 cli ^2 dependency', async () => {
-        fs.write(
-            join(basePath, 'package.json'),
-            JSON.stringify({ devDependencies: { '@ui5/cli': '^2', 'cds-plugin-ui5': '6.6.6' } })
-        );
+        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '^2' } }));
 
         expect(await checkPrerequisites(basePath, fs, false, logger)).toBeFalsy();
         expect(errorLogMock).toHaveBeenCalledWith(
@@ -68,7 +63,7 @@ describe('prerequisites', () => {
         fs.write(
             join(basePath, 'package.json'),
             JSON.stringify({
-                devDependencies: { '@sap/ux-ui5-tooling': '1.16.0', '@ui5/cli': '^3', 'cds-plugin-ui5': '6.6.6' }
+                devDependencies: { '@sap/ux-ui5-tooling': '1.16.0', '@ui5/cli': '^3' }
             })
         );
 
@@ -79,7 +74,7 @@ describe('prerequisites', () => {
         fs.write(
             join(basePath, 'package.json'),
             JSON.stringify({
-                devDependencies: { '@sap/ux-ui5-tooling': '1', '@ui5/cli': '^3', 'cds-plugin-ui5': '6.6.6' }
+                devDependencies: { '@sap/ux-ui5-tooling': '1', '@ui5/cli': '^3' }
             })
         );
 
@@ -90,7 +85,7 @@ describe('prerequisites', () => {
         fs.write(
             join(basePath, 'package.json'),
             JSON.stringify({
-                devDependencies: { '@sap/ux-ui5-tooling': 'latest', '@ui5/cli': '^3', 'cds-plugin-ui5': '6.6.6' }
+                devDependencies: { '@sap/ux-ui5-tooling': 'latest', '@ui5/cli': '^3' }
             })
         );
 
@@ -110,6 +105,7 @@ describe('prerequisites', () => {
     });
 
     test('check prerequisites w/o mockserver dependency', async () => {
+        jest.spyOn(ProjectAccess, 'checkCdsUi5PluginEnabled').mockResolvedValue(false);
         fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0' } }));
 
         expect(await checkPrerequisites(basePath, fs, false, logger)).toBeFalsy();
@@ -119,10 +115,7 @@ describe('prerequisites', () => {
     });
 
     test('check prerequisites w/o mockserver dependency but with cds-plugin-ui5 dependency', async () => {
-        fs.write(
-            join(basePath, 'package.json'),
-            JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0', 'cds-plugin-ui5': '6.6.6' } })
-        );
+        fs.write(join(basePath, 'package.json'), JSON.stringify({ devDependencies: { '@ui5/cli': '3.0.0' } }));
 
         expect(await checkPrerequisites(basePath, fs, false, logger)).toBeTruthy();
     });

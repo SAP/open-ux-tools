@@ -26,6 +26,10 @@ import {
 } from '../file';
 import { loadModuleFromProject } from './module-loader';
 import { findCapProjectRoot } from './search';
+import type { CdsUi5PluginInfo } from '../types';
+import { coerce, gte, satisfies } from 'semver';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -47,6 +51,8 @@ interface ResolveWithCache {
     (files: string | string[], options?: { skipModelCache: boolean }): string[];
     cache: Record<string, { cached: Record<string, string[]>; paths: string[] }>;
 }
+
+export const minCdsVersion = '6.8.2';
 
 /**
  * Returns true if the project is a CAP Node.js project.
@@ -820,4 +826,152 @@ export async function deleteCapApp(appPath: string, memFs?: Editor, logger?: Log
         logger?.info(`Directory '${dirname(appPath)}' is now empty. Deleting it.`);
         await deleteDirectory(dirname(appPath), memFs);
     }
+}
+
+/**
+ * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
+ * Overloaded function that returns detailed CAP plugin info.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param [fs] - optional: the memfs editor instance
+ * @returns true: cds-plugin-ui5 and all prerequisites are fulfilled; false: cds-plugin-ui5 is not enabled or not all prerequisites are fulfilled
+ */
+export async function checkCdsUi5PluginEnabled(basePath: string, fs?: Editor): Promise<boolean>;
+
+/**
+ * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param [fs] - optional: the memfs editor instance
+ * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
+ * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info
+ */
+export async function checkCdsUi5PluginEnabled(
+    basePath: string,
+    fs?: Editor,
+    moreInfo?: boolean
+): Promise<boolean | CdsUi5PluginInfo>;
+
+/**
+ * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param [fs] - optional: the memfs editor instance
+ * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
+ * @param {CdsVersionInfo} [cdsVersionInfo] - If provided will be used instead of parsing the package.json file to determine the cds version.
+ * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info
+ */
+export async function checkCdsUi5PluginEnabled(
+    basePath: string,
+    fs?: Editor,
+    moreInfo?: boolean,
+    cdsVersionInfo?: CdsVersionInfo
+): Promise<boolean | CdsUi5PluginInfo>;
+
+/**
+ * Implementation of the overloaded function.
+ * Check if cds-plugin-ui5 is enabled on a CAP project. Checks also all prerequisites, like minimum @sap/cds version.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param [fs] - optional: the memfs editor instance
+ * @param [moreInfo] if true return an object specifying detailed info about the cds and workspace state
+ * @param {CdsVersionInfo} [cdsVersionInfo] - If provided will be used instead of parsing the package.json file to determine the cds version.
+ * @returns false if package.json is not found at specified path or {@link CdsUi5PluginInfo} with additional info or true if
+ * cds-plugin-ui5 and all prerequisites are fulfilled
+ */
+export async function checkCdsUi5PluginEnabled(
+    basePath: string,
+    fs?: Editor,
+    moreInfo?: boolean,
+    cdsVersionInfo?: CdsVersionInfo
+): Promise<boolean | CdsUi5PluginInfo> {
+    if (!fs) {
+        fs = create(createStorage());
+    }
+    const packageJsonPath = join(basePath, 'package.json');
+    if (!fs.exists(packageJsonPath)) {
+        return false;
+    }
+    const packageJson = fs.readJSON(packageJsonPath) as Package;
+    const { workspaceEnabled } = await getWorkspaceInfo(basePath, packageJson);
+    const cdsInfo: CdsUi5PluginInfo = {
+        // Below line checks if 'cdsVersionInfo' is available and contains version information.
+        // If it does, it uses that version information to determine if it satisfies the minimum CDS version required.
+        // If 'cdsVersionInfo' is not available or does not contain version information,it falls back to check the version specified in the package.json file.
+        hasMinCdsVersion: cdsVersionInfo?.version
+            ? satisfies(cdsVersionInfo?.version, `>=${minCdsVersion}`)
+            : satisfiesMinCdsVersion(packageJson),
+        isWorkspaceEnabled: workspaceEnabled,
+        hasCdsUi5Plugin: hasCdsPluginUi5(packageJson),
+        isCdsUi5PluginEnabled: false
+    };
+    cdsInfo.isCdsUi5PluginEnabled = cdsInfo.hasMinCdsVersion && cdsInfo.isWorkspaceEnabled && cdsInfo.hasCdsUi5Plugin;
+    return moreInfo ? cdsInfo : cdsInfo.isCdsUi5PluginEnabled;
+}
+
+/**
+ * Get information about the workspaces in the CAP project.
+ *
+ * @param basePath - root path of the CAP project, where package.json is located
+ * @param packageJson - the parsed package.json
+ * @returns - appWorkspace containing the path to the appWorkspace including wildcard; workspaceEnabled: boolean that states whether workspace for apps are enabled
+ */
+export async function getWorkspaceInfo(
+    basePath: string,
+    packageJson: Package
+): Promise<{ appWorkspace: string; workspaceEnabled: boolean }> {
+    const capPaths = await getCapCustomPaths(basePath);
+    const appWorkspace = capPaths.app.endsWith('/') ? `${capPaths.app}*` : `${capPaths.app}/*`;
+    const workspacePackages = getWorkspacePackages(packageJson) ?? [];
+    const workspaceEnabled = workspacePackages.includes(appWorkspace);
+    return { appWorkspace, workspaceEnabled };
+}
+
+/**
+ * Return the reference to the array of workspace packages or undefined if not defined.
+ * The workspace packages can either be defined directly as workspaces in package.json
+ * or in workspaces.packages, e.g. in yarn workspaces.
+ *
+ * @param packageJson - the parsed package.json
+ * @returns ref to the packages in workspaces or undefined
+ */
+export function getWorkspacePackages(packageJson: Package): string[] | undefined {
+    let workspacePackages: string[] | undefined;
+    if (Array.isArray(packageJson.workspaces)) {
+        workspacePackages = packageJson.workspaces;
+    } else if (Array.isArray(packageJson.workspaces?.packages)) {
+        workspacePackages = packageJson.workspaces?.packages;
+    }
+    return workspacePackages;
+}
+
+/**
+ * Check if devDependency to cds-plugin-ui5 is present in package.json.
+ *
+ * @param packageJson - the parsed package.json
+ * @returns true: devDependency to cds-plugin-ui5 exists; false: devDependency to cds-plugin-ui5 does not exist
+ */
+export function hasCdsPluginUi5(packageJson: Package): boolean {
+    return !!packageJson.devDependencies?.['cds-plugin-ui5'];
+}
+
+/**
+ * Check if package.json has version or version range that satisfies the minimum version of @sap/cds.
+ *
+ * @param packageJson  - the parsed package.json
+ * @returns - true: cds version satisfies the min cds version; false: cds version does not satisfy min cds version
+ */
+export function satisfiesMinCdsVersion(packageJson: Package): boolean {
+    return hasMinCdsVersion(packageJson) || satisfies(minCdsVersion, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0');
+}
+
+/**
+ * Check if package.json has dependency to the minimum min version of @sap/cds,
+ * that is required to enable cds-plugin-ui.
+ *
+ * @param packageJson - the parsed package.json
+ * @returns - true: min cds version is present; false: cds version needs update
+ */
+export function hasMinCdsVersion(packageJson: Package): boolean {
+    return gte(coerce(packageJson.dependencies?.['@sap/cds']) ?? '0.0.0', minCdsVersion);
 }
