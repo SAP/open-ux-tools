@@ -165,13 +165,13 @@ export async function generateFreestyleOPAFiles(
 
     // copy common templates
     const commonFiles = await getFilePaths(commonTemplateDir);
-    const filteredCommonFiles = commonFiles.filter((filePath: string) => !filePath.endsWith('.js') || !isTypeScript);
+    const filteredCommonFiles = commonFiles.filter((filePath: string) => filePath.endsWith('.html'));
 
     const commonTemplatesCopied = copyTemplates(
         commonTemplateDir,
         testOutDir,
         filteredCommonFiles,
-        { appId, addUnitTests: true },
+        { appId },
         fsEditor,
         log
     );

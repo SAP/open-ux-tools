@@ -314,29 +314,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for ui5-test-writer.test.employees
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -660,29 +656,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for ui5-test-writer.test.employees
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -981,29 +973,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for ui5-test-writer.test.employees
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -1302,29 +1290,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for ui5-test-writer.test.employees
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -1575,29 +1559,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for ui5-test-writer.test.employees
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -1837,29 +1817,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for ui5-test-writer.test.employees
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -2106,29 +2082,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for ui5-test-writer.test.employees
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -2514,29 +2486,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for vesc.demo.employee.project2
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -2922,29 +2890,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for vesc.demo.employee.project2
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -3283,29 +3247,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for projectservice
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },
@@ -3551,29 +3511,25 @@ Object {
     "contents": "<!DOCTYPE html>
 <html>
   <head>
-    <title>
-      QUnit test suite for test.ui5-test-writer
-    </title>
+    <title>QUnit test suite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
     <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
   </head>
   <body></body>
-</html>
-",
+</html>",
     "state": "modified",
   },
   "webapp/test/testsuite.qunit.js": Object {
     "contents": "window.suite = function() {
-	'use strict';
+    'use strict';
 
-	// eslint-disable-next-line
-	var oSuite = new parent.jsUnitTestSuite(),
+    // eslint-disable-next-line
+    var oSuite = new parent.jsUnitTestSuite(),
+    
+    sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
+    oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
 
-	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf('/') + 1);
-	
-	oSuite.addTestPage(sContextPath + 'integration/opaTests.qunit.html');
-
-	return oSuite;
+    return oSuite;
 };",
     "state": "modified",
   },

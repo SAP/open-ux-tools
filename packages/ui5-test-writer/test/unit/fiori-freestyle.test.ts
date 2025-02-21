@@ -63,7 +63,7 @@ describe('ui5-test-writer - Freestyle OPA Integration tests', () => {
             <html>
               <head>
                 <title>
-                  QUnit test suite for ${opaConfig.appId}
+                  QUnit test suite
                 </title>
                 <script src="../resources/sap/ui/qunit/qunit-redirect.js"></script>
                 <script src="testsuite.qunit.js" data-sap-ui-testsuite></script>

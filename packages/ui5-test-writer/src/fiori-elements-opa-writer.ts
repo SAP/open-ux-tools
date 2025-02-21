@@ -284,7 +284,7 @@ export function generateOPAFiles(
         join(rootCommonTemplateDirPath),
         testOutDirPath,
         // unit tests are not added for Fiori elements app
-        { appId: config.appID, addUnitTests: false },
+        { appId: config.appID },
         undefined,
         {
             globOptions: { dot: true }
