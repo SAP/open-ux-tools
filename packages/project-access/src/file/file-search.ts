@@ -48,8 +48,6 @@ function getMemFsChanges(
  * @param extensionNames - array of file extensions that were searched for
  * @param root - root directory where the search was performed
  * @param errors - array of errors that occurred during the search
- * @param resolve - function to call with the search results if no fatal errors occurred
- * @param reject - function to call with the fatal errors if any occurred
  * @param [memFs] - optional memfs editor instance
  * @returns - object containing the search results and any fatal errors
  */
