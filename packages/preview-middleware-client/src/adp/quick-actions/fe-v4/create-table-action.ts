@@ -35,6 +35,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
 
             await DialogFactory.createDialog(controlOverlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
                 aggregation: 'actions',
+                defaultAggregationArrayIndex: 0,
                 title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
             });
         }
