@@ -1,5 +1,24 @@
 # @sap-ux/adp-tooling
 
+## 0.12.137
+
+### Patch Changes
+
+-   df8d790: fix: 'Add Custom Table Column' CPE quick action is generating incorrect column fragment for Grid and Tree tables
+
+## 0.12.136
+
+### Patch Changes
+
+-   bb38bef: fix: Change fileName for the manifest change editors writers differs from the actual real file name
+
+## 0.12.135
+
+### Patch Changes
+
+-   Updated dependencies [dbd725a]
+    -   @sap-ux/odata-service-writer@0.26.3
+
 ## 0.12.134
 
 ### Patch Changes
