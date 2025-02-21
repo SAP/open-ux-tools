@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.11.69
+
+### Patch Changes
+
+-   df8d790: fix: 'Add Custom Table Column' CPE quick action is generating incorrect column fragment for Grid and Tree tables
+
+## 0.11.68
+
+### Patch Changes
+
+-   1bcd64f: Fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
 ## 0.11.67
 
 ### Patch Changes

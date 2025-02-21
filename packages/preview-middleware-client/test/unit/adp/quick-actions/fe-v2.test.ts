@@ -26,6 +26,7 @@ import FlexUtils from 'mock/sap/ui/fl/Utils';
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import { fetchMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
+import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import ManagedObject from 'mock/sap/ui/base/ManagedObject';
 import {
     ANALYTICAL_TABLE_TYPE,
@@ -547,17 +548,35 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('create table action', () => {
-            const testCases = [
+            type TableToolbar = 'None' | 'toolbarAggregation' | 'ItemAggregation' | 'smartTableProperty';
+
+            interface TestCase {
+                tableType: string;
+                tableToolbar: TableToolbar;
+                expectedToolbarID: string;
+            }
+            const testCases: TestCase[] = [
                 {
-                    tableType: M_TABLE_TYPE
+                    tableType: M_TABLE_TYPE,
+                    tableToolbar: 'toolbarAggregation',
+                    expectedToolbarID: 'dummyMTableToolbar'
                 },
                 {
                     tableType: SMART_TABLE_TYPE,
-                    overflowTable: true,
-                    headerToolbar: false
+                    tableToolbar: 'toolbarAggregation',
+                    expectedToolbarID: 'dummyToolbar'
                 },
-                { tableType: SMART_TABLE_TYPE, headerToolbar: true },
-                { tableType: SMART_TABLE_TYPE, isTableWithoutToolbar: true }
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    tableToolbar: 'smartTableProperty',
+                    expectedToolbarID: 'dummyPropertyToolbar'
+                },
+                { tableType: SMART_TABLE_TYPE, tableToolbar: 'None', expectedToolbarID: '' },
+                {
+                    tableType: SMART_TABLE_TYPE,
+                    tableToolbar: 'ItemAggregation',
+                    expectedToolbarID: 'dummyOverflowToolbar'
+                }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
@@ -570,7 +589,11 @@ describe('FE V2 quick actions', () => {
                             getDomRef: () => ({
                                 scrollIntoView
                             }),
-                            getAggregation: () => 'headerToolbar',
+                            getAggregation: () => {
+                                return {
+                                    id: 'dummyMTableToolbar'
+                                }; // Return a simple string for headerToolbar
+                            },
                             getParent: () => pageView,
                             getHeaderToolbar: () => {
                                 return {
@@ -592,24 +615,36 @@ describe('FE V2 quick actions', () => {
                                 scrollIntoView
                             }),
 
+                            getToolbar: () => {
+                                if (testCase.tableToolbar == 'smartTableProperty') {
+                                    return {
+                                        id: 'dummyPropertyToolbar'
+                                    };
+                                } else {
+                                    return null;
+                                }
+                            },
                             getAggregation: (aggregationName: string) => {
                                 if (aggregationName === 'items') {
-                                    if (testCase.headerToolbar) {
+                                    if (testCase.tableToolbar === 'toolbarAggregation') {
                                         return [
                                             {
                                                 isA: (type: string) => type === testCase.tableType,
                                                 getAggregation: (aggregationName: string) => {
                                                     if (aggregationName === 'headerToolbar') {
-                                                        return 'headerToolbar'; // Return a simple string for headerToolbar
+                                                        return {
+                                                            id: 'dummyToolbar'
+                                                        }; // Return a simple string for headerToolbar
                                                     }
                                                 }
                                             }
                                         ];
-                                    } else if (testCase.overflowTable) {
+                                    } else if (testCase.tableToolbar === 'ItemAggregation') {
                                         return [
                                             {
                                                 getAggregation: () => null,
-                                                isA: (type: string) => type === 'sap.m.OverflowToolbar'
+                                                isA: (type: string) => type === 'sap.m.OverflowToolbar',
+                                                id: 'dummyOverflowToolbar'
                                             }
                                         ];
                                     } else {
@@ -662,6 +697,7 @@ describe('FE V2 quick actions', () => {
                         return container;
                     }
                 });
+
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
                 const service = new QuickActionService(
@@ -701,7 +737,7 @@ describe('FE V2 quick actions', () => {
                         ]
                     });
                 }
-
+               
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -715,9 +751,9 @@ describe('FE V2 quick actions', () => {
                                     children: [
                                         {
                                             children: [],
-                                            enabled: !testCase.isTableWithoutToolbar,
+                                            enabled: !(testCase.tableToolbar === 'None'),
                                             label: `'MyTable' table`,
-                                            ...(testCase.isTableWithoutToolbar && {
+                                            ...(testCase.tableToolbar === 'None' && {
                                                 tooltip:
                                                     'This option has been disabled because the table does not have a header toolbar.'
                                             })
@@ -744,9 +780,11 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
-                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.isTableWithoutToolbar ? 0 : 1);
+               
+                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.tableToolbar === 'None' ? 0 : 1);
 
-                if (!testCase.isTableWithoutToolbar) {
+                if (testCase.tableToolbar !== 'None') {
+                    expect(OverlayRegistry.getOverlay.mock.calls[0][0].id).toBe(testCase.expectedToolbarID);
                     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
                         mockOverlay,
                         rtaMock,
@@ -758,8 +796,8 @@ describe('FE V2 quick actions', () => {
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                         }
                     );
-                }
 
+                };
             });
         });
 

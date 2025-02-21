@@ -83,12 +83,19 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
     getHeaderToolbar(table: UI5Element): ManagedObject | ManagedObject[] | OverflowToolbar | null | undefined {
         let headerToolbar;
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {
-            headerToolbar = (table.getAggregation('items') as ManagedObject[]).find((item) => {
+            for (const item of table.getAggregation('items') as ManagedObject[]) {
                 if (item.getAggregation('headerToolbar')) {
-                    return true;
+                    headerToolbar = item.getAggregation('headerToolbar');
+                    break;
                 }
-                return isA<OverflowToolbar>('sap.m.OverflowToolbar', item);
-            });
+                if (isA<OverflowToolbar>('sap.m.OverflowToolbar', item)) {
+                    headerToolbar = item;
+                    break;
+                }
+            }
+            if (!headerToolbar) {
+                headerToolbar = table.getToolbar();
+            }
         } else if (isA<Table>(M_TABLE_TYPE, table)) {
             headerToolbar = table.getAggregation('headerToolbar');
         }
