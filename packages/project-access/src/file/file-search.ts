@@ -1,9 +1,8 @@
 import type { Editor, FileMap } from 'mem-fs-editor';
 import { basename, dirname, extname, join } from 'path';
-import { default as find } from 'findit2';
+import { default as find, type FindError } from 'findit2';
 import { fileExists } from './file-access';
 import { promises as fs } from 'fs';
-import type { Finder } from '../types/file';
 
 /**
  * Get deleted and modified files from mem-fs editor filtered by query and 'by' (name|extension).
@@ -24,9 +23,10 @@ function getMemFsChanges(
     const modified: string[] = [];
     const filteredChanges = Object.keys(changes).filter(
         (f) =>
-            fileNames.includes(basename(f)) ||
-            extensionNames.includes(extname(f)) ||
-            (fileNames.length === 0 && extensionNames.length === 0 && f.includes(root))
+            f.startsWith(root) &&
+            (fileNames.includes(basename(f)) ||
+                extensionNames.includes(extname(f)) ||
+                (fileNames.length === 0 && extensionNames.length === 0))
     );
     for (const file of filteredChanges) {
         if (changes[file].state === 'deleted') {
@@ -37,6 +37,45 @@ function getMemFsChanges(
         }
     }
     return { deleted, modified };
+}
+
+/**
+ * Returns the search results and fatal errors.
+ * This is required to include potential memfs changes in the search results.
+ *
+ * @param results - array of file paths that were found during the search.
+ * @param fileNames - array of file names that were searched for
+ * @param extensionNames - array of file extensions that were searched for
+ * @param root - root directory where the search was performed
+ * @param errors - array of errors that occurred during the search
+ * @param resolve - function to call with the search results if no fatal errors occurred
+ * @param reject - function to call with the fatal errors if any occurred
+ * @param [memFs] - optional memfs editor instance
+ * @returns - object containing the search results and any fatal errors
+ */
+function getFindResultOnEnd(
+    results: string[],
+    fileNames: string[],
+    extensionNames: string[],
+    root: string,
+    errors: FindError[],
+    memFs?: Editor
+): { searchResult: string[]; fatalErrors: FindError[] } {
+    let searchResult = results;
+    let fatalErrors = errors;
+
+    if (memFs) {
+        const { modified, deleted } = getMemFsChanges(memFs.dump(''), fileNames, extensionNames, root);
+        const merged = Array.from(new Set([...results, ...modified]));
+        searchResult = merged.filter((f) => !deleted.includes(f));
+        // Filter out errors that are of type ENOENT and path is part of memfs changes, which can happen for folders that contain memfs files only.
+        fatalErrors = errors.filter(
+            (e) =>
+                e.code !== 'ENOENT' ||
+                (typeof e.path === 'string' && !modified.some((f) => f.startsWith(e.path as string)))
+        );
+    }
+    return { searchResult, fatalErrors };
 }
 
 /**
@@ -66,8 +105,9 @@ export function findBy(options: {
         const extensionNames = Array.isArray(options.extensionNames) ? options.extensionNames : [];
         const excludeFolders = Array.isArray(options.excludeFolders) ? options.excludeFolders : [];
         const noTraversal = options.noTraversal ?? false;
+        const errors: FindError[] = [];
 
-        const finder = find(options.root) as Finder;
+        const finder = find(options.root);
         finder.on('directory', (dir: string, _stat: unknown, stop: () => void) => {
             const base = basename(dir);
             if (excludeFolders.includes(base) || (noTraversal && dir !== options.root)) {
@@ -84,21 +124,23 @@ export function findBy(options: {
             }
         });
         finder.on('end', () => {
-            let searchResult: string[] = results;
-            if (options.memFs) {
-                const { modified, deleted } = getMemFsChanges(
-                    options.memFs.dump(''),
-                    fileNames,
-                    extensionNames,
-                    options.root
-                );
-                const merged = Array.from(new Set([...results, ...modified]));
-                searchResult = merged.filter((f) => !deleted.includes(f));
+            const { searchResult, fatalErrors } = getFindResultOnEnd(
+                results,
+                fileNames,
+                extensionNames,
+                options.root,
+                errors,
+                options.memFs
+            );
+
+            if (fatalErrors.length === 0) {
+                resolve(searchResult);
+            } else {
+                reject(fatalErrors);
             }
-            resolve(searchResult);
         });
-        finder.on('error', (error: Error) => {
-            reject(error);
+        finder.on('error', (error: FindError) => {
+            errors.push(error);
         });
     });
 }
