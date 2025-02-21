@@ -54,7 +54,7 @@ export class EnableVariantManagementQuickAction
         if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 131 })) {
             return;
         }
-        super.initialize();
+        await super.initialize();
         if (this.control) {
             this.ownerComponent = Component.getOwnerComponentFor(this.control) as unknown as ListReportComponent;
             if (

@@ -1,4 +1,4 @@
-import { getAppComponent, getReference, getV4PageType } from '../../../../src/utils/fe-v4';
+import { getV4AppComponent, getReference, getV4PageType } from '../../../../src/utils/fe-v4';
 import ComponentMock from 'mock/sap/ui/core/Component';
 
 describe('fe-v4/utils', () => {
@@ -28,11 +28,11 @@ describe('fe-v4/utils', () => {
     });
 
     test('getAppComponent - undefined', () => {
-        expect(getAppComponent({ id: 'buttonId' } as any)).toBe(undefined);
+        expect(getV4AppComponent({ id: 'buttonId' } as any)).toBe(undefined);
     });
 
     test('getAppComponent - defined', () => {
-        expect(getAppComponent({ id: 'buttonId2' } as any)).toBe(appComponent);
+        expect(getV4AppComponent({ id: 'buttonId2' } as any)).toBe(appComponent);
     });
 
     test('getV4PageType - undefined', () => {
