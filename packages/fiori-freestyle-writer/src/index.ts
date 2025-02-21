@@ -14,23 +14,8 @@ import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-gener
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import { generateFreestyleOPAFiles } from '@sap-ux/ui5-test-writer';
+import { generateOPATests } from './generateOPATests';
 
-/**
- * Adds test scripts to the package.json object.
- *
- * @param {Package} packageJson - The package.json object to update.
- * @param {boolean} addMock - Whether to include the UI5 mock YAML configuration.
- */
-function addTestScripts(packageJson: Package, addMock: boolean): void {
-    // Note: 'ui5MockYamlScript' is empty when no data source is selected.
-    const ui5MockYamlScript = addMock ? '--config ./ui5-mock.yaml ' : '';
-    packageJson.scripts = {
-        ...packageJson.scripts,
-        'unit-test': `fiori run ${ui5MockYamlScript}--open 'test/unit/unitTests.qunit.html'`,
-        'int-test': `fiori run ${ui5MockYamlScript}--open 'test/integration/opaTests.qunit.html'`
-    };
-}
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
  *
@@ -171,17 +156,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             })
         };
         if (addTests) {
-            addTestScripts(packageJson, addMock);
-            const config = {
-                appId: ffApp.app.id,
-                applicationDescription: ffApp.app.description,
-                applicationTitle: ffApp.app.title,
-                viewName: (ffApp.template.settings as BasicAppSettings).viewName,
-                ui5Theme: ffApp.ui5?.ui5Theme,
-                ui5Version: ffApp.ui5?.version,
-                enableTypeScript: ffApp.appOptions?.typescript
-            };
-            await generateFreestyleOPAFiles(basePath, config, fs, log);
+            await generateOPATests(basePath, ffApp, addMock, packageJson, fs, log);
         }
     } else {
         // Add deploy-config for CAP applications
