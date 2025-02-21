@@ -60,6 +60,7 @@ function getTemplateUi5Version(ui5Version?: string): string {
  * @param {Editor} editor - The editor instance used to copy and render template files.
  * @param {Logger} [log] - The logger instance.
  * @param {Record<string, string>} [renameMap] - Optional rename mapping for file paths.
+ * @param {string} [templateUi5Version] - The template UI5 version.
  * @returns {boolean} - resolves to `true` if the files were copied successfully,
  * or `false` if there was an error during the process.
  */
@@ -70,11 +71,13 @@ function copyTemplates(
     opaConfig: FFOPAConfig & { addUnitTests?: boolean },
     editor: Editor,
     log?: Logger,
-    renameMap?: Record<string, string>
+    renameMap?: Record<string, string>,
+    templateUi5Version?: string
 ): boolean {
     try {
         filteredFiles.forEach((filePath: string) => {
-            const destFilePath = filePath.replace(sourceDir, '');
+            // remove template UI5 version from the path
+            const destFilePath = filePath.replace(sourceDir, '').replace(`/${templateUi5Version}/`, '/');
             const destinationFilePath = join(ouputDir, renameMap?.[destFilePath] ?? destFilePath);
             editor.copyTpl(filePath, destinationFilePath, opaConfig, undefined, {
                 globOptions: { dot: true }
@@ -89,6 +92,44 @@ function copyTemplates(
         );
         return false;
     }
+}
+
+/**
+ * Filters files based on the template UI5 version.
+ *
+ * @param files - Array of file paths.
+ * @param templateUi5Version - The current template Ui5 Version.
+ * @returns Files that either are testsuite files or reside in the current template UI5 version folder.
+ */
+function filterByUi5Version(files: string[], templateUi5Version: string): string[] {
+    return files.filter((filePath: string) => {
+        // Always include testsuite files.
+        if (filePath.includes('testsuite.qunit')) {
+            return true;
+        }
+        // For all other files, include only those in the current UI5 version directory.
+        return filePath.includes(`/${templateUi5Version}/`);
+    });
+}
+
+/**
+ * Filters files based on the TypeScript setting.
+ *
+ * @param files - Array of file paths.
+ * @param isTypeScript - If true, include .ts files; if false, include .js files.
+ * @returns Files filtered based on the file extension.
+ */
+function filterByTypeScript(files: string[], isTypeScript: boolean): string[] {
+    return files.filter((filePath: string) => {
+        if (filePath.endsWith('.ts')) {
+            return isTypeScript;
+        }
+        if (filePath.endsWith('.js')) {
+            return !isTypeScript;
+        }
+        // Keep all .html file types
+        return true;
+    });
 }
 
 /**
@@ -120,24 +161,13 @@ export async function generateFreestyleOPAFiles(
     const templateFiles = await getFilePaths(freestyleTemplateDir);
     const isTypeScript = Boolean(enableTypeScript);
 
-    // Filter files based on TypeScript setting:
-    // - If TypeScript is enabled, include only .ts files
-    // - If TypeScript is disabled, include only .js files
-    const filteredFiles = templateFiles.filter((filePath: string) => {
-        if (filePath.endsWith('.ts')) {
-            return isTypeScript;
-        }
-        if (filePath.endsWith('.js')) {
-            return !isTypeScript;
-        }
-        return true; // keep other .html files
-    });
+    const templateFilteredFiles = filterByUi5Version(templateFiles, templateUi5Version);
+    const filteredFiles = filterByTypeScript(templateFilteredFiles, isTypeScript);
 
     const config = {
         ...opaConfig,
         viewNamePage: `${viewName}Page`,
         appIdWithSlash,
-        ui5Version: templateUi5Version,
         navigationIntent,
         ui5Theme: opaConfig.ui5Theme ?? ''
     };
@@ -159,7 +189,8 @@ export async function generateFreestyleOPAFiles(
         config,
         fsEditor,
         log,
-        renameMap
+        renameMap,
+        templateUi5Version
     );
 
     // copy common templates
@@ -174,7 +205,6 @@ export async function generateFreestyleOPAFiles(
         fsEditor,
         log
     );
-
     if (commonTemplatesCopied && freestyleTestTemplatesCopied && isTypeScript) {
         writeOPATsconfigJsonUpdates(fsEditor, basePath, log);
     }

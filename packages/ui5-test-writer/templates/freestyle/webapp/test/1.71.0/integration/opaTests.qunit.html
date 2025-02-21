@@ -16,12 +16,11 @@
 		data-sap-ui-compatVersion="edge"
 		data-sap-ui-async="true"
 		data-sap-ui-preload="async"
-		<% if (ui5Version === "1.71.0") { %>data-sap-ui-oninit="module:integration/opaTests.qunit"<% } %>>
+		data-sap-ui-oninit="module:integration/opaTests.qunit">
 	</script>
 	<link rel="stylesheet" type="text/css" href="../../resources/sap/ui/thirdparty/qunit-2.css">
 	<script src="../../resources/sap/ui/thirdparty/qunit-2.js"></script>
 	<script src="../../resources/sap/ui/qunit/qunit-junit.js"></script>
-<% if (ui5Version !== "1.71.0") { %><script src="opaTests.qunit.js"></script><% } -%>
 </head>
 <body>
 	<div id="qunit"></div>

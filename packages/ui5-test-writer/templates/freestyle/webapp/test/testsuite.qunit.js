@@ -3,7 +3,7 @@
 // eslint-disable-next-line fiori-custom/sap-no-global-define
 	
 window.suite = function() {
-	'use strict';
+	"use strict";
 
 	// eslint-disable-next-line
 	var oSuite = new parent.jsUnitTestSuite(),
