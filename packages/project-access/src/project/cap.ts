@@ -2,7 +2,7 @@ import { spawn } from 'child_process';
 import { basename, dirname, join, normalize, relative, sep, resolve } from 'path';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
-import { FileName } from '../constants';
+import { FileName, MinCdsVersionUi5Plugin } from '../constants';
 import type {
     CapCustomPaths,
     CapProjectType,
@@ -51,8 +51,6 @@ interface ResolveWithCache {
     (files: string | string[], options?: { skipModelCache: boolean }): string[];
     cache: Record<string, { cached: Record<string, string[]>; paths: string[] }>;
 }
-
-export const minCdsVersion = '6.8.2';
 
 /**
  * Returns true if the project is a CAP Node.js project.
@@ -899,7 +897,7 @@ export async function checkCdsUi5PluginEnabled(
         // If it does, it uses that version information to determine if it satisfies the minimum CDS version required.
         // If 'cdsVersionInfo' is not available or does not contain version information,it falls back to check the version specified in the package.json file.
         hasMinCdsVersion: cdsVersionInfo?.version
-            ? satisfies(cdsVersionInfo?.version, `>=${minCdsVersion}`)
+            ? satisfies(cdsVersionInfo?.version, `>=${MinCdsVersionUi5Plugin}`)
             : satisfiesMinCdsVersion(packageJson),
         isWorkspaceEnabled: workspaceEnabled,
         hasCdsUi5Plugin: hasCdsPluginUi5(packageJson),
@@ -962,7 +960,10 @@ export function hasCdsPluginUi5(packageJson: Package): boolean {
  * @returns - true: cds version satisfies the min cds version; false: cds version does not satisfy min cds version
  */
 export function satisfiesMinCdsVersion(packageJson: Package): boolean {
-    return hasMinCdsVersion(packageJson) || satisfies(minCdsVersion, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0');
+    return (
+        hasMinCdsVersion(packageJson) ||
+        satisfies(MinCdsVersionUi5Plugin, packageJson.dependencies?.['@sap/cds'] ?? '0.0.0')
+    );
 }
 
 /**
@@ -973,5 +974,5 @@ export function satisfiesMinCdsVersion(packageJson: Package): boolean {
  * @returns - true: min cds version is present; false: cds version needs update
  */
 export function hasMinCdsVersion(packageJson: Package): boolean {
-    return gte(coerce(packageJson.dependencies?.['@sap/cds']) ?? '0.0.0', minCdsVersion);
+    return gte(coerce(packageJson.dependencies?.['@sap/cds']) ?? '0.0.0', MinCdsVersionUi5Plugin);
 }
