@@ -1,6 +1,7 @@
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
 import { PromptState } from './prompt-state';
-import { PackageInputChoices, PackagePromptOptions, TargetSystemType, TransportChoices, type AbapSystemChoice } from '../types';
+import type { PackagePromptOptions } from '../types';
+import { PackageInputChoices, TargetSystemType, TransportChoices, type AbapSystemChoice } from '../types';
 
 /**
  * Determines the default target system from the abap system choices.
