@@ -26,7 +26,8 @@
         },
         "debug": {
             "promptOptions": "Retrieving CF prompts using: \n {{- options}}",
-            "initTelemetry": "Initializing telemetry in CF deployment configuration generator"
+            "initTelemetry": "Initializing telemetry in CF deployment configuration generator",
+            "capMissingMTA": "CAP project detected with no MTA configuration"
         }
     },
     "appRouterGen": {
