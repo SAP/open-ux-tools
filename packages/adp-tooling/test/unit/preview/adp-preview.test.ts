@@ -55,7 +55,13 @@ jest.mock('../../../src/preview/change-handler', () => ({
 
 jest.mock('../../../src/base/helper.ts', () => ({
     ...jest.requireActual('../../../src/base/helper.ts'),
-    getVariant: jest.fn()
+    getVariant: jest.fn(),
+    getAdpConfig: jest.fn().mockResolvedValue({
+        target: {
+            destination: 'testDestination'
+        },
+        ignoreCertErrors: false
+    })
 }));
 
 jest.mock('@sap-ux/store', () => {
@@ -512,44 +518,47 @@ describe('AdaptationProject', () => {
                 reference: 'adp/project'
             });
 
-            jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
-                target: {
-                    destination: 'testDestination'
-                },
-                ignoreCertErrors: false
-            });
             jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
-            jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
-                getDataSourceMetadata: jest.fn().mockResolvedValue(`
-                    <?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-    <edmx:DataServices>
-        <Schema Namespace="com.sap.gateway.srvd.c_salesordermanage_sd.v0001" Alias="SAP__self">
-         </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`),
-                getManifestDataSources: jest.fn().mockReturnValue({
-                    mainService: {
-                        type: 'OData',
-                        uri: 'main/service/uri',
-                        settings: {
-                            annotations: ['annotation0']
-                        }
-                    },
-                    annotation0: {
-                        type: 'ODataAnnotation',
-                        uri: `ui5://adp/project/annotation0.xml`
-                    },
-                    secondaryService: {
-                        type: 'OData',
-                        uri: 'secondary/service/uri',
-                        settings: {
-                            annotations: []
+
+            const manifestService = {
+                getManifest: jest.fn().mockReturnValue({
+                    'sap.app': {
+                        dataSources: {
+                            mainService: {
+                                type: 'OData',
+                                uri: 'main/service/uri',
+                                settings: {
+                                    annotations: ['annotation0']
+                                }
+                            },
+                            annotation0: {
+                                type: 'ODataAnnotation',
+                                uri: `ui5://adp/project/annotation0.xml`
+                            },
+                            secondaryService: {
+                                type: 'OData',
+                                uri: 'secondary/service/uri',
+                                settings: {
+                                    annotations: []
+                                }
+                            }
                         }
                     }
-                })
-            } as any);
-            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValue(false);
+                }),
+                getAppInfo: jest.fn()
+            } as unknown as ManifestService;
+
+            jest.spyOn(ManifestService, 'initMergedManifest').mockResolvedValue(manifestService);
+
+            jest.spyOn(ODataService.prototype, 'getMetadataWithFallback').mockResolvedValue(`
+                <?xml version="1.0" encoding="utf-8"?>
+                    <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                    <edmx:DataServices>
+                        <Schema Namespace="com.sap.gateway.srvd.c_salesordermanage_sd.v0001" Alias="SAP__self">
+                        </Schema>
+                    </edmx:DataServices>
+                    </edmx:Edmx>`);
+
             jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
                 {
                     namespace: 'com.sap.gateway.srvd.c_salesordermanage_sd.v0001',
@@ -774,11 +783,12 @@ describe('AdaptationProject', () => {
         });
 
         test('GET /adp/api/annotation', async () => {
+            mockExistsSync.mockReturnValue(false);
             const response = await server.get('/adp/api/annotation').send().expect(200);
 
             const message = response.text;
             expect(message).toMatchInlineSnapshot(
-                `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`
+                `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationExistsInWS\\":false,\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`
             );
         });
     });
