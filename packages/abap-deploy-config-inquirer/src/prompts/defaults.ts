@@ -1,6 +1,6 @@
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
 import { PromptState } from './prompt-state';
-import { PackageInputChoices, TargetSystemType, TransportChoices, type AbapSystemChoice } from '../types';
+import { PackageInputChoices, PackagePromptOptions, TargetSystemType, TransportChoices, type AbapSystemChoice } from '../types';
 
 /**
  * Determines the default target system from the abap system choices.
@@ -41,15 +41,21 @@ export function defaultPackageChoice(previousPackageInputChoice?: PackageInputCh
  * Determines the default package based on the previous answers or the existing deploy task config.
  *
  * @param existingPkg - existing package from manual input prompt or backend config
+ * @param packagePromptOptions - package prompt options
  * @returns default package
  */
-export function defaultPackage(existingPkg?: string): string {
+export function defaultPackage(existingPkg?: string, packagePromptOptions?: PackagePromptOptions): string {
     if (PromptState.abapDeployConfig.scp) {
         return existingPkg || '';
     } else {
         let defaultPkg = '';
         // if atoSettings are enabled and operationsType is P (on-premise) we default to $tmp
-        if (PromptState.transportAnswers.transportConfig?.getOperationsType() === 'P') {
+        if (
+            PromptState.transportAnswers.transportConfig?.getOperationsType() === 'P' &&
+            (!packagePromptOptions?.additionalValidation ||
+                packagePromptOptions?.additionalValidation?.shouldValidatePackageType === false ||
+                packagePromptOptions?.additionalValidation?.shouldValidatePackageForStartingPrefix === false)
+        ) {
             defaultPkg = DEFAULT_PACKAGE_ABAP;
         }
         return existingPkg || defaultPkg;
