@@ -1,9 +1,9 @@
 import {
     type Package,
-    hasCdsPluginUi5,
     getWorkspaceInfo,
     MinCdsVersionUi5Plugin,
-    hasMinCdsVersion
+    hasMinCdsVersion,
+    hasDependency
 } from '@sap-ux/project-access';
 
 const minCdsPluginUi5Version = '0.9.3';
@@ -49,7 +49,7 @@ export async function enableWorkspaces(basePath: string, packageJson: Package): 
  * @param packageJson - the parsed package.json
  */
 export function addCdsPluginUi5(packageJson: Package): void {
-    if (!hasCdsPluginUi5(packageJson)) {
+    if (!hasDependency(packageJson, 'cds-plugin-ui5')) {
         packageJson.devDependencies ??= {};
         packageJson.devDependencies['cds-plugin-ui5'] = `^${minCdsPluginUi5Version}`;
     }

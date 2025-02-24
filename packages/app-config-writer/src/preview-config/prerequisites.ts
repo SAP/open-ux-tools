@@ -1,6 +1,12 @@
 import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
-import { type Package, findCapProjectRoot, FileName, checkCdsUi5PluginEnabled } from '@sap-ux/project-access';
+import {
+    type Package,
+    findCapProjectRoot,
+    FileName,
+    checkCdsUi5PluginEnabled,
+    hasDependency
+} from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { satisfies, valid } from 'semver';
 
@@ -85,10 +91,7 @@ export async function checkPrerequisites(
         throw Error(`File '${FileName.Package}' not found at '${basePath}'`);
     }
 
-    const sapui5BestpracticeBuildExists =
-        !!packageJson?.devDependencies?.[packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD] ||
-        !!packageJson?.dependencies?.[packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD];
-    if (sapui5BestpracticeBuildExists) {
+    if (hasDependency(packageJson, packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD)) {
         logger?.error(
             `Conversion from '${packageName.SAP_GRUNT_SAPUI5_BESTPRACTICE_BUILD}' is not supported. You must migrate to UI5 CLI version 3.0.0 or higher. For more information, see https://sap.github.io/ui5-tooling/v3/updates/migrate-v3.`
         );
@@ -109,30 +112,23 @@ export async function checkPrerequisites(
         prerequisitesMet = false;
     }
 
-    const ui5MiddlewareMockserverExists =
-        !!packageJson?.devDependencies?.[packageName.SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER] ||
-        !!packageJson?.dependencies?.[packageName.SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER];
-    if (!ui5MiddlewareMockserverExists && !(await isUsingCdsPluginUi5(basePath, fs))) {
+    if (
+        !hasDependency(packageJson, packageName.SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER) &&
+        !(await isUsingCdsPluginUi5(basePath, fs))
+    ) {
         logger?.error(
             `Conversion from 'sap/ui/core/util/MockServer' or '@sap/ux-ui5-fe-mockserver-middleware' is not supported. You must migrate to '${packageName.SAP_UX_UI5_MIDDLEWARE_FE_MOCKSERVER}' first. For more information, see https://www.npmjs.com/package/@sap-ux/ui5-middleware-fe-mockserver.`
         );
         prerequisitesMet = false;
     }
 
-    if (
-        convertTests &&
-        (packageJson?.devDependencies?.[packageName.KARMA_UI5] ?? packageJson?.dependencies?.[packageName.KARMA_UI5])
-    ) {
+    if (convertTests && hasDependency(packageJson, packageName.KARMA_UI5)) {
         logger?.warn(
             "This app seems to use Karma as a test runner. Please note that the converter does not convert any Karma configuration files. Please update your karma configuration ('ui5.configPath' and 'ui5.testpage') according to the new virtual endpoints after the conversion."
         );
     }
 
-    if (
-        convertTests &&
-        (packageJson?.devDependencies?.[packageName.WDIO_QUNIT_SERVICE] ??
-            packageJson?.dependencies?.[packageName.WDIO_QUNIT_SERVICE])
-    ) {
+    if (convertTests && hasDependency(packageJson, packageName.WDIO_QUNIT_SERVICE)) {
         logger?.warn(
             'This app seems to use the WebdriverIO QUnit Service as a test runner. Please note that the converter does not convert any WebdriverIO configuration files. Please update your WebdriverIO QUnit Service test paths according to the new virtual endpoints after the conversion.'
         );

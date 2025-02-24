@@ -48,7 +48,6 @@ export {
     refreshSpecificationDistTags,
     toReferenceUri,
     updatePackageScript,
-    hasCdsPluginUi5,
     getWorkspaceInfo,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled
@@ -56,3 +55,4 @@ export {
 export { execNpmCommand } from './command/npm-command';
 export * from './types';
 export * from './library';
+export { hasDependency } from './project';

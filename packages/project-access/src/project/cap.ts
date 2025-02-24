@@ -30,6 +30,7 @@ import type { CdsUi5PluginInfo } from '../types';
 import { coerce, gte, satisfies } from 'semver';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
+import { hasDependency } from './dependencies';
 
 interface CdsFacade {
     env: { for: (mode: string, path: string) => CdsEnvironment };
@@ -900,7 +901,7 @@ export async function checkCdsUi5PluginEnabled(
             ? satisfies(cdsVersionInfo?.version, `>=${MinCdsVersionUi5Plugin}`)
             : satisfiesMinCdsVersion(packageJson),
         isWorkspaceEnabled: workspaceEnabled,
-        hasCdsUi5Plugin: hasCdsPluginUi5(packageJson),
+        hasCdsUi5Plugin: hasDependency(packageJson, 'cds-plugin-ui5'),
         isCdsUi5PluginEnabled: false
     };
     cdsInfo.isCdsUi5PluginEnabled = cdsInfo.hasMinCdsVersion && cdsInfo.isWorkspaceEnabled && cdsInfo.hasCdsUi5Plugin;
@@ -941,16 +942,6 @@ function getWorkspacePackages(packageJson: Package): string[] | undefined {
         workspacePackages = packageJson.workspaces?.packages;
     }
     return workspacePackages;
-}
-
-/**
- * Check if devDependency to cds-plugin-ui5 is present in package.json.
- *
- * @param packageJson - the parsed package.json
- * @returns true: devDependency to cds-plugin-ui5 exists; false: devDependency to cds-plugin-ui5 does not exist
- */
-export function hasCdsPluginUi5(packageJson: Package): boolean {
-    return !!packageJson.devDependencies?.['cds-plugin-ui5'];
 }
 
 /**
