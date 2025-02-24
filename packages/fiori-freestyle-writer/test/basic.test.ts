@@ -116,7 +116,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 ...commonConfig,
                 appOptions: {
                     loadReuseLibs: false,
-                    typescript: true
+                    typescript: true,
+                    addTests: true
                 }
             },
             settings: {}
@@ -127,7 +128,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 ...commonConfig,
                 appOptions: {
                     loadReuseLibs: false,
-                    typescript: true
+                    typescript: true,
+                    addTests: true
                 },
                 ui5: {
                     version: '1.108.1',

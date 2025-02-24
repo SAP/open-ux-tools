@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.9.0
+
+### Minor Changes
+
+-   fffc3a7: Add Freestyle OPA templates to ui5-test-writer
+
 ## 0.8.1
 
 ### Patch Changes
