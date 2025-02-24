@@ -238,7 +238,7 @@ export interface CdsVersionInfo {
 
 export type CdsUi5PluginInfo = {
     /**
-     * Convienience property. The CDS UI5 plugin is considered enabled if `hasCdsUi5Plugin`, `hasMinCdsVersion`, `isWorkspaceEnabled` are all true.
+     * Convenience property. The CDS UI5 plugin is considered enabled if `hasCdsUi5Plugin`, `hasMinCdsVersion`, `isWorkspaceEnabled` are all true.
      */
     isCdsUi5PluginEnabled: boolean;
     /**
