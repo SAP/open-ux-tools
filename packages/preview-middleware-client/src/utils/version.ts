@@ -12,6 +12,7 @@ export type Ui5VersionInfo = {
     major: number;
     minor: number;
     patch?: number;
+    label?: string;
 };
 
 /**
@@ -51,11 +52,13 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
         version = '1.121.0';
     }
     const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+    const label = version.split(/-(.*)/s)?.[1];
 
     return {
-        major: major,
-        minor: minor,
-        patch: patch
+        major,
+        minor,
+        patch,
+        label
     } satisfies Ui5VersionInfo;
 }
 
