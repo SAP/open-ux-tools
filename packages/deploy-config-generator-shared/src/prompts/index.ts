@@ -24,3 +24,19 @@ export function getConfirmConfigUpdatePrompt(configType?: string): Question[] {
         }
     ];
 }
+
+/**
+ * Generate a new prompt asking if the user wants to create an approuter configuration within a CAP project.
+ *
+ * @returns the CAP MTA continue question.
+ */
+export function getConfirmMtaContinuePrompt(): Question[] {
+    return [
+        {
+            type: 'confirm',
+            name: 'addCapMtaContinue',
+            message: t('prompts.confirmCAPMtaContinue.message'),
+            default: false
+        }
+    ];
+}

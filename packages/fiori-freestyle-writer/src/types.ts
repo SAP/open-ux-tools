@@ -1,4 +1,4 @@
-import type { Ui5App, App } from '@sap-ux/ui5-application-writer';
+import type { Ui5App, App, AppOptions } from '@sap-ux/ui5-application-writer';
 import type { OdataService } from '@sap-ux/odata-service-writer';
 import type { CapServiceCdsInfo } from '@sap-ux/cap-config-writer';
 
@@ -43,6 +43,13 @@ export interface FreestyleApp<T> extends Ui5App {
         capService?: CapServiceCdsInfo;
     };
     app: FioriApp;
+    appOptions?: Partial<AppOptions> & {
+        /**
+         * Generate OPA based tests, for Simple template.
+         * This will eventually move up to {@link Ui5App.appOptions}
+         */
+        addTests?: boolean;
+    };
 }
 
 // We need this for the service version
