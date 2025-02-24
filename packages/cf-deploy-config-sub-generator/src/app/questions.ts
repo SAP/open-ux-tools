@@ -15,6 +15,9 @@ import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-sha
 import { destinationQuestionDefaultOption, getCFChoices } from './utils';
 import { t } from '../utils';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
+import { getConfirmMtaContinuePrompt } from '@sap-ux/deploy-config-generator-shared';
+import type { Answers, Question } from 'inquirer';
+import { withCondition } from '@sap-ux/inquirer-common';
 
 /**
  * Fetches the Cloud Foundry deployment configuration questions.
@@ -76,7 +79,7 @@ export async function getCFQuestions({
  * @param options.projectRoot - the root path of the project.
  * @returns the cf approuter config questions.
  */
-export async function getCFApprouterQuestionsForCap({
+async function getCFApprouterQuestionsForCap({
     projectRoot
 }: {
     projectRoot: string;
@@ -93,4 +96,21 @@ export async function getCFApprouterQuestionsForCap({
     };
 
     return getAppRouterPrompts(appRouterPromptOptions);
+}
+
+/**
+ * Generate CF Approuter questions for CAP project with an existing HTML5 app and missing MTA configuration.
+ *
+ * @param options - the options required for retrieving the prompts.
+ * @param options.projectRoot - the root path of the project.
+ * @returns the cf approuter config questions, restricting prompts being shown to the user
+ */
+export async function getCAPMTAQuestions({ projectRoot }: { projectRoot: string }): Promise<Question[]> {
+    // If launched as root generator, add a prompt to allow user decide if they want to add an MTA config
+    let questions = (await getCFApprouterQuestionsForCap({
+        projectRoot
+    })) as Question[];
+    questions = withCondition(questions, (answers: Answers) => answers.addCapMtaContinue === true);
+    questions.unshift(...getConfirmMtaContinuePrompt());
+    return questions;
 }
