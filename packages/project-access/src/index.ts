@@ -1,4 +1,4 @@
-export { FileName, DirName, FioriToolsSettings } from './constants';
+export { FileName, DirName, FioriToolsSettings, MinCdsVersionUi5Plugin } from './constants';
 export { getFilePaths } from './file';
 export {
     addPackageDevDependency,
@@ -50,8 +50,6 @@ export {
     updatePackageScript,
     hasCdsPluginUi5,
     getWorkspaceInfo,
-    getWorkspacePackages,
-    minCdsVersion,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled
 } from './project';

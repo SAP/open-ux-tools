@@ -61,7 +61,8 @@ describe('Test enableCdsUi5Plugin()', () => {
         jest.spyOn(ProjectAccessMock, 'hasMinCdsVersion').mockReturnValue(true);
         jest.spyOn(ProjectAccessMock, 'getWorkspaceInfo').mockResolvedValueOnce({
             appWorkspace: 'customAppPath/*',
-            workspaceEnabled: false
+            workspaceEnabled: false,
+            workspacePackages: []
         });
         const memFs = create(createStorage());
         const fs = await enableCdsUi5Plugin(__dirname, memFs);

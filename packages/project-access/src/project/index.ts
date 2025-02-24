@@ -16,8 +16,6 @@ export {
     toReferenceUri,
     hasCdsPluginUi5,
     getWorkspaceInfo,
-    getWorkspacePackages,
-    minCdsVersion,
     hasMinCdsVersion,
     checkCdsUi5PluginEnabled
 } from './cap';

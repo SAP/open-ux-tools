@@ -917,12 +917,12 @@ export async function checkCdsUi5PluginEnabled(
 export async function getWorkspaceInfo(
     basePath: string,
     packageJson: Package
-): Promise<{ appWorkspace: string; workspaceEnabled: boolean }> {
+): Promise<{ appWorkspace: string; workspaceEnabled: boolean; workspacePackages: string[] }> {
     const capPaths = await getCapCustomPaths(basePath);
     const appWorkspace = capPaths.app.endsWith('/') ? `${capPaths.app}*` : `${capPaths.app}/*`;
     const workspacePackages = getWorkspacePackages(packageJson) ?? [];
     const workspaceEnabled = workspacePackages.includes(appWorkspace);
-    return { appWorkspace, workspaceEnabled };
+    return { appWorkspace, workspaceEnabled, workspacePackages };
 }
 
 /**
@@ -933,7 +933,7 @@ export async function getWorkspaceInfo(
  * @param packageJson - the parsed package.json
  * @returns ref to the packages in workspaces or undefined
  */
-export function getWorkspacePackages(packageJson: Package): string[] | undefined {
+function getWorkspacePackages(packageJson: Package): string[] | undefined {
     let workspacePackages: string[] | undefined;
     if (Array.isArray(packageJson.workspaces)) {
         workspacePackages = packageJson.workspaces;
