@@ -1,5 +1,5 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
+import { DeploymentGenerator, getConfirmMtaContinuePrompt } from '@sap-ux/deploy-config-generator-shared';
 import { getMtaPath } from '@sap-ux/project-access';
 import {
     appRouterPromptNames,
@@ -11,7 +11,7 @@ import {
     getPrompts,
     promptNames
 } from '@sap-ux/cf-deploy-config-inquirer';
-import { getHostEnvironment, hostEnvironment, getConfirmMtaContinuePrompt } from '@sap-ux/fiori-generator-shared';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { destinationQuestionDefaultOption, getCFChoices } from './utils';
 import { t } from '../utils';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
