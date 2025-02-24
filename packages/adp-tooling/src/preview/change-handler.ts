@@ -19,6 +19,7 @@ const V2_SMART_TABLE_COLUMN = 'V2_SMART_TABLE_COLUMN';
 const V2_SMART_TABLE_CELL = 'V2_SMART_TABLE_CELL';
 const V4_MDC_TABLE_COLUMN = 'V4_MDC_TABLE_COLUMN';
 const ANALYTICAL_TABLE_COLUMN = 'ANALYTICAL_TABLE_COLUMN';
+const GRID_TREE_TABLE_COLUMN = 'GRID_TREE_TABLE_COLUMN';
 const TABLE_ACTION = 'TABLE_ACTION';
 
 interface FragmentTemplateConfig<T = { [key: string]: any }> {
@@ -112,6 +113,22 @@ const fragmentTemplateDefinitions: Record<string, FragmentTemplateConfig> = {
                 ids: {
                     column: `column-${uuid}`,
                     text: `text-${uuid}`
+                }
+            };
+        }
+    },
+    [GRID_TREE_TABLE_COLUMN]: {
+        path: 'common/grid-tree-custom-column.xml',
+        getData: (change: AddXMLChange) => {
+            const uuid = randomBytes(4).toString('hex');
+            const columnIndex = change.content.index;
+            return {
+                ids: {
+                    column: `column-${uuid}`,
+                    label: `label-${uuid}`,
+                    text: `text-${uuid}`,
+                    customData: `custom-data-${uuid}`,
+                    index: columnIndex.toFixed(0)
                 }
             };
         }
