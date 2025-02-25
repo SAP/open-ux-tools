@@ -11,7 +11,13 @@ import {
 } from '@sap-ux/fiori-generator-shared';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { isFullUrlDestination } from '@sap-ux/btp-utils';
-import { generateAppConfig, ApiHubType, useAbapDirectServiceBinding } from '@sap-ux/cf-deploy-config-writer';
+import {
+    generateAppConfig,
+    generateCAPConfig,
+    ApiHubType,
+    useAbapDirectServiceBinding,
+    DefaultMTADestination
+} from '@sap-ux/cf-deploy-config-writer';
 import {
     DeploymentGenerator,
     showOverwriteQuestion,
@@ -28,12 +34,17 @@ import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE
 import { loadManifest } from './utils';
 import { getMtaPath, findCapProjectRoot, FileName } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
-import { getCFQuestions } from './questions';
-import type { ApiHubConfig, CFAppConfig } from '@sap-ux/cf-deploy-config-writer';
+import { getCFQuestions, getCAPMTAQuestions } from './questions';
+import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
-import type { CfDeployConfigOptions } from './types';
-import type { CfDeployConfigAnswers, CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-inquirer';
+import { CfDeployConfigOptions } from './types';
+import {
+    type CfAppRouterDeployConfigAnswers,
+    type CfDeployConfigQuestions,
+    CfDeployConfigAnswers
+} from '@sap-ux/cf-deploy-config-inquirer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
+import type { Answers } from 'inquirer';
 
 /**
  * Cloud Foundry deployment configuration generator.
@@ -49,6 +60,7 @@ export default class extends DeploymentGenerator {
     private readonly cloudServiceName?: string;
     private readonly serviceBase?: string;
     private answers: CfDeployConfigAnswers & Partial<CFAppConfig> = {};
+    private appRouterAnswers: CfAppRouterDeployConfigAnswers;
     private projectRoot: string;
     private mtaPath?: string;
     private isCap = false;
@@ -75,7 +87,7 @@ export default class extends DeploymentGenerator {
         this.options = opts;
 
         this.destinationName = opts.destinationName ?? '';
-        this.addMtaDestination = opts.addMTADestination ?? false; // by default it's false unless passed in i.e. headless flow
+        this.addMtaDestination = opts.addMTADestination ?? false; // by default, it's false unless passed in i.e. headless flow
         this.lcapModeOnly = opts.lcapModeOnly ?? false;
         this.cloudServiceName = opts.cloudServiceName || undefined;
         this.apiHubConfig = opts.apiHubConfig;
@@ -115,12 +127,10 @@ export default class extends DeploymentGenerator {
             this.abort = true;
             handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.NO_MTA_BIN });
         }
-
         await this._processProjectPaths();
         await this._processProjectConfigs();
 
         this.isAbapDirectServiceBinding = await useAbapDirectServiceBinding(this.appPath, false, this.mtaPath);
-
         // restricting local changes is only applicable for CAP flows
         if (!this.isCap) {
             this.lcapModeOnly = false;
@@ -134,7 +144,7 @@ export default class extends DeploymentGenerator {
     private async _processProjectPaths(): Promise<void> {
         const mtaPathResult = await getMtaPath(this.appPath);
         this.mtaPath = mtaPathResult?.mtaPath;
-        const capRoot = await findCapProjectRoot(this.appPath);
+        const capRoot = await findCapProjectRoot(this.appPath, true, this.fs);
         if (capRoot) {
             if (!hasbin.sync(cdsExecutable)) {
                 bail(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_CDS_BIN));
@@ -156,7 +166,6 @@ export default class extends DeploymentGenerator {
         if (!baseConfigExists) {
             bail(ErrorHandler.noBaseConfig(baseConfigFile));
         }
-
         this.deployConfigExists = this.fs.exists(join(this.appPath, this.options.config ?? FileName.Ui5Yaml));
     }
 
@@ -164,21 +173,34 @@ export default class extends DeploymentGenerator {
         if (this.abort) {
             return;
         }
-
-        if (this.isCap && this.projectRoot && !this.mtaPath) {
-            // if the user is adding deploy config to a CAP project and there is no mta.yaml in the root, then log error and exit
-            this.abort = true;
-            handleErrorMessage(this.appWizard, { errorType: ERROR_TYPE.CAP_DEPLOYMENT_NO_MTA });
-            return;
-        }
-
         if (!this.launchDeployConfigAsSubGenerator) {
+            await this._prompting();
+        }
+        await this._reconcileAnswersWithOptions();
+    }
+
+    private async _prompting(): Promise<void> {
+        const isCAPMissingMTA = this.isCap && this.projectRoot && !this.mtaPath;
+        if (isCAPMissingMTA) {
+            DeploymentGenerator.logger?.debug(t('cfGen.debug.capMissingMTA'));
+            this.appRouterAnswers = (await this.prompt(
+                await getCAPMTAQuestions({ projectRoot: this.projectRoot ?? process.cwd() })
+            )) as CfAppRouterDeployConfigAnswers;
+            if ((this.appRouterAnswers as Answers).addCapMtaContinue !== true) {
+                this.abort = true;
+                return;
+            }
+            // Configure defaults
+            this.destinationName = DefaultMTADestination;
+            this.options.overwrite = true; // Don't prompt the user to overwrite files we've just written!
+            this.answers = {};
+            this.answers.destinationName = this.destinationName;
+            this.answers.addManagedAppRouter = false;
+        } else {
             await this._handleApiHubConfig();
             const questions = await this._getCFQuestions();
             this.answers = await this.prompt(questions);
         }
-
-        await this._reconcileAnswersWithOptions();
     }
 
     /**
@@ -251,8 +273,16 @@ export default class extends DeploymentGenerator {
 
     private async _writing(): Promise<void> {
         try {
-            const appConfig = this._getAppConfig();
-            await generateAppConfig(appConfig, this.fs, DeploymentGenerator.logger as unknown as Logger);
+            // Step1. (Optional) Generate CAP MTA with specific approuter type managed | standalone
+            if (this.appRouterAnswers) {
+                await generateCAPConfig(
+                    this.appRouterAnswers as CAPConfig,
+                    this.fs,
+                    DeploymentGenerator.logger as unknown as Logger
+                );
+            }
+            // Step2. Append HTML5 app to MTA
+            await generateAppConfig(this._getAppConfig(), this.fs, DeploymentGenerator.logger as unknown as Logger);
         } catch (error) {
             this.abort = true;
             handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.writing', { error }) });
