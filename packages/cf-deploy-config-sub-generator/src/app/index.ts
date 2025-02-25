@@ -28,14 +28,13 @@ import {
     mtaExecutable,
     cdsExecutable,
     generateDestinationName,
-    getDestination,
-    getConfirmMtaContinuePrompt
+    getDestination
 } from '@sap-ux/deploy-config-generator-shared';
 import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils';
 import { loadManifest } from './utils';
 import { getMtaPath, findCapProjectRoot, FileName } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
-import { getCFApprouterQuestionsForCap, getCFQuestions } from './questions';
+import { getCFQuestions, getCAPMTAQuestions } from './questions';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Logger } from '@sap-ux/logger';
 import { CfDeployConfigOptions } from './types';
@@ -45,8 +44,7 @@ import {
     CfDeployConfigAnswers
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import { withCondition } from '@sap-ux/inquirer-common';
-import type { Answers, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 
 /**
  * Cloud Foundry deployment configuration generator.
@@ -120,8 +118,6 @@ export default class extends DeploymentGenerator {
 
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._init();
-        } else {
-            await this._processProjectConfigs();
         }
     }
 
@@ -187,13 +183,9 @@ export default class extends DeploymentGenerator {
         const isCAPMissingMTA = this.isCap && this.projectRoot && !this.mtaPath;
         if (isCAPMissingMTA) {
             DeploymentGenerator.logger?.debug(t('cfGen.debug.capMissingMTA'));
-            // If launched as root generator, add a prompt to allow user decide if they want to add an MTA config
-            let questions = (await getCFApprouterQuestionsForCap({
-                projectRoot: this.projectRoot ?? process.cwd()
-            })) as Question[];
-            questions = withCondition(questions, (answers: Answers) => answers.addCapMtaContinue === true);
-            questions.unshift(...getConfirmMtaContinuePrompt());
-            this.appRouterAnswers = (await this.prompt(questions)) as CfAppRouterDeployConfigAnswers;
+            this.appRouterAnswers = (await this.prompt(
+                await getCAPMTAQuestions({ projectRoot: this.projectRoot ?? process.cwd() })
+            )) as CfAppRouterDeployConfigAnswers;
             if ((this.appRouterAnswers as Answers).addCapMtaContinue !== true) {
                 this.abort = true;
                 return;
