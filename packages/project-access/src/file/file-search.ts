@@ -88,6 +88,7 @@ function getFindResultOnEnd(
  * @param [options.memFs] - optional memfs editor instance
  * @param [options.noTraversal] - optional flag to disable root path traversal
  * @returns - array of paths that contain the file
+ * @throws Error[] - list of errors that occurred during the search
  */
 export function findBy(options: {
     fileNames?: string[];
