@@ -960,6 +960,32 @@ describe('Cloud foundry generator tests', () => {
         );
     });
 
+    it('Ensure init is loaded when loaded as a subgenerator', async () => {
+        hasbinSyncMock.mockReturnValue(true);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        memfs.vol.fromNestedJSON({}, '/');
+        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+
+        await expect(
+            yeomanTest
+                .create(
+                    CFGenerator,
+                    {
+                        resolved: cfGenPath
+                    },
+                    { cwd: appDir }
+                )
+                .withOptions({
+                    skipInstall: true,
+                    launchDeployConfigAsSubGenerator: true
+                })
+                .withPrompts({})
+                .run()
+        ).resolves.not.toThrow();
+        expect(hasbinSyncMock).toHaveBeenCalledWith('mta');
+        expect(mockFindCapProjectRoot).toHaveBeenCalled();
+    });
+
     it('Should throw error when base config is not found', async () => {
         hasbinSyncMock.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
