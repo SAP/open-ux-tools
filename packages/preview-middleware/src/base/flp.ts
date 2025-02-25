@@ -34,6 +34,7 @@ import {
     getAppName,
     sanitizeRtaConfig
 } from './config';
+import { generateCdm } from './cdm';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -339,6 +340,9 @@ export class FlpSandbox {
             this.router.get(previewUrl, async (req: Request, res: Response) => {
                 await this.editorGetHandler(req, res, rta, previewUrl, editor);
             });
+
+            // add route for the CDM, if newHomePage is enabled
+            this.addCDMRoute(previewUrl);
         }
     }
 
@@ -406,6 +410,9 @@ export class FlpSandbox {
                 await this.flpGetHandler(req, res, next);
             }
         );
+
+        // add route for the CDM, if newHomePage is enabled
+        this.addCDMRoute(this.flpConfig.path);
     }
 
     /**
@@ -519,6 +526,26 @@ export class FlpSandbox {
                     `Invalid application config for route ${app.target} because neither componentId nor local folder provided.`
                 );
             }
+        }
+    }
+
+    /**
+     * Add route for the cdm.json file if flp.newHomePage is enabled.
+     *
+     * @param previewPath the path of the preview
+     */
+    private addCDMRoute(previewPath: string): void {
+        if (this.flpConfig.newHomePage === true) {
+            const path = previewPath.split('/');
+            path.pop();
+            path.push('cdm.json');
+            this.router.get(
+                path.join('/'),
+                async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                    const json = generateCdm(this.templateConfig.apps);
+                    this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
+                }
+            );
         }
     }
 
