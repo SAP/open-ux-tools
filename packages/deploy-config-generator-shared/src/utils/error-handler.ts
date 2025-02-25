@@ -9,8 +9,7 @@ export enum ERROR_TYPE {
     NO_MANIFEST = 'NO_MANIFEST',
     NO_APP_NAME = 'NO_APP_NAME',
     NO_CDS_BIN = 'NO_CDS_BIN',
-    NO_MTA_BIN = 'NO_MTA_BIN',
-    CAP_DEPLOYMENT_NO_MTA = 'CAP_DEPLOYMENT_NO_MTA'
+    NO_MTA_BIN = 'NO_MTA_BIN'
 }
 
 /**
@@ -37,8 +36,7 @@ export class ErrorHandler {
         [ERROR_TYPE.NO_MANIFEST]: () => t('errors.noManifest'),
         [ERROR_TYPE.NO_APP_NAME]: () => t('errors.noAppName'),
         [ERROR_TYPE.NO_CDS_BIN]: () => ErrorHandler.cannotFindBinary(cdsExecutable, cdsPkg),
-        [ERROR_TYPE.NO_MTA_BIN]: () => ErrorHandler.cannotFindBinary(mtaExecutable, mtaPkg),
-        [ERROR_TYPE.CAP_DEPLOYMENT_NO_MTA]: () => t('errors.capDeploymentNoMta')
+        [ERROR_TYPE.NO_MTA_BIN]: () => ErrorHandler.cannotFindBinary(mtaExecutable, mtaPkg)
     };
 
     public static readonly noBaseConfig = (baseConfig: string): string => t('errors.noBaseConfig', { baseConfig });

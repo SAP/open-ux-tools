@@ -27,10 +27,12 @@ export type MTADestinationType = Destination & {
     ServiceKeyName: string;
     'sap.cloud.service': string;
 };
-export enum RouterModuleType {
-    Standard = 'standard',
-    Managed = 'managed'
-}
+export const RouterModuleType = {
+    Standard: 'standard',
+    Managed: 'managed'
+} as const;
+
+export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
 export interface MTABaseConfig {
     mtaId: string;
     mtaPath: string;

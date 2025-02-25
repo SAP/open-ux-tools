@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.33.6
+
+### Patch Changes
+
+-   0c37c3d: Added support for 'showClearButton', 'showMessages', and 'liveMode' properties in FilterBar building block generation.
+
 ## 0.33.5
 
 ### Patch Changes
