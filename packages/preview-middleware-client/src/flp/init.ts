@@ -257,16 +257,19 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
+ * @param params.newHomePage boolean indicating if new homepage is enabled
  * @returns promise
  */
 export async function init({
     appUrls,
     flex,
-    customInit
+    customInit,
+    newHomePage
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
+    newHomePage?: boolean | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ??
@@ -277,7 +280,7 @@ export async function init({
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
         scenario = flexSettings.scenario;
-        container.attachRendererCreatedEvent(async function () {
+        const triggerAdaptation = async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const view = event.getParameter('componentInstance');
@@ -314,7 +317,15 @@ export async function init({
                     }
                 );
             });
-        });
+        };
+
+        // Attach renderer created event to trigger adaptation, or trigger adaptation directly if newHomePage is enabled
+        // as the ushell is bootstrapped via cdm where the renderer is cretead before the init script is executed
+        if (!newHomePage) {
+            container.attachRendererCreatedEvent(triggerAdaptation);
+        } else {
+            triggerAdaptation();
+        }
     }
 
     // reset app state if requested
@@ -340,11 +351,13 @@ export async function init({
     setI18nTitle(resourceBundle);
     registerSAPFonts();
 
-    const renderer =
-        ui5VersionInfo.major < 2
-            ? await container.createRenderer(undefined, true)
-            : await container.createRendererInternal(undefined, true);
-    renderer.placeAt('content');
+    if (document.getElementById('content')) {
+        const renderer =
+            ui5VersionInfo.major < 2
+                ? await container.createRenderer(undefined, true)
+                : await container.createRendererInternal(undefined, true);
+        renderer.placeAt('content');
+    }
 }
 
 // eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
@@ -353,7 +366,8 @@ if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
+        newHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-new-homePage')
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
