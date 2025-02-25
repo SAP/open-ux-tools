@@ -133,9 +133,6 @@ export interface InfoCenterItem {
     message: InfoCenterMessage;
     id: string;
     expandable?: boolean;
-    expanded?: boolean;
-    read?: boolean;
-    modal?: boolean;
 }
 
 export const changeProperty = createAction<PropertyChange, 'app/change-property'>('app/change-property');
@@ -156,10 +153,7 @@ interface LivereloadOptions {
 export const initializeLivereload = createAction<LivereloadOptions>('app/initialize-livereload');
 export const clearInfoCenterMessage = createAction<string>('clear-info-center-message');
 export const clearAllInfoCenterMessages = createAction<void>('clear-all-info-center-message');
-export const toggleExpandMessage = createAction<string>('toggle-expand-message');
-export const readMessage = createAction<string>('read-message');
 export const expandableMessage = createAction<string>('expandable-message');
-export const toggleModalMessage = createAction<string>('toggle-modal-message');
 export const initialState: SliceState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
@@ -489,35 +483,11 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 );
             })
             .addMatcher(
-                toggleExpandMessage.match,
-                (state: SliceState, action: ReturnType<typeof toggleExpandMessage>): void => {
-                    const id = action.payload;
-                    state.infoCenterMessages = state.infoCenterMessages.map((message) =>
-                        message.id === id ? { ...message, expanded: !message.expanded } : message
-                    );
-                }
-            )
-            .addMatcher(readMessage.match, (state: SliceState, action: ReturnType<typeof readMessage>): void => {
-                const id = action.payload;
-                state.infoCenterMessages = state.infoCenterMessages.map((message) =>
-                    message.id === id ? { ...message, read: true } : message
-                );
-            })
-            .addMatcher(
                 expandableMessage.match,
                 (state: SliceState, action: ReturnType<typeof expandableMessage>): void => {
                     const id = action.payload;
                     state.infoCenterMessages = state.infoCenterMessages.map((message) =>
                         message.id === id ? { ...message, expandable: true } : message
-                    );
-                }
-            )
-            .addMatcher(
-                toggleModalMessage.match,
-                (state: SliceState, action: ReturnType<typeof toggleModalMessage>): void => {
-                    const id = action.payload;
-                    state.infoCenterMessages = state.infoCenterMessages.map((message) =>
-                        message.id === id ? { ...message, modal: !message.modal } : message
                     );
                 }
             )

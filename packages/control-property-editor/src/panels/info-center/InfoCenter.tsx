@@ -26,6 +26,14 @@ export function InfoCenter(): ReactElement {
      * If an element's content is clamped and it is not already marked as expandable, the effect dispatches an action
      * to mark the corresponding message as expandable.
      *
+     * NOTE:
+     * Ideally, we would attach a ref directly to each message description element using React refs.
+     * In newer React versions, forwardRef is deprecated and no longer needed, so the ref property should work as expected.
+     * However, Fluent UI's Text component (used inside InfoMessageItem) does not currently forward refs to its underlying DOM element.
+     * As a workaround, we directly query the DOM for elements with the class "message-description" using standard DOM manipulation methods.
+     * This non-standard approach is necessary until Fluent UI provides proper ref forwarding.
+     * In React 19, this workaround may no longer be required.
+     *
      * @returns {void} This effect does not return a value.
      */
     useEffect(() => {
@@ -50,6 +58,7 @@ export function InfoCenter(): ReactElement {
                 <Stack.Item>
                     <UIIconButton
                         aria-label="clear-all"
+                        title={t('CLEAR_ALL')}
                         onClick={() => dispatch(clearAllInfoCenterMessages())}
                         iconProps={{ iconName: UiIcons.TextGrammarDismiss }}
                     />

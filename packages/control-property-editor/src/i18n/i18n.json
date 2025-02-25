@@ -99,5 +99,6 @@
   "LESS": "Less",
   "CLOSE": "Close",
   "VIEW_DETAILS": "View Details",
-  "ERROR_DETAILS": "Error Details"
+  "ERROR_DETAILS": "Error Details",
+  "CLEAR_ALL": "Clear All Messages"
 }

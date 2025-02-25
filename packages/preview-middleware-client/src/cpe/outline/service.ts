@@ -38,9 +38,10 @@ export class OutlineService extends EventTarget {
         const outline = await this.rta.getService<RTAOutlineService>('outline');
         const scenario = this.rta.getFlexSettings().scenario;
         const resourceBundle = await getTextBundle();
-        const key = 'ADP_REUSE_COMPONENTS_MESSAGE';
-        const message = resourceBundle.getText(key) ?? key;
-        const [title, description] = message.split('|');
+        const titleKey = 'ADP_REUSE_COMPONENTS_MESSAGE_TITLE';
+        const descriptionKey = 'ADP_REUSE_COMPONENTS_MESSAGE_DESCRIPTION';
+        const title = resourceBundle.getText(titleKey);
+        const description = resourceBundle.getText(descriptionKey);
         let hasSentWarning = false;
         const reuseComponentsIds = new Set<string>();
         const syncOutline = async () => {
@@ -69,8 +70,8 @@ export class OutlineService extends EventTarget {
                     sendAction(
                         showInfoCenterMessage({
                             type: MessageBarType.warning,
-                            title: title.trim(),
-                            description: description?.trim()
+                            title: title,
+                            description: description
                         })
                     );
                     hasSentWarning = true;

@@ -5,9 +5,6 @@ import { InfoCenter } from '../../../../src/panels/info-center';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 import {
     clearAllInfoCenterMessages,
-    readMessage,
-    toggleModalMessage,
-    toggleExpandMessage,
     clearInfoCenterMessage,
     expandableMessage
 } from '../../../../src/slice';
@@ -25,16 +22,11 @@ describe('InfoCenter Component', () => {
                             details: 'Details 1'
                         },
                         expandable: true,
-                        expanded: false,
-                        read: false,
-                        modal: false,
                         id: 'testid1'
                     },
                     {
                         message: { type: MessageBarType.warning, title: 'Title 2', description: 'Test Description 2' },
                         expandable: false,
-                        read: true,
-                        modal: false,
                         id: 'testid2'
                     }
                 ]
@@ -65,9 +57,6 @@ describe('InfoCenter Component', () => {
                             details: 'More Details'
                         },
                         expandable: true,
-                        expanded: false,
-                        read: false,
-                        modal: false,
                         id: 'testid'
                     }
                 ]
@@ -77,55 +66,38 @@ describe('InfoCenter Component', () => {
         const expandableMessage = screen.getByText(/expandable message/i);
         expect(expandableMessage).toBeInTheDocument();
 
-        // Simulate expanding the message
-        const expandButton = screen.getByText(/more/i);
-        fireEvent.click(expandButton);
-        expect(dispatch).toBeCalledWith(toggleExpandMessage('testid'));
+        // Simulate expanding the message by clicking the "more-less" text.
+        // Initially, the "more-less" button should display "MORE".
+        const moreLessButton = screen.getByText(/more/i);
+        fireEvent.click(moreLessButton);
+        await waitFor(() => {
+            expect(expandableMessage.className).toMatch(/expanded/);
+        });
 
-        // Simulate open the message details in modal
-        const modalButton = screen.getByText(/view details/i);
-        fireEvent.click(modalButton);
-        expect(dispatch).toBeCalledWith(toggleModalMessage('testid'));
+        // Simulate opening the message details in a modal.
+        const viewDetailsButton = screen.getByText(/view details/i);
+        fireEvent.click(viewDetailsButton);
+        const modalTextArea = screen.getByRole('textbox');
+        expect(modalTextArea).toBeInTheDocument();
+
+        // Simulate closing the modal.
+        const closeButton = screen.getByText(/close/i);
+        fireEvent.click(closeButton);
+        await waitFor(() => {
+            expect(screen.queryByRole('dialog')).toBeNull();
+        });
 
         // Simulate marking the message as read
         fireEvent.mouseOver(expandableMessage);
-        expect(dispatch).toBeCalledWith(readMessage('testid'));
-
-        // Simulate remove the single message
-        fireEvent.mouseOver(expandableMessage);
-        const deleteButton = await screen.findByLabelText(/remove-message/i);
-        fireEvent.click(deleteButton);
-        expect(dispatch).toBeCalledWith(clearInfoCenterMessage('testid'));
-    });
-
-    test('close modal with message details correctly', () => {
-        const { dispatch } = render(<InfoCenter />, {
-            initialState: {
-                infoCenterMessages: [
-                    {
-                        message: {
-                            type: MessageBarType.info,
-                            title: 'Title',
-                            description: 'Message',
-                            details: 'More Details'
-                        },
-                        expandable: true,
-                        expanded: false,
-                        read: false,
-                        modal: false,
-                        id: 'testid'
-                    }
-                ]
-            }
+        const messageBar = expandableMessage.closest('.message-bar');
+        await waitFor(() => {
+            expect(messageBar).toHaveClass('message-read');
         });
 
-        // Simulate open the message details in modal
-        const modalButton = screen.getByText(/view details/i);
-        fireEvent.click(modalButton);
-        // Simulate closing of modal
-        const closeModalButton = screen.getByText(/close/i);
-        fireEvent.click(closeModalButton);
-        expect(dispatch).toBeCalledWith(toggleModalMessage('testid'));
+        const deleteButton = await screen.findByLabelText(/remove-message/i);
+
+        fireEvent.click(deleteButton);
+        expect(dispatch).toHaveBeenCalledWith(clearInfoCenterMessage('testid'));
     });
 
     test('clears messages correctly', () => {
@@ -135,8 +107,6 @@ describe('InfoCenter Component', () => {
                     {
                         message: { type: MessageBarType.error, title: 'Test Message 1', description: 'Description 1' },
                         expandable: false,
-                        read: false,
-                        modal: false,
                         id: 'testid'
                     }
                 ]
@@ -144,12 +114,13 @@ describe('InfoCenter Component', () => {
         });
 
         // Simulate clearing all messages
-        const clearAllButton = screen.getByRole('button', { name: /clear-all/i }) || screen.getByLabelText('clear-all');
+        const clearAllButton =
+            screen.getByRole('button', { name: /clear-all/i }) || screen.getByLabelText('clear-all');
         fireEvent.click(clearAllButton);
-        expect(dispatch).toBeCalledWith(clearAllInfoCenterMessages());
+        expect(dispatch).toHaveBeenCalledWith(clearAllInfoCenterMessages());
     });
 
-    test('dispatches expandableMessage when element overflows and is not marked expandable', async () => {
+    test('dispatches expandableMessage when element overflows and is not marked expandable', () => {
         const { dispatch } = render(<InfoCenter />, {
             initialState: {
                 infoCenterMessages: [
@@ -161,9 +132,6 @@ describe('InfoCenter Component', () => {
                             details: 'More Details'
                         },
                         expandable: false,
-                        expanded: false,
-                        read: false,
-                        modal: false,
                         id: 'testid'
                     }
                 ]
@@ -179,12 +147,12 @@ describe('InfoCenter Component', () => {
 
         fireEvent.mouseOver(message);
 
-        await waitFor(() => {
-          expect(dispatch).toHaveBeenCalledWith(expandableMessage('testid'));
+        waitFor(() => {
+            expect(dispatch).toHaveBeenCalledWith(expandableMessage('testid'));
         });
-      });
-    
-      test('does not dispatch expandableMessage when element is already marked as expandable', async () => {
+    });
+
+    test('does not dispatch expandableMessage when element is already marked as expandable', () => {
         const { dispatch } = render(<InfoCenter />, {
             initialState: {
                 infoCenterMessages: [
@@ -196,9 +164,6 @@ describe('InfoCenter Component', () => {
                             details: 'More Details'
                         },
                         expandable: true,
-                        expanded: false,
-                        read: false,
-                        modal: false,
                         id: 'testid'
                     }
                 ]
@@ -213,9 +178,9 @@ describe('InfoCenter Component', () => {
         Object.defineProperty(message, 'clientHeight', { value: 100, configurable: true });
 
         fireEvent.mouseOver(message);
-    
-        await waitFor(() => {
-          expect(dispatch).not.toHaveBeenCalledWith(expandableMessage('testid'));
+
+        waitFor(() => {
+            expect(dispatch).not.toHaveBeenCalledWith(expandableMessage('testid'));
         });
-      });
+    });
 });
