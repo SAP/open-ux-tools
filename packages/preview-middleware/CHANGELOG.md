@@ -1,5 +1,108 @@
 # @sap-ux/preview-middleware
 
+## 0.17.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.138
+
+## 0.17.47
+
+### Patch Changes
+
+-   df8d790: fix: 'Add Custom Table Column' CPE quick action is generating incorrect column fragment for Grid and Tree tables
+-   Updated dependencies [df8d790]
+    -   @sap-ux/adp-tooling@0.12.137
+
+## 0.17.46
+
+### Patch Changes
+
+-   1bcd64f: Fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
+## 0.17.45
+
+### Patch Changes
+
+-   ef57432: fix: re-route issue with cds-plugin-ui5
+
+## 0.17.44
+
+### Patch Changes
+
+-   583c4cd: Fix: Default aggregation array index to 1 for create page action and create table action
+
+## 0.17.43
+
+### Patch Changes
+
+-   fd3bfb0: fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
+## 0.17.42
+
+### Patch Changes
+
+-   Updated dependencies [bb38bef]
+    -   @sap-ux/adp-tooling@0.12.136
+
+## 0.17.41
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.135
+
+## 0.17.40
+
+### Patch Changes
+
+-   8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
+-   Updated dependencies [8930179]
+    -   @sap-ux/adp-tooling@0.12.134
+
+## 0.17.39
+
+### Patch Changes
+
+-   5226a61: feat: introduce 'editors' property on config root level
+
+## 0.17.38
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.133
+
+## 0.17.37
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/adp-tooling@0.12.132
+
+## 0.17.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.131
+
+## 0.17.35
+
+### Patch Changes
+
+-   931e735: Add stable ids to form elements
+
+## 0.17.34
+
+### Patch Changes
+
+-   354107e: fix: Fixed bug in CPE. In some ADP projects Change Table Columns Quick Action didn't work
+
+## 0.17.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.130
+
 ## 0.17.32
 
 ### Patch Changes

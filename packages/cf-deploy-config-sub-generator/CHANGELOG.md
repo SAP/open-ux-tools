@@ -1,5 +1,37 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.11
+
+### Patch Changes
+
+-   d6118c9: Changes to support adding CAP MTA prompt to allow user generate MTA
+-   Updated dependencies [d6118c9]
+    -   @sap-ux/deploy-config-generator-shared@0.0.27
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.8
+    -   @sap-ux/cf-deploy-config-writer@0.1.12
+
+## 0.1.10
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.26
+    -   @sap-ux/inquirer-common@0.6.19
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.7
+
+## 0.1.9
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/cf-deploy-config-writer@0.1.11
+    -   @sap-ux/fiori-generator-shared@0.8.1
+    -   @sap-ux/deploy-config-generator-shared@0.0.25
+    -   @sap-ux/inquirer-common@0.6.18
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.6
+
 ## 0.1.8
 
 ### Patch Changes

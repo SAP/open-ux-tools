@@ -1,5 +1,47 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.1.0
+
+### Minor Changes
+
+-   fffc3a7: Add Freestyle OPA templates to ui5-test-writer
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+    -   @sap-ux/ui5-test-writer@0.5.0
+    -   @sap-ux/cap-config-writer@0.9.11
+
+## 2.0.20
+
+### Patch Changes
+
+-   Updated dependencies [dbd725a]
+    -   @sap-ux/odata-service-writer@0.26.3
+
+## 2.0.19
+
+### Patch Changes
+
+-   @sap-ux/odata-service-writer@0.26.2
+
+## 2.0.18
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.9.10
+-   @sap-ux/fiori-generator-shared@0.8.1
+-   @sap-ux/odata-service-writer@0.26.1
+-   @sap-ux/ui5-application-writer@1.2.10
+
+## 2.0.17
+
+### Patch Changes
+
+-   Updated dependencies [f1f9cbe]
+    -   @sap-ux/odata-service-writer@0.26.0
+
 ## 2.0.16
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.53
+
+### Patch Changes
+
+-   afbb147: The adaptive card manifest should not be saved
+
+## 0.4.52
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+
 ## 0.4.51
 
 ### Patch Changes

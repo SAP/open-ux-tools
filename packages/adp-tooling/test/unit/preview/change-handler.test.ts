@@ -296,12 +296,15 @@ id="<%- ids.toolbarActionButton %>`);
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: `V2_SMART_TABLE_COLUMN`
+                        templateName: `V2_SMART_TABLE_COLUMN`,
+                        index: 1
                     }
                 } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.column %>
 id="<%- ids.columnTitle %>
+id="<%- ids.customData %>
+id="<%- ids.index %>
 `);
                 addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
 
@@ -320,6 +323,8 @@ id="<%- ids.columnTitle %>
                     "
                     id=\\"column-30303030
                     id=\\"column-title-30303030
+                    id=\\"custom-data-30303030
+                    id=\\"1
                     "
                 `);
 
@@ -396,13 +401,26 @@ id="<%- ids.text %>
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
 
-            it('should create custom table column fragment (analytical table)', () => {
+            const testCases: {
+                tableType: 'ANALYTICAL_TABLE_COLUMN' | 'GRID_TREE_TABLE_COLUMN';
+                fragmentFileName: string;
+            }[] = [
+                {
+                    tableType: 'ANALYTICAL_TABLE_COLUMN',
+                    fragmentFileName: 'templates/rta/common/analytical-custom-column.xml'
+                },
+                {
+                    tableType: 'GRID_TREE_TABLE_COLUMN',
+                    fragmentFileName: 'templates/rta/common/grid-tree-custom-column.xml'
+                }
+            ];
+            it.each(testCases)('should create custom table column fragment (%s table)', (testCase) => {
                 mockFs.exists.mockReturnValue(false);
                 const updatedChange = {
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: `ANALYTICAL_TABLE_COLUMN`,
+                        templateName: testCase.tableType,
                         index: 1
                     }
                 } as unknown as AddXMLChange;
@@ -417,9 +435,7 @@ id="<%- ids.index %>
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
-                    (mockFs.read.mock.calls[0][0] as string)
-                        .replace(/\\/g, '/')
-                        .endsWith('templates/rta/common/analytical-custom-column.xml')
+                    (mockFs.read.mock.calls[0][0] as string).replace(/\\/g, '/').endsWith(testCase.fragmentFileName)
                 ).toBe(true);
 
                 expect(mockFs.write).toHaveBeenCalled();

@@ -1898,6 +1898,9 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
       '@sap-ux/odata-service-writer':
         specifier: workspace:*
         version: link:../odata-service-writer
@@ -1907,6 +1910,9 @@ importers:
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
+      '@sap-ux/ui5-test-writer':
+        specifier: workspace:*
+        version: link:../ui5-test-writer
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -2400,6 +2406,9 @@ importers:
 
   packages/mockserver-config-writer:
     dependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -2413,9 +2422,6 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
       '@types/mem-fs':
         specifier: 1.1.2
         version: 1.1.2
@@ -2835,8 +2841,8 @@ importers:
         specifier: 2.2.3
         version: 2.2.3
       json-parse-even-better-errors:
-        specifier: 3.0.2
-        version: 3.0.2
+        specifier: 4.0.0
+        version: 4.0.0
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -3818,6 +3824,12 @@ importers:
 
   packages/ui5-test-writer:
     dependencies:
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/ui5-application-writer':
+        specifier: workspace:*
+        version: link:../ui5-application-writer
       ejs:
         specifier: 3.1.10
         version: 3.1.10
@@ -16845,6 +16857,11 @@ packages:
   /json-parse-even-better-errors@3.0.2:
     resolution: {integrity: sha512-fi0NG4bPjCHunUJffmLd0gxssIgkNmArMvis4iNah6Owg1MCJjWhEcDLmsK6iGkJq3tHwbDkTlce70/tmXN4cQ==}
     engines: {node: ^14.17.0 || ^16.13.0 || >=18.0.0}
+
+  /json-parse-even-better-errors@4.0.0:
+    resolution: {integrity: sha512-lR4MXjGNgkJc7tkQ97kb2nuEMnNCyU//XYVH0MKTGcXEiSudQ5MKGKen3C5QubYy0vmq+JGitUg92uuywGEwIA==}
+    engines: {node: ^18.17.0 || >=20.5.0}
+    dev: false
 
   /json-schema-traverse@0.4.1:
     resolution: {integrity: sha512-xbbCH5dCYU5T8LcEhhuh7HJ88HXuW3qsI3Y0zOZFKfZEHcpWiHU/Jxzk629Brsab/mMiHQti9wMP+845RPe3Vg==}

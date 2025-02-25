@@ -1,2 +1,2 @@
 export { FlpSandbox, initAdp } from './flp';
-export { generatePreviewFiles, getPreviewPaths } from './config';
+export { generatePreviewFiles, getPreviewPaths, sanitizeRtaConfig } from './config';
