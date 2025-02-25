@@ -1,6 +1,4 @@
 ---
 '@sap-ux/ui-components': patch
 ---
-
-Added `justifyContent: 'space-between'` to ensure proper alignment of elements.
-Included `...(labelFlexGrow && {})` to handle label flex grow property correctly.
+UIToggle: Avoid triggering change when click happens on whitespace between label and toggle switch button
