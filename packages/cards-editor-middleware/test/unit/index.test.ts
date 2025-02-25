@@ -11,6 +11,7 @@ import path from 'path';
 import os from 'os';
 
 jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
     promises: {
         ...jest.requireActual('fs').promises,
         writeFile: jest.fn(),
@@ -62,6 +63,18 @@ async function getTestServer(fixture?: string, configuration: Partial<any> = {})
 }
 
 describe('sap-cards-generator', () => {
+    // beforeAll(() => {
+    //     jest.mock('fs', () => ({
+    //         promises: {
+    //             ...jest.requireActual('fs').promises,
+    //             readFile: jest.fn(),
+    //             writeFile: jest.fn(),
+    //             access: jest.fn(),
+    //             mkdir: jest.fn()
+    //         }
+    //     }));
+    // });
+
     describe('Middleware for serving static files', () => {
         test('GET /test/flpGeneratorSandbox.html', async () => {
             const server = await getTestServer('lrop-v4');
