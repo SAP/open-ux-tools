@@ -1315,7 +1315,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html>
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -2079,7 +2079,7 @@ export function createDeviceModel () {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -2144,7 +2144,6 @@ export function createDeviceModel () {
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
@@ -4030,7 +4029,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html>
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -4794,7 +4793,7 @@ export function createDeviceModel () {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -4859,7 +4858,6 @@ export function createDeviceModel () {
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon\\"
         data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
@@ -6745,7 +6743,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html>
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -7509,7 +7507,7 @@ export function createDeviceModel () {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -7574,7 +7572,6 @@ export function createDeviceModel () {
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon\\"
         data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
@@ -9357,7 +9354,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html>
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -10140,7 +10137,7 @@ function (JSONModel, Device) {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -10205,7 +10202,6 @@ function (JSONModel, Device) {
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
@@ -11944,7 +11940,7 @@ errorText=Sorry, a technical error occurred! Please try again later.",
   },
   "webapp/index.html": Object {
     "contents": "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html>
 <head>
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
@@ -12708,7 +12704,7 @@ export function createDeviceModel () {
   },
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
@@ -12773,7 +12769,6 @@ export function createDeviceModel () {
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_fiori_3\\"
         data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
         data-sap-ui-resourceroots='{\\"test.me\\": \\"../\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>

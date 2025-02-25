@@ -14,13 +14,12 @@ import {
 } from '../../src/base/utils';
 import type { Response } from 'express';
 import YAML from 'yaml';
-import fs, { readdirSync, readFileSync } from 'fs';
+import fs from 'fs';
 import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { join } from 'path';
 import type { ReaderCollection } from '@ui5/fs';
 
 describe('utils', () => {
