@@ -11,7 +11,7 @@ import {
     enhanceUI5YamlWithTranspileMiddleware
 } from './options';
 
-import { UI5Config } from '@sap-ux/ui5-config';
+import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
 
 type PackageJSON = { name: string; version: string };
 
@@ -50,16 +50,18 @@ export function writeTemplateToFolder(
 ): void {
     const tmplPath = join(baseTmplPath, 'project', '**/*.*');
     const tsConfigPath = join(baseTmplPath, 'typescript', 'tsconfig.json');
+    const typesVersion = getEsmTypesVersion(data.ui5?.version);
+    const typesPackage = getTypesPackage(typesVersion);
 
     try {
-        fs.copyTpl(tmplPath, projectPath, data, undefined, {
+        fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {
             globOptions: { dot: true },
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
         });
 
         if (data.options?.enableTypeScript) {
             const id = data.app?.id?.split('.').join('/');
-            fs.copyTpl(tsConfigPath, join(projectPath, 'tsconfig.json'), { id }, undefined, {
+            fs.copyTpl(tsConfigPath, join(projectPath, 'tsconfig.json'), { id, typesPackage }, undefined, {
                 globOptions: { dot: true }
             });
         }

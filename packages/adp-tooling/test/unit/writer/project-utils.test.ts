@@ -31,6 +31,9 @@ describe('Project Utils', () => {
         },
         options: {
             enableTypeScript: false
+        },
+        ui5: {
+            version: '1.133.1'
         }
     };
 
@@ -81,7 +84,11 @@ describe('Project Utils', () => {
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
-            expect(writeFilesSpy.mock.calls[0][2]).toEqual(data);
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
+                ...data,
+                typesPackage: '@sapui5/types',
+                typesVersion: '~1.133.0'
+            });
         });
 
         it('should write TS template to the specified folder when project supports typescript', () => {
@@ -90,7 +97,11 @@ describe('Project Utils', () => {
 
             expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
-            expect(writeFilesSpy.mock.calls[0][2]).toEqual(newData);
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
+                ...newData,
+                typesPackage: '@sapui5/types',
+                typesVersion: '~1.133.0'
+            });
         });
 
         it('should throw error when writing file fails', () => {

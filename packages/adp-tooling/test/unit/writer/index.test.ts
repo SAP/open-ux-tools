@@ -123,6 +123,9 @@ describe('ADP writer', () => {
                     options: {
                         fioriTools: true,
                         enableTypeScript: true
+                    },
+                    ui5: {
+                        version: '1.133.0'
                     }
                 },
                 fs
@@ -323,6 +326,9 @@ describe('ADP writer', () => {
             options: {
                 fioriTools: true,
                 enableTypeScript: false
+            },
+            ui5: {
+                version: '1.133.0'
             }
         };
         const migrateInputDir = join(__dirname, '../../fixtures/webide-adaptation-project');

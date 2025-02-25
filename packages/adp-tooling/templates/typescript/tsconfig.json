@@ -10,7 +10,7 @@
     "rootDir": "./",
     "outDir": "./dist",
     "baseUrl": "./",
-    "typeRoots": ["./node_modules/@types", "./node_modules/@sapui5/types"],
+    "typeRoots": ["./node_modules/@types", "./node_modules/<%- typesPackage %>"],
     "paths": {
       "<%= id %>/*": ["./webapp/*"]
     }
