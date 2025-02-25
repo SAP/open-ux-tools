@@ -1,8 +1,6 @@
 import { join } from 'path';
-import { prompt } from 'prompts';
 import type { Editor } from 'mem-fs-editor';
 import type { Package } from '@sap-ux/project-access';
-import type { PromptObject } from 'prompts';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { satisfies, valid } from 'semver';
 
@@ -105,21 +103,14 @@ export async function checkPrerequisites(
         );
     }
 
-    return prerequisitesMet;
-}
+    if (
+        convertTests &&
+        (packageJson?.devDependencies?.['wdio-qunit-service'] ?? packageJson?.dependencies?.['wdio-qunit-service'])
+    ) {
+        logger?.warn(
+            'This app seems to use the WebdriverIO QUnit Service as a test runner. Please note that the converter does not convert any WebdriverIO configuration files. Please update your WebdriverIO QUnit Service test paths according to the new virtual endpoints after the conversion.'
+        );
+    }
 
-/**
- * Get the explicit approval form the user to do the conversion.
- *
- * @returns Explicit user approval to do the conversion.
- */
-export async function getExplicitApprovalToAdjustFiles(): Promise<boolean> {
-    const question: PromptObject = {
-        type: 'confirm',
-        name: 'approval',
-        initial: false,
-        message:
-            'The converter will rename the HTML files and delete the JS and TS files used for the existing preview functionality and configure virtual endpoints instead. Do you want to proceed with the conversion?'
-    };
-    return Boolean((await prompt([question])).approval);
+    return prerequisitesMet;
 }

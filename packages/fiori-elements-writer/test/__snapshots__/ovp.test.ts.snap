@@ -1011,18 +1011,6 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/GWSAMPLE_BASIC/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"GWSAMPLE_BASIC\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"GWSAMPLE_BASIC\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -1035,6 +1023,18 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/GWSAMPLE_BASIC/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"GWSAMPLE_BASIC\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -1083,7 +1083,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"bundleName\\": \\"feovp1.i18n.i18n\\"
         }
       },
-      \\"\\": {
+      \\"mainModel\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -1110,7 +1110,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"\\",
+    \\"globalFilterModel\\": \\"mainModel\\",
     \\"globalFilterEntityType\\": \\"GlobalFilters\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -2807,18 +2807,6 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
-      \\"mainService\\": {
-        \\"uri\\": \\"/sap/opu/odata/sap/GWSAMPLE_BASIC/\\",
-        \\"type\\": \\"OData\\",
-        \\"settings\\": {
-          \\"annotations\\": [
-            \\"GWSAMPLE_BASIC\\",
-            \\"annotation\\"
-          ],
-          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
-          \\"odataVersion\\": \\"2.0\\"
-        }
-      },
       \\"GWSAMPLE_BASIC\\": {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='GWSAMPLE_BASIC',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
@@ -2831,6 +2819,18 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
         \\"uri\\": \\"annotations/annotation.xml\\",
         \\"settings\\": {
           \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
+      \\"mainService\\": {
+        \\"uri\\": \\"/sap/opu/odata/sap/GWSAMPLE_BASIC/\\",
+        \\"type\\": \\"OData\\",
+        \\"settings\\": {
+          \\"annotations\\": [
+            \\"GWSAMPLE_BASIC\\",
+            \\"annotation\\"
+          ],
+          \\"localUri\\": \\"localService/mainService/metadata.xml\\",
+          \\"odataVersion\\": \\"2.0\\"
         }
       }
     }
@@ -2879,7 +2879,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
           \\"bundleName\\": \\"feovp1.i18n.i18n\\"
         }
       },
-      \\"\\": {
+      \\"mainModel\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -2906,7 +2906,7 @@ xmlns:atom=\\"http://www.w3.org/2005/Atom\\"/>
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"\\",
+    \\"globalFilterModel\\": \\"mainModel\\",
     \\"globalFilterEntityType\\": \\"GlobalFilters\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -8757,6 +8757,13 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/\\",
         \\"type\\": \\"OData\\",
@@ -8766,13 +8773,6 @@ appDescription=A Fiori application.",
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -8817,7 +8817,7 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"feovp2.i18n.i18n\\"
         }
       },
-      \\"\\": {
+      \\"mainModel\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -8842,7 +8842,7 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"\\",
+    \\"globalFilterModel\\": \\"mainModel\\",
     \\"globalFilterEntityType\\": \\"SalesOrderItem\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,
@@ -14788,6 +14788,13 @@ appDescription=A Fiori application.",
       \\"version\\": \\"1.2.3-test\\"
     },
     \\"dataSources\\": {
+      \\"annotation\\": {
+        \\"type\\": \\"ODataAnnotation\\",
+        \\"uri\\": \\"annotations/annotation.xml\\",
+        \\"settings\\": {
+          \\"localUri\\": \\"annotations/annotation.xml\\"
+        }
+      },
       \\"mainService\\": {
         \\"uri\\": \\"/sap/opu/odata4/sap/c_salesordermanage_srv/srvd/sap/c_salesordermanage_sd_aggregate/0001/\\",
         \\"type\\": \\"OData\\",
@@ -14797,13 +14804,6 @@ appDescription=A Fiori application.",
           ],
           \\"localUri\\": \\"localService/mainService/metadata.xml\\",
           \\"odataVersion\\": \\"4.0\\"
-        }
-      },
-      \\"annotation\\": {
-        \\"type\\": \\"ODataAnnotation\\",
-        \\"uri\\": \\"annotations/annotation.xml\\",
-        \\"settings\\": {
-          \\"localUri\\": \\"annotations/annotation.xml\\"
         }
       }
     }
@@ -14848,7 +14848,7 @@ appDescription=A Fiori application.",
           \\"bundleName\\": \\"feovp2.i18n.i18n\\"
         }
       },
-      \\"\\": {
+      \\"mainModel\\": {
         \\"dataSource\\": \\"mainService\\",
         \\"preload\\": true,
         \\"settings\\": {
@@ -14873,7 +14873,7 @@ appDescription=A Fiori application.",
     }
   },
   \\"sap.ovp\\": {
-    \\"globalFilterModel\\": \\"\\",
+    \\"globalFilterModel\\": \\"mainModel\\",
     \\"globalFilterEntityType\\": \\"SalesOrderItem\\",
     \\"containerLayout\\": \\"resizable\\",
     \\"enableLiveFilter\\": true,

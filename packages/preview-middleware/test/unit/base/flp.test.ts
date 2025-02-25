@@ -1,21 +1,23 @@
 import type { ReaderCollection } from '@ui5/fs';
 import type { TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
-import type { FlpConfig, MiddlewareConfig } from '../../../src/types';
+import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { join, posix } from 'path';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
-import express from 'express';
+import express, { type Response, type NextFunction } from 'express';
+import type { EnhancedRequest } from '../../../src/base/flp';
 import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
+import connect = require('connect');
 
 jest.mock('@sap-ux/adp-tooling', () => {
     return {
@@ -26,7 +28,7 @@ jest.mock('@sap-ux/adp-tooling', () => {
 
 class FlpSandbox extends FlpSandboxUnderTest {
     public declare templateConfig: TemplateConfig;
-    public declare readonly config: FlpConfig;
+    public declare readonly flpConfig: FlpConfig;
 }
 
 describe('FlpSandbox', () => {
@@ -62,10 +64,10 @@ describe('FlpSandbox', () => {
     describe('constructor', () => {
         test('default (no) config', () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
-            expect(flp.config.path).toBe('/test/flp.html');
-            expect(flp.config.apps).toBeDefined();
-            expect(flp.config.apps).toHaveLength(0);
-            expect(flp.config.intent).toStrictEqual({ object: 'app', action: 'preview' });
+            expect(flp.flpConfig.path).toBe('/test/flp.html');
+            expect(flp.flpConfig.apps).toBeDefined();
+            expect(flp.flpConfig.apps).toHaveLength(0);
+            expect(flp.flpConfig.intent).toStrictEqual({ object: 'app', action: 'preview' });
             expect(flp.router).toBeDefined();
         });
 
@@ -82,11 +84,11 @@ describe('FlpSandbox', () => {
                 ]
             };
             const flp = new FlpSandbox({ flp: flpConfig }, mockProject, mockUtils, logger);
-            expect(flp.config.path).toBe(`/${flpConfig.path}`);
-            expect(flp.config.apps).toEqual(flpConfig.apps);
-            expect(flp.config.intent).toStrictEqual({ object: 'movie', action: 'start' });
+            expect(flp.flpConfig.path).toBe(`/${flpConfig.path}`);
+            expect(flp.flpConfig.apps).toEqual(flpConfig.apps);
+            expect(flp.flpConfig.intent).toStrictEqual({ object: 'movie', action: 'start' });
             expect(flp.router).toBeDefined();
-            expect(flp.config.theme).toEqual(flpConfig.theme);
+            expect(flp.flpConfig.theme).toEqual(flpConfig.theme);
         });
     });
 
@@ -238,6 +240,29 @@ describe('FlpSandbox', () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             await flp.init(manifest);
             expect(flp.templateConfig.ui5.libs).toMatchSnapshot();
+        });
+
+        test('do not add component to applications single', async () => {
+            const manifest = {
+                'sap.app': { id: 'my.id', type: 'component' }
+            } as Manifest;
+            const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            await flp.init(manifest);
+            expect(flp.templateConfig.apps).toMatchSnapshot();
+        });
+
+        test('do not add component to applications multi', async () => {
+            const manifest = {
+                'sap.app': { id: 'my.id', type: 'component' }
+            } as Manifest;
+            const flp = new FlpSandbox(
+                { flp: { apps: [{ target: '/yet/another/app', local: join(fixtures, 'multi-app') }] } },
+                mockProject,
+                mockUtils,
+                logger
+            );
+            await flp.init(manifest);
+            expect(flp.templateConfig.apps).toMatchSnapshot();
         });
     });
 
@@ -737,6 +762,227 @@ describe('FlpSandbox', () => {
             expect(logger.info).toBeCalledWith(
                 'HTML file returned at /test/existingFlp.html is loaded from the file system.'
             );
+        });
+    });
+
+    describe('router - connect API', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ]
+        };
+        test('GET default routes with connect API (used by karma test runner)', async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = connect();
+            app.use(flp.router as unknown as connect.Server);
+
+            server = await supertest(app);
+            let response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/unitTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/unitTests.qunit.js').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+    });
+
+    describe('rta with new config', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ],
+            editors: {
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    endpoints: [
+                        {
+                            path: '/my/rta.html'
+                        },
+                        {
+                            path: 'without/slash/rta.html'
+                        },
+                        {
+                            path: '/my/editor.html',
+                            developerMode: true
+                        },
+                        {
+                            path: '/with/plugin.html',
+                            developerMode: true,
+                            pluginScript: 'open/ux/tools/plugin'
+                        },
+                        {
+                            path: '/my/editorWithConfig.html',
+                            generator: 'test-generator'
+                        }
+                    ]
+                }
+            }
+        };
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = await supertest(app);
+        });
+
+        test('rta', async () => {
+            const response = await server.get('/my/rta.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with url parameters', async () => {
+            const response = await server.get('/my/rta.html?fiori-tools-rta-mode=true').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('rta with developerMode=true', async () => {
+            let response = await server.get('/my/editor.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            expect(response.text.includes('livereloadPort: 35729')).toBe(true);
+            response = await server.get('/my/editor.html.inner.html').expect(302);
+            expect(response.text).toMatchSnapshot();
+        });
+    });
+
+    describe('cds-plugin-ui5', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ],
+            editors: {
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    endpoints: [
+                        {
+                            path: '/my/rta.html'
+                        },
+                        {
+                            path: 'without/slash/rta.html'
+                        },
+                        {
+                            path: '/my/editor.html',
+                            developerMode: true
+                        },
+                        {
+                            path: '/with/plugin.html',
+                            developerMode: true,
+                            pluginScript: 'open/ux/tools/plugin'
+                        },
+                        {
+                            path: '/my/editorWithConfig.html',
+                            generator: 'test-generator'
+                        }
+                    ]
+                }
+            }
+        };
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use([
+                function (req: EnhancedRequest, _res: Response, next: NextFunction) {
+                    req['ui5-patched-router'] = { baseUrl: '/ui5-patched-router-base' };
+                    next();
+                },
+                flp.router
+            ]);
+
+            server = await supertest(app);
+        });
+
+        test('rta', async () => {
+            const response = await server.get('/my/rta.html').expect(302);
+            expect(response.header.location).toContain('ui5-patched-router-base');
+        });
+
+        test('test/flp.html', async () => {
+            const response = await server.get(`/test/flp.html#app-preview`).expect(302);
+            expect(response.header.location).toContain('ui5-patched-router-base');
         });
     });
 });

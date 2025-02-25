@@ -1195,16 +1195,21 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
-                    onStackChange: jest.fn(),
-                    getConfigurationPropertyValue: jest
-                        .fn()
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(true)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValue(undefined)
-                } as any);
+                service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(true)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValue(undefined)
+                    } as any
+                );
             });
 
             test('initialize and execute action', async () => {

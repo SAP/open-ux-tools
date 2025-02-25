@@ -1,5 +1,241 @@
 # @sap-ux/preview-middleware
 
+## 0.17.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.138
+
+## 0.17.47
+
+### Patch Changes
+
+-   df8d790: fix: 'Add Custom Table Column' CPE quick action is generating incorrect column fragment for Grid and Tree tables
+-   Updated dependencies [df8d790]
+    -   @sap-ux/adp-tooling@0.12.137
+
+## 0.17.46
+
+### Patch Changes
+
+-   1bcd64f: Fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
+## 0.17.45
+
+### Patch Changes
+
+-   ef57432: fix: re-route issue with cds-plugin-ui5
+
+## 0.17.44
+
+### Patch Changes
+
+-   583c4cd: Fix: Default aggregation array index to 1 for create page action and create table action
+
+## 0.17.43
+
+### Patch Changes
+
+-   fd3bfb0: fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
+## 0.17.42
+
+### Patch Changes
+
+-   Updated dependencies [bb38bef]
+    -   @sap-ux/adp-tooling@0.12.136
+
+## 0.17.41
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.135
+
+## 0.17.40
+
+### Patch Changes
+
+-   8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
+-   Updated dependencies [8930179]
+    -   @sap-ux/adp-tooling@0.12.134
+
+## 0.17.39
+
+### Patch Changes
+
+-   5226a61: feat: introduce 'editors' property on config root level
+
+## 0.17.38
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.133
+
+## 0.17.37
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/adp-tooling@0.12.132
+
+## 0.17.36
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.131
+
+## 0.17.35
+
+### Patch Changes
+
+-   931e735: Add stable ids to form elements
+
+## 0.17.34
+
+### Patch Changes
+
+-   354107e: fix: Fixed bug in CPE. In some ADP projects Change Table Columns Quick Action didn't work
+
+## 0.17.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.130
+
+## 0.17.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.129
+
+## 0.17.31
+
+### Patch Changes
+
+-   4d0b026: fix: undo redo issue for v2 manifest changes created via quickactions
+
+## 0.17.30
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/adp-tooling@0.12.128
+
+## 0.17.29
+
+### Patch Changes
+
+-   063a2f4: fix: enable manifest actions for v2 apps with array page structure
+
+## 0.17.28
+
+### Patch Changes
+
+-   d95bade: fix: Fixed various bugs related to Enable Variant Management for Tables quick action. It was unnecessarily disabled in some apps on List Report; changing Object Page table type led to enabling this action again; action is disabled now for custom tables, where it can't be applied.
+
+## 0.17.27
+
+### Patch Changes
+
+-   7c76e7c: fix: unify contextual menu for all nodes in outline panel.
+
+## 0.17.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.127
+-   @sap-ux/project-access@1.29.6
+
+## 0.17.25
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
+## 0.17.24
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+-   Updated dependencies [59453ba]
+    -   @sap-ux/adp-tooling@0.12.126
+
+## 0.17.23
+
+### Patch Changes
+
+-   b214776: fix: remove hard coded usage of webapp folder
+
+## 0.17.22
+
+### Patch Changes
+
+-   9bccf03: feat: add support for type component
+
+## 0.17.21
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/adp-tooling@0.12.125
+    -   @sap-ux/project-access@1.29.5
+
+## 0.17.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.124
+
+## 0.17.19
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/adp-tooling@0.12.123
+
+## 0.17.18
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.17.17
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.122
+
+## 0.17.16
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
+## 0.17.15
+
+### Patch Changes
+
+-   5c127cf: fix: ui5 version protocol for karma tests
+
+## 0.17.14
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/adp-tooling@0.12.121
+
+## 0.17.13
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/adp-tooling@0.12.120
+
 ## 0.17.12
 
 ### Patch Changes

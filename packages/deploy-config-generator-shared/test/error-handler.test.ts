@@ -35,18 +35,22 @@ describe('Error Message Methods', () => {
         expect(result).toBe(t('errors.folderDoesNotExist', { filePath }));
     });
 
+    it('noBaseConfig should return the correct error message', () => {
+        const baseConfig = 'mockConfig.yaml';
+        const result = ErrorHandler.noBaseConfig(baseConfig);
+        expect(result).toBe(t('errors.noBaseConfig', { baseConfig }));
+    });
+
     it('should return correct error message for each error type', () => {
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.ABORT_SIGNAL)).toBe(t('errors.abortSignal'));
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MANIFEST)).toBe(t('errors.noManifest'));
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_APP_NAME)).toBe(t('errors.noAppName'));
-        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_UI5_CONFIG)).toBe(t('errors.noUi5Config'));
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_CDS_BIN)).toBe(
             t('errors.noBinary', { bin: cdsExecutable, pkg: cdsPkg })
         );
         expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.NO_MTA_BIN)).toBe(
             t('errors.noBinary', { bin: mtaExecutable, pkg: mtaPkg })
         );
-        expect(ErrorHandler.getErrorMsgFromType(ERROR_TYPE.CAP_DEPLOYMENT_NO_MTA)).toBe(t('errors.capDeploymentNoMta'));
     });
 });
 

@@ -1,5 +1,11 @@
 # @sap-ux/serve-static-middleware
 
+## 0.2.3
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
 ## 0.2.2
 
 ### Patch Changes

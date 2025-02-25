@@ -15,6 +15,7 @@ import { getError } from '../utils/error';
 import { QuickActionService } from './quick-actions/quick-action-service';
 import type { QuickActionDefinitionRegistry } from './quick-actions/registry';
 import { CommunicationService } from './communication-service';
+import { ContextMenuService } from './context-menu-service';
 
 export default function init(
     rta: RuntimeAuthoring,
@@ -40,14 +41,15 @@ export default function init(
 
     const changesService = new ChangeService({ rta });
     const selectionService = new SelectionService(rta, changesService);
-
     const connectorService = new WorkspaceConnectorService();
+    const contextMenuService = new ContextMenuService(rta);
     const outlineService = new OutlineService(rta, changesService);
     const quickActionService = new QuickActionService(rta, outlineService, registries, changesService);
     const services: Service[] = [
         connectorService,
         selectionService,
         changesService,
+        contextMenuService,
         outlineService,
         rtaService,
         quickActionService

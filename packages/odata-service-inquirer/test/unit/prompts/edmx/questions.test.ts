@@ -42,7 +42,7 @@ describe('Test entity prompts', () => {
         expect(questions).toMatchSnapshot();
 
         // Invalid metadata
-        const errorLogSpy = jest.spyOn(LoggerHelper.logger, 'log');
+        const errorLogSpy = jest.spyOn(LoggerHelper.logger, 'error');
         questions = getEntitySelectionQuestions('{}', 'lrop');
         expect(questions).toEqual([]);
         expect(errorLogSpy).toBeCalledWith(expect.stringMatching('Unable to parse entities'));

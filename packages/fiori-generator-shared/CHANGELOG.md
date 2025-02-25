@@ -1,5 +1,72 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.9.0
+
+### Minor Changes
+
+-   fffc3a7: Add Freestyle OPA templates to ui5-test-writer
+
+## 0.8.1
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/telemetry@0.5.62
+
+## 0.8.0
+
+### Minor Changes
+
+-   fb4e328: Adds interoperability between `@vscode-logging/logger` and `@sap-ux/logger` to prevent crashes where non-implemented log functions were being called.
+    Fix entity-helper.ts to log error at correct level.
+
+## 0.7.29
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/telemetry@0.5.61
+
+## 0.7.28
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/telemetry@0.5.60
+
+## 0.7.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/telemetry@0.5.59
+
+## 0.7.26
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/telemetry@0.5.58
+
+## 0.7.25
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/telemetry@0.5.57
+
+## 0.7.24
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/telemetry@0.5.56
+
 ## 0.7.23
 
 ### Patch Changes

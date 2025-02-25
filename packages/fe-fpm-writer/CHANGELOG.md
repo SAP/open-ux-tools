@@ -1,5 +1,68 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.33.6
+
+### Patch Changes
+
+-   0c37c3d: Added support for 'showClearButton', 'showMessages', and 'liveMode' properties in FilterBar building block generation.
+
+## 0.33.5
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/fiori-annotation-api@0.4.9
+
+## 0.33.4
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/fiori-annotation-api@0.4.8
+
+## 0.33.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.4.7
+
+## 0.33.2
+
+### Patch Changes
+
+-   Updated dependencies [9e5c80f]
+    -   @sap-ux/fiori-annotation-api@0.4.6
+
+## 0.33.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/fiori-annotation-api@0.4.5
+
+## 0.33.0
+
+### Minor Changes
+
+-   aaaf046: update validateBasePath to use dynamic webapp path from manifest.json instead of hardcoded value
+
+## 0.32.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/fiori-annotation-api@0.4.4
+
+## 0.32.3
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/fiori-annotation-api@0.4.3
+
 ## 0.32.2
 
 ### Patch Changes

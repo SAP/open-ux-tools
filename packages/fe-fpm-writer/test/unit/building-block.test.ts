@@ -262,6 +262,34 @@ describe('Building Blocks', () => {
         expect(testFS.read(join(basePath, xmlViewFilePath))).toMatchSnapshot();
     });
 
+    test('FilterBar properties', async () => {
+        const aggregationPath = `/mvc:View/*[local-name()='Page']/*[local-name()='content']`;
+        const basePath = join(__dirname, 'sample/building-block/filterbar-properties');
+        const testXmlViewFilePath = join(basePath, xmlViewFilePath);
+        fs.write(join(basePath, manifestFilePath), JSON.stringify(testManifestContent));
+        fs.write(testXmlViewFilePath, testXmlViewContent);
+
+        await generateBuildingBlock<FilterBar>(
+            basePath,
+            {
+                viewOrFragmentPath: xmlViewFilePath,
+                aggregationPath: aggregationPath,
+                buildingBlockData: {
+                    id: 'testFilterBar',
+                    buildingBlockType: BuildingBlockType.FilterBar,
+                    filterChanged: 'onFilterChanged',
+                    search: 'onSearch',
+                    liveMode: true,
+                    showClearButton: false,
+                    showMessages: true
+                }
+            },
+            fs
+        );
+        expect(fs.read(testXmlViewFilePath)).toMatchSnapshot('filterbar-properties');
+        await writeFilesForDebugging(fs);
+    });
+
     describe('Generate with just ID and xml view without macros namespace', () => {
         const testInput = [
             {

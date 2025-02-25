@@ -92,5 +92,6 @@
   "NAVIGATION": "Navigation",
   "NAVIGATE": "Navigate",
   "LIST": "list",
-  "QUICK_ACTIONS": "{{title}} QUICK ACTIONS"
+  "QUICK_ACTIONS": "{{title}} QUICK ACTIONS",
+  "CONTEXT_MENU_ACTION_DISABLED_IN_NAVIGATION_MODE": "This action is disabled in navigation mode"
 }

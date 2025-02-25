@@ -13,6 +13,8 @@ import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
+import type { Logger } from '@sap-ux/logger';
+import { generateOPATests } from './generateOPATests';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -20,9 +22,10 @@ import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-wri
  * @param basePath - the absolute target path where the application will be generated
  * @param data - configuration to generate the freestyle application
  * @param fs - an optional reference to a mem-fs editor
+ * @param log - optional logger
  * @returns Reference to a mem-fs-editor
  */
-async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor): Promise<Editor> {
+async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor, log?: Logger): Promise<Editor> {
     // Load i18n translations asynchronously to ensure proper initialization.
     // This addresses occasional issues where i18n is not initialized in time, causing tests to fail.
     await initI18n();
@@ -133,21 +136,28 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
         JSON.parse(render(fs.read(join(tmplPath, 'common', 'extend', 'package.json')), ffApp, {}))
     );
 
+    const addTests = ffApp.appOptions?.addTests;
     const packageJson: Package = JSON.parse(fs.read(packagePath));
+
     if (isEdmxProjectType) {
+        const addMock = !!ffApp.service?.metadata;
         // Add scripts for non-CAP applications
         packageJson.scripts = {
             ...packageJson.scripts,
             ...getPackageScripts({
                 localOnly: !!ffApp.service && !ffApp.service?.url,
-                addMock: !!ffApp.service?.metadata,
+                addMock,
                 sapClient: ffApp.service?.client,
                 flpAppId: ffApp.app.flpAppId,
                 startFile: data?.app?.startFile,
                 localStartFile: data?.app?.localStartFile,
-                generateIndex: ffApp.appOptions?.generateIndex
+                generateIndex: ffApp.appOptions?.generateIndex,
+                addTest: addTests
             })
         };
+        if (addTests) {
+            await generateOPATests(basePath, ffApp, addMock, packageJson, fs, log);
+        }
     } else {
         // Add deploy-config for CAP applications
         packageJson.scripts = {
@@ -168,7 +178,8 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
     }
 
     if (ffApp.service?.capService) {
-        const hasCdsUi5PluginInfo = !!ffApp.service.capService.cdsUi5PluginInfo;
+        const enableCdsUi5Plugin =
+            !!ffApp?.appOptions?.typescript || !!ffApp?.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled;
         const settings: CapProjectSettings = {
             appRoot: basePath,
             packageName: ffApp.package.name ?? '',
@@ -176,14 +187,9 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor)
             sapux: ffApp.appOptions?.sapux,
             enableTypescript: ffApp.appOptions?.typescript,
             // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
-            enableCdsUi5Plugin: hasCdsUi5PluginInfo,
-            enableNPMWorkspaces: hasCdsUi5PluginInfo
+            enableCdsUi5Plugin: enableCdsUi5Plugin,
+            enableNPMWorkspaces: enableCdsUi5Plugin
         };
-        // Enable CDS UI5 plugin and NPM workspaces if the CDS UI5 plugin info is present
-        if (ffApp.service?.capService.cdsUi5PluginInfo) {
-            settings.enableCdsUi5Plugin = true;
-            settings.enableNPMWorkspaces = true;
-        }
         // apply cap updates when service is cap
         await applyCAPUpdates(fs, ffApp.service.capService, settings);
     }

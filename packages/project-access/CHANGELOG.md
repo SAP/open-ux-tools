@@ -1,5 +1,37 @@
 # @sap-ux/project-access
 
+## 1.29.8
+
+### Patch Changes
+
+-   c50e09f: Improve performance and fix code smells
+
+## 1.29.7
+
+### Patch Changes
+
+-   2c0d657: Export `getI18nBundles` function
+
+## 1.29.6
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+
+## 1.29.5
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/i18n@0.2.1
+
+## 1.29.4
+
+### Patch Changes
+
+-   29abc73: feat: support component type
+
 ## 1.29.3
 
 ### Patch Changes
