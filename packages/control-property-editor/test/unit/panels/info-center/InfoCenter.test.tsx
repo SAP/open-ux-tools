@@ -3,11 +3,7 @@ import { screen, fireEvent, waitFor } from '@testing-library/react';
 import { render } from '../../utils';
 import { InfoCenter } from '../../../../src/panels/info-center';
 import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
-import {
-    clearAllInfoCenterMessages,
-    clearInfoCenterMessage,
-    expandableMessage
-} from '../../../../src/slice';
+import { clearAllInfoCenterMessages, clearInfoCenterMessage, expandableMessage } from '../../../../src/slice';
 
 describe('InfoCenter Component', () => {
     test('renders the InfoCenter component correctly', () => {
@@ -94,8 +90,8 @@ describe('InfoCenter Component', () => {
             expect(messageBar).toHaveClass('message-read');
         });
 
+        // Simulate deleting the message
         const deleteButton = await screen.findByLabelText(/remove-message/i);
-
         fireEvent.click(deleteButton);
         expect(dispatch).toHaveBeenCalledWith(clearInfoCenterMessage('testid'));
     });
@@ -114,48 +110,20 @@ describe('InfoCenter Component', () => {
         });
 
         // Simulate clearing all messages
-        const clearAllButton =
-            screen.getByRole('button', { name: /clear-all/i }) || screen.getByLabelText('clear-all');
+        const clearAllButton = screen.getByRole('button', { name: /clear-all/i }) || screen.getByLabelText('clear-all');
         fireEvent.click(clearAllButton);
         expect(dispatch).toHaveBeenCalledWith(clearAllInfoCenterMessages());
     });
 
-    test('dispatches expandableMessage when element overflows and is not marked expandable', () => {
+    test('does not dispatch expandableMessage when element is already marked as expandable', async () => {
         const { dispatch } = render(<InfoCenter />, {
             initialState: {
                 infoCenterMessages: [
                     {
-                        message: {
-                            type: MessageBarType.info,
-                            title: 'Title',
-                            description: 'Expandable Message',
-                            details: 'More Details'
-                        },
+                        message: { type: MessageBarType.warning, title: 'Title 2', description: 'Test Description 2' },
                         expandable: false,
-                        id: 'testid'
-                    }
-                ]
-            }
-        });
-
-        const message = screen.getByText(/expandable message/i);
-        expect(message).toBeInTheDocument();
-
-        // Simulate overflow: scrollHeight > clientHeight.
-        Object.defineProperty(message, 'scrollHeight', { value: 200, configurable: true });
-        Object.defineProperty(message, 'clientHeight', { value: 100, configurable: true });
-
-        fireEvent.mouseOver(message);
-
-        waitFor(() => {
-            expect(dispatch).toHaveBeenCalledWith(expandableMessage('testid'));
-        });
-    });
-
-    test('does not dispatch expandableMessage when element is already marked as expandable', () => {
-        const { dispatch } = render(<InfoCenter />, {
-            initialState: {
-                infoCenterMessages: [
+                        id: 'testid2'
+                    },
                     {
                         message: {
                             type: MessageBarType.info,
@@ -176,11 +144,56 @@ describe('InfoCenter Component', () => {
         // Simulate overflow: scrollHeight > clientHeight.
         Object.defineProperty(message, 'scrollHeight', { value: 200, configurable: true });
         Object.defineProperty(message, 'clientHeight', { value: 100, configurable: true });
+        const messageForDeletion = screen.getByText(/test description 2/i);
+        expect(messageForDeletion).toBeInTheDocument();
+        fireEvent.mouseOver(messageForDeletion);
+        const deleteButton = await screen.findByLabelText(/remove-message/i);
+        // Simulate deletion to triger dispatch
+        fireEvent.click(deleteButton);
 
-        fireEvent.mouseOver(message);
-
-        waitFor(() => {
+        await waitFor(() => {
             expect(dispatch).not.toHaveBeenCalledWith(expandableMessage('testid'));
+        });
+    });
+
+    test('dispatches expandableMessage when element overflows and is not marked expandable', async () => {
+        const { dispatch } = render(<InfoCenter />, {
+            initialState: {
+                infoCenterMessages: [
+                    {
+                        message: { type: MessageBarType.warning, title: 'Title 2', description: 'Test Description 2' },
+                        expandable: false,
+                        id: 'testid2'
+                    },
+                    {
+                        message: {
+                            type: MessageBarType.info,
+                            title: 'Title',
+                            description: 'Expandable Message',
+                            details: 'More Details'
+                        },
+                        expandable: false,
+                        id: 'testid'
+                    }
+                ]
+            }
+        });
+
+        const message = screen.getByText(/expandable message/i);
+        expect(message).toBeInTheDocument();
+
+        // Simulate overflow: scrollHeight > clientHeight.
+        Object.defineProperty(message, 'scrollHeight', { value: 200, configurable: true });
+        Object.defineProperty(message, 'clientHeight', { value: 100, configurable: true });
+        const messageForDeletion = screen.getByText(/test description 2/i);
+        expect(messageForDeletion).toBeInTheDocument();
+        fireEvent.mouseOver(messageForDeletion);
+        const deleteButton = await screen.findByLabelText(/remove-message/i);
+        // Simulate deletion to triger dispatch
+        fireEvent.click(deleteButton);
+
+        await waitFor(() => {
+            expect(dispatch).toHaveBeenCalledWith(expandableMessage('testid'));
         });
     });
 });
