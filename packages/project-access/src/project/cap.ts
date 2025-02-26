@@ -171,6 +171,10 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
     return result;
 }
 
+function filterCapServiceEndpoints(endpoint: { kind: string; path: string }) {
+    return endpoint.kind === 'odata' || endpoint.kind === 'odata-v4';
+}
+
 /**
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
@@ -214,13 +218,13 @@ export async function getCapModelAndServices(
         services = services.filter(
             (service) =>
                 (service.urlPath && service.endpoints === undefined) ||
-                service.endpoints?.find((endpoint) => endpoint.kind === 'odata')
+                service.endpoints?.find(filterCapServiceEndpoints)
         );
     }
     if (services.map) {
         services = services.map((value) => {
             const { endpoints, urlPath } = value;
-            const odataEndpoint = endpoints?.find((endpoint) => endpoint.kind === 'odata');
+            const odataEndpoint = endpoints?.find(filterCapServiceEndpoints);
             const endpointPath = odataEndpoint?.path ?? urlPath;
             return {
                 name: value.name,
