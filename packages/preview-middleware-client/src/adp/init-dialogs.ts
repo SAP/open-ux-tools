@@ -22,18 +22,24 @@ import { DialogFactory, DialogNames } from './dialog-factory';
  * @param control UI5 control.
  * @param syncViewsIds Runtime Authoring
  * @param ui5VersionInfo UI5 version information
+ * @param isCloud Whether the application is running in the cloud
  *
  * @returns boolean whether menu item is enabled or not
  */
 export function isControllerExtensionEnabledForControl(
     control: ManagedObject,
     syncViewsIds: string[],
-    ui5VersionInfo: Ui5VersionInfo
+    ui5VersionInfo: Ui5VersionInfo,
+    isCloud: boolean
 ): boolean {
     const clickedControlId = FlUtils.getViewForControl(control).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
+    const isControlInSyncView = syncViewsIds.includes(clickedControlId);
 
-    return !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent;
+    if(isCloud) {
+        const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
+        return !isControlInSyncView && !isClickedControlReuseComponent;
+    }
+    return !isControlInSyncView;
 }
 
 /**
@@ -42,18 +48,20 @@ export function isControllerExtensionEnabledForControl(
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
  * @param ui5VersionInfo UI5 version information
+ * @param isCloud Whether the application is running in the cloud
  *
  * @returns boolean whether menu item is enabled or not
  */
 export const isControllerExtensionEnabled = (
     overlays: ElementOverlay[],
     syncViewsIds: string[],
-    ui5VersionInfo: Ui5VersionInfo
+    ui5VersionInfo: Ui5VersionInfo,
+    isCloud: boolean
 ): boolean => {
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
-    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, ui5VersionInfo);
+    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, ui5VersionInfo, isCloud);
 };
 
 /**
@@ -96,6 +104,7 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
  */
 export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): void => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
+    const isCloud = rta.getFlexSettings().isCloud;
 
     contextMenu.addMenuItem({
         id: 'ADD_FRAGMENT',
@@ -112,6 +121,6 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5Ve
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, ui5VersionInfo)
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, ui5VersionInfo, isCloud)
     });
 };

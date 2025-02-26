@@ -41,7 +41,7 @@ export class AddControllerToPageQuickAction
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
-            const isActiveAction = isControllerExtensionEnabledForControl(control, syncViewsIds, version);
+            const isActiveAction = isControllerExtensionEnabledForControl(control, syncViewsIds, version, this.context.isCloud);
             this.control = isActiveAction ? control : undefined;
             break;
         }
