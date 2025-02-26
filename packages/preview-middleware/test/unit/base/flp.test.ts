@@ -64,6 +64,7 @@ describe('FlpSandbox', () => {
     describe('constructor', () => {
         test('default (no) config', () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
+            expect(flp.flpConfig.newHomePage).toBeFalsy();
             expect(flp.flpConfig.path).toBe('/test/flp.html');
             expect(flp.flpConfig.apps).toBeDefined();
             expect(flp.flpConfig.apps).toHaveLength(0);
@@ -73,6 +74,7 @@ describe('FlpSandbox', () => {
 
         test('advanced config', () => {
             const flpConfig: FlpConfig = {
+                newHomePage: true,
                 path: 'my/custom/path',
                 intent: { object: 'movie', action: 'start' },
                 theme: 'sap_fiori_3',
@@ -84,6 +86,7 @@ describe('FlpSandbox', () => {
                 ]
             };
             const flp = new FlpSandbox({ flp: flpConfig }, mockProject, mockUtils, logger);
+            expect(flp.flpConfig.newHomePage).toBeTruthy();
             expect(flp.flpConfig.path).toBe(`/${flpConfig.path}`);
             expect(flp.flpConfig.apps).toEqual(flpConfig.apps);
             expect(flp.flpConfig.intent).toStrictEqual({ object: 'movie', action: 'start' });
@@ -270,6 +273,7 @@ describe('FlpSandbox', () => {
         let server!: SuperTest<Test>;
         const mockConfig = {
             flp: {
+                newHomePage: false,
                 apps: [
                     {
                         target: '/yet/another/app',
@@ -317,71 +321,105 @@ describe('FlpSandbox', () => {
             fetchMock.mockRestore();
         });
 
-        beforeAll(async () => {
-            const flp = new FlpSandbox(
-                mockConfig as unknown as Partial<MiddlewareConfig>,
-                mockProject,
-                mockUtils,
-                logger
-            );
+        const beforeAllHook = async (mockConfig: Partial<MiddlewareConfig>) => {
+            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
 
             const app = express();
             app.use(flp.router);
 
-            server = await supertest(app);
-        });
+            server = supertest(app);
+        };
 
-        test('test/flp.html UI5 2.x', async () => {
-            const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
-            fetchMock.mockResolvedValue({
-                json: jsonSpy,
-                text: jest.fn(),
-                ok: true
+        beforeAll(() => beforeAllHook(mockConfig as MiddlewareConfig));
+
+        const runTestsWithHomepageToggle = (enableNewHomepage: boolean = false) => {
+            describe(`new homepage ${enableNewHomepage ? 'enabled' : 'disabled'}`, () => {
+                afterEach(() => {
+                    fetchMock.mockRestore();
+                });
+
+                beforeAll(() =>
+                    beforeAllHook({
+                        ...mockConfig,
+                        flp: { ...mockConfig.flp, newHomePage: enableNewHomepage }
+                    } as MiddlewareConfig)
+                );
+
+                test('test/flp.html UI5 2.x', async () => {
+                    const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+                    fetchMock.mockResolvedValue({
+                        json: jsonSpy,
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('test/flp.html UI5 legacy-free', async () => {
+                    const jsonSpy = () =>
+                        Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }] });
+                    fetchMock.mockResolvedValue({
+                        json: jsonSpy,
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('test/flp.html UI5 snapshot', async () => {
+                    const jsonSpy = () =>
+                        Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }] });
+                    fetchMock.mockResolvedValue({
+                        json: jsonSpy,
+                        text: jest.fn(),
+                        ok: true
+                    });
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('test/flp.html', async () => {
+                    const response = await server
+                        .get('/test/flp.html?sap-ui-xx-viewCache=false#app-preview')
+                        .expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('test/flp.html sap-ui-xx-viewCache set to true', async () => {
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=true').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('test/flp.html missing sap-ui-xx-viewCache set to false', async () => {
+                    const response = await server.get('/test/flp.html').expect(302);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test('editor with config', async () => {
+                    const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                    expect(response.text).toMatchSnapshot();
+                });
+
+                test(`test/cdm.json should ${enableNewHomepage ? 'return cdm' : 'fail'} when homepage is ${
+                    enableNewHomepage ? 'enabled' : 'disabled'
+                }`, async () => {
+                    const response = await server.get('/test/cdm.json').expect(enableNewHomepage ? 200 : 404);
+                    if (enableNewHomepage) {
+                        expect(response.text).toMatchSnapshot();
+                    }
+                });
             });
-            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
-            expect(response.text).toMatchSnapshot();
-        });
+        };
 
-        test('test/flp.html UI5 legacy-free', async () => {
-            const jsonSpy = () =>
-                Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }] });
-            fetchMock.mockResolvedValue({
-                json: jsonSpy,
-                text: jest.fn(),
-                ok: true
-            });
-            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
-            expect(response.text).toMatchSnapshot();
-        });
+        // run tests with new homepage enabled
+        runTestsWithHomepageToggle(true);
 
-        test('test/flp.html UI5 snapshot', async () => {
-            const jsonSpy = () =>
-                Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }] });
-            fetchMock.mockResolvedValue({
-                json: jsonSpy,
-                text: jest.fn(),
-                ok: true
-            });
-            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
-            expect(response.text).toMatchSnapshot();
-        });
-
-        test('test/flp.html', async () => {
-            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false#app-preview').expect(200);
-            expect(response.text).toMatchSnapshot();
-        });
-
-        test('test/flp.html sap-ui-xx-viewCache set to true', async () => {
-            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=true').expect(200);
-            expect(response.text).toMatchSnapshot();
-        });
-
-        test('test/flp.html missing sap-ui-xx-viewCache set to false', async () => {
-            const response = await server.get('/test/flp.html').expect(302);
-            expect(response.text).toMatchSnapshot();
-        });
+        // run tests with homepage disabled
+        runTestsWithHomepageToggle(false);
 
         test('rta', async () => {
             const response = await server.get('/my/rta.html').expect(302);
@@ -576,11 +614,6 @@ describe('FlpSandbox', () => {
                 .set('Content-Type', 'application/json')
                 .send({ hello: 'world' })
                 .expect(400);
-        });
-
-        test('editor with config', async () => {
-            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
-            expect(response.text).toMatchSnapshot();
         });
 
         test('default Qunit path test/unitTests.qunit.html', async () => {
@@ -786,6 +819,7 @@ describe('FlpSandbox', () => {
             expect(logger.info).toBeCalledWith(
                 'HTML file returned at /test/existingFlp.html is loaded from the file system.'
             );
+            await server.get('/test/cdm.json').expect(404);
         });
     });
 
@@ -793,6 +827,7 @@ describe('FlpSandbox', () => {
         let server!: SuperTest<Test>;
         const mockConfig = {
             flp: {
+                newHomePage: false,
                 apps: [
                     {
                         target: '/yet/another/app',
@@ -811,6 +846,8 @@ describe('FlpSandbox', () => {
                 }
             ]
         };
+        const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+
         test('GET default routes with connect API (used by karma test runner)', async () => {
             const flp = new FlpSandbox(
                 mockConfig as unknown as Partial<MiddlewareConfig>,
@@ -818,7 +855,6 @@ describe('FlpSandbox', () => {
                 mockUtils,
                 logger
             );
-            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
 
             const app = connect();
@@ -832,6 +868,27 @@ describe('FlpSandbox', () => {
             response = await server.get('/test/unitTests.qunit.js').expect(200);
             expect(response.text).toMatchSnapshot();
             response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            await server.get('/test/cdm.json').expect(404);
+        });
+
+        test('GET default routes with connect API when newHomepage is enabled', async () => {
+            mockConfig.flp.newHomePage = true;
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            await flp.init(manifest);
+
+            const app = connect();
+            app.use(flp.router as unknown as connect.Server);
+
+            server = await supertest(app);
+            let response = await server.get('/test/flp.html').expect(200);
+            expect(response.text).toMatchSnapshot();
+            response = await server.get('/test/cdm.json').expect(200);
             expect(response.text).toMatchSnapshot();
         });
     });
