@@ -35,9 +35,9 @@ const getMessageType = (type: MessageBarType) => {
 export function InfoMessageItem(item: Readonly<InfoCenterItem>): ReactElement {
     const { t } = useTranslation();
     const dispatch = useDispatch();
-    const [isExpanded, setIsExpanded] = useState<boolean>();
-    const [isRead, setIsRead] = useState<boolean>();
-    const [isOpenedModal, setIsOpenedModal] = useState<boolean>();
+    const [isExpanded, setIsExpanded] = useState<boolean>(false);
+    const [isRead, setIsRead] = useState<boolean>(false);
+    const [isOpenedModal, setIsOpenedModal] = useState<boolean>(false);
     const { expandable: isExpandable, message, id } = item;
 
     return (
