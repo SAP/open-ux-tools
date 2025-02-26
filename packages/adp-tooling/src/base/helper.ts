@@ -1,8 +1,9 @@
 import type { Editor } from 'mem-fs-editor';
-import { readdirSync, readFileSync } from 'fs';
+import { existsSync, readdirSync, readFileSync } from 'fs';
 import { join, isAbsolute, relative, basename, dirname } from 'path';
 import { getWebappPath, FileName, readUi5Yaml } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
+
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
 /**
@@ -51,6 +52,18 @@ export async function flpConfigurationExists(basePath: string): Promise<boolean>
     } catch (error) {
         throw new Error(`Failed to check if FLP configuration exists: ${(error as Error).message}`);
     }
+}
+
+/**
+ * Checks whether TypeScript is supported in the project by verifying the existence of `tsconfig.json`.
+ *
+ * @param basePath - The base path of the project.
+ * @param fs - An optional `mem-fs-editor` instance to check for the file's existence.
+ * @returns `true` if `tsconfig.json` exists, otherwise `false`.
+ */
+export function isTypescriptSupported(basePath: string, fs?: Editor): boolean {
+    const path = join(basePath, 'tsconfig.json');
+    return fs ? fs.exists(path) : existsSync(path);
 }
 
 /**

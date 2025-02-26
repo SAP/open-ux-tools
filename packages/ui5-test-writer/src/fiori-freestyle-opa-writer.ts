@@ -1,4 +1,4 @@
-import { join } from 'path';
+import { join, sep } from 'path';
 import { create as createStorage } from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import { create } from 'mem-fs-editor';
@@ -63,7 +63,7 @@ function filterByUi5Version(files: string[], templateUi5Version: string): string
             return true;
         }
         // For all other files, include only those in the current UI5 version directory.
-        return filePath.includes(`/${templateUi5Version}/`);
+        return filePath.includes(`${sep}${templateUi5Version}${sep}`);
     });
 }
 
@@ -103,7 +103,7 @@ function getDestFilePath(
     templateUi5Version: string
 ): string {
     if (filePath.includes(freestyleTemplateDir)) {
-        return filePath.replace(freestyleTemplateDir, '').replace(`/${templateUi5Version}/`, '/');
+        return filePath.replace(freestyleTemplateDir, '').replace(`${sep}${templateUi5Version}${sep}`, sep);
     } else if (filePath.includes(commonTemplateDir)) {
         return filePath.replace(commonTemplateDir, '');
     } else {
@@ -159,11 +159,11 @@ export async function generateFreestyleOPAFiles(
     // Rename files:
     // - viewName.js files are renamed to include the view name in their file path
     // - viewName.ts files are renamed with the view name appended with 'Page'
-    const renameMap: Record<string, string> = {
-        '/integration/pages/viewName.js': `integration/pages/${viewName}.js`,
-        '/integration/pages/viewName.ts': `integration/pages/${viewName}Page.ts`,
-        '/unit/controller/viewName.controller.js': `unit/controller/${viewName}.controller.js`,
-        '/unit/controller/viewName.controller.ts': `unit/controller/${viewName}Page.controller.ts`
+    const renameMap = {
+        [join('/integration/pages/viewName.js')]: join(`integration/pages/${viewName}.js`),
+        [join('/integration/pages/viewName.ts')]: join(`integration/pages/${viewName}Page.ts`),
+        [join('/unit/controller/viewName.controller.js')]: join(`unit/controller/${viewName}.controller.js`),
+        [join('/unit/controller/viewName.controller.ts')]: join(`unit/controller/${viewName}Page.controller.ts`)
     };
     // copy templates
     let freestyleTestTemplatesCopied = false;
