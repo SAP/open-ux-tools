@@ -34,7 +34,6 @@ import {
     getAppName,
     sanitizeRtaConfig
 } from './config';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
