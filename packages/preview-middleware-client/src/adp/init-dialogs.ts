@@ -33,9 +33,13 @@ export function isControllerExtensionEnabledForControl(
     isCloud: boolean
 ): boolean {
     const clickedControlId = FlUtils.getViewForControl(control).getId();
-    const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
+    const isControlInSyncView = syncViewsIds.includes(clickedControlId);
 
-    return isCloud ? !syncViewsIds.includes(clickedControlId) && !isClickedControlReuseComponent : !syncViewsIds.includes(clickedControlId);
+    if(isCloud) {
+        const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
+        return !isControlInSyncView && !isClickedControlReuseComponent;
+    }
+    return !isControlInSyncView;
 }
 
 /**
