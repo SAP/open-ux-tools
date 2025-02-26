@@ -170,6 +170,41 @@ describe('AdaptationProject', () => {
                 'the.original.app': mockMergedDescriptor.url,
                 'app.variant1': '/webapp'
             });
+            expect(adp.isCloudProject).toBeFalsy();
+        });
+
+        test('cloud project', async () => {
+            nock(backend)
+                .get('/sap/bc/adt/ato/settings')
+                .replyWithFile(200, join(__dirname, '..', '..', 'mockResponses/atoSettingsS4C.xml'));
+            nock(backend)
+                .get('/sap/bc/adt/discovery')
+                .replyWithFile(200, join(__dirname, '..', '..', 'mockResponses/discovery.xml'));
+            const adp = new AdpPreview(
+                {
+                    target: {
+                        url: backend
+                    }
+                },
+                mockProject as unknown as ReaderCollection,
+                middlewareUtil,
+                logger
+            );
+
+            mockProject.byGlob.mockResolvedValueOnce([
+                {
+                    getPath: () => '/manifest.appdescr_variant',
+                    getBuffer: () => Buffer.from(descriptorVariant)
+                }
+            ]);
+            await adp.init(JSON.parse(descriptorVariant));
+            expect(adp.descriptor).toEqual(mockMergedDescriptor);
+            expect(adp.resources).toEqual({
+                'sap.reuse.lib': '/sap/reuse/lib',
+                'the.original.app': mockMergedDescriptor.url,
+                'app.variant1': '/webapp'
+            });
+            expect(adp.isCloudProject).toEqual(true);
         });
 
         test('error on property access before init', async () => {
@@ -186,6 +221,7 @@ describe('AdaptationProject', () => {
 
             expect(() => adp.descriptor).toThrowError();
             expect(() => adp.resources).toThrowError();
+            expect(() => adp.isCloudProject).toThrowError();
             await expect(() => adp.sync()).rejects.toEqual(Error('Not initialized'));
         });
     });
