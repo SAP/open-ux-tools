@@ -14,7 +14,8 @@
             "!{projectRoot}/**/*.test.tsx",
             "!{projectRoot}/**/*.spec.ts",
             "!{projectRoot}/**/*.test.ts"
-        ]
+        ],
+        "sharedGlobals": [{ "runtime": "node --version", "os":  "node -e 'console.log(os.platform())'"}]
     },
     "targetDefaults": {
         "build": {
