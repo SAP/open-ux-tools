@@ -147,6 +147,7 @@ export function createCAPMTA(cwd: string, options?: string[]): void {
     if (result?.error) {
         throw new Error(`Something went wrong installing node modules! ${result.error}`);
     }
+    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
 }
 
 /**
