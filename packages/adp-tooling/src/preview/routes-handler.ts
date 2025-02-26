@@ -104,8 +104,8 @@ export default class RoutesHandler {
         try {
             const files = await this.readAllFilesByGlob('/**/changes/fragments/*.fragment.xml');
 
-            const fileNames = files.map((fragment) => ({
-                fragmentName: fragment.getName()
+            const fileNames = files.map((file) => ({
+                fragmentName: file.getName()
             }));
 
             this.sendFilesResponse(res, {
@@ -129,8 +129,8 @@ export default class RoutesHandler {
         try {
             const files = await this.readAllFilesByGlob('/**/changes/coding/*.js');
 
-            const fileNames = files.map((fragment) => ({
-                controllerName: fragment.getName()
+            const fileNames = files.map((file) => ({
+                controllerName: file.getName()
             }));
 
             this.sendFilesResponse(res, {
