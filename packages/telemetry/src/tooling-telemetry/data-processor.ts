@@ -24,6 +24,7 @@ import { spawn } from 'child_process';
 import os from 'os';
 import type { CustomTask } from '@sap-ux/ui5-config';
 import { ToolingTelemetrySettings } from './config-state';
+import { getWebappPath } from '@sap-ux/project-access';
 
 /**
  * Collect commone properties that needs to be added to telemetry event.
@@ -270,9 +271,10 @@ function getInternalVsExternal(): InternalFeature {
  * @returns {Promise<SourceTemplate>} A promise that resolves to the source template configuration object.
  */
 async function getSourceTemplate(appPath: string): Promise<SourceTemplate> {
+    const webappPath = await getWebappPath(appPath);
     const paths = {
-        manifest: path.join(appPath, 'webapp', 'manifest.json'),
-        appdescr: path.join(appPath, 'webapp', 'manifest.appdescr_variant'),
+        manifest: path.join(webappPath, 'manifest.json'),
+        appdescr: path.join(webappPath, 'manifest.appdescr_variant'),
         ui5Yaml: path.join(appPath, 'ui5.yaml')
     };
 

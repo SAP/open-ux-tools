@@ -2821,7 +2821,7 @@ Object {
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/mainService//SEPM_XYZ/SERVICE.xml
+          - localPath: ./webapp/localService/mainService/SEPM_XYZ/SERVICE.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
 ",
     "state": "modified",
@@ -2851,7 +2851,7 @@ Object {
             mockdataPath: ./webapp/localService/mainService/data
             generateMockData: true
         annotations:
-          - localPath: ./webapp/localService/mainService//SEPM_XYZ/SERVICE.xml
+          - localPath: ./webapp/localService/mainService/SEPM_XYZ/SERVICE.xml
             urlPath: /sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/
 ",
     "state": "modified",

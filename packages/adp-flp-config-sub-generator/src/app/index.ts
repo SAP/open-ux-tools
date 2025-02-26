@@ -197,7 +197,7 @@ export default class extends Generator {
             requestOptions['auth'] = { username: this.credentials.username, password: this.credentials.password };
         }
         const provider = await createAbapServiceProvider(target, requestOptions, false, this.toolsLogger);
-        const variant = getVariant(this.projectRootPath);
+        const variant = await getVariant(this.projectRootPath);
         const manifestService = await ManifestService.initMergedManifest(
             provider,
             this.projectRootPath,

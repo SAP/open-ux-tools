@@ -116,7 +116,7 @@ export async function addServicesData(
                 extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml);
             }
         }
-        await writeLocalServiceAnnotationXMLFiles(fs, basePath, webappPath, templateRoot, service);
+        await writeLocalServiceAnnotationXMLFiles(fs, webappPath, templateRoot, service);
     }
     // service update should not trigger the package.json update
     if (paths.packageJson && paths.ui5Yaml) {
@@ -125,7 +125,7 @@ export async function addServicesData(
     if (paths.ui5LocalYaml && ui5LocalConfig) {
         fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
-    writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }
 
 /**
@@ -188,5 +188,5 @@ export async function updateServicesData(
         await writeMetadata(fs, webappPath, service);
     }
     // Write new annotations files
-    writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }

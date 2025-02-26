@@ -39,7 +39,7 @@ export async function addComponentUsages(basePath: string, simulate: boolean): P
         }
         await validateAdpProject(basePath);
 
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
 
         const answers = await promptYUIQuestions(getPromptsForAddComponentUsages(basePath, variant.layer), false);
 

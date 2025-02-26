@@ -112,9 +112,9 @@ describe('ManifestService', () => {
     describe('initMergedManifest', () => {
         it('should initialize and fetch the merged manifest', async () => {
             const variant = { id: 'descriptorVariantId', reference: 'referenceAppId' };
-            (getWebappFiles as jest.MockedFunction<typeof getWebappFiles>).mockReturnValue([
-                { relativePath: 'path', content: 'content' }
-            ]);
+            (getWebappFiles as jest.MockedFunction<typeof getWebappFiles>).mockReturnValue(
+                Promise.resolve([{ relativePath: 'path', content: 'content' }])
+            );
             manifestService = await ManifestService.initMergedManifest(
                 provider,
                 'basePath',

@@ -35,7 +35,7 @@ async function addNewModel(basePath: string, simulate: boolean): Promise<void> {
 
         await validateAdpProject(basePath);
 
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
 
         const answers = await promptYUIQuestions(getPromptsForNewModel(basePath, variant.layer), false);
 

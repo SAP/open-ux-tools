@@ -42,18 +42,18 @@ describe('helper', () => {
             jest.clearAllMocks();
         });
 
-        test('should return variant', () => {
+        test('should return variant', async () => {
             readFileSyncMock.mockImplementation(() => mockVariant);
 
-            expect(getVariant(basePath)).toStrictEqual(JSON.parse(mockVariant));
+            expect(await getVariant(basePath)).toStrictEqual(JSON.parse(mockVariant));
         });
 
-        test('should return variant using fs editor', () => {
+        test('should return variant using fs editor', async () => {
             const fs = {
                 readJSON: jest.fn().mockReturnValue(JSON.parse(mockVariant))
             } as unknown as Editor;
 
-            const result = getVariant(basePath, fs);
+            const result = await getVariant(basePath, fs);
 
             expect(fs.readJSON).toHaveBeenCalledWith(join(basePath, 'webapp', 'manifest.appdescr_variant'));
             expect(result).toStrictEqual(JSON.parse(mockVariant));
@@ -70,8 +70,8 @@ describe('helper', () => {
             jest.clearAllMocks();
         });
 
-        it('should write the updated variant content to the manifest file', () => {
-            updateVariant(basePath, mockVariant, fs);
+        it('should write the updated variant content to the manifest file', async () => {
+            await updateVariant(basePath, mockVariant, fs);
 
             expect(fs.writeJSON).toHaveBeenCalledWith(
                 join(basePath, 'webapp', 'manifest.appdescr_variant'),
@@ -87,7 +87,7 @@ describe('helper', () => {
             jest.clearAllMocks();
         });
 
-        it('should return true if valid FLP configuration exists', () => {
+        it('should return true if valid FLP configuration exists', async () => {
             readFileSyncMock.mockReturnValue(
                 JSON.stringify({
                     content: [
@@ -97,13 +97,13 @@ describe('helper', () => {
                 })
             );
 
-            const result = flpConfigurationExists(basePath);
+            const result = await flpConfigurationExists(basePath);
 
             expect(result).toBe(true);
             expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
         });
 
-        it('should return false if no valid FLP configuration exists', () => {
+        it('should return false if no valid FLP configuration exists', async () => {
             readFileSyncMock.mockReturnValue(
                 JSON.stringify({
                     content: [
@@ -113,18 +113,18 @@ describe('helper', () => {
                 })
             );
 
-            const result = flpConfigurationExists(basePath);
+            const result = await flpConfigurationExists(basePath);
 
             expect(result).toBe(false);
             expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
         });
 
-        it('should throw an error if getVariant fails', () => {
+        it('should throw an error if getVariant fails', async () => {
             readFileSyncMock.mockImplementation(() => {
                 throw new Error('Failed to retrieve variant');
             });
 
-            expect(() => flpConfigurationExists(basePath)).toThrow(
+            await expect(flpConfigurationExists(basePath)).rejects.toThrow(
                 'Failed to check if FLP configuration exists: Failed to retrieve variant'
             );
             expect(readFileSyncMock).toHaveBeenCalledWith(appDescrPath, 'utf-8');
@@ -214,8 +214,20 @@ describe('helper', () => {
             jest.clearAllMocks();
         });
 
-        test('should return webapp files', () => {
-            expect(getWebappFiles(basePath)).toEqual([
+        test('should return webapp files', async () => {
+            jest.spyOn(UI5Config, 'newInstance').mockResolvedValue({
+                findCustomMiddleware: jest.fn().mockReturnValue({
+                    configuration: {
+                        adp: mockAdp
+                    }
+                } as Partial<CustomMiddleware> as CustomMiddleware<object>),
+                getConfiguration: jest.fn().mockReturnValue({
+                    paths: {
+                        webapp: 'webapp'
+                    }
+                })
+            } as Partial<UI5Config> as UI5Config);
+            expect(await getWebappFiles(basePath)).toEqual([
                 {
                     relativePath: join('i18n', 'i18n.properties'),
                     content: expect.any(String)
