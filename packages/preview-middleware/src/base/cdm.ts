@@ -9,7 +9,7 @@ import { type FLPCdmConfig, FLPHomePageDefaults } from '../types';
  * @param apps - A list of app to be embedded.
  * @returns The generated CDM configuration
  */
-export function generateCdm(apps: TemplateConfig['apps']): FLPCdmConfig {
+export function generateCdm(apps: TemplateConfig['apps'] = {}): FLPCdmConfig {
     const cdm = JSON.parse(readFileSync(join(__dirname, '../../templates/flp/cdm.base.json'), 'utf-8')) as FLPCdmConfig;
 
     // add apps
