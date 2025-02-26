@@ -175,6 +175,7 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
  * Filters service endpoints to include only OData endpoints.
  *
  * @param endpoint The endpoint object to check.
+ * @param endpoint.kind The type of the endpoint.
  * @returns `true` if the endpoint is of kind 'odata' or 'odata-v4'.
  */
 function filterCapServiceEndpoints(endpoint: { kind: string }) {
