@@ -1,5 +1,16 @@
 # @sap-ux/preview-middleware
 
+## 0.18.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
+### Patch Changes
+
+-   Updated dependencies [127bd12]
+    -   @sap-ux/adp-tooling@0.13.0
+
 ## 0.17.48
 
 ### Patch Changes

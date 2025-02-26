@@ -7,10 +7,11 @@ import {
     enhanceUI5Yaml,
     hasDeployConfig,
     enhanceUI5YamlWithCustomConfig,
-    enhanceUI5YamlWithCustomTask
+    enhanceUI5YamlWithCustomTask,
+    enhanceUI5YamlWithTranspileMiddleware
 } from './options';
 
-import { UI5Config } from '@sap-ux/ui5-config';
+import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
 
 type PackageJSON = { name: string; version: string };
 
@@ -35,23 +36,35 @@ export function getPackageJSONInfo(): PackageJSON {
 /**
  * Writes a given project template files within a specified folder in the project directory.
  *
- * @param {string} templatePath - The root path of the project template.
+ * @param {string} baseTmplPath - The root path of the templates folder.
  * @param {string} projectPath - The root path of the project.
  * @param {AdpWriterConfig} data - The data to be populated in the template file.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @returns {void}
  */
 export function writeTemplateToFolder(
-    templatePath: string,
+    baseTmplPath: string,
     projectPath: string,
     data: AdpWriterConfig,
     fs: Editor
 ): void {
+    const tmplPath = join(baseTmplPath, 'project', '**/*.*');
+    const tsConfigPath = join(baseTmplPath, 'typescript', 'tsconfig.json');
+    const typesVersion = getEsmTypesVersion(data.ui5?.version);
+    const typesPackage = getTypesPackage(typesVersion);
+
     try {
-        fs.copyTpl(templatePath, projectPath, data, undefined, {
+        fs.copyTpl(tmplPath, projectPath, { ...data, typesPackage, typesVersion }, undefined, {
             globOptions: { dot: true },
             processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
         });
+
+        if (data.options?.enableTypeScript) {
+            const id = data.app?.id?.split('.').join('/');
+            fs.copyTpl(tsConfigPath, join(projectPath, 'tsconfig.json'), { id, typesPackage }, undefined, {
+                globOptions: { dot: true }
+            });
+        }
     } catch (e) {
         throw new Error(`Could not write template files to folder. Reason: ${e.message}`);
     }
@@ -71,11 +84,10 @@ export async function writeUI5Yaml(projectPath: string, data: AdpWriterConfig, f
         const baseUi5ConfigContent = fs.read(ui5ConfigPath);
         const ui5Config = await UI5Config.newInstance(baseUi5ConfigContent);
         ui5Config.setConfiguration({ propertiesFileSourceEncoding: 'UTF-8' });
-        enhanceUI5YamlWithCustomConfig(ui5Config, data?.customConfig);
+        enhanceUI5YamlWithCustomConfig(ui5Config, data);
+        enhanceUI5YamlWithTranspileMiddleware(ui5Config, data);
         enhanceUI5Yaml(ui5Config, data);
-        if (data.customConfig?.adp?.environment === 'C') {
-            enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
-        }
+        enhanceUI5YamlWithCustomTask(ui5Config, data as AdpWriterConfig & { app: CloudApp });
 
         fs.write(ui5ConfigPath, ui5Config.toString());
     } catch (e) {

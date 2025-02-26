@@ -16,8 +16,8 @@
                 <Label text="Controller Name" />
                 <Input 
                     id="controllerName"
-                    description=".js" 
-                    value="{/newControllerName}" 
+                    description="{/controllerExtension}"
+                    value="{/newControllerName}"
                     liveChange="onControllerNameInputChange">
                 </Input>
             </f:content>
