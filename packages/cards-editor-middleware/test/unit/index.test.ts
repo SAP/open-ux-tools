@@ -11,6 +11,7 @@ import path from 'path';
 import os from 'os';
 
 jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
     promises: {
         ...jest.requireActual('fs').promises,
         writeFile: jest.fn(),
