@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
 ## 0.12.138
 
 ### Patch Changes
