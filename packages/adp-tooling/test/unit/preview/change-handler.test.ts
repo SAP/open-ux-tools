@@ -14,12 +14,13 @@ import {
     moduleNameContentMap,
     tryFixChange
 } from '../../../src/preview/change-handler';
-import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange } from '../../../src';
+import { type AddXMLChange, type CommonChangeProperties, type AnnotationFileChange, ODataService } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
 import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
 import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
+import { Manifest } from '@sap-ux/project-access';
 
 describe('change-handler', () => {
     describe('moduleNameContentMap', () => {
@@ -524,42 +525,49 @@ id=\\"btn-30303030\\""
     });
 
     describe('addAnnotationFile', () => {
+        const mockManifest = {
+            'sap.app': {
+                dataSources: {
+                    mainService: {
+                        type: 'OData',
+                        uri: 'main/service/uri',
+                        settings: {
+                            annotations: ['annotation0']
+                        }
+                    },
+                    annotation0: {
+                        type: 'ODataAnnotation',
+                        uri: `ui5://adp/project/annotation0.xml`
+                    },
+                    secondaryService: {
+                        type: 'OData',
+                        uri: 'secondary/service/uri',
+                        settings: {
+                            annotations: []
+                        }
+                    }
+                }
+            }
+        } as unknown as Manifest;
+
         jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
             {
                 namespace: 'com.sap.test.serviceorder.v0001',
                 alias: 'test'
             }
         ]);
-        jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
-        jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
-            getDataSourceMetadata: jest.fn().mockResolvedValue(`
+        jest.spyOn(ODataService.prototype, 'getMetadataWithFallback').mockResolvedValue(`
                     <?xml version="1.0" encoding="utf-8"?>
 <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
     <edmx:DataServices>
         <Schema Namespace="com.sap.gateway.srvd.c_salesordermanage_sd.v0001" Alias="SAP__self">
          </Schema>
     </edmx:DataServices>
-</edmx:Edmx>`),
-            getManifestDataSources: jest.fn().mockReturnValue({
-                mainService: {
-                    type: 'OData',
-                    uri: 'main/service/uri',
-                    settings: {
-                        annotations: ['annotation0']
-                    }
-                },
-                annotation0: {
-                    type: 'ODataAnnotation',
-                    uri: `ui5://adp/project/annotation0.xml`
-                },
-                secondaryService: {
-                    type: 'OData',
-                    uri: 'secondary/service/uri',
-                    settings: {
-                        annotations: []
-                    }
-                }
-            })
+</edmx:Edmx>`);
+        jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
+        jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
+            getManifest: jest.fn().mockReturnValue(mockManifest),
+            getAppInfo: jest.fn()
         } as any);
         jest.spyOn(helper, 'getVariant').mockReturnValue({
             content: [],
@@ -589,7 +597,6 @@ id=\\"btn-30303030\\""
             error: jest.fn()
         };
 
-        const fragmentName = 'Share';
         const change = {
             changeType: 'appdescr_app_addAnnotationsToOData',
             content: {

@@ -1,6 +1,8 @@
 import {
     ApiEndpoints,
+    MetadataResponse,
     RequestMethod,
+    checkMetadata,
     getDataSourceAnnotationFileMap,
     getFragments,
     getManifestAppdescr,
@@ -122,6 +124,21 @@ describe('API Handler', () => {
 
             expect(data.layer).toBe('VENDOR');
         });
+    });
+
+    describe('checkMetadata', async () => {
+        fetchMock.mockResolvedValue({
+            json: jest.fn().mockReturnValue({
+                results: { dataSource1: { metadata: '<xml>data</xml>', success: true } },
+                success: true,
+                message: ''
+            } as MetadataResponse),
+            ok: true
+        });
+
+        const data = await checkMetadata();
+
+        expect(Object.values(data.results)?.[0]?.metadata).toBe('<xml>data</xml>');
     });
 
     describe('getDataSourceAnnotationFileMap', () => {

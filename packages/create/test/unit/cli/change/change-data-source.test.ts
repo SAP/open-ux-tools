@@ -214,11 +214,13 @@ describe('change/data-source', () => {
     });
 
     test('change data-source - no data sources in manifest', async () => {
-        jest.spyOn(adp.ManifestService, 'initBaseManifest').mockResolvedValueOnce({
-            getManifestDataSources: jest.fn().mockImplementation(() => {
-                throw new Error('No data sources found in the manifest');
-            })
+        jest.spyOn(adp, 'getDataSources').mockImplementation((_) => {
+            throw new Error('No data sources found in the manifest');
+        });
+        jest.spyOn(adp.ManifestService, 'initBaseManifest').mockResolvedValue({
+            getManifest: jest.fn().mockReturnValue({})
         } as unknown as adp.ManifestService);
+
         const command = new Command('data-source');
         addChangeDataSourceCommand(command);
         await command.parseAsync(getArgv(appRoot));

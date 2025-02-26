@@ -3,11 +3,14 @@ import { join } from 'path';
 import express from 'express';
 import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
-import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
 import * as fs from 'fs';
 
+import { type Logger, ToolsLogger } from '@sap-ux/logger';
+import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+
+import { ManifestService, ODataService } from '../../../src';
 import { AdpPreview } from '../../../src/preview/adp-preview';
 import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import * as helper from '../../../src/base/helper';
@@ -33,6 +36,12 @@ interface CodeExtResponse {
     controllerPathFromRoot: string;
 }
 
+export interface MetadataResponse {
+    message: string;
+    success: boolean;
+    results: Record<string, { success: boolean; metadata?: any; message?: string }>;
+}
+
 jest.mock('os', () => ({
     ...jest.requireActual('os'),
     platform: jest.fn().mockImplementation(() => 'win32')
@@ -42,6 +51,17 @@ jest.mock('../../../src/preview/change-handler', () => ({
     ...jest.requireActual('../../../src/preview/change-handler'),
     tryFixChange: jest.fn(),
     addXmlFragment: jest.fn()
+}));
+
+jest.mock('../../../src/base/helper.ts', () => ({
+    ...jest.requireActual('../../../src/base/helper.ts'),
+    getVariant: jest.fn(),
+    getAdpConfig: jest.fn().mockResolvedValue({
+        target: {
+            destination: 'testDestination'
+        },
+        ignoreCertErrors: false
+    })
 }));
 
 jest.mock('@sap-ux/store', () => {
@@ -57,6 +77,20 @@ jest.mock('@sap-ux/store', () => {
 
 const tryFixChangeMock = tryFixChange as jest.Mock;
 const addXmlFragmentMock = addXmlFragment as jest.Mock;
+
+const mockManifest = {
+    'sap.app': {
+        dataSources: {
+            'mainService': { uri: '/odata/service1', type: 'OData' } as ManifestNamespace.DataSource,
+            'DataSource2': {
+                uri: '/odata/service2',
+                type: 'OData',
+                settings: { localUri: 'local/metadata.xml' }
+            } as ManifestNamespace.DataSource
+        }
+    }
+} as unknown as Manifest;
+const mockMetadata = '<xml>data</xml>';
 
 const mockProject = {
     byGlob: jest.fn().mockResolvedValue([])
@@ -484,44 +518,47 @@ describe('AdaptationProject', () => {
                 reference: 'adp/project'
             });
 
-            jest.spyOn(helper, 'getAdpConfig').mockResolvedValue({
-                target: {
-                    destination: 'testDestination'
-                },
-                ignoreCertErrors: false
-            });
             jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
-            jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
-                getDataSourceMetadata: jest.fn().mockResolvedValue(`
-                    <?xml version="1.0" encoding="utf-8"?>
-<edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
-    <edmx:DataServices>
-        <Schema Namespace="com.sap.gateway.srvd.c_salesordermanage_sd.v0001" Alias="SAP__self">
-         </Schema>
-    </edmx:DataServices>
-</edmx:Edmx>`),
-                getManifestDataSources: jest.fn().mockReturnValue({
-                    mainService: {
-                        type: 'OData',
-                        uri: 'main/service/uri',
-                        settings: {
-                            annotations: ['annotation0']
-                        }
-                    },
-                    annotation0: {
-                        type: 'ODataAnnotation',
-                        uri: `ui5://adp/project/annotation0.xml`
-                    },
-                    secondaryService: {
-                        type: 'OData',
-                        uri: 'secondary/service/uri',
-                        settings: {
-                            annotations: []
+
+            const manifestService = {
+                getManifest: jest.fn().mockReturnValue({
+                    'sap.app': {
+                        dataSources: {
+                            mainService: {
+                                type: 'OData',
+                                uri: 'main/service/uri',
+                                settings: {
+                                    annotations: ['annotation0']
+                                }
+                            },
+                            annotation0: {
+                                type: 'ODataAnnotation',
+                                uri: `ui5://adp/project/annotation0.xml`
+                            },
+                            secondaryService: {
+                                type: 'OData',
+                                uri: 'secondary/service/uri',
+                                settings: {
+                                    annotations: []
+                                }
+                            }
                         }
                     }
-                })
-            } as any);
-            jest.spyOn(fs, 'existsSync').mockReturnValueOnce(true).mockReturnValue(false);
+                }),
+                getAppInfo: jest.fn()
+            } as unknown as ManifestService;
+
+            jest.spyOn(ManifestService, 'initMergedManifest').mockResolvedValue(manifestService);
+
+            jest.spyOn(ODataService.prototype, 'getMetadataWithFallback').mockResolvedValue(`
+                <?xml version="1.0" encoding="utf-8"?>
+                    <edmx:Edmx Version="4.0" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                    <edmx:DataServices>
+                        <Schema Namespace="com.sap.gateway.srvd.c_salesordermanage_sd.v0001" Alias="SAP__self">
+                        </Schema>
+                    </edmx:DataServices>
+                    </edmx:Edmx>`);
+
             jest.spyOn(serviceWriter, 'getAnnotationNamespaces').mockReturnValue([
                 {
                     namespace: 'com.sap.gateway.srvd.c_salesordermanage_sd.v0001',
@@ -709,12 +746,49 @@ describe('AdaptationProject', () => {
                 expect(e.message).toEqual(errorMsg);
             }
         });
+
+        test('GET /adp/api/metadata - returns a response', async () => {
+            const manifestService = {
+                getManifest: jest.fn().mockReturnValue(mockManifest),
+                getAppInfo: jest.fn()
+            } as unknown as ManifestService;
+            jest.spyOn(ManifestService, 'initMergedManifest').mockResolvedValue(manifestService);
+            jest.spyOn(ODataService.prototype, 'getMetadata')
+                .mockResolvedValueOnce(mockMetadata)
+                .mockRejectedValueOnce(new Error('Fetching failed'));
+
+            const response = await server.get('/adp/api/metadata').expect(200);
+
+            const data = JSON.parse(response.text) as MetadataResponse;
+            const results = Object.values(data.results);
+
+            expect(data.success).toBe(true);
+            expect(results[0]?.success).toBe(true);
+            expect(results[0]?.metadata).toBe(mockMetadata);
+            expect(results[1]?.success).toBe(false);
+            expect(results[1]?.message).toBe('Fetching failed');
+        });
+
+        test('GET /adp/api/metadata - throws error', async () => {
+            const manifestService = {
+                getManifest: jest.fn().mockReturnValue({}),
+                getAppInfo: jest.fn()
+            } as unknown as ManifestService;
+            jest.spyOn(ManifestService, 'initMergedManifest').mockResolvedValue(manifestService);
+
+            const response = await server.get('/adp/api/metadata').expect(500);
+
+            const data = JSON.parse(response.text) as MetadataResponse;
+            expect(data.message).toEqual('No data sources found in the manifest');
+        });
+
         test('GET /adp/api/annotation', async () => {
+            mockExistsSync.mockReturnValue(false);
             const response = await server.get('/adp/api/annotation').send().expect(200);
 
             const message = response.text;
             expect(message).toMatchInlineSnapshot(
-                `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`
+                `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationExistsInWS\\":false,\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`
             );
         });
     });

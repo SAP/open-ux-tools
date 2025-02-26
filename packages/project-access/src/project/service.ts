@@ -96,7 +96,7 @@ function getServiceSpecification(
  */
 export function filterDataSourcesByType(
     dataSources: Record<string, ManifestNamespace.DataSource>,
-    type: string
+    type: ManifestNamespace.DataSourceEnum['type']
 ): Record<string, ManifestNamespace.DataSource> {
     return Object.fromEntries(Object.entries(dataSources).filter(([, data]) => data.type === type));
 }

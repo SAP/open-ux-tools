@@ -11,6 +11,10 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import ElementRegistry from 'mock/sap/ui/core/ElementRegistry';
 import Element from 'mock/sap/ui/core/Element';
 
+jest.mock('../../../src/adp/metadata-checker.ts', () => ({
+    checkAllMetadata: jest.fn()
+}));
+
 describe('adp', () => {
     const addMenuItemSpy = jest.fn();
     let initOutlineSpy: jest.SpyInstance;

@@ -1,11 +1,14 @@
 import type { Command } from 'commander';
+
 import {
     generateChange,
     ChangeType,
     getPromptsForAddAnnotationsToOData,
     getAdpConfig,
     ManifestService,
-    getVariant
+    getVariant,
+    ODataService,
+    getDataSources
 } from '@sap-ux/adp-tooling';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces, type NamespaceAlias } from '@sap-ux/odata-service-writer';
@@ -54,12 +57,17 @@ async function addAnnotationsToOdata(basePath: string, simulate: boolean, yamlPa
             true,
             logger
         );
+
         const manifestService = await ManifestService.initMergedManifest(provider, basePath, variant, logger);
-        const dataSources = manifestService.getManifestDataSources();
+        const manifest = manifestService.getManifest();
+        const metadataService = new ODataService(manifest, manifestService.getAppInfo(), provider, logger);
+        const dataSources = getDataSources(manifest);
+
         const answers = await promptYUIQuestions(getPromptsForAddAnnotationsToOData(basePath, dataSources), false);
+
         let namespaces: NamespaceAlias[] = [];
         if (!answers.filePath) {
-            const metadata = await manifestService.getDataSourceMetadata(answers.id);
+            const metadata = await metadataService.getMetadataWithFallback(answers.id);
             namespaces = getAnnotationNamespaces({ metadata });
         }
 
