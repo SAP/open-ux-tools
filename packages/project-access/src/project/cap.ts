@@ -12,7 +12,8 @@ import type {
     Package,
     ServiceDefinitions,
     ServiceInfo,
-    CdsVersionInfo
+    CdsVersionInfo,
+    CdsUi5PluginInfo
 } from '../types';
 import {
     deleteDirectory,
@@ -26,7 +27,6 @@ import {
 } from '../file';
 import { loadModuleFromProject } from './module-loader';
 import { findCapProjectRoot } from './search';
-import type { CdsUi5PluginInfo } from '../types';
 import { coerce, gte, satisfies } from 'semver';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
