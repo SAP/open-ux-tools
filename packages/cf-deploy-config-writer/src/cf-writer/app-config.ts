@@ -316,26 +316,24 @@ function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: Mta
  * @param mtaInstance MTA configuration instance
  */
 async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void> {
-    let isMtaSaved = false;
     try {
-        isMtaSaved = await mtaInstance.save();
+        // Cleanup any temp files, not required to handle the exception as the mta.yaml will have been appended already with required changes.
+        await mtaInstance.save();
+        LoggerHelper.logger?.debug(t('debug.mtaSaved'));
     } catch (error) {
         LoggerHelper.logger?.debug(t('debug.mtaSavedFailed', { error }));
-        isMtaSaved = await mtaInstance.save();
     }
-    if (isMtaSaved) {
-        // Add mtaext if required for API Hub Enterprise connectivity
-        if (cfConfig.apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise) {
-            try {
-                await mtaInstance.addMtaExtensionConfig(cfConfig.destinationName, cfConfig.serviceHost, {
-                    key: 'ApiKey',
-                    value: cfConfig.apiHubConfig.apiHubKey
-                });
-            } catch (error) {
-                LoggerHelper.logger?.error(t('error.mtaExtensionFailed', { error }));
-            }
+
+    // Add mtaext if required for API Hub Enterprise connectivity
+    if (cfConfig.apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise) {
+        try {
+            await mtaInstance.addMtaExtensionConfig(cfConfig.destinationName, cfConfig.serviceHost, {
+                key: 'ApiKey',
+                value: cfConfig.apiHubConfig.apiHubKey
+            });
+        } catch (error) {
+            LoggerHelper.logger?.error(t('error.mtaExtensionFailed', { error }));
         }
-        LoggerHelper.logger?.debug(t('debug.mtaSaved'));
     }
 }
 
