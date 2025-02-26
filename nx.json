@@ -25,12 +25,12 @@
                 "{projectRoot}/lib",
                 "{projectRoot}/storybook"
             ],
-            "cache": true
+            "cache": false
         },
         "test": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
             "outputs": ["{projectRoot}/coverage"],
-            "cache": true
+            "cache": false
         },
         "test:integration": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
