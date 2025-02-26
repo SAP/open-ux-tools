@@ -135,4 +135,23 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
         expect(validateDestSpy).toHaveBeenCalledWith(createdDestinationMock, undefined, undefined);
         expect(PromptState.odataService.connectedSystem?.destination).toEqual(createdDestinationMock);
     });
+
+    test('test getCfAbapBASQuestions validate() will throw an exception if the user is missing privileges on CF', async () => {
+        PromptState.isYUI = true;
+        const errMsg = `Couldn't create the destination from following error: Request failed with status code 403. Error code=403`;
+        const getCredsSpy = jest.spyOn(cfTools, 'apiGetInstanceCredentials');
+        const createDestSpy = jest.spyOn(btpUtils, 'createOAuth2UserTokenExchangeDest').mockImplementation(() => {
+            throw new Error(errMsg);
+        });
+        const questions = getCfAbapBASQuestions();
+        const cfDiscoQuestion = questions.find((question) => question.name === `cfAbapBas:cloudFoundryAbapSystem`);
+        expect(
+            await (cfDiscoQuestion?.validate as Function)({
+                label: 'test1-cFAbapService',
+                serviceName: 'test1-cfServicetechnicalName'
+            } as ServiceInstanceInfo)
+        ).toEqual(errMsg);
+        expect(getCredsSpy).toBeCalledWith('test1-cFAbapService');
+        expect(createDestSpy).toHaveBeenCalled();
+    });
 });
