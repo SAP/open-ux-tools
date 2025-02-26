@@ -14,7 +14,8 @@
             "!{projectRoot}/**/*.test.tsx",
             "!{projectRoot}/**/*.spec.ts",
             "!{projectRoot}/**/*.test.ts"
-        ]
+        ],
+        "sharedGlobals": [{ "runtime": "node --version", "os":  "node -e 'console.log(os.platform())'"}]
     },
     "targetDefaults": {
         "build": {
@@ -25,12 +26,12 @@
                 "{projectRoot}/lib",
                 "{projectRoot}/storybook"
             ],
-            "cache": false
+            "cache": true
         },
         "test": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
             "outputs": ["{projectRoot}/coverage"],
-            "cache": false
+            "cache": true
         },
         "test:integration": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
