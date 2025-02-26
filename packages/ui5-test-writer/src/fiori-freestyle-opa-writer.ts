@@ -63,7 +63,7 @@ function filterByUi5Version(files: string[], templateUi5Version: string): string
             return true;
         }
         // For all other files, include only those in the current UI5 version directory.
-        return filePath.includes(sep + templateUi5Version + sep);
+        return filePath.includes(`${sep}${templateUi5Version}${sep}`);
     });
 }
 
@@ -103,7 +103,7 @@ function getDestFilePath(
     templateUi5Version: string
 ): string {
     if (filePath.includes(freestyleTemplateDir)) {
-        return filePath.replace(freestyleTemplateDir, '').replace(sep + templateUi5Version + sep, sep);
+        return filePath.replace(freestyleTemplateDir, '').replace(`${sep}${templateUi5Version}${sep}`, sep);
     } else if (filePath.includes(commonTemplateDir)) {
         return filePath.replace(commonTemplateDir, '');
     } else {
