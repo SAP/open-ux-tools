@@ -272,8 +272,9 @@ export async function init({
     newHomePage?: boolean | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ??
-        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
+    const container =
+        sap?.ushell?.Container ??
+        ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
     let scenario: string = '';
     const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
@@ -351,7 +352,7 @@ export async function init({
     setI18nTitle(resourceBundle);
     registerSAPFonts();
 
-    if (document.getElementById('content')) {
+    if (!document.getElementById('canvas')) {
         const renderer =
             ui5VersionInfo.major < 2
                 ? await container.createRenderer(undefined, true)
