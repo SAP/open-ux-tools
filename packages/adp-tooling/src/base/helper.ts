@@ -10,7 +10,7 @@ import type { DescriptorVariant, AdpPreviewConfig } from '../types';
  *
  * @param {string} basePath - The path to the adaptation project.
  * @param {Editor} fs - The mem-fs editor instance.
- * @returns {DescriptorVariant} The app descriptor variant.
+ * @returns {Promise<DescriptorVariant>} The app descriptor variant.
  */
 export async function getVariant(basePath: string, fs?: Editor): Promise<DescriptorVariant> {
     const webappPath = await getWebappPath(basePath);
@@ -38,7 +38,7 @@ export async function updateVariant(basePath: string, variant: DescriptorVariant
  * or `appdescr_app_addNewInbound` present in the content of the descriptor variant.
  *
  * @param {string} basePath - The base path of the project where the manifest.appdescr_variant is located.
- * @returns {boolean} Returns `true` if FLP configuration changes exist, otherwise `false`.
+ * @returns {Promise<boolean>} Returns `true` if FLP configuration changes exist, otherwise `false`.
  * @throws {Error} Throws an error if the variant could not be retrieved.
  */
 export async function flpConfigurationExists(basePath: string): Promise<boolean> {
@@ -83,7 +83,7 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
  * Get all files in the webapp folder.
  *
  * @param {string} basePath - The path to the adaptation project.
- * @returns {Array<{ relativePath: string; content: string }>} The files in the webapp folder.
+ * @returns {Promise<{ relativePath: string; content: string }[]>} The files in the webapp folder.
  */
 export async function getWebappFiles(basePath: string): Promise<{ relativePath: string; content: string }[]> {
     const dir = await getWebappPath(basePath);
