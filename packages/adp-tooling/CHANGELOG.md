@@ -1,5 +1,22 @@
 # @sap-ux/adp-tooling
 
+## 0.13.1
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/odata-service-writer@0.26.4
+    -   @sap-ux/system-access@0.5.31
+    -   @sap-ux/inquirer-common@0.6.20
+
+## 0.13.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
 ## 0.12.138
 
 ### Patch Changes
