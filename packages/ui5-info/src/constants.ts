@@ -18,8 +18,7 @@ export const ui5VersionRequestInfo = {
     OfficialUrl: 'https://ui5.sap.com',
     NeoAppFile: 'neo-app.json',
     VersionsFile: 'version.json?sap-ui-config-patches=true&sap-ui-config-showall=true',
-    VersionExternalFile: 'version.json',
-    SnapshotUrl: 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com'
+    VersionExternalFile: 'version.json'
 };
 
 export const defaultMinUi5Version = '1.65.0';
