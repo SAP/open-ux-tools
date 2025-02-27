@@ -1,5 +1,24 @@
 # @sap-ux/create
 
+## 0.12.2
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/mockserver-config-writer@0.8.3
+    -   @sap-ux/odata-service-writer@0.26.5
+    -   @sap-ux/adp-tooling@0.13.2
+    -   @sap-ux/flp-config-inquirer@0.2.47
+    -   @sap-ux/preview-middleware@0.18.2
+    -   @sap-ux/project-access@1.29.10
+    -   @sap-ux/app-config-writer@0.5.34
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.20
+    -   @sap-ux/cap-config-writer@0.9.13
+    -   @sap-ux/abap-deploy-config-writer@0.0.91
+    -   @sap-ux/cards-editor-config-writer@0.4.10
+    -   @sap-ux/system-access@0.5.31
+
 ## 0.12.1
 
 ### Patch Changes

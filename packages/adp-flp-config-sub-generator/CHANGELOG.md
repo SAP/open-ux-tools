@@ -1,5 +1,19 @@
 # @sap-ux/adp-flp-config-sub-generator
 
+## 0.0.18
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/adp-tooling@0.13.2
+    -   @sap-ux/flp-config-inquirer@0.2.47
+    -   @sap-ux/fiori-generator-shared@0.9.2
+    -   @sap-ux/inquirer-common@0.6.21
+    -   @sap-ux/project-access@1.29.10
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/system-access@0.5.31
+
 ## 0.0.17
 
 ### Patch Changes

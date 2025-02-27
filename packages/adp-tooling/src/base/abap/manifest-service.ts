@@ -141,7 +141,7 @@ export class ManifestService {
      */
     private async fetchMergedManifest(basePath: string, descriptorVariantId: string): Promise<void> {
         const zip = new ZipFile();
-        const files = getWebappFiles(basePath);
+        const files = await getWebappFiles(basePath);
         for (const file of files) {
             zip.addFile(file.relativePath, Buffer.from(file.content, 'utf-8'));
         }

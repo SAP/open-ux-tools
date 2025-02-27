@@ -14,7 +14,7 @@ import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotatio
 
 import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
-import { AdpPreview } from '../../../src/preview/adp-preview';
+import { AdpPreview } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
 import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
@@ -485,7 +485,7 @@ describe('AdaptationProject', () => {
                 middlewareUtil,
                 logger
             );
-            jest.spyOn(helper, 'getVariant').mockReturnValue({
+            jest.spyOn(helper, 'getVariant').mockResolvedValue({
                 content: [],
                 id: 'adp/project',
                 layer: 'VENDOR',
