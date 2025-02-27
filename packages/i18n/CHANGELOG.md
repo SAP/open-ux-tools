@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.2.2
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+
 ## 0.2.1
 
 ### Patch Changes
