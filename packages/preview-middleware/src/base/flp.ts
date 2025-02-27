@@ -445,11 +445,18 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
-            version = '1.121.0';
+            this.logger.error('Could not get UI5 version of application. Using 1.123.0 as fallback.');
+            version = '1.123.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
+
+        // Disable newHomePage feature for UI5 versions below 1.123.0
+        if (major < 2 && minor < 123) {
+            this.flpConfig.newHomePage = this.templateConfig.newHomePage = false;
+            this.logger.warn('Detected UI5 version below 1.123.0. Disabling newHomePage feature for compatibility.');
+        }
+
         return {
             major,
             minor,
