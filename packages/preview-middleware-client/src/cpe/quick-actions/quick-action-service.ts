@@ -115,16 +115,14 @@ export class QuickActionService implements Service {
                     title,
                     actions: []
                 };
-                const flexSettings = this.rta.getFlexSettings();
                 const actionContext: QuickActionContext = {
                     ...context,
                     view,
                     key,
                     rta: this.rta,
-                    flexSettings: flexSettings,
+                    flexSettings: this.rta.getFlexSettings(),
                     resourceBundle: this.texts,
                     changeService: this.changeService,
-                    isCloud: flexSettings.isCloud
                 };
                 for (const Definition of definitions) {
                     try {

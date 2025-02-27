@@ -40,7 +40,6 @@ export interface QuickActionContext {
     flexSettings: FlexSettings;
     manifest: Manifest;
     changeService: ChangeService;
-    isCloud: boolean;
 }
 
 interface QuickActionDefinitionBase {
