@@ -1,5 +1,23 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/cf-deploy-config-writer@0.1.13
+    -   @sap-ux/fiori-generator-shared@0.9.1
+    -   @sap-ux/deploy-config-generator-shared@0.0.28
+    -   @sap-ux/inquirer-common@0.6.20
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.9
+
+## 0.1.12
+
+### Patch Changes
+
+-   a92b715: Init should only be run when standalone
+
 ## 0.1.11
 
 ### Patch Changes
