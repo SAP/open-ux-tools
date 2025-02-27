@@ -26,10 +26,10 @@ describe('validation', () => {
         const descriptorVariant = JSON.parse(
             readFileSync(join(__dirname, '../../fixtures/adaptation-project', 'manifest.appdescr_variant'), 'utf-8')
         );
-        test('throw error for omPremise project', () => {
+        test('throw error for omPremise project', async () => {
             jest.spyOn(adp, 'getVariant').mockReturnValue(descriptorVariant);
             try {
-                validateCloudAdpProject('');
+                await validateCloudAdpProject('');
                 fail('The function should have thrown an error.');
             } catch (error) {
                 expect(error.message).toBe('This command can only be used for Cloud Adaptation Project.');

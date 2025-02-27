@@ -53,8 +53,8 @@ export async function validateAdpProject(basePath: string): Promise<void> {
  *
  * @param basePath - path to the adaptation project
  */
-export function validateCloudAdpProject(basePath: string): void {
-    const manifest = getVariant(basePath);
+export async function validateCloudAdpProject(basePath: string): Promise<void> {
+    const manifest = await getVariant(basePath);
     if (
         !manifest?.content?.some(
             (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'

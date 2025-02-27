@@ -1,5 +1,64 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/i18n@0.2.2
+    -   @sap-ux/fiori-generator-shared@0.9.2
+    -   @sap-ux/inquirer-common@0.6.21
+    -   @sap-ux/project-access@1.29.10
+    -   @sap-ux/deploy-config-generator-shared@0.0.29
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.10
+    -   @sap-ux/cf-deploy-config-writer@0.1.15
+
+## 0.1.14
+
+### Patch Changes
+
+-   d0b656b: change where inti and writing are executing when cf-sub-gen is loaded as a sub-gen
+-   Updated dependencies [d0b656b]
+    -   @sap-ux/cf-deploy-config-writer@0.1.14
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/cf-deploy-config-writer@0.1.13
+    -   @sap-ux/fiori-generator-shared@0.9.1
+    -   @sap-ux/deploy-config-generator-shared@0.0.28
+    -   @sap-ux/inquirer-common@0.6.20
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.9
+
+## 0.1.12
+
+### Patch Changes
+
+-   a92b715: Init should only be run when standalone
+
+## 0.1.11
+
+### Patch Changes
+
+-   d6118c9: Changes to support adding CAP MTA prompt to allow user generate MTA
+-   Updated dependencies [d6118c9]
+    -   @sap-ux/deploy-config-generator-shared@0.0.27
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.8
+    -   @sap-ux/cf-deploy-config-writer@0.1.12
+
+## 0.1.10
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.26
+    -   @sap-ux/inquirer-common@0.6.19
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.7
+
 ## 0.1.9
 
 ### Patch Changes

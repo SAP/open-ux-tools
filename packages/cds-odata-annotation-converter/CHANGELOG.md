@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.5.0
+
+### Minor Changes
+
+-   4373718: Updated UI texts.
+
 ## 0.4.1
 
 ### Patch Changes

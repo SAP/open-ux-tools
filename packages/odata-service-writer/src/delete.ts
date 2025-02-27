@@ -73,7 +73,7 @@ export async function deleteServiceData(
             ui5MockConfig.removeServiceFromMockServerMiddleware(service.path, serviceAnnotationPaths);
             fs.write(paths.ui5MockYaml, ui5MockConfig.toString());
         }
-        removeRemoteServiceAnnotationXmlFiles(
+        await removeRemoteServiceAnnotationXmlFiles(
             fs,
             basePath,
             service.name,

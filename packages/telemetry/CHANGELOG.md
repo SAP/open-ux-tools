@@ -1,5 +1,19 @@
 # @sap-ux/telemetry
 
+## 0.5.64
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+    -   @sap-ux/project-access@1.29.10
+
+## 0.5.63
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+
 ## 0.5.62
 
 ### Patch Changes
