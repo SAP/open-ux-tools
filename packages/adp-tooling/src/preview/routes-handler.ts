@@ -74,7 +74,7 @@ export default class RoutesHandler {
      * @param data Data that is sent to the client
      * @param contentType Content type, defaults to json
      */
-    private sendFilesResponse(res: Response, data: object | string, contentType: string = 'application/json') {
+    private sendFilesResponse(res: Response, data: object | string, contentType: string = 'application/json'): void {
         res.status(HttpStatusCodes.OK).contentType(contentType).send(data);
     }
 
@@ -100,12 +100,12 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction) => {
+    public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const files = await this.readAllFilesByGlob('/**/changes/fragments/*.fragment.xml');
 
-            const fileNames = files.map((f) => ({
-                fragmentName: f.getName()
+            const fileNames = files.map((file) => ({
+                fragmentName: file.getName()
             }));
 
             this.sendFilesResponse(res, {
@@ -125,12 +125,12 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction) => {
+    public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const files = await this.readAllFilesByGlob('/**/changes/coding/*.js');
 
-            const fileNames = files.map((f) => ({
-                controllerName: f.getName()
+            const fileNames = files.map((file) => ({
+                controllerName: file.getName()
             }));
 
             this.sendFilesResponse(res, {
@@ -150,7 +150,11 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleGetControllerExtensionData = async (req: Request, res: Response, next: NextFunction) => {
+    public handleGetControllerExtensionData = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
             const params = req.params as { controllerName: string };
             const controllerName = sanitize(params.controllerName);
@@ -219,7 +223,7 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleWriteControllerExt = async (req: Request, res: Response, next: NextFunction) => {
+    public handleWriteControllerExt = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const data = req.body as WriteControllerBody;
 
@@ -249,7 +253,7 @@ export default class RoutesHandler {
                 return;
             }
 
-            generateControllerFile(rootPath, filePath, name);
+            await generateControllerFile(rootPath, filePath, name);
 
             const message = 'Controller extension created!';
             res.status(HttpStatusCodes.CREATED).send(message);
@@ -269,7 +273,11 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleGetAllAnnotationFilesMappedByDataSource = async (_req: Request, res: Response, next: NextFunction) => {
+    public handleGetAllAnnotationFilesMappedByDataSource = async (
+        _req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
             const isRunningInBAS = isAppStudio();
 
@@ -344,7 +352,7 @@ export default class RoutesHandler {
     private async getManifestService(): Promise<ManifestService> {
         const project = this.util.getProject();
         const basePath = project.getRootPath();
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
         const { target, ignoreCertErrors = false } = await getAdpConfig(
             basePath,
             path.join(basePath, FileName.Ui5Yaml)
@@ -365,8 +373,8 @@ export default class RoutesHandler {
  * @param {string} name - The name of the controller extension (used in TypeScript templates).
  * @throws {Error} Throws an error if rendering the template fails.
  */
-function generateControllerFile(rootPath: string, filePath: string, name: string): void {
-    const id = getVariant(rootPath)?.id;
+async function generateControllerFile(rootPath: string, filePath: string, name: string): Promise<void> {
+    const id = (await getVariant(rootPath))?.id;
     const isTsSupported = isTypescriptSupported(rootPath);
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
     const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
