@@ -1,9 +1,20 @@
 // Legacy package, dependent on external dependencies for async operations and no 'type: module' defined in package.json
 import hasbin = require('hasbin');
-import { ApiHubType, type ApiHubConfig } from '@sap-ux/cf-deploy-config-sub-generator';
-import { ERROR_TYPE, ErrorHandler, mtaExecutable } from '@sap-ux/deploy-config-generator-shared';
+import {
+    API_BUSINESS_HUB_ENTERPRISE_PREFIX,
+    ApiHubType,
+    loadManifest,
+    type ApiHubConfig
+} from '@sap-ux/cf-deploy-config-sub-generator';
+import {
+    ERROR_TYPE,
+    ErrorHandler,
+    generateDestinationName,
+    mtaExecutable
+} from '@sap-ux/deploy-config-generator-shared';
 import { existsSync } from 'fs';
 import { join } from 'path';
+import { Editor } from 'mem-fs-editor';
 
 /**
  * Check if the MTA is installed.
@@ -39,4 +50,32 @@ export function getEnvApiHubConfig(): ApiHubConfig | undefined {
               apiHubType: apiHubType === ApiHubType.apiHubEnterprise ? ApiHubType.apiHubEnterprise : ApiHubType.apiHub
           }
         : undefined;
+}
+
+/**
+ * Returns the destination name for API Hub Enterprise.
+ *
+ * @param memFs - reference to a mem-fs editor
+ * @param opts -options representing the project app path and service path
+ * @param opts.appPath - path to project
+ * @param opts.servicePath - service path
+ * @param apiHubConfig - API Hub Config
+ * @returns - destination name
+ */
+export async function getApiHubOptions(
+    memFs: Editor,
+    { appPath, servicePath }: { appPath: string; servicePath: string | undefined },
+    apiHubConfig?: ApiHubConfig
+): Promise<{ destinationName: string | undefined; servicePath: string | undefined }> {
+    let destinationName: string | undefined;
+    if (apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise) {
+        // appGenDestination may not have been passed in options e.g. launched from app modeler
+        if (!servicePath) {
+            // Load service path from manifest.json file
+            const manifest = await loadManifest(memFs, appPath);
+            servicePath = manifest?.['sap.app'].dataSources?.mainService?.uri;
+        }
+        destinationName = generateDestinationName(API_BUSINESS_HUB_ENTERPRISE_PREFIX, servicePath);
+    }
+    return { destinationName, servicePath };
 }
