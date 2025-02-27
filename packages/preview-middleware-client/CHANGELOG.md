@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.12.1
+
+### Patch Changes
+
+-   1d4ba46: feat: handling of legacy free ui5 version
+
 ## 0.12.0
 
 ### Minor Changes
