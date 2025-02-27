@@ -122,7 +122,7 @@ export class QuickActionService implements Service {
                     rta: this.rta,
                     flexSettings: this.rta.getFlexSettings(),
                     resourceBundle: this.texts,
-                    changeService: this.changeService,
+                    changeService: this.changeService
                 };
                 for (const Definition of definitions) {
                     try {
