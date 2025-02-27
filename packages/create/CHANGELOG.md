@@ -1,5 +1,49 @@
 # @sap-ux/create
 
+## 0.12.1
+
+### Patch Changes
+
+-   Updated dependencies [1d4ba46]
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/preview-middleware@0.18.1
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/app-config-writer@0.5.33
+    -   @sap-ux/abap-deploy-config-writer@0.0.90
+    -   @sap-ux/adp-tooling@0.13.1
+    -   @sap-ux/cap-config-writer@0.9.12
+    -   @sap-ux/cards-editor-config-writer@0.4.10
+    -   @sap-ux/flp-config-inquirer@0.2.46
+    -   @sap-ux/mockserver-config-writer@0.8.2
+    -   @sap-ux/odata-service-writer@0.26.4
+    -   @sap-ux/system-access@0.5.31
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.19
+
+## 0.12.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
+### Patch Changes
+
+-   Updated dependencies [127bd12]
+    -   @sap-ux/adp-tooling@0.13.0
+    -   @sap-ux/preview-middleware@0.18.0
+    -   @sap-ux/flp-config-inquirer@0.2.45
+    -   @sap-ux/app-config-writer@0.5.32
+
+## 0.11.95
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.2.18
+-   @sap-ux/cap-config-writer@0.9.11
+-   @sap-ux/flp-config-inquirer@0.2.44
+-   @sap-ux/adp-tooling@0.12.138
+-   @sap-ux/preview-middleware@0.17.48
+-   @sap-ux/app-config-writer@0.5.32
+
 ## 0.11.94
 
 ### Patch Changes

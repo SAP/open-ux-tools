@@ -1,5 +1,31 @@
 # @sap-ux/preview-middleware
 
+## 0.18.1
+
+### Patch Changes
+
+-   1d4ba46: feat: handling of legacy free ui5 version
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/adp-tooling@0.13.1
+
+## 0.18.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
+### Patch Changes
+
+-   Updated dependencies [127bd12]
+    -   @sap-ux/adp-tooling@0.13.0
+
+## 0.17.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.138
+
 ## 0.17.47
 
 ### Patch Changes

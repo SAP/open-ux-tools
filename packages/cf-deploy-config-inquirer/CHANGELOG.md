@@ -1,5 +1,23 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.20
+
+## 0.2.8
+
+### Patch Changes
+
+-   d6118c9: Changes to support adding CAP MTA prompt to allow user generate MTA
+
+## 0.2.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.19
+
 ## 0.2.6
 
 ### Patch Changes

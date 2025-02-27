@@ -1,5 +1,19 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.9.1
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/telemetry@0.5.63
+
+## 0.9.0
+
+### Minor Changes
+
+-   fffc3a7: Add Freestyle OPA templates to ui5-test-writer
+
 ## 0.8.1
 
 ### Patch Changes

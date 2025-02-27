@@ -1,12 +1,22 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { DeploymentGenerator } from '@sap-ux/deploy-config-generator-shared';
+import { DeploymentGenerator, getConfirmMtaContinuePrompt } from '@sap-ux/deploy-config-generator-shared';
 import { getMtaPath } from '@sap-ux/project-access';
-import { getPrompts, promptNames } from '@sap-ux/cf-deploy-config-inquirer';
+import {
+    appRouterPromptNames,
+    type CfAppRouterDeployConfigPromptOptions,
+    type CfAppRouterDeployConfigQuestions,
+    type CfDeployConfigPromptOptions,
+    type CfDeployConfigQuestions,
+    getAppRouterPrompts,
+    getPrompts,
+    promptNames
+} from '@sap-ux/cf-deploy-config-inquirer';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { destinationQuestionDefaultOption, getCFChoices } from './utils';
 import { t } from '../utils';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
-import type { CfDeployConfigPromptOptions, CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-inquirer';
+import type { Answers, Question } from 'inquirer';
+import { withCondition } from '@sap-ux/inquirer-common';
 
 /**
  * Fetches the Cloud Foundry deployment configuration questions.
@@ -59,4 +69,47 @@ export async function getCFQuestions({
 
     DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));
     return getPrompts(options);
+}
+
+/**
+ * Retrieve the CF Approuter questions, certain prompts are restricted to support CAP project.
+ *
+ * @param options - the options required for retrieving the prompts.
+ * @param options.projectRoot - the root path of the project.
+ * @returns the cf approuter config questions.
+ */
+async function getCFApprouterQuestionsForCap({
+    projectRoot
+}: {
+    projectRoot: string;
+}): Promise<CfAppRouterDeployConfigQuestions[]> {
+    // Disable some prompts, not required for CAP flow
+    const appRouterPromptOptions: CfAppRouterDeployConfigPromptOptions = {
+        [appRouterPromptNames.mtaPath]: projectRoot,
+        [appRouterPromptNames.mtaId]: true,
+        [appRouterPromptNames.mtaDescription]: false,
+        [appRouterPromptNames.mtaVersion]: false,
+        [appRouterPromptNames.routerType]: true,
+        [appRouterPromptNames.addConnectivityService]: true,
+        [appRouterPromptNames.addABAPServiceBinding]: false
+    };
+
+    return getAppRouterPrompts(appRouterPromptOptions);
+}
+
+/**
+ * Generate CF Approuter questions for CAP project with an existing HTML5 app and missing MTA configuration.
+ *
+ * @param options - the options required for retrieving the prompts.
+ * @param options.projectRoot - the root path of the project.
+ * @returns the cf approuter config questions, restricting prompts being shown to the user
+ */
+export async function getCAPMTAQuestions({ projectRoot }: { projectRoot: string }): Promise<Question[]> {
+    // If launched as root generator, add a prompt to allow user decide if they want to add an MTA config
+    let questions = (await getCFApprouterQuestionsForCap({
+        projectRoot
+    })) as Question[];
+    questions = withCondition(questions, (answers: Answers) => answers.addCapMtaContinue === true);
+    questions.unshift(...getConfirmMtaContinuePrompt());
+    return questions;
 }
