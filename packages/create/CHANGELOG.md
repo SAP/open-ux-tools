@@ -1,5 +1,19 @@
 # @sap-ux/create
 
+## 0.12.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
+### Patch Changes
+
+-   Updated dependencies [127bd12]
+    -   @sap-ux/adp-tooling@0.13.0
+    -   @sap-ux/preview-middleware@0.18.0
+    -   @sap-ux/flp-config-inquirer@0.2.45
+    -   @sap-ux/app-config-writer@0.5.32
+
 ## 0.11.95
 
 ### Patch Changes

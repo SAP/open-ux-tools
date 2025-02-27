@@ -18,6 +18,7 @@ export type PromptDefaults = {
     ft?: boolean;
     package?: string;
     transport?: string;
+    ts?: boolean;
 };
 
 /**
@@ -92,6 +93,13 @@ export async function promptGeneratorInput(
             name: 'fioriTools',
             message: 'Enable Fiori tools?',
             initial: defaults.ft !== false,
+            validate: (input) => input?.length > 0
+        },
+        {
+            type: 'confirm',
+            name: 'enableTypeScript',
+            message: 'Enable TypeScript?',
+            initial: defaults.ts !== false,
             validate: (input) => input?.length > 0
         }
     ]);

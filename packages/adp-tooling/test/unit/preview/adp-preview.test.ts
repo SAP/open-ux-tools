@@ -1,21 +1,23 @@
 import nock from 'nock';
+import * as fs from 'fs';
 import { join } from 'path';
 import express from 'express';
+import { renderFile } from 'ejs';
 import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
-import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
-import * as fs from 'fs';
 
-import { AdpPreview } from '../../../src/preview/adp-preview';
-import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
-import * as helper from '../../../src/base/helper';
-import * as editors from '../../../src/writer/editors';
-import * as manifestService from '../../../src/base/abap/manifest-service';
-import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
+import { type Logger, ToolsLogger } from '@sap-ux/logger';
 import * as systemAccess from '@sap-ux/system-access/dist/base/connect';
 import * as serviceWriter from '@sap-ux/odata-service-writer/dist/data/annotations';
+
+import * as helper from '../../../src/base/helper';
+import * as editors from '../../../src/writer/editors';
+import { AdpPreview } from '../../../src/preview/adp-preview';
+import * as manifestService from '../../../src/base/abap/manifest-service';
+import type { AdpPreviewConfig, CommonChangeProperties } from '../../../src';
+import { addXmlFragment, tryFixChange } from '../../../src/preview/change-handler';
 
 interface GetFragmentsResponse {
     fragments: { fragmentName: string }[];
@@ -54,6 +56,13 @@ jest.mock('@sap-ux/store', () => {
         )
     };
 });
+
+jest.mock('ejs', () => ({
+    ...jest.requireActual('ejs'),
+    renderFile: jest.fn()
+}));
+
+const renderFileMock = renderFile as jest.Mock;
 
 const tryFixChangeMock = tryFixChange as jest.Mock;
 const addXmlFragmentMock = addXmlFragment as jest.Mock;
@@ -526,6 +535,8 @@ describe('AdaptationProject', () => {
                 },
                 ignoreCertErrors: false
             });
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+
             jest.spyOn(systemAccess, 'createAbapServiceProvider').mockResolvedValue({} as any);
             jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
                 getDataSourceMetadata: jest.fn().mockResolvedValue(`
@@ -575,6 +586,7 @@ describe('AdaptationProject', () => {
 
         afterEach(() => {
             mockExistsSync.mockRestore();
+            mockWriteFileSync.mockRestore();
         });
 
         test('GET /adp/api/fragment', async () => {
@@ -653,12 +665,51 @@ describe('AdaptationProject', () => {
 
         test('POST /adp/api/controller - creates controller', async () => {
             mockExistsSync.mockReturnValue(false);
+            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+                callback(undefined, 'test-js-controller');
+            });
             const controllerName = 'Share';
+            const controllerPath = join('/adp.project', 'webapp', 'changes', 'coding', 'Share.js');
             const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
 
             const message = response.text;
-            expect(mockWriteFileSync).toHaveBeenCalledTimes(1);
+            expect(mockWriteFileSync).toHaveBeenNthCalledWith(1, controllerPath, 'test-js-controller', {
+                encoding: 'utf8'
+            });
             expect(message).toBe('Controller extension created!');
+        });
+
+        test('POST /adp/api/controller - creates TypeScript controller', async () => {
+            mockExistsSync.mockReturnValue(false);
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(true);
+            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+                callback(undefined, 'test-ts-controller');
+            });
+
+            const controllerName = 'Share';
+            const controllerPath = join('/adp.project', 'webapp', 'changes', 'coding', 'Share.ts');
+            const response = await server.post('/adp/api/controller').send({ controllerName }).expect(201);
+
+            const message = response.text;
+            expect(mockWriteFileSync).toHaveBeenNthCalledWith(1, controllerPath, 'test-ts-controller', {
+                encoding: 'utf8'
+            });
+            expect(message).toBe('Controller extension created!');
+        });
+
+        test('POST /adp/api/controller - throws error during rendering a ts template', async () => {
+            mockExistsSync.mockReturnValue(false);
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(true);
+            renderFileMock.mockImplementation((templatePath, data, options, callback) => {
+                callback(new Error('Failed to render template'), '');
+            });
+
+            const controllerName = 'Share';
+            const response = await server.post('/adp/api/controller').send({ controllerName }).expect(500);
+
+            const message = response.text;
+            expect(mockWriteFileSync).not.toHaveBeenCalled();
+            expect(message).toBe('Error rendering TypeScript template Failed to render template');
         });
 
         test('POST /adp/api/controller - controller already exists', async () => {

@@ -344,6 +344,30 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
+        test('test/flp.html UI5 legacy-free', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html UI5 snapshot', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
         test('test/flp.html', async () => {
             const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false#app-preview').expect(200);
             expect(response.text).toMatchSnapshot();
