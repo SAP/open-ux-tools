@@ -412,6 +412,21 @@ describe('FlpSandbox', () => {
                         expect(response.text).toMatchSnapshot();
                     }
                 });
+
+                // new homepage related tests
+                if (enableNewHomepage) {
+                    test('test/flp.html should fallback to old homepage if ui5 version is less than 1.123.0', async () => {
+                        const jsonSpy = () =>
+                            Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.120.0' }] });
+                        fetchMock.mockResolvedValue({
+                            json: jsonSpy,
+                            text: jest.fn(),
+                            ok: true
+                        });
+                        const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+                        expect(response.text).toMatchSnapshot();
+                    });
+                }
             });
         };
 

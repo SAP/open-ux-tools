@@ -7,8 +7,8 @@
 >
     <m:Page
         id="page"
-        class="sapCuxBaseLayout"
         showHeader="false"
+        class="sapUiBaseLayout sapUiResponsiveContentPadding sapUiLayoutPadding sapCuxBaseLayout"
     >
         <NewsAndPagesContainer id="newsContainer">
             <NewsPanel
