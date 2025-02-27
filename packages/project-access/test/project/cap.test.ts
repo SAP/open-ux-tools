@@ -155,6 +155,16 @@ describe('Test getCapModelAndServices()', () => {
                             'runtime': 'Node.js'
                         },
                         {
+                            'name': 'oDataV4Kind',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'odata-v4'
+                                }
+                            ],
+                            'runtime': 'Node.js'
+                        },
+                        {
                             'name': 'withRuntime',
                             'endpoints': [
                                 {
@@ -190,6 +200,11 @@ describe('Test getCapModelAndServices()', () => {
                 },
                 {
                     'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
+                },
+                {
+                    'name': 'oDataV4Kind',
                     'urlPath': 'url',
                     'runtime': 'Node.js'
                 }
