@@ -141,7 +141,7 @@ const UI5_LIBS = [
  * Gets the UI5 libs dependencies from manifest.json.
  *
  * @param manifest application manifest
- * @returns UI5 libs that should preloaded
+ * @returns UI5 libs that should be preloaded
  */
 function getUI5Libs(manifest: Partial<Manifest>): string {
     const libs = manifest['sap.ui5']?.dependencies?.libs ?? {};
