@@ -1,5 +1,12 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.1.23
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.12
+-   @sap-ux/fe-fpm-writer@0.33.9
+
 ## 2.1.22
 
 ### Patch Changes
