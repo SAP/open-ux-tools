@@ -321,7 +321,7 @@ describe('FlpSandbox', () => {
             fetchMock.mockRestore();
         });
 
-        const beforeAllHook = async (mockConfig: Partial<MiddlewareConfig>) => {
+        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
             const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
             const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
             await flp.init(manifest);
@@ -332,7 +332,7 @@ describe('FlpSandbox', () => {
             server = supertest(app);
         };
 
-        beforeAll(() => beforeAllHook(mockConfig as MiddlewareConfig));
+        beforeAll(() => setupMiddleware(mockConfig as MiddlewareConfig));
 
         const runTestsWithHomepageToggle = (enableNewHomepage: boolean = false) => {
             describe(`new homepage ${enableNewHomepage ? 'enabled' : 'disabled'}`, () => {
@@ -340,8 +340,8 @@ describe('FlpSandbox', () => {
                     fetchMock.mockRestore();
                 });
 
-                beforeAll(() =>
-                    beforeAllHook({
+                beforeEach(() =>
+                    setupMiddleware({
                         ...mockConfig,
                         flp: { ...mockConfig.flp, newHomePage: enableNewHomepage }
                     } as MiddlewareConfig)
