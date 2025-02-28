@@ -75,7 +75,7 @@ Object {
 
 exports[`config generatePreviewFiles minimum settings 1`] = `
 "<!DOCTYPE HTML>
-<html lang=\\"en\\">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -129,7 +129,6 @@ exports[`config generatePreviewFiles minimum settings 1`] = `
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
@@ -152,7 +151,7 @@ exports[`config generatePreviewFiles multi-app setup e.g. in CAP 1`] = `
 Object {
   "test/flpSandbox.thml": Object {
     "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -206,7 +205,6 @@ Object {
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon\\"
         data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"/apps/simple-app\\",\\"test.fe.v2.other\\":\\"/apps/other-app\\"}'
@@ -232,7 +230,7 @@ exports[`config generatePreviewFiles tests included and a custom path 1`] = `
 Object {
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -286,7 +284,6 @@ Object {
         data-sap-ui-preload=\\"async\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
         data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
         data-sap-ui-bindingSyntax=\\"complex\\"
         data-sap-ui-flexibilityServices='[{\\"connector\\":\\"LrepConnector\\",\\"layers\\":[],\\"url\\":\\"/sap/bc/lrep\\"},{\\"applyConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"writeConnector\\":\\"custom.connectors.WorkspaceConnector\\",\\"custom\\":true},{\\"connector\\":\\"LocalStorageConnector\\",\\"layers\\":[\\"CUSTOMER\\",\\"USER\\"]}]'
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\"}'
@@ -336,7 +333,7 @@ Object {
   },
   "webapp/test/testsuite.qunit.html": Object {
     "contents": "<!DOCTYPE html>
-<html lang=\\"en\\">
+<html>
 <head>
     <title>QUnit TestSuite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>

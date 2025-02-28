@@ -1,5 +1,5 @@
 <!DOCTYPE HTML>
-<html lang="en">
+<html>
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 <head>
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -64,7 +64,6 @@
         data-sap-ui-preload="async"
         data-sap-ui-theme="<%- ui5.ui5Theme %>"
         data-sap-ui-compatVersion="edge"
-        data-sap-ui-language="en"
         data-sap-ui-resourceroots='{"<%- app.id  %>": "../"}'
         data-sap-ui-frameOptions="allow"
         data-sap-ui-flexibilityServices='[<% if (templateOptions.changesLoader) {%>{"applyConnector":"<%= app.id.replace(/\./g, "/") %>/test/changes_loader", "custom":true}, <% } %>{"connector": "LocalStorageConnector"}]'>
