@@ -155,6 +155,9 @@ export class FlpSandbox {
             this.createTestSuite(this.test);
         }
 
+        if (this.flpConfig.newHomePage === true) {
+            this.addCDMRoutes();
+        }
         await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
@@ -340,9 +343,6 @@ export class FlpSandbox {
             this.router.get(previewUrl, async (req: Request, res: Response) => {
                 await this.editorGetHandler(req, res, rta, previewUrl, editor);
             });
-
-            // add route for the CDM, if newHomePage is enabled
-            this.addCDMRoute(previewUrl);
         }
     }
 
@@ -410,9 +410,6 @@ export class FlpSandbox {
                 await this.flpGetHandler(req, res, next);
             }
         );
-
-        // add route for the CDM, if newHomePage is enabled
-        this.addCDMRoute(this.flpConfig.path);
     }
 
     /**
@@ -478,7 +475,8 @@ export class FlpSandbox {
             }.`
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
-        return readFileSync(join(__dirname, `../../templates/flp/sandbox${filePrefix}.html`), 'utf-8');
+        const template = this.flpConfig.newHomePage ? 'cdm' : 'sandbox';
+        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.html`), 'utf-8');
     }
 
     /**
@@ -537,23 +535,27 @@ export class FlpSandbox {
     }
 
     /**
-     * Add route for the cdm.json file if flp.newHomePage is enabled.
+     * Add routes for cdm.json required by FLP during bootstrapping via cdm.
      *
-     * @param previewPath the path of the preview
      */
-    private addCDMRoute(previewPath: string): void {
-        if (this.flpConfig.newHomePage === true) {
-            const path = previewPath.split('/');
-            path.pop();
-            path.push('cdm.json');
+    private addCDMRoutes(): void {
+        const previewPaths = [this.flpConfig.path];
+        if (this.rta) {
+            this.rta.endpoints.forEach((editor) => {
+                previewPaths.push(editor.path.startsWith('/') ? editor.path : `/${editor.path}`);
+            });
+        }
+
+        previewPaths.forEach((previewPath) => {
+            const cdmPath = join(dirname(previewPath), 'cdm.json');
             this.router.get(
-                path.join('/'),
+                cdmPath,
                 async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
                     const json = generateCdm(this.templateConfig.apps);
                     this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
                 }
             );
-        }
+        });
     }
 
     /**

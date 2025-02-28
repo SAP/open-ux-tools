@@ -6,6 +6,66 @@
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="sap.ushellConfig.crossPlatformDefaults"
+        content='{
+            "defaultRenderer": "fiori2",
+            "renderers": {
+                "fiori2": {
+                    "componentData": {
+                        "config": {
+                            "enableSearch": false,
+                            "enableUserDefaultParameters": true
+                        }
+                    }
+                }
+            },
+            "ushell": {
+                "spaces": {
+                    "enabled": true,
+                    "myHome": {
+                        "enabled": true
+                    }
+                },
+                "homeApp": {
+                    "component": {
+                        "name": "open.ux.preview.client.flp.homepage",
+                        "url": "/preview/client/flp/homepage"
+                    }
+                }
+            },
+            "services": {
+                "Container": {
+                    "adapter": {
+                        "config": {
+                            "userProfile": {
+                                "defaults": {
+                                    "email": "john.doe@sap.com",
+                                    "firstName": "John",
+                                    "lastName": "Doe",
+                                    "fullName": "John Doe",
+                                    "id": "DOEJ"
+                                }
+                            }
+                        }
+                    }
+                },
+                "CommonDataModel": {
+                    "adapter": {
+                        "config": {
+                            "ignoreSiteDataPersonalization": true,
+                            "siteDataUrl": "./cdm.json"
+                        }
+                    }
+                },
+                "LaunchPage": {
+                    "adapter": {
+                        "module": "sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter"
+                    }
+                }
+            }
+        }'
+    />
     <title>Local FLP Sandbox</title>
 
     <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
@@ -24,19 +84,8 @@
          for productive scenarios.
     -->
     <script type="text/javascript">
-        window["sap-ushell-config"] = {
-            defaultRenderer: "fiori2",
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: "hidden",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications:  <%- JSON.stringify(apps) %>
+        window['sap-ui-config'] = {
+            oninit: "module:open/ux/preview/client/flp/init"
         };
     </script>
 
@@ -44,10 +93,9 @@
         window["data-open-ux-preview-basePath"] = "<%- basePath %>";
     </script>
 
-    <script src="<%- basePath %>/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions="allow"' is a NON-SECURE setting for test environments -->
     <script id="sap-ui-bootstrap"
-        src="<%- basePath %>/resources/sap-ui-core.js"
+        src="<%- basePath %>/resources/sap/ushell/bootstrap/cdm.js"
         data-sap-ui-libs="<%- ui5.libs %>"
         data-sap-ui-async="true"
         data-sap-ui-preload="async"
@@ -58,12 +106,12 @@
         data-sap-ui-flexibilityServices='<%- JSON.stringify(ui5.flex) %>'
         data-sap-ui-resourceroots='<%- JSON.stringify(ui5.resources) %>'
         data-sap-ui-frameOptions="allow"
-        data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %>
-        data-sap-ui-oninit="module:open/ux/preview/client/flp/init"<% if (locals.init) { %>
+        data-sap-ui-xx-componentPreload="off"<%- ui5.bootstrapOptions %><% if (locals.init) { %>
         data-open-ux-preview-customInit='<%- init %>'<% } if (locals.flex) { %>
         data-open-ux-preview-features='<%- JSON.stringify(features) %>'
         data-open-ux-preview-flex-settings='<%- JSON.stringify(flex) %>'<% } if (locals.locateReuseLibsScript) { %>
-        data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>>
+        data-open-ux-preview-libs-manifests='<%- JSON.stringify(Object.values(apps).map(app => app.url)) %>'<% } %>
+        data-open-ux-preview-new-homepage='true'>
     </script>
 
 <% if (locals.flex && flex?.developerMode) { %>
@@ -83,7 +131,10 @@
 </head>
 
 <!-- UI Content -->
-<body class="sapUiBody" id="content">
+<body class="sapUiBody">
+    <div id="canvas">
+        <div class="sapMShellBG sapUiGlobalBackgroundImage"></div>
+    </div>
 </body>
 
 </html>
