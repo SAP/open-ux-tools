@@ -121,7 +121,7 @@ function getMinUI5Version(ui5Version: string, minUI5Version?: string) {
  * @param manifestVersion - optional manifest descriptor version to be used if provided
  * @returns - the manifest descriptor version
  */
-function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
+export function getManifestVersion(ui5Version: string, manifestVersion?: string): string {
     const ui5SemVer = semVer.coerce(ui5Version) as SemVer;
 
     /**

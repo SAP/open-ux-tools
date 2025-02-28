@@ -1,5 +1,27 @@
 # @sap-ux/preview-middleware
 
+## 0.18.4
+
+### Patch Changes
+
+-   78dd2c2: fix: TypeScript template causes the iframe to break when controller extension is loaded
+-   Updated dependencies [78dd2c2]
+    -   @sap-ux/adp-tooling@0.13.4
+
+## 0.18.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.3
+
+## 0.18.2
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/adp-tooling@0.13.2
+    -   @sap-ux/project-access@1.29.10
+
 ## 0.18.1
 
 ### Patch Changes

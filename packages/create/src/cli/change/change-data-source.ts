@@ -42,7 +42,7 @@ async function changeDataSource(basePath: string, simulate: boolean, yamlPath: s
             basePath = process.cwd();
         }
         await validateAdpProject(basePath);
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
         const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, yamlPath);
         const provider = await createAbapServiceProvider(
             target,

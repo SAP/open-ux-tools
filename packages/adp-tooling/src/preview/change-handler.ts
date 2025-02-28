@@ -270,7 +270,7 @@ export async function addAnnotationFile(
                     serviceUrl: datasoruces[dataSourceId].uri,
                     fileName: basename(dataSource[annotationDataSourceKey].uri)
                 },
-                variant: getVariant(projectRoot),
+                variant: await getVariant(projectRoot),
                 isCommand: false
             },
             fs
@@ -289,7 +289,7 @@ export async function addAnnotationFile(
  * @returns Promise<ManifestService>
  */
 async function getManifestService(basePath: string, logger: Logger): Promise<ManifestService> {
-    const variant = getVariant(basePath);
+    const variant = await getVariant(basePath);
     const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
     const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
     return await ManifestService.initMergedManifest(provider, basePath, variant, logger as unknown as ToolsLogger);

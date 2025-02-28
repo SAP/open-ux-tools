@@ -1,5 +1,30 @@
 # @sap-ux/adp-tooling
 
+## 0.13.4
+
+### Patch Changes
+
+-   78dd2c2: fix: TypeScript template causes the iframe to break when controller extension is loaded
+
+## 0.13.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.22
+
+## 0.13.2
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/odata-service-writer@0.26.5
+    -   @sap-ux/i18n@0.2.2
+    -   @sap-ux/inquirer-common@0.6.21
+    -   @sap-ux/project-access@1.29.10
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/system-access@0.5.31
+
 ## 0.13.1
 
 ### Patch Changes
