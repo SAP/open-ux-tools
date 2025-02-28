@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.22
+
 ## 2.2.11
 
 ### Patch Changes
