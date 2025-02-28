@@ -29,11 +29,3 @@ declare module 'sap/ushell/services/AppState' {
 
     export default AppState;
 }
-
-declare module 'sap/ushell/services/Pages' {
-    interface Pages {
-        enableImplicitSave(enableSave: boolean): void;
-    }
-
-    export default Pages;
-}

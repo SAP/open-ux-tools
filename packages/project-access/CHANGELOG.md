@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.29.16
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+
+## 1.29.15
+
+### Patch Changes
+
+-   1ce7fe9: Improve `getModule` to attempt module reinstallation if loading fails.
+
 ## 1.29.14
 
 ### Patch Changes

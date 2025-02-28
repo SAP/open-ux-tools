@@ -1,5 +1,27 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.22
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/project-access@1.29.16
+
+## 0.1.21
+
+### Patch Changes
+
+-   751865f: support mta configurations generated using cds which produce modules with a different naming conventions
+
+## 0.1.20
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+
 ## 0.1.19
 
 ### Patch Changes

@@ -6,7 +6,6 @@ import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
-import Pages from 'sap/ushell/services/Pages';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
 import initConnectors from './initConnectors';
@@ -365,12 +364,6 @@ export async function init({
         } else {
             await triggerAdaptation(flexSettings, ui5VersionInfo);
         }
-    }
-
-    // disable implicit personalisation save if new home page is enabled
-    if (enhancedHomePage) {
-        const pages = await container.getServiceAsync<Pages>('Pages');
-        pages.enableImplicitSave(false);
     }
 
     // reset app state if requested

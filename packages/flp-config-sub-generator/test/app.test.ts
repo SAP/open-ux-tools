@@ -208,17 +208,7 @@ describe('flp-config generator', () => {
                 )
                 .withPrompts({
                     s4Continue: true,
-                    confirmConfigUpdate: true,
                     ...answers
-                })
-                .withOptions({
-                    data: {
-                        additionalPrompts: {
-                            confirmConfigUpdate: {
-                                show: true
-                            }
-                        }
-                    }
                 })
                 .run()
         ).resolves.not.toThrow();

@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.24.9
+
+### Patch Changes
+
+-   3190a55: UISections. Fixed incorrect position calculations when hiding sections with three or more sections present.
+
 ## 1.24.8
 
 ### Patch Changes
