@@ -586,7 +586,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
                     \\"adapter\\": {
                         \\"config\\": {
                             \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"./cdm.json\\"
+                            \\"siteDataUrl\\": \\"/cdm.json\\"
                         }
                     }
                 },
@@ -1254,7 +1254,7 @@ exports[`FlpSandbox router new homepage enabled editor with config 1`] = `
                     \\"adapter\\": {
                         \\"config\\": {
                             \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"./cdm.json\\"
+                            \\"siteDataUrl\\": \\"/cdm.json\\"
                         }
                     }
                 },
@@ -1382,7 +1382,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html 1`] = `
                     \\"adapter\\": {
                         \\"config\\": {
                             \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"./cdm.json\\"
+                            \\"siteDataUrl\\": \\"/cdm.json\\"
                         }
                     }
                 },
@@ -1756,7 +1756,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 snapshot 1`] =
                     \\"adapter\\": {
                         \\"config\\": {
                             \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"./cdm.json\\"
+                            \\"siteDataUrl\\": \\"/cdm.json\\"
                         }
                     }
                 },
@@ -1884,7 +1884,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html sap-ui-xx-viewCach
                     \\"adapter\\": {
                         \\"config\\": {
                             \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"./cdm.json\\"
+                            \\"siteDataUrl\\": \\"/cdm.json\\"
                         }
                     }
                 },
