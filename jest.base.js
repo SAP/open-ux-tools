@@ -1,6 +1,7 @@
 module.exports = {
     transform: {
-        '^.+\\.ts$': 'ts-jest'
+        '^.+\\.ts$': 'ts-jest',
+        '^.+\\.txt$': 'jest-text-transformer'
     },
     collectCoverage: true,
     collectCoverageFrom: ['src/**/*.ts'],
