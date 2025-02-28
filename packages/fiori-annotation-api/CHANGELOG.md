@@ -1,5 +1,11 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.12
+
+### Patch Changes
+
+-   d443dde: Fixed CDS compile error when new .cds files are created in memfs.
+
 ## 0.4.11
 
 ### Patch Changes

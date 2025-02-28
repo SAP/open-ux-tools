@@ -157,7 +157,7 @@ export class FioriAnnotationService {
             project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs'
         );
         const finalOptions = getOptionsWithDefaults(options);
-        const service = await getService(project, serviceName, appName, finalOptions.clearFileResolutionCache);
+        const service = await getService(project, serviceName, appName, fs, finalOptions.clearFileResolutionCache);
         const adapter = createAdapter(
             project,
             service,
@@ -239,12 +239,6 @@ export class FioriAnnotationService {
         );
         for (const file of files) {
             this.fileCache.set(file.uri, file.content);
-        }
-
-        // all the modified files should also be included in the cache
-        for (const [relativePath, value] of Object.entries(this.fs.dump())) {
-            const absolute = pathToFileURL(join(process.cwd(), relativePath)).toString();
-            this.fileCache.set(absolute, value.contents);
         }
 
         await this.adapter.sync(this.fileCache);
@@ -470,12 +464,20 @@ async function getService(
     project: Project,
     serviceName: string,
     appName: string,
+    fsEditor: Editor | undefined,
     clearCache: boolean
 ): Promise<Service> {
     if (project.projectType === 'EDMXBackend') {
         return getLocalEDMXService(project, serviceName, appName);
     } else if (project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs') {
-        return getCDSService(project.root, serviceName, clearCache);
+        const fileCache = new Map<string, string>();
+        if (fsEditor) {
+            for (const [relativePath, value] of Object.entries(fsEditor.dump())) {
+                const absolute = pathToFileURL(join(process.cwd(), relativePath)).toString();
+                fileCache.set(absolute, value.contents);
+            }
+        }
+        return getCDSService(project.root, serviceName, fileCache, clearCache);
     } else {
         throw new Error(`Unsupported project type "${project.projectType}"!`);
     }
