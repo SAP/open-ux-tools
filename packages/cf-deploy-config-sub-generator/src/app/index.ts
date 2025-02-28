@@ -246,7 +246,7 @@ export default class extends DeploymentGenerator {
     private async _reconcileAnswersWithOptions(): Promise<void> {
         const destinationName = this.destinationName || this.answers.destinationName;
         const destination = await getDestination(destinationName);
-        const addManagedAppRouter = this.options.addManagedAppRouter ?? false;
+        const addManagedAppRouter = this.options.addManagedAppRouter ?? this.answers.addManagedAppRouter ?? false;
         const isDestinationFullUrl =
             this.options.isFullUrlDest ?? (destination && isFullUrlDestination(destination)) ?? false;
         const destinationAuthentication =

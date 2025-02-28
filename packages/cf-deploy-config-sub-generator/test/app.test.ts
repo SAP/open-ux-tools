@@ -493,12 +493,13 @@ describe('Cloud foundry generator tests', () => {
                 .withOptions({
                     skipInstall: true,
                     appRootPath: join(appDir, projectName),
-                    addManagedAppRouter: true,
-                    launchDeployConfigAsSubGenerator: true,
-                    destinationName: 'testDestination',
+                    launchDeployConfigAsSubGenerator: false,
                     destinationAuthType: 'NoAuthentication' // Validating SH4
                 })
-                .withPrompts({ addManagedAppRouter: true })
+                .withPrompts({
+                    addManagedAppRouter: true,
+                    destinationName: 'testDestination'
+                })
                 .run()
         ).resolves.not.toThrow();
 
