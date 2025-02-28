@@ -1,23 +1,17 @@
-import type { CapRuntime } from '../../../src/cap-config/types';
-import { satisfiesMinCdsVersion } from '../../../src/cap-config/package-json';
+import type { CapRuntime, CapServiceCdsInfo } from '../../../src';
 import memFs from 'mem-fs';
 import { ToolsLogger } from '@sap-ux/logger';
 import editor, { type Editor } from 'mem-fs-editor';
 import { dirname, join } from 'path';
-import { minCdsVersion } from '../../../src/cap-config';
 import { updateRootPackageJson, updateAppPackageJson } from '../../../src/cap-writer/package-json';
 import type { Package } from '@sap-ux/project-access';
-import type { CapServiceCdsInfo } from '../../../src/index';
-import { dir } from 'console';
-
-jest.mock('../../../src/cap-config/package-json', () => ({
-    ...jest.requireActual('../../../src/cap-config/package-json'),
-    satisfiesMinCdsVersion: jest.fn()
-}));
+import * as ProjectAccessMock from '@sap-ux/project-access';
 
 jest.mock('@sap-ux/project-access', () => ({
     ...jest.requireActual('@sap-ux/project-access'),
-    getCdsVersionInfo: jest.fn()
+    getCdsVersionInfo: jest.fn(),
+    satisfiesMinCdsVersion: jest.fn().mockReturnValue(true),
+    checkCdsUi5PluginEnabled: jest.fn().mockReturnValue(false)
 }));
 
 describe('Writing/package json files', () => {
@@ -60,7 +54,6 @@ describe('Writing/package json files', () => {
         const packageJsonPath = join(testInputPath, testProjectNameWithSapUx, 'package.json');
         const isSapUxEnabled = true;
         capService.projectPath = join(testInputPath, testProjectNameWithSapUx);
-        (satisfiesMinCdsVersion as jest.Mock).mockReturnValue(true);
         await updateRootPackageJson(fs, testProjectNameNoSapUx, isSapUxEnabled, capService, 'test.app.project');
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
         const scripts = packageJson.scripts;
@@ -95,6 +88,7 @@ describe('Writing/package json files', () => {
         );
     });
     test('should add watch script when workspace is NOT enabled', async () => {
+        jest.spyOn(ProjectAccessMock, 'checkCdsUi5PluginEnabled').mockResolvedValue(true);
         const isSapUxEnabled = true;
         const isNpmWorkspacesEnabled = false;
         const testProjectWSAlreadyEnabled = 'testprojectwsalreadyenabled';
@@ -118,7 +112,6 @@ describe('Writing/package json files', () => {
             isNpmWorkspacesEnabled
         );
         const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
-        const devDependencies = packageJson.devDependencies;
         const scripts = packageJson.scripts;
         expect(scripts?.['watch-testprojectwsalreadyenabled']).toBeDefined();
         expect(scripts?.['watch-testprojectwsalreadyenabled']).toEqual(
