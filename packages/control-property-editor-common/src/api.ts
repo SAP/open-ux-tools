@@ -283,6 +283,22 @@ export interface NestedQuickActionExecutionPayload {
 
 export type QuickActionExecutionPayload = SimpleQuickActionExecutionPayload | NestedQuickActionExecutionPayload;
 
+export interface InfoCenterMessage {
+    type: MessageBarType;
+    title: string;
+    description: string;
+    details?: string;
+}
+
+export enum MessageBarType {
+    /** Info styled MessageBar */
+    info = 0,
+    /** Error styled MessageBar */
+    error = 1,
+    /** Warning styled MessageBar */
+    warning = 5
+}
+
 export interface ContextMenuActionExecutionPayload {
     controlId: string;
     actionName: string;
@@ -465,6 +481,7 @@ export const executeContextMenuAction =
     createExternalAction<ContextMenuActionExecutionPayload>('execute-context-menu-action');
 export const setApplicationRequiresReload = createExternalAction<boolean>('set-application-requires-reload');
 export const externalFileChange = createExternalAction<string>('external-file-change');
+export const showInfoCenterMessage = createExternalAction<InfoCenterMessage>('show-info-center-message');
 
 const createAsyncExternalAction = createAsyncActionFactory(EXTERNAL_ACTION_PREFIX);
 
@@ -508,6 +525,7 @@ export type ExternalAction =
     | ReturnType<typeof setApplicationRequiresReload>
     | ReturnType<typeof updateQuickAction>
     | ReturnType<typeof executeQuickAction>
-    | ReturnType<typeof executeContextMenuAction>
+    | ReturnType<typeof showInfoCenterMessage>
     | ReturnType<typeof externalFileChange>
+    | ReturnType<typeof executeContextMenuAction>
     | ReturnType<typeof requestControlContextMenu.fulfilled>;
