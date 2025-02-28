@@ -4,6 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { existsSync, readdirSync, statSync, unlinkSync } from 'fs';
 import { join, parse, sep } from 'path';
 import type { CommonChangeProperties } from '@sap-ux/adp-tooling';
+import type { Resource } from '@ui5/fs';
 
 /**
  * Read changes from the file system and return them.
@@ -17,7 +18,7 @@ export async function readChanges(
     logger: Logger
 ): Promise<Record<string, CommonChangeProperties>> {
     const changes: Record<string, CommonChangeProperties> = {};
-    const files = await project.byGlob('/**/changes/**/*.*');
+    const files = (await project.byGlob('/**/changes/**/*.*')) as Resource[];
     for (const file of files) {
         try {
             changes[`sap.ui.fl.${parse(file.getName()).name}`] = JSON.parse(
