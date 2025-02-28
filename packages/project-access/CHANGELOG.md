@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.29.10
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/i18n@0.2.2
+
+## 1.29.9
+
+### Patch Changes
+
+-   c8c292c: Fix: method 'getCapModelAndServices' not returning 'odata-v4' services
+
 ## 1.29.8
 
 ### Patch Changes

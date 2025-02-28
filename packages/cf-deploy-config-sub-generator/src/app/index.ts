@@ -116,6 +116,7 @@ export default class extends DeploymentGenerator {
             watchTelemetrySettingStore: false
         });
 
+        // Note: the init phase has to be delayed when loaded as a sub-gen as the yaml configurations are not available.
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._init();
         }
@@ -268,6 +269,10 @@ export default class extends DeploymentGenerator {
 
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._writing();
+        } else {
+            // Need to delay `init` as the yaml configurations wont be ready!
+            await this._init();
+            await this._writing();
         }
     }
 
@@ -310,7 +315,7 @@ export default class extends DeploymentGenerator {
     }
 
     public async install(): Promise<void> {
-        if (!this.launchDeployConfigAsSubGenerator && this.options.overwrite !== false && !this.abort) {
+        if (this.options.overwrite !== false && !this.abort) {
             await this._install();
         }
     }
@@ -352,11 +357,6 @@ export default class extends DeploymentGenerator {
 
     public async end(): Promise<void> {
         try {
-            if ((this.launchDeployConfigAsSubGenerator && !this.abort) || this.options.overwrite === true) {
-                await this._init();
-                await this._writing();
-                await this._install();
-            }
             if (
                 this.options.launchStandaloneFromYui &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
