@@ -65,6 +65,9 @@ describe('defaults', () => {
 
         defaultPkg = defaultPackage();
         expect(defaultPkg).toBe('$TMP');
+
+        defaultPkg = defaultPackage('', { additionalValidation: { shouldValidatePackageType: true } });
+        expect(defaultPkg).toBe('');
     });
 
     it('should return default transport request choice', () => {

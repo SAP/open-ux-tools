@@ -154,7 +154,7 @@ function getUrlPrompt(
 
 /**
  * Returns the scp prompt.
- *
+ 
  * @param backendTarget - backend target
  * @returns confirm question for scp
  */
@@ -238,9 +238,7 @@ function getClientChoicePrompt(
  */
 function getClientPrompt(): Question<AbapDeployConfigAnswersInternal> {
     return {
-        when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => {
-            return showClientQuestion(previousAnswers);
-        },
+        when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean => showClientQuestion(previousAnswers),
         type: 'input',
         name: promptNames.client,
         message: t('prompts.target.client.message'),
@@ -263,6 +261,7 @@ export async function getAbapTargetPrompts(
     options: AbapDeployConfigPromptOptions
 ): Promise<Question<AbapDeployConfigAnswersInternal>[]> {
     const { destinations, backendSystems } = await getAbapSystems();
+
     const abapSystemChoices = await getAbapSystemChoices(destinations, options?.backendTarget, backendSystems);
     return [
         ...getDestinationPrompt(abapSystemChoices, destinations, options.backendTarget),

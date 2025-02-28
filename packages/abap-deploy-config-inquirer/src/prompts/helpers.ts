@@ -97,7 +97,7 @@ async function getBackendTargetChoices(
             let isDefault = false;
             if (!targetExistsInStore && target?.url) {
                 isDefault = targetExistsInStore =
-                    system.url.replace(/\/$/, '') === target.url.replace(/\/$/, '') &&
+                    system.url.trim().replace(/\/$/, '') === target.url.trim().replace(/\/$/, '') &&
                     (system.client ?? '') === (target?.client ?? '');
             }
             return {
