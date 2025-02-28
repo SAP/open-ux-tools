@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.13
+
+### Patch Changes
+
+-   0ff192b: handle exception thrown when creating CF destination
+
 ## 2.2.12
 
 ### Patch Changes
