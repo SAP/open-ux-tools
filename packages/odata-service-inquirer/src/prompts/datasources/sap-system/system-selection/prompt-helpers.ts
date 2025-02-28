@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/btp-utils';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
-import { SystemService } from '@sap-ux/store';
+import { BackendSystemKey, getFilesystemStore, SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
@@ -45,41 +45,57 @@ export async function connectWithBackendSystem(
     // Create a new connection with the selected system
     PromptState.resetConnectedSystem();
     let connectValResult: ValidationResult = false;
-    if (backendSystem) {
+    let backendSystemWithCreds: BackendSystem | undefined;
+    // Fetch the credentials for the system
+    try {
+        backendSystemWithCreds = await new SystemService(LoggerHelper.logger).read(
+            BackendSystemKey.from(backendSystem) as BackendSystemKey
+        );
+    } catch (error) {
+        LoggerHelper.logger.error(t('errors.storedSystemReError', { systemName: backendSystem.name, error }));
+    }
+
+    if (backendSystemWithCreds) {
         // Assumption: non-BAS systems are BackendSystems
-        if (backendSystem.authenticationType === 'reentranceTicket') {
-            connectValResult = await connectionValidator.validateUrl(backendSystem.url, {
+        if (backendSystemWithCreds.authenticationType === 'reentranceTicket') {
+            connectValResult = await connectionValidator.validateUrl(backendSystemWithCreds.url, {
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion),
                 systemAuthType: 'reentranceTicket'
             });
-        } else if (backendSystem.serviceKeys) {
+        } else if (backendSystemWithCreds.serviceKeys) {
             connectValResult = await connectionValidator.validateServiceInfo(
-                backendSystem.serviceKeys as ServiceInfo,
+                backendSystemWithCreds.serviceKeys as ServiceInfo,
                 convertODataVersionType(requiredOdataVersion),
-                backendSystem.refreshToken
+                backendSystemWithCreds.refreshToken
             );
-        } else if (backendSystem.authenticationType === 'basic' || !backendSystem.authenticationType) {
+        } else if (
+            backendSystemWithCreds.authenticationType === 'basic' ||
+            !backendSystemWithCreds.authenticationType
+        ) {
             let errorType;
             ({ valResult: connectValResult, errorType } = await connectionValidator.validateAuth(
-                backendSystem.url,
-                backendSystem.username,
-                backendSystem.password,
+                backendSystemWithCreds.url,
+                backendSystemWithCreds.username,
+                backendSystemWithCreds.password,
                 {
                     isSystem: true,
                     odataVersion: convertODataVersionType(requiredOdataVersion),
-                    sapClient: backendSystem.client
+                    sapClient: backendSystemWithCreds.client
                 }
             ));
             // If authentication failed with existing credentials the user will be prompted to enter new credentials.
             // We log the error in case there is another issue (unresolveable) with the stored backend configuration.
             if (
                 errorType === ERROR_TYPE.AUTH &&
-                typeof backendSystem.username === 'string' &&
-                typeof backendSystem.password === 'string'
+                typeof backendSystemWithCreds.username === 'string' &&
+                typeof backendSystemWithCreds.password === 'string'
             ) {
                 LoggerHelper.logger.error(
-                    t('errors.storedSystemConnectionError', { systemName: backendSystem.name, error: connectValResult })
+                    t('errors.storedSystemConnectionError', {
+                        systemName: backendSystemWithCreds.name,
+                        error: connectValResult
+                    })
                 );
                 return true;
             }
@@ -88,7 +104,7 @@ export async function connectWithBackendSystem(
         if (connectValResult === true && connectionValidator.serviceProvider) {
             PromptState.odataService.connectedSystem = {
                 serviceProvider: connectionValidator.serviceProvider,
-                backendSystem
+                backendSystem: backendSystemWithCreds
             };
         }
     }
@@ -232,7 +248,9 @@ export async function createSystemChoices(
             };
         }
     } else {
-        const backendSystems = await new SystemService(LoggerHelper.logger).getAll();
+        // Fetch backend systems from systems.json file, credential are fetched once the system is selected
+        const fileSystemStore = getFilesystemStore<BackendSystem>(LoggerHelper.logger);
+        const backendSystems = await fileSystemStore.getAll({ entityName: 'system' });
         systemChoices = backendSystems.map((system) => {
             return {
                 name: getBackendSystemDisplayName(system),
