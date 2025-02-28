@@ -407,7 +407,7 @@ describe('FlpSandbox', () => {
                 test(`test/cdm.json should ${enableNewHomepage ? 'return cdm' : 'fail'} when homepage is ${
                     enableNewHomepage ? 'enabled' : 'disabled'
                 }`, async () => {
-                    const response = await server.get('/test/cdm.json').expect(enableNewHomepage ? 200 : 404);
+                    const response = await server.get('/cdm.json').expect(enableNewHomepage ? 200 : 404);
                     if (enableNewHomepage) {
                         expect(response.text).toMatchSnapshot();
                     }
@@ -834,7 +834,7 @@ describe('FlpSandbox', () => {
             expect(logger.info).toBeCalledWith(
                 'HTML file returned at /test/existingFlp.html is loaded from the file system.'
             );
-            await server.get('/test/cdm.json').expect(404);
+            await server.get('/cdm.json').expect(404);
         });
     });
 
@@ -884,7 +884,7 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
             response = await server.get('/test/integration/opaTests.qunit.html').expect(200);
             expect(response.text).toMatchSnapshot();
-            await server.get('/test/cdm.json').expect(404);
+            await server.get('/cdm.json').expect(404);
         });
 
         test('GET default routes with connect API when newHomepage is enabled', async () => {
@@ -903,7 +903,7 @@ describe('FlpSandbox', () => {
             server = await supertest(app);
             let response = await server.get('/test/flp.html').expect(200);
             expect(response.text).toMatchSnapshot();
-            response = await server.get('/test/cdm.json').expect(200);
+            response = await server.get('/cdm.json').expect(200);
             expect(response.text).toMatchSnapshot();
         });
     });
