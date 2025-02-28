@@ -334,8 +334,8 @@ describe('FlpSandbox', () => {
 
         beforeAll(() => setupMiddleware(mockConfig as MiddlewareConfig));
 
-        const runTestsWithHomepageToggle = (enableenhancedHomePage: boolean = false) => {
-            describe(`enhanced homepage ${enableenhancedHomePage ? 'enabled' : 'disabled'}`, () => {
+        const runTestsWithHomepageToggle = (enableEnhancedHomePage: boolean = false) => {
+            describe(`enhanced homepage ${enableEnhancedHomePage ? 'enabled' : 'disabled'}`, () => {
                 afterEach(() => {
                     fetchMock.mockRestore();
                 });
@@ -343,7 +343,7 @@ describe('FlpSandbox', () => {
                 beforeEach(() =>
                     setupMiddleware({
                         ...mockConfig,
-                        flp: { ...mockConfig.flp, enhancedHomePage: enableenhancedHomePage }
+                        flp: { ...mockConfig.flp, enhancedHomePage: enableEnhancedHomePage }
                     } as MiddlewareConfig)
                 );
 
@@ -404,17 +404,17 @@ describe('FlpSandbox', () => {
                     expect(response.text).toMatchSnapshot();
                 });
 
-                test(`test/cdm.json should ${enableenhancedHomePage ? 'return cdm' : 'fail'} when homepage is ${
-                    enableenhancedHomePage ? 'enabled' : 'disabled'
+                test(`test/cdm.json should ${enableEnhancedHomePage ? 'return cdm' : 'fail'} when homepage is ${
+                    enableEnhancedHomePage ? 'enabled' : 'disabled'
                 }`, async () => {
-                    const response = await server.get('/cdm.json').expect(enableenhancedHomePage ? 200 : 404);
-                    if (enableenhancedHomePage) {
+                    const response = await server.get('/cdm.json').expect(enableEnhancedHomePage ? 200 : 404);
+                    if (enableEnhancedHomePage) {
                         expect(response.text).toMatchSnapshot();
                     }
                 });
 
                 // enhanced homepage related tests
-                if (enableenhancedHomePage) {
+                if (enableEnhancedHomePage) {
                     test('test/flp.html should fallback to old homepage if ui5 version is less than 1.123.0', async () => {
                         const jsonSpy = () =>
                             Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.120.0' }] });
