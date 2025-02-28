@@ -34,6 +34,7 @@ import {
     getAppName,
     sanitizeRtaConfig
 } from './config';
+import { generateCdm } from './cdm';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -154,6 +155,9 @@ export class FlpSandbox {
             this.createTestSuite(this.test);
         }
 
+        if (this.flpConfig.newHomePage === true) {
+            this.addCDMRoute();
+        }
         await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
@@ -438,11 +442,18 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
-            version = '1.121.0';
+            this.logger.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+            version = '1.130.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
+
+        // Disable newHomePage feature for UI5 versions below 1.123.0
+        if ((major < 2 && minor < 123) || major >= 2) {
+            this.flpConfig.newHomePage = this.templateConfig.newHomePage = false;
+            this.logger.warn(`Feature newHomePage disabled: UI5 version ${version} not supported.`);
+        }
+
         return {
             major,
             minor,
@@ -464,7 +475,8 @@ export class FlpSandbox {
             }.`
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
-        return readFileSync(join(__dirname, `../../templates/flp/sandbox${filePrefix}.html`), 'utf-8');
+        const template = this.flpConfig.newHomePage && filePrefix !== '2' ? 'cdm' : 'sandbox';
+        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.html`), 'utf-8');
     }
 
     /**
@@ -520,6 +532,20 @@ export class FlpSandbox {
                 );
             }
         }
+    }
+
+    /**
+     * Add routes for cdm.json required by FLP during bootstrapping via cdm.
+     *
+     */
+    private addCDMRoute(): void {
+        this.router.get(
+            '/cdm.json',
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                const json = generateCdm(this.templateConfig.apps);
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
+            }
+        );
     }
 
     /**

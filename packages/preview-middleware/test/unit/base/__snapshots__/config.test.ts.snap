@@ -6,6 +6,7 @@ Object {
   "basePath": "..",
   "init": undefined,
   "locateReuseLibsScript": undefined,
+  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -42,6 +43,7 @@ Object {
   "basePath": "..",
   "init": undefined,
   "locateReuseLibsScript": undefined,
+  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
