@@ -1460,66 +1460,6 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 2.x 1`] = `
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <meta
-        name=\\"sap.ushellConfig.crossPlatformDefaults\\"
-        content='{
-            \\"defaultRenderer\\": \\"fiori2\\",
-            \\"renderers\\": {
-                \\"fiori2\\": {
-                    \\"componentData\\": {
-                        \\"config\\": {
-                            \\"enableSearch\\": false,
-                            \\"enableUserDefaultParameters\\": true
-                        }
-                    }
-                }
-            },
-            \\"ushell\\": {
-                \\"spaces\\": {
-                    \\"enabled\\": true,
-                    \\"myHome\\": {
-                        \\"enabled\\": true
-                    }
-                },
-                \\"homeApp\\": {
-                    \\"component\\": {
-                        \\"name\\": \\"open.ux.preview.client.flp.homepage\\",
-                        \\"url\\": \\"/preview/client/flp/homepage\\"
-                    }
-                }
-            },
-            \\"services\\": {
-                \\"Container\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"userProfile\\": {
-                                \\"defaults\\": {
-                                    \\"email\\": \\"john.doe@sap.com\\",
-                                    \\"firstName\\": \\"John\\",
-                                    \\"lastName\\": \\"Doe\\",
-                                    \\"fullName\\": \\"John Doe\\",
-                                    \\"id\\": \\"DOEJ\\"
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"CommonDataModel\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"./cdm.json\\"
-                        }
-                    }
-                },
-                \\"LaunchPage\\": {
-                    \\"adapter\\": {
-                        \\"module\\": \\"sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter\\"
-                    }
-                }
-            }
-        }'
-    />
     <title>Local FLP Sandbox</title>
 
     <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
@@ -1538,8 +1478,19 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 2.x 1`] = `
          for productive scenarios.
     -->
     <script type=\\"text/javascript\\">
-        window['sap-ui-config'] = {
-            oninit: \\"module:open/ux/preview/client/flp/init\\"
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
@@ -1547,9 +1498,10 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 2.x 1`] = `
         window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
     </script>
 
+    <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap/ushell/bootstrap/cdm.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
@@ -1559,17 +1511,14 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 2.x 1`] = `
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        data-open-ux-preview-new-homepage='true'>
+        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
 
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\">
-    <div id=\\"canvas\\">
-        <div class=\\"sapMShellBG sapUiGlobalBackgroundImage\\"></div>
-    </div>
+<body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
 
 </html>"
@@ -1584,66 +1533,6 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 legacy-free 1`
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <meta
-        name=\\"sap.ushellConfig.crossPlatformDefaults\\"
-        content='{
-            \\"defaultRenderer\\": \\"fiori2\\",
-            \\"renderers\\": {
-                \\"fiori2\\": {
-                    \\"componentData\\": {
-                        \\"config\\": {
-                            \\"enableSearch\\": false,
-                            \\"enableUserDefaultParameters\\": true
-                        }
-                    }
-                }
-            },
-            \\"ushell\\": {
-                \\"spaces\\": {
-                    \\"enabled\\": true,
-                    \\"myHome\\": {
-                        \\"enabled\\": true
-                    }
-                },
-                \\"homeApp\\": {
-                    \\"component\\": {
-                        \\"name\\": \\"open.ux.preview.client.flp.homepage\\",
-                        \\"url\\": \\"/preview/client/flp/homepage\\"
-                    }
-                }
-            },
-            \\"services\\": {
-                \\"Container\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"userProfile\\": {
-                                \\"defaults\\": {
-                                    \\"email\\": \\"john.doe@sap.com\\",
-                                    \\"firstName\\": \\"John\\",
-                                    \\"lastName\\": \\"Doe\\",
-                                    \\"fullName\\": \\"John Doe\\",
-                                    \\"id\\": \\"DOEJ\\"
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"CommonDataModel\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"./cdm.json\\"
-                        }
-                    }
-                },
-                \\"LaunchPage\\": {
-                    \\"adapter\\": {
-                        \\"module\\": \\"sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter\\"
-                    }
-                }
-            }
-        }'
-    />
     <title>Local FLP Sandbox</title>
 
     <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
@@ -1662,8 +1551,19 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 legacy-free 1`
          for productive scenarios.
     -->
     <script type=\\"text/javascript\\">
-        window['sap-ui-config'] = {
-            oninit: \\"module:open/ux/preview/client/flp/init\\"
+        window[\\"sap-ushell-config\\"] = {
+            defaultRenderer: \\"fiori2\\",
+            renderers: {
+                fiori2: {
+                    componentData: {
+                        config: {
+                            search: \\"hidden\\",
+                            enableSearch: false
+                        }
+                    }
+                }
+            },
+            applications:  {\\"app-preview\\":{\\"title\\":\\"My Simple App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.app\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"..\\"},\\"testfev2other-preview\\":{\\"title\\":\\"My Other App\\",\\"description\\":\\"This is a very simple application.\\",\\"additionalInformation\\":\\"SAPUI5.Component=test.fe.v2.other\\",\\"applicationType\\":\\"URL\\",\\"url\\":\\"/yet/another/app\\"}}
         };
     </script>
 
@@ -1671,9 +1571,10 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 legacy-free 1`
         window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
     </script>
 
+    <script src=\\"../resources/sap/ushell/bootstrap/sandbox2.js\\" id=\\"sap-ushell-bootstrap\\"></script>
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap/ushell/bootstrap/cdm.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-theme=\\"sap_horizon_dark\\"
@@ -1683,17 +1584,14 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 legacy-free 1`
         data-sap-ui-resource-roots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frame-options=\\"allow\\"
         data-sap-ui-xx-component-preload=\\"off\\"
-        data-open-ux-preview-new-homepage='true'>
+        data-sap-ui-on-init=\\"module:open/ux/preview/client/flp/init\\">
     </script>
 
 
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\">
-    <div id=\\"canvas\\">
-        <div class=\\"sapMShellBG sapUiGlobalBackgroundImage\\"></div>
-    </div>
+<body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
 
 </html>"
