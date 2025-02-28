@@ -9,7 +9,8 @@ describe('Test getAllUi5YamlFileNames()', () => {
     test('Read list of Ui5 yaml files', async () => {
         const memFs = create(createStorage());
 
-        expect(await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs)).toMatchInlineSnapshot(`
+        expect((await getAllUi5YamlFileNames(join(samplesRoot, 'default-with-ui5-yaml'), memFs)).sort())
+            .toMatchInlineSnapshot(`
             Array [
               "ui5-custom-multi.yaml",
               "ui5-custom.yaml",
