@@ -442,8 +442,8 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.123.0 as fallback.');
-            version = '1.123.0';
+            this.logger.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+            version = '1.130.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
