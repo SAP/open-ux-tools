@@ -161,6 +161,54 @@ function registerModules(dataFromAppIndex: AppIndexData) {
 }
 
 /**
+ * Triggers the adaptation process for the given UI5 application.
+ *
+ * @param {FlexSettings} flexSettings - The settings for the flexibility services.
+ * @param {Ui5VersionInfo} ui5VersionInfo - The version information of the UI5 framework.
+ * @returns A promise that resolves when the adaptation process is triggered.
+ *
+ */
+async function triggerAdaptation(flexSettings: FlexSettings, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
+    const container = sap?.ushell?.Container ?? ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
+    const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+    lifecycleService.attachAppLoaded((event) => {
+        const view = event.getParameter('componentInstance');
+        const pluginScript = flexSettings.pluginScript ?? '';
+
+        let libs: string[] = [];
+
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
+            libs.push('open/ux/preview/client/flp/initRta');
+        } else {
+            libs.push('sap/ui/rta/api/startAdaptation');
+        }
+
+        if (flexSettings.pluginScript) {
+            libs.push(pluginScript as string);
+            delete flexSettings.pluginScript;
+        }
+
+        const options: RTAOptions = {
+            rootControl: view,
+            validateAppVersion: false,
+            flexSettings
+        };
+
+        sap.ui.require(
+            libs,
+            // eslint-disable-next-line no-shadow
+            async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+                try {
+                    await startAdaptation(options, pluginScript);
+                } catch (error) {
+                    await handleHigherLayerChanges(error, ui5VersionInfo);
+                }
+            }
+        );
+    });
+}
+
+/**
  * Fetch the app state from the given application urls, then reset the app state.
  *
  * @param container the UShell container
@@ -282,51 +330,13 @@ export async function init({
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
         scenario = flexSettings.scenario;
-        const triggerAdaptation = async function () {
-            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-            lifecycleService.attachAppLoaded((event) => {
-                const view = event.getParameter('componentInstance');
-                const pluginScript = flexSettings.pluginScript ?? '';
-
-                let libs: string[] = [];
-
-                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
-                    libs.push('open/ux/preview/client/flp/initRta');
-                } else {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                }
-
-                if (flexSettings.pluginScript) {
-                    libs.push(pluginScript as string);
-                    delete flexSettings.pluginScript;
-                }
-
-                const options: RTAOptions = {
-                    rootControl: view,
-                    validateAppVersion: false,
-                    flexSettings
-                };
-
-                sap.ui.require(
-                    libs,
-                    // eslint-disable-next-line no-shadow
-                    async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
-                        try {
-                            await startAdaptation(options, pluginScript);
-                        } catch (error) {
-                            await handleHigherLayerChanges(error, ui5VersionInfo);
-                        }
-                    }
-                );
-            });
-        };
 
         // Attach renderer created event to trigger adaptation, or trigger adaptation directly if newHomePage is enabled
         // as the ushell is bootstrapped via cdm where the renderer is cretead before the init script is executed
         if (!newHomePage) {
-            container.attachRendererCreatedEvent(triggerAdaptation);
+            container.attachRendererCreatedEvent(triggerAdaptation.bind(null, flexSettings, ui5VersionInfo));
         } else {
-            triggerAdaptation();
+            await triggerAdaptation(flexSettings, ui5VersionInfo);
         }
     }
 
