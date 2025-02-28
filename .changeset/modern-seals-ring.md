@@ -4,3 +4,4 @@
 ---
 
 feat: introduce new flp homepage
+  - controlled via boolean property `flp.newHomePage`, which is false by default

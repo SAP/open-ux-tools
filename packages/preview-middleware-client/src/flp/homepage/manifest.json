@@ -13,7 +13,6 @@
         }
     },
     "sap.ui5": {
-        "flexEnabled": true,
         "rootView": {
             "viewName": "open.ux.preview.client.flp.homepage.view.MyHome",
             "type": "XML",
@@ -21,14 +20,10 @@
             "id": "myhome"
         },
         "dependencies": {
-            "minUI5Version": "${sap.ui5.dist.version}",
+            "minUI5Version": "1.123.0",
             "libs": {
-                "sap.ui.core": {
-                    "lazy": false
-                },
-                "sap.cux.home": {
-                    "lazy": false
-                }
+                "sap.ui.core": {},
+                "sap.cux.home": {}
             }
         },
         "contentDensities": {
