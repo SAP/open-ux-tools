@@ -156,7 +156,7 @@ export class FlpSandbox {
         }
 
         if (this.flpConfig.newHomePage === true) {
-            this.addCDMRoutes();
+            this.addCDMRoute();
         }
         await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
@@ -538,24 +538,14 @@ export class FlpSandbox {
      * Add routes for cdm.json required by FLP during bootstrapping via cdm.
      *
      */
-    private addCDMRoutes(): void {
-        const previewPaths = [this.flpConfig.path];
-        if (this.rta) {
-            this.rta.endpoints.forEach((editor) => {
-                previewPaths.push(editor.path.startsWith('/') ? editor.path : `/${editor.path}`);
-            });
-        }
-
-        previewPaths.forEach((previewPath) => {
-            const cdmPath = join(dirname(previewPath), 'cdm.json');
-            this.router.get(
-                cdmPath,
-                async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
-                    const json = generateCdm(this.templateConfig.apps);
-                    this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
-                }
-            );
-        });
+    private addCDMRoute(): void {
+        this.router.get(
+            '/cdm.json',
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                const json = generateCdm(this.templateConfig.apps);
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
+            }
+        );
     }
 
     /**
