@@ -1,4 +1,4 @@
-import type { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection, Resource } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
@@ -34,7 +34,6 @@ import {
     getAppName,
     sanitizeRtaConfig
 } from './config';
-import type { Resource } from '@ui5/fs';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 

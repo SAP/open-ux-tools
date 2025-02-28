@@ -1,10 +1,9 @@
 import type { Logger } from '@sap-ux/logger';
-import type { ReaderCollection } from '@ui5/fs';
+import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { Editor } from 'mem-fs-editor';
 import { existsSync, readdirSync, statSync, unlinkSync } from 'fs';
 import { join, parse, sep } from 'path';
 import type { CommonChangeProperties } from '@sap-ux/adp-tooling';
-import type { Resource } from '@ui5/fs';
 
 /**
  * Read changes from the file system and return them.
