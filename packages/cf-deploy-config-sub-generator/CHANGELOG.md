@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.17
+
+### Patch Changes
+
+-   3ab6e46: ensure managed approuter is added
+
 ## 0.1.16
 
 ### Patch Changes
