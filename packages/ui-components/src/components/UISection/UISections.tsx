@@ -119,8 +119,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         let availableSize = 0;
         sizes.forEach((section, index) => {
             if (typeof section === 'object' && section.size === undefined) {
-                const position = this.getSectionPosition(section);
-                section.size = Math.abs(this.rootSize - position.end - position.start);
+                section.size = this.getSize(section);
             }
             if (index !== dynamicSectionIndex) {
                 availableSize += (typeof section === 'object' ? section.size : section) ?? 0;
@@ -494,26 +493,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {React.CSSProperties | undefined} CSS Style object or undefined if no style from 'sizes' prop.
      */
     private getSectionSize(index: number, childrenCount: number): React.CSSProperties | undefined {
-        if (
-            this.props.sizesAsPercents ||
-            !this.props.sizes ||
-            childrenCount < 2 ||
-            (index >= this.props.sizes.length && index >= childrenCount)
-        ) {
+        const { sizes } = this.state;
+        if (!sizes || this.props.sizesAsPercents || !this.props.sizes || childrenCount < 2) {
             return undefined;
         }
-        const sectionStyle: React.CSSProperties = {
-            [this.sizeProperty]: this.props.sizes[index] ? this.props.sizes[index] + 'px' : this.props.sizes[index]
+        return {
+            [this.startPositionProperty]: this.getSectionPosition(index, sizes, true),
+            [this.endPositionProperty]: this.getSectionPosition(index, sizes, false)
         };
-        if (index === 0) {
-            sectionStyle[this.startPositionProperty] = 0;
-        }
-        if (index === this.props.sizes.length - 1) {
-            sectionStyle[this.endPositionProperty] = 0;
-        } else if (this.props.sizes[index + 1]) {
-            sectionStyle[this.endPositionProperty] = this.props.sizes[index + 1] + 'px';
-        }
-        return sectionStyle;
     }
 
     /**
@@ -554,10 +541,15 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 sectionStyle.style[this.sizeProperty] = stateSize.size + 'px';
             }
         } else {
-            const toggleSectionSize = this.getSectionSize(index, childrenCount);
-            if (toggleSectionSize) {
-                sectionStyle.style = { ...sectionStyle.style, ...toggleSectionSize };
-            } else {
+            let usePercents = true;
+            if (stateSize) {
+                const toggleSectionSize = this.getSectionSize(index, childrenCount);
+                if (toggleSectionSize) {
+                    sectionStyle.style = { ...sectionStyle.style, ...toggleSectionSize };
+                    usePercents = false;
+                }
+            }
+            if (usePercents) {
                 const size: number = this.getSizePercents(index, childrenCount, true);
                 sectionStyle.style = {
                     [this.startPositionProperty]: this.getPositionStyleValue(childrenCount, `${index * size}%`),
@@ -603,14 +595,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             }
         } else {
             const childrenCount = this.props.children.length;
-            const sectionSize = this.getSectionSize(index, childrenCount);
-            if (sectionSize && sectionSize.width) {
-                size = parseFloat(sectionSize.width.toString());
-                unit = 'px';
-            } else {
-                size = this.getSizePercents(index, childrenCount);
-                unit = '%';
-            }
+            size = this.getSizePercents(index, childrenCount);
+            unit = '%';
         }
 
         const hiddenPosition = -size + unit;
@@ -695,7 +681,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                         onResizeStart={this.onSplitterResizeStart.bind(this)}
                         onResizeEnd={this.onSplitterResizeEnd.bind(this)}
                         onToggle={this.onSplitterToggle.bind(this)}
-                        hidden={isSectionHidden || isSingleSection}
+                        hidden={isSectionHidden || isSingleSection || !this.isSectionVisible(index - 1)}
                         type={splitterType}
                         splitterTabIndex={splitterTabIndex}
                         title={splitterTitle}
@@ -723,16 +709,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      */
     private getDynamicSectionIndex(): number {
         return this.state.dynamicSection !== undefined ? this.state.dynamicSection : 0;
-    }
-
-    /**
-     * Method converts passed positions to section position object.
-     *
-     * @param {UISectionSize} section Section size.
-     * @returns Position object.
-     */
-    private getSectionPosition(section: UISectionSize): { start: number; end: number } {
-        return { start: section.start ?? 0, end: section.end ?? 0 };
     }
 
     /**
@@ -844,8 +820,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const sections = [];
         let visibleSections = 0;
         for (let i = 0; i < this.props.children.length; i++) {
-            const childNode = this.props.children[i] as React.ReactElement;
-            const isSectionHidden = !UISections.isSectionVisible(childNode);
+            const isSectionHidden = !this.isSectionVisible(i);
 
             if (!isSectionHidden) {
                 visibleSections++;
@@ -928,5 +903,69 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             reservedSize += this.getMinSectionSize(i);
         }
         return Math.max(minSectionSize, mainSize - reservedSize);
+    }
+
+    /**
+     * Determines whether a specific section is visible.
+     *
+     * @param {number} index - The index of the child node to check.
+     * @returns {boolean} - Returns `true` if the section is visible, otherwise `false`.
+     */
+    private isSectionVisible(index: number): boolean {
+        const childNode = this.props.children[index] as React.ReactElement;
+        return childNode ? UISections.isSectionVisible(childNode) : false;
+    }
+
+    /**
+     * Calculates the position of a section, either from the start or the end.
+     *
+     * @param index The index of the section.
+     * @param sizes An array of section size objects.
+     * @param start Determines whether to calculate from the start (true) or the end (false).
+     * @returns The calculated position of the section.
+     */
+    private getSectionPosition(index: number, sizes: Array<UISectionSize>, start: boolean): number {
+        let visibleSize = 0;
+        let hiddenSize = 0;
+        let totalHiddenSize = 0;
+
+        const iterate = (i: number) => {
+            const size = this.getSize(sizes[i]);
+            if (this.isSectionVisible(i)) {
+                visibleSize += size;
+                totalHiddenSize += hiddenSize;
+                hiddenSize = 0;
+            } else {
+                hiddenSize += size;
+            }
+        };
+
+        if (start) {
+            for (let i = 0; i < index; i++) {
+                iterate(i);
+            }
+        } else {
+            for (let i = sizes.length - 1; i > index; i--) {
+                iterate(i);
+            }
+        }
+
+        return visibleSize + totalHiddenSize;
+    }
+
+    /**
+     * Returns the size of a section based on its properties(size, start, end).
+     *
+     * @param sizes The section size object containing size, start, and end properties.
+     * @returns The computed size of the section. Returns 0 if no valid size is found.
+     */
+    private getSize(sizes: UISectionSize): number {
+        if (sizes.size !== undefined) {
+            return sizes.size;
+        }
+        if (sizes.end !== undefined && sizes.start !== undefined) {
+            return Math.abs(this.rootSize - sizes.end - sizes.start);
+        }
+        return 0;
     }
 }
