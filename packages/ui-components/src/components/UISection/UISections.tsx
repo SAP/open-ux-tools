@@ -941,19 +941,23 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         };
 
         if (start) {
-            for (let i = 0; i < index; i++) iterate(i);
+            for (let i = 0; i < index; i++) {
+                iterate(i);
+            }
         } else {
-            for (let i = sizes.length - 1; i > index; i--) iterate(i);
+            for (let i = sizes.length - 1; i > index; i--) {
+                iterate(i);
+            }
         }
 
         return visibleSize + totalHiddenSize;
     }
 
     /**
-     * Gets the size of a section based on its properties.
+     * Returns the size of a section based on its properties(size, start, end).
      *
-     * @param position The section size object.
-     * @returns The calculated section size.
+     * @param sizes The section size object containing size, start, and end properties.
+     * @returns The computed size of the section. Returns 0 if no valid size is found.
      */
     private getSize(sizes: UISectionSize): number {
         if (sizes.size !== undefined) {
