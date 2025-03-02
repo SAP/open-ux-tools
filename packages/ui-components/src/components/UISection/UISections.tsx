@@ -495,20 +495,18 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      */
     private getSectionSize(index: number, childrenCount: number): React.CSSProperties | undefined {
         const { sizes } = this.state;
-        if (
-            !sizes ||
-            this.props.sizesAsPercents ||
-            !this.props.sizes ||
-            childrenCount < 2 ||
-            (index >= this.props.sizes.length && index >= childrenCount)
-        ) {
+        if (!sizes || this.props.sizesAsPercents || !this.props.sizes || childrenCount < 2) {
             return undefined;
         }
 
-        return {
+        const sectionStyle: React.CSSProperties = {
             [this.startPositionProperty]: this.getStartPosition(index, sizes),
             [this.endPositionProperty]: this.getEndPosition(index, sizes)
         };
+
+        console.log(`index=${index}; value="${JSON.stringify(sectionStyle)}"`);
+
+        return sectionStyle;
     }
 
     /**
@@ -929,12 +927,18 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         return childNode ? UISections.isSectionVisible(childNode) : false;
     }
 
-    private getStartPosition(index: number, sizes: Array<{ size?: number }>): number {
+    private getStartPosition(index: number, sizes: Array<UISectionSize>): number {
         let visibleSize = 0;
         let hiddenSize = 0;
         let totalHiddenSize = 0;
         for (let i = 0; i < index; i++) {
-            const size = sizes[i]?.size ?? 0;
+            const position = sizes[i];
+            let size = 0;
+            if (position.size !== undefined) {
+                size = position.size;
+            } else if (position.end !== undefined && position.start !== undefined) {
+                size = Math.abs(this.rootSize - position.end - position.start);
+            }
             if (this.isSectionVisible(i)) {
                 visibleSize += size;
                 totalHiddenSize += hiddenSize;
@@ -946,12 +950,18 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         return visibleSize + totalHiddenSize;
     }
 
-    private getEndPosition(index: number, sizes: Array<{ size?: number }>): number {
+    private getEndPosition(index: number, sizes: Array<UISectionSize>): number {
         let visibleSize = 0;
         let hiddenSize = 0;
         let totalHiddenSize = 0;
         for (let i = sizes.length - 1; i > index; i--) {
-            const size = sizes[i]?.size ?? 0;
+            const position = sizes[i];
+            let size = 0;
+            if (position.size !== undefined) {
+                size = position.size;
+            } else if (position.end !== undefined && position.start !== undefined) {
+                size = Math.abs(this.rootSize - position.end - position.start);
+            }
             if (this.isSectionVisible(i)) {
                 visibleSize += size;
                 totalHiddenSize += hiddenSize;
