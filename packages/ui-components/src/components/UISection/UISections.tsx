@@ -119,8 +119,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         let availableSize = 0;
         sizes.forEach((section, index) => {
             if (typeof section === 'object' && section.size === undefined) {
-                const position = this.getSectionPosition(section);
-                section.size = Math.abs(this.rootSize - position.end - position.start);
+                section.size = this.getSize(section);
             }
             if (index !== dynamicSectionIndex) {
                 availableSize += (typeof section === 'object' ? section.size : section) ?? 0;
@@ -498,15 +497,10 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         if (!sizes || this.props.sizesAsPercents || !this.props.sizes || childrenCount < 2) {
             return undefined;
         }
-
-        const sectionStyle: React.CSSProperties = {
-            [this.startPositionProperty]: this.getStartPosition(index, sizes),
-            [this.endPositionProperty]: this.getEndPosition(index, sizes)
+        return {
+            [this.startPositionProperty]: this.getSectionPosition(index, sizes, true),
+            [this.endPositionProperty]: this.getSectionPosition(index, sizes, false)
         };
-
-        console.log(`index=${index}; value="${JSON.stringify(sectionStyle)}"`);
-
-        return sectionStyle;
     }
 
     /**
@@ -718,16 +712,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     }
 
     /**
-     * Method converts passed positions to section position object.
-     *
-     * @param {UISectionSize} section Section size.
-     * @returns Position object.
-     */
-    private getSectionPosition(section: UISectionSize): { start: number; end: number } {
-        return { start: section.start ?? 0, end: section.end ?? 0 };
-    }
-
-    /**
      * Method calculates spare size for passed section.
      *
      * @param {SizeCalculationInfo} origin Section size.
@@ -836,8 +820,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const sections = [];
         let visibleSections = 0;
         for (let i = 0; i < this.props.children.length; i++) {
-            const childNode = this.props.children[i] as React.ReactElement;
-            const isSectionHidden = !UISections.isSectionVisible(childNode);
+            const isSectionHidden = !this.isSectionVisible(i);
 
             if (!isSectionHidden) {
                 visibleSections++;
@@ -922,23 +905,32 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         return Math.max(minSectionSize, mainSize - reservedSize);
     }
 
+    /**
+     * Determines whether a specific section is visible.
+     *
+     * @param {number} index - The index of the child node to check.
+     * @returns {boolean} - Returns `true` if the section is visible, otherwise `false`.
+     */
     private isSectionVisible(index: number): boolean {
         const childNode = this.props.children[index] as React.ReactElement;
         return childNode ? UISections.isSectionVisible(childNode) : false;
     }
 
-    private getStartPosition(index: number, sizes: Array<UISectionSize>): number {
+    /**
+     * Calculates the position of a section, either from the start or the end.
+     *
+     * @param index The index of the section.
+     * @param sizes An array of section size objects.
+     * @param start Determines whether to calculate from the start (true) or the end (false).
+     * @returns The calculated position of the section.
+     */
+    private getSectionPosition(index: number, sizes: Array<UISectionSize>, start: boolean): number {
         let visibleSize = 0;
         let hiddenSize = 0;
         let totalHiddenSize = 0;
-        for (let i = 0; i < index; i++) {
-            const position = sizes[i];
-            let size = 0;
-            if (position.size !== undefined) {
-                size = position.size;
-            } else if (position.end !== undefined && position.start !== undefined) {
-                size = Math.abs(this.rootSize - position.end - position.start);
-            }
+
+        const iterate = (i: number) => {
+            const size = this.getSize(sizes[i]);
             if (this.isSectionVisible(i)) {
                 visibleSize += size;
                 totalHiddenSize += hiddenSize;
@@ -946,30 +938,30 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             } else {
                 hiddenSize += size;
             }
+        };
+
+        if (start) {
+            for (let i = 0; i < index; i++) iterate(i);
+        } else {
+            for (let i = sizes.length - 1; i > index; i--) iterate(i);
         }
+
         return visibleSize + totalHiddenSize;
     }
 
-    private getEndPosition(index: number, sizes: Array<UISectionSize>): number {
-        let visibleSize = 0;
-        let hiddenSize = 0;
-        let totalHiddenSize = 0;
-        for (let i = sizes.length - 1; i > index; i--) {
-            const position = sizes[i];
-            let size = 0;
-            if (position.size !== undefined) {
-                size = position.size;
-            } else if (position.end !== undefined && position.start !== undefined) {
-                size = Math.abs(this.rootSize - position.end - position.start);
-            }
-            if (this.isSectionVisible(i)) {
-                visibleSize += size;
-                totalHiddenSize += hiddenSize;
-                hiddenSize = 0;
-            } else {
-                hiddenSize += size;
-            }
+    /**
+     * Gets the size of a section based on its properties.
+     *
+     * @param position The section size object.
+     * @returns The calculated section size.
+     */
+    private getSize(sizes: UISectionSize): number {
+        if (sizes.size !== undefined) {
+            return sizes.size;
         }
-        return visibleSize + totalHiddenSize;
+        if (sizes.end !== undefined && sizes.start !== undefined) {
+            return Math.abs(this.rootSize - sizes.end - sizes.start);
+        }
+        return 0;
     }
 }
