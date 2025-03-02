@@ -494,7 +494,9 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {React.CSSProperties | undefined} CSS Style object or undefined if no style from 'sizes' prop.
      */
     private getSectionSize(index: number, childrenCount: number): React.CSSProperties | undefined {
+        const { sizes } = this.state;
         if (
+            !sizes ||
             this.props.sizesAsPercents ||
             !this.props.sizes ||
             childrenCount < 2 ||
@@ -502,18 +504,11 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         ) {
             return undefined;
         }
-        const sectionStyle: React.CSSProperties = {
-            [this.sizeProperty]: this.props.sizes[index] ? this.props.sizes[index] + 'px' : this.props.sizes[index]
+
+        return {
+            [this.startPositionProperty]: this.getStartPosition(index, sizes),
+            [this.endPositionProperty]: this.getEndPosition(index, sizes)
         };
-        if (index === 0) {
-            sectionStyle[this.startPositionProperty] = 0;
-        }
-        if (index === this.props.sizes.length - 1) {
-            sectionStyle[this.endPositionProperty] = 0;
-        } else if (this.props.sizes[index + 1]) {
-            sectionStyle[this.endPositionProperty] = this.props.sizes[index + 1] + 'px';
-        }
-        return sectionStyle;
     }
 
     /**
@@ -554,10 +549,15 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 sectionStyle.style[this.sizeProperty] = stateSize.size + 'px';
             }
         } else {
-            const toggleSectionSize = this.getSectionSize(index, childrenCount);
-            if (toggleSectionSize) {
-                sectionStyle.style = { ...sectionStyle.style, ...toggleSectionSize };
-            } else {
+            let usePercents = true;
+            if (stateSize) {
+                const toggleSectionSize = this.getSectionSize(index, childrenCount);
+                if (toggleSectionSize) {
+                    sectionStyle.style = { ...sectionStyle.style, ...toggleSectionSize };
+                    usePercents = false;
+                }
+            }
+            if (usePercents) {
                 const size: number = this.getSizePercents(index, childrenCount, true);
                 sectionStyle.style = {
                     [this.startPositionProperty]: this.getPositionStyleValue(childrenCount, `${index * size}%`),
@@ -603,14 +603,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             }
         } else {
             const childrenCount = this.props.children.length;
-            const sectionSize = this.getSectionSize(index, childrenCount);
-            if (sectionSize && sectionSize.width) {
-                size = parseFloat(sectionSize.width.toString());
-                unit = 'px';
-            } else {
-                size = this.getSizePercents(index, childrenCount);
-                unit = '%';
-            }
+            size = this.getSizePercents(index, childrenCount);
+            unit = '%';
         }
 
         const hiddenPosition = -size + unit;
@@ -695,7 +689,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                         onResizeStart={this.onSplitterResizeStart.bind(this)}
                         onResizeEnd={this.onSplitterResizeEnd.bind(this)}
                         onToggle={this.onSplitterToggle.bind(this)}
-                        hidden={isSectionHidden || isSingleSection}
+                        hidden={isSectionHidden || isSingleSection || !this.isSectionVisible(index - 1)}
                         type={splitterType}
                         splitterTabIndex={splitterTabIndex}
                         title={splitterTitle}
@@ -928,5 +922,44 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             reservedSize += this.getMinSectionSize(i);
         }
         return Math.max(minSectionSize, mainSize - reservedSize);
+    }
+
+    private isSectionVisible(index: number): boolean {
+        const childNode = this.props.children[index] as React.ReactElement;
+        return childNode ? UISections.isSectionVisible(childNode) : false;
+    }
+
+    private getStartPosition(index: number, sizes: Array<{ size?: number }>): number {
+        let visibleSize = 0;
+        let hiddenSize = 0;
+        let totalHiddenSize = 0;
+        for (let i = 0; i < index; i++) {
+            const size = sizes[i]?.size ?? 0;
+            if (this.isSectionVisible(i)) {
+                visibleSize += size;
+                totalHiddenSize += hiddenSize;
+                hiddenSize = 0;
+            } else {
+                hiddenSize += size;
+            }
+        }
+        return visibleSize + totalHiddenSize;
+    }
+
+    private getEndPosition(index: number, sizes: Array<{ size?: number }>): number {
+        let visibleSize = 0;
+        let hiddenSize = 0;
+        let totalHiddenSize = 0;
+        for (let i = sizes.length - 1; i > index; i--) {
+            const size = sizes[i]?.size ?? 0;
+            if (this.isSectionVisible(i)) {
+                visibleSize += size;
+                totalHiddenSize += hiddenSize;
+                hiddenSize = 0;
+            } else {
+                hiddenSize += size;
+            }
+        }
+        return visibleSize + totalHiddenSize;
     }
 }
