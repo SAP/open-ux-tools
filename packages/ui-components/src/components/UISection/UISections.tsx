@@ -174,14 +174,16 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         this.ignoreAnimation = false;
         const sizes = this.props.sizes ?? [];
         const prevSizes = prevProps.sizes ?? [];
-        let stateSizes = this.state.sizes;
+        let newSizes = this.state.sizes;
+        let update = false;
         // Recalculate sizes when external sizes changed
         if (
             sizes !== prevSizes &&
             (sizes.length !== prevSizes.length || sizes.some((size, index) => size !== prevSizes[index]))
         ) {
             // Calculate state sizes
-            stateSizes = this.updateStateSizes(this.rootSize, sizes);
+            newSizes = this.updateStateSizes(this.rootSize, sizes);
+            update = true;
         }
         // Recalculate sizes when visibility of sections are changed
         const prevVisibleSections = prevState.visibleSections ?? [];
@@ -190,13 +192,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             prevVisibleSections.length !== visibleSections.length ||
             prevVisibleSections.some((index) => !visibleSections.includes(index))
         ) {
-            stateSizes = this.onVisibilityToggle(stateSizes);
+            newSizes = this.onVisibilityToggle(newSizes);
+            update = true;
         }
 
-        if (stateSizes !== this.state.sizes) {
+        if (update) {
             // State sizes are updated
             this.setState({
-                sizes: stateSizes
+                sizes: newSizes
             });
         }
     }
@@ -433,6 +436,9 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 resizeSection.dom.style[this.startPositionProperty] = '0px';
             }
             sectionSize.end = right;
+            if (this.isSectionVisible(i)) {
+                sectionSize.size = Math.abs(this.rootSize - sectionSize.end - sectionSize.start);
+            }
             resizeSection.dom.style[this.endPositionProperty] = right + 'px';
             resizeSection.dom.style[this.sizeProperty] = '';
             resizeSection.section = sectionSize;

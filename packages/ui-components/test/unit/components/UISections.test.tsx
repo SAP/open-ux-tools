@@ -709,12 +709,12 @@ describe('<Sections />', () => {
                             right: '100%'
                         },
                         last: {
-                            left: '2050px',
+                            left: '1050px',
                             right: '0px'
                         },
                         middle: {
-                            left: '1000px',
-                            right: '950px'
+                            left: '0px',
+                            right: '1950px'
                         }
                     }
                 },
