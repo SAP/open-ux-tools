@@ -30,15 +30,15 @@ export function getDeployTargetQuestion(supportedTargets: Target[], projectRoot:
 /**
  * Returns prompts for the target deployment and wraps in the config update prompt if found.
  *
+ * @param projectRoot - path to project
  * @param supportedTargets - the supported deployment targets
  * @param configUpdatePrompts - confirm config update prompts
- * @param projectRoot - path to project
  * @returns - the list of questions merged
  */
 export function getDeployTargetPrompts(
+    projectRoot: string,
     supportedTargets: Target[],
-    configUpdatePrompts: Question[] = [],
-    projectRoot: string
+    configUpdatePrompts: Question[] = []
 ): Question[] {
     let questions: Question[] = getDeployTargetQuestion(supportedTargets, projectRoot);
     if (configUpdatePrompts.length > 0) {

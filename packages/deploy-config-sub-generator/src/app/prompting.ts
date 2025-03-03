@@ -59,7 +59,7 @@ export async function promptDeployConfigQuestions(
     );
 
     if (launchDeployConfigAsSubGenerator) {
-        const { questions: questions, abapAnswers: abapAnswers } = await getSubGenPrompts(fs, options, {
+        const { questions, abapAnswers } = await getSubGenPrompts(fs, options, {
             launchDeployConfigAsSubGenerator,
             launchStandaloneFromYui,
             configUpdatePrompts,
@@ -73,7 +73,7 @@ export async function promptDeployConfigQuestions(
         const subGenAnswers = await prompt(questions);
         Object.assign(answers, subGenAnswers, abapAnswers);
     } else {
-        answers = await prompt(getDeployTargetPrompts([...supportedTargets], configUpdatePrompts, options.projectRoot));
+        answers = await prompt(getDeployTargetPrompts(options.projectRoot, [...supportedTargets], configUpdatePrompts));
     }
     const target = supportedTargets.find((t) => t.name === (answers as Answers)?.targetName)?.name;
 

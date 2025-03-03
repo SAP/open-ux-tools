@@ -25,9 +25,9 @@ describe('deploy-target', () => {
             }
         ];
         const deployTargetPrompts = getDeployTargetPrompts(
+            'path/to/project',
             [abapChoice, cfChoice],
-            configUpdatePrompts,
-            'path/to/project'
+            configUpdatePrompts
         );
         expect(deployTargetPrompts).toHaveLength(2);
     });
