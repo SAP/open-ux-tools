@@ -391,7 +391,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     private onSplitterResize(index: number, position: number): boolean {
         const resizeSections = position !== 0 ? this.resizeSections : [];
         const totalSize = this.rootSize;
-        let left = this.getSiblingsSize(resizeSections, 0, index);
+        let left = this.getSiblingsSize(resizeSections, 0, index, true);
         console.log(`onSplitterResize| left=${left}`);
         this.refreshResizeSections(0, index, this.state.sizes);
         let minSizeTriggered = false;
@@ -439,7 +439,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             resizeSection.dom.style[this.endPositionProperty] = right + 'px';
             resizeSection.dom.style[this.sizeProperty] = '';
             resizeSection.section = sectionSize;
-            console.log(`onSplitterResize|${i} -> ${JSON.stringify(sectionSize)}`);
             left += newSize;
         }
         return false;
@@ -473,6 +472,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 sizes
             });
         }
+        console.log(`onSplitterResizeEnd`);
+        console.log(sizes);
         this.props.onResize?.(sizes);
     }
 
@@ -887,11 +888,12 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @param end The ending index (exclusive) of the range.
      * @returns The sum of the sibling sizes for the specified range.
      */
-    private getSiblingsSize(sizes: Array<{ size?: number }>, start: number, end: number): number {
+    private getSiblingsSize(sizes: Array<{ size?: number }>, start: number, end: number, onlyVisible = false): number {
         let size = 0;
         for (let j = start; j < end; j++) {
             const next = sizes[j];
-            if (next?.size && this.isSectionVisible(j)) {
+            // if (next?.size && this.isSectionVisible(j)) {
+            if (next?.size && (!onlyVisible || this.isSectionVisible(j))) {
                 size += next.size;
             }
         }
@@ -932,10 +934,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const resizeSections = this.resizeSections;
         let reservedSize = 0;
         for (let i = 0; i < index; i++) {
-            reservedSize += resizeSections[i].size;
+            if (this.isSectionVisible(i)) {
+                reservedSize += resizeSections[i].size;
+            }
         }
         for (let i = index + 1; i < resizeSections.length; i++) {
-            reservedSize += this.getMinSectionSize(i);
+            if (this.isSectionVisible(i)) {
+                reservedSize += this.getMinSectionSize(i);
+            }
         }
         return Math.max(minSectionSize, mainSize - reservedSize);
     }
