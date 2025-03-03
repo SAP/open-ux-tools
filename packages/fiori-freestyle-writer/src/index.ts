@@ -9,7 +9,7 @@ import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
 import { setDefaults, escapeFLPText } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { initI18n, t } from './i18n';
+import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
@@ -156,9 +156,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
             })
         };
         if (addTests) {
-            ffApp.template.type === TemplateType.Basic
-                ? await generateOPATests(basePath, ffApp, addMock, packageJson, fs, log)
-                : log?.warn(t('info.unsupportedTestTemplateMessage', { templateType: ffApp.template.type }));
+            await generateOPATests(basePath, ffApp, addMock, packageJson, fs, log);
         }
     } else {
         // Add deploy-config for CAP applications
