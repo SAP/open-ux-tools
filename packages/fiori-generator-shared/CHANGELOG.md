@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.9.4
+
+### Patch Changes
+
+-   d47a1b1: Export interface used by exported API, `generateReadMe`
+
 ## 0.9.3
 
 ### Patch Changes

@@ -1,5 +1,21 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.20
+
+### Patch Changes
+
+-   4f7f2b4: Fix windows test
+
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+    -   @sap-ux/deploy-config-generator-shared@0.0.31
+    -   @sap-ux/inquirer-common@0.6.24
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.13
+
 ## 0.1.18
 
 ### Patch Changes
