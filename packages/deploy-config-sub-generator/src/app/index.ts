@@ -31,15 +31,13 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     readonly appWizard: AppWizard;
     readonly prompts: Prompts;
     readonly genNamespace: string;
-
     readonly launchDeployConfigAsSubGenerator: boolean;
     readonly launchStandaloneFromYui: boolean;
-
     readonly apiHubConfig: ApiHubConfig;
     cfDestination: string;
     mtaPath?: string;
     backendConfig: FioriToolsProxyConfigBackend;
-    isLibrary: boolean;
+    isLibrary = false;
     isCap = false;
 
     target: string | undefined;

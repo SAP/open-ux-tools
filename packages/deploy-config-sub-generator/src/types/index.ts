@@ -103,7 +103,6 @@ export interface DeployConfigGenerator {
      * Indicates the generator is launched standalone from YUI
      */
     launchStandaloneFromYui: boolean;
-
     /**
      * The target deployment e.g CF or ABAP
      */
