@@ -213,7 +213,7 @@ describe('Cloud foundry generator tests', () => {
             expect.objectContaining({
                 addCapMtaContinue: true,
                 mtaId: 'capmtaid',
-                mtaPath: '/output/capmissingmta',
+                mtaPath: join(OUTPUT_DIR_PREFIX, 'capmissingmta'),
                 routerType: 'managed'
             }),
             expect.anything(),
