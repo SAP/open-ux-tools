@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.20
+
+### Patch Changes
+
+-   4f7f2b4: Fix windows test
+
 ## 0.1.19
 
 ### Patch Changes
