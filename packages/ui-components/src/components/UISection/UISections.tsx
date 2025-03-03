@@ -173,54 +173,38 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      */
     componentDidUpdate(prevProps: UISectionsProps, prevState: UISectionsState): void {
         this.ignoreAnimation = false;
-        const sizes = this.props.sizes ?? [];
+        const externalSizes = this.props.sizes ?? [];
+        const sizes = this.state.sizes ?? [];
         const prevSizes = prevProps.sizes ?? [];
-        let newSizes = this.state.sizes;
-        let update = false;
-        // Recalculate sizes when external sizes changed
-        if (
-            sizes !== prevSizes &&
-            (sizes.length !== prevSizes.length || sizes.some((size, index) => size !== prevSizes[index]))
-        ) {
-            // Calculate state sizes
-            newSizes = this.updateStateSizes(this.rootSize, sizes);
-            update = true;
-        }
-        // Recalculate sizes when visibility of sections are changed
         const prevVisibleSections = prevState.visibleSections ?? [];
         const visibleSections = this.state.visibleSections ?? [];
-        if (
+        let newSizes: UISectionSize[] | undefined;
+        // Recalculate sizes when external sizes changed
+        const isExternalSizesChanged =
+            externalSizes !== prevSizes &&
+            (externalSizes.length !== prevSizes.length ||
+                externalSizes.some((size, index) => size !== prevSizes[index]));
+        // Recalculate sizes when visibility of sections are changed
+        const isSectionsVisibilityToggled =
             prevVisibleSections.length !== visibleSections.length ||
-            prevVisibleSections.some((index) => !visibleSections.includes(index))
-        ) {
-            newSizes = this.onVisibilityToggle(newSizes);
-            update = true;
+            prevVisibleSections.some((index) => !visibleSections.includes(index));
+        if (isExternalSizesChanged || isSectionsVisibilityToggled) {
+            newSizes = this.updateStateSizes(this.rootSize, isExternalSizesChanged ? externalSizes : sizes);
         }
-
-        if (update) {
+        if (newSizes) {
             // State sizes are updated
             this.setState({
                 sizes: newSizes
             });
-        }
-    }
-
-    onVisibilityToggle(sizes?: UISectionSize[]): UISectionSize[] | undefined {
-        if (sizes) {
-            // Update sizes after toggle
-            sizes = this.updateStateSizes(this.rootSize, sizes);
-            // Update cached section's sizes
-            for (let i = 0; i < sizes.length; i++) {
-                if (this.resizeSections[i]) {
-                    this.resizeSections[i].section = sizes[i];
+            if (newSizes) {
+                // Update cached section's sizes
+                for (let i = 0; i < newSizes.length; i++) {
+                    if (this.resizeSections[i]) {
+                        this.resizeSections[i].section = newSizes[i];
+                    }
                 }
             }
-            // Apply state
-            this.setState({
-                sizes: sizes
-            });
         }
-        return sizes;
     }
 
     /**
