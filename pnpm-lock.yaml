@@ -1568,6 +1568,9 @@ importers:
       '@sap-ux/nodejs-utils':
         specifier: workspace:*
         version: link:../nodejs-utils
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
@@ -1605,9 +1608,6 @@ importers:
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
       '@sap/mta-lib':
         specifier: 1.7.4
         version: 1.7.4

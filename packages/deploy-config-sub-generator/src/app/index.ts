@@ -58,8 +58,8 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.target = parseTarget(args, opts);
 
-        // Extensions use options.data to pass in options
-        if (this.options.launchStandaloneFromYui || this.options.data?.destinationRoot) {
+        // Extensions use options.data to pass in the options
+        if (this.options.data?.launchStandaloneFromYui || this.options.data?.destinationRoot) {
             this.launchStandaloneFromYui = true;
             this.launchDeployConfigAsSubGenerator ||= this.options.data.launchDeployConfigAsSubGenerator;
             this.options.appRootPath = join(
@@ -74,7 +74,6 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             } else {
                 this.options.appRootPath = this.destinationRoot(); // probably in a CLI context
             }
-
             // Load .env file for api hub config
             dotenv.config();
             this.apiHubConfig = this.options.apiHubConfig ?? getEnvApiHubConfig();
@@ -136,7 +135,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.apiHubConfig
         );
 
-        // target may have been passed in from the command line or determined in the init phase
+        // target may have been passed in from the cli or determined in the init phase
         if (this.target) {
             const checkTarget = supportedTargets.find((t) => t.name === this.target);
             if (!checkTarget) {
