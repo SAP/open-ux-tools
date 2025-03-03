@@ -59,6 +59,41 @@ async function testWriter(
  */
 describe('cds writer', () => {
     describe('insert target', () => {
+        test('annotate structured type', async () => {
+            const fixture = 'Service S { entity E { a: { x: String;} }; };';
+            await testWriter(
+                fixture,
+                [
+                    {
+                        type: 'insert-target',
+                        pointer: '',
+                        isStructuredTypeTarget: true,
+                        target: {
+                            type: 'target',
+                            name: 'S.E/a_x',
+                            terms: [
+                                createElementNode({
+                                    name: Edm.Annotation,
+                                    attributes: {
+                                        [Edm.Term]: createAttributeNode(Edm.Term, 'Common.Text'),
+                                        [Edm.String]: createAttributeNode(Edm.String, 'test')
+                                    }
+                                })
+                            ]
+                        }
+                    }
+                ],
+                fixture +
+                    `
+annotate S.E with {
+    a {
+        x @Common.Text : 'test'
+    }
+};
+
+`
+            );
+        });
         test('annotate service entity', async () => {
             const fixture = 'Service S { entity E {}; };';
             await testWriter(

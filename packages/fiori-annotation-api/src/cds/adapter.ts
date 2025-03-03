@@ -545,7 +545,18 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             }
         }
         change.target.name = [originalPathBase, ...pathSegments].join('/');
-        writer.addChange(createInsertTargetChange('target', change.target));
+        let isStructuredTypeTarget;
+        if (pathSegments?.[0]?.includes('_')) {
+            const segments = pathSegments[0].split('_');
+            const complexType = this.metadataService.getMetadataElement(`${originalPathBase}/${segments[0]}`);
+            if (complexType?.structuredType && complexType.isComplexType) {
+                const element = this.metadataService.getMetadataElement(`${originalPathBase}/${pathSegments[0]}`);
+                if (element?.kind === ELEMENT_TYPE) {
+                    isStructuredTypeTarget = true;
+                }
+            }
+        }
+        writer.addChange(createInsertTargetChange('target', change.target, undefined, isStructuredTypeTarget));
     };
 
     [DELETE_ELEMENT] = (writer: CDSWriter, document: Document, change: DeleteElement): void => {
