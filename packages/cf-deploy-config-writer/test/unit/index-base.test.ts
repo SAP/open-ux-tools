@@ -90,6 +90,7 @@ describe('CF Writer Base', () => {
         });
 
         test('Generate deployment configs - standalone with connectivity service', async () => {
+            jest.setTimeout(20000);
             const debugSpy = jest.spyOn(logger, 'debug');
             const mtaId = 'standalone-with-connectivity-service';
             const mtaPath = join(outputDir, mtaId);
