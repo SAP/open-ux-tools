@@ -170,19 +170,55 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      *
      * @param prevProps The previous props of the component before the update.
      */
-    componentDidUpdate(prevProps: UISectionsProps): void {
+    componentDidUpdate(prevProps: UISectionsProps, prevState: UISectionsState): void {
         this.ignoreAnimation = false;
         const sizes = this.props.sizes ?? [];
         const prevSizes = prevProps.sizes ?? [];
+        console.log('componentDidUpdate1');
+        let stateSizes = this.state.sizes;
         if (
             sizes !== prevSizes &&
             (sizes.length !== prevSizes.length || sizes.some((size, index) => size !== prevSizes[index]))
         ) {
-            // Calculate state
+            // Calculate state sizes
+            stateSizes = this.updateStateSizes(this.rootSize, sizes);
+        }
+        const prevVisibleSections = prevState.visibleSections ?? [];
+        const visibleSections = this.state.visibleSections ?? [];
+        if (
+            prevVisibleSections.length !== visibleSections.length ||
+            prevVisibleSections.some((index) => !visibleSections.includes(index))
+        ) {
+            stateSizes = this.onVisibilityToggle(stateSizes);
+        }
+
+        if (stateSizes !== this.state.sizes) {
+            console.log('componentDidUpdate2');
+            // State sizes are updated
             this.setState({
-                sizes: this.updateStateSizes(this.rootSize, sizes)
+                sizes: stateSizes
             });
         }
+    }
+
+    onVisibilityToggle(sizes?: UISectionSize[]): UISectionSize[] | undefined {
+        console.log('Visibility changed!!! ' + this.rootSize);
+        if (sizes) {
+            // Update sizes after toggle
+            sizes = this.updateStateSizes(this.rootSize, sizes);
+            // Update cached section's sizes
+            for (let i = 0; i < sizes.length; i++) {
+                if (this.resizeSections[i]) {
+                    this.resizeSections[i].section = sizes[i];
+                }
+            }
+            console.log(sizes);
+            // Apply state
+            this.setState({
+                sizes: sizes
+            });
+        }
+        return sizes;
     }
 
     /**
@@ -195,10 +231,9 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     static getDerivedStateFromProps(nextProps: UISectionsProps, prevState: UISectionsState): UISectionsState | null {
         // Handle property "animation" as array
         let animate = prevState.animate;
-        let visibleSections: number[] | undefined;
+        const visibleSections: number[] = UISections.getVisibleSections(nextProps.children);
         let dynamicSection = 0;
         if (Array.isArray(nextProps.animation)) {
-            visibleSections = UISections.getVisibleSections(nextProps.children);
             // Check if there is transition for section with enabled animation
             let transitionAnimation: boolean | undefined;
             for (let i = 0; i < nextProps.animation.length; i++) {
@@ -357,6 +392,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const resizeSections = position !== 0 ? this.resizeSections : [];
         const totalSize = this.rootSize;
         let left = this.getSiblingsSize(resizeSections, 0, index);
+        console.log(`onSplitterResize| left=${left}`);
         this.refreshResizeSections(0, index, this.state.sizes);
         let minSizeTriggered = false;
         for (let i = index; i < resizeSections.length; i++) {
@@ -403,6 +439,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             resizeSection.dom.style[this.endPositionProperty] = right + 'px';
             resizeSection.dom.style[this.sizeProperty] = '';
             resizeSection.section = sectionSize;
+            console.log(`onSplitterResize|${i} -> ${JSON.stringify(sectionSize)}`);
             left += newSize;
         }
         return false;
@@ -497,10 +534,16 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         if (!sizes || this.props.sizesAsPercents || !this.props.sizes || childrenCount < 2) {
             return undefined;
         }
-        return {
-            [this.startPositionProperty]: this.getSectionPosition(index, sizes, true),
-            [this.endPositionProperty]: this.getSectionPosition(index, sizes, false)
+        const result = {
+            [this.startPositionProperty]: sizes[index].start ?? 0,
+            [this.endPositionProperty]: sizes[index].end ?? 0
         };
+        console.log(
+            `getSectionSize; Section=${index}; start=${result[this.startPositionProperty]}; end=${
+                result[this.startPositionProperty]
+            }`
+        );
+        return result;
     }
 
     /**
@@ -783,20 +826,12 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @param {UISectionSize[]} sizes Section sizes.
      */
     private recalculatePositions(sizes: UISectionSize[]): void {
-        // Recalculate positions - START
-        let start = 0;
-        sizes.forEach((section) => {
-            section.start = start;
-            // Next start
-            start += section.size ?? 0;
+        sizes.forEach((section, index) => {
+            if (this.isSectionVisible(index)) {
+                section.start = this.getSectionPosition(index, sizes, true);
+                section.end = this.getSectionPosition(index, sizes, false);
+            }
         });
-        // Recalculate positions - END
-        let end = 0;
-        for (let i = sizes.length - 1; i >= 0; i--) {
-            sizes[i].end = end;
-            // Next start
-            end += sizes[i].size ?? 0;
-        }
     }
 
     /**
@@ -856,7 +891,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         let size = 0;
         for (let j = start; j < end; j++) {
             const next = sizes[j];
-            if (next?.size) {
+            if (next?.size && this.isSectionVisible(j)) {
                 size += next.size;
             }
         }
