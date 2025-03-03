@@ -174,7 +174,7 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
         libs: config.libs,
         theme: config.theme,
         init: config.init,
-        newHomePage: config.newHomePage ?? false
+        newHomePage: config.newHomePage === true
     } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
         flpConfig.path = `/${flpConfig.path}`;
