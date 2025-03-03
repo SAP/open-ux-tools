@@ -16,7 +16,7 @@ import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
-import type { DeployConfigOptions } from '../types';
+import type { DeployConfigGenerator, DeployConfigOptions } from '../types';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type {
     CfDeployConfigAnswers,
@@ -27,20 +27,23 @@ import type {
 /**
  * The main deployment configuration generator.
  */
-export default class extends DeploymentGenerator {
-    private readonly appWizard: AppWizard;
-    private readonly prompts: Prompts;
-    private readonly launchDeployConfigAsSubGenerator: boolean;
-    private readonly genNamespace: string;
-    private readonly apiHubConfig: ApiHubConfig;
-    private target: string | undefined;
-    private cfDestination: string;
-    private isCap = false;
-    private launchStandaloneFromYui = false;
-    private mtaPath?: string;
-    private backendConfig: FioriToolsProxyConfigBackend;
-    private isLibrary: boolean;
-    private answers?: Answers;
+export default class extends DeploymentGenerator implements DeployConfigGenerator {
+    readonly appWizard: AppWizard;
+    readonly prompts: Prompts;
+    readonly genNamespace: string;
+
+    readonly launchDeployConfigAsSubGenerator: boolean;
+    readonly launchStandaloneFromYui: boolean;
+
+    readonly apiHubConfig: ApiHubConfig;
+    cfDestination: string;
+    mtaPath?: string;
+    backendConfig: FioriToolsProxyConfigBackend;
+    isLibrary: boolean;
+    isCap = false;
+
+    target: string | undefined;
+    answers?: Answers;
 
     setPromptsCallback: (fn: object) => void;
 
@@ -77,6 +80,7 @@ export default class extends DeploymentGenerator {
             // Load .env file for api hub config
             dotenv.config();
             this.apiHubConfig = this.options.apiHubConfig ?? getEnvApiHubConfig();
+            this.launchStandaloneFromYui = false;
         }
 
         // If launched standalone, set the header, title and description

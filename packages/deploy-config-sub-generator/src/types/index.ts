@@ -1,16 +1,16 @@
 import type Generator from 'yeoman-generator';
-import type { Question } from 'inquirer';
-import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import type { Answers, Question } from 'inquirer';
+import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
+import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 
 export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**
      * The target deployment
      */
     target?: string;
-
     /**
      * Instance of the AppWizard
      */
@@ -81,4 +81,63 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
 export interface Target {
     name: string;
     description: string;
+}
+
+/**
+ * The deployment configuration generator.
+ */
+export interface DeployConfigGenerator {
+    /**
+     * Instance of the Application Wizard
+     */
+    appWizard: AppWizard;
+    /**
+     * The generator namespace that will be used for calling subgens
+     */
+    genNamespace: string;
+    /**
+     * Indicates the generator should be launched as a sub generator and combine all prompts into one step
+     */
+    launchDeployConfigAsSubGenerator: boolean;
+    /**
+     * Indicates the generator is launched standalone from YUI
+     */
+    launchStandaloneFromYui: boolean;
+
+    /**
+     * The target deployment e.g CF or ABAP
+     */
+    target: string | undefined;
+    /**
+     * The deploy config prompts
+     */
+    prompts: Prompts;
+    /**
+     * The deploy config answers
+     */
+    answers?: Answers;
+    /**
+     * The bas destination
+     */
+    cfDestination: string;
+    /**
+     * The path to the mta file
+     */
+    mtaPath?: string;
+    /**
+     * The API Hub configuration
+     */
+    apiHubConfig: ApiHubConfig;
+    /**
+     * The backend configuration,
+     */
+    backendConfig: FioriToolsProxyConfigBackend;
+    /**
+     * Whether the project is CAP
+     */
+    isCap: boolean;
+    /**
+     * Whether the project is a library
+     */
+    isLibrary: boolean;
 }

@@ -54,7 +54,7 @@ export async function getCFQuestions({
         isAbapDirectServiceBinding,
         apiHubConfigType: apiHubConfig?.apiHubType
     });
-    debugger;
+
     const options: CfDeployConfigPromptOptions = {
         [promptNames.destinationName]: {
             defaultValue: destinationQuestionDefaultOption(isAbapDirectServiceBinding, isBAS, cfDestination),
@@ -66,7 +66,7 @@ export async function getCFQuestions({
         [promptNames.addManagedAppRouter]: !mtaYamlExists && !isCap,
         [promptNames.overwrite]: addOverwrite
     };
-    debugger;
+
     DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));
     return getPrompts(options);
 }
