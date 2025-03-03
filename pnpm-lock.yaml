@@ -1596,9 +1596,18 @@ importers:
       '@jest/types':
         specifier: 29.6.3
         version: 29.6.3
+      '@sap-ux/cf-deploy-config-inquirer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-inquirer
+      '@sap-ux/cf-deploy-config-writer':
+        specifier: workspace:*
+        version: link:../cf-deploy-config-writer
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
       '@sap/mta-lib':
         specifier: 1.7.4
         version: 1.7.4

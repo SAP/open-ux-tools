@@ -1,16 +1,17 @@
 import { DeployProjectType } from '@sap-ux/abap-deploy-config-sub-generator';
-import { ApiHubConfig, ApiHubType } from '@sap-ux/cf-deploy-config-sub-generator';
+import { ApiHubType } from '@sap-ux/cf-deploy-config-sub-generator';
 import { FileName } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
-import { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { Target } from '../types';
 import { cfChoice, abapChoice } from './constants';
+import type { Editor } from 'mem-fs-editor';
+import type { Target } from '../types';
+import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-sub-generator';
 
 /**
  * Generate a list of targets i.e. CF | ABAP and order based on the project type i.e. library, CF, abap or CAP.
  *
- * @param memFs - reference to a mem-fs editor
+ * @param fs - reference to a mem-fs editor
  * @param projectPath - project path
  * @param isCap - is the target project a CAP project
  * @param hasMtaConfig - does the target project contain MTA Config
@@ -19,7 +20,7 @@ import { cfChoice, abapChoice } from './constants';
  * @returns a list of Target options i.e. CF | ABAP
  */
 export async function getSupportedTargets(
-    memFs: Editor,
+    fs: Editor,
     projectPath: string,
     isCap = false,
     hasMtaConfig = false,
@@ -27,8 +28,8 @@ export async function getSupportedTargets(
     configFile = FileName.Ui5Yaml
 ): Promise<Target[]> {
     const isApiHubEnt = apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise;
-    const isProjectExtension = memFs.exists(join(projectPath, '.extconfig.json'));
-    const ui5Config = await UI5Config.newInstance(memFs.read(join(projectPath, configFile)));
+    const isProjectExtension = fs.exists(join(projectPath, '.extconfig.json'));
+    const ui5Config = await UI5Config.newInstance(fs.read(join(projectPath, configFile)));
 
     if (isApiHubEnt || isCap) {
         return [cfChoice];

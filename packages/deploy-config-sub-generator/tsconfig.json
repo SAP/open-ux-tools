@@ -19,7 +19,13 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../cf-deploy-config-inquirer"
+    },
+    {
       "path": "../cf-deploy-config-sub-generator"
+    },
+    {
+      "path": "../cf-deploy-config-writer"
     },
     {
       "path": "../deploy-config-generator-shared"
@@ -38,6 +44,9 @@
     },
     {
       "path": "../nodejs-utils"
+    },
+    {
+      "path": "../odata-service-inquirer"
     },
     {
       "path": "../project-access"

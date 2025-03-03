@@ -1,53 +1,64 @@
-import { t } from '../utils';
-import type { Answers, Question } from 'inquirer';
 import { withCondition } from '@sap-ux/inquirer-common';
-import type { DeployConfigOptions, Target } from '../types';
-import { ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import { DeploymentGenerator, showOverwriteQuestion, TargetName } from '@sap-ux/deploy-config-generator-shared';
-import {
-    AbapDeployConfigAnswersInternal,
-    getAbapQuestions,
-    indexHtmlExists,
-    type AbapDeployConfigQuestion
-} from '@sap-ux/abap-deploy-config-sub-generator';
-import {
-    CfDeployConfigAnswers,
-    getCFQuestions,
-    type ApiHubConfig,
-    type CfDeployConfigQuestions
-} from '@sap-ux/cf-deploy-config-sub-generator';
-import { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
-import { FileName } from '@sap-ux/project-access';
-import { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { GeneratorOptions } from 'yeoman-generator';
+import { t } from '../utils';
+import { DeploymentGenerator, showOverwriteQuestion, TargetName } from '@sap-ux/deploy-config-generator-shared';
+import { getAbapQuestions, indexHtmlExists } from '@sap-ux/abap-deploy-config-sub-generator';
+import { getCFQuestions } from '@sap-ux/cf-deploy-config-sub-generator';
+import { FileName } from '@sap-ux/project-access';
 import { getDeployTargetQuestion } from './deploy-target';
+import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import type { Editor } from 'mem-fs-editor';
+import type { ApiHubConfig, CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-sub-generator';
+import type {
+    AbapDeployConfigAnswersInternal,
+    AbapDeployConfigQuestion
+} from '@sap-ux/abap-deploy-config-sub-generator';
+import type { Answers, Question } from 'inquirer';
+import type { DeployConfigOptions, Target } from '../types';
 
-export async function promptSubGenerators(
+/**
+ * Retrieves the combined sub generator prompts.
+ *
+ * @param fs - instance of fs
+ * @param options - deploy config options
+ * @param promptOpts - options for prompts
+ * @param promptOpts.launchDeployConfigAsSubGenerator - whether the generator is launched as a sub generator
+ * @param promptOpts.launchStandaloneFromYui - whether the generator is launched standalone from YUI
+ * @param promptOpts.configUpdatePrompts - prompt to confirm updating the config
+ * @param promptOpts.supportedTargets - supported deployment targets
+ * @param promptOpts.backendConfig - backend configuration
+ * @param promptOpts.cfDestination - CF destination
+ * @param promptOpts.isCap - whether the project is a CAP project
+ * @param promptOpts.apiHubConfig - API Hub configuration
+ * @param promptOpts.isLibrary - whether the project is a library
+ * @returns - deployment configuration answers
+ */
+export async function getSubGenPrompts(
     fs: Editor,
     options: DeployConfigOptions,
-    prompt: GeneratorOptions['prompt'],
-    launchDeployConfigAsSubGenerator: boolean,
-    launchStandaloneFromYui: boolean,
-    configUpdatePrompts: Question[],
-    supportedTargets: Target[],
     {
+        launchDeployConfigAsSubGenerator,
+        launchStandaloneFromYui,
+        configUpdatePrompts,
+        supportedTargets,
         backendConfig,
         cfDestination,
         isCap,
         apiHubConfig,
         isLibrary
     }: {
+        launchDeployConfigAsSubGenerator: boolean;
+        launchStandaloneFromYui: boolean;
+        configUpdatePrompts: Question[];
+        supportedTargets: Target[];
         backendConfig: FioriToolsProxyConfigBackend;
         cfDestination: string;
         isCap: boolean;
         apiHubConfig: ApiHubConfig;
         isLibrary: boolean;
     }
-): Promise<AbapDeployConfigAnswersInternal | CfDeployConfigAnswers> {
+): Promise<{ questions: Question[]; abapAnswers: Partial<AbapDeployConfigAnswersInternal> }> {
     DeploymentGenerator.logger?.debug(t('debug.loadingPrompts'));
-    const deployConfigAnswers = {} as AbapDeployConfigAnswersInternal | CfDeployConfigAnswers;
-
     const configExists = fs.exists(join(options.appRootPath, options.config || FileName.UI5DeployYaml));
     const showOverwrite = showOverwriteQuestion(
         configExists,
@@ -55,52 +66,8 @@ export async function promptSubGenerators(
         launchStandaloneFromYui,
         options.overwrite
     );
-
     const indexGenerationAllowed = !isLibrary && !(await indexHtmlExists(fs, options.appRootPath));
 
-    // Combine all prompts
-    const { questions: questions, abapAnswers: abapAnswers } = await getSubGenPrompts({
-        options: options as DeployConfigOptions,
-        supportedTargets,
-        configUpdatePrompts,
-        indexGenerationAllowed,
-        showOverwrite,
-        backendConfig: backendConfig,
-        logger: DeploymentGenerator.logger,
-        cfDestination: cfDestination,
-        isCap: isCap,
-        apiHubConfig: apiHubConfig
-    });
-
-    // Prompt and assign answers
-    const answers = await prompt(questions);
-    Object.assign(deployConfigAnswers, answers, abapAnswers);
-    return deployConfigAnswers;
-}
-
-async function getSubGenPrompts({
-    options,
-    supportedTargets,
-    configUpdatePrompts = [],
-    indexGenerationAllowed,
-    showOverwrite,
-    backendConfig,
-    logger,
-    cfDestination,
-    isCap,
-    apiHubConfig
-}: {
-    options: DeployConfigOptions;
-    supportedTargets: Target[];
-    configUpdatePrompts: Question[];
-    indexGenerationAllowed: boolean;
-    showOverwrite: boolean;
-    backendConfig: FioriToolsProxyConfigBackend;
-    logger: ILogWrapper;
-    cfDestination: string;
-    isCap: boolean;
-    apiHubConfig: ApiHubConfig;
-}): Promise<{ questions: Question[]; abapAnswers: Partial<AbapDeployConfigAnswersInternal> }> {
     // ABAP prompts
     const { prompts: abapPrompts, answers: abapAnswers } = await getAbapQuestions({
         appRootPath: options.appRootPath,
@@ -109,13 +76,13 @@ async function getSubGenPrompts({
         configFile: options.config,
         indexGenerationAllowed,
         showOverwriteQuestion: showOverwrite,
-        logger
+        logger: DeploymentGenerator.logger
     });
 
     // CF prompts
     const cfPrompts = await getCFQuestions({
         projectRoot: options.projectRoot,
-        isAbapDirectServiceBinding: options.isAbapDirectServiceBinding, // todo: check if this can be removed
+        isAbapDirectServiceBinding: options.isAbapDirectServiceBinding,
         cfDestination: cfDestination,
         isCap: isCap,
         addOverwrite: showOverwrite,
@@ -144,7 +111,6 @@ async function getSubGenPrompts({
  * @param opts.configUpdatePrompts - confirm config update prompts
  * @returns - all the different prompts combined
  */
-
 function combineAllPrompts(
     projectRoot: string,
     {

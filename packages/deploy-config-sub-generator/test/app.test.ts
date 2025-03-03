@@ -3,18 +3,16 @@ import DeployGenerator from '../src/app';
 import yeomanTest from 'yeoman-test';
 import * as memfs from 'memfs';
 import hasbin from 'hasbin';
-import { TestFixture, mockDestinations } from './fixtures';
+import { TestFixture } from './fixtures';
 import fs from 'fs';
 import { generatorNamespace, initI18n } from '../src/utils';
 import { TargetName } from '@sap-ux/deploy-config-generator-shared';
-import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
-import { Destination } from '@sap-ux/btp-utils';
-import { type ServiceProvider } from '@sap-ux/axios-extension';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
-import * as deployConfigShared from '@sap-ux/deploy-config-generator-shared';
 import * as envUtils from '@sap-ux/fiori-generator-shared';
 import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
+import Generator from 'yeoman-generator';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -37,6 +35,11 @@ jest.mock('@sap-ux/cf-deploy-config-writer', () => {
     };
 });
 
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
+    getService: jest.fn()
+}));
+
 jest.mock('hasbin', () => ({
     sync: jest.fn()
 }));
@@ -48,7 +51,6 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 const hasbinSyncMock = hasbin.sync as jest.MockedFunction<typeof hasbin.sync>;
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const mockListDestinations = listDestinations as jest.Mock;
 
 describe('Deployment Generator', () => {
     jest.setTimeout(200000);
@@ -114,6 +116,8 @@ describe('Deployment Generator', () => {
     it('Validate deployment generator is loaded as root generator', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
+        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
         const getABAPPromptsSpy = jest.spyOn(abapDeploySubGen, 'getAbapQuestions');
         memfs.vol.fromNestedJSON(
@@ -146,10 +150,11 @@ describe('Deployment Generator', () => {
                 .withPrompts({
                     targetName: TargetName.ABAP
                 })
-                .withGenerators([[mockSubGen, generatorNamespace('abap')]])
-                .withGenerators([[mockSubGen, generatorNamespace('cf')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'abap')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
+        expect(composeWithSpy).toHaveBeenCalledWith('gen:test_abap', expect.any(Object));
         expect(getCFQuestionsSpy).not.toHaveBeenCalled();
         expect(getABAPPromptsSpy).not.toHaveBeenCalled();
     });
@@ -192,8 +197,8 @@ describe('Deployment Generator', () => {
                 .withPrompts({
                     targetName: TargetName.ABAP
                 })
-                .withGenerators([[mockSubGen, generatorNamespace('abap')]])
-                .withGenerators([[mockSubGen, generatorNamespace('cf')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'abap')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
         expect(getCFQuestionsSpy).toHaveBeenCalled();
@@ -205,7 +210,7 @@ describe('Deployment Generator', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
         jest.spyOn(envUtils, 'getHostEnvironment').mockReturnValue(envUtils.hostEnvironment.cli);
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
-        const getS4PromptsSpy = jest.spyOn(deployConfigShared, 'getConfirmConfigUpdatePrompt');
+
         const mockExit = jest.spyOn(process, 'exit').mockImplementation();
         memfs.vol.fromNestedJSON(
             {
@@ -228,9 +233,12 @@ describe('Deployment Generator', () => {
                     overwrite: false,
                     skipInstall: true,
                     data: {
-                        additionalPrompts: {
-                            confirmConfigUpdate: { show: true, configType: '~Test' }
-                        },
+                        confirmConfigUpdatePrompt: [
+                            {
+                                type: 'confirm',
+                                name: 'confirmConfigUpdate'
+                            }
+                        ],
                         launchDeployConfigAsSubGenerator: true,
                         destinationRoot: appDir
                     },
@@ -240,11 +248,11 @@ describe('Deployment Generator', () => {
                 .withPrompts({
                     confirmConfigUpdate: false
                 })
-                .withGenerators([[mockSubGen, generatorNamespace('deploy')]])
-                .withGenerators([[mockSubGen, generatorNamespace('cf')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'deploy')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getS4PromptsSpy).toHaveBeenLastCalledWith('~Test');
+
         expect(getCFQuestionsSpy).toHaveBeenCalled();
         expect(mockExit).toHaveBeenCalledWith(0);
     });
@@ -255,7 +263,7 @@ describe('Deployment Generator', () => {
         jest.spyOn(envUtils, 'getHostEnvironment').mockReturnValue(envUtils.hostEnvironment.cli);
         const getABAPPromptsSpy = jest.spyOn(abapDeploySubGen, 'getAbapQuestions');
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts').mockResolvedValueOnce([]);
-        const getS4PromptsSpy = jest.spyOn(deployConfigShared, 'getConfirmConfigUpdatePrompt');
+
         const mockExit = jest.spyOn(process, 'exit').mockImplementation();
         memfs.vol.fromNestedJSON(
             {
@@ -277,11 +285,11 @@ describe('Deployment Generator', () => {
                 .withOptions({
                     overwrite: false,
                     skipInstall: true,
+                    launchDeployConfigAsSubGenerator: false,
                     data: {
                         additionalPrompts: {
                             confirmConfigUpdate: { show: true, configType: '~Test' }
                         },
-                        launchDeployConfigAsSubGenerator: false,
                         destinationRoot: appDir
                     },
                     projectPath: OUTPUT_DIR_PREFIX,
@@ -291,95 +299,14 @@ describe('Deployment Generator', () => {
                     confirmConfigUpdate: true,
                     targetName: TargetName.CF
                 })
-                .withGenerators([[mockSubGen, generatorNamespace('deploy')]])
-                .withGenerators([[mockSubGen, generatorNamespace('cf')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'deploy')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getS4PromptsSpy).toHaveBeenLastCalledWith('~Test');
+
         expect(getABAPPromptsSpy).not.toHaveBeenCalled();
         expect(getCFQuestionsSpy).not.toHaveBeenCalled();
         expect(mockExit).not.toHaveBeenCalled();
-    });
-
-    it('Validate API Hub Enterprise application is correctly handled', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
-        mockIsAppStudio.mockReturnValueOnce(true);
-        mockListDestinations.mockResolvedValueOnce(mockDestinations);
-        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts').mockResolvedValueOnce([]);
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/apibhubproject/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml'),
-                [`.${OUTPUT_DIR_PREFIX}/apibhubproject/.env`]: testFixture.getContents('apiHubEnterprise/env'),
-                [`.${OUTPUT_DIR_PREFIX}/apibhubproject/webapp/manifest.json`]: testFixture.getContents(
-                    'apiHubEnterprise/webapp/manifest.json'
-                ),
-                [`.${OUTPUT_DIR_PREFIX}/apibhubproject/package.json`]: JSON.stringify({ scripts: {} })
-            },
-            '/'
-        );
-
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/apibhubproject`);
-        const serviceProvider = {
-            log: jest.fn(),
-            cookies: 'MockCookie',
-            services: {}
-        } as any as ServiceProvider;
-        const destination: Destination = {
-            Name: 'ABHE_catalog',
-            Type: 'HTTP',
-            Authentication: 'NoAuthentication',
-            ProxyType: 'Internet',
-            WebIDEAdditionalData: 'full_url',
-            Description: 'ABHE_catalog OData Service',
-            WebIDEUsage: 'odata_gen',
-            Host: 'https://system1/'
-        };
-        await expect(
-            yeomanTest
-                .create(
-                    DeployGenerator,
-                    {
-                        resolved: deployPath
-                    },
-                    { cwd: appDir }
-                )
-                .withOptions({
-                    overwrite: false, // If overwrite is false, prompt the user to confirm.
-                    skipInstall: true,
-                    data: { destinationRoot: appDir, launchDeployConfigAsSubGenerator: true },
-                    connectedSystem: {
-                        serviceProvider,
-                        destination
-                    }
-                })
-                .withPrompts({
-                    destination: 'ABHE_catalog',
-                    targetName: TargetName.CF
-                })
-                .withGenerators([[mockSubGen, generatorNamespace('deploy')]])
-                .withGenerators([[mockSubGen, generatorNamespace('cf')]])
-                .run()
-        ).resolves.not.toThrow();
-
-        expect(getCFQuestionsSpy).toHaveBeenLastCalledWith(
-            expect.objectContaining({
-                addManagedAppRouter: true,
-                destinationName: {
-                    addBTPDestinationList: false, // todo: retest when modules are published, app studio mocking is not working
-                    additionalChoiceList: [
-                        {
-                            name: 'ABHE_catalog',
-                            value: 'ABHE_catalog'
-                        }
-                    ],
-                    defaultValue: 'ABHE_catalog',
-                    hint: false,
-                    useAutocomplete: true
-                },
-                overwriteDestinationName: false
-            })
-        );
-        getCFQuestionsSpy.mockRestore();
     });
 
     it('Validate deployment generator handles CAP project with missing MTA configuration', async () => {
@@ -413,8 +340,8 @@ describe('Deployment Generator', () => {
                     projectPath: OUTPUT_DIR_PREFIX,
                     projectName: 'capproject'
                 })
-                .withGenerators([[mockSubGen, generatorNamespace('abap')]])
-                .withGenerators([[mockSubGen, generatorNamespace('cf')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'abap')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
         expect(getCFQuestionsSpy).not.toHaveBeenCalled();

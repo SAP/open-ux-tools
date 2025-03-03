@@ -1,13 +1,18 @@
-import { DeployProjectType } from '@sap-ux/abap-deploy-config-sub-generator';
-import { FileName } from '@sap-ux/project-access';
-import { FioriToolsProxyConfigBackend, UI5Config } from '@sap-ux/ui5-config';
-import { Editor } from 'mem-fs-editor';
 import { join } from 'path';
-import { DeployConfigOptions } from '../types';
+import { DeployProjectType } from '@sap-ux/abap-deploy-config-sub-generator';
+import { UI5Config } from '@sap-ux/ui5-config';
+import { FileName } from '@sap-ux/project-access';
+import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import type { Editor } from 'mem-fs-editor';
+import type { DeployConfigOptions } from '../types';
 
 /**
  * Retrieves backend configuration from either the base config (ui5.yaml) or from the options passed in.
  *
+ * @param fs - file system editor
+ * @param options - options passed in
+ * @param launchStandaloneFromYui - flag to indicate if this generator is launched in YUI standalone
+ * @param projectRoot - project root
  * @returns - backend configuration
  */
 export async function getBackendConfig(
@@ -29,10 +34,10 @@ export async function getBackendConfig(
     } else {
         // Launched as subgenerator from app gen
         backendConfig = {
-            destination: options.appGenDestination,
+            destination: options.connectedSystem?.destination?.Name,
             url: options.appGenServiceHost,
             client: options.appGenClient,
-            scp: options.scp || false
+            scp: !!options.connectedSystem?.backendSystem?.serviceKeys || false
         } as FioriToolsProxyConfigBackend;
     }
     return { backendConfig, isLibrary };

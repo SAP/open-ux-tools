@@ -1,8 +1,8 @@
-import { withCondition } from '@sap-ux/inquirer-common';
 import { t } from 'i18next';
-import { Question, ListQuestion, Answers } from 'inquirer';
-import { Target } from '../types';
+import { withCondition } from '@sap-ux/inquirer-common';
 import { isMTAInstalled } from '../utils';
+import type { Target } from '../types';
+import type { Question, ListQuestion, Answers } from 'inquirer';
 
 /**
  * Returns the deployment target question.
@@ -28,7 +28,7 @@ export function getDeployTargetQuestion(supportedTargets: Target[], projectRoot:
 }
 
 /**
- * Directly prompts for the target deployment.
+ * Returns prompts for the target deployment and wraps in the config update prompt if found.
  *
  * @param supportedTargets - the supported deployment targets
  * @param configUpdatePrompts - confirm config update prompts

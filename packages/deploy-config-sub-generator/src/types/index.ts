@@ -1,10 +1,9 @@
 import type Generator from 'yeoman-generator';
+import type { Question } from 'inquirer';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
-import type { ServiceProvider } from '@sap-ux/axios-extension';
-import type { BackendSystem } from '@sap-ux/store';
-import type { Destination } from '@sap-ux/btp-utils';
 import type { LogWrapper } from '@sap-ux/fiori-generator-shared';
+import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 
 export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -36,11 +35,7 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**
      * The connected system from the generator
      */
-    connectedSystem?: {
-        serviceProvider: ServiceProvider;
-        backendSystem?: BackendSystem;
-        destination?: Destination;
-    };
+    connectedSystem?: OdataServiceAnswers['connectedSystem'];
     /**
      * Whether the system is a cloud system
      */
@@ -74,23 +69,9 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
          */
         destinationRoot: string;
         /**
-         * Config for additional prompts
+         * Prompt to confirm the the update of non-productive configurations as they are centrally managed as part of the CI pipeline.
          */
-        additionalPrompts?: {
-            /**
-             * Prompt to confirm the the update of non-productive configurations as they are centrally managed as part of the CI pipeline.
-             */
-            confirmConfigUpdate?: {
-                /**
-                 * Whether the prompt should be shown.
-                 */
-                show?: boolean;
-                /**
-                 * The type of configuration being updated. This will be added to the start of the prompt message.
-                 */
-                configType?: string;
-            };
-        };
+        confirmConfigUpdatePrompt?: Question;
     };
 }
 

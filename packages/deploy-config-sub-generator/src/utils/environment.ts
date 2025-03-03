@@ -14,7 +14,7 @@ import {
 } from '@sap-ux/deploy-config-generator-shared';
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { Editor } from 'mem-fs-editor';
+import type { Editor } from 'mem-fs-editor';
 
 /**
  * Check if the MTA is installed.
