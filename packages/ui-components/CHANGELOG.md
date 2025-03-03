@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.24.6
+
+### Patch Changes
+
+-   689f1b8: UIIcons. Add new icon "DataSparkle"
+
 ## 1.24.5
 
 ### Patch Changes

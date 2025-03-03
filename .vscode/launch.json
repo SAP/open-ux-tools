@@ -343,6 +343,23 @@
         {
             "type": "node",
             "request": "launch",
+            "name": "cds-odata-annotation-converter: Debug Current Jest File",
+            "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
+            "args": ["${fileBasenameNoExtension}", "--config", "jest.config.js", "--coverage=false", "--runInBand"],
+            "console": "integratedTerminal",
+            "internalConsoleOptions": "neverOpen",
+            "disableOptimisticBPs": true,
+            "windows": {
+                "program": "${workspaceFolder}/node_modules/jest/bin/jest"
+            },
+            "cwd": "${workspaceFolder}/packages/cds-odata-annotation-converter",
+            "env": {
+                "UX_DEBUG": "false"
+            }
+        },
+        {
+            "type": "node",
+            "request": "launch",
             "name": "xml-odata-annotation-converter: Debug Current Jest File",
             "program": "${workspaceFolder}/node_modules/jest/bin/jest.js",
             "args": ["${file}", "--config", "jest.config.js", "--coverage=false"],

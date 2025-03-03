@@ -1,5 +1,18 @@
 # @sap-ux/project-access
 
+## 1.29.11
+
+### Patch Changes
+
+-   0f35b4b: ignore error thrown when no .library file found
+
+## 1.29.10
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/i18n@0.2.2
+
 ## 1.29.9
 
 ### Patch Changes

@@ -664,7 +664,25 @@ describe('fiori annotation service', () => {
                 expect(serialize(metadata.schema, PROJECTS.V4_CDS_START.root)).toMatchSnapshot();
             });
 
-            test('new file from memfs', async () => {
+            test('new file from memfs, no apps', async () => {
+                const project = PROJECTS.V4_CAP_NO_APPS;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const servicesFilePath = pathFromUri(project.files.services);
+                const newFileName = 'new-file';
+                const appName = 'incidents';
+                const testData = `using from './${appName}/${newFileName}';\n`;
+                const annotationFilePath = join(root, 'app', appName, `${newFileName}.cds`);
+                fsEditor.write(annotationFilePath, '');
+                fsEditor.write(servicesFilePath, testData);
+
+                const service = await testRead(project.root, [], 'IncidentService', fsEditor);
+                const annotations = service.getSchema().schema.annotations;
+
+                expect(annotations[pathToFileURL(servicesFilePath).toString()]).toHaveLength(0);
+                expect(annotations[pathToFileURL(annotationFilePath).toString()]).toHaveLength(0);
+            });
+            test('new file from memfs, existing service file', async () => {
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);

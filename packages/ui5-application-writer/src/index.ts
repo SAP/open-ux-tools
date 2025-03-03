@@ -160,3 +160,4 @@ export {
     processDestinationPath,
     getTemplateVersionPath
 } from './utils';
+export { getManifestVersion } from './data/defaults';
