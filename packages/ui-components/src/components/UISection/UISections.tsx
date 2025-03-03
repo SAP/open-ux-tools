@@ -174,8 +174,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         this.ignoreAnimation = false;
         const sizes = this.props.sizes ?? [];
         const prevSizes = prevProps.sizes ?? [];
-        console.log('componentDidUpdate1');
         let stateSizes = this.state.sizes;
+        // Recalculate sizes when external sizes changed
         if (
             sizes !== prevSizes &&
             (sizes.length !== prevSizes.length || sizes.some((size, index) => size !== prevSizes[index]))
@@ -183,6 +183,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             // Calculate state sizes
             stateSizes = this.updateStateSizes(this.rootSize, sizes);
         }
+        // Recalculate sizes when visibility of sections are changed
         const prevVisibleSections = prevState.visibleSections ?? [];
         const visibleSections = this.state.visibleSections ?? [];
         if (
@@ -193,7 +194,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         }
 
         if (stateSizes !== this.state.sizes) {
-            console.log('componentDidUpdate2');
             // State sizes are updated
             this.setState({
                 sizes: stateSizes
@@ -202,7 +202,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     }
 
     onVisibilityToggle(sizes?: UISectionSize[]): UISectionSize[] | undefined {
-        console.log('Visibility changed!!! ' + this.rootSize);
         if (sizes) {
             // Update sizes after toggle
             sizes = this.updateStateSizes(this.rootSize, sizes);
@@ -212,7 +211,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                     this.resizeSections[i].section = sizes[i];
                 }
             }
-            console.log(sizes);
             // Apply state
             this.setState({
                 sizes: sizes
@@ -392,7 +390,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const resizeSections = position !== 0 ? this.resizeSections : [];
         const totalSize = this.rootSize;
         let left = this.getSiblingsSize(resizeSections, 0, index, true);
-        console.log(`onSplitterResize| left=${left}`);
         this.refreshResizeSections(0, index, this.state.sizes);
         let minSizeTriggered = false;
         for (let i = index; i < resizeSections.length; i++) {
@@ -472,8 +469,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 sizes
             });
         }
-        console.log(`onSplitterResizeEnd`);
-        console.log(sizes);
         this.props.onResize?.(sizes);
     }
 
@@ -539,11 +534,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             [this.startPositionProperty]: sizes[index].start ?? 0,
             [this.endPositionProperty]: sizes[index].end ?? 0
         };
-        console.log(
-            `getSectionSize; Section=${index}; start=${result[this.startPositionProperty]}; end=${
-                result[this.startPositionProperty]
-            }`
-        );
         return result;
     }
 
@@ -832,6 +822,10 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 section.start = this.getSectionPosition(index, sizes, true);
                 section.end = this.getSectionPosition(index, sizes, false);
             }
+            // else {
+            //     section.start = 0;
+            //     section.end = 0;
+            // }
         });
     }
 
