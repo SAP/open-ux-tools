@@ -101,10 +101,8 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.isCap = !!capRoot;
         this.mtaPath = (await getMtaPath(this.options.appRootPath))?.mtaPath;
         if (this.isCap && !this.mtaPath) {
-            // when CAP project and no mta.yaml, default to Cloud Foundry
-            this.target = TargetName.CF;
+            this.target = TargetName.CF; // when CAP project and no mta.yaml, default to Cloud Foundry
         }
-
         this.options.projectRoot = capRoot ?? this.mtaPath ?? this.options.appRootPath;
 
         ({ backendConfig: this.backendConfig, isLibrary: this.isLibrary } = await getBackendConfig(
@@ -113,12 +111,10 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.launchStandaloneFromYui,
             this.options.projectRoot
         ));
-
         const { destinationName, servicePath } = await getApiHubOptions(this.fs, {
             appPath: this.options.appRootPath,
             servicePath: this.options.appGenServicePath
         });
-
         this.options.appGenServicePath ||= servicePath;
         this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig.destination;
     }
