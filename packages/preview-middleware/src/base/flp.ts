@@ -155,7 +155,7 @@ export class FlpSandbox {
             this.createTestSuite(this.test);
         }
 
-        if (this.flpConfig.newHomePage === true) {
+        if (this.flpConfig.newHomePage) {
             this.addCDMRoute();
         }
         await this.addRoutesForAdditionalApps();
@@ -448,7 +448,6 @@ export class FlpSandbox {
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
 
-        // Disable newHomePage feature for UI5 versions below 1.123.0
         if ((major < 2 && minor < 123) || major >= 2) {
             this.flpConfig.newHomePage = this.templateConfig.newHomePage = false;
             this.logger.warn(`Feature newHomePage disabled: UI5 version ${version} not supported.`);

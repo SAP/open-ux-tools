@@ -16,8 +16,7 @@
     "pages": {
         "SAP_BASIS_PG_UI_MYHOME": {
             "identification": {
-                "id": "SAP_BASIS_PG_UI_MYHOME",
-                "title": "My Home"
+                "id": "SAP_BASIS_PG_UI_MYHOME"
             },
             "payload": {
                 "layout": {
