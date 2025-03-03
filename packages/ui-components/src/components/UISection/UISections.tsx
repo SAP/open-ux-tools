@@ -537,10 +537,13 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         if (!sizes || this.props.sizesAsPercents || !this.props.sizes || childrenCount < 2) {
             return undefined;
         }
-        const result = {
-            [this.startPositionProperty]: sizes[index].start ?? 0,
-            [this.endPositionProperty]: sizes[index].end ?? 0
-        };
+        const result: React.CSSProperties = {};
+        if (sizes[index].start !== undefined) {
+            result[this.startPositionProperty] = sizes[index].start;
+        }
+        if (sizes[index].end !== undefined) {
+            result[this.endPositionProperty] = sizes[index].end;
+        }
         return result;
     }
 
