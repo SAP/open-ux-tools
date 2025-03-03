@@ -169,6 +169,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * when the external prop sizes have changed.
      *
      * @param prevProps The previous props of the component before the update.
+     * @param prevState The previous state of the component before the update.
      */
     componentDidUpdate(prevProps: UISectionsProps, prevState: UISectionsState): void {
         this.ignoreAnimation = false;
@@ -886,13 +887,13 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @param sizes An array of objects, each containing 'size` property.
      * @param start The starting index (inclusive) of the range.
      * @param end The ending index (exclusive) of the range.
+     * @param onlyVisible Calculate only visible sections.
      * @returns The sum of the sibling sizes for the specified range.
      */
     private getSiblingsSize(sizes: Array<{ size?: number }>, start: number, end: number, onlyVisible = false): number {
         let size = 0;
         for (let j = start; j < end; j++) {
             const next = sizes[j];
-            // if (next?.size && this.isSectionVisible(j)) {
             if (next?.size && (!onlyVisible || this.isSectionVisible(j))) {
                 size += next.size;
             }
