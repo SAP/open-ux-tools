@@ -428,19 +428,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             if (resizeSections[i + 1]) {
                 right = totalSize - left - newSize;
             }
-            if (i > 0) {
-                sectionSize.size = newSize;
-                sectionSize.start = left;
-                resizeSection.dom.style[this.startPositionProperty] = left + 'px';
-            } else {
-                sectionSize.start = 0;
-                resizeSection.dom.style[this.startPositionProperty] = '0px';
-            }
-            sectionSize.end = right;
-            if (this.isSectionVisible(i)) {
-                sectionSize.size = Math.abs(this.rootSize - sectionSize.end - sectionSize.start);
-            }
-            resizeSection.dom.style[this.endPositionProperty] = right + 'px';
+            this.updateSectionSize(sectionSize, i, {
+                size: newSize,
+                start: left,
+                end: right,
+                percentage: false
+            });
+            resizeSection.dom.style[this.startPositionProperty] = sectionSize.start + 'px';
+            resizeSection.dom.style[this.endPositionProperty] = sectionSize.end + 'px';
             resizeSection.dom.style[this.sizeProperty] = '';
             resizeSection.section = sectionSize;
             left += newSize;
@@ -948,6 +943,26 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             }
         }
         return Math.max(minSectionSize, mainSize - reservedSize);
+    }
+
+    /**
+     * Updates the size and position of section.
+     *
+     * @param sectionSize The section object to be updated.
+     * @param index The index of the section.
+     * @param newSize The new size and position values for the section.
+     */
+    private updateSectionSize(sectionSize: UISectionSize, index: number, newSize: UISectionSize): void {
+        if (index > 0) {
+            sectionSize.size = newSize.size;
+            sectionSize.start = newSize.start;
+        } else {
+            sectionSize.start = 0;
+        }
+        sectionSize.end = newSize.end;
+        if (this.isSectionVisible(index) && sectionSize.end !== undefined && sectionSize.start !== undefined) {
+            sectionSize.size = Math.abs(this.rootSize - sectionSize.end - sectionSize.start);
+        }
     }
 
     /**
