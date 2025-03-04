@@ -1,5 +1,11 @@
 # @sap-ux/i18n
 
+## 0.2.3
+
+### Patch Changes
+
+-   cf05ceb: Update `vscode-languageserver-textdocument` dependency
+
 ## 0.2.2
 
 ### Patch Changes
