@@ -39,21 +39,33 @@ export async function writeIntegrityData(integrityFilePath: string, content: Int
     if (!existsSync(integrityDir)) {
         await mkdir(integrityDir, { recursive: true });
     }
+    const contentWithoutGetter: Integrity = {
+        enabled: content.enabled,
+        fileIntegrity: [],
+        contentIntegrity: []
+    };
 
     for (const fileIntegrity of content.fileIntegrity) {
-        fileIntegrity.filePath = relative(integrityDir, fileIntegrity.filePath);
+        const filePath = relative(integrityDir, fileIntegrity.filePath);
+        let content: string | undefined;
         if (typeof fileIntegrity.content === 'string') {
-            fileIntegrity.content = compressToBase64(fileIntegrity.content);
+            content = compressToBase64(fileIntegrity.content);
         }
+        contentWithoutGetter.fileIntegrity.push({ filePath, content, hash: fileIntegrity.hash });
     }
 
     for (const contentIntegrity of content.contentIntegrity) {
         if (typeof contentIntegrity.content === 'string') {
-            contentIntegrity.content = compressToBase64(contentIntegrity.content);
+            const content = compressToBase64(contentIntegrity.content);
+            contentWithoutGetter.contentIntegrity.push({
+                contentKey: contentIntegrity.contentKey,
+                content,
+                hash: contentIntegrity.hash
+            });
         }
     }
 
-    await writeFile(integrityFilePath, JSON.stringify(content), { encoding: 'utf-8' });
+    await writeFile(integrityFilePath, JSON.stringify(contentWithoutGetter), { encoding: 'utf-8' });
 }
 
 /**
