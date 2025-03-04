@@ -30,7 +30,7 @@
         "test": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
             "outputs": ["{projectRoot}/coverage"],
-            "cache": false
+            "cache": true
         },
         "test:integration": {
             "inputs": ["default", "^prod", "{workspaceRoot}/jest.base.js", "{projectRoot}/jest.config.js"],
