@@ -23,7 +23,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { Editor, FlpConfig, InternalTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type { RtaEditor, FlpConfig, InternalTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -31,7 +31,8 @@ import {
     type TemplateConfig,
     createTestTemplateConfig,
     addApp,
-    getAppName
+    getAppName,
+    sanitizeRtaConfig
 } from './config';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
@@ -46,7 +47,7 @@ export type EnhancedRouter = Router & {
 /**
  * Enhanced request object that contains additional properties from cds-plugin-ui5.
  */
-type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: string } };
+export type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: string } };
 
 type OnChangeRequestHandler = (
     type: OperationType,
@@ -54,6 +55,13 @@ type OnChangeRequestHandler = (
     fs: MemFsEditor,
     logger: Logger
 ) => Promise<void>;
+
+type Ui5Version = {
+    major: number;
+    minor: number;
+    patch: number;
+    label?: string;
+};
 
 /**
  * Class handling preview of a sandbox FLP.
@@ -63,7 +71,7 @@ export class FlpSandbox {
     private manifest: Manifest;
     protected onChangeRequest: OnChangeRequestHandler | undefined;
     protected templateConfig: TemplateConfig;
-    public readonly config: FlpConfig;
+    public readonly flpConfig: FlpConfig;
     public readonly rta?: RtaConfig;
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
@@ -83,10 +91,10 @@ export class FlpSandbox {
         private readonly utils: MiddlewareUtils,
         private readonly logger: Logger
     ) {
-        this.config = getFlpConfigWithDefaults(config.flp);
+        this.flpConfig = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
-        this.rta = config.rta;
-        logger.debug(`Config: ${JSON.stringify({ flp: this.config, rta: this.rta, test: this.test })}`);
+        this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
+        logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
     }
 
@@ -114,9 +122,9 @@ export class FlpSandbox {
         adp?: AdpPreview
     ): Promise<void> {
         this.createFlexHandler();
-        this.config.libs ??= await this.hasLocateReuseLibsScript();
+        this.flpConfig.libs ??= await this.hasLocateReuseLibsScript();
         const id = manifest['sap.app']?.id ?? '';
-        this.templateConfig = createFlpTemplateConfig(this.config, manifest, resources);
+        this.templateConfig = createFlpTemplateConfig(this.flpConfig, manifest, resources);
         this.adp = adp;
         this.manifest = manifest;
 
@@ -127,7 +135,7 @@ export class FlpSandbox {
                 componentId,
                 target: resources[componentId ?? id] ?? this.templateConfig.basePath,
                 local: '.',
-                intent: this.config.intent
+                intent: this.flpConfig.intent
             },
             this.logger
         );
@@ -190,7 +198,7 @@ export class FlpSandbox {
      * @param editor editor configuration
      * @returns FLP sandbox html
      */
-    private async generateSandboxForEditor(req: EnhancedRequest, rta: RtaConfig, editor: Editor): Promise<string> {
+    private async generateSandboxForEditor(req: EnhancedRequest, rta: RtaConfig, editor: RtaEditor): Promise<string> {
         const defaultGenerator = editor.developerMode
             ? '@sap-ux/control-property-editor'
             : '@sap-ux/preview-middleware';
@@ -221,7 +229,7 @@ export class FlpSandbox {
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
         }
-        return render(this.getSandboxTemplate(ui5Version.major), config);
+        return render(this.getSandboxTemplate(ui5Version), config);
     }
 
     /**
@@ -233,7 +241,7 @@ export class FlpSandbox {
     private async setApplicationDependencies(): Promise<void> {
         if (this.adp) {
             await this.adp.sync();
-            const appName = getAppName(this.manifest, this.config.intent);
+            const appName = getAppName(this.manifest, this.flpConfig.intent);
             this.templateConfig.apps[appName].applicationDependencies = this.adp.descriptor;
         }
     }
@@ -248,7 +256,7 @@ export class FlpSandbox {
      */
     private async editorGetHandlerDeveloperMode(res: Response, rta: RtaConfig, previewUrl: string): Promise<void> {
         const scenario = rta.options?.scenario;
-        let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.config.intent.object}-${this.config.intent.action}`;
+        let templatePreviewUrl = `${previewUrl}?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=forAdaptation&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true#${this.flpConfig.intent.object}-${this.flpConfig.intent.action}`;
         if (scenario === 'ADAPTATION_PROJECT') {
             templatePreviewUrl = templatePreviewUrl.replace('?', `?sap-ui-layer=${rta.layer}&`);
         }
@@ -281,20 +289,22 @@ export class FlpSandbox {
      * @private
      */
     private async editorGetHandler(
-        req: Request,
+        req: EnhancedRequest,
         res: Response,
         rta: RtaConfig,
         previewUrl: string,
-        editor: Editor
+        editor: RtaEditor
     ): Promise<void> {
         if (!req.query['fiori-tools-rta-mode']) {
             // Redirect to the same URL but add the necessary parameter
+            const url =
+                'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl) : previewUrl;
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
             params['fiori-tools-rta-mode'] = 'true';
             params['sap-ui-rta-skip-flex-validation'] = 'true';
             params['sap-ui-xx-condense-changes'] = 'true';
-            res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
+            res.redirect(302, `${url}?${new URLSearchParams(params)}`);
             return;
         }
         const html = (await this.generateSandboxForEditor(req, rta, editor)).replace(
@@ -311,7 +321,7 @@ export class FlpSandbox {
      */
     private addEditorRoutes(rta: RtaConfig): void {
         const cpe = dirname(require.resolve('@sap-ux/control-property-editor-sources'));
-        for (const editor of rta.editors) {
+        for (const editor of rta.endpoints) {
             let previewUrl = editor.path.startsWith('/') ? editor.path : `/${editor.path}`;
             if (editor.developerMode) {
                 previewUrl = `${previewUrl}.inner.html`;
@@ -347,18 +357,22 @@ export class FlpSandbox {
     ): Promise<void> {
         // connect API (karma test runner) has no request query property
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
+            const url =
+                'ui5-patched-router' in req
+                    ? join(req['ui5-patched-router']?.baseUrl ?? '', this.flpConfig.path)
+                    : this.flpConfig.path;
             // Redirect to the same URL but add the necessary parameter
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
-            res.redirect(302, `${this.config.path}?${new URLSearchParams(params)}`);
+            res.redirect(302, `${url}?${new URLSearchParams(params)}`);
             return;
         }
         await this.setApplicationDependencies();
         // inform the user if a html file exists on the filesystem
         // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-        const file = await this.project.byPath(this.config.path);
+        const file = await this.project.byPath(this.flpConfig.path);
         if (file) {
-            this.logger.info(`HTML file returned at ${this.config.path} is loaded from the file system.`);
+            this.logger.info(`HTML file returned at ${this.flpConfig.path} is loaded from the file system.`);
             next();
         } else {
             const ui5Version = await this.getUi5Version(
@@ -369,7 +383,7 @@ export class FlpSandbox {
                 req.headers.host,
                 'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
             );
-            const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
+            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
     }
@@ -383,7 +397,7 @@ export class FlpSandbox {
 
         // add route for the sandbox html
         this.router.get(
-            this.config.path,
+            this.flpConfig.path,
             async (
                 req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
@@ -408,7 +422,7 @@ export class FlpSandbox {
         protocol: Request['protocol'],
         host: Request['headers']['host'],
         baseUrl: string = ''
-    ): Promise<{ major: number; minor: number }> {
+    ): Promise<Ui5Version> {
         let version: string | undefined;
         if (!host) {
             this.logger.error('Unable to fetch UI5 version: No host found in request header.');
@@ -427,25 +441,30 @@ export class FlpSandbox {
             this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
             version = '1.121.0';
         }
-        const [major, minor] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+        const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+        const label = version.split(/-(.*)/s)?.[1];
         return {
             major,
-            minor
+            minor,
+            patch,
+            label
         };
     }
 
     /**
      * Read the sandbox template file based on the given UI5 version.
      *
-     * @param ui5MajorVersion - the major version of UI5
+     * @param ui5Version - the UI5 version
      * @returns the template for the sandbox HTML file
      */
-    private getSandboxTemplate(ui5MajorVersion: number): string {
-        this.logger.info(`Using sandbox template for UI5 major version ${ui5MajorVersion}.`);
-        return readFileSync(
-            join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
-            'utf-8'
+    private getSandboxTemplate(ui5Version: Ui5Version): string {
+        this.logger.info(
+            `Using sandbox template for UI5 version ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
+                ui5Version.label ? `-${ui5Version.label}` : ''
+            }.`
         );
+        const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
+        return readFileSync(join(__dirname, `../../templates/flp/sandbox${filePrefix}.html`), 'utf-8');
     }
 
     /**
@@ -476,7 +495,7 @@ export class FlpSandbox {
      * Add additional routes for apps also to be shown in the local FLP.
      */
     private async addRoutesForAdditionalApps(): Promise<void> {
-        for (const app of this.config.apps) {
+        for (const app of this.flpConfig.apps) {
             let manifest: Manifest | undefined;
             if (app.local) {
                 this.fs = this.fs ?? create(createStorage());
@@ -873,7 +892,7 @@ export async function initAdp(
                 projectId: variant.id,
                 scenario: 'ADAPTATION_PROJECT'
             };
-            for (const editor of flp.rta.editors) {
+            for (const editor of flp.rta.endpoints) {
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';
             }
         }

@@ -1,5 +1,58 @@
 # @sap-ux/odata-service-writer
 
+## 0.26.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/mockserver-config-writer@0.8.5
+
+## 0.26.6
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/mockserver-config-writer@0.8.4
+
+## 0.26.5
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/mockserver-config-writer@0.8.3
+    -   @sap-ux/project-access@1.29.10
+
+## 0.26.4
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/mockserver-config-writer@0.8.2
+
+## 0.26.3
+
+### Patch Changes
+
+-   dbd725a: Write metadata.xml in update in odata-service-writer
+
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [c244f60]
+    -   @sap-ux/mockserver-config-writer@0.8.1
+
+## 0.26.1
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
 ## 0.26.0
 
 ### Minor Changes

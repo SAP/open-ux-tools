@@ -1,5 +1,132 @@
 # @sap-ux/flp-config-inquirer
 
+## 0.2.53
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.8
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/fiori-generator-shared@0.9.5
+-   @sap-ux/inquirer-common@0.6.25
+
+## 0.2.52
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+    -   @sap-ux/inquirer-common@0.6.24
+    -   @sap-ux/adp-tooling@0.13.7
+
+## 0.2.51
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.6
+
+## 0.2.50
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/adp-tooling@0.13.5
+    -   @sap-ux/fiori-generator-shared@0.9.3
+    -   @sap-ux/inquirer-common@0.6.23
+
+## 0.2.49
+
+### Patch Changes
+
+-   Updated dependencies [78dd2c2]
+    -   @sap-ux/adp-tooling@0.13.4
+
+## 0.2.48
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.22
+-   @sap-ux/adp-tooling@0.13.3
+
+## 0.2.47
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/adp-tooling@0.13.2
+    -   @sap-ux/fiori-generator-shared@0.9.2
+    -   @sap-ux/inquirer-common@0.6.21
+    -   @sap-ux/project-access@1.29.10
+
+## 0.2.46
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/adp-tooling@0.13.1
+    -   @sap-ux/fiori-generator-shared@0.9.1
+    -   @sap-ux/inquirer-common@0.6.20
+
+## 0.2.45
+
+### Patch Changes
+
+-   Updated dependencies [127bd12]
+    -   @sap-ux/adp-tooling@0.13.0
+
+## 0.2.44
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+    -   @sap-ux/inquirer-common@0.6.19
+    -   @sap-ux/adp-tooling@0.12.138
+
+## 0.2.43
+
+### Patch Changes
+
+-   Updated dependencies [df8d790]
+    -   @sap-ux/adp-tooling@0.12.137
+
+## 0.2.42
+
+### Patch Changes
+
+-   Updated dependencies [bb38bef]
+    -   @sap-ux/adp-tooling@0.12.136
+
+## 0.2.41
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.135
+
+## 0.2.40
+
+### Patch Changes
+
+-   Updated dependencies [8930179]
+    -   @sap-ux/adp-tooling@0.12.134
+
+## 0.2.39
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.133
+
+## 0.2.38
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/adp-tooling@0.12.132
+    -   @sap-ux/fiori-generator-shared@0.8.1
+    -   @sap-ux/inquirer-common@0.6.18
+
 ## 0.2.37
 
 ### Patch Changes

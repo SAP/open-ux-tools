@@ -5,8 +5,8 @@ import type {
     AbapTarget,
     FioriToolsProxyConfigBackend
 } from '@sap-ux/ui5-config';
+
 import type {
-    CustomConfig,
     AdpWriterConfig,
     InboundContent,
     Language,
@@ -37,14 +37,35 @@ export function enhanceUI5Yaml(ui5Config: UI5Config, config: AdpWriterConfig) {
 }
 
 /**
- * Generate the configuration for the custom tasks required for the ui5.yaml.
+ * Generates the configuration for the custom tasks required for the ui5.yaml.
  *
- * @param ui5Config configuration representing the ui5.yaml
- * @param config full project configuration
+ * Adds a custom task for building TypeScript projects.
+ *
+ * @param {UI5Config} ui5Config - The UI5 configuration object representing the ui5.yaml.
+ * @param {AdpWriterConfig} config - The configuration object containing options for the adaptation project.
  */
 export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWriterConfig & { app: CloudApp }) {
-    const tasks = getAdpCloudCustomTasks(config);
-    ui5Config.addCustomTasks(tasks);
+    if (config.options?.enableTypeScript) {
+        ui5Config.addCustomTasks([
+            {
+                name: 'ui5-tooling-transpile-task',
+                afterTask: 'replaceVersion',
+                configuration: {
+                    debug: true,
+                    omitSourceMaps: true,
+                    omitTSFromBuildResult: true,
+                    transformModulesToUI5: {
+                        overridesToOverride: true
+                    }
+                }
+            }
+        ]);
+    }
+
+    if (config.customConfig?.adp?.environment === 'C') {
+        const tasks = getAdpCloudCustomTasks(config);
+        ui5Config.addCustomTasks(tasks);
+    }
 }
 
 /**
@@ -53,10 +74,33 @@ export function enhanceUI5YamlWithCustomTask(ui5Config: UI5Config, config: AdpWr
  * @param ui5Config configuration representing the ui5.yaml
  * @param config full project configuration
  */
-export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config?: CustomConfig) {
-    if (config?.adp) {
-        const { support } = config.adp;
+export function enhanceUI5YamlWithCustomConfig(ui5Config: UI5Config, config: AdpWriterConfig) {
+    const adp = config.customConfig?.adp;
+    if (adp) {
+        const { support } = adp;
         ui5Config.addCustomConfiguration('adp', { support });
+    }
+}
+
+/**
+ * Enhances a UI5 YAML configuration with the transpile middleware for TypeScript support.
+ *
+ * @param {UI5Config} ui5Config - The UI5 configuration object representing the ui5.yaml.
+ * @param {AdpWriterConfig} config - The configuration object containing options for the adaptation project.
+ * @param {boolean} [config.options.enableTypeScript] - Flag indicating if TypeScript support is enabled.
+ */
+export function enhanceUI5YamlWithTranspileMiddleware(ui5Config: UI5Config, config: AdpWriterConfig) {
+    if (config.options?.enableTypeScript) {
+        ui5Config.updateCustomMiddleware({
+            name: 'ui5-tooling-transpile-middleware',
+            afterMiddleware: 'compression',
+            configuration: {
+                debug: true,
+                transformModulesToUI5: {
+                    overridesToOverride: true
+                }
+            }
+        });
     }
 }
 

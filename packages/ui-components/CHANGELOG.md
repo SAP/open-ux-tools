@@ -1,5 +1,23 @@
 # @sap-ux/ui-components
 
+## 1.24.6
+
+### Patch Changes
+
+-   689f1b8: UIIcons. Add new icon "DataSparkle"
+
+## 1.24.5
+
+### Patch Changes
+
+-   b410041: fix(ui-components): UIButtonAction set margin left icon to zero
+
+## 1.24.4
+
+### Patch Changes
+
+-   1215e5b: fix(ui-components): UIButtonAction underline in normal mode
+
 ## 1.24.3
 
 ### Patch Changes

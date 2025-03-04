@@ -5,7 +5,11 @@ import { FileName, getWebappPath } from '@sap-ux/project-access';
 import type { CustomMiddleware, FioriToolsProxyConfigBackend as ProxyBackend } from '@sap-ux/ui5-config';
 import { UI5Config, YAMLError, yamlErrorCode } from '@sap-ux/ui5-config';
 import { generateMockserverConfig } from '@sap-ux/mockserver-config-writer';
-import { writeLocalServiceAnnotationXMLFiles, writeRemoteServiceAnnotationXmlFiles } from './data/annotations';
+import {
+    writeLocalServiceAnnotationXMLFiles,
+    writeMetadata,
+    writeRemoteServiceAnnotationXmlFiles
+} from './data/annotations';
 import { updatePackageJson } from './data/package';
 
 /**
@@ -112,7 +116,7 @@ export async function addServicesData(
                 extendBackendMiddleware(fs, service, ui5MockConfig, paths.ui5MockYaml);
             }
         }
-        await writeLocalServiceAnnotationXMLFiles(fs, basePath, webappPath, templateRoot, service);
+        await writeLocalServiceAnnotationXMLFiles(fs, webappPath, templateRoot, service);
     }
     // service update should not trigger the package.json update
     if (paths.packageJson && paths.ui5Yaml) {
@@ -121,7 +125,7 @@ export async function addServicesData(
     if (paths.ui5LocalYaml && ui5LocalConfig) {
         fs.write(paths.ui5LocalYaml, ui5LocalConfig.toString());
     }
-    writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }
 
 /**
@@ -180,7 +184,9 @@ export async function updateServicesData(
                 }
             }
         }
+        // Write metadata.xml file
+        await writeMetadata(fs, webappPath, service);
     }
     // Write new annotations files
-    writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
+    await writeRemoteServiceAnnotationXmlFiles(fs, basePath, service.name ?? 'mainService', service.annotations);
 }

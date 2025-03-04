@@ -14,7 +14,7 @@ import { DirName, FileName } from '@sap-ux/project-access';
 import { type CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
 import type { DataSources } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant } from '../base/helper';
+import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 interface WriteControllerBody {
@@ -74,7 +74,7 @@ export default class RoutesHandler {
      * @param data Data that is sent to the client
      * @param contentType Content type, defaults to json
      */
-    private sendFilesResponse(res: Response, data: object | string, contentType: string = 'application/json') {
+    private sendFilesResponse(res: Response, data: object | string, contentType: string = 'application/json'): void {
         res.status(HttpStatusCodes.OK).contentType(contentType).send(data);
     }
 
@@ -100,12 +100,12 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction) => {
+    public handleReadAllFragments = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const files = await this.readAllFilesByGlob('/**/changes/fragments/*.fragment.xml');
 
-            const fileNames = files.map((f) => ({
-                fragmentName: f.getName()
+            const fileNames = files.map((file) => ({
+                fragmentName: file.getName()
             }));
 
             this.sendFilesResponse(res, {
@@ -125,12 +125,12 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction) => {
+    public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const files = await this.readAllFilesByGlob('/**/changes/coding/*.js');
 
-            const fileNames = files.map((f) => ({
-                controllerName: f.getName()
+            const fileNames = files.map((file) => ({
+                controllerName: file.getName()
             }));
 
             this.sendFilesResponse(res, {
@@ -150,7 +150,11 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleGetControllerExtensionData = async (req: Request, res: Response, next: NextFunction) => {
+    public handleGetControllerExtensionData = async (
+        req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
             const params = req.params as { controllerName: string };
             const controllerName = sanitize(params.controllerName);
@@ -163,7 +167,10 @@ export default class RoutesHandler {
 
             const project = this.util.getProject();
             const sourcePath = project.getSourcePath();
+            const rootPath = this.util.getProject().getRootPath();
             const projectName = project.getName();
+
+            const isTsSupported = isTypescriptSupported(rootPath);
 
             const getPath = (projectPath: string, fileName: string, folder: string = DirName.Coding) =>
                 path.join(projectPath, DirName.Changes, folder, fileName).split(path.sep).join(path.posix.sep);
@@ -173,7 +180,8 @@ export default class RoutesHandler {
                 const change = JSON.parse(fileStr) as CodeExtChange;
 
                 if (change.selector.controllerName === controllerName) {
-                    const fileName = change.content.codeRef.replace('coding/', '');
+                    const baseFileName = change.content.codeRef.replace('coding/', '');
+                    const fileName = isTsSupported ? baseFileName.replace('.js', '.ts') : baseFileName;
                     controllerPath = getPath(sourcePath, fileName);
                     controllerPathFromRoot = getPath(projectName, fileName);
                     changeFilePath = getPath(projectName, file.getName(), '');
@@ -195,7 +203,8 @@ export default class RoutesHandler {
                 controllerExists,
                 controllerPath: os.platform() === 'win32' ? `/${controllerPath}` : controllerPath,
                 controllerPathFromRoot,
-                isRunningInBAS
+                isRunningInBAS,
+                isTsSupported
             });
             this.logger.debug(
                 controllerExists
@@ -214,51 +223,41 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleWriteControllerExt = async (req: Request, res: Response, next: NextFunction) => {
+    public handleWriteControllerExt = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
             const data = req.body as WriteControllerBody;
 
-            const controllerExtName = sanitize(data.controllerName);
-            const projectId = data.projectId;
+            const name = sanitize(data.controllerName);
 
             const sourcePath = this.util.getProject().getSourcePath();
+            const rootPath = this.util.getProject().getRootPath();
 
-            if (!controllerExtName) {
+            if (!name) {
                 res.status(HttpStatusCodes.BAD_REQUEST).send('Controller extension name was not provided!');
                 this.logger.debug('Bad request. Controller extension name was not provided!');
                 return;
             }
 
+            const isTsSupported = isTypescriptSupported(rootPath);
+
             const fullPath = path.join(sourcePath, DirName.Changes, DirName.Coding);
-            const filePath = path.join(fullPath, `${controllerExtName}.js`);
+            const filePath = path.join(fullPath, `${name}.${isTsSupported ? 'ts' : 'js'}`);
 
             if (!fs.existsSync(fullPath)) {
                 fs.mkdirSync(fullPath, { recursive: true });
             }
 
             if (fs.existsSync(filePath)) {
-                res.status(HttpStatusCodes.CONFLICT).send(
-                    `Controller extension with name "${controllerExtName}" already exists`
-                );
-                this.logger.debug(`Controller extension with name "${controllerExtName}" already exists`);
+                res.status(HttpStatusCodes.CONFLICT).send(`Controller extension with name "${name}" already exists`);
+                this.logger.debug(`Controller extension with name "${name}" already exists`);
                 return;
             }
 
-            const controllerExtPath = `${projectId}.${controllerExtName}`;
-
-            const controllerTemplateFilePath = path.join(__dirname, '../../templates/rta', TemplateFileName.Controller);
-
-            renderFile(controllerTemplateFilePath, { controllerExtPath }, {}, (err, str) => {
-                if (err) {
-                    throw new Error('Error rendering template: ' + err.message);
-                }
-
-                fs.writeFileSync(filePath, str, { encoding: 'utf8' });
-            });
+            await generateControllerFile(rootPath, filePath, name);
 
             const message = 'Controller extension created!';
             res.status(HttpStatusCodes.CREATED).send(message);
-            this.logger.debug(`Controller extension with name "${controllerExtName}" was created`);
+            this.logger.debug(`Controller extension with name "${name}" was created`);
         } catch (e) {
             const sanitizedMsg = sanitize(e.message);
             this.logger.error(sanitizedMsg);
@@ -274,7 +273,11 @@ export default class RoutesHandler {
      * @param res Response
      * @param next Next Function
      */
-    public handleGetAllAnnotationFilesMappedByDataSource = async (_req: Request, res: Response, next: NextFunction) => {
+    public handleGetAllAnnotationFilesMappedByDataSource = async (
+        _req: Request,
+        res: Response,
+        next: NextFunction
+    ): Promise<void> => {
         try {
             const isRunningInBAS = isAppStudio();
 
@@ -349,7 +352,7 @@ export default class RoutesHandler {
     private async getManifestService(): Promise<ManifestService> {
         const project = this.util.getProject();
         const basePath = project.getRootPath();
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
         const { target, ignoreCertErrors = false } = await getAdpConfig(
             basePath,
             path.join(basePath, FileName.Ui5Yaml)
@@ -357,4 +360,33 @@ export default class RoutesHandler {
         const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, this.logger);
         return await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
     }
+}
+
+/**
+ * Generates a controller file for the Adaptation Project based on the project's TypeScript support.
+ *
+ * This function creates a controller file in the specified `filePath` by rendering a template.
+ * It determines whether to use a TypeScript or JavaScript template based on the TypeScript support of the project.
+ *
+ * @param {string} rootPath - The root directory of the project.
+ * @param {string} filePath - The destination path where the generated controller file should be saved.
+ * @param {string} name - The name of the controller extension (used in TypeScript templates).
+ * @throws {Error} Throws an error if rendering the template fails.
+ */
+async function generateControllerFile(rootPath: string, filePath: string, name: string): Promise<void> {
+    const id = (await getVariant(rootPath))?.id;
+    const isTsSupported = isTypescriptSupported(rootPath);
+    const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
+    const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
+    const extensionPath = `${id}.${name}`;
+
+    const templateData = isTsSupported ? { name, ns: id } : { extensionPath };
+
+    renderFile(tmplPath, templateData, {}, (err, str) => {
+        if (err) {
+            throw new Error(`Error rendering ${isTsSupported ? 'TypeScript' : 'JavaScript'} template: ${err.message}`);
+        }
+
+        fs.writeFileSync(filePath, str, { encoding: 'utf8' });
+    });
 }

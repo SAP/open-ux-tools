@@ -59,7 +59,7 @@ async function addInboundNavigationConfig(basePath: string, simulate: boolean): 
         const appType = await getAppType(basePath);
         const isAdp = appType === 'Fiori Adaptation';
 
-        if (isAdp && flpConfigurationExists(basePath)) {
+        if (isAdp && (await flpConfigurationExists(basePath))) {
             logger.info('FLP Configuration already exists.');
             return;
         }
@@ -137,7 +137,7 @@ async function retrieveManifest(basePath: string, fs: Editor): Promise<Manifest>
  * @throws {Error} If the project is not CloudReady.
  */
 async function retrieveMergedManifest(basePath: string, logger: ToolsLogger): Promise<Manifest> {
-    const variant = getVariant(basePath);
+    const variant = await getVariant(basePath);
     const { target, ignoreCertErrors = false } = await getAdpConfig(basePath, join(basePath, FileName.Ui5Yaml));
 
     const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, logger);
