@@ -2,7 +2,7 @@ import { join } from 'path';
 import Generator from 'yeoman-generator';
 import FlpGenLogger from '../utils/logger';
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
-import { handleErrorMessage, getConfirmConfigUpdatePrompt } from '@sap-ux/deploy-config-generator-shared';
+import { handleErrorMessage } from '@sap-ux/deploy-config-generator-shared';
 import { getPrompts } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig } from '@sap-ux/app-config-writer';
 import { FileName, getWebappPath, getI18nPropertiesPaths } from '@sap-ux/project-access';
@@ -148,13 +148,10 @@ export default class extends Generator {
         // Show specific prompt for config update when launched standalone or on CLI. Otherwise, it should be handled by consuming generator in YUI.
         if (
             (getHostEnvironment() === hostEnvironment.cli || !this.options.launchFlpConfigAsSubGenerator) &&
-            this.options.data?.additionalPrompts?.confirmConfigUpdate?.show
+            this.options.data?.confirmConfigUpdatePrompt
         ) {
-            const confirmConfigUpdatePrompts = getConfirmConfigUpdatePrompt(
-                this.options.data.additionalPrompts.confirmConfigUpdate.configType
-            );
             questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpdate);
-            questions.unshift(...confirmConfigUpdatePrompts);
+            questions.unshift(this.options.data.confirmConfigUpdatePrompt);
         }
 
         this.answers = {} as FLPConfigAnswers;

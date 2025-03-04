@@ -42,7 +42,7 @@ export async function getAbapSystems(): Promise<{
             logger: LoggerHelper.logger,
             entityName: 'system'
         });
-        backendSystems = await systemStore.getAll();
+        backendSystems = await systemStore?.getAll();
         cachedBackendSystems = backendSystems;
     }
 
