@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.26
+
+### Patch Changes
+
+-   2202356: cleanup package answer utility method
+
 ## 1.2.25
 
 ### Patch Changes
