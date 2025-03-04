@@ -29,11 +29,17 @@ export async function getSupportedTargets(
 ): Promise<Target[]> {
     const isApiHubEnt = apiHubConfig?.apiHubType === ApiHubType.apiHubEnterprise;
     const isProjectExtension = fs.exists(join(projectPath, '.extconfig.json'));
-    const ui5Config = await UI5Config.newInstance(fs.read(join(projectPath, configFile)));
+    let isLibrary = false;
+    try {
+        const ui5Config = await UI5Config.newInstance(fs.read(join(projectPath, configFile)));
+        isLibrary = ui5Config.getType() === DeployProjectType.Library;
+    } catch {
+        // Ignore error, ui5.yaml may not be written yet
+    }
 
     if (isApiHubEnt || isCap) {
         return [cfChoice];
-    } else if (ui5Config.getType() === DeployProjectType.Library || isProjectExtension) {
+    } else if (isLibrary || isProjectExtension) {
         return [abapChoice]; // Extension projects, Library and systems using Reentrance tickets for auth
     } else {
         // If there's an mta.yaml in the hierarchy, it's probably a CF project
