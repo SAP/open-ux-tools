@@ -332,7 +332,7 @@ export async function init({
         scenario = flexSettings.scenario;
 
         // Attach renderer created event to trigger adaptation, or trigger adaptation directly if newHomePage is enabled
-        // as the ushell is bootstrapped via cdm where the renderer is cretead before the init script is executed
+        // as the ushell is bootstrapped via cdm where the renderer is created before the init script is executed
         if (!newHomePage) {
             container.attachRendererCreatedEvent(triggerAdaptation.bind(null, flexSettings, ui5VersionInfo));
         } else {
