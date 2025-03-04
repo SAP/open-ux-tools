@@ -93,7 +93,7 @@ function checkParenthesis(segments: string[]): number {
     return segments.findIndex((segment) => segment.indexOf('(') > 0 && segment.indexOf('(') < segment.indexOf(')'));
 }
 
-export const printTarget = (target: Target): string => {
+export const printTarget = (target: Target, isStructureTargetType?: boolean): string => {
     const resolvedTarget = resolveTarget(target.name);
     const rootElementName = resolvedTarget.rootElementName;
     const childSegments = resolvedTarget.childSegments;
@@ -128,9 +128,23 @@ export const printTarget = (target: Target): string => {
             //        <term> <qualifier>: <value>
             //     );
             // }
-            result = `annotate ${rootElementName} with {\n${childSegments[0]} ${
-                target.terms.length > 1 ? `@(${result})` : `@${result}`
-            }};\n`;
+            const terms = target.terms.length > 1 ? `@(${result})` : `@${result}`;
+            if (isStructureTargetType) {
+                let closingBraces: string[] = [];
+                const complexTarget = childSegments[0].split('_').reduce((acc, item, index, array) => {
+                    if (index < array.length - 1) {
+                        acc += `${item} {\n`;
+                        closingBraces.unshift(`}\n`);
+                    } else {
+                        acc += `${item} ${terms}${closingBraces.join('')}`;
+                        closingBraces = [];
+                    }
+                    return acc;
+                }, '');
+                result = `annotate ${rootElementName} with {\n${complexTarget}};\n`;
+            } else {
+                result = `annotate ${rootElementName} with {\n${childSegments[0]} ${terms}};\n`;
+            }
         }
     }
 
