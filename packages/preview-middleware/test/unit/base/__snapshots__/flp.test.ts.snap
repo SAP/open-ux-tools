@@ -359,7 +359,7 @@ Object {
 
 exports[`FlpSandbox router - connect API GET default routes with connect API (used by karma test runner) 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -615,7 +615,7 @@ exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
 
 exports[`FlpSandbox router editor with config 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -749,7 +749,7 @@ Object {
 
 exports[`FlpSandbox router rta with adp instance - preview 2`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -878,7 +878,7 @@ Object {
 
 exports[`FlpSandbox router rta with adp instance 2`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -971,7 +971,7 @@ exports[`FlpSandbox router rta with adp instance 2`] = `
 
 exports[`FlpSandbox router rta with developerMode=true 1`] = `
 "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
     <head>
         <meta charset=\\"utf-8\\" />
         <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
@@ -1005,7 +1005,7 @@ exports[`FlpSandbox router rta with developerMode=true 2`] = `"Found. Redirectin
 
 exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 1`] = `
 "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
     <head>
         <meta charset=\\"utf-8\\" />
         <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
@@ -1037,7 +1037,7 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 1`] = `
 
 exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1128,7 +1128,7 @@ exports[`FlpSandbox router rta with developerMode=true UI5 version 2.x 2`] = `
 
 exports[`FlpSandbox router rta with developerMode=true and plugin 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1223,7 +1223,7 @@ exports[`FlpSandbox router rta with editors path without leading "/" 1`] = `"Fou
 
 exports[`FlpSandbox router rta with url parameters 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1300,7 +1300,7 @@ exports[`FlpSandbox router rta with url parameters 1`] = `
 
 exports[`FlpSandbox router test/flp.html 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1429,7 +1429,7 @@ Object {
 
 exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1522,7 +1522,7 @@ exports[`FlpSandbox router test/flp.html UI5 1.71 with asyncHints.requests 2`] =
 
 exports[`FlpSandbox router test/flp.html UI5 2.x 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1594,7 +1594,7 @@ exports[`FlpSandbox router test/flp.html UI5 2.x 1`] = `
 
 exports[`FlpSandbox router test/flp.html UI5 legacy-free 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1666,7 +1666,7 @@ exports[`FlpSandbox router test/flp.html UI5 legacy-free 1`] = `
 
 exports[`FlpSandbox router test/flp.html UI5 snapshot 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1742,7 +1742,7 @@ exports[`FlpSandbox router test/flp.html missing sap-ui-xx-viewCache set to fals
 
 exports[`FlpSandbox router test/flp.html sap-ui-xx-viewCache set to true 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -1816,7 +1816,7 @@ exports[`FlpSandbox router test/flp.html sap-ui-xx-viewCache set to true 1`] = `
 
 exports[`FlpSandbox router with test suite default with testsuite 1`] = `
 "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <title>QUnit TestSuite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
@@ -1844,7 +1844,7 @@ exports[`FlpSandbox rta with new config rta 1`] = `"Found. Redirecting to /my/rt
 
 exports[`FlpSandbox rta with new config rta with developerMode=true 1`] = `
 "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
     <head>
         <meta charset=\\"utf-8\\" />
         <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1\\" />
@@ -1878,7 +1878,7 @@ exports[`FlpSandbox rta with new config rta with developerMode=true 2`] = `"Foun
 
 exports[`FlpSandbox rta with new config rta with url parameters 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>

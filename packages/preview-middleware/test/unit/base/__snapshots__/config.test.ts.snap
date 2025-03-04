@@ -75,7 +75,7 @@ Object {
 
 exports[`config generatePreviewFiles minimum settings 1`] = `
 "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -151,7 +151,7 @@ exports[`config generatePreviewFiles multi-app setup e.g. in CAP 1`] = `
 Object {
   "test/flpSandbox.thml": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -230,7 +230,7 @@ exports[`config generatePreviewFiles tests included and a custom path 1`] = `
 Object {
   "webapp/test/flpSandbox.html": Object {
     "contents": "<!DOCTYPE HTML>
-<html>
+<html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
 
 <head>
@@ -333,7 +333,7 @@ Object {
   },
   "webapp/test/testsuite.qunit.html": Object {
     "contents": "<!DOCTYPE html>
-<html>
+<html lang=\\"en\\">
 <head>
     <title>QUnit TestSuite</title>
     <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
