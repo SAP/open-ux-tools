@@ -11,6 +11,7 @@ import {
     validatePackage,
     validatePackageChoiceInput,
     validatePackageChoiceInputForCli,
+    validatePackageExtended,
     validateTargetSystem,
     validateTargetSystemUrlCli,
     validateTransportChoiceInput,
@@ -23,9 +24,11 @@ import { ClientChoiceValue, PackageInputChoices, TargetSystemType, TransportChoi
 import * as utils from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 jest.mock('../../src/service-provider-utils', () => ({
-    getTransportListFromService: jest.fn()
+    getTransportListFromService: jest.fn(),
+    getSystemInfo: jest.fn()
 }));
 
 describe('Test validators', () => {
@@ -239,7 +242,7 @@ describe('Test validators', () => {
         it('should return error message when there is a transportConfigError', () => {
             const configError = 'Transport config error';
             PromptState.transportAnswers.transportConfigError = configError;
-            let result = validateUi5AbapRepoName('ZUI5_REPOSITORY');
+            const result = validateUi5AbapRepoName('ZUI5_REPOSITORY');
             expect(result).toBe(
                 t('errors.targetNotDeployable', {
                     systemError: configError
@@ -301,25 +304,137 @@ describe('Test validators', () => {
     });
 
     describe('validatePackage', () => {
-        it('should return error for invalid package input', async () => {
-            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
-
-            const result = await validatePackage('zpackage', {
-                ...previousAnswers,
-                ui5AbapRepo: 'ZUI5REPO'
-            });
+        it('should return true for valid package input', async () => {
+            const result = await validatePackage('Zpackage');
             expect(result).toBe(true);
-            expect(getTransportListFromServiceSpy).toBeCalledWith('ZPACKAGE', 'ZUI5REPO', undefined);
         });
-        it('should return error for invalid package input', async () => {
-            const result = await validatePackage(' ', previousAnswers);
+        it('should return error for empty package input', async () => {
+            const result = await validatePackage(' ');
             expect(result).toBe(t('warnings.providePackage'));
         });
 
-        it('should return true for default package', async () => {
-            const result = await validatePackage('$TMP', previousAnswers);
+        it('should return error for special characters', async () => {
+            const result = await validatePackage('@TMP');
+            expect(result).toBe(t('errors.validators.charactersForbiddenInPackage'));
+        });
+
+        it('should return error for invalid format', async () => {
+            const result = await validatePackage('namespace/packageName');
+            expect(result).toBe(t('errors.validators.abapPackageInvalidFormat'));
+        });
+    });
+
+    describe('validatePackageExtended', () => {
+        beforeEach(() => {
+            PromptState.resetTransportAnswers();
+        });
+
+        it('should return error when base validation fail', async () => {
+            const result = await validatePackageExtended(' ', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
+            expect(result).toBe(t('warnings.providePackage'));
+        });
+
+        it('should return error for invalid starting prefix', async () => {
+            PromptState.abapDeployConfig.isS4HC = false;
+            PromptState.abapDeployConfig.scp = true;
+            const result = await validatePackageExtended(
+                'namespace',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'UI5REPO'
+                },
+                {
+                    additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                },
+                {
+                    hideIfOnPremise: true
+                }
+            );
+            expect(result).toBe(t('errors.validators.abapPackageStartingPrefix'));
+        });
+
+        it('should return error for invalid ui5Repo starting prefix', async () => {
+            PromptState.abapDeployConfig.isS4HC = true;
+            PromptState.abapDeployConfig.scp = false;
+            const result = await validatePackageExtended(
+                'ZPACKAGE',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'UI5REPO'
+                },
+                {
+                    additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                },
+                {
+                    hideIfOnPremise: true
+                }
+            );
+            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
+        });
+
+        it('should return error for invalid ui5Repo starting prefix package starting with namespace', async () => {
+            PromptState.abapDeployConfig.isS4HC = true;
+            PromptState.abapDeployConfig.scp = false;
+            const result = await validatePackageExtended(
+                '/NAMESPACE/ZPACKAGE',
+                {
+                    ...previousAnswers,
+                    ui5AbapRepo: 'UI5REPO'
+                },
+                {
+                    additionalValidation: { shouldValidatePackageForStartingPrefix: true }
+                },
+                {
+                    hideIfOnPremise: false
+                }
+            );
+            expect(result).toBe(t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix'));
+        });
+
+        it('should return error when package is not cloud', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                apiExist: true,
+                systemInfo: {
+                    adaptationProjectTypes: [AdaptationProjectType.ON_PREMISE],
+                    activeLanguages: []
+                }
+            });
+            PromptState.abapDeployConfig.isS4HC = true;
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
+            expect(result).toBe(t('errors.validators.invalidCloudPackage'));
+        });
+
+        it('should return true when package meets all validators', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                apiExist: true,
+                systemInfo: {
+                    adaptationProjectTypes: [AdaptationProjectType.CLOUD_READY],
+                    activeLanguages: []
+                }
+            });
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
             expect(result).toBe(true);
-            expect(PromptState.transportAnswers.transportRequired).toBe(false);
+        });
+
+        it('should return true when package base validation passes and there are no additional validation', async () => {
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+        });
+
+        it('should return true when package base validation passes get systemInfo API is missing in the target system', async () => {
+            jest.spyOn(serviceProviderUtils, 'getSystemInfo').mockResolvedValueOnce({
+                apiExist: false
+            });
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
+            expect(result).toBe(true);
         });
     });
 
