@@ -3,7 +3,9 @@ export {
     minUi5VersionSupportingCodeAssist,
     minUi5VersionV4Template,
     minUI5VersionForLocalDev,
-    latestVersionString
+    latestVersionString,
+    ui5VersionRequestInfo,
+    defaultMinUi5Version
 } from './constants';
 export type { UI5Theme, UI5Version, UI5VersionFilterOptions } from './types';
 export { getUI5Versions, getLatestUI5Version } from './ui5-version-info';

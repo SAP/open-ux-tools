@@ -136,11 +136,14 @@ export const getReuseLibs = async (libs?: LibraryResults[]): Promise<ReuseLib[]>
             }
 
             for (const libraryPath of libraryPaths) {
-                const libraryFilePath = join(libraryPath, FileName.Library);
-                const library = (await fs.readFile(libraryFilePath, { encoding: 'utf8' })).toString();
-
-                const libFile = await getLibraryFromLibraryFile(library, libraryFilePath, lib.projectRoot);
-                updateLibOptions(reuseLibs, libFile);
+                try {
+                    const libraryFilePath = join(libraryPath, FileName.Library);
+                    const library = (await fs.readFile(libraryFilePath, { encoding: 'utf8' })).toString();
+                    const libFile = await getLibraryFromLibraryFile(library, libraryFilePath, lib.projectRoot);
+                    updateLibOptions(reuseLibs, libFile);
+                } catch {
+                    // ignore exception
+                }
             }
         }
     }

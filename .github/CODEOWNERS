@@ -132,3 +132,8 @@
 /CONTRIBUTING.md @SAP/ux-tools-team
 /README.md @SAP/ux-tools-team
 
+
+# localisation texts
+**/i18n.json @SAP/ux-tools-text-reviewers
+**/*.i18n.json @SAP/ux-tools-text-reviewers
+

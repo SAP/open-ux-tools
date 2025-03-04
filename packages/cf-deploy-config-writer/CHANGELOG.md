@@ -1,5 +1,37 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.17
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+
+## 0.1.16
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+
+## 0.1.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.10
+
+## 0.1.14
+
+### Patch Changes
+
+-   d0b656b: change where inti and writing are executing when cf-sub-gen is loaded as a sub-gen
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+
 ## 0.1.12
 
 ### Patch Changes
