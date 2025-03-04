@@ -210,26 +210,44 @@ describe('<Sections />', () => {
         });
 
         describe('Test 3 columns splitter resize', () => {
-            beforeEach(() => {
-                mockClientWidth(1000, { sections: 3000 });
-                wrapper = Enzyme.mount(
+            const renderSections = (
+                visible = [true, true, true]
+            ): Enzyme.ReactWrapper<UISectionsProps, UISectionsState, React.Component> => {
+                return Enzyme.mount(
                     <UISections
                         vertical={false}
                         splitterType={UISplitterType.Resize}
                         splitter={true}
                         sizes={[1000, 1000, 1000]}
                         minSectionSize={[200, 100, 300]}>
-                        <UISections.Section className="dummy-left-section" title="Left Title" height="100%">
+                        <UISections.Section
+                            className="dummy-left-section"
+                            title="Left Title"
+                            height="100%"
+                            hidden={!visible[0]}>
                             <div>Left</div>
                         </UISections.Section>
-                        <UISections.Section className="dummy-middle-section" title="Middle Title" height="100%">
+                        <UISections.Section
+                            className="dummy-middle-section"
+                            title="Middle Title"
+                            height="100%"
+                            hidden={!visible[1]}>
                             <div>Middle</div>
                         </UISections.Section>
-                        <UISections.Section className="dummy-right-section" title="Right Title" height="100%">
+                        <UISections.Section
+                            className="dummy-right-section"
+                            title="Right Title"
+                            height="100%"
+                            hidden={!visible[2]}>
                             <div>Right</div>
                         </UISections.Section>
                     </UISections>
                 );
+            };
+
+            beforeEach(() => {
+                mockClientWidth(1000, { sections: 3000 });
+                wrapper = renderSections();
 
                 windowEventListenerMock.cleanDomEventListeners();
                 windowEventListenerMock = mockDomEventListener(window);
@@ -574,6 +592,179 @@ describe('<Sections />', () => {
                     sizes: resetSizes
                 });
                 expect(getSizes()).toEqual(expectedResult);
+            });
+
+            const hiddenTestCases = [
+                {
+                    name: 'First section is hidden',
+                    visibility: [false, true, true],
+                    expectedResult: {
+                        first: {
+                            left: '-1000px',
+                            right: '100%'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        },
+                        middle: {
+                            left: '0px',
+                            right: '1000px'
+                        }
+                    }
+                },
+                {
+                    name: 'Second section is hidden',
+                    visibility: [true, false, true],
+                    expectedResult: {
+                        first: {
+                            left: '0px',
+                            right: '1000px'
+                        },
+                        last: {
+                            left: '1000px',
+                            right: '0px'
+                        },
+                        middle: {
+                            left: '100%',
+                            right: '-1000px'
+                        }
+                    }
+                },
+                {
+                    name: 'Third section is hidden',
+                    visibility: [true, true, false],
+                    expectedResult: {
+                        first: {
+                            left: '0px',
+                            right: '2000px'
+                        },
+                        last: {
+                            left: '100%',
+                            right: '-1000px'
+                        },
+                        middle: {
+                            left: '1000px',
+                            right: '0px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move between first and second, then hide first section',
+                    visibility: [false, true, true],
+                    move: {
+                        index: 0,
+                        start: 100,
+                        end: 50
+                    },
+                    expectedResult: {
+                        first: {
+                            left: '-950px',
+                            right: '2050px'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        },
+                        middle: {
+                            left: '950px',
+                            right: '1000px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move between first and second, then hide third section',
+                    visibility: [true, true, false],
+                    move: {
+                        index: 0,
+                        start: 100,
+                        end: 50
+                    },
+                    expectedResult: {
+                        first: {
+                            left: '0px',
+                            right: '2050px'
+                        },
+                        last: {
+                            left: '2000px',
+                            right: '0px'
+                        },
+                        middle: {
+                            left: '950px',
+                            right: '1000px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move between second and third, then hide first section',
+                    visibility: [false, true, true],
+                    move: {
+                        index: 1,
+                        start: 100,
+                        end: 150
+                    },
+                    expectedResult: {
+                        first: {
+                            left: '-1000px',
+                            right: '100%'
+                        },
+                        last: {
+                            left: '1050px',
+                            right: '0px'
+                        },
+                        middle: {
+                            left: '0px',
+                            right: '1950px'
+                        }
+                    }
+                },
+                {
+                    name: 'Move between second and third, then hide third section',
+                    visibility: [true, true, false],
+                    move: {
+                        index: 1,
+                        start: 100,
+                        end: 150
+                    },
+                    expectedResult: {
+                        first: {
+                            left: '0px',
+                            right: '2000px'
+                        },
+                        last: {
+                            left: '2050px',
+                            right: '-950px'
+                        },
+                        middle: {
+                            left: '1000px',
+                            right: '950px'
+                        }
+                    }
+                }
+            ];
+            test.each(hiddenTestCases)('Handle hidden sections. $name', ({ visibility, expectedResult, move }) => {
+                wrapper = renderSections(visibility);
+                if (move) {
+                    simulateSplitterResize(wrapper, move.start, move.end, move.index);
+                }
+                const firstSection: HTMLElement = wrapper.find('.sections__item').first().getDOMNode();
+                const middleSection: HTMLElement = wrapper.find('.sections__item').at(1).getDOMNode();
+                const lastSection: HTMLElement = wrapper.find('.sections__item').last().getDOMNode();
+
+                expect({
+                    first: {
+                        left: firstSection.style.left,
+                        right: firstSection.style.right
+                    },
+                    middle: {
+                        left: middleSection.style.left,
+                        right: middleSection.style.right
+                    },
+                    last: {
+                        left: lastSection.style.left,
+                        right: lastSection.style.right
+                    }
+                }).toEqual(expectedResult);
             });
         });
     });
