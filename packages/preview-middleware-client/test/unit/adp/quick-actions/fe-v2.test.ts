@@ -41,6 +41,7 @@ import type { ChangeService } from '../../../../src/cpe/changes/service';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import ComponentMock from 'mock/sap/ui/core/Component';
 import UIComponent from 'sap/ui/core/UIComponent';
+import hasStableId from 'mock/sap/ui/rta/util/hasStableId';
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -737,7 +738,7 @@ describe('FE V2 quick actions', () => {
                         ]
                     });
                 }
-               
+
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -780,7 +781,7 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
-               
+
                 expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.tableToolbar === 'None' ? 0 : 1);
 
                 if (testCase.tableToolbar !== 'None') {
@@ -796,13 +797,15 @@ describe('FE V2 quick actions', () => {
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                         }
                     );
-
-                };
+                }
             });
         });
 
         describe('add page action', () => {
             test('initialize and execute action', async () => {
+                hasStableId.mockImplementation(() => {
+                    return true;
+                });
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -1757,6 +1760,9 @@ describe('FE V2 quick actions', () => {
                 jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                     testCase.ui5version ?? { major: 1, minor: 131 }
                 );
+                hasStableId.mockImplementation(() => {
+                    return true;
+                });
                 sapCoreMock.byId.mockImplementation((id) => {
                     if (id == 'DynamicPage') {
                         return {
@@ -1905,6 +1911,9 @@ describe('FE V2 quick actions', () => {
     describe('ObjectPage', () => {
         describe('add header field', () => {
             test('initialize and execute action', async () => {
+                hasStableId.mockImplementation(() => {
+                    return true;
+                });
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
