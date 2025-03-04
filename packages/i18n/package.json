@@ -36,7 +36,7 @@
     },
     "dependencies": {
         "jsonc-parser": "3.2.0",
-        "vscode-languageserver-textdocument": "1.0.7",
+        "vscode-languageserver-textdocument": "1.0.11",
         "@sap-ux/text-document-utils": "workspace:*"
     },
     "devDependencies": {
