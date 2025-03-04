@@ -1,5 +1,12 @@
 # @sap-ux/project-access
 
+## 1.29.12
+
+### Patch Changes
+
+-   Updated dependencies [cf05ceb]
+    -   @sap-ux/i18n@0.2.3
+
 ## 1.29.11
 
 ### Patch Changes
