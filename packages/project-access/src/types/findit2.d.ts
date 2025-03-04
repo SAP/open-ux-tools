@@ -45,7 +45,8 @@ declare module 'findit2' {
         /**
          * Fired whenever an error occurs.
          */
-        on(event: 'error', listener: (error: Error) => void): this;
+        on(event: 'error', listener: (error: FindError) => void): this;
     };
+    export type FindError = Error & { code?: string; path?: string };
     export = find;
 }
