@@ -83,7 +83,6 @@ Object {
     "SAP_BASIS_PG_UI_MYHOME": Object {
       "identification": Object {
         "id": "SAP_BASIS_PG_UI_MYHOME",
-        "title": "My Home",
       },
       "payload": Object {
         "layout": Object {
@@ -185,7 +184,6 @@ Object {
     "SAP_BASIS_PG_UI_MYHOME": Object {
       "identification": Object {
         "id": "SAP_BASIS_PG_UI_MYHOME",
-        "title": "My Home",
       },
       "payload": Object {
         "layout": Object {
