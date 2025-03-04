@@ -3,4 +3,4 @@
 '@sap-ux/ui5-config': patch
 ---
 
-Adds webappPath and basePath parameters to resolve service paths during mockserver generation/update.
+Adds `webappPath` and `basePath` parameters to resolve service paths during mockserver generation/update.
