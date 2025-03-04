@@ -1,5 +1,13 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.14
+
+### Patch Changes
+
+-   cf05ceb: Update `vscode-languageserver-textdocument` dependency
+    -   @sap-ux/project-access@1.29.12
+    -   @sap-ux/cds-odata-annotation-converter@0.5.0
+
 ## 0.4.13
 
 ### Patch Changes
