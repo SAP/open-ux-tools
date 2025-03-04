@@ -152,7 +152,7 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
                 startFile: data?.app?.startFile,
                 localStartFile: data?.app?.localStartFile,
                 generateIndex: ffApp.appOptions?.generateIndex,
-                addTest: addTests
+                addTest: addTests && ffApp.template.type === TemplateType.Basic
             })
         };
         if (addTests) {

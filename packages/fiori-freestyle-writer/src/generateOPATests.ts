@@ -1,8 +1,10 @@
 import { generateFreestyleOPAFiles } from '@sap-ux/ui5-test-writer';
 import type { Package } from '@sap-ux/ui5-application-writer';
 import type { FreestyleApp, BasicAppSettings } from './types';
+import { TemplateType } from './types';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
+import { t } from './i18n';
 
 /**
  * Adds test scripts to the package.json object.
@@ -39,15 +41,19 @@ export async function generateOPATests<T>(
     fs?: Editor,
     log?: Logger
 ): Promise<void> {
-    addTestScripts(packageJson, addMock);
-    const config = {
-        appId: ffApp.app.id,
-        applicationDescription: ffApp.app.description,
-        applicationTitle: ffApp.app.title,
-        viewName: (ffApp.template.settings as BasicAppSettings).viewName,
-        ui5Theme: ffApp.ui5?.ui5Theme,
-        ui5Version: ffApp.ui5?.version,
-        enableTypeScript: ffApp.appOptions?.typescript
-    };
-    await generateFreestyleOPAFiles(basePath, config, fs, log);
+    if (ffApp.template.type === TemplateType.Basic) {
+        addTestScripts(packageJson, addMock);
+        const config = {
+            appId: ffApp.app.id,
+            applicationDescription: ffApp.app.description,
+            applicationTitle: ffApp.app.title,
+            viewName: (ffApp.template.settings as BasicAppSettings).viewName,
+            ui5Theme: ffApp.ui5?.ui5Theme,
+            ui5Version: ffApp.ui5?.version,
+            enableTypeScript: ffApp.appOptions?.typescript
+        };
+        await generateFreestyleOPAFiles(basePath, config, fs, log);
+    } else {
+        log?.info(t('info.unsupportedTestTemplateMessage', { templateType: ffApp.template.type }));
+    }
 }

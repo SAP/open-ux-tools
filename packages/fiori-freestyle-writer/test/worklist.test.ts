@@ -147,7 +147,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 },
                 service: v2Service,
                 appOptions: {
-                    typescript: true
+                    typescript: true,
+                    addTests: true
                 }
             }
         },
