@@ -71,6 +71,30 @@ describe('Test enhanceYaml()', () => {
         ]);
     });
 
+    test('Create new ui5-mock.yaml with services and annotations from mock manifest.json in custom webapp', async () => {
+        const customWebappPath = join(basePath, 'custom_webapp');
+        const customManifestJsonPath = join(customWebappPath, 'manifest.json');
+
+        const fs = getFs({ [customManifestJsonPath]: mockManifestJson });
+        await enhanceYaml(fs, basePath, customWebappPath);
+
+        const ui5Config = await UI5Config.newInstance(fs.read(ui5MockYamlPath));
+        const mockserverConfig = ui5Config.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
+        expect(mockserverConfig?.configuration.services?.[0]).toStrictEqual({
+            generateMockData: true,
+            metadataPath: './custom_webapp/localService/mainService/metadata.xml',
+            mockdataPath: './custom_webapp/localService/mainService/data',
+            urlPath: '/sap/opu/odata/sap/SEPMRA_PROD_MAN'
+        });
+        expect(mockserverConfig?.configuration.annotations).toEqual([
+            {
+                localPath: './custom_webapp/localService/SEPMRA_PROD_MAN.xml',
+                urlPath:
+                    "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_PROD_MAN',Version='0001')/$value/"
+            }
+        ]);
+    });
+
     test('Update ui5-mock.yaml, path and service name from manifest', async () => {
         const fs = getFsWithUi5MockYaml(manifestWithMainService);
         await enhanceYaml(fs, basePath, webappPath);

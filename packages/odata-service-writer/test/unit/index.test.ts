@@ -1147,6 +1147,8 @@ async function getSingleServiceMock(): Promise<Editor> {
     const ui5LocalYaml = (await UI5Config.newInstance(''))
         .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
         .addMockServerMiddleware(
+            testDir,
+            join(testDir, 'webapp'),
             [{ serviceName: 'mainService', servicePath: '/sap' }],
             [
                 {
@@ -1158,6 +1160,8 @@ async function getSingleServiceMock(): Promise<Editor> {
     const ui5MockYaml = (await UI5Config.newInstance(''))
         .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
         .addMockServerMiddleware(
+            testDir,
+            join(testDir, 'webapp'),
             [{ serviceName: 'mainService', servicePath: '/sap' }],
             [
                 {
