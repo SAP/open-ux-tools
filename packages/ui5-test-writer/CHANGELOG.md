@@ -1,5 +1,24 @@
 # @sap-ux/ui5-test-writer
 
+## 0.6.1
+
+### Patch Changes
+
+-   @sap-ux/ui5-application-writer@1.3.1
+
+## 0.6.0
+
+### Minor Changes
+
+-   db575f3: Update unit test template for Freestyle version 1.120.0
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [88520b4]
+    -   @sap-ux/ui5-application-writer@1.3.0
+
 ## 0.5.1
 
 ### Patch Changes

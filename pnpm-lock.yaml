@@ -1050,8 +1050,8 @@ importers:
         specifier: workspace:*
         version: link:../text-document-utils
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.16.0
-        version: 1.16.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.16.1
+        version: 1.16.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -1789,8 +1789,8 @@ importers:
         specifier: workspace:*
         version: link:../xml-odata-annotation-converter
       '@sap/ux-cds-compiler-facade':
-        specifier: 1.16.0
-        version: 1.16.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
+        specifier: 1.16.1
+        version: 1.16.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access)
       '@xml-tools/ast':
         specifier: 5.0.5
         version: 5.0.5
@@ -1804,8 +1804,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       vscode-languageserver-textdocument:
-        specifier: 1.0.8
-        version: 1.0.8
+        specifier: 1.0.11
+        version: 1.0.11
     devDependencies:
       '@sap/cds-compiler':
         specifier: 4.8.0
@@ -2176,8 +2176,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0
       vscode-languageserver-textdocument:
-        specifier: 1.0.7
-        version: 1.0.7
+        specifier: 1.0.11
+        version: 1.0.11
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -8478,8 +8478,8 @@ packages:
       temp-dir: 2.0.0
       which: 2.0.2
 
-  /@sap/ux-cds-compiler-facade@1.16.0(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
-    resolution: {integrity: sha512-6YfFnQhxGsIxsS8k7eYE5r9l+HXtb7o/AaEuvt+1YnDwJypnh63gbMGkVEq1HcxqyEHJp6Md15QVGYVmquI4fA==}
+  /@sap/ux-cds-compiler-facade@1.16.1(@sap-ux/odata-annotation-core-types@packages+odata-annotation-core-types)(@sap-ux/odata-annotation-core@packages+odata-annotation-core)(@sap-ux/project-access@packages+project-access):
+    resolution: {integrity: sha512-H3RoeqJtuKT8fvtzgURbsWM2aCdktYt2XtFaciNW896UQIdMSVhi2EKD1oVGE8b8doP7i1i5J+I6Vw8dGuzYAA==}
     engines: {node: '>=18.16.0'}
     peerDependencies:
       '@sap-ux/odata-annotation-core': '>=0.2.2'
@@ -22434,12 +22434,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /vscode-languageserver-textdocument@1.0.7:
-    resolution: {integrity: sha512-bFJH7UQxlXT8kKeyiyu41r22jCZXG8kuuVVA33OEJn1diWOZK5n8zBSPZFHVBOu8kXZ6h0LIRhf5UnCo61J4Hg==}
-    dev: false
-
-  /vscode-languageserver-textdocument@1.0.8:
-    resolution: {integrity: sha512-1bonkGqQs5/fxGT5UchTgjGVnfysL0O8v1AYMBjqTbWQTFn721zaPGDYFkOKtfDgFiSgXM3KwaG3FMGfW4Ed9Q==}
+  /vscode-languageserver-textdocument@1.0.11:
+    resolution: {integrity: sha512-X+8T3GoiwTVlJbicx/sIAF+yuJAqz8VvwJyoMVhwEMoEKE/fkDmrqUgDMyBECcM2A2frVZIUj5HI/ErRXCfOeA==}
     dev: false
 
   /vscode-languageserver-types@3.17.2:

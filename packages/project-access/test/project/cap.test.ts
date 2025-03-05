@@ -89,6 +89,21 @@ describe('Test getCapProjectType() & isCapProject()', () => {
         const capPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project');
         expect(await getCapProjectType(capPath, memFs)).toBe(undefined);
     });
+
+    test('Test if getCapProjectType() considers deletions in memfs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'cap-app');
+        const memFsWithDeletion = create(createStorage());
+        memFsWithDeletion.delete(join(capPath, 'srv', 'keep'));
+        expect(await getCapProjectType(capPath, memFsWithDeletion)).toBe(undefined);
+    });
+
+    test('Test if getCapProjectType() considers addition in memfs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'cap-root', 'invalid-cap-root-no-srv');
+        const memFsWithAddition = create(createStorage());
+        memFsWithAddition.write(join(capPath, 'srv', 'keep'), '');
+        memFsWithAddition.write(join('/tmp/any/file/test'), 'test');
+        expect(await getCapProjectType(capPath, memFsWithAddition)).toBe('CAPNodejs');
+    });
 });
 
 describe('Test isCapNodeJsProject()', () => {
