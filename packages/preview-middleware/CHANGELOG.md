@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.18.12
+
+### Patch Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
 ## 0.18.11
 
 ### Patch Changes
