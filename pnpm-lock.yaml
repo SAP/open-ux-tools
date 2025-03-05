@@ -1928,8 +1928,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       vscode-languageserver-textdocument:
-        specifier: 1.0.8
-        version: 1.0.8
+        specifier: 1.0.11
+        version: 1.0.11
     devDependencies:
       '@sap/cds-compiler':
         specifier: 4.8.0
@@ -2300,8 +2300,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0
       vscode-languageserver-textdocument:
-        specifier: 1.0.7
-        version: 1.0.7
+        specifier: 1.0.11
+        version: 1.0.11
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -22563,12 +22563,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /vscode-languageserver-textdocument@1.0.7:
-    resolution: {integrity: sha512-bFJH7UQxlXT8kKeyiyu41r22jCZXG8kuuVVA33OEJn1diWOZK5n8zBSPZFHVBOu8kXZ6h0LIRhf5UnCo61J4Hg==}
-    dev: false
-
-  /vscode-languageserver-textdocument@1.0.8:
-    resolution: {integrity: sha512-1bonkGqQs5/fxGT5UchTgjGVnfysL0O8v1AYMBjqTbWQTFn721zaPGDYFkOKtfDgFiSgXM3KwaG3FMGfW4Ed9Q==}
+  /vscode-languageserver-textdocument@1.0.11:
+    resolution: {integrity: sha512-X+8T3GoiwTVlJbicx/sIAF+yuJAqz8VvwJyoMVhwEMoEKE/fkDmrqUgDMyBECcM2A2frVZIUj5HI/ErRXCfOeA==}
     dev: false
 
   /vscode-languageserver-types@3.17.2:
