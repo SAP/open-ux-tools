@@ -38,10 +38,6 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
      */
     connectedSystem?: OdataServiceAnswers['connectedSystem'];
     /**
-     * Whether the system is a cloud system
-     */
-    scp?: boolean;
-    /**
      * Name of the project
      */
     projectName: string;

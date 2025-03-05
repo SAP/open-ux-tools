@@ -6,7 +6,7 @@ describe('prompts', () => {
         await initI18n();
     });
 
-    test('should return config update confirm prompt', () => {
+    test('should returncap mta continue confirm prompt', () => {
         const result = getConfirmMtaContinuePrompt();
         expect(result).toEqual([
             {

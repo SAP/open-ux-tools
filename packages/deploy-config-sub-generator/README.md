@@ -2,7 +2,7 @@
 
 ## Features
 
-The Fiori Deployment configuration sub-generator enables users to create deployment configuration for a SAP Fiori application.
+The Fiori Deployment configuration sub-generator enables users to create deployment configuration for an SAP Fiori application.
 
 ## Installation
 
@@ -10,7 +10,7 @@ The SAP Fiori Deployment sub-generator is installed as part of the [@sap/generat
 
 ## Launch the SAP Application Router Generator
 
-Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and execute either: 
+Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and execute: 
 - Fiori: Add Deployment Configuration
 
 ## Keywords

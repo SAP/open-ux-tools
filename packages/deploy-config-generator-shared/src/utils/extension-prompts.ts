@@ -4,7 +4,7 @@ import type { GeneratorOptions } from 'yeoman-generator';
 import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 
 /**
- * Find any extension generators and return the path to the first one found.
+ * Find fiori generator extension generators and return the path to the first one found.
  *
  * @param vscode - instance of vscode
  * @returns - the path to the extension generator
@@ -23,7 +23,7 @@ async function getExtensionGenPath(vscode?: VSCodeInstance): Promise<string | un
 }
 
 /**
- * Loads any extension generator associated with the root generator and returns the extension prompt options.
+ * Loads the fiori generator extension and returns the extension prompt options.
  * This a lightweight temp version for loading the extension generator prompts options.
  *
  * @param createEnv - the env create function from yeoman generator

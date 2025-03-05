@@ -25,13 +25,13 @@ import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { DeployConfigGenerator, DeployConfigOptions } from '../types';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
+import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 import type {
     CfDeployConfigAnswers,
     CfDeployConfigOptions,
     ApiHubConfig
 } from '@sap-ux/cf-deploy-config-sub-generator';
-import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
-import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 
 /**
  * The main deployment configuration generator.
