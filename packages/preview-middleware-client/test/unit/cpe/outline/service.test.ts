@@ -15,7 +15,6 @@ const mockChangeService = {
 jest.useFakeTimers();
 
 describe('index', () => {
- 
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
     const transformNodesSpy = jest.spyOn(nodes, 'transformNodes');
@@ -118,13 +117,27 @@ describe('index', () => {
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
     });
 
-    test('initOutLine - send action for reuse components for ADAPTATION_PROJECT scenario', async () => {
+    test('initOutLine - skip sending action for reuse components for ADAPTATION_PROJECT scenario for OnPremise project', async () => {
         (nodes.transformNodes as jest.Mock).mockImplementation(async (nodes, scenario, reuseComponentsIds) => {
             reuseComponentsIds.add('someViewId');
             return nodes;
         });
         rtaMock.getFlexSettings.mockReturnValue({
             scenario: 'ADAPTATION_PROJECT'
+        });
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
+        await service.init(mockSendAction);
+        expect(mockSendAction).toHaveBeenNthCalledWith(1, { payload: 'mockViewNodes', type: '[ext] outline-changed' });
+    });
+
+    test('initOutLine - send action for reuse components for ADAPTATION_PROJECT scenario for Cloud project', async () => {
+        (nodes.transformNodes as jest.Mock).mockImplementation(async (nodes, scenario, reuseComponentsIds) => {
+            reuseComponentsIds.add('someViewId');
+            return nodes;
+        });
+        rtaMock.getFlexSettings.mockReturnValue({
+            scenario: 'ADAPTATION_PROJECT',
+            isCloud: true
         });
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
