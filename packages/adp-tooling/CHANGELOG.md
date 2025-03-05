@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.10
+
+### Patch Changes
+
+-   14bec21: feat: Change "Add Local Annotation File" wizard dropdown option text in @sap-ux/adp-tooling
+
 ## 0.13.9
 
 ### Patch Changes
