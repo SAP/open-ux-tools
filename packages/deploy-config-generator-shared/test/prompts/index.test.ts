@@ -13,7 +13,7 @@ describe('prompts', () => {
                 type: 'confirm',
                 name: 'addCapMtaContinue',
                 message:
-                    'There is no mta.yaml file defined for this project. In order to add deployment configuration for this application, this file must be present. Do you want to create an mta.yaml to continue?',
+                    'There is no `mta.yaml` file defined for this project. To add a deployment configuration for this application, this file must be present. Do you want to create an `mta.yaml` file to continue?',
                 default: false
             }
         ]);
