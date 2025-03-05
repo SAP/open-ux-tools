@@ -169,7 +169,9 @@ function registerModules(dataFromAppIndex: AppIndexData) {
  *
  */
 async function triggerAdaptation(flexSettings: FlexSettings, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
-    const container = sap?.ushell?.Container ?? ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
+    const container =
+        sap?.ushell?.Container ??
+        ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
     const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
     lifecycleService.attachAppLoaded((event) => {
         const view = event.getParameter('componentInstance');
@@ -306,19 +308,19 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
- * @param params.newHomePage boolean indicating if new homepage is enabled
+ * @param params.enhancedHomePage boolean indicating if enhanced homepage is enabled
  * @returns promise
  */
 export async function init({
     appUrls,
     flex,
     customInit,
-    newHomePage
+    enhancedHomePage
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
-    newHomePage?: boolean | null;
+    enhancedHomePage?: boolean | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container =
@@ -331,9 +333,9 @@ export async function init({
         const flexSettings = JSON.parse(flex) as FlexSettings;
         scenario = flexSettings.scenario;
 
-        // Attach renderer created event to trigger adaptation, or trigger adaptation directly if newHomePage is enabled
+        // Attach renderer created event to trigger adaptation, or trigger adaptation directly if enhancedHomePage is enabled
         // as the ushell is bootstrapped via cdm where the renderer is created before the init script is executed
-        if (!newHomePage) {
+        if (!enhancedHomePage) {
             container.attachRendererCreatedEvent(triggerAdaptation.bind(null, flexSettings, ui5VersionInfo));
         } else {
             await triggerAdaptation(flexSettings, ui5VersionInfo);
@@ -341,7 +343,7 @@ export async function init({
     }
 
     // disable implicit personalisation save if new home page is enabled
-    if (newHomePage) {
+    if (enhancedHomePage) {
         const pages = await container.getServiceAsync<Pages>('Pages');
         pages.enableImplicitSave(false);
     }
@@ -385,7 +387,7 @@ if (bootstrapConfig) {
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
-        newHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-new-homePage')
+        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage')
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);

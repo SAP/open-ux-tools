@@ -3,5 +3,5 @@
 '@sap-ux-private/preview-middleware-client': patch
 ---
 
-feat: introduce new flp homepage
-  - controlled via boolean property `flp.newHomePage`, which is false by default
+feat: introduce enhanced flp homepage
+  - controlled via boolean property `flp.enhancedHomePage`, which is false by default

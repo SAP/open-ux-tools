@@ -4,9 +4,9 @@ exports[`config createFlpTemplateConfig minimum settings 1`] = `
 Object {
   "apps": Object {},
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": undefined,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -41,9 +41,9 @@ exports[`config createFlpTemplateConfig minimum settings with one reuse lib 1`] 
 Object {
   "apps": Object {},
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": undefined,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
