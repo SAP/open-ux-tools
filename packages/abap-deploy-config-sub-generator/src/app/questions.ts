@@ -148,7 +148,13 @@ export async function getAbapQuestions({
                 }
             },
             overwrite: { hide: !showOverwriteQuestion },
-            transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false }
+            transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false },
+            targetSystem: {
+                additionalValidation: {
+                    shouldRestrictDifferentSystemType:
+                        promptOptions?.targetSystem?.shouldRestrictDifferentSystemType ?? false
+                }
+            }
         },
         logger as unknown as Logger,
         getHostEnvironment() !== hostEnvironment.cli

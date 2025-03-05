@@ -42,14 +42,14 @@ describe('Test validators', () => {
     });
     describe('validateDestinationQuestion', () => {
         it('should return true for valid destination', async () => {
-            const result = validateDestinationQuestion('Dest2', mockDestinations);
+            const result = await validateDestinationQuestion('Dest2', mockDestinations);
             expect(PromptState.abapDeployConfig.destination).toBe('Dest2');
             expect(PromptState.abapDeployConfig.url).toBe('https://mock.url.dest2.com');
             expect(result).toBe(true);
         });
 
         it('should return false for invalid destination', async () => {
-            const result = validateDestinationQuestion('', mockDestinations);
+            const result = await validateDestinationQuestion('', mockDestinations);
             expect(PromptState.abapDeployConfig.destination).toBe(undefined);
             expect(PromptState.abapDeployConfig.url).toBe(undefined);
             expect(result).toBe(false);
@@ -74,13 +74,13 @@ describe('Test validators', () => {
             }
         ];
         it('should return true for valid (or empty) target system', async () => {
-            let result = validateTargetSystem('');
+            let result = await validateTargetSystem('');
             expect(result).toBe(true);
 
-            result = validateTargetSystem(TargetSystemType.Url);
+            result = await validateTargetSystem(TargetSystemType.Url);
             expect(result).toBe(true);
 
-            result = validateTargetSystem('https://mock.url.target1.com', abapSystemChoices);
+            result = await validateTargetSystem('https://mock.url.target1.com', abapSystemChoices);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
                 client: '001',
@@ -93,7 +93,7 @@ describe('Test validators', () => {
         });
 
         it('should return false for invalid  target system', async () => {
-            let result = validateTargetSystem('/x/inval.z');
+            const result = await validateTargetSystem('/x/inval.z');
             expect(result).toBe(false);
         });
     });

@@ -21,7 +21,8 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type AbapSystemChoice,
-    type BackendTarget
+    type BackendTarget,
+    type TargetSystemPromptOptions
 } from '../../types';
 import type { InputQuestion, ListQuestion, ConfirmQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Question } from 'inquirer';
@@ -32,12 +33,14 @@ import { TargetSystemType } from '../../types';
  *
  * @param choices - abap system choices
  * @param destinations - list of destinations
+ * @param options - target system options
  * @param backendTarget - backend target
  * @returns list question for destination
  */
 function getDestinationPrompt(
     choices: AbapSystemChoice[],
     destinations?: Destinations,
+    options?: TargetSystemPromptOptions,
     backendTarget?: BackendTarget
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
@@ -53,7 +56,8 @@ function getDestinationPrompt(
             default: (): string | undefined => backendTarget?.abapTarget?.destination,
             filter: (input: string): string => input?.trim(),
             choices: (): AbapSystemChoice[] => choices,
-            validate: (destination: string): boolean => validateDestinationQuestion(destination, destinations),
+            validate: async (destination: string): Promise<boolean | string> =>
+                await validateDestinationQuestion(destination, destinations, options, backendTarget),
             additionalMessages: (destination: string): IMessageSeverity | undefined => {
                 let additionalMessage;
                 if (destinations && destination && isOnPremiseDestination(destinations[destination])) {
@@ -86,10 +90,14 @@ function getDestinationPrompt(
  * Returns the target system prompt.
  *
  * @param choices - abap system choices
+ * @param options - target system options
+ * @param backendTarget - backend target
  * @returns list question for target system
  */
 function getTargetSystemPrompt(
-    choices: AbapSystemChoice[]
+    choices: AbapSystemChoice[],
+    options?: TargetSystemPromptOptions,
+    backendTarget?: BackendTarget
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
@@ -103,7 +111,8 @@ function getTargetSystemPrompt(
             },
             choices: (): AbapSystemChoice[] => choices,
             default: (): string | undefined => defaultTargetSystem(choices),
-            validate: (target: string): boolean | string => validateTargetSystem(target, choices)
+            validate: async (target: string): Promise<boolean | string> =>
+                await validateTargetSystem(target, choices, options, backendTarget)
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];
 
@@ -264,8 +273,8 @@ export async function getAbapTargetPrompts(
 
     const abapSystemChoices = await getAbapSystemChoices(destinations, options?.backendTarget, backendSystems);
     return [
-        ...getDestinationPrompt(abapSystemChoices, destinations, options.backendTarget),
-        ...getTargetSystemPrompt(abapSystemChoices),
+        ...getDestinationPrompt(abapSystemChoices, destinations, options.targetSystem, options.backendTarget),
+        ...getTargetSystemPrompt(abapSystemChoices, options.targetSystem, options.backendTarget),
         getUrlPrompt(destinations, options.backendTarget),
         ...getScpPrompt(options.backendTarget),
         ...getClientChoicePrompt(options.backendTarget),

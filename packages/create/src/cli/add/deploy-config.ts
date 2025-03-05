@@ -115,7 +115,8 @@ async function addDeployConfig(
                         shouldValidatePackageForStartingPrefix: isAdp
                     }
                 },
-                transportInputChoice: { hideIfOnPremise: isAdp }
+                transportInputChoice: { hideIfOnPremise: isAdp },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: isAdp } }
             };
             const { prompts: abapPrompts, answers: abapAnswers } = await getAbapDeployConfigPrompts(
                 promptOptions,

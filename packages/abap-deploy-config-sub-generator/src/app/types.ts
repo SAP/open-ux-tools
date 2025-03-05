@@ -62,11 +62,16 @@ enum promptNames {
     ui5AbapRepo = 'ui5AbapRepo',
     packageManual = 'packageManual',
     packageAutocomplete = 'packageAutocomplete',
-    transportInputChoice = 'transportInputChoice'
+    transportInputChoice = 'transportInputChoice',
+    targetSystem = 'targetSystem'
 }
 
 type HideIfOnPremisePromptOption = {
     hideIfOnPremise?: boolean;
+};
+
+type TargetSystemPromptOptions = {
+    shouldRestrictDifferentSystemType: boolean;
 };
 
 type PackageAdditionalValidationPrompOptions = {
@@ -78,5 +83,6 @@ export type AbapDeployConfigPromptOptions = Partial<
     Record<promptNames.ui5AbapRepo, HideIfOnPremisePromptOption> &
         Record<promptNames.transportInputChoice, HideIfOnPremisePromptOption> &
         Record<promptNames.packageManual, PackageAdditionalValidationPrompOptions> &
-        Record<promptNames.packageAutocomplete, PackageAdditionalValidationPrompOptions>
+        Record<promptNames.packageAutocomplete, PackageAdditionalValidationPrompOptions> &
+        Record<promptNames.targetSystem, TargetSystemPromptOptions>
 >;

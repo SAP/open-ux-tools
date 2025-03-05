@@ -131,7 +131,7 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         mockIsOnPremiseDestination.mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateDestinationQuestion').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateDestinationQuestion').mockResolvedValueOnce(true);
 
         const abapDeployConfigPromptOptions = {
             backendTarget: {
@@ -149,7 +149,7 @@ describe('getAbapTargetPrompts', () => {
             expect(destPrompt.message).toBe(t('prompts.target.destination.message'));
             expect((destPrompt.default as Function)()).toEqual('mockDest1');
             expect((destPrompt.filter as Function)('mockDest1 ')).toEqual('mockDest1');
-            expect((destPrompt.validate as Function)()).toEqual(true);
+            expect(await (destPrompt.validate as Function)()).toEqual(true);
             expect(((destPrompt as ListQuestion).additionalMessages as Function)('mockDestination')).toStrictEqual({
                 message: t('warnings.virtualHost'),
                 severity: Severity.warning
@@ -206,7 +206,7 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: mockTargetSystems
         });
-        jest.spyOn(validators, 'validateTargetSystem').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateTargetSystem').mockResolvedValueOnce(true);
 
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const targetSystemPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.targetSystem);
@@ -215,7 +215,7 @@ describe('getAbapTargetPrompts', () => {
             expect((targetSystemPrompt.when as Function)()).toBe(true);
             expect(targetSystemPrompt.message).toBe(t('prompts.target.targetSystem.message'));
             expect((targetSystemPrompt.default as Function)()).toEqual(undefined);
-            expect((targetSystemPrompt.validate as Function)()).toEqual(true);
+            expect(await (targetSystemPrompt.validate as Function)()).toEqual(true);
             expect(((targetSystemPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 Array [
                   Object {

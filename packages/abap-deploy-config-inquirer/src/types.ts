@@ -171,6 +171,12 @@ export type TransportInputChoicePromptOptions = {
     showCreateDuringDeploy?: boolean;
 };
 
+export type TargetSystemPromptOptions = {
+    additionalValidation: {
+        shouldRestrictDifferentSystemType: boolean;
+    };
+};
+
 type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepoPromptOptions> &
     Record<promptNames.description, DescriptionPromptOptions> &
     Record<promptNames.packageManual, PackageManualPromptOptions> &
@@ -178,7 +184,8 @@ type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepo
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.index, IndexPromptOptions> &
     Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
-    Record<promptNames.transportInputChoice, TransportInputChoicePromptOptions>;
+    Record<promptNames.transportInputChoice, TransportInputChoicePromptOptions> &
+    Record<promptNames.targetSystem, TargetSystemPromptOptions>;
 
 /**
  * The options which are common for the abap deploy config inquirer.

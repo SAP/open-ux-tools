@@ -170,7 +170,8 @@ export default class extends DeploymentGenerator {
                     shouldValidatePackageForStartingPrefix: isAdp,
                     shouldValidatePackageType: isAdp
                 },
-                packageManual: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp }
+                packageManual: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp },
+                targetSystem: { shouldRestrictDifferentSystemType: isAdp }
             };
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
                 appRootPath: this.destinationRoot(),

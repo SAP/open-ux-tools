@@ -22,7 +22,7 @@ import { handleTransportConfigError } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
-import type { UI5AbapRepoPromptOptions } from '../types';
+import type { TargetSystemPromptOptions, UI5AbapRepoPromptOptions } from '../types';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -35,18 +35,57 @@ import {
     type PackagePromptOptions
 } from '../types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { isAbapCloud } from '../service-provider-utils/abap-cloud';
+import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
+
+/**
+ * Validates the system type based on the provided options and backend target.
+ *
+ * @param options - target system options
+ * @param backendTarget - backend target
+ * @returns boolean
+ */
+async function validateSystemType(
+    options?: TargetSystemPromptOptions,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
+    if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
+        const isSelectedAbapCloud = await isAbapCloud(backendTarget);
+        if (AbapServiceProviderManager.getIsDefaultProviderAbapCloud() === true && isSelectedAbapCloud !== true) {
+            return 'Cloud system';
+        } else if (
+            AbapServiceProviderManager.getIsDefaultProviderAbapCloud() === false &&
+            isSelectedAbapCloud !== false
+        ) {
+            return 'OnPrem system';
+        }
+    }
+
+    return true;
+}
 /**
  * Validates the destination question and sets the destination in the prompt state.
  *
  * @param destination - chosen destination
  * @param destinations - list of destinations
+ * @param options - target system options
+ * @param backendTarget - backend target
  * @returns boolean
  */
-export function validateDestinationQuestion(destination: string, destinations?: Destinations): boolean {
+export async function validateDestinationQuestion(
+    destination: string,
+    destinations?: Destinations,
+    options?: TargetSystemPromptOptions,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
     updateDestinationPromptState(destination, destinations);
+    const systemTypeValidation = await validateSystemType(options, backendTarget);
+    if (typeof systemTypeValidation === 'string') {
+        return systemTypeValidation;
+    }
     return !!destination?.trim();
 }
 
@@ -104,9 +143,16 @@ export function updateDestinationPromptState(destination: string, destinations: 
  *
  * @param target - target system
  * @param choices - abab system choices
+ * @param options - target system options
+ * @param backendTarget - backend target
  * @returns boolean or error message string
  */
-export function validateTargetSystem(target?: string, choices?: AbapSystemChoice[]): boolean | string {
+export async function validateTargetSystem(
+    target?: string,
+    choices?: AbapSystemChoice[],
+    options?: TargetSystemPromptOptions,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
     if (!target || target === TargetSystemType.Url) {
         return true;
@@ -114,6 +160,7 @@ export function validateTargetSystem(target?: string, choices?: AbapSystemChoice
     const isValid = isValidUrl(target?.trim());
     if (isValid === true && choices) {
         const choice = choices.find((choice) => choice.value === target);
+
         if (choice) {
             updatePromptState({
                 url: choice.value,
@@ -122,6 +169,11 @@ export function validateTargetSystem(target?: string, choices?: AbapSystemChoice
                 isS4HC: choice.isS4HC,
                 target: target
             });
+        }
+
+        const systemTypeValidation = await validateSystemType(options, backendTarget);
+        if (typeof systemTypeValidation === 'string') {
+            return systemTypeValidation;
         }
     }
     return isValid;
