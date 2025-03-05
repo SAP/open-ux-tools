@@ -1,5 +1,40 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.2.0
+
+### Minor Changes
+
+-   ebc6dfa: Refactor conditional logic for test generation in FF writer
+
+## 2.1.10
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.9.18
+-   @sap-ux/fiori-generator-shared@0.9.7
+-   @sap-ux/odata-service-writer@0.26.9
+-   @sap-ux/ui5-application-writer@1.3.1
+-   @sap-ux/ui5-test-writer@0.6.1
+
+## 2.1.9
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/odata-service-writer@0.26.8
+    -   @sap-ux/ui5-application-writer@1.3.1
+    -   @sap-ux/cap-config-writer@0.9.17
+    -   @sap-ux/fiori-generator-shared@0.9.6
+    -   @sap-ux/ui5-test-writer@0.6.1
+
+## 2.1.8
+
+### Patch Changes
+
+-   Updated dependencies [db575f3]
+    -   @sap-ux/ui5-test-writer@0.6.0
+
 ## 2.1.7
 
 ### Patch Changes

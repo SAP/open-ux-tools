@@ -20,7 +20,6 @@ export default async function (rta: RuntimeAuthoring) {
         enableTelemetry();
     }
 
-
     const ui5VersionInfo = await getUi5Version();
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
     initDialogs(rta, syncViewsIds, ui5VersionInfo);

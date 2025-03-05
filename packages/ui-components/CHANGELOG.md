@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.24.8
+
+### Patch Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
 ## 1.24.7
 
 ### Patch Changes

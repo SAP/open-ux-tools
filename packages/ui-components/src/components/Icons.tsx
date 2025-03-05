@@ -150,6 +150,7 @@ export enum UiIcons {
     Task = 'Task',
     Terminal = 'Terminal',
     TestGuides = 'TestGuides',
+    TextGrammarDismiss = 'TextGrammarDismiss',
     ThumbsDown = 'ThumbsDown',
     ThumbsUp = 'ThumbsUp',
     ToTheTop = 'ToTheTop',
@@ -1974,6 +1975,19 @@ export function initIcons(): void {
                         clipRule="evenodd"
                         d="M6 5C6 5.5 6.5 6 7 6H9C9.5 6 10 5.5 10 5V10C10 11.1046 9.10457 12 8 12C6.89543 12 6 11.1046 6 10V5ZM8 7.5C8 7.77614 7.77614 8 7.5 8C7.22386 8 7 7.77614 7 7.5C7 7.22386 7.22386 7 7.5 7C7.77614 7 8 7.22386 8 7.5ZM8.5 10C8.77614 10 9 9.77614 9 9.5C9 9.22386 8.77614 9 8.5 9C8.22386 9 8 9.22386 8 9.5C8 9.77614 8.22386 10 8.5 10Z"
                         fill={COLORS.success}
+                    />
+                </svg>
+            ),
+            [UiIcons.TextGrammarDismiss]: (
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M15 1H1V2H15V1Z" fill={COLORS.default} />
+                    <path d="M15 4H1V5H15V4Z" fill={COLORS.default} />
+                    <path d="M1 7H15V8H1V7Z" fill={COLORS.default} />
+                    <path d="M9 10H1V11H9V10Z" fill={COLORS.default} />
+                    <path d="M1 13H9V14H1V13Z" fill={COLORS.default} />
+                    <path
+                        d="M10.1465 13.1465L11.7929 11.5L10.1465 9.85359L10.8536 9.14648L12.5 10.7929L14.1465 9.14648L14.8536 9.85359L13.2071 11.5L14.8536 13.1465L14.1465 13.8536L12.5 12.2071L10.8536 13.8536L10.1465 13.1465Z"
+                        fill={COLORS.default}
                     />
                 </svg>
             ),
