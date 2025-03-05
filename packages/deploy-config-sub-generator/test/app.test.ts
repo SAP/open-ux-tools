@@ -86,12 +86,12 @@ describe('Deployment Generator', () => {
         mockIsAppStudio.mockReturnValueOnce(true);
         memfs.vol.fromNestedJSON(
             {
-                [`.${OUTPUT_DIR_PREFIX}/s4project/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
+                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
             },
             '/'
         );
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/s4project`);
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
         await expect(
             yeomanTest
                 .create(
@@ -106,7 +106,7 @@ describe('Deployment Generator', () => {
                     skipInstall: true,
                     launchDeployConfigAsSubGenerator: false,
                     projectPath: OUTPUT_DIR_PREFIX,
-                    projectName: 's4project',
+                    projectName: 'project1',
                     target: 'Unknown'
                 })
                 .run()
@@ -122,12 +122,12 @@ describe('Deployment Generator', () => {
         const getABAPPromptsSpy = jest.spyOn(abapDeploySubGen, 'getAbapQuestions');
         memfs.vol.fromNestedJSON(
             {
-                [`.${OUTPUT_DIR_PREFIX}/s4project/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
+                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
             },
             '/'
         );
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/s4project`);
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
         await expect(
             yeomanTest
                 .create(
@@ -142,7 +142,7 @@ describe('Deployment Generator', () => {
                     skipInstall: true,
                     launchDeployConfigAsSubGenerator: false,
                     projectPath: OUTPUT_DIR_PREFIX,
-                    projectName: 's4project',
+                    projectName: 'project1',
                     appGenDestination: '~Destinaton',
                     appGenServiceHost: '~Host',
                     appGenClient: '110'
@@ -168,12 +168,12 @@ describe('Deployment Generator', () => {
             .mockResolvedValueOnce({ prompts: [], answers: {} });
         memfs.vol.fromNestedJSON(
             {
-                [`.${OUTPUT_DIR_PREFIX}/s4project/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
+                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
             },
             '/'
         );
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/s4project`);
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
         await expect(
             yeomanTest
                 .create(
@@ -186,13 +186,13 @@ describe('Deployment Generator', () => {
                 .withOptions({
                     overwrite: false,
                     skipInstall: true,
-                    launchDeployConfigAsSubGenerator: true,
-                    launchStandaloneFromYui: false,
-                    projectPath: OUTPUT_DIR_PREFIX,
-                    projectName: 's4project',
                     appGenDestination: '~Destinaton',
                     appGenServiceHost: '~Host',
-                    appGenClient: '110'
+                    appGenClient: '110',
+                    data: {
+                        destinationRoot: appDir,
+                        launchDeployConfigAsSubGenerator: true
+                    }
                 })
                 .withPrompts({
                     targetName: TargetName.ABAP
@@ -203,110 +203,6 @@ describe('Deployment Generator', () => {
         ).resolves.not.toThrow();
         expect(getCFQuestionsSpy).toHaveBeenCalled();
         expect(getABAPPromptsSpy).toHaveBeenCalled();
-    });
-
-    it('Validate S4 correctly exists is users chooses not to proceed', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}s4project`;
-        mockIsAppStudio.mockReturnValueOnce(true);
-        jest.spyOn(envUtils, 'getHostEnvironment').mockReturnValue(envUtils.hostEnvironment.cli);
-        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
-
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation();
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/s4project/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
-            },
-            '/'
-        );
-
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/s4project`);
-        await expect(
-            yeomanTest
-                .create(
-                    DeployGenerator,
-                    {
-                        resolved: deployPath
-                    },
-                    { cwd: appDir }
-                )
-                .withOptions({
-                    overwrite: false,
-                    skipInstall: true,
-                    data: {
-                        confirmConfigUpdatePrompt: [
-                            {
-                                type: 'confirm',
-                                name: 'confirmConfigUpdate'
-                            }
-                        ],
-                        launchDeployConfigAsSubGenerator: true,
-                        destinationRoot: appDir
-                    },
-                    projectPath: OUTPUT_DIR_PREFIX,
-                    projectName: 's4project'
-                })
-                .withPrompts({
-                    confirmConfigUpdate: false
-                })
-                .withGenerators([[mockSubGen, generatorNamespace('test', 'deploy')]])
-                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
-                .run()
-        ).resolves.not.toThrow();
-
-        expect(getCFQuestionsSpy).toHaveBeenCalled();
-        expect(mockExit).toHaveBeenCalledWith(0);
-    });
-
-    it('Validate S4 correctly continues and enables target prompting', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
-        mockIsAppStudio.mockReturnValueOnce(true);
-        jest.spyOn(envUtils, 'getHostEnvironment').mockReturnValue(envUtils.hostEnvironment.cli);
-        const getABAPPromptsSpy = jest.spyOn(abapDeploySubGen, 'getAbapQuestions');
-        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts').mockResolvedValueOnce([]);
-
-        const mockExit = jest.spyOn(process, 'exit').mockImplementation();
-        memfs.vol.fromNestedJSON(
-            {
-                [`.${OUTPUT_DIR_PREFIX}/s4project/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
-            },
-            '/'
-        );
-
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/s4project`);
-        await expect(
-            yeomanTest
-                .create(
-                    DeployGenerator,
-                    {
-                        resolved: deployPath
-                    },
-                    { cwd: appDir }
-                )
-                .withOptions({
-                    overwrite: false,
-                    skipInstall: true,
-                    launchDeployConfigAsSubGenerator: false,
-                    data: {
-                        additionalPrompts: {
-                            confirmConfigUpdate: { show: true, configType: '~Test' }
-                        },
-                        destinationRoot: appDir
-                    },
-                    projectPath: OUTPUT_DIR_PREFIX,
-                    projectName: 's4project'
-                })
-                .withPrompts({
-                    confirmConfigUpdate: true,
-                    targetName: TargetName.CF
-                })
-                .withGenerators([[mockSubGen, generatorNamespace('test', 'deploy')]])
-                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
-                .run()
-        ).resolves.not.toThrow();
-
-        expect(getABAPPromptsSpy).not.toHaveBeenCalled();
-        expect(getCFQuestionsSpy).not.toHaveBeenCalled();
-        expect(mockExit).not.toHaveBeenCalled();
     });
 
     it('Validate deployment generator handles CAP project with missing MTA configuration', async () => {

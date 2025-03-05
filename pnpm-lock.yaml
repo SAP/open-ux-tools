@@ -1520,6 +1520,9 @@ importers:
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
       '@sap-ux/store':
         specifier: workspace:*
         version: link:../store

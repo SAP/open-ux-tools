@@ -13,6 +13,7 @@ import type {
     AbapDeployConfigAnswersInternal,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-sub-generator';
+import type { CommonPromptOptions, PromptDefaultValue } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import type { DeployConfigOptions, Target } from '../types';
 
@@ -24,7 +25,7 @@ import type { DeployConfigOptions, Target } from '../types';
  * @param promptOpts - options for prompts
  * @param promptOpts.launchDeployConfigAsSubGenerator - whether the generator is launched as a sub generator
  * @param promptOpts.launchStandaloneFromYui - whether the generator is launched standalone from YUI
- * @param promptOpts.configUpdatePrompts - prompt to confirm updating the config
+ * @param promptOpts.extensionPromptOpts - extension prompt options
  * @param promptOpts.supportedTargets - supported deployment targets
  * @param promptOpts.backendConfig - backend configuration
  * @param promptOpts.cfDestination - CF destination
@@ -39,7 +40,7 @@ export async function getSubGenPrompts(
     {
         launchDeployConfigAsSubGenerator,
         launchStandaloneFromYui,
-        configUpdatePrompts,
+        extensionPromptOpts,
         supportedTargets,
         backendConfig,
         cfDestination,
@@ -49,7 +50,7 @@ export async function getSubGenPrompts(
     }: {
         launchDeployConfigAsSubGenerator: boolean;
         launchStandaloneFromYui: boolean;
-        configUpdatePrompts: Question[];
+        extensionPromptOpts?: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>;
         supportedTargets: Target[];
         backendConfig: FioriToolsProxyConfigBackend;
         cfDestination: string;
@@ -92,10 +93,10 @@ export async function getSubGenPrompts(
 
     // Combine all prompts
     const questions = combineAllPrompts(options.projectRoot, {
+        extensionPromptOpts,
         supportedTargets,
         abapPrompts,
-        cfPrompts,
-        configUpdatePrompts
+        cfPrompts
     });
 
     return { questions, abapAnswers: abapAnswers };
@@ -109,7 +110,7 @@ export async function getSubGenPrompts(
  * @param opts.supportedTargets - the support deployment targets
  * @param opts.abapPrompts - abap specific prompts
  * @param opts.cfPrompts - cf specific prompts
- * @param opts.configUpdatePrompts - confirm config update prompts
+ * @param opts.extensionPromptOpts - extension prompt options
  * @returns - all the different prompts combined
  */
 function combineAllPrompts(
@@ -118,22 +119,18 @@ function combineAllPrompts(
         supportedTargets,
         abapPrompts,
         cfPrompts,
-        configUpdatePrompts = []
+        extensionPromptOpts
     }: {
         supportedTargets: Target[];
         abapPrompts: AbapDeployConfigQuestion[];
         cfPrompts: CfDeployConfigQuestions[];
-        configUpdatePrompts: Question[];
+        extensionPromptOpts?: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>;
     }
 ): Question[] {
-    let questions = getDeployTargetQuestion(supportedTargets, projectRoot);
+    const questions = getDeployTargetQuestion(supportedTargets, projectRoot, extensionPromptOpts);
     questions.push(
         ...withCondition(abapPrompts as Question[], (answers: Answers) => answers.targetName === TargetName.ABAP)
     );
     questions.push(...withCondition(cfPrompts, (answers: Answers) => answers.targetName === TargetName.CF));
-    if (configUpdatePrompts.length > 0) {
-        questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpdate);
-        questions.unshift(...configUpdatePrompts);
-    }
     return questions;
 }

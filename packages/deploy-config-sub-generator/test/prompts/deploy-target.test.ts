@@ -1,5 +1,5 @@
-import { ListQuestion, Question } from 'inquirer';
-import { getDeployTargetPrompts, getDeployTargetQuestion } from '../../src/prompts/deploy-target';
+import { Question } from 'inquirer';
+import { getDeployTargetQuestion } from '../../src/prompts/deploy-target';
 import { abapChoice, cfChoice } from '../../src/utils/constants';
 
 jest.mock('hasbin', () => ({
@@ -15,20 +15,5 @@ describe('deploy-target', () => {
             expect(deployTargetQuestion.default()).toEqual(abapChoice.name);
             expect((deployTargetQuestion.validate as Function)(cfChoice.name)).toEqual(true);
         }
-    });
-
-    it('should wrap the target deployment prompts in the config update prompt', () => {
-        const configUpdatePrompts = [
-            {
-                type: 'confirm',
-                name: 'confirmConfigUpdate'
-            }
-        ];
-        const deployTargetPrompts = getDeployTargetPrompts(
-            'path/to/project',
-            [abapChoice, cfChoice],
-            configUpdatePrompts
-        );
-        expect(deployTargetPrompts).toHaveLength(2);
     });
 });

@@ -2,7 +2,6 @@ import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { VSCodeInstance, TelemetryData, LogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { ManifestNamespace } from '@sap-ux/project-access';
-import type { Question } from 'inquirer';
 
 export interface FlpConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -49,11 +48,6 @@ export interface FlpConfigOptions extends Generator.GeneratorOptions {
          * Path to the application root where the Fiori launchpad configuration will be added.
          */
         appRootPath?: string;
-
-        /**
-         * Prompt to confirm the the update of non-productive configurations as they are centrally managed as part of the CI pipeline.
-         */
-        confirmConfigUpdatePrompt?: Question;
     };
     /**
      * Logger instance

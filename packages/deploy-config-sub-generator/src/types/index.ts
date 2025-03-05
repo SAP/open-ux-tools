@@ -1,10 +1,11 @@
 import type Generator from 'yeoman-generator';
-import type { Answers, Question } from 'inquirer';
+import type { Answers } from 'inquirer';
 import type { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
-import type { LogWrapper } from '@sap-ux/fiori-generator-shared';
+import type { LogWrapper, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { OdataServiceAnswers } from '@sap-ux/odata-service-inquirer';
 import type { FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
+import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 
 export interface DeployConfigOptions extends Generator.GeneratorOptions {
     /**
@@ -68,10 +69,6 @@ export interface DeployConfigOptions extends Generator.GeneratorOptions {
          * Project folder root
          */
         destinationRoot: string;
-        /**
-         * Prompt to confirm the the update of non-productive configurations as they are centrally managed as part of the CI pipeline.
-         */
-        confirmConfigUpdatePrompt?: Question;
     };
 }
 
@@ -91,6 +88,14 @@ export interface DeployConfigGenerator {
      * Instance of the Application Wizard
      */
     appWizard: AppWizard;
+    /**
+     * Instance of vscode
+     */
+    vscode: VSCodeInstance;
+    /**
+     * Options loaded from extension generators
+     */
+    extensionPromptOpts?: Record<string, CommonPromptOptions>;
     /**
      * The generator namespace that will be used for calling subgens
      */

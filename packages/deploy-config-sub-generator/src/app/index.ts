@@ -1,7 +1,13 @@
 import dotenv from 'dotenv';
 import { basename, dirname, join } from 'path';
 import { getMtaPath, findCapProjectRoot } from '@sap-ux/project-access';
-import { bail, DeploymentGenerator, ErrorHandler, TargetName } from '@sap-ux/deploy-config-generator-shared';
+import {
+    bail,
+    DeploymentGenerator,
+    ErrorHandler,
+    TargetName,
+    getExtensionGenPromptOpts
+} from '@sap-ux/deploy-config-generator-shared';
 import { parseTarget, getYUIDetails } from './utils';
 import {
     getApiHubOptions,
@@ -14,6 +20,7 @@ import {
 } from '../utils';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting';
+import { promptNames } from '../prompts/deploy-target';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { DeployConfigGenerator, DeployConfigOptions } from '../types';
@@ -23,6 +30,8 @@ import type {
     CfDeployConfigOptions,
     ApiHubConfig
 } from '@sap-ux/cf-deploy-config-sub-generator';
+import type { VSCodeInstance } from '@sap-ux/fiori-generator-shared';
+import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 
 /**
  * The main deployment configuration generator.
@@ -34,6 +43,8 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     readonly launchDeployConfigAsSubGenerator: boolean;
     readonly launchStandaloneFromYui: boolean;
     readonly apiHubConfig: ApiHubConfig;
+    extensionPromptOpts?: Record<string, CommonPromptOptions>;
+    vscode: VSCodeInstance;
     cfDestination: string;
     mtaPath?: string;
     backendConfig: FioriToolsProxyConfigBackend;
@@ -57,9 +68,10 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.genNamespace = opts.namespace;
         this.launchDeployConfigAsSubGenerator = opts.launchDeployConfigAsSubGenerator ?? false;
         this.target = parseTarget(args, opts);
+        this.vscode = opts.vscode;
 
         // Extensions use options.data to pass in the options
-        if (this.options.data?.launchStandaloneFromYui || this.options.data?.destinationRoot) {
+        if (this.options.data?.destinationRoot) {
             this.launchStandaloneFromYui = true;
             this.launchDeployConfigAsSubGenerator ||= this.options.data.launchDeployConfigAsSubGenerator;
             this.options.appRootPath = join(
@@ -97,6 +109,11 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
      */
     public async initializing(): Promise<void> {
         await super.initializing();
+        this.extensionPromptOpts = await getExtensionGenPromptOpts(
+            this.env.create.bind(this.env),
+            this.rootGeneratorName(),
+            this.vscode
+        );
         const capRoot = await findCapProjectRoot(this.options.appRootPath);
         this.isCap = !!capRoot;
         this.mtaPath = (await getMtaPath(this.options.appRootPath))?.mtaPath;
@@ -146,6 +163,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                 {
                     launchDeployConfigAsSubGenerator: this.launchDeployConfigAsSubGenerator,
                     launchStandaloneFromYui: this.launchStandaloneFromYui,
+                    extensionPromptOpts: this.extensionPromptOpts,
                     supportedTargets,
                     backendConfig: this.backendConfig,
                     cfDestination: this.cfDestination,
@@ -199,4 +217,5 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     }
 }
 
+export { promptNames };
 export type { DeployConfigOptions };

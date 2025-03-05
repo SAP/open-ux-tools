@@ -1,4 +1,5 @@
-import { getDeployTargetPrompts, getConfirmConfigUpdatePrompts, getSubGenPrompts } from '../prompts';
+import { getSubGenPrompts, getDeployTargetQuestion } from '../prompts';
+import type { CommonPromptOptions } from '@sap-ux/inquirer-common';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { ApiHubConfig, CfDeployConfigAnswers } from '@sap-ux/cf-deploy-config-sub-generator';
 import type { Answers } from 'inquirer';
@@ -16,6 +17,7 @@ import type { GeneratorOptions } from 'yeoman-generator';
  * @param promptOpts - options for prompting
  * @param promptOpts.launchDeployConfigAsSubGenerator - whether the generator is launched as a sub generator
  * @param promptOpts.launchStandaloneFromYui - whether the generator is launched standalone from YUI
+ * @param promptOpts.extensionPromptOpts - extension prompt options
  * @param promptOpts.supportedTargets - supported deployment targets
  * @param promptOpts.backendConfig - backend configuration
  * @param promptOpts.cfDestination - CF destination
@@ -31,6 +33,7 @@ export async function promptDeployConfigQuestions(
     {
         launchDeployConfigAsSubGenerator,
         launchStandaloneFromYui,
+        extensionPromptOpts,
         supportedTargets,
         backendConfig,
         cfDestination,
@@ -40,6 +43,7 @@ export async function promptDeployConfigQuestions(
     }: {
         launchDeployConfigAsSubGenerator: boolean;
         launchStandaloneFromYui: boolean;
+        extensionPromptOpts?: Record<string, CommonPromptOptions>;
         supportedTargets: Target[];
         backendConfig: FioriToolsProxyConfigBackend;
         cfDestination: string;
@@ -53,16 +57,11 @@ export async function promptDeployConfigQuestions(
 }> {
     let answers: AbapDeployConfigAnswersInternal | CfDeployConfigAnswers = {};
 
-    const configUpdatePrompts = getConfirmConfigUpdatePrompts(
-        launchStandaloneFromYui,
-        options.data?.confirmConfigUpdatePrompt
-    );
-
     if (launchDeployConfigAsSubGenerator) {
         const { questions, abapAnswers } = await getSubGenPrompts(fs, options, {
             launchDeployConfigAsSubGenerator,
             launchStandaloneFromYui,
-            configUpdatePrompts,
+            extensionPromptOpts,
             supportedTargets,
             backendConfig,
             cfDestination,
@@ -73,7 +72,7 @@ export async function promptDeployConfigQuestions(
         const subGenAnswers = await prompt(questions);
         Object.assign(answers, subGenAnswers, abapAnswers);
     } else {
-        answers = await prompt(getDeployTargetPrompts(options.projectRoot, [...supportedTargets], configUpdatePrompts));
+        answers = await prompt(getDeployTargetQuestion([...supportedTargets], options.projectRoot));
     }
     const target = supportedTargets.find((t) => t.name === (answers as Answers)?.targetName)?.name;
 
