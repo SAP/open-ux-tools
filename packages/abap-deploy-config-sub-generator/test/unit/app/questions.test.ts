@@ -61,7 +61,8 @@ describe('Test getAbapQuestions', () => {
                     shouldValidatePackageForStartingPrefix: false,
                     shouldValidatePackageType: false
                 },
-                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false }
+                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false },
+                targetSystem: { shouldRestrictDifferentSystemType: false }
             }
         });
 
@@ -98,7 +99,8 @@ describe('Test getAbapQuestions', () => {
                     }
                 },
                 overwrite: { hide: true },
-                transportInputChoice: { hideIfOnPremise: false }
+                transportInputChoice: { hideIfOnPremise: false },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
             expect.any(Object),
             true
@@ -131,7 +133,8 @@ describe('Test getAbapQuestions', () => {
                     shouldValidatePackageForStartingPrefix: false,
                     shouldValidatePackageType: false
                 },
-                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false }
+                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false },
+                targetSystem: { shouldRestrictDifferentSystemType: false }
             }
         });
 
@@ -168,7 +171,8 @@ describe('Test getAbapQuestions', () => {
                     }
                 },
                 overwrite: { hide: true },
-                transportInputChoice: { hideIfOnPremise: false }
+                transportInputChoice: { hideIfOnPremise: false },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
             expect.any(Object),
             false

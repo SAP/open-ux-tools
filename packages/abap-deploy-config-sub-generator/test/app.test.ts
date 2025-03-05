@@ -375,7 +375,8 @@ describe('Test abap deploy configuration generator', () => {
                 overwrite: { hide: true },
                 transportInputChoice: {
                     hideIfOnPremise: false
-                }
+                },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
             {},
             false // isYUI
