@@ -257,7 +257,7 @@ export class CDSWriter implements ChangeHandler {
             position.character = 0;
         }
 
-        const newElements = prefix + printTarget(change.target, change.isStructuredTypeTarget) + '\n';
+        const newElements = prefix + printTarget(change.target, change.complexTypePathSegments) + '\n';
         const edits = [TextEdit.insert(position, newElements)];
         this.edits.push(...edits);
     };

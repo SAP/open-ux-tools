@@ -93,14 +93,16 @@ function checkParenthesis(segments: string[]): number {
     return segments.findIndex((segment) => segment.indexOf('(') > 0 && segment.indexOf('(') < segment.indexOf(')'));
 }
 
-export const printTarget = (target: Target, isStructureTargetType?: boolean): string => {
+export const printTarget = (target: Target, complexTypePathSegments?: string[]): string => {
     const resolvedTarget = resolveTarget(target.name);
     const rootElementName = resolvedTarget.rootElementName;
     const childSegments = resolvedTarget.childSegments;
     const boundActionFunctionName = resolvedTarget.boundActionFunctionName;
     const options: FormatterOptions = { ...defaultPrintOptions, useSnippetSyntax: false };
 
-    let result = [...target.terms.map((term) => internalPrint(term, options))].join(',\n') + '\n';
+    let result =
+        [...target.terms.map((term) => internalPrint(term, options))].join(',\n') +
+        (complexTypePathSegments?.length ? ';' : '\n');
 
     if (!childSegments || childSegments.length === 0) {
         if (boundActionFunctionName) {
@@ -129,19 +131,9 @@ export const printTarget = (target: Target, isStructureTargetType?: boolean): st
             //     );
             // }
             const terms = target.terms.length > 1 ? `@(${result})` : `@${result}`;
-            if (isStructureTargetType) {
-                let closingBraces: string[] = [];
-                const complexTarget = childSegments[0].split('_').reduce((acc, item, index, array) => {
-                    if (index < array.length - 1) {
-                        acc += `${item} {\n`;
-                        closingBraces.unshift(`}\n`);
-                    } else {
-                        acc += `${item} ${terms}${closingBraces.join('')}`;
-                        closingBraces = [];
-                    }
-                    return acc;
-                }, '');
-                result = `annotate ${rootElementName} with {\n${complexTarget}};\n`;
+            if (complexTypePathSegments?.length) {
+                const complexTarget = complexTypePathSegments?.join('.');
+                result = `annotate ${rootElementName} : ${complexTarget} with ${terms}\n`;
             } else {
                 result = `annotate ${rootElementName} with {\n${childSegments[0]} ${terms}};\n`;
             }

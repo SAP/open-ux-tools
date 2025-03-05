@@ -67,7 +67,7 @@ describe('cds writer', () => {
                     {
                         type: 'insert-target',
                         pointer: '',
-                        isStructuredTypeTarget: true,
+                        complexTypePathSegments: ['a', 'x'],
                         target: {
                             type: 'target',
                             name: 'S.E/a_x',
@@ -85,11 +85,7 @@ describe('cds writer', () => {
                 ],
                 fixture +
                     `
-annotate S.E with {
-    a {
-        x @Common.Text : 'test'
-    }
-};
+annotate S.E : a.x with @Common.Text : 'test';
 
 `
             );
