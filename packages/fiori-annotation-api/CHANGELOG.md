@@ -1,5 +1,36 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.17
+
+### Patch Changes
+
+-   282dd9a: Fix: creation of complex type annotation target
+-   Updated dependencies [282dd9a]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.1
+
+## 0.4.16
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/cds-odata-annotation-converter@0.5.0
+
+## 0.4.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.13
+-   @sap-ux/cds-odata-annotation-converter@0.5.0
+
+## 0.4.14
+
+### Patch Changes
+
+-   cf05ceb: Update `vscode-languageserver-textdocument` dependency
+    -   @sap-ux/project-access@1.29.12
+    -   @sap-ux/cds-odata-annotation-converter@0.5.0
+
 ## 0.4.13
 
 ### Patch Changes

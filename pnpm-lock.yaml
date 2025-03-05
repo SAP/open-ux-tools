@@ -1389,6 +1389,9 @@ importers:
       ts-jest:
         specifier: 29.1.2
         version: 29.1.2(@babel/core@7.22.20)(esbuild@0.14.49)(jest@29.7.0)(typescript@5.6.3)
+      uuid:
+        specifier: 11.0.5
+        version: 11.0.5
       yargs-parser:
         specifier: 21.1.1
         version: 21.1.1
@@ -1804,8 +1807,8 @@ importers:
         specifier: 9.4.0
         version: 9.4.0(mem-fs@2.1.0)
       vscode-languageserver-textdocument:
-        specifier: 1.0.8
-        version: 1.0.8
+        specifier: 1.0.11
+        version: 1.0.11
     devDependencies:
       '@sap/cds-compiler':
         specifier: 4.8.0
@@ -2176,8 +2179,8 @@ importers:
         specifier: 3.2.0
         version: 3.2.0
       vscode-languageserver-textdocument:
-        specifier: 1.0.7
-        version: 1.0.7
+        specifier: 1.0.11
+        version: 1.0.11
     devDependencies:
       '@types/mem-fs':
         specifier: 1.1.2
@@ -22347,7 +22350,13 @@ packages:
 
   /uuid@10.0.0:
     resolution: {integrity: sha512-8XkAphELsDnEGrDxUOHB3RGvXz6TeuYSGEZBOjtTtPm2lwhGBjLgOzLHB63IUWfBpNucQjND6d3AOudO+H3RWQ==}
+    hasBin: true
     dev: false
+
+  /uuid@11.0.5:
+    resolution: {integrity: sha512-508e6IcKLrhxKdBbcA2b4KQZlLVp2+J5UwQ6F7Drckkc5N9ZJwFa4TgWtsww9UG8fGHbm6gbV19TdM5pQ4GaIA==}
+    hasBin: true
+    dev: true
 
   /uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
@@ -22355,6 +22364,7 @@ packages:
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}
+    hasBin: true
     dev: false
 
   /v8-compile-cache-lib@3.0.1:
@@ -22434,12 +22444,8 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
-  /vscode-languageserver-textdocument@1.0.7:
-    resolution: {integrity: sha512-bFJH7UQxlXT8kKeyiyu41r22jCZXG8kuuVVA33OEJn1diWOZK5n8zBSPZFHVBOu8kXZ6h0LIRhf5UnCo61J4Hg==}
-    dev: false
-
-  /vscode-languageserver-textdocument@1.0.8:
-    resolution: {integrity: sha512-1bonkGqQs5/fxGT5UchTgjGVnfysL0O8v1AYMBjqTbWQTFn721zaPGDYFkOKtfDgFiSgXM3KwaG3FMGfW4Ed9Q==}
+  /vscode-languageserver-textdocument@1.0.11:
+    resolution: {integrity: sha512-X+8T3GoiwTVlJbicx/sIAF+yuJAqz8VvwJyoMVhwEMoEKE/fkDmrqUgDMyBECcM2A2frVZIUj5HI/ErRXCfOeA==}
     dev: false
 
   /vscode-languageserver-types@3.17.2:

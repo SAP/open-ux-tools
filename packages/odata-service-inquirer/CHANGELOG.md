@@ -1,5 +1,51 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.19
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/fiori-generator-shared@0.9.7
+    -   @sap-ux/telemetry@0.5.68
+    -   @sap-ux/inquirer-common@0.6.27
+
+## 2.2.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.13
+-   @sap-ux/telemetry@0.5.67
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.6
+-   @sap-ux/inquirer-common@0.6.26
+
+## 2.2.17
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.5
+-   @sap-ux/telemetry@0.5.66
+-   @sap-ux/inquirer-common@0.6.25
+
+## 2.2.16
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+    -   @sap-ux/inquirer-common@0.6.24
+
+## 2.2.15
+
+### Patch Changes
+
+-   Updated dependencies [aaa432a]
+    -   @sap-ux/axios-extension@1.19.0
+
 ## 2.2.14
 
 ### Patch Changes

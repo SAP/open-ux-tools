@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/project-access",
-    "version": "1.29.11",
+    "version": "1.29.14",
     "description": "Library to access SAP Fiori tools projects",
     "repository": {
         "type": "git",
