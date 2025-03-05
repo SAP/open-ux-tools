@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.2.0
+
+### Minor Changes
+
+-   ebc6dfa: Refactor conditional logic for test generation in FF writer
+
 ## 2.1.10
 
 ### Patch Changes
