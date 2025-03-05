@@ -41,7 +41,7 @@ export default class extends Generator {
     private abort = false;
     private manifest: Partial<Manifest>;
     private manifestPath: string;
-    private extensionOpts?: Record<string, CommonPromptOptions>;
+    private extensionPromptOpts?: Record<string, CommonPromptOptions>;
     public options: FlpConfigOptions;
 
     setPromptsCallback: (fn: object) => void;
@@ -88,7 +88,7 @@ export default class extends Generator {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
 
-        this.extensionOpts = await getExtensionGenPromptOpts(
+        this.extensionPromptOpts = await getExtensionGenPromptOpts(
             this.env.create.bind(this.env),
             this.rootGeneratorName(),
             this.vscode
@@ -151,8 +151,8 @@ export default class extends Generator {
             createAnotherInbound: { hide: true }
         })) as Question[];
 
-        if (this.extensionOpts) {
-            questions = extendWithOptions(questions as YUIQuestion[], this.extensionOpts);
+        if (this.extensionPromptOpts && !this.launchFlpConfigAsSubGenerator) {
+            questions = extendWithOptions(questions as YUIQuestion[], this.extensionPromptOpts);
         }
 
         this.answers = {} as FLPConfigAnswers;

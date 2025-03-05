@@ -14,12 +14,14 @@ export enum promptNames {
  * @param supportedTargets - supported targets
  * @param projectRoot - path to the project
  * @param extensionPromptOpts - extension prompt options
+ * @param launchStandaloneFromYui - whether the generator is launched standalone from YUI
  * @returns - the deployment target question
  */
 export function getDeployTargetQuestion(
     supportedTargets: Target[],
     projectRoot: string,
-    extensionPromptOpts?: Record<string, CommonPromptOptions>
+    extensionPromptOpts?: Record<string, CommonPromptOptions>,
+    launchStandaloneFromYui?: boolean
 ): Question[] {
     const deployTargetPrompts = [
         {
@@ -35,7 +37,7 @@ export function getDeployTargetQuestion(
         } as ListQuestion
     ];
 
-    return extensionPromptOpts
+    return extensionPromptOpts && launchStandaloneFromYui
         ? extendWithOptions(deployTargetPrompts as YUIQuestion[], extensionPromptOpts)
         : deployTargetPrompts;
 }

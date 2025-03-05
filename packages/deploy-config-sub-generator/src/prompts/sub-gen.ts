@@ -93,10 +93,11 @@ export async function getSubGenPrompts(
 
     // Combine all prompts
     const questions = combineAllPrompts(options.projectRoot, {
-        extensionPromptOpts,
         supportedTargets,
         abapPrompts,
-        cfPrompts
+        cfPrompts,
+        extensionPromptOpts,
+        launchStandaloneFromYui
     });
 
     return { questions, abapAnswers: abapAnswers };
@@ -111,6 +112,7 @@ export async function getSubGenPrompts(
  * @param opts.abapPrompts - abap specific prompts
  * @param opts.cfPrompts - cf specific prompts
  * @param opts.extensionPromptOpts - extension prompt options
+ * @param opts.launchStandaloneFromYui - whether the generator is launched standalone from YUI
  * @returns - all the different prompts combined
  */
 function combineAllPrompts(
@@ -119,15 +121,22 @@ function combineAllPrompts(
         supportedTargets,
         abapPrompts,
         cfPrompts,
-        extensionPromptOpts
+        extensionPromptOpts,
+        launchStandaloneFromYui
     }: {
         supportedTargets: Target[];
         abapPrompts: AbapDeployConfigQuestion[];
         cfPrompts: CfDeployConfigQuestions[];
         extensionPromptOpts?: Record<string, CommonPromptOptions & PromptDefaultValue<string | boolean>>;
+        launchStandaloneFromYui: boolean;
     }
 ): Question[] {
-    const questions = getDeployTargetQuestion(supportedTargets, projectRoot, extensionPromptOpts);
+    const questions = getDeployTargetQuestion(
+        supportedTargets,
+        projectRoot,
+        extensionPromptOpts,
+        launchStandaloneFromYui
+    );
     questions.push(
         ...withCondition(abapPrompts as Question[], (answers: Answers) => answers.targetName === TargetName.ABAP)
     );
