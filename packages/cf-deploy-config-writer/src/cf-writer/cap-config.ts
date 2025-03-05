@@ -26,10 +26,11 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     }
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
-    const cdsOptionalParams: string[] = [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService];
-    createCAPMTA(config.mtaPath, cdsOptionalParams);
+    // Run `cds` add against the project, it will append whatever it needs
+    createCAPMTA(config.mtaPath, [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService]);
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
+    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
     return fs;
 }
 

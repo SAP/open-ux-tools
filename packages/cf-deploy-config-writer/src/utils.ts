@@ -283,10 +283,10 @@ export function setMtaDefaults(config: CFBaseConfig): void {
 /**
  * Update the root package.json with scripts to deploy the MTA.
  *
- * @param {object} Options
+ * @param {object} Options Input params
  * @param {string} Options.mtaId - MTA ID to be written to package.json
  * @param {string} Options.rootPath - MTA project path
- * @param fs
+ * @param fs - reference to a mem-fs editor
  */
 export async function updateRootPackage(
     { mtaId, rootPath }: { mtaId: string; rootPath: string },
