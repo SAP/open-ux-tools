@@ -1,5 +1,25 @@
 # @sap-ux/project-access
 
+## 1.29.13
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+
+## 1.29.12
+
+### Patch Changes
+
+-   Updated dependencies [cf05ceb]
+    -   @sap-ux/i18n@0.2.3
+
+## 1.29.11
+
+### Patch Changes
+
+-   0f35b4b: ignore error thrown when no .library file found
+
 ## 1.29.10
 
 ### Patch Changes
