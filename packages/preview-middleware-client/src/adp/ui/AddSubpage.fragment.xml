@@ -56,7 +56,7 @@
     <beginButton>
         <Button
             id="createDialogBtn"
-            text="Create"
+            text="{i18n>CREATE_BUTTON_LABEL}"
             press="onCreateBtnPress"
             enabled="true"
             type="Emphasized"
@@ -65,7 +65,7 @@
     <endButton>
         <Button
             id="closeDialogBtn"
-            text="Cancel"
+            text="{i18n>CANCEL_BUTTON_LABEL}"
             press="handleDialogClose"
             type="Reject"
         />

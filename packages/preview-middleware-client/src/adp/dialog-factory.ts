@@ -12,7 +12,7 @@ import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
 import { ExtensionPointData } from './extension-point';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
-import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpageController';
+import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',

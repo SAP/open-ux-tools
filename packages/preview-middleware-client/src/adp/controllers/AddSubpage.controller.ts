@@ -42,10 +42,12 @@ export type AddSubpageModel = JSONModel & {
 export interface AddSubpageOptions {
     appType: ApplicationType;
     appReference: string;
-    pageType: string;
     title: string;
-    currentPageEntitySet: string;
-    navigationOptions: { navProperty: string; entitySet: string }[]; // only navProperty with 1:n relationship and the entitySet
+    pageDescriptor: {
+        pageType: string;
+        entitySet: string;
+        navProperties: { navProperty: string; entitySet: string }[]; 
+    } 
 }
 
 /**
@@ -59,10 +61,10 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         this.model = new JSONModel({
             appType: options.appType,
             appReference: options.appReference,
-            pageType: options.pageType,
+            pageType: options.pageDescriptor.pageType,
             title: options.title,
-            navigationData: options.navigationOptions,
-            currentEntitySet: options.currentPageEntitySet
+            navigationData: options.pageDescriptor.navProperties,
+            currentEntitySet: options.pageDescriptor.entitySet
         });
         this.commandExecutor = new CommandExecutor(this.rta);
     }

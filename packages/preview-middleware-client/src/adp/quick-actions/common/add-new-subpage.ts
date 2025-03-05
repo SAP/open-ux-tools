@@ -1,39 +1,30 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById } from '../../../utils/core';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import Component from 'sap/ui/core/Component';
-import { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
+import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import ODataModel from 'sap/ui/model/odata/v2/ODataModel';
-import { QuickActionDefinitionBase } from '../quick-action-base';
-import {
-    NestedQuickActionChild,
-    SIMPLE_QUICK_ACTION_KIND,
-    SimpleQuickAction
-} from '@sap-ux-private/control-property-editor-common';
-import { getApplicationPages, getApplicationType } from '../../../utils/application';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { DialogFactory, DialogNames } from '../../dialog-factory';
 import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
 
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { pageHasControlId } from '../../../cpe/quick-actions/utils';
+import { getControlById } from '../../../utils/core';
+import { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
+import { ApplicationType, getApplicationType } from '../../../utils/application';
+import { DialogFactory, DialogNames } from '../../dialog-factory';
+import { areManifestChangesSupported } from '../fe-v2/utils';
+import { getV2ApplicationPages } from '../../../utils/fe-v2';
+import { getV4ApplicationPages } from '../../../utils/fe-v4';
+import { EnablementValidatorResult } from '../enablement-validator';
+import { getTextBundle } from '../../../i18n';
+import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+
 export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-object-page';
-// const CONTROL_TYPES = [
-//     { control: 'sap.f.DynamicPage', pageType: 'sap.suite.ui.generic.template.ListReport' },
-//     { control: 'sap.uxap.ObjectPageLayout', pageType: 'sap.suite.ui.generic.template.ObjectPage' },
-//     { control: 'aaaa' , pageType: 'sap.suite.ui.generic.template.AnalyticalListPage'}
-// ];
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
 
 /**
  * Quick Action for adding a custom page action.
  */
-export class AddNewSubpage
-    extends QuickActionDefinitionBase<typeof SIMPLE_QUICK_ACTION_KIND>
-    implements SimpleQuickActionDefinition
-{
+export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements SimpleQuickActionDefinition {
     private currentPageDescriptor: {
         pageType: string;
         entitySet: string;
@@ -44,20 +35,43 @@ export class AddNewSubpage
         navProperties: []
     };
 
-    public isApplicable = true;
-    public get id(): string {
-        return `${this.context.key}-${this.type}`;
-    }
-    public children: NestedQuickActionChild[] = [];
+    private appType: ApplicationType;
+
     constructor(context: QuickActionContext) {
-        super(ADD_NEW_OBJECT_PAGE_ACTION, SIMPLE_QUICK_ACTION_KIND, 'QUICK_ACTION_ADD_NEW_SUB_PAGE', context, [
-            DIALOG_ENABLEMENT_VALIDATOR
+        super(ADD_NEW_OBJECT_PAGE_ACTION, [], 'QUICK_ACTION_ADD_NEW_SUB_PAGE', context, [
+            {
+                run: async (): Promise<EnablementValidatorResult> => {
+                    const i18n = await getTextBundle();
+                    if (this.currentPageDescriptor.navProperties.length === 0) {
+                        return {
+                            type: 'error',
+                            message: i18n.getText('NO_SUB_PAGES_TO_ADD')
+                        };
+                    }
+                    return undefined;
+                }
+            }
         ]);
     }
 
     private currentPageControl: ObjectPageLayout;
 
+    private getApplicationPages() {
+        if (this.appType === 'fe-v2') {
+            return getV2ApplicationPages(this.context.manifest);
+        } else if (this.appType === 'fe-v4') {
+            return getV4ApplicationPages(this.context.manifest);
+        }
+        return [];
+    }
+
     async initialize(): Promise<void> {
+        if (!(await areManifestChangesSupported(this.context.manifest))) {
+            return Promise.resolve();
+        }
+
+        this.appType = getApplicationType(this.context.manifest);
+
         const allControls = CONTROL_TYPES.flatMap((item) => this.context.controlIndex[item] ?? []);
         const control = allControls.find((c) => pageHasControlId(this.context.view, c.controlId));
 
@@ -80,13 +94,13 @@ export class AddNewSubpage
         if (!entitySetName) {
             return Promise.resolve();
         }
-
         this.currentPageDescriptor.entitySet = entitySetName;
 
         const entitySet = metaModel.getODataEntitySet(entitySetName) as EntitySet;
         const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
+        this.control = modifiedControl;
 
-        const existingPages = getApplicationPages(this.context.manifest);
+        const existingPages = this.getApplicationPages();
 
         if (this.currentPageDescriptor.pageType === 'sap.suite.ui.generic.template.ObjectPage') {
             // Navigation from Object Page
@@ -126,27 +140,13 @@ export class AddNewSubpage
 
     async execute(): Promise<FlexCommand[]> {
         const overlay = OverlayRegistry.getOverlay(this.currentPageControl) || [];
-        const appType = getApplicationType(this.context.manifest);
-        const appReference = this.context.flexSettings.projectId;
+        const appReference = this.context.flexSettings.projectId ?? '';
         await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_SUBPAGE, undefined, {
-            title: 'ADD_SUB_PAGE_DIALOG_TITLE',
-            currentPageEntitySet: this.currentPageDescriptor.entitySet,
-            navigationOptions: this.currentPageDescriptor.navProperties,
-            appType,
+            appType: this.appType,
             appReference,
-            pageType: this.currentPageDescriptor.pageType
+            title: 'ADD_SUB_PAGE_DIALOG_TITLE',
+            pageDescriptor: this.currentPageDescriptor
         });
         return [];
-    }
-
-    getActionObject(): SimpleQuickAction {
-        const enabled = this.currentPageDescriptor.navProperties.length > 0;
-        return {
-            kind: SIMPLE_QUICK_ACTION_KIND,
-            id: this.id,
-            enabled,
-            title: this.context.resourceBundle.getText(this.textKey),
-            tooltip: enabled ? undefined : this.context.resourceBundle.getText('NO_SUB_PAGES_TO_ADD')
-        };
     }
 }
