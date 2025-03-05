@@ -64,7 +64,7 @@
         "overrides": {
             "router>path-to-regexp": "0.1.12",
             "@storybook/manager-api>store2": "2.14.4",
-            "@octokit/rest@18": ">=21.1.1"
+            "@octokit/rest@18": "^20.1.1"
         }
     }
 }
