@@ -1,7 +1,10 @@
 import { generateOPATests } from '../src/generateOPATests';
 import { generateFreestyleOPAFiles } from '@sap-ux/ui5-test-writer';
 import type { FreestyleApp, BasicAppSettings } from '../src/types';
+import { TemplateType } from '../src/types';
 import type { Package } from '@sap-ux/ui5-application-writer';
+import type { Logger } from '@sap-ux/logger';
+import { t } from '../src/i18n';
 
 jest.mock('@sap-ux/ui5-test-writer', () => ({
     generateFreestyleOPAFiles: jest.fn()
@@ -18,7 +21,8 @@ describe('generateOPATests', () => {
         template: {
             settings: {
                 viewName: 'ViewName'
-            }
+            },
+            type: TemplateType.Basic
         },
         ui5: {
             ui5Theme: 'sap_fiori_3',
@@ -83,5 +87,24 @@ describe('generateOPATests', () => {
         );
         expect(packageJson.scripts?.['unit-test']).toBe("fiori run --open 'test/unit/unitTests.qunit.html'");
         expect(packageJson.scripts?.['int-test']).toBe("fiori run --open 'test/integration/opaTests.qunit.html'");
+    });
+
+    it('should not add test scripts to package.json when addMock is true and template is worklist', async () => {
+        const addMock = false;
+        const workListApp = {
+            ...ffApp,
+            template: {
+                ...ffApp.template,
+                type: TemplateType.Worklist
+            }
+        };
+        const mockLog = {
+            info: jest.fn()
+        } as unknown as Logger;
+        await generateOPATests(basePath, workListApp, addMock, packageJson, undefined, mockLog);
+        expect(generateFreestyleOPAFiles).not.toHaveBeenCalled();
+        expect(mockLog.info).toHaveBeenCalledWith(
+            t('info.unsupportedTestTemplateMessage', { templateType: 'worklist' })
+        );
     });
 });

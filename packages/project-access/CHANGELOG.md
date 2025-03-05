@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.14
+
+### Patch Changes
+
+-   3cc8f8a: fix: check files in srv folder of CAP project when srv folder contains subfolders
+
 ## 1.29.13
 
 ### Patch Changes

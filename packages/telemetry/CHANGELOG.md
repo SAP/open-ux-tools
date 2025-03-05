@@ -1,5 +1,12 @@
 # @sap-ux/telemetry
 
+## 0.5.68
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+
 ## 0.5.67
 
 ### Patch Changes
