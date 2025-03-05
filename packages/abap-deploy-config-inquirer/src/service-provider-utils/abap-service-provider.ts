@@ -183,7 +183,7 @@ export class AbapServiceProviderManager {
      * Set if the default provider is AbapCloud.
      */
     private static async setIsDefaultAbapCloud(): Promise<void> {
-        if (this.isDefaultProviderAbapCloud === undefined) {
+        if (this.isDefaultProviderAbapCloud === undefined && this.abapServiceProvider) {
             this.isDefaultProviderAbapCloud = await this.abapServiceProvider?.isAbapCloud();
         }
     }

@@ -25,11 +25,15 @@ import * as utils from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
 import * as serviceProviderUtils from '../../src/service-provider-utils';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
 
 jest.mock('../../src/service-provider-utils', () => ({
     getTransportListFromService: jest.fn(),
-    getSystemInfo: jest.fn()
+    getSystemInfo: jest.fn(),
+    isAbapCloud: jest.fn()
 }));
+
+jest.mock('../../src/service-provider-utils/abap-service-provider');
 
 describe('Test validators', () => {
     const previousAnswers = {
@@ -53,6 +57,26 @@ describe('Test validators', () => {
             expect(PromptState.abapDeployConfig.destination).toBe(undefined);
             expect(PromptState.abapDeployConfig.url).toBe(undefined);
             expect(result).toBe(false);
+        });
+
+        it('should return error when selected destination is cloud and the default one is onPrem', async () => {
+            jest.spyOn(serviceProviderUtils, 'isAbapCloud').mockResolvedValueOnce(false);
+            jest.spyOn(AbapServiceProviderManager, 'getIsDefaultProviderAbapCloud').mockReturnValueOnce(true);
+            const result = await validateDestinationQuestion('Dest2', mockDestinations, {
+                additionalValidation: { shouldRestrictDifferentSystemType: true }
+            });
+
+            expect(result).toBe('Cloud system');
+        });
+
+        it('should return error when selected destination is onPrem and the default one is cloud', async () => {
+            jest.spyOn(serviceProviderUtils, 'isAbapCloud').mockResolvedValueOnce(true);
+            jest.spyOn(AbapServiceProviderManager, 'getIsDefaultProviderAbapCloud').mockReturnValueOnce(false);
+            const result = await validateDestinationQuestion('Dest2', mockDestinations, {
+                additionalValidation: { shouldRestrictDifferentSystemType: true }
+            });
+
+            expect(result).toBe('OnPrem system');
         });
     });
 
@@ -95,6 +119,26 @@ describe('Test validators', () => {
         it('should return false for invalid  target system', async () => {
             const result = await validateTargetSystem('/x/inval.z');
             expect(result).toBe(false);
+        });
+
+        it('should return error when selected destination is cloud and the default one is onPrem', async () => {
+            jest.spyOn(serviceProviderUtils, 'isAbapCloud').mockResolvedValueOnce(false);
+            jest.spyOn(AbapServiceProviderManager, 'getIsDefaultProviderAbapCloud').mockReturnValueOnce(true);
+            const result = await validateTargetSystem('https://mock.url.target1.com', abapSystemChoices, {
+                additionalValidation: { shouldRestrictDifferentSystemType: true }
+            });
+
+            expect(result).toBe('Cloud system');
+        });
+
+        it('should return error when selected destination is onPrem and the default one is cloud', async () => {
+            jest.spyOn(serviceProviderUtils, 'isAbapCloud').mockResolvedValueOnce(true);
+            jest.spyOn(AbapServiceProviderManager, 'getIsDefaultProviderAbapCloud').mockReturnValueOnce(false);
+            const result = await validateTargetSystem('https://mock.url.target1.com', abapSystemChoices, {
+                additionalValidation: { shouldRestrictDifferentSystemType: true }
+            });
+
+            expect(result).toBe('OnPrem system');
         });
     });
 

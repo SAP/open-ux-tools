@@ -9,7 +9,7 @@ import {
     isAppNameValid
 } from '../validator-utils';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { getTransportListFromService, getSystemInfo } from '../service-provider-utils';
+import { getTransportListFromService, getSystemInfo, isAbapCloud } from '../service-provider-utils';
 import { t } from '../i18n';
 import {
     findBackendSystemByUrl,
@@ -35,7 +35,6 @@ import {
     type PackagePromptOptions
 } from '../types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { isAbapCloud } from '../service-provider-utils/abap-cloud';
 import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
 
 const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
@@ -53,12 +52,10 @@ async function validateSystemType(
 ): Promise<boolean | string> {
     if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
         const isSelectedAbapCloud = await isAbapCloud(backendTarget);
-        if (AbapServiceProviderManager.getIsDefaultProviderAbapCloud() === true && isSelectedAbapCloud !== true) {
+        const isDefaultProviderAbapCloud = AbapServiceProviderManager.getIsDefaultProviderAbapCloud();
+        if (isDefaultProviderAbapCloud === true && isSelectedAbapCloud !== true) {
             return 'Cloud system';
-        } else if (
-            AbapServiceProviderManager.getIsDefaultProviderAbapCloud() === false &&
-            isSelectedAbapCloud !== false
-        ) {
+        } else if (isDefaultProviderAbapCloud === false && isSelectedAbapCloud !== false) {
             return 'OnPrem system';
         }
     }
