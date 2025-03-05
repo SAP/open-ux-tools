@@ -1,5 +1,11 @@
 # @sap-ux/ui5-test-writer
 
+## 0.6.0
+
+### Minor Changes
+
+-   db575f3: Update unit test template for Freestyle version 1.120.0
+
 ## 0.5.2
 
 ### Patch Changes

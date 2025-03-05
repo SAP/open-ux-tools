@@ -1,5 +1,28 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.26
+
+### Patch Changes
+
+-   2202356: cleanup package answer utility method
+
+## 1.2.25
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.5
+-   @sap-ux/system-access@0.5.32
+-   @sap-ux/inquirer-common@0.6.25
+
+## 1.2.24
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+    -   @sap-ux/inquirer-common@0.6.24
+
 ## 1.2.23
 
 ### Patch Changes

@@ -167,10 +167,12 @@ export async function queryPackages(
  * @returns package name
  */
 export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersInternal, statePackage?: string): string {
-    // Older versions of YUI do not have a packageInputChoice question
-    return statePackage || previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
-        ? previousAnswers?.packageAutocomplete ?? ''
-        : previousAnswers?.packageManual ?? '';
+    return (
+        statePackage ??
+        (previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
+            ? previousAnswers?.packageAutocomplete ?? ''
+            : previousAnswers?.packageManual ?? '')
+    );
 }
 
 /**
