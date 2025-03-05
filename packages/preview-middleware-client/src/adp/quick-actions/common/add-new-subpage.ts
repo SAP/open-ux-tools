@@ -7,8 +7,8 @@ import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateCompone
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
-import { getControlById } from '../../../utils/core';
-import { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
+import { getControlById, isA } from '../../../utils/core';
+import ODataMetaModel, { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
 import { ApplicationType, getApplicationType } from '../../../utils/application';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { areManifestChangesSupported } from '../fe-v2/utils';
@@ -17,6 +17,7 @@ import { getV4ApplicationPages } from '../../../utils/fe-v4';
 import { EnablementValidatorResult } from '../enablement-validator';
 import { getTextBundle } from '../../../i18n';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+import { FeatureService } from '../../../cpe/feature-service';
 
 export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-subpage';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -63,42 +64,8 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         return [];
     }
 
-    async initialize(): Promise<void> {
-        if (!(await areManifestChangesSupported(this.context.manifest))) {
-            return Promise.resolve();
-        }
-
-        this.appType = getApplicationType(this.context.manifest);
-
-        const allControls = CONTROL_TYPES.flatMap((item) => this.context.controlIndex[item] ?? []);
-        const control = allControls.find((c) => pageHasControlId(this.context.view, c.controlId));
-
-        const pageType = this.context.view.getViewName().split('.view.')[0];
-        this.currentPageDescriptor.pageType = pageType;
-
-        const metaModel = (this.context.rta.getRootControlInstance().getModel() as ODataModel)?.getMetaModel();
-        if (!metaModel || !control) {
-            return Promise.resolve();
-        }
-
-        const modifiedControl = getControlById<ObjectPageLayout>(control.controlId);
-        if (!modifiedControl) {
-            return Promise.resolve();
-        }
-        this.control = modifiedControl;
-
-        const component = Component.getOwnerComponentFor(modifiedControl) as TemplateComponent;
-        const entitySetName = component.getEntitySet();
-        if (!entitySetName) {
-            return Promise.resolve();
-        }
-        this.currentPageDescriptor.entitySet = entitySetName;
-
-        const entitySet = metaModel.getODataEntitySet(entitySetName) as EntitySet;
-        const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
-
+    private prepareNavigationData(entityType: EntityType, metaModel: ODataMetaModel) {
         const existingPages = this.getApplicationPages();
-
         if (this.currentPageDescriptor.pageType === 'sap.suite.ui.generic.template.ObjectPage') {
             // Navigation from Object Page
             for (const navProp of entityType?.navigationProperty || []) {
@@ -131,6 +98,53 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
                 });
             }
         }
+    }
+
+    async initialize(): Promise<void> {
+        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+            return Promise.resolve();
+        }
+
+        if (!(await areManifestChangesSupported(this.context.manifest))) {
+            return Promise.resolve();
+        }
+
+        this.appType = getApplicationType(this.context.manifest);
+
+        const allControls = CONTROL_TYPES.flatMap((item) => this.context.controlIndex[item] ?? []);
+        const control = allControls.find((c) => pageHasControlId(this.context.view, c.controlId));
+
+        const pageType = this.context.view.getViewName().split('.view.')[0];
+        this.currentPageDescriptor.pageType = pageType;
+
+        const metaModel = (this.context.rta.getRootControlInstance().getModel() as ODataModel)?.getMetaModel();
+        if (!metaModel || !control) {
+            return Promise.resolve();
+        }
+
+        const modifiedControl = getControlById<ObjectPageLayout>(control.controlId);
+        if (!modifiedControl) {
+            return Promise.resolve();
+        }
+
+        const component = Component.getOwnerComponentFor(modifiedControl);
+        if (!isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
+            return Promise.reject('Unexpected type of page owner component');
+        }
+
+        const entitySetName = component.getEntitySet();
+        if (!entitySetName) {
+            return Promise.resolve();
+        }
+
+        this.currentPageDescriptor.entitySet = entitySetName;
+
+        const entitySet = metaModel.getODataEntitySet(entitySetName) as EntitySet;
+        const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
+
+        this.prepareNavigationData(entityType, metaModel);
+        
+        this.control = modifiedControl;
 
         return Promise.resolve();
     }

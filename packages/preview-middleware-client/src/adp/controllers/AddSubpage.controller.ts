@@ -30,7 +30,7 @@ type SubpageType = 'ObjectPage' | 'CustomPage';
 
 export type AddSubpageModel = JSONModel & {
     getProperty(sPath: '/appType'): ApplicationType;
-    getProperty(sPath: '/pageType'): ApplicationType;
+    getProperty(sPath: '/pageType'): string;
     getProperty(sPath: '/appReference'): string;
     getProperty(sPath: '/currentEntitySet'): string;
     getProperty(sPath: '/title'): string;
