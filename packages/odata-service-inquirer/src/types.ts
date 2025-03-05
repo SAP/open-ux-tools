@@ -275,9 +275,9 @@ export type SystemSelectionPromptOptions = {
      */
     useAutoComplete?: boolean;
     /**
-     * Include the Cloud Foundry Abap environments service in the system selection prompt, note this option is only supported on Business Application Studio.
-     * Even if this option is set to true, the choice will only be included if the prompts are executed in the Business Application Studio.
-     * Note that there is no implementation for this option in this module and handling of the prompt optin and subsequent prompting must be implemented by the consumer.
+     * Include the Cloud Foundry Abap environments service in the system selection prompt, only on Business Application Studio.
+     * On non-BAS environments e.g. VSCode, the option to connect with Cloud Foundry Abap environments is included by default
+     * via the 'New System' -> 'ABAP Environment on SAP Business Technology Platform' -> 'Discover a Cloud Foundry Service' option.
      */
     includeCloudFoundryAbapEnvChoice?: boolean;
     /**
