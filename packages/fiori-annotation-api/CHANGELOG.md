@@ -1,5 +1,43 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.14
+
+### Patch Changes
+
+-   cf05ceb: Update `vscode-languageserver-textdocument` dependency
+    -   @sap-ux/project-access@1.29.12
+    -   @sap-ux/cds-odata-annotation-converter@0.5.0
+
+## 0.4.13
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/cds-odata-annotation-converter@0.5.0
+
+## 0.4.12
+
+### Patch Changes
+
+-   d443dde: Fixed CDS compile error when new .cds files are created in memfs.
+
+## 0.4.11
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.10
+-   @sap-ux/cds-odata-annotation-converter@0.5.0
+
+## 0.4.10
+
+### Patch Changes
+
+-   Updated dependencies [4373718]
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.0
+    -   @sap-ux/project-access@1.29.9
+
 ## 0.4.9
 
 ### Patch Changes

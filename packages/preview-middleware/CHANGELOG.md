@@ -1,5 +1,74 @@
 # @sap-ux/preview-middleware
 
+## 0.18.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.8
+-   @sap-ux/project-access@1.29.12
+
+## 0.18.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.7
+
+## 0.18.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.6
+
+## 0.18.5
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/adp-tooling@0.13.5
+
+## 0.18.4
+
+### Patch Changes
+
+-   78dd2c2: fix: TypeScript template causes the iframe to break when controller extension is loaded
+-   Updated dependencies [78dd2c2]
+    -   @sap-ux/adp-tooling@0.13.4
+
+## 0.18.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.3
+
+## 0.18.2
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/adp-tooling@0.13.2
+    -   @sap-ux/project-access@1.29.10
+
+## 0.18.1
+
+### Patch Changes
+
+-   1d4ba46: feat: handling of legacy free ui5 version
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/adp-tooling@0.13.1
+
+## 0.18.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
+### Patch Changes
+
+-   Updated dependencies [127bd12]
+    -   @sap-ux/adp-tooling@0.13.0
+
 ## 0.17.48
 
 ### Patch Changes

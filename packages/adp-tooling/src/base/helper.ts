@@ -1,8 +1,8 @@
 import type { Editor } from 'mem-fs-editor';
-import { readdirSync, readFileSync } from 'fs';
-import { join, isAbsolute, relative } from 'path';
-
-import { UI5Config } from '@sap-ux/ui5-config';
+import { existsSync, readdirSync, readFileSync } from 'fs';
+import { join, isAbsolute, relative, basename, dirname } from 'path';
+import { getWebappPath, FileName, readUi5Yaml } from '@sap-ux/project-access';
+import type { UI5Config } from '@sap-ux/ui5-config';
 
 import type { DescriptorVariant, AdpPreviewConfig } from '../types';
 
@@ -11,13 +11,14 @@ import type { DescriptorVariant, AdpPreviewConfig } from '../types';
  *
  * @param {string} basePath - The path to the adaptation project.
  * @param {Editor} fs - The mem-fs editor instance.
- * @returns {DescriptorVariant} The app descriptor variant.
+ * @returns {Promise<DescriptorVariant>} The app descriptor variant.
  */
-export function getVariant(basePath: string, fs?: Editor): DescriptorVariant {
+export async function getVariant(basePath: string, fs?: Editor): Promise<DescriptorVariant> {
+    const webappPath = await getWebappPath(basePath);
     if (fs) {
-        return fs.readJSON(join(basePath, 'webapp', 'manifest.appdescr_variant')) as unknown as DescriptorVariant;
+        return fs.readJSON(join(webappPath, FileName.ManifestAppDescrVar)) as unknown as DescriptorVariant;
     }
-    return JSON.parse(readFileSync(join(basePath, 'webapp', 'manifest.appdescr_variant'), 'utf-8'));
+    return JSON.parse(readFileSync(join(webappPath, FileName.ManifestAppDescrVar), 'utf-8'));
 }
 
 /**
@@ -27,8 +28,8 @@ export function getVariant(basePath: string, fs?: Editor): DescriptorVariant {
  * @param {DescriptorVariant} variant - The descriptor variant object.
  * @param {Editor} fs - The mem-fs editor instance.
  */
-export function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor) {
-    fs.writeJSON(join(basePath, 'webapp', 'manifest.appdescr_variant'), variant);
+export async function updateVariant(basePath: string, variant: DescriptorVariant, fs: Editor): Promise<void> {
+    fs.writeJSON(join(await getWebappPath(basePath), FileName.ManifestAppDescrVar), variant);
 }
 
 /**
@@ -38,12 +39,12 @@ export function updateVariant(basePath: string, variant: DescriptorVariant, fs: 
  * or `appdescr_app_addNewInbound` present in the content of the descriptor variant.
  *
  * @param {string} basePath - The base path of the project where the manifest.appdescr_variant is located.
- * @returns {boolean} Returns `true` if FLP configuration changes exist, otherwise `false`.
+ * @returns {Promise<boolean>} Returns `true` if FLP configuration changes exist, otherwise `false`.
  * @throws {Error} Throws an error if the variant could not be retrieved.
  */
-export function flpConfigurationExists(basePath: string): boolean {
+export async function flpConfigurationExists(basePath: string): Promise<boolean> {
     try {
-        const variant = getVariant(basePath);
+        const variant = await getVariant(basePath);
         return variant.content?.some(
             ({ changeType }) =>
                 changeType === 'appdescr_app_changeInbound' || changeType === 'appdescr_app_addNewInbound'
@@ -51,6 +52,18 @@ export function flpConfigurationExists(basePath: string): boolean {
     } catch (error) {
         throw new Error(`Failed to check if FLP configuration exists: ${(error as Error).message}`);
     }
+}
+
+/**
+ * Checks whether TypeScript is supported in the project by verifying the existence of `tsconfig.json`.
+ *
+ * @param basePath - The base path of the project.
+ * @param fs - An optional `mem-fs-editor` instance to check for the file's existence.
+ * @returns `true` if `tsconfig.json` exists, otherwise `false`.
+ */
+export function isTypescriptSupported(basePath: string, fs?: Editor): boolean {
+    const path = join(basePath, 'tsconfig.json');
+    return fs ? fs.exists(path) : existsSync(path);
 }
 
 /**
@@ -62,13 +75,19 @@ export function flpConfigurationExists(basePath: string): boolean {
  */
 export async function getAdpConfig(basePath: string, yamlPath: string): Promise<AdpPreviewConfig> {
     const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
-    const ui5Conf = await UI5Config.newInstance(readFileSync(ui5ConfigPath, 'utf-8'));
-    const customMiddlerware =
-        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
-        ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
-    const adp = customMiddlerware?.configuration?.adp;
+    let ui5Conf: UI5Config;
+    let adp: AdpPreviewConfig | undefined;
+    try {
+        ui5Conf = await readUi5Yaml(dirname(ui5ConfigPath), basename(ui5ConfigPath));
+        const customMiddleware =
+            ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('fiori-tools-preview') ??
+            ui5Conf.findCustomMiddleware<{ adp: AdpPreviewConfig }>('preview-middleware');
+        adp = customMiddleware?.configuration?.adp;
+    } catch (error) {
+        // do nothing here
+    }
     if (!adp) {
-        throw new Error('No system configuration found in ui5.yaml');
+        throw new Error(`No system configuration found in ${basename(ui5ConfigPath)}`);
     }
     return adp;
 }
@@ -77,10 +96,10 @@ export async function getAdpConfig(basePath: string, yamlPath: string): Promise<
  * Get all files in the webapp folder.
  *
  * @param {string} basePath - The path to the adaptation project.
- * @returns {Array<{ relativePath: string; content: string }>} The files in the webapp folder.
+ * @returns {Promise<{ relativePath: string; content: string }[]>} The files in the webapp folder.
  */
-export function getWebappFiles(basePath: string): { relativePath: string; content: string }[] {
-    const dir = join(basePath, 'webapp');
+export async function getWebappFiles(basePath: string): Promise<{ relativePath: string; content: string }[]> {
+    const dir = await getWebappPath(basePath);
     const files: { relativePath: string; content: string }[] = [];
 
     const getFilesRecursivelySync = (directory: string): void => {

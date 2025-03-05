@@ -32,8 +32,8 @@ async function changeInbound(basePath: string, simulate: boolean): Promise<void>
         }
 
         await validateAdpProject(basePath);
-        validateCloudAdpProject(basePath);
-        const variant = getVariant(basePath);
+        await validateCloudAdpProject(basePath);
+        const variant = await getVariant(basePath);
         const change = variant.content.find(
             (change: DescriptorVariantContent) => change.changeType === 'appdescr_app_removeAllInboundsExceptOne'
         );
