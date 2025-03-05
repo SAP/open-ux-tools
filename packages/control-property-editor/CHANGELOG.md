@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.6.0
+
+### Minor Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
 ## 0.5.37
 
 ### Patch Changes
