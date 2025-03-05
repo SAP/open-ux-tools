@@ -64,7 +64,7 @@ describe('FlpSandbox', () => {
     describe('constructor', () => {
         test('default (no) config', () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
-            expect(flp.flpConfig.newHomePage).toBeFalsy();
+            expect(flp.flpConfig.enhancedHomePage).toBeFalsy();
             expect(flp.flpConfig.path).toBe('/test/flp.html');
             expect(flp.flpConfig.apps).toBeDefined();
             expect(flp.flpConfig.apps).toHaveLength(0);
@@ -74,7 +74,7 @@ describe('FlpSandbox', () => {
 
         test('advanced config', () => {
             const flpConfig: FlpConfig = {
-                newHomePage: true,
+                enhancedHomePage: true,
                 path: 'my/custom/path',
                 intent: { object: 'movie', action: 'start' },
                 theme: 'sap_fiori_3',
@@ -86,7 +86,7 @@ describe('FlpSandbox', () => {
                 ]
             };
             const flp = new FlpSandbox({ flp: flpConfig }, mockProject, mockUtils, logger);
-            expect(flp.flpConfig.newHomePage).toBeTruthy();
+            expect(flp.flpConfig.enhancedHomePage).toBeTruthy();
             expect(flp.flpConfig.path).toBe(`/${flpConfig.path}`);
             expect(flp.flpConfig.apps).toEqual(flpConfig.apps);
             expect(flp.flpConfig.intent).toStrictEqual({ object: 'movie', action: 'start' });
@@ -273,7 +273,7 @@ describe('FlpSandbox', () => {
         let server!: SuperTest<Test>;
         const mockConfig = {
             flp: {
-                newHomePage: false,
+                enhancedHomePage: false,
                 apps: [
                     {
                         target: '/yet/another/app',
@@ -334,8 +334,8 @@ describe('FlpSandbox', () => {
 
         beforeAll(() => setupMiddleware(mockConfig as MiddlewareConfig));
 
-        const runTestsWithHomepageToggle = (enableNewHomepage: boolean = false) => {
-            describe(`new homepage ${enableNewHomepage ? 'enabled' : 'disabled'}`, () => {
+        const runTestsWithHomepageToggle = (enableenhancedHomePage: boolean = false) => {
+            describe(`enhanced homepage ${enableenhancedHomePage ? 'enabled' : 'disabled'}`, () => {
                 afterEach(() => {
                     fetchMock.mockRestore();
                 });
@@ -343,7 +343,7 @@ describe('FlpSandbox', () => {
                 beforeEach(() =>
                     setupMiddleware({
                         ...mockConfig,
-                        flp: { ...mockConfig.flp, newHomePage: enableNewHomepage }
+                        flp: { ...mockConfig.flp, enhancedHomePage: enableenhancedHomePage }
                     } as MiddlewareConfig)
                 );
 
@@ -404,17 +404,17 @@ describe('FlpSandbox', () => {
                     expect(response.text).toMatchSnapshot();
                 });
 
-                test(`test/cdm.json should ${enableNewHomepage ? 'return cdm' : 'fail'} when homepage is ${
-                    enableNewHomepage ? 'enabled' : 'disabled'
+                test(`test/cdm.json should ${enableenhancedHomePage ? 'return cdm' : 'fail'} when homepage is ${
+                    enableenhancedHomePage ? 'enabled' : 'disabled'
                 }`, async () => {
-                    const response = await server.get('/cdm.json').expect(enableNewHomepage ? 200 : 404);
-                    if (enableNewHomepage) {
+                    const response = await server.get('/cdm.json').expect(enableenhancedHomePage ? 200 : 404);
+                    if (enableenhancedHomePage) {
                         expect(response.text).toMatchSnapshot();
                     }
                 });
 
-                // new homepage related tests
-                if (enableNewHomepage) {
+                // enhanced homepage related tests
+                if (enableenhancedHomePage) {
                     test('test/flp.html should fallback to old homepage if ui5 version is less than 1.123.0', async () => {
                         const jsonSpy = () =>
                             Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.120.0' }] });
@@ -430,7 +430,7 @@ describe('FlpSandbox', () => {
             });
         };
 
-        // run tests with new homepage enabled
+        // run tests with enhanced homepage enabled
         runTestsWithHomepageToggle(true);
 
         // run tests with homepage disabled
@@ -842,7 +842,7 @@ describe('FlpSandbox', () => {
         let server!: SuperTest<Test>;
         const mockConfig = {
             flp: {
-                newHomePage: false,
+                enhancedHomePage: false,
                 apps: [
                     {
                         target: '/yet/another/app',
@@ -887,8 +887,8 @@ describe('FlpSandbox', () => {
             await server.get('/cdm.json').expect(404);
         });
 
-        test('GET default routes with connect API when newHomepage is enabled', async () => {
-            mockConfig.flp.newHomePage = true;
+        test('GET default routes with connect API when enhancedHomePage is enabled', async () => {
+            mockConfig.flp.enhancedHomePage = true;
             const flp = new FlpSandbox(
                 mockConfig as unknown as Partial<MiddlewareConfig>,
                 mockProject,

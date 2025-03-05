@@ -35,9 +35,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -98,9 +98,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -144,9 +144,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -190,9 +190,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -236,9 +236,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -282,9 +282,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -330,9 +330,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -529,7 +529,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API (us
 </html>"
 `;
 
-exports[`FlpSandbox router - connect API GET default routes with connect API when newHomepage is enabled 1`] = `
+exports[`FlpSandbox router - connect API GET default routes with connect API when enhancedHomePage is enabled 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -639,7 +639,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-open-ux-preview-new-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
 
@@ -655,7 +655,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
 </html>"
 `;
 
-exports[`FlpSandbox router - connect API GET default routes with connect API when newHomepage is enabled 2`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\"}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\"}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
+exports[`FlpSandbox router - connect API GET default routes with connect API when enhancedHomePage is enabled 2`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\"}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\"}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
 
 exports[`FlpSandbox router GET /preview/api/changes 1`] = `"{\\"sap.ui.fl.myid\\":{\\"id\\":\\"myId\\"}}"`;
 
@@ -749,7 +749,7 @@ exports[`FlpSandbox router default Qunit path test/unitTests.qunit.html 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage disabled editor with config 1`] = `
+exports[`FlpSandbox router enhanced homepage disabled editor with config 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -824,7 +824,7 @@ exports[`FlpSandbox router new homepage disabled editor with config 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage disabled test/flp.html 1`] = `
+exports[`FlpSandbox router enhanced homepage disabled test/flp.html 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -899,7 +899,7 @@ exports[`FlpSandbox router new homepage disabled test/flp.html 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage disabled test/flp.html UI5 2.x 1`] = `
+exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 2.x 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -972,7 +972,7 @@ exports[`FlpSandbox router new homepage disabled test/flp.html UI5 2.x 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage disabled test/flp.html UI5 legacy-free 1`] = `
+exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 legacy-free 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1045,7 +1045,7 @@ exports[`FlpSandbox router new homepage disabled test/flp.html UI5 legacy-free 1
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage disabled test/flp.html UI5 snapshot 1`] = `
+exports[`FlpSandbox router enhanced homepage disabled test/flp.html UI5 snapshot 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1120,9 +1120,9 @@ exports[`FlpSandbox router new homepage disabled test/flp.html UI5 snapshot 1`] 
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage disabled test/flp.html missing sap-ui-xx-viewCache set to false 1`] = `"Found. Redirecting to /test/flp.html?sap-ui-xx-viewCache=false"`;
+exports[`FlpSandbox router enhanced homepage disabled test/flp.html missing sap-ui-xx-viewCache set to false 1`] = `"Found. Redirecting to /test/flp.html?sap-ui-xx-viewCache=false"`;
 
-exports[`FlpSandbox router new homepage disabled test/flp.html sap-ui-xx-viewCache set to true 1`] = `
+exports[`FlpSandbox router enhanced homepage disabled test/flp.html sap-ui-xx-viewCache set to true 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1197,7 +1197,7 @@ exports[`FlpSandbox router new homepage disabled test/flp.html sap-ui-xx-viewCac
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage enabled editor with config 1`] = `
+exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1307,7 +1307,7 @@ exports[`FlpSandbox router new homepage enabled editor with config 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-open-ux-preview-new-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
 
@@ -1323,9 +1323,9 @@ exports[`FlpSandbox router new homepage enabled editor with config 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage enabled test/cdm.json should return cdm when homepage is enabled 1`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\"}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\"}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
+exports[`FlpSandbox router enhanced homepage enabled test/cdm.json should return cdm when homepage is enabled 1`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\"}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\"}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
 
-exports[`FlpSandbox router new homepage enabled test/flp.html 1`] = `
+exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1435,7 +1435,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-open-ux-preview-new-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
 
@@ -1451,7 +1451,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage enabled test/flp.html UI5 2.x 1`] = `
+exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 2.x 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1524,7 +1524,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 2.x 1`] = `
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage enabled test/flp.html UI5 legacy-free 1`] = `
+exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 legacy-free 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1597,7 +1597,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 legacy-free 1`
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage enabled test/flp.html UI5 snapshot 1`] = `
+exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1707,7 +1707,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 snapshot 1`] =
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-open-ux-preview-new-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
 
@@ -1723,9 +1723,9 @@ exports[`FlpSandbox router new homepage enabled test/flp.html UI5 snapshot 1`] =
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage enabled test/flp.html missing sap-ui-xx-viewCache set to false 1`] = `"Found. Redirecting to /test/flp.html?sap-ui-xx-viewCache=false"`;
+exports[`FlpSandbox router enhanced homepage enabled test/flp.html missing sap-ui-xx-viewCache set to false 1`] = `"Found. Redirecting to /test/flp.html?sap-ui-xx-viewCache=false"`;
 
-exports[`FlpSandbox router new homepage enabled test/flp.html sap-ui-xx-viewCache set to true 1`] = `
+exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-viewCache set to true 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1835,7 +1835,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html sap-ui-xx-viewCach
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
-        data-open-ux-preview-new-homepage='true'>
+        data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
 
@@ -1851,7 +1851,7 @@ exports[`FlpSandbox router new homepage enabled test/flp.html sap-ui-xx-viewCach
 </html>"
 `;
 
-exports[`FlpSandbox router new homepage enabled test/flp.html should fallback to old homepage if ui5 version is less than 1.123.0 1`] = `
+exports[`FlpSandbox router enhanced homepage enabled test/flp.html should fallback to old homepage if ui5 version is less than 1.123.0 1`] = `
 "<!DOCTYPE HTML>
 <html lang=\\"en\\">
 <!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
@@ -1947,9 +1947,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2078,9 +2078,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [
@@ -2560,9 +2560,9 @@ Object {
     },
   },
   "basePath": "..",
+  "enhancedHomePage": false,
   "init": undefined,
   "locateReuseLibsScript": false,
-  "newHomePage": false,
   "ui5": Object {
     "bootstrapOptions": "",
     "flex": Array [

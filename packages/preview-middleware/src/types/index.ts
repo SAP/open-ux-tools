@@ -62,7 +62,7 @@ export interface FlpConfig {
     /**
      * Optional: if set to true then the new FLP homepage will be enabled
      */
-    newHomePage?: boolean;
+    enhancedHomePage?: boolean;
 }
 
 interface OptionalTestConfig {

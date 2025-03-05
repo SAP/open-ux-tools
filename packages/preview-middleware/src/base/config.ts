@@ -76,7 +76,7 @@ export interface TemplateConfig {
     };
     features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
-    newHomePage?: boolean;
+    enhancedHomePage?: boolean;
 }
 
 /**
@@ -174,7 +174,7 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
         libs: config.libs,
         theme: config.theme,
         init: config.init,
-        newHomePage: config.newHomePage === true
+        enhancedHomePage: config.enhancedHomePage === true
     } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
         flpConfig.path = `/${flpConfig.path}`;
@@ -362,7 +362,7 @@ export function createFlpTemplateConfig(
             bootstrapOptions: ''
         },
         locateReuseLibsScript: config.libs,
-        newHomePage: config.newHomePage
+        enhancedHomePage: config.enhancedHomePage
     } satisfies TemplateConfig;
 }
 
