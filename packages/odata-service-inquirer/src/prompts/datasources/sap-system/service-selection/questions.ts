@@ -216,9 +216,9 @@ async function createServiceChoicesFromCatalog(
 ): Promise<ListChoiceOptions<ServiceAnswer>[]> {
     let catalogs: CatalogService[] = [];
     if (requiredOdataVersion && availableCatalogs[requiredOdataVersion]) {
-        catalogs.push(availableCatalogs[requiredOdataVersion]);
+        catalogs.push(availableCatalogs[requiredOdataVersion] as CatalogService);
     } else {
-        catalogs = Object.values(availableCatalogs).filter((cat) => cat !== undefined);
+        catalogs = Object.values(availableCatalogs).filter((cat): cat is CatalogService => cat !== undefined);
     }
     return await getServiceChoices(catalogs);
 }
