@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.19.0
+
+### Minor Changes
+
+-   aaa432a: Export patchTls from `sap-ux/axios-extension`
+
 ## 1.18.6
 
 ### Patch Changes
