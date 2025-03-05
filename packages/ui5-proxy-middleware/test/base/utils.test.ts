@@ -14,13 +14,12 @@ import {
 } from '../../src/base/utils';
 import type { Response } from 'express';
 import YAML from 'yaml';
-import fs, { readdirSync, readFileSync } from 'fs';
+import fs from 'fs';
 import * as baseUtils from '../../src/base/utils';
 import type { ProxyConfig } from '../../src/base/types';
 import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { join } from 'path';
 import type { ReaderCollection } from '@ui5/fs';
 
 describe('utils', () => {
@@ -422,7 +421,6 @@ describe('utils', () => {
                 data-sap-ui-preload="async"
                 data-sap-ui-theme="sap_fiori_3"
                 data-sap-ui-compatVersion="edge"
-                data-sap-ui-language="en"
                 data-sap-ui-resourceroots='{"project": "../"}'
                 data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
                 </script>
@@ -455,7 +453,6 @@ describe('utils', () => {
                 data-sap-ui-preload="async"
                 data-sap-ui-theme="sap_fiori_3"
                 data-sap-ui-compatVersion="edge"
-                data-sap-ui-language="en"
                 data-sap-ui-resourceroots='{"project": "../"}'
                 data-sap-ui-frameOptions="allow"> // NON-SECURE setting for testing environment
                 </script>
