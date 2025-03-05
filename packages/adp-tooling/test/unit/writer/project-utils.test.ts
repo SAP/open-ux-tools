@@ -1,4 +1,4 @@
-import path from 'path';
+import path, { join } from 'path';
 import { readFileSync } from 'fs';
 import type { Editor } from 'mem-fs-editor';
 
@@ -28,6 +28,12 @@ describe('Project Utils', () => {
         },
         target: {
             url: 'http://sap.example'
+        },
+        options: {
+            enableTypeScript: false
+        },
+        ui5: {
+            version: '1.133.1'
         }
     };
 
@@ -67,7 +73,7 @@ describe('Project Utils', () => {
             jest.clearAllMocks();
         });
 
-        const templatePath = '../../../templates/project';
+        const templatePath = '../../../templates';
         const projectPath = 'project';
 
         const writeFilesSpy = jest.fn();
@@ -76,9 +82,26 @@ describe('Project Utils', () => {
         it('should write template to the specified folder', () => {
             writeTemplateToFolder(templatePath, projectPath, data, mockFs as unknown as Editor);
 
-            expect(writeFilesSpy.mock.calls[0][0]).toEqual(templatePath);
+            expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
             expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
-            expect(writeFilesSpy.mock.calls[0][2]).toEqual(data);
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
+                ...data,
+                typesPackage: '@sapui5/types',
+                typesVersion: '~1.133.0'
+            });
+        });
+
+        it('should write TS template to the specified folder when project supports typescript', () => {
+            const newData = { ...data, options: { enableTypeScript: true } };
+            writeTemplateToFolder(templatePath, projectPath, newData, mockFs as unknown as Editor);
+
+            expect(writeFilesSpy.mock.calls[0][0]).toEqual(join(templatePath, 'project', '**', '*.*'));
+            expect(writeFilesSpy.mock.calls[0][1]).toEqual(projectPath);
+            expect(writeFilesSpy.mock.calls[0][2]).toEqual({
+                ...newData,
+                typesPackage: '@sapui5/types',
+                typesVersion: '~1.133.0'
+            });
         });
 
         it('should throw error when writing file fails', () => {

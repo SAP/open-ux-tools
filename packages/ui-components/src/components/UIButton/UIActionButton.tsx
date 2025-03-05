@@ -75,7 +75,7 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
             icon: {
                 height: 16,
                 lineHeight: 16,
-                marginLeft: -3,
+                marginLeft: 0,
                 position: 'relative',
                 top: 1
             },

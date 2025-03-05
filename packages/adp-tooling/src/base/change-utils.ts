@@ -11,7 +11,8 @@ import {
     type DescriptorVariant,
     type InboundContent,
     type ManifestChangeProperties,
-    type PropertyValueType
+    type PropertyValueType,
+    ChangeTypeMap
 } from '../types';
 import { renderFile } from 'ejs';
 
@@ -42,10 +43,10 @@ export function writeAnnotationChange(
     try {
         const changesFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
         const annotationsFolderPath = path.join(changesFolderPath, DirName.Annotations);
+
         if (change) {
-            const changeFileName = `id_${timestamp}_addAnnotationsToOData.change`;
+            const changeFileName = `${change.fileName}.change`;
             const changeFilePath = path.join(changesFolderPath, changeFileName);
-            change.fileName = `${change.fileName}_addAnnotationsToOData`;
             writeChangeToFile(changeFilePath, change, fs);
         }
 
@@ -83,18 +84,11 @@ export function writeAnnotationChange(
  *
  * @param {string} projectPath - The root path of the project.
  * @param {ManifestChangeProperties} change - The change data to be written to the file.
- * @param {string} fileName - The name of the file to write the change data to.
  * @param {Editor} fs - The `mem-fs-editor` instance used for file operations.
  * @param {string} [dir] - An optional subdirectory within the 'changes' directory where the file will be written.
  * @returns {void}
  */
-export function writeChangeToFolder(
-    projectPath: string,
-    change: ManifestChangeProperties,
-    fileName: string,
-    fs: Editor,
-    dir = ''
-): void {
+export function writeChangeToFolder(projectPath: string, change: ManifestChangeProperties, fs: Editor, dir = ''): void {
     try {
         let targetFolderPath = path.join(projectPath, DirName.Webapp, DirName.Changes);
 
@@ -102,6 +96,7 @@ export function writeChangeToFolder(
             targetFolderPath = path.join(targetFolderPath, dir);
         }
 
+        const fileName = `${change.fileName}.change`;
         const filePath = path.join(targetFolderPath, fileName);
         writeChangeToFile(filePath, change, fs);
     } catch (e) {
@@ -271,8 +266,16 @@ export function getChange(
     content: object,
     changeType: ChangeType
 ): ManifestChangeProperties {
+    const changeName = ChangeTypeMap[changeType];
+
+    if (!changeName) {
+        throw new Error(`Could not extract the change name from the change type: ${changeType}`);
+    }
+
+    const fileName = `id_${timestamp}_${changeName}`;
+
     return {
-        fileName: `id_${timestamp}`,
+        fileName,
         namespace: path.posix.join(namespace, DirName.Changes),
         layer,
         fileType: 'change',

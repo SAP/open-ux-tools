@@ -1,5 +1,29 @@
 # @sap-ux/ui-components
 
+## 1.24.8
+
+### Patch Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
+## 1.24.7
+
+### Patch Changes
+
+-   8b27155: UIToggle: Avoid triggering change when click happens on whitespace between label and toggle switch button
+
+## 1.24.6
+
+### Patch Changes
+
+-   689f1b8: UIIcons. Add new icon "DataSparkle"
+
+## 1.24.5
+
+### Patch Changes
+
+-   b410041: fix(ui-components): UIButtonAction set margin left icon to zero
+
 ## 1.24.4
 
 ### Patch Changes

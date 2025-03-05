@@ -47,7 +47,7 @@ export type EnhancedRouter = Router & {
 /**
  * Enhanced request object that contains additional properties from cds-plugin-ui5.
  */
-type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: string } };
+export type EnhancedRequest = Request & { 'ui5-patched-router'?: { baseUrl?: string } };
 
 type OnChangeRequestHandler = (
     type: OperationType,
@@ -55,6 +55,13 @@ type OnChangeRequestHandler = (
     fs: MemFsEditor,
     logger: Logger
 ) => Promise<void>;
+
+type Ui5Version = {
+    major: number;
+    minor: number;
+    patch: number;
+    label?: string;
+};
 
 /**
  * Class handling preview of a sandbox FLP.
@@ -222,7 +229,7 @@ export class FlpSandbox {
         if (ui5Version.major === 1 && ui5Version.minor <= 71) {
             this.removeAsyncHintsRequests();
         }
-        return render(this.getSandboxTemplate(ui5Version.major), config);
+        return render(this.getSandboxTemplate(ui5Version), config);
     }
 
     /**
@@ -282,7 +289,7 @@ export class FlpSandbox {
      * @private
      */
     private async editorGetHandler(
-        req: Request,
+        req: EnhancedRequest,
         res: Response,
         rta: RtaConfig,
         previewUrl: string,
@@ -290,12 +297,14 @@ export class FlpSandbox {
     ): Promise<void> {
         if (!req.query['fiori-tools-rta-mode']) {
             // Redirect to the same URL but add the necessary parameter
+            const url =
+                'ui5-patched-router' in req ? join(req['ui5-patched-router']?.baseUrl ?? '', previewUrl) : previewUrl;
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
             params['fiori-tools-rta-mode'] = 'true';
             params['sap-ui-rta-skip-flex-validation'] = 'true';
             params['sap-ui-xx-condense-changes'] = 'true';
-            res.redirect(302, `${previewUrl}?${new URLSearchParams(params)}`);
+            res.redirect(302, `${url}?${new URLSearchParams(params)}`);
             return;
         }
         const html = (await this.generateSandboxForEditor(req, rta, editor)).replace(
@@ -348,10 +357,14 @@ export class FlpSandbox {
     ): Promise<void> {
         // connect API (karma test runner) has no request query property
         if ('query' in req && 'redirect' in res && !req.query['sap-ui-xx-viewCache']) {
+            const url =
+                'ui5-patched-router' in req
+                    ? join(req['ui5-patched-router']?.baseUrl ?? '', this.flpConfig.path)
+                    : this.flpConfig.path;
             // Redirect to the same URL but add the necessary parameter
             const params = structuredClone(req.query);
             params['sap-ui-xx-viewCache'] = 'false';
-            res.redirect(302, `${this.flpConfig.path}?${new URLSearchParams(params)}`);
+            res.redirect(302, `${url}?${new URLSearchParams(params)}`);
             return;
         }
         await this.setApplicationDependencies();
@@ -370,7 +383,7 @@ export class FlpSandbox {
                 req.headers.host,
                 'ui5-patched-router' in req ? req['ui5-patched-router']?.baseUrl : undefined
             );
-            const html = render(this.getSandboxTemplate(ui5Version.major), this.templateConfig);
+            const html = render(this.getSandboxTemplate(ui5Version), this.templateConfig);
             this.sendResponse(res, 'text/html', 200, html);
         }
     }
@@ -409,7 +422,7 @@ export class FlpSandbox {
         protocol: Request['protocol'],
         host: Request['headers']['host'],
         baseUrl: string = ''
-    ): Promise<{ major: number; minor: number }> {
+    ): Promise<Ui5Version> {
         let version: string | undefined;
         if (!host) {
             this.logger.error('Unable to fetch UI5 version: No host found in request header.');
@@ -428,25 +441,30 @@ export class FlpSandbox {
             this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
             version = '1.121.0';
         }
-        const [major, minor] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+        const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
+        const label = version.split(/-(.*)/s)?.[1];
         return {
             major,
-            minor
+            minor,
+            patch,
+            label
         };
     }
 
     /**
      * Read the sandbox template file based on the given UI5 version.
      *
-     * @param ui5MajorVersion - the major version of UI5
+     * @param ui5Version - the UI5 version
      * @returns the template for the sandbox HTML file
      */
-    private getSandboxTemplate(ui5MajorVersion: number): string {
-        this.logger.info(`Using sandbox template for UI5 major version ${ui5MajorVersion}.`);
-        return readFileSync(
-            join(__dirname, `../../templates/flp/sandbox${ui5MajorVersion === 1 ? '' : ui5MajorVersion}.html`),
-            'utf-8'
+    private getSandboxTemplate(ui5Version: Ui5Version): string {
+        this.logger.info(
+            `Using sandbox template for UI5 version ${ui5Version.major}.${ui5Version.minor}.${ui5Version.patch}${
+                ui5Version.label ? `-${ui5Version.label}` : ''
+            }.`
         );
+        const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
+        return readFileSync(join(__dirname, `../../templates/flp/sandbox${filePrefix}.html`), 'utf-8');
     }
 
     /**

@@ -133,6 +133,44 @@ resources:
 "
 `;
 
+exports[`CF Writer CAP Validate generation of CAP mta configurations managed 2`] = `
+"{
+  \\"name\\": \\"captestproject\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A simple CAP project.\\",
+  \\"repository\\": \\"<Add your repository here>\\",
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.8.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"cds-serve\\",
+    \\"undeploy\\": \\"cf undeploy captestproject --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"cds\\": {
+    \\"requires\\": {
+      \\"auth\\": \\"xsuaa\\",
+      \\"connectivity\\": true,
+      \\"destinations\\": true,
+      \\"html5-repo\\": true
+    }
+  }
+}
+"
+`;
+
 exports[`CF Writer CAP Validate generation of CAP mta configurations standard 1`] = `
 "_schema-version: 3.3.0
 ID: captestproject
@@ -264,6 +302,44 @@ resources:
 
 exports[`CF Writer CAP Validate generation of CAP mta configurations standard 2`] = `
 "{
+  \\"name\\": \\"captestproject\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A simple CAP project.\\",
+  \\"repository\\": \\"<Add your repository here>\\",
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.8.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"cds-serve\\",
+    \\"undeploy\\": \\"cf undeploy captestproject --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"cds\\": {
+    \\"requires\\": {
+      \\"auth\\": \\"xsuaa\\",
+      \\"connectivity\\": true,
+      \\"destinations\\": true,
+      \\"html5-repo\\": true
+    }
+  }
+}
+"
+`;
+
+exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`] = `
+"{
     \\"name\\": \\"app-router\\",
     \\"private\\": true,
     \\"description\\": \\"App router\\",
@@ -284,7 +360,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 2`
 "
 `;
 
-exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`] = `
+exports[`CF Writer CAP Validate generation of CAP mta configurations standard 4`] = `
 "{
   \\"authenticationMethod\\": \\"route\\",
   \\"routes\\": [

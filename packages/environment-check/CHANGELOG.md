@@ -1,5 +1,59 @@
 # @sap-ux/environment-check
 
+## 0.17.88
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/axios-extension@1.19.0
+
+## 0.17.87
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/project-access@1.29.13
+    -   @sap-ux/axios-extension@1.19.0
+
+## 0.17.86
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/axios-extension@1.19.0
+
+## 0.17.85
+
+### Patch Changes
+
+-   Updated dependencies [aaa432a]
+    -   @sap-ux/axios-extension@1.19.0
+
+## 0.17.84
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/axios-extension@1.18.6
+
+## 0.17.83
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.10
+-   @sap-ux/axios-extension@1.18.6
+
+## 0.17.82
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/axios-extension@1.18.6
+
 ## 0.17.81
 
 ### Patch Changes

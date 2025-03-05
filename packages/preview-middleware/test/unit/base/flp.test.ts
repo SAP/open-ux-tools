@@ -6,10 +6,11 @@ import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
-import { join } from 'path';
+import { join, posix } from 'path';
 import type { SuperTest, Test } from 'supertest';
 import supertest from 'supertest';
-import express from 'express';
+import express, { type Response, type NextFunction } from 'express';
+import type { EnhancedRequest } from '../../../src/base/flp';
 import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
@@ -334,6 +335,30 @@ describe('FlpSandbox', () => {
 
         test('test/flp.html UI5 2.x', async () => {
             const jsonSpy = () => Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '2.0.0' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html UI5 legacy-free', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html UI5 snapshot', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }] });
             fetchMock.mockResolvedValue({
                 json: jsonSpy,
                 text: jest.fn(),
@@ -896,6 +921,92 @@ describe('FlpSandbox', () => {
             expect(response.text.includes('livereloadPort: 35729')).toBe(true);
             response = await server.get('/my/editor.html.inner.html').expect(302);
             expect(response.text).toMatchSnapshot();
+        });
+    });
+
+    describe('cds-plugin-ui5', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            flp: {
+                apps: [
+                    {
+                        target: '/yet/another/app',
+                        local: join(fixtures, 'multi-app')
+                    }
+                ]
+            },
+            test: [
+                {
+                    framework: 'QUnit'
+                },
+                {
+                    framework: 'OPA5',
+                    path: '/test/integration/opaTests.qunit.html',
+                    init: '/test/integration/opaTests.qunit.js'
+                }
+            ],
+            editors: {
+                rta: {
+                    layer: 'CUSTOMER_BASE',
+                    endpoints: [
+                        {
+                            path: '/my/rta.html'
+                        },
+                        {
+                            path: 'without/slash/rta.html'
+                        },
+                        {
+                            path: '/my/editor.html',
+                            developerMode: true
+                        },
+                        {
+                            path: '/with/plugin.html',
+                            developerMode: true,
+                            pluginScript: 'open/ux/tools/plugin'
+                        },
+                        {
+                            path: '/my/editorWithConfig.html',
+                            generator: 'test-generator'
+                        }
+                    ]
+                }
+            }
+        };
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        beforeAll(async () => {
+            const flp = new FlpSandbox(
+                mockConfig as unknown as Partial<MiddlewareConfig>,
+                mockProject,
+                mockUtils,
+                logger
+            );
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use([
+                function (req: EnhancedRequest, _res: Response, next: NextFunction) {
+                    req['ui5-patched-router'] = { baseUrl: '/ui5-patched-router-base' };
+                    next();
+                },
+                flp.router
+            ]);
+
+            server = await supertest(app);
+        });
+
+        test('rta', async () => {
+            const response = await server.get('/my/rta.html').expect(302);
+            expect(response.header.location).toContain('ui5-patched-router-base');
+        });
+
+        test('test/flp.html', async () => {
+            const response = await server.get(`/test/flp.html#app-preview`).expect(302);
+            expect(response.header.location).toContain('ui5-patched-router-base');
         });
     });
 });

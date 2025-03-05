@@ -1,5 +1,44 @@
 # @sap-ux/project-access
 
+## 1.29.14
+
+### Patch Changes
+
+-   3cc8f8a: fix: check files in srv folder of CAP project when srv folder contains subfolders
+
+## 1.29.13
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+
+## 1.29.12
+
+### Patch Changes
+
+-   Updated dependencies [cf05ceb]
+    -   @sap-ux/i18n@0.2.3
+
+## 1.29.11
+
+### Patch Changes
+
+-   0f35b4b: ignore error thrown when no .library file found
+
+## 1.29.10
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/i18n@0.2.2
+
+## 1.29.9
+
+### Patch Changes
+
+-   c8c292c: Fix: method 'getCapModelAndServices' not returning 'odata-v4' services
+
 ## 1.29.8
 
 ### Patch Changes

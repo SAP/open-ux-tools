@@ -1,5 +1,58 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+
+## 0.1.18
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/project-access@1.29.13
+
+## 0.1.17
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+
+## 0.1.16
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+
+## 0.1.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.10
+
+## 0.1.14
+
+### Patch Changes
+
+-   d0b656b: change where inti and writing are executing when cf-sub-gen is loaded as a sub-gen
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+
+## 0.1.12
+
+### Patch Changes
+
+-   d6118c9: Changes to support adding CAP MTA prompt to allow user generate MTA
+
 ## 0.1.11
 
 ### Patch Changes

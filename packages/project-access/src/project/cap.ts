@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { basename, dirname, join, normalize, relative, sep, resolve } from 'path';
+import { basename, dirname, join, normalize, relative, sep } from 'path';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import { FileName } from '../constants';
@@ -18,6 +18,7 @@ import {
     deleteDirectory,
     deleteFile,
     fileExists,
+    findBy,
     readDirectory,
     readFile,
     readJSON,
@@ -83,30 +84,11 @@ export async function isCapJavaProject(
  * @returns {Promise<boolean>} - Resolves to `true` if files are found in the `srv` folder; otherwise, `false`.
  */
 async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Promise<boolean> {
-    if (!memFs) {
-        return await fileExists(srvFolderPath);
+    try {
+        return (await findBy({ root: srvFolderPath, memFs })).length > 0;
+    } catch (error) {
+        return false;
     }
-    // Load the srv folder and its files into mem-fs
-    // This is necessary as mem-fs operates in-memory and doesn't automatically include files from disk.
-    // By loading the files, we ensure they are available within mem-fs.
-    if (await fileExists(srvFolderPath)) {
-        const fileSystemFiles = await readDirectory(srvFolderPath);
-        for (const file of fileSystemFiles) {
-            const filePath = join(srvFolderPath, file);
-            if (await fileExists(filePath)) {
-                const fileContent = await readFile(filePath);
-                memFs.write(filePath, fileContent);
-            }
-        }
-    }
-    // Dump the mem-fs state
-    const memFsDump = memFs.dump() as { [key: string]: { contents: string; state: 'modified' | 'deleted' } };
-    const memFsFiles = Object.keys(memFsDump).filter((filePath) => {
-        const normalisedFilePath = resolve(filePath);
-        const normalisedSrvPath = resolve(srvFolderPath);
-        return normalisedFilePath.startsWith(normalisedSrvPath);
-    });
-    return memFsFiles.length > 0;
 }
 
 /**
@@ -172,6 +154,17 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 }
 
 /**
+ * Filters service endpoints to include only OData endpoints.
+ *
+ * @param endpoint The endpoint object to check.
+ * @param endpoint.kind The type of the endpoint.
+ * @returns `true` if the endpoint is of kind 'odata' or 'odata-v4'.
+ */
+function filterCapServiceEndpoints(endpoint: { kind: string }) {
+    return endpoint.kind === 'odata' || endpoint.kind === 'odata-v4';
+}
+
+/**
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
@@ -214,13 +207,13 @@ export async function getCapModelAndServices(
         services = services.filter(
             (service) =>
                 (service.urlPath && service.endpoints === undefined) ||
-                service.endpoints?.find((endpoint) => endpoint.kind === 'odata')
+                service.endpoints?.find(filterCapServiceEndpoints)
         );
     }
     if (services.map) {
         services = services.map((value) => {
             const { endpoints, urlPath } = value;
-            const odataEndpoint = endpoints?.find((endpoint) => endpoint.kind === 'odata');
+            const odataEndpoint = endpoints?.find(filterCapServiceEndpoints);
             const endpointPath = odataEndpoint?.path ?? urlPath;
             return {
                 name: value.name,
