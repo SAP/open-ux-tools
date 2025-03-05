@@ -1,5 +1,14 @@
 # @sap-ux/mockserver-config-writer
 
+## 0.8.6
+
+### Patch Changes
+
+-   5817923: Adds `webappPath` and `basePath` parameters to resolve service paths during mockserver generation/update.
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/project-access@1.29.13
+
 ## 0.8.5
 
 ### Patch Changes
