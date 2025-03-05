@@ -7,7 +7,7 @@ import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { generateAppConfig } from '../../src';
 import type { Editor } from 'mem-fs-editor';
-import { DefaultMTADestination, MTABinNotFound, CDSBinNotFound } from '../../src/constants';
+import { DefaultMTADestination, MTABinNotFound } from '../../src/constants';
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 jest.mock('@sap/mta-lib', () => {
@@ -104,5 +104,42 @@ describe('CF Writer', () => {
             ).rejects.toThrowError(/Something went wrong creating mta.yaml!/);
             expect(spawnMock).not.toHaveBeenCalledWith('');
         });
+    });
+
+    test('Validate HTML5 is added with a managed approuter to an existing a CAP project', async () => {
+        const capPath = join(outputDir, 'capcdsmta02');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(capPath);
+        fsExtra.copySync(join(__dirname, '../sample/capcds'), capPath);
+        // Copy over sample mta.yaml generated, when using the command `cds add mta xsuaa destination html5-repo`
+        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmta'), capPath);
+        await generateAppConfig(
+            {
+                appPath: join(capPath, 'app/project1'),
+                destinationName: DefaultMTADestination
+            },
+            unitTestFs
+        );
+        expect(unitTestFs.dump(capPath)).toMatchSnapshot();
+        expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
+    });
+
+    test('Validate HTML5 is added without a managed approuter to a CAP project', async () => {
+        const capPath = join(outputDir, 'capcdsmtastandalone');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(capPath);
+        fsExtra.copySync(join(__dirname, '../sample/capcds'), capPath);
+        // Copy over sample mta.yaml generated, when using the command `cds add mta xsuaa destination html5-repo`
+        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmta'), capPath);
+        await generateAppConfig(
+            {
+                appPath: join(capPath, 'app/project1'),
+                destinationName: DefaultMTADestination,
+                addManagedAppRouter: false
+            },
+            unitTestFs
+        );
+        expect(unitTestFs.dump(capPath)).toMatchSnapshot();
+        expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
     });
 });
