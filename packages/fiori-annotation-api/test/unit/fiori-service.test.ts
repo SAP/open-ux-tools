@@ -3338,7 +3338,7 @@ rating : Rating;
                     ],
                     [
                         {
-                            kind: ChangeType.Insert,
+                            kind: ChangeType.Update,
                             uri: project.files.annotations,
                             reference: {
                                 target: 'IncidentService.Incidents/rating_name',
