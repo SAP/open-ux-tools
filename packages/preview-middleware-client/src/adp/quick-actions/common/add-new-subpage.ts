@@ -18,7 +18,7 @@ import { EnablementValidatorResult } from '../enablement-validator';
 import { getTextBundle } from '../../../i18n';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
-export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-object-page';
+export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-subpage';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
 
 /**
@@ -54,8 +54,6 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         ]);
     }
 
-    private currentPageControl: ObjectPageLayout;
-
     private getApplicationPages() {
         if (this.appType === 'fe-v2') {
             return getV2ApplicationPages(this.context.manifest);
@@ -87,7 +85,7 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         if (!modifiedControl) {
             return Promise.resolve();
         }
-        this.currentPageControl = modifiedControl;
+        this.control = modifiedControl;
 
         const component = Component.getOwnerComponentFor(modifiedControl) as TemplateComponent;
         const entitySetName = component.getEntitySet();
@@ -98,7 +96,6 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
 
         const entitySet = metaModel.getODataEntitySet(entitySetName) as EntitySet;
         const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
-        this.control = modifiedControl;
 
         const existingPages = this.getApplicationPages();
 
@@ -139,7 +136,7 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const overlay = OverlayRegistry.getOverlay(this.currentPageControl) || [];
+        const overlay = OverlayRegistry.getOverlay(this.control!) || [];
         const appReference = this.context.flexSettings.projectId ?? '';
         await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_SUBPAGE, undefined, {
             appType: this.appType,
