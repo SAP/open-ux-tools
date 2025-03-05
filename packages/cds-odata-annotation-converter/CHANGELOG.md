@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.5.1
+
+### Patch Changes
+
+-   282dd9a: Fix: creation of complex type annotation target
+
 ## 0.5.0
 
 ### Minor Changes
