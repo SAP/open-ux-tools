@@ -9,4 +9,4 @@ export { getBootstrapResourceUrls } from './ui5/ui5';
 export { getDefaultTargetFolder, isExtensionInstalled } from './vscode-helpers/vscode-helpers';
 export { generateReadMe } from './read-me';
 export { getHostEnvironment } from './environment';
-export { YeomanEnvironment, VSCodeInstance, hostEnvironment, HostEnvironmentId } from './types';
+export { YeomanEnvironment, VSCodeInstance, hostEnvironment, HostEnvironmentId, ReadMe } from './types';

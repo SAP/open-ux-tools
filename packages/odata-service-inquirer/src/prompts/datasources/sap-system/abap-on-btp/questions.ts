@@ -157,15 +157,20 @@ async function validateCFServiceInfo(
     let valResult: ValidationResult = true;
     let destination: Destination | undefined;
     if (getPromptHostEnvironment() === hostEnvironment.bas) {
-        destination = await createOAuth2UserTokenExchangeDest(
-            cfAbapServiceName,
-            {
-                uaaCredentials: uaaCreds.credentials.uaa,
-                hostUrl: uaaCreds.credentials.url
-            },
-            LoggerHelper.logger
-        );
-        valResult = await connectWithDestination(destination, connectionValidator, requiredOdataVersion);
+        try {
+            destination = await createOAuth2UserTokenExchangeDest(
+                cfAbapServiceName,
+                {
+                    uaaCredentials: uaaCreds.credentials.uaa,
+                    hostUrl: uaaCreds.credentials.url
+                },
+                LoggerHelper.logger
+            );
+            valResult = await connectWithDestination(destination, connectionValidator, requiredOdataVersion);
+        } catch (error) {
+            // If a user doesn't have subaccount admin rights they can't create/update destinations on CF
+            valResult = error.message;
+        }
     } else {
         valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
     }
