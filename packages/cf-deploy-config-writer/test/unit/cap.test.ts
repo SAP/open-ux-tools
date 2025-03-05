@@ -74,6 +74,7 @@ describe('CF Writer', () => {
                 unitTestFs
             );
             expect(getMtaPathMock).toBeCalledWith(expect.stringContaining(capPath));
+            expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
             expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(spawnMock).not.toHaveBeenCalled();
             expect(unitTestFs.dump(capPath)).toMatchSnapshot();
@@ -106,8 +107,8 @@ describe('CF Writer', () => {
         });
     });
 
-    test('Validate HTML5 is added with a managed approuter to an existing a CAP project', async () => {
-        const capPath = join(outputDir, 'capcdsmta02');
+    test('Validate HTML5 app is added with a managed approuter to an existing a CAP project', async () => {
+        const capPath = join(outputDir, 'capcdsmta');
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(capPath);
         fsExtra.copySync(join(__dirname, '../sample/capcds'), capPath);
@@ -140,6 +141,35 @@ describe('CF Writer', () => {
             unitTestFs
         );
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
+        expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
+    });
+
+    test('Validate a 2nd HTML5 app is added', async () => {
+        const capPath = join(outputDir, 'capcdsmulti');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(capPath);
+        fsExtra.copySync(join(__dirname, '../sample/capcdsmulti'), capPath);
+        // Copy over sample mta.yaml generated, when using the command `cds add mta xsuaa destination html5-repo`
+        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmta'), capPath);
+        // Step1. Add existing app with managed approuter
+        await generateAppConfig(
+            {
+                appPath: join(capPath, 'app/project1'),
+                destinationName: DefaultMTADestination,
+                addManagedAppRouter: true
+            },
+            unitTestFs
+        );
+        // Step2. Add a 2nd app to the mta
+        await generateAppConfig(
+            {
+                appPath: join(capPath, 'app/project2'),
+                destinationName: DefaultMTADestination,
+                addManagedAppRouter: false
+            },
+            unitTestFs
+        );
+        unitTestFs.dump(capPath);
         expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
     });
 });

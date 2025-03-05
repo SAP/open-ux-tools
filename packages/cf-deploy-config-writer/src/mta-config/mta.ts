@@ -472,24 +472,24 @@ export class MtaConfig {
                 contentModule[MTABuildParams]?.[MTABuildResult] ?? `resources`; // Default
             contentModule[MTABuildParams].requires = contentModule[MTABuildParams].requires ?? [];
             const artifactName = `${appModule.slice(0, 128)}.zip`;
-            // The artifact name should be unique
+            // The name of the HTML5 app will always be the artifact name
             if (
                 contentModule[MTABuildParams].requires?.findIndex(
-                    (app: { name: string; artifacts: { contains: { [x: string]: any } } }) =>
-                        !app.artifacts?.contains?.[artifactName]
-                ) === -1
+                    (app: mta.Requires & { artifacts?: { [key: string]: any } }) =>
+                        app.artifacts?.includes?.(artifactName)
+                ) !== -1
             ) {
+                isHTML5AlreadyExisting = true;
+            } else {
                 contentModule[MTABuildParams].requires.push({
                     name: appModule.slice(0, 128),
                     artifacts: [artifactName],
                     'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/+$/, '/')
                 });
-            } else {
-                isHTML5AlreadyExisting = true;
             }
             await this.mta.updateModule(contentModule);
+            this.dirty = true;
         }
-
         // Need to handle where existing HTML5 apps are added by `cds` which follow a different naming convention when added to mta
         const modules = await this.mta.getModules();
         for (const module of modules) {
