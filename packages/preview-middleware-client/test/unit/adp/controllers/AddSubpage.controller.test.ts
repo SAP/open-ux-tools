@@ -6,7 +6,7 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
-import { fetchMock, sapCoreMock, sapMock } from 'mock/window';
+import { fetchMock, sapCoreMock } from 'mock/window';
 
 import ControlUtils from '../../../../src/adp/control-utils';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
@@ -55,14 +55,6 @@ const mockFormInput = (
     getValueStateText: nCallsMock(stateTexts),
     setValueState: mocks.setValueStateMock
 });
-
-const mockInputEvent = (value: String | Object): Event =>
-    ({
-        getSource: jest.fn().mockReturnValue({
-            getValue: jest.fn().mockReturnValue(value),
-            setValueState: mocks.setValueStateMock
-        })
-    } as unknown as Event);
 
 describe('AddSubpage controller', () => {
     beforeAll(() => {
