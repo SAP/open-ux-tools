@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.1
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+
 ## 0.13.0
 
 ### Minor Changes
