@@ -161,6 +161,31 @@ function registerModules(dataFromAppIndex: AppIndexData) {
 }
 
 /**
+ * Handle higher layer changes when starting UI Adaptation.
+ * When RTA detects higher layer changes an error with Reload triggered text is thrown, the RTA instance is destroyed and the application is reloaded.
+ * For UI5 version lower than 1.84.0 RTA is showing a popup with notification text about the detection of higher layer changes.
+ *
+ * @param error the error thrown when there are higher layer changes when starting UI Adaptation.
+ * @param ui5VersionInfo ui5 version info
+ */
+export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
+    const err = getError(error);
+    if (err.message.includes('Reload triggered')) {
+        if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
+            const bundle = await getTextBundle();
+            const action = showMessage({
+                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
+                shouldHideIframe: false
+            });
+            CommunicationService.sendAction(action);
+        }
+
+        // eslint-disable-next-line fiori-custom/sap-no-location-reload
+        window.location.reload();
+    }
+}
+
+/**
  * Triggers the adaptation process for the given UI5 application.
  *
  * @param {FlexSettings} flexSettings - The settings for the flexibility services.
@@ -371,6 +396,7 @@ export async function init({
     setI18nTitle(resourceBundle);
     registerSAPFonts();
 
+    // eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
     if (!document.getElementById('canvas')) {
         const renderer =
             ui5VersionInfo.major < 2
@@ -392,29 +418,4 @@ if (bootstrapConfig) {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
     });
-}
-
-/**
- * Handle higher layer changes when starting UI Adaptation.
- * When RTA detects higher layer changes an error with Reload triggered text is thrown, the RTA instance is destroyed and the application is reloaded.
- * For UI5 version lower than 1.84.0 RTA is showing a popup with notification text about the detection of higher layer changes.
- *
- * @param error the error thrown when there are higher layer changes when starting UI Adaptation.
- * @param ui5VersionInfo ui5 version info
- */
-export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
-    const err = getError(error);
-    if (err.message.includes('Reload triggered')) {
-        if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
-            const bundle = await getTextBundle();
-            const action = showMessage({
-                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
-                shouldHideIframe: false
-            });
-            CommunicationService.sendAction(action);
-        }
-
-        // eslint-disable-next-line fiori-custom/sap-no-location-reload
-        window.location.reload();
-    }
 }
