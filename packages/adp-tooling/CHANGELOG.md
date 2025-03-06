@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.12
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+
 ## 0.13.11
 
 ### Patch Changes

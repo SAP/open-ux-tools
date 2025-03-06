@@ -1084,4 +1084,40 @@ describe('initAdp', () => {
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
     });
+
+    test('initAdp - cloud scenario', async () => {
+        const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                isCloudProject: true
+            } as unknown as adpTooling.AdpPreview;
+        });
+        const config = {
+            adp: { target: { url } },
+            rta: { options: {}, editors: [] }
+        } as unknown as Partial<MiddlewareConfig>;
+        const flp = new FlpSandbox(config, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+        await initAdp(mockAdpProject, config.adp as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
+        expect(adpToolingMock).toBeCalled();
+        expect(flpInitMock).toBeCalled();
+        expect(flp.rta?.options?.isCloud).toBe(true);
+    });
 });
