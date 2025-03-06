@@ -63,10 +63,7 @@
     "pnpm": {
         "overrides": {
             "router>path-to-regexp": "0.1.12",
-            "@storybook/manager-api>store2": "2.14.4",
-            "@octokit/request": ">=9.2.1",
-            "@octokit/request-error": ">=5.1.1",
-            "@octokit/plugin-paginate-rest": ">=9.2.2"
+            "@storybook/manager-api>store2": "2.14.4"
         }
     }
 }
