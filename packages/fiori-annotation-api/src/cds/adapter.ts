@@ -537,7 +537,8 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
         const fullyQualifiedPath =
             toFullyQualifiedName(aliasInfo.aliasMap, aliasInfo.currentFileNamespace, parsedName) ?? '';
         const metadataElement = this.metadataService.getMetadataElement(fullyQualifiedPath);
-        let originalPathBase = metadataElement?.originalName ?? pathBase;
+        const fqName = metadataElement?.originalName ?? pathBase;
+        let originalPathBase = fqName;
         if (parsedName.namespaceOrAlias !== undefined) {
             const namespace = aliasInfo.aliasMap[parsedName.namespaceOrAlias];
             if (namespace) {
@@ -545,7 +546,18 @@ export class CDSAnnotationServiceAdapter implements AnnotationServiceAdapter, Ch
             }
         }
         change.target.name = [originalPathBase, ...pathSegments].join('/');
-        writer.addChange(createInsertTargetChange('target', change.target));
+        let complexTypePathSegments;
+        if (pathSegments?.[0]?.includes('_')) {
+            const segments = pathSegments[0].split('_');
+            const complexType = this.metadataService.getMetadataElement(`${fqName}/${segments[0]}`);
+            if (complexType?.structuredType && complexType.isComplexType) {
+                const element = this.metadataService.getMetadataElement(`${fqName}/${pathSegments[0]}`);
+                if (element?.kind === ELEMENT_TYPE) {
+                    complexTypePathSegments = pathSegments[0].split('_');
+                }
+            }
+        }
+        writer.addChange(createInsertTargetChange('target', change.target, undefined, complexTypePathSegments));
     };
 
     [DELETE_ELEMENT] = (writer: CDSWriter, document: Document, change: DeleteElement): void => {

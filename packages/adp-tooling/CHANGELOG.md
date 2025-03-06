@@ -1,5 +1,34 @@
 # @sap-ux/adp-tooling
 
+## 0.13.11
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/odata-service-writer@0.26.9
+    -   @sap-ux/system-access@0.5.32
+    -   @sap-ux/inquirer-common@0.6.27
+
+## 0.13.10
+
+### Patch Changes
+
+-   14bec21: feat: Change "Add Local Annotation File" wizard dropdown option text in @sap-ux/adp-tooling
+
+## 0.13.9
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/odata-service-writer@0.26.8
+    -   @sap-ux/project-access@1.29.13
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/system-access@0.5.32
+    -   @sap-ux/inquirer-common@0.6.26
+
 ## 0.13.8
 
 ### Patch Changes
