@@ -484,7 +484,7 @@ export class MtaConfig {
                 contentModule[MTABuildParams].requires.push({
                     name: appModule.slice(0, 128),
                     artifacts: [artifactName],
-                    'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`
+                    'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
             }
             await this.mta.updateModule(contentModule);
