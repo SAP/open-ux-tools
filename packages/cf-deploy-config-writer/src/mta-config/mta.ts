@@ -484,7 +484,7 @@ export class MtaConfig {
                 contentModule[MTABuildParams].requires.push({
                     name: appModule.slice(0, 128),
                     artifacts: [artifactName],
-                    'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/+$/, '/')
+                    'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`
                 });
             }
             await this.mta.updateModule(contentModule);
