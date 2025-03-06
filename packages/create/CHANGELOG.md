@@ -1,5 +1,23 @@
 # @sap-ux/create
 
+## 0.12.16
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/abap-deploy-config-writer@0.0.97
+    -   @sap-ux/adp-tooling@0.13.13
+    -   @sap-ux/app-config-writer@0.5.40
+    -   @sap-ux/cap-config-writer@0.9.19
+    -   @sap-ux/cards-editor-config-writer@0.4.11
+    -   @sap-ux/flp-config-inquirer@0.2.58
+    -   @sap-ux/mockserver-config-writer@0.8.8
+    -   @sap-ux/odata-service-writer@0.26.10
+    -   @sap-ux/preview-middleware@0.18.14
+    -   @sap-ux/system-access@0.5.32
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.30
+
 ## 0.12.15
 
 ### Patch Changes
