@@ -1,5 +1,14 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.0.49
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+-   Updated dependencies [19a19dd]
+    -   @sap-ux/deploy-config-generator-shared@0.0.35
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.29
+
 ## 0.0.48
 
 ### Patch Changes
