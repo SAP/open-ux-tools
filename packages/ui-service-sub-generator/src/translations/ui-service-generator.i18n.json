@@ -1,1 +1,9 @@
-{}
+{
+    "info": {
+        "LABEL_UI_SERVICE_GEN_SYSTEM_STEP": "SAP System selection",
+        "LABEL_UI_SERVICE_GEN_CONFIG_STEP": "UI Service Configuration",
+        "GENERATING_UI_SERVICE_WARNING": "Generating UI service...",
+        "INFO_GENERATION_WARNING": "Generation of UI Service might take a few minutes. Please be patient."
+    },
+    "UI_SERVICE_GENERATOR_TITLE": "UI Service Generator"
+}

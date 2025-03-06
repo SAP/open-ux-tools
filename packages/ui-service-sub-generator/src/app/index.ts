@@ -1,20 +1,43 @@
+import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
+import { getConfigPrompts, getSystemSelectionPrompts } from '@sap-ux/ui-service-inquirer';
 import Generator from 'yeoman-generator';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
-import { type UiServiceGenerator } from './types';
-import { prompts, t } from '../utils';
-//import { UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
+import { boUri, cdsUri, initI18n, prompts, t } from '../utils';
+import UiServiceGenLogger from '../utils/logger';
+//import { type YeomanEnvironment, type VSCodeInstance } from '@sap-ux/fiori-generator-shared';
+// import { type InquirerAdapter } from '@sap-ux/inquirer-common';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { Destination } from '@sap-ux/btp-utils';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
+import { type Logger } from '@sap-ux/logger';
+import { BAS_OBJECT } from './types';
+import {
+    authenticateInputData,
+    generateService,
+    getAppGenSystemData,
+    runPostGenHook,
+    setToolbarMessage,
+    writeBASMetadata
+} from './utils';
 
 /**
  * Generator for creating a new UI Service.
  *
  * @extends Generator
  */
-export default class extends Generator implements UiServiceGenerator {
-    //answers: UiServiceAnswers = {};
-    answers: any = {};
+export default class extends Generator {
+    answers: UiServiceAnswers = {
+        url: '',
+        package: ''
+    };
     prompts: Prompts;
     appWizard: AppWizard;
     vscode: unknown;
+    systemSelectionAnswers: SystemSelectionAnswers = {};
+    serviceConfigAnswers: ServiceConfig = {
+        content: '',
+        serviceName: ''
+    };
     setPromptsCallback: (fn: any) => void;
 
     /**
@@ -24,29 +47,29 @@ export default class extends Generator implements UiServiceGenerator {
      * @param opts - options passed to the generator
      */
     constructor(args: string | string[], opts: Generator.GeneratorOptions) {
-        // Force overwrite of files in case of conflict
-        opts.force = true;
         super(args, opts);
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = true;
+        }
 
         this.appWizard = AppWizard.create(opts);
         this.vscode = opts.vscode;
-        // UiServiceGenLogger.configureLogging(
-        //     this.options.logger,
-        //     this.rootGeneratorName(),
-        //     this.log,
-        //     this.options.vscode,
-        //     this.options.logLevel
-        // );
+        UiServiceGenLogger.configureLogging(
+            this.options.logger,
+            this.rootGeneratorName(),
+            this.log,
+            this.options.vscode,
+            this.options.logLevel
+        );
 
         const steps = prompts;
         // if options.data is present, skip the first step
         // options.data is passeed from BAS service center
         if (this.options.data?.systemName) {
-            //this.skipSystemStep = true;
             steps.shift();
         }
 
-        opts.appWizard.setHeaderTitle(t('UI_SERVICE_GENERATOR_TITLE'));
+        this.appWizard.setHeaderTitle('UI Service Generator');
         this.prompts = new Prompts(steps);
         this.setPromptsCallback = (fn): void => {
             if (this.prompts) {
@@ -55,5 +78,117 @@ export default class extends Generator implements UiServiceGenerator {
         };
     }
 
-    public async prompting(): Promise<void> {}
+    public async initializing(): Promise<void> {
+        await initI18n();
+        if (this.options.data) {
+            UiServiceGenLogger.logger.debug('Options passed into generator: ' + JSON.stringify(this.options.data));
+            await this._initSteps();
+        }
+    }
+
+    private async _initSteps(): Promise<void> {
+        await authenticateInputData(this.options.data, this.systemSelectionAnswers);
+        if (this.systemSelectionAnswers.connectedSystem?.serviceProvider) {
+            try {
+                if (this.options.data.id && this.options.data.type) {
+                    // new BAS service center data interface, for BO and CDS
+                    const objectUri = this.options.data.type === BAS_OBJECT.BUSINESS_OBJECT ? boUri : cdsUri;
+                    this.systemSelectionAnswers.objectGenerator = await (
+                        this.systemSelectionAnswers.connectedSystem.serviceProvider as AbapServiceProvider
+                    ).getUiServiceGenerator({
+                        name: this.options.data.id,
+                        uri: `${objectUri}${this.options.data.id.toLowerCase()}`
+                    });
+                } else {
+                    // old interface, for BO only
+                    // to be removed once BAS release new interface
+                    this.systemSelectionAnswers.objectGenerator = await (
+                        this.systemSelectionAnswers.connectedSystem.serviceProvider as AbapServiceProvider
+                    ).getUiServiceGenerator({
+                        name: this.options.data.businessObject,
+                        uri: `${boUri}${this.options.data.businessObject.toLowerCase()}`
+                    });
+                }
+                this.systemSelectionAnswers.connectedSystem.destination = {
+                    Name: this.options.data.systemName
+                } as Destination;
+            } catch (error) {
+                UiServiceGenLogger.logger.error(t('ERROR_FETCHING_GENERATOR', { error: error.message }));
+            }
+        }
+    }
+
+    public async prompting(): Promise<void> {
+        // SAP System step
+        if (!this.options.data) {
+            // prompt system selection
+            const systemPrompts = await getSystemSelectionPrompts();
+            const systemSelectionAnswers = await this.prompt(systemPrompts.prompts);
+            Object.assign(this.answers, systemSelectionAnswers);
+            Object.assign(this.systemSelectionAnswers, systemPrompts.answers);
+        }
+
+        // UI Service configuration step
+        setToolbarMessage(this.options.data, this.systemSelectionAnswers, this.appWizard);
+        // prompt service configuration
+        const configPrompts = await getConfigPrompts(
+            this.systemSelectionAnswers,
+            UiServiceGenLogger.logger as unknown as Logger
+        );
+
+        const configAnswers = await this.prompt(configPrompts.prompts);
+        Object.assign(this.answers, configAnswers);
+        Object.assign(this.serviceConfigAnswers, configPrompts.answers);
+    }
+
+    async end(): Promise<void> {
+        // UI Service Generation
+        this.appWizard.showWarning(t('GENERATING_UI_SERVICE_WARNING'), MessageType.prompt);
+        const transportReqNumber =
+            (this.answers.transportFromList || this.answers.transportManual || this.answers.transportCreated) ?? '';
+        UiServiceGenLogger.logger.error('transportReqNumber: ' + transportReqNumber);
+        UiServiceGenLogger.logger.error(
+            'serviceConfigAnswers content: ' + JSON.stringify(this.serviceConfigAnswers.content)
+        );
+        await generateService(
+            this.systemSelectionAnswers.objectGenerator!,
+            this.serviceConfigAnswers.content,
+            transportReqNumber,
+            this.appWizard
+        ).then(async (res) => {
+            if (res) {
+                //sendTelemetry(SERVICE_GENERATION_SUCCESS, TelemetryHelper.telemetryData);
+
+                // check if data passed from BAS service center to write BAS .service.metadata file
+                if (this.options.data?.path && this.options.data?.providerSystem) {
+                    await writeBASMetadata(
+                        this.serviceConfigAnswers,
+                        this.fs,
+                        this.appWizard,
+                        this.options.data,
+                        this.systemSelectionAnswers.connectedSystem!.serviceProvider
+                    );
+                } else {
+                    this.appWizard.showInformation(
+                        t('INFO_GENERATION_SUCCESSFUL', { serviceName: this.serviceConfigAnswers.serviceName }),
+                        MessageType.notification
+                    );
+                    UiServiceGenLogger.logger.info(
+                        `Generation of service ${this.serviceConfigAnswers.serviceName} successful`
+                    );
+                    UiServiceGenLogger.logger.debug(`Generation response: ${JSON.stringify(res)}`);
+                }
+
+                if (this.answers.launchAppGen && this.systemSelectionAnswers.connectedSystem) {
+                    await runPostGenHook(
+                        this.options.vscode,
+                        getAppGenSystemData(this.systemSelectionAnswers),
+                        this.serviceConfigAnswers.content,
+                        this.systemSelectionAnswers.connectedSystem?.serviceProvider,
+                        this.options.data?.path
+                    );
+                }
+            }
+        });
+    }
 }

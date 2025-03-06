@@ -16,13 +16,31 @@
       "path": "../axios-extension"
     },
     {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../guided-answers-helper"
+    },
+    {
       "path": "../inquirer-common"
     },
     {
       "path": "../jest-file-matchers"
     },
     {
+      "path": "../logger"
+    },
+    {
       "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../store"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../telemetry"
     }
   ]
 }

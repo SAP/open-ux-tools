@@ -10,10 +10,28 @@
   },
   "references": [
     {
+      "path": "../axios-extension"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
       "path": "../fiori-generator-shared"
     },
     {
+      "path": "../inquirer-common"
+    },
+    {
       "path": "../jest-file-matchers"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../system-access"
+    },
+    {
+      "path": "../ui-service-inquirer"
     }
   ]
 }

@@ -1,0 +1,8 @@
+{
+    "MESSAGE_OBJECT_TYPE": "Object Type",
+    "MESSAGE_BUSINESS_OBJECT_INTERFACE": "Business Object Interface",
+    "MESSAGE_ABAP_CDS_SERVICE": "ABAP Core Data Service",
+    "PROMPT_DRAFT_ENABLED": "Draft Enabled",
+    "PROMPT_LAUNCH_APP_GEN": "Do you want to create an SAP Fiori application with the newly generated service?",
+    "PROMPT_LAUNCH_APP_GEN_BREADCRUMB": "Create SAP Fiori Application?"
+}
