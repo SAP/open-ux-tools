@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.18.13
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+-   Updated dependencies [1c07ab9]
+    -   @sap-ux/adp-tooling@0.13.12
+
 ## 0.18.12
 
 ### Patch Changes
