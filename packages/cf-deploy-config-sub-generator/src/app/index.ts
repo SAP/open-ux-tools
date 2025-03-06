@@ -383,4 +383,4 @@ export default class extends DeploymentGenerator {
 
 export { getCFQuestions, loadManifest };
 export { API_BUSINESS_HUB_ENTERPRISE_PREFIX, DESTINATION_AUTHTYPE_NOTFOUND };
-export { CfDeployConfigOptions, CfDeployConfigAnswers };
+export { CfDeployConfigOptions, CfDeployConfigAnswers, CfDeployConfigQuestions, ApiHubConfig, ApiHubType };

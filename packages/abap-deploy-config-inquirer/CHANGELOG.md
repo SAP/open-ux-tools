@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.29
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+
 ## 1.2.28
 
 ### Patch Changes

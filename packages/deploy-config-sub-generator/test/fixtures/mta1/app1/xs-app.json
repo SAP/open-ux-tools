@@ -1,0 +1,18 @@
+{
+    "welcomeFile": "/manifest.json",
+    "authenticationMethod": "route",
+    "routes": [
+      {
+        "source": "^/sap/(.*)$",
+        "target": "/sap/$1",
+        "destination": "not_going_to_work",
+        "authenticationType": "xsuaa"
+      },
+      {
+        "source": "^(.*)$",
+        "target": "$1",
+        "service": "html5-apps-repo-rt",
+        "authenticationType": "none"
+      }
+    ]
+  }

@@ -1,5 +1,13 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.24
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+-   Updated dependencies [19a19dd]
+    -   @sap-ux/deploy-config-generator-shared@0.0.35
+
 ## 0.1.23
 
 ### Patch Changes

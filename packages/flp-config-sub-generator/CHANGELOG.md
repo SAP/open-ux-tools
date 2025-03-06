@@ -1,5 +1,20 @@
 # @sap-ux/flp-config-sub-generator
 
+## 0.1.39
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+-   Updated dependencies [19a19dd]
+    -   @sap-ux/deploy-config-generator-shared@0.0.35
+
+## 0.1.38
+
+### Patch Changes
+
+-   @sap-ux/flp-config-inquirer@0.2.57
+-   @sap-ux/app-config-writer@0.5.39
+
 ## 0.1.37
 
 ### Patch Changes

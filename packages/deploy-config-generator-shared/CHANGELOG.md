@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.35
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+
 ## 0.0.34
 
 ### Patch Changes
