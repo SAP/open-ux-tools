@@ -66,7 +66,7 @@ describe('Test validators', () => {
                 additionalValidation: { shouldRestrictDifferentSystemType: true }
             });
 
-            expect(result).toBe('Cloud system');
+            expect(result).toBe(t('errors.invalidCloudSystem'));
         });
 
         it('should return error when selected destination is onPrem and the default one is cloud', async () => {
@@ -76,7 +76,7 @@ describe('Test validators', () => {
                 additionalValidation: { shouldRestrictDifferentSystemType: true }
             });
 
-            expect(result).toBe('OnPrem system');
+            expect(result).toBe(t('errors.invalidOnPremSystem'));
         });
     });
 
@@ -128,7 +128,7 @@ describe('Test validators', () => {
                 additionalValidation: { shouldRestrictDifferentSystemType: true }
             });
 
-            expect(result).toBe('Cloud system');
+            expect(result).toBe(t('errors.invalidCloudSystem'));
         });
 
         it('should return error when selected destination is onPrem and the default one is cloud', async () => {
@@ -138,7 +138,7 @@ describe('Test validators', () => {
                 additionalValidation: { shouldRestrictDifferentSystemType: true }
             });
 
-            expect(result).toBe('OnPrem system');
+            expect(result).toBe(t('errors.invalidOnPremSystem'));
         });
     });
 
