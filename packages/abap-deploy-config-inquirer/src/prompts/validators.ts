@@ -54,9 +54,9 @@ async function validateSystemType(
         const isSelectedAbapCloud = await isAbapCloud(backendTarget);
         const isDefaultProviderAbapCloud = AbapServiceProviderManager.getIsDefaultProviderAbapCloud();
         if (isDefaultProviderAbapCloud === true && isSelectedAbapCloud !== true) {
-            return t('errors.invalidCloudSystem');
+            return t('errors.validators.invalidCloudSystem');
         } else if (isDefaultProviderAbapCloud === false && isSelectedAbapCloud !== false) {
-            return t('errors.invalidOnPremSystem');
+            return t('errors.validators.invalidOnPremSystem');
         }
     }
 
