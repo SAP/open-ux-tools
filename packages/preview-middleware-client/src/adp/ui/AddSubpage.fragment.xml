@@ -1,0 +1,73 @@
+<Dialog
+    id="addSubpageDialog"
+    xmlns="sap.m"
+    xmlns:core="sap.ui.core"
+    xmlns:l="sap.ui.layout"
+    xmlns:f="sap.ui.layout.form"
+    title="{/title}"
+    contentWidth="500px"
+    initialFocus="aggregationName"
+    class="sapUiRTABorder"
+>
+    <content>
+        <f:SimpleForm
+            id="addSubpageDialog_Form"
+            editable="true"
+            layout="ResponsiveGridLayout"
+            labelSpanS="4"
+            singleContainerFullSize="false"
+        >
+            <f:content>
+                <Label text="{i18n>ADP_ADD_SUB_PAGE_DIALOG_PAGE_TYPE_LABEL}" />
+                <Select
+                    id="pageType"
+                    change="onPageTypeChange"
+                    selectedKey="{/selectedPageType/key}"
+                    editable="false"
+                    items="{
+                        path: '/pageTypeOptions',
+                        sorter: { path: 'text' }
+                    }"
+                >
+                    <core:Item
+                        key="{key}"
+                        text="{value}"
+                    />
+                </Select>
+                <Label text="{i18n>ADP_ADD_SUB_PAGE_DIALOG_NAVIGATION_LABEL}" />
+                <Select
+                    id="navigation"
+                    visible="true"
+                    change="onNavigationChange"
+                    selectedKey="{/selectedNavigation/key}"
+                    items="{
+                        path: '/navigationOptions',
+                        sorter: { path: 'text' }
+                    }"
+                >
+                    <core:Item
+                        key="{key}"
+                        text="{value}"
+                    />
+                </Select>
+            </f:content>
+        </f:SimpleForm>
+    </content>
+    <beginButton>
+        <Button
+            id="createDialogBtn"
+            text="{i18n>CREATE_BUTTON_LABEL}"
+            press="onCreateBtnPress"
+            enabled="true"
+            type="Emphasized"
+        />
+    </beginButton>
+    <endButton>
+        <Button
+            id="closeDialogBtn"
+            text="{i18n>CANCEL_BUTTON_LABEL}"
+            press="handleDialogClose"
+            type="Reject"
+        />
+    </endButton>
+</Dialog>
