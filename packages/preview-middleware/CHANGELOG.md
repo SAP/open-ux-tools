@@ -1,5 +1,50 @@
 # @sap-ux/preview-middleware
 
+## 0.18.14
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/adp-tooling@0.13.13
+    -   @sap-ux/system-access@0.5.32
+
+## 0.18.13
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+-   Updated dependencies [1c07ab9]
+    -   @sap-ux/adp-tooling@0.13.12
+
+## 0.18.12
+
+### Patch Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
+## 0.18.11
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/adp-tooling@0.13.11
+
+## 0.18.10
+
+### Patch Changes
+
+-   Updated dependencies [14bec21]
+    -   @sap-ux/adp-tooling@0.13.10
+
+## 0.18.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.9
+-   @sap-ux/project-access@1.29.13
+
 ## 0.18.8
 
 ### Patch Changes

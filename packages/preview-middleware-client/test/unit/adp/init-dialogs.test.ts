@@ -133,28 +133,36 @@ describe('Dialogs', () => {
         });
 
         it('should return false when overlays array is empty', () => {
-            expect(isControllerExtensionEnabled([], syncViewsIds, { major: 1, minor: 118 })).toBe(false);
+            expect(isControllerExtensionEnabled([], syncViewsIds, { major: 1, minor: 118 }, false)).toBe(false);
         });
 
         it('should return true when overlays length is 1 and clickedControlId is not in syncViewsIds and it is not reuse component', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId2') });
             jest.spyOn(cpeUtils, 'isReuseComponent').mockReturnValue(false);
             const overlays: ElementOverlay[] = [elementOverlayMock];
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds, { major: 1, minor: 112 })).toBe(true);
+            expect(isControllerExtensionEnabled(overlays, syncViewsIds, { major: 1, minor: 112 }, false)).toBe(true);
         });
 
-        it('should return false when overlays length is 1 and clickedControlId is not in syncViewsIds and it is reuse component', () => {
+        it('should return false when overlays length is 1 and clickedControlId is not in syncViewsIds and it is reuse component - OnPremise', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('asyncViewId4') });
             const overlays: ElementOverlay[] = [elementOverlayMock];
             jest.spyOn(cpeUtils, 'isReuseComponent').mockReturnValue(true);
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds, { major: 1, minor: 118 })).toBe(false);
+            expect(isControllerExtensionEnabled(overlays, syncViewsIds, { major: 1, minor: 118 }, false)).toBe(true);
+            expect(cpeUtils.isReuseComponent).not.toHaveBeenCalled();
+        });
+
+        it('should return false when overlays length is 1 and clickedControl is not in syncViewsIds adn it is reuse component - Cloud', () => {
+            FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId3') });
+            const overlays: ElementOverlay[] = [elementOverlayMock];
+            jest.spyOn(cpeUtils, 'isReuseComponent').mockReturnValue(true);
+            expect(isControllerExtensionEnabled(overlays, syncViewsIds, { major: 1, minor: 118 }, true)).toBe(false);
         });
 
         it('should return false when overlays length is more than 1', () => {
             FlUtils.getViewForControl = jest.fn().mockReturnValue({ getId: jest.fn().mockReturnValue('syncViewId3') });
             const overlays: ElementOverlay[] = [elementOverlayMock, elementOverlayMock];
             const syncViewsIds = ['syncViewId1', 'syncViewId2'];
-            expect(isControllerExtensionEnabled(overlays, syncViewsIds, { major: 1, minor: 118 })).toBe(false);
+            expect(isControllerExtensionEnabled(overlays, syncViewsIds, { major: 1, minor: 118 }, false)).toBe(false);
         });
     });
 });

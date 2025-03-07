@@ -1,5 +1,24 @@
 # @sap-ux/project-access
 
+## 1.29.15
+
+### Patch Changes
+
+-   1ce7fe9: Improve `getModule` to attempt module reinstallation if loading fails.
+
+## 1.29.14
+
+### Patch Changes
+
+-   3cc8f8a: fix: check files in srv folder of CAP project when srv folder contains subfolders
+
+## 1.29.13
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+
 ## 1.29.12
 
 ### Patch Changes
