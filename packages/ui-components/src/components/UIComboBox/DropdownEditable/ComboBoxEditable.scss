@@ -1,0 +1,8 @@
+.dropdown-menu-editable {
+    .ms-Button-flexContainer  > span {
+        width: 100%;
+    }
+    .ms-Checkbox, .ms-Button--action {
+        padding-right: 0 !important;
+    }
+}
