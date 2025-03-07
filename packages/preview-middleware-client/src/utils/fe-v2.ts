@@ -1,11 +1,11 @@
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
-interface V2_ManifestPageDefinition {
+interface V2ManifestPageDefinition {
     component: {
         name: string;
     };
     entitySet: string;
-    pages?: Record<string, V2_ManifestPageDefinition> | Array<V2_ManifestPageDefinition>;
+    pages?: Record<string, V2ManifestPageDefinition> | Array<V2ManifestPageDefinition>;
 }
 
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
@@ -23,7 +23,7 @@ export function getV2ApplicationPages(manifest: Manifest): { id: string; entityS
         const result: { id: string; entitySet: string | undefined }[] = [];
 
         const collectPageData = <
-            T extends Record<string, V2_ManifestPageDefinition> | Array<V2_ManifestPageDefinition>
+            T extends Record<string, V2ManifestPageDefinition> | Array<V2ManifestPageDefinition>
         >(
             pagesDefinitions: T | undefined,
             idPrefix: string

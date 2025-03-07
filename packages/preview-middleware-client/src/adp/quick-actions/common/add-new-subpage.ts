@@ -26,7 +26,7 @@ const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
  * Quick Action for adding a custom page action.
  */
 export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements SimpleQuickActionDefinition {
-    private currentPageDescriptor: {
+    private readonly currentPageDescriptor: {
         pageType: string;
         entitySet: string;
         navProperties: { navProperty: string; entitySet: string }[]; // only navProperty with 1:n relationship and the entitySet
@@ -64,7 +64,7 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         return [];
     }
 
-    private prepareNavigationData(entityType: EntityType, metaModel: ODataMetaModel) {
+    private prepareNavigationData(entityType: EntityType, metaModel: ODataMetaModel): void {
         const existingPages = this.getApplicationPages();
         if (this.currentPageDescriptor.pageType === 'sap.suite.ui.generic.template.ObjectPage') {
             // Navigation from Object Page
@@ -88,15 +88,16 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
                     });
                 }
             }
-        } else {
-            // navigation from LR or ALP (only OP based on current entitySet is possible)
-            const pageExists = existingPages.some((page) => page.entitySet === this.currentPageDescriptor.entitySet);
-            if (!pageExists) {
-                this.currentPageDescriptor.navProperties.push({
-                    entitySet: this.currentPageDescriptor.entitySet,
-                    navProperty: this.currentPageDescriptor.entitySet
-                });
-            }
+            return;
+        }
+
+        // navigation from LR or ALP (only OP based on current entitySet is possible)
+        const pageExists = existingPages.some((page) => page.entitySet === this.currentPageDescriptor.entitySet);
+        if (!pageExists) {
+            this.currentPageDescriptor.navProperties.push({
+                entitySet: this.currentPageDescriptor.entitySet,
+                navProperty: this.currentPageDescriptor.entitySet
+            });
         }
     }
 
@@ -129,7 +130,7 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
 
         const component = Component.getOwnerComponentFor(modifiedControl);
         if (!isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
-            return Promise.reject('Unexpected type of page owner component');
+            return Promise.reject(new Error('Unexpected type of page owner component'));
         }
 
         const entitySetName = component.getEntitySet();
@@ -143,7 +144,7 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
 
         this.prepareNavigationData(entityType, metaModel);
-        
+
         this.control = modifiedControl;
 
         return Promise.resolve();
@@ -151,7 +152,7 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
 
     async execute(): Promise<FlexCommand[]> {
         const overlay = OverlayRegistry.getOverlay(this.control!) || [];
-        const appReference = this.context.flexSettings.projectId ?? '';
+        const appReference = this.context.flexSettings.projectId;
         await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_SUBPAGE, undefined, {
             appType: this.appType,
             appReference,
