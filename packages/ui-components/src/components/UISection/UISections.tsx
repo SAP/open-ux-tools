@@ -119,8 +119,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         let availableSize = 0;
         sizes.forEach((section, index) => {
             if (typeof section === 'object' && section.size === undefined) {
-                const position = this.getSectionPosition(section);
-                section.size = Math.abs(this.rootSize - position.end - position.start);
+                section.size = this.getSize(section);
             }
             if (index !== dynamicSectionIndex) {
                 availableSize += (typeof section === 'object' ? section.size : section) ?? 0;
@@ -170,19 +169,39 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * when the external prop sizes have changed.
      *
      * @param prevProps The previous props of the component before the update.
+     * @param prevState The previous state of the component before the update.
      */
-    componentDidUpdate(prevProps: UISectionsProps): void {
+    componentDidUpdate(prevProps: UISectionsProps, prevState: UISectionsState): void {
         this.ignoreAnimation = false;
-        const sizes = this.props.sizes ?? [];
+        const externalSizes = this.props.sizes ?? [];
+        const sizes = this.state.sizes ?? [];
         const prevSizes = prevProps.sizes ?? [];
-        if (
-            sizes !== prevSizes &&
-            (sizes.length !== prevSizes.length || sizes.some((size, index) => size !== prevSizes[index]))
-        ) {
-            // Calculate state
+        const prevVisibleSections = prevState.visibleSections ?? [];
+        const visibleSections = this.state.visibleSections ?? [];
+        let newSizes: UISectionSize[] | undefined;
+        // Recalculate sizes when external sizes changed
+        const isExternalSizesChanged =
+            externalSizes !== prevSizes &&
+            (externalSizes.length !== prevSizes.length ||
+                externalSizes.some((size, index) => size !== prevSizes[index]));
+        // Recalculate sizes when visibility of sections are changed
+        const isSectionsVisibilityToggled =
+            prevVisibleSections.length !== visibleSections.length ||
+            prevVisibleSections.some((index) => !visibleSections.includes(index));
+        if (isExternalSizesChanged || isSectionsVisibilityToggled) {
+            newSizes = this.updateStateSizes(this.rootSize, isExternalSizesChanged ? externalSizes : sizes);
+        }
+        if (newSizes) {
+            // State sizes are updated
             this.setState({
-                sizes: this.updateStateSizes(this.rootSize, sizes)
+                sizes: newSizes
             });
+            // Update cached section's sizes
+            for (let i = 0; i < newSizes.length; i++) {
+                if (this.resizeSections[i]) {
+                    this.resizeSections[i].section = newSizes[i];
+                }
+            }
         }
     }
 
@@ -196,10 +215,9 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     static getDerivedStateFromProps(nextProps: UISectionsProps, prevState: UISectionsState): UISectionsState | null {
         // Handle property "animation" as array
         let animate = prevState.animate;
-        let visibleSections: number[] | undefined;
+        const visibleSections: number[] = UISections.getVisibleSections(nextProps.children);
         let dynamicSection = 0;
         if (Array.isArray(nextProps.animation)) {
-            visibleSections = UISections.getVisibleSections(nextProps.children);
             // Check if there is transition for section with enabled animation
             let transitionAnimation: boolean | undefined;
             for (let i = 0; i < nextProps.animation.length; i++) {
@@ -357,7 +375,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     private onSplitterResize(index: number, position: number): boolean {
         const resizeSections = position !== 0 ? this.resizeSections : [];
         const totalSize = this.rootSize;
-        let left = this.getSiblingsSize(resizeSections, 0, index);
+        let left = this.getSiblingsSize(resizeSections, 0, index, true);
         this.refreshResizeSections(0, index, this.state.sizes);
         let minSizeTriggered = false;
         for (let i = index; i < resizeSections.length; i++) {
@@ -392,16 +410,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             if (resizeSections[i + 1]) {
                 right = totalSize - left - newSize;
             }
-            if (i > 0) {
-                sectionSize.size = newSize;
-                sectionSize.start = left;
-                resizeSection.dom.style[this.startPositionProperty] = left + 'px';
-            } else {
-                sectionSize.start = 0;
-                resizeSection.dom.style[this.startPositionProperty] = '0px';
-            }
-            sectionSize.end = right;
-            resizeSection.dom.style[this.endPositionProperty] = right + 'px';
+            this.updateSectionSize(sectionSize, i, {
+                size: newSize,
+                start: left,
+                end: right,
+                percentage: false
+            });
+            resizeSection.dom.style[this.startPositionProperty] = sectionSize.start + 'px';
+            resizeSection.dom.style[this.endPositionProperty] = sectionSize.end + 'px';
             resizeSection.dom.style[this.sizeProperty] = '';
             resizeSection.section = sectionSize;
             left += newSize;
@@ -494,26 +510,18 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns {React.CSSProperties | undefined} CSS Style object or undefined if no style from 'sizes' prop.
      */
     private getSectionSize(index: number, childrenCount: number): React.CSSProperties | undefined {
-        if (
-            this.props.sizesAsPercents ||
-            !this.props.sizes ||
-            childrenCount < 2 ||
-            (index >= this.props.sizes.length && index >= childrenCount)
-        ) {
+        const { sizes } = this.state;
+        if (!sizes || this.props.sizesAsPercents || !this.props.sizes || childrenCount < 2) {
             return undefined;
         }
-        const sectionStyle: React.CSSProperties = {
-            [this.sizeProperty]: this.props.sizes[index] ? this.props.sizes[index] + 'px' : this.props.sizes[index]
-        };
-        if (index === 0) {
-            sectionStyle[this.startPositionProperty] = 0;
+        const result: React.CSSProperties = {};
+        if (sizes[index].start !== undefined) {
+            result[this.startPositionProperty] = sizes[index].start;
         }
-        if (index === this.props.sizes.length - 1) {
-            sectionStyle[this.endPositionProperty] = 0;
-        } else if (this.props.sizes[index + 1]) {
-            sectionStyle[this.endPositionProperty] = this.props.sizes[index + 1] + 'px';
+        if (sizes[index].end !== undefined) {
+            result[this.endPositionProperty] = sizes[index].end;
         }
-        return sectionStyle;
+        return result;
     }
 
     /**
@@ -554,10 +562,15 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 sectionStyle.style[this.sizeProperty] = stateSize.size + 'px';
             }
         } else {
-            const toggleSectionSize = this.getSectionSize(index, childrenCount);
-            if (toggleSectionSize) {
-                sectionStyle.style = { ...sectionStyle.style, ...toggleSectionSize };
-            } else {
+            let usePercents = true;
+            if (stateSize) {
+                const toggleSectionSize = this.getSectionSize(index, childrenCount);
+                if (toggleSectionSize) {
+                    sectionStyle.style = { ...sectionStyle.style, ...toggleSectionSize };
+                    usePercents = false;
+                }
+            }
+            if (usePercents) {
                 const size: number = this.getSizePercents(index, childrenCount, true);
                 sectionStyle.style = {
                     [this.startPositionProperty]: this.getPositionStyleValue(childrenCount, `${index * size}%`),
@@ -603,14 +616,8 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
             }
         } else {
             const childrenCount = this.props.children.length;
-            const sectionSize = this.getSectionSize(index, childrenCount);
-            if (sectionSize && sectionSize.width) {
-                size = parseFloat(sectionSize.width.toString());
-                unit = 'px';
-            } else {
-                size = this.getSizePercents(index, childrenCount);
-                unit = '%';
-            }
+            size = this.getSizePercents(index, childrenCount);
+            unit = '%';
         }
 
         const hiddenPosition = -size + unit;
@@ -695,7 +702,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                         onResizeStart={this.onSplitterResizeStart.bind(this)}
                         onResizeEnd={this.onSplitterResizeEnd.bind(this)}
                         onToggle={this.onSplitterToggle.bind(this)}
-                        hidden={isSectionHidden || isSingleSection}
+                        hidden={isSectionHidden || isSingleSection || !this.isSectionVisible(index - 1)}
                         type={splitterType}
                         splitterTabIndex={splitterTabIndex}
                         title={splitterTitle}
@@ -723,16 +730,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      */
     private getDynamicSectionIndex(): number {
         return this.state.dynamicSection !== undefined ? this.state.dynamicSection : 0;
-    }
-
-    /**
-     * Method converts passed positions to section position object.
-     *
-     * @param {UISectionSize} section Section size.
-     * @returns Position object.
-     */
-    private getSectionPosition(section: UISectionSize): { start: number; end: number } {
-        return { start: section.start ?? 0, end: section.end ?? 0 };
     }
 
     /**
@@ -807,20 +804,16 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @param {UISectionSize[]} sizes Section sizes.
      */
     private recalculatePositions(sizes: UISectionSize[]): void {
-        // Recalculate positions - START
-        let start = 0;
-        sizes.forEach((section) => {
-            section.start = start;
-            // Next start
-            start += section.size ?? 0;
+        sizes.forEach((section, index) => {
+            if (this.isSectionVisible(index)) {
+                section.start = this.getSectionPosition(index, sizes, true);
+                section.end = this.getSectionPosition(index, sizes, false);
+            }
+            // else {
+            //     section.start = 0;
+            //     section.end = 0;
+            // }
         });
-        // Recalculate positions - END
-        let end = 0;
-        for (let i = sizes.length - 1; i >= 0; i--) {
-            sizes[i].end = end;
-            // Next start
-            end += sizes[i].size ?? 0;
-        }
     }
 
     /**
@@ -844,8 +837,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const sections = [];
         let visibleSections = 0;
         for (let i = 0; i < this.props.children.length; i++) {
-            const childNode = this.props.children[i] as React.ReactElement;
-            const isSectionHidden = !UISections.isSectionVisible(childNode);
+            const isSectionHidden = !this.isSectionVisible(i);
 
             if (!isSectionHidden) {
                 visibleSections++;
@@ -875,13 +867,14 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @param sizes An array of objects, each containing 'size` property.
      * @param start The starting index (inclusive) of the range.
      * @param end The ending index (exclusive) of the range.
+     * @param onlyVisible Calculate only visible sections.
      * @returns The sum of the sibling sizes for the specified range.
      */
-    private getSiblingsSize(sizes: Array<{ size?: number }>, start: number, end: number): number {
+    private getSiblingsSize(sizes: Array<{ size?: number }>, start: number, end: number, onlyVisible = false): number {
         let size = 0;
         for (let j = start; j < end; j++) {
             const next = sizes[j];
-            if (next?.size) {
+            if (next?.size && (!onlyVisible || this.isSectionVisible(j))) {
                 size += next.size;
             }
         }
@@ -922,11 +915,99 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         const resizeSections = this.resizeSections;
         let reservedSize = 0;
         for (let i = 0; i < index; i++) {
-            reservedSize += resizeSections[i].size;
+            if (this.isSectionVisible(i)) {
+                reservedSize += resizeSections[i].size;
+            }
         }
         for (let i = index + 1; i < resizeSections.length; i++) {
-            reservedSize += this.getMinSectionSize(i);
+            if (this.isSectionVisible(i)) {
+                reservedSize += this.getMinSectionSize(i);
+            }
         }
         return Math.max(minSectionSize, mainSize - reservedSize);
+    }
+
+    /**
+     * Updates the size and position of section.
+     *
+     * @param sectionSize The section object to be updated.
+     * @param index The index of the section.
+     * @param newSize The new size and position values for the section.
+     */
+    private updateSectionSize(sectionSize: UISectionSize, index: number, newSize: UISectionSize): void {
+        if (index > 0) {
+            sectionSize.size = newSize.size;
+            sectionSize.start = newSize.start;
+        } else {
+            sectionSize.start = 0;
+        }
+        sectionSize.end = newSize.end;
+        if (this.isSectionVisible(index) && sectionSize.end !== undefined && sectionSize.start !== undefined) {
+            sectionSize.size = Math.abs(this.rootSize - sectionSize.end - sectionSize.start);
+        }
+    }
+
+    /**
+     * Determines whether a specific section is visible.
+     *
+     * @param {number} index - The index of the child node to check.
+     * @returns {boolean} - Returns `true` if the section is visible, otherwise `false`.
+     */
+    private isSectionVisible(index: number): boolean {
+        const childNode = this.props.children[index] as React.ReactElement;
+        return childNode ? UISections.isSectionVisible(childNode) : false;
+    }
+
+    /**
+     * Calculates the position of a section, either from the start or the end.
+     *
+     * @param index The index of the section.
+     * @param sizes An array of section size objects.
+     * @param start Determines whether to calculate from the start (true) or the end (false).
+     * @returns The calculated position of the section.
+     */
+    private getSectionPosition(index: number, sizes: Array<UISectionSize>, start: boolean): number {
+        let visibleSize = 0;
+        let hiddenSize = 0;
+        let totalHiddenSize = 0;
+
+        const iterate = (i: number) => {
+            const size = this.getSize(sizes[i]);
+            if (this.isSectionVisible(i)) {
+                visibleSize += size;
+                totalHiddenSize += hiddenSize;
+                hiddenSize = 0;
+            } else {
+                hiddenSize += size;
+            }
+        };
+
+        if (start) {
+            for (let i = 0; i < index; i++) {
+                iterate(i);
+            }
+        } else {
+            for (let i = sizes.length - 1; i > index; i--) {
+                iterate(i);
+            }
+        }
+
+        return visibleSize + totalHiddenSize;
+    }
+
+    /**
+     * Returns the size of a section based on its properties(size, start, end).
+     *
+     * @param sizes The section size object containing size, start, and end properties.
+     * @returns The computed size of the section. Returns 0 if no valid size is found.
+     */
+    private getSize(sizes: UISectionSize): number {
+        if (sizes.size !== undefined) {
+            return sizes.size;
+        }
+        if (sizes.end !== undefined && sizes.start !== undefined) {
+            return Math.abs(this.rootSize - sizes.end - sizes.start);
+        }
+        return 0;
     }
 }

@@ -223,6 +223,10 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
          * This value is ignored by UI5 version prior to 1.107
          */
         generator: string;
+        /**
+         * Key representing whether this is a cloud scenario
+         */
+        isCloud: boolean;
     }
 
     export interface RTAOptions {

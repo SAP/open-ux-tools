@@ -890,7 +890,8 @@ export async function initAdp(
             flp.rta.options = {
                 ...flp.rta.options,
                 projectId: variant.id,
-                scenario: 'ADAPTATION_PROJECT'
+                scenario: 'ADAPTATION_PROJECT',
+                isCloud: adp.isCloudProject
             };
             for (const editor of flp.rta.endpoints) {
                 editor.pluginScript ??= 'open/ux/preview/client/adp/init';

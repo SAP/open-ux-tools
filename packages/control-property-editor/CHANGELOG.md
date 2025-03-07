@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.6.1
+
+### Patch Changes
+
+-   3190a55: UISections. Fixed incorrect position calculations when hiding sections with three or more sections present.
+
 ## 0.6.0
 
 ### Minor Changes

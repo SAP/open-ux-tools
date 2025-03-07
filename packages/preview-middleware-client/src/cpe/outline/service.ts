@@ -36,7 +36,7 @@ export class OutlineService extends EventTarget {
      */
     public async init(sendAction: (action: ExternalAction) => void): Promise<void> {
         const outline = await this.rta.getService<RTAOutlineService>('outline');
-        const scenario = this.rta.getFlexSettings().scenario;
+        const { scenario, isCloud } = this.rta.getFlexSettings();
         const resourceBundle = await getTextBundle();
         const titleKey = 'ADP_REUSE_COMPONENTS_MESSAGE_TITLE';
         const descriptionKey = 'ADP_REUSE_COMPONENTS_MESSAGE_DESCRIPTION';
@@ -66,7 +66,7 @@ export class OutlineService extends EventTarget {
 
                 this.dispatchEvent(event);
                 sendAction(outlineChanged(outlineNodes));
-                if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning) {
+                if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning && isCloud) {
                     sendAction(
                         showInfoCenterMessage({
                             type: MessageBarType.warning,
