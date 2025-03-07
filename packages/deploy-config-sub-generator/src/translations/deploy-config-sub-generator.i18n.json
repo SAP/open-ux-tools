@@ -1,0 +1,12 @@
+{
+    "prompts": {
+        "deployTarget": {
+            "breadcrumb": "Target Type",
+            "message": "Please choose the target"
+        }
+    },
+    "debug": {
+        "exit": "Exiting the deployment generator",
+        "loadingPrompts": "Loading deploy prompts..."
+    }
+}
