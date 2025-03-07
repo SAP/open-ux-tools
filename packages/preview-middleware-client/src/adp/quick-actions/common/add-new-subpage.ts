@@ -151,7 +151,7 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
     }
 
     async execute(): Promise<FlexCommand[]> {
-        const overlay = OverlayRegistry.getOverlay(this.control!) || [];
+        const overlay = OverlayRegistry.getOverlay(this.control!);
         const appReference = this.context.flexSettings.projectId;
         await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_SUBPAGE, undefined, {
             appType: this.appType,
