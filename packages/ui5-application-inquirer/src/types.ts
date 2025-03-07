@@ -1,4 +1,4 @@
-import type { CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
+import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { CommonPromptOptions, PromptDefaultValue, UI5VersionChoice, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 

@@ -11,6 +11,14 @@ import { promises as fs } from 'fs';
  * @param fileNames - array of file names to search for
  * @param extensionNames - array of extensions names to search for
  * @param root - path to root folder
+ * @example
+ * // returns { deleted: ['src/test.css'], modified: ['src/app.js'] }
+ * const changes = {
+ *   'src/app.js': { state: 'modified' },
+ *   'src/test.css': { state: 'deleted' },
+ *   'src/index.ts': { state: 'modified' }
+ * };
+ * getMemFsChanges(changes, ['app.js'], ['.css'], 'src');
  * @returns - array of deleted and modified files filtered by query
  */
 function getMemFsChanges(
