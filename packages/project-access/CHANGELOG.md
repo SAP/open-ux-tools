@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.15
+
+### Patch Changes
+
+-   1ce7fe9: Improve `getModule` to attempt module reinstallation if loading fails.
+
 ## 1.29.14
 
 ### Patch Changes

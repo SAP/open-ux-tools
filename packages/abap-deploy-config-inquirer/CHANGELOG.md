@@ -1,5 +1,20 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.30
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.8
+-   @sap-ux/system-access@0.5.32
+-   @sap-ux/inquirer-common@0.6.28
+
+## 1.2.29
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+
 ## 1.2.28
 
 ### Patch Changes
