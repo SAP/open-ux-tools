@@ -23,9 +23,14 @@ describe('getOrCreateServiceProvider', () => {
         AbapServiceProviderManager.deleteExistingServiceProvider();
     });
 
+    beforeEach(() => {
+        AbapServiceProviderManager.resetIsDefaultProviderAbapCloud();
+    });
+
     it('should return an instance of AbapServiceProvider (VSCode)', async () => {
+        const abapServiceProvider = new AbapServiceProvider();
         mockIsAppStudio.mockReturnValueOnce(false);
-        mockCreateAbapServiceProvider.mockResolvedValueOnce(new AbapServiceProvider());
+        mockCreateAbapServiceProvider.mockResolvedValueOnce(abapServiceProvider);
         PromptState.abapDeployConfig = {
             url: 'http://target.url',
             client: '100',
@@ -37,10 +42,11 @@ describe('getOrCreateServiceProvider', () => {
             username: 'user1',
             password: 'password1'
         };
-
+        const isAbapCloudSpy = jest.spyOn(abapServiceProvider, 'isAbapCloud');
         const serviceProvider = await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials);
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
+        expect(isAbapCloudSpy).toHaveBeenCalled();
         expect(mockCreateAbapServiceProvider).toBeCalledWith(
             {
                 url: 'http://target.url',
@@ -60,14 +66,16 @@ describe('getOrCreateServiceProvider', () => {
 
     it('should return an instance of AbapServiceProvider (BAS)', async () => {
         mockIsAppStudio.mockReturnValueOnce(true);
-        mockCreateAbapServiceProvider.mockResolvedValueOnce(new AbapServiceProvider());
+        const abapServiceProvider = new AbapServiceProvider();
+        mockCreateAbapServiceProvider.mockResolvedValueOnce(abapServiceProvider);
         PromptState.abapDeployConfig = {
             destination: 'MOCK_DESTINATION'
         };
-
+        const isAbapCloudSpy = jest.spyOn(abapServiceProvider, 'isAbapCloud');
         const serviceProvider = await AbapServiceProviderManager.getOrCreateServiceProvider();
 
         expect(serviceProvider).toBeInstanceOf(AbapServiceProvider);
+        expect(isAbapCloudSpy).toHaveBeenCalled();
         expect(mockCreateAbapServiceProvider).toBeCalledWith(
             {
                 destination: 'MOCK_DESTINATION'
@@ -92,5 +100,25 @@ describe('getOrCreateServiceProvider', () => {
 
         const serviceProvider = await AbapServiceProviderManager.getOrCreateServiceProvider(backendTarget);
         expect(serviceProvider).toBe(abapServiceProvider);
+    });
+
+    it('should get is default created service provider abap cloud', async () => {
+        const abapServiceProvider = new AbapServiceProvider();
+        mockIsAppStudio.mockReturnValueOnce(false);
+        mockCreateAbapServiceProvider.mockResolvedValueOnce(abapServiceProvider);
+        PromptState.abapDeployConfig = {
+            url: 'http://target.url',
+            client: '100',
+            scp: false,
+            isS4HC: true
+        };
+
+        const credentials = {
+            username: 'user1',
+            password: 'password1'
+        };
+        jest.spyOn(abapServiceProvider, 'isAbapCloud').mockResolvedValueOnce(true);
+        await AbapServiceProviderManager.getOrCreateServiceProvider(undefined, credentials);
+        expect(AbapServiceProviderManager.getIsDefaultProviderAbapCloud()).toBe(true);
     });
 });
