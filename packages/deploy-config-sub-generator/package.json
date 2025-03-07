@@ -54,7 +54,7 @@
         "@jest/types": "29.6.3",
         "@types/hasbin": "1.2.2",
         "@types/inquirer": "8.2.6",
-        "@types/inquirer-autocomplete-prompt": "2.0.1",
+        "@types/inquirer-autocomplete-prompt": "2.0.2",
         "@types/js-yaml": "4.0.9",
         "@types/mem-fs": "1.1.2",
         "@types/mem-fs-editor": "7.0.1",
