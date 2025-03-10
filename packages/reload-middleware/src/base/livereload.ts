@@ -77,7 +77,8 @@ export function watchManifestChanges(livereload: LiveReloadServer): void {
                 path.endsWith('appdescr_fe_changePageConfiguration.change') ||
                 path.endsWith('appdescr_ui_generic_app_changePageConfiguration.change') ||
                 path.endsWith('appdescr_ui_gen_app_changePageConfig.change') ||
-                path.endsWith('appdescr_app_addAnnotationsToOData.change')
+                path.endsWith('appdescr_app_addAnnotationsToOData.change') ||
+                path.endsWith('appdescr_ui_generic_app_addNewObjectPage.change')
             ) {
                 global.__SAP_UX_MANIFEST_SYNC_REQUIRED__ = true;
             }
