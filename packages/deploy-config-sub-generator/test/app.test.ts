@@ -205,6 +205,49 @@ describe('Deployment Generator', () => {
         expect(getABAPPromptsSpy).toHaveBeenCalled();
     });
 
+    it('Validate deployment generator is ran standalone (no backend config)', async () => {
+        cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
+        mockIsAppStudio.mockReturnValueOnce(true);
+        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
+        const getABAPPromptsSpy = jest
+            .spyOn(abapDeploySubGen, 'getAbapQuestions')
+            .mockResolvedValueOnce({ prompts: [], answers: {} });
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('mta1/app1/ui5.yaml')
+            },
+            '/'
+        );
+
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
+        await expect(
+            yeomanTest
+                .create(
+                    DeployGenerator,
+                    {
+                        resolved: deployPath
+                    },
+                    { cwd: appDir }
+                )
+                .withOptions({
+                    overwrite: false,
+                    skipInstall: true,
+                    data: {
+                        destinationRoot: appDir,
+                        launchDeployConfigAsSubGenerator: true
+                    }
+                })
+                .withPrompts({
+                    targetName: TargetName.ABAP
+                })
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'abap')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
+                .run()
+        ).resolves.not.toThrow();
+        expect(getCFQuestionsSpy).toHaveBeenCalled();
+        expect(getABAPPromptsSpy).toHaveBeenCalled();
+    });
+
     it('Validate deployment generator handles CAP project with missing MTA configuration', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}capproject`;
         mockIsAppStudio.mockReturnValueOnce(true);
