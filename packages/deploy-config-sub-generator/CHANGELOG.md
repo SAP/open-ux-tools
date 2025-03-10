@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.0.5
+
+### Patch Changes
+
+-   625fb21: ensure destination is appended to backend config
+
 ## 0.0.4
 
 ### Patch Changes
