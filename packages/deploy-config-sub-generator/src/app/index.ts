@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { basename, dirname, join } from 'path';
-import { getMtaPath, findCapProjectRoot } from '@sap-ux/project-access';
+import { getMtaPath, findCapProjectRoot, getAppType } from '@sap-ux/project-access';
 import {
     bail,
     DeploymentGenerator,
@@ -50,6 +50,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     backendConfig: FioriToolsProxyConfigBackend;
     isLibrary = false;
     isCap = false;
+    isAdp = false;
 
     target: string | undefined;
     answers?: Answers;
@@ -134,6 +135,8 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         });
         this.options.appGenServicePath ||= servicePath;
         this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig?.destination;
+        const appType = await getAppType(this.options.appRootPath);
+        this.isAdp = appType === 'Fiori Adaptation';
     }
 
     /**
@@ -169,10 +172,11 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                     cfDestination: this.cfDestination,
                     isCap: this.isCap,
                     apiHubConfig: this.apiHubConfig,
-                    isLibrary: this.isLibrary
+                    isLibrary: this.isLibrary,
+                    isAdp: this.isAdp
                 }
             );
-            this.target = target;
+            this.target = target ?? TargetName.ABAP;
             this.answers = answers;
         }
 

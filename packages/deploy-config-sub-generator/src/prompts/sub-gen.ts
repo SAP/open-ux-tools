@@ -11,6 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { ApiHubConfig, CfDeployConfigQuestions } from '@sap-ux/cf-deploy-config-sub-generator';
 import type {
     AbapDeployConfigAnswersInternal,
+    AbapDeployConfigPromptOptions,
     AbapDeployConfigQuestion
 } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { CommonPromptOptions, PromptDefaultValue } from '@sap-ux/inquirer-common';
@@ -32,6 +33,7 @@ import type { DeployConfigOptions, Target } from '../types';
  * @param promptOpts.isCap - whether the project is a CAP project
  * @param promptOpts.apiHubConfig - API Hub configuration
  * @param promptOpts.isLibrary - whether the project is a library
+ * @param promptOpts.isAdp - whether the project is an Adaptation Project
  * @returns - deployment configuration answers
  */
 export async function getSubGenPrompts(
@@ -46,7 +48,8 @@ export async function getSubGenPrompts(
         cfDestination,
         isCap,
         apiHubConfig,
-        isLibrary
+        isLibrary,
+        isAdp
     }: {
         launchDeployConfigAsSubGenerator: boolean;
         launchStandaloneFromYui: boolean;
@@ -57,6 +60,7 @@ export async function getSubGenPrompts(
         isCap: boolean;
         apiHubConfig: ApiHubConfig;
         isLibrary: boolean;
+        isAdp: boolean;
     }
 ): Promise<{ questions: Question[]; abapAnswers: Partial<AbapDeployConfigAnswersInternal> }> {
     DeploymentGenerator.logger?.debug(t('debug.loadingPrompts'));
@@ -68,8 +72,15 @@ export async function getSubGenPrompts(
         options.overwrite
     );
     const indexGenerationAllowed =
-        !isLibrary && launchStandaloneFromYui && !(await indexHtmlExists(fs, options.appRootPath));
+        !isLibrary && launchStandaloneFromYui && !(await indexHtmlExists(fs, options.appRootPath)) && !isAdp;
 
+    const promptOptions: AbapDeployConfigPromptOptions = {
+        packageAutocomplete: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp },
+        packageManual: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp },
+        targetSystem: { shouldRestrictDifferentSystemType: isAdp },
+        transportInputChoice: { hideIfOnPremise: isAdp },
+        ui5AbapRepo: { hideIfOnPremise: isAdp }
+    };
     // ABAP prompts
     const { prompts: abapPrompts, answers: abapAnswers } = await getAbapQuestions({
         appRootPath: options.appRootPath,
@@ -78,8 +89,13 @@ export async function getSubGenPrompts(
         configFile: options.config,
         indexGenerationAllowed,
         showOverwriteQuestion: showOverwrite,
-        logger: DeploymentGenerator.logger
+        logger: DeploymentGenerator.logger,
+        promptOptions
     });
+
+    if (isAdp) {
+        return { questions: abapPrompts as Question[], abapAnswers };
+    }
 
     // CF prompts
     const cfPrompts = await getCFQuestions({
