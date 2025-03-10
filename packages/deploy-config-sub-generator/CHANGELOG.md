@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.0.4
+
+### Patch Changes
+
+-   026dfe0: fix undefined error when no backend config
+
+## 0.0.3
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-sub-generator@0.1.26
+
 ## 0.0.2
 
 ### Patch Changes

@@ -133,7 +133,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             servicePath: this.options.appGenServicePath
         });
         this.options.appGenServicePath ||= servicePath;
-        this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig.destination;
+        this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig?.destination;
     }
 
     /**

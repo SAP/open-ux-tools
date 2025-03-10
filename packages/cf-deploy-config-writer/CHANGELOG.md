@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.21
+
+### Patch Changes
+
+-   751865f: support mta configurations generated using cds which produce modules with a different naming conventions
+
 ## 0.1.20
 
 ### Patch Changes
