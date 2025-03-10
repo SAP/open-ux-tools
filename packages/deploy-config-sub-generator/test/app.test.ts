@@ -159,7 +159,7 @@ describe('Deployment Generator', () => {
     });
 
     it('Validate deployment generator is loaded as sub generator', async () => {
-        cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
+        cwd = join(OUTPUT_DIR_PREFIX, 'mta-app/project1');
         mockIsAppStudio.mockReturnValueOnce(true);
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
         const getABAPPromptsSpy = jest
@@ -167,12 +167,17 @@ describe('Deployment Generator', () => {
             .mockResolvedValueOnce({ prompts: [], answers: {} });
         memfs.vol.fromNestedJSON(
             {
-                [`.${OUTPUT_DIR_PREFIX}/project1/ui5.yaml`]: testFixture.getContents('apiHubEnterprise/ui5.yaml')
+                [`.${OUTPUT_DIR_PREFIX}/mta-app/project1/ui5.yaml`]: testFixture.getContents(
+                    'mta1/app1/ui5-client-value.yaml'
+                ),
+                [`.${OUTPUT_DIR_PREFIX}/mta-app/mta.yaml`]: testFixture.getContents(
+                    'mta1/mta-with-router-deployer.yaml'
+                )
             },
             '/'
         );
 
-        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/project1`);
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/mta-app/project1`);
         await expect(
             yeomanTest
                 .create(
@@ -185,9 +190,6 @@ describe('Deployment Generator', () => {
                 .withOptions({
                     overwrite: false,
                     skipInstall: true,
-                    appGenDestination: '~Destination',
-                    appGenServiceHost: '~Host',
-                    appGenClient: '110',
                     data: {
                         destinationRoot: appDir,
                         launchDeployConfigAsSubGenerator: true
@@ -201,7 +203,17 @@ describe('Deployment Generator', () => {
                 .run()
         ).resolves.not.toThrow();
         expect(getCFQuestionsSpy).toHaveBeenCalled();
-        expect(getABAPPromptsSpy).toHaveBeenCalled();
+        expect(getABAPPromptsSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                appRootPath: expect.stringContaining('/output/mta-app/project1'),
+                backendConfig: {
+                    client: 100,
+                    path: '/sap',
+                    scp: true,
+                    url: 'https://abap.staging.hana.ondemand.com'
+                }
+            })
+        );
     });
 
     it('Validate deployment generator is loaded and backend config is loaded from options', async () => {
