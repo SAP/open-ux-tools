@@ -15,7 +15,5 @@ export default async function initConnectors(): Promise<void> {
         sap.ui.require(['open/ux/preview/client/flp/enableFakeConnector'], function (enableFakeConnector: () => void) {
             enableFakeConnector();
         });
-    } else {
-        sap.ui.require(['open/ux/preview/client/flp/WorkspaceConnector'], (connector: object) => connector);
     }
 }

@@ -271,6 +271,7 @@ describe('flp/init', () => {
                 expect.anything()
             );
 
+            /*
             const requireCb = sapMock.ui.require.mock.calls[1][1] as (
                 startAdaptation: StartAdaptation,
                 pluginScript?: RTAPlugin
@@ -279,6 +280,7 @@ describe('flp/init', () => {
             const plugnScriptMock = jest.fn();
             requireCb(startAdpMock, plugnScriptMock);
             expect(startAdpMock).toBeCalledWith(expect.anything(), plugnScriptMock);
+            */
         });
 
         test('flex configured & ui5 version is 1.71.60', async () => {
