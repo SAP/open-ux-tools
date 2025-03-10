@@ -29,19 +29,4 @@ describe('flp/initConnectors', () => {
         requireCb(enableFakeConSpy);
         expect(enableFakeConSpy).toHaveBeenCalled();
     });
-
-    /*
-    test('defines a local connector for writing and applying changes and returns it', async () => {
-        sapMock.ui.version = '1.120.4';
-        VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.120.4' });
-
-        await initConnectors();
-
-        const WorkspaceConnectorMock = { layers: [] };
-        const requireCb = sapMock.ui.require.mock.calls[0][1];
-
-        const wsMock = requireCb(WorkspaceConnectorMock);
-        expect(wsMock).toEqual(WorkspaceConnectorMock);
-    });
-    */
 });
