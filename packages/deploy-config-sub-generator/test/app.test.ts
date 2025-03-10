@@ -9,7 +9,6 @@ import { generatorNamespace, initI18n } from '../src/utils';
 import { TargetName } from '@sap-ux/deploy-config-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
-import * as envUtils from '@sap-ux/fiori-generator-shared';
 import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
 import Generator from 'yeoman-generator';
