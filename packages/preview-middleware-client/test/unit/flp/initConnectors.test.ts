@@ -17,6 +17,11 @@ describe('flp/initConnectors', () => {
             expect.anything()
         );
 
+        expect(sapMock.ui.require).not.toBeCalledWith(
+            ['open/ux/preview/client/flp/WorkspaceConnector'],
+            expect.anything()
+        );
+
         const enableFakeConSpy = jest.fn();
         const requireCb = sapMock.ui.require.mock.calls[0][1] as (enableFakeConnector: () => void) => void;
 
