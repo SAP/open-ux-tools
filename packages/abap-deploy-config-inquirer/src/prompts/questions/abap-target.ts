@@ -73,10 +73,10 @@ function getDestinationPrompt(
 
     if (isAppStudio() && !PromptState.isYUI) {
         prompts.push({
-            when: (answers: AbapDeployConfigAnswersInternal): boolean => {
+            when: async (answers: AbapDeployConfigAnswersInternal): Promise<boolean> => {
                 const destination = answers[promptNames.destination];
                 if (destination) {
-                    updateDestinationPromptState(destination, destinations);
+                    await updateDestinationPromptState(destination, destinations, options, backendTarget);
                 }
                 return false;
             },
@@ -91,13 +91,11 @@ function getDestinationPrompt(
  *
  * @param choices - abap system choices
  * @param options - target system options
- * @param backendTarget - backend target
  * @returns list question for target system
  */
 function getTargetSystemPrompt(
     choices: AbapSystemChoice[],
-    options?: TargetSystemPromptOptions,
-    backendTarget?: BackendTarget
+    options?: TargetSystemPromptOptions
 ): (YUIQuestion<AbapDeployConfigAnswersInternal> | Question)[] {
     const prompts: (ListQuestion<AbapDeployConfigAnswersInternal> | Question)[] = [
         {
@@ -112,7 +110,7 @@ function getTargetSystemPrompt(
             choices: (): AbapSystemChoice[] => choices,
             default: (): string | undefined => defaultTargetSystem(choices),
             validate: async (target: string): Promise<boolean | string> =>
-                await validateTargetSystem(target, choices, options, backendTarget)
+                await validateTargetSystem(target, choices, options)
         } as ListQuestion<AbapDeployConfigAnswersInternal>
     ];
 
@@ -157,7 +155,7 @@ function getUrlPrompt(
         },
         default: ({ targetSystem }: AbapDeployConfigAnswersInternal): string | undefined => defaultUrl(targetSystem),
         filter: (input: string): string => input?.trim(),
-        validate: (url: string): boolean | string => validateUrl(url)
+        validate: async (url: string): Promise<boolean | string> => validateUrl(url)
     } as InputQuestion<AbapDeployConfigAnswersInternal>;
 }
 
@@ -274,7 +272,7 @@ export async function getAbapTargetPrompts(
     const abapSystemChoices = await getAbapSystemChoices(destinations, options?.backendTarget, backendSystems);
     return [
         ...getDestinationPrompt(abapSystemChoices, destinations, options.targetSystem, options.backendTarget),
-        ...getTargetSystemPrompt(abapSystemChoices, options.targetSystem, options.backendTarget),
+        ...getTargetSystemPrompt(abapSystemChoices, options.targetSystem),
         getUrlPrompt(destinations, options.backendTarget),
         ...getScpPrompt(options.backendTarget),
         ...getClientChoicePrompt(options.backendTarget),

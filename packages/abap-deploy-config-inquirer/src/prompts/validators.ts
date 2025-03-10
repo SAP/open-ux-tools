@@ -43,19 +43,15 @@ const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
  * Validates the system type based on the provided options and backend target.
  *
  * @param options - target system options
- * @param backendTarget - backend target
  * @returns boolean
  */
-async function validateSystemType(
-    options?: TargetSystemPromptOptions,
-    backendTarget?: BackendTarget
-): Promise<boolean | string> {
+async function validateSystemType(options?: TargetSystemPromptOptions): Promise<boolean | string> {
     if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
-        const isSelectedAbapCloud = await isAbapCloud(backendTarget);
         const isDefaultProviderAbapCloud = AbapServiceProviderManager.getIsDefaultProviderAbapCloud();
-        if (isDefaultProviderAbapCloud === true && isSelectedAbapCloud !== true) {
+        const isSelectedS4HC = PromptState?.abapDeployConfig?.isS4HC;
+        if (isDefaultProviderAbapCloud === true && isSelectedS4HC === false) {
             return t('errors.validators.invalidCloudSystem');
-        } else if (isDefaultProviderAbapCloud === false && isSelectedAbapCloud !== false) {
+        } else if (isDefaultProviderAbapCloud === false && isSelectedS4HC == true) {
             return t('errors.validators.invalidOnPremSystem');
         }
     }
@@ -78,8 +74,8 @@ export async function validateDestinationQuestion(
     backendTarget?: BackendTarget
 ): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
-    updateDestinationPromptState(destination, destinations);
-    const systemTypeValidation = await validateSystemType(options, backendTarget);
+    await updateDestinationPromptState(destination, destinations, options, backendTarget);
+    const systemTypeValidation = await validateSystemType(options);
     if (typeof systemTypeValidation === 'string') {
         return systemTypeValidation;
     }
@@ -121,8 +117,15 @@ function updatePromptState({
  *
  * @param destination - destination
  * @param destinations - list of destinations
+ * @param options - target system options
+ * @param backendTarget - backend target
  */
-export function updateDestinationPromptState(destination: string, destinations: Destinations = {}): void {
+export async function updateDestinationPromptState(
+    destination: string,
+    destinations: Destinations = {},
+    options?: TargetSystemPromptOptions,
+    backendTarget?: BackendTarget
+): Promise<void> {
     const dest = destinations[destination];
     if (dest) {
         PromptState.abapDeployConfig.destination = dest.Name;
@@ -132,6 +135,11 @@ export function updateDestinationPromptState(destination: string, destinations: 
             isS4HC: isS4HC(dest),
             scp: isAbapEnvironmentOnBtp(dest)
         });
+
+        if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
+            const isS4HCloud = await isAbapCloud(backendTarget);
+            PromptState.abapDeployConfig.isS4HC = isS4HCloud ?? false;
+        }
     }
 }
 
@@ -141,14 +149,12 @@ export function updateDestinationPromptState(destination: string, destinations: 
  * @param target - target system
  * @param choices - abab system choices
  * @param options - target system options
- * @param backendTarget - backend target
  * @returns boolean or error message string
  */
 export async function validateTargetSystem(
     target?: string,
     choices?: AbapSystemChoice[],
-    options?: TargetSystemPromptOptions,
-    backendTarget?: BackendTarget
+    options?: TargetSystemPromptOptions
 ): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
     if (!target || target === TargetSystemType.Url) {
@@ -168,7 +174,7 @@ export async function validateTargetSystem(
             });
         }
 
-        const systemTypeValidation = await validateSystemType(options, backendTarget);
+        const systemTypeValidation = await validateSystemType(options);
         if (typeof systemTypeValidation === 'string') {
             return systemTypeValidation;
         }
@@ -637,7 +643,7 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
 async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
-    const packageType = PromptState.abapDeployConfig.isS4HC
+    const packageType = PromptState?.abapDeployConfig?.isS4HC
         ? AdaptationProjectType.CLOUD_READY
         : AdaptationProjectType.ON_PREMISE;
     const errorMsg =

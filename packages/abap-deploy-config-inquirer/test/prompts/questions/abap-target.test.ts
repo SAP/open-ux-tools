@@ -187,14 +187,13 @@ describe('getAbapTargetPrompts', () => {
         const destinationCliSetterPrompt = abapTargetPrompts.find(
             (prompt) => prompt.name === promptNames.destinationCliSetter
         );
-
         if (destinationCliSetterPrompt) {
             expect(
-                ((await destinationCliSetterPrompt.when) as Function)({
+                await (destinationCliSetterPrompt.when as Function)({
                     destination: 'mockDest1'
                 })
             ).toBe(false);
-            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
+            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations, undefined, undefined);
         } else {
             throw new Error('Destination setter prompt not found');
         }
@@ -302,7 +301,7 @@ describe('getAbapTargetPrompts', () => {
             expect(urlPrompt.message).toBe(t('prompts.target.url.message'));
             expect((urlPrompt.default as Function)({ targetSystem: TargetSystemType.Url })).toEqual('');
             expect((urlPrompt.filter as Function)('target system 1 ')).toEqual('target system 1');
-            expect((urlPrompt.validate as Function)()).toEqual(true);
+            expect(await (urlPrompt.validate as Function)()).toEqual(true);
         } else {
             throw new Error('Url prompt not found');
         }
