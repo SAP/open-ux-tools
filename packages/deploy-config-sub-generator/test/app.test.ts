@@ -205,7 +205,7 @@ describe('Deployment Generator', () => {
         expect(getCFQuestionsSpy).toHaveBeenCalled();
         expect(getABAPPromptsSpy).toHaveBeenCalledWith(
             expect.objectContaining({
-                appRootPath: expect.stringContaining('/output/mta-app/project1'),
+                appRootPath: expect.stringContaining(join('/output/mta-app/project1')),
                 backendConfig: {
                     client: 100,
                     path: '/sap',
