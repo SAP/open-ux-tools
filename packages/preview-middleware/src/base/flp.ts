@@ -29,6 +29,7 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    type CustomConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
@@ -191,6 +192,17 @@ export class FlpSandbox {
     }
 
     /**
+     * Overrides the custom connector to a non-existing dummy value.
+     * This is needed for UI5 versions 1.71 and below.
+     *
+     * @private
+     */
+    private overrideCustomConnector(): void {
+        (this.templateConfig.ui5.flex?.[1] as CustomConnector).applyConnector = 'FioriToolsNonexistentConnector';
+        (this.templateConfig.ui5.flex?.[1] as CustomConnector).writeConnector = 'FioriToolsNonexistentConnector';
+    }
+
+    /**
      * Generates the FLP sandbox for an editor.
      *
      * @param req the request
@@ -221,6 +233,10 @@ export class FlpSandbox {
         config.features = FeatureToggleAccess.getAllFeatureToggles();
 
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
+
+        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
+            this.overrideCustomConnector();
+        }
 
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
