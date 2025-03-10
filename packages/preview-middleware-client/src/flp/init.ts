@@ -6,6 +6,7 @@ import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
+import Pages from 'sap/ushell/services/Pages';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
 import initConnectors from './initConnectors';
@@ -160,6 +161,81 @@ function registerModules(dataFromAppIndex: AppIndexData) {
 }
 
 /**
+ * Handle higher layer changes when starting UI Adaptation.
+ * When RTA detects higher layer changes an error with Reload triggered text is thrown, the RTA instance is destroyed and the application is reloaded.
+ * For UI5 version lower than 1.84.0 RTA is showing a popup with notification text about the detection of higher layer changes.
+ *
+ * @param error the error thrown when there are higher layer changes when starting UI Adaptation.
+ * @param ui5VersionInfo ui5 version info
+ */
+export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
+    const err = getError(error);
+    if (err.message.includes('Reload triggered')) {
+        if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
+            const bundle = await getTextBundle();
+            const action = showMessage({
+                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
+                shouldHideIframe: false
+            });
+            CommunicationService.sendAction(action);
+        }
+
+        // eslint-disable-next-line fiori-custom/sap-no-location-reload
+        window.location.reload();
+    }
+}
+
+/**
+ * Triggers the adaptation process for the given UI5 application.
+ *
+ * @param {FlexSettings} flexSettings - The settings for the flexibility services.
+ * @param {Ui5VersionInfo} ui5VersionInfo - The version information of the UI5 framework.
+ * @returns A promise that resolves when the adaptation process is triggered.
+ *
+ */
+async function triggerAdaptation(flexSettings: FlexSettings, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
+    const container =
+        sap?.ushell?.Container ??
+        ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
+    const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+    lifecycleService.attachAppLoaded((event) => {
+        const view = event.getParameter('componentInstance');
+        const pluginScript = flexSettings.pluginScript ?? '';
+
+        let libs: string[] = [];
+
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
+            libs.push('open/ux/preview/client/flp/initRta');
+        } else {
+            libs.push('sap/ui/rta/api/startAdaptation');
+        }
+
+        if (flexSettings.pluginScript) {
+            libs.push(pluginScript as string);
+            delete flexSettings.pluginScript;
+        }
+
+        const options: RTAOptions = {
+            rootControl: view,
+            validateAppVersion: false,
+            flexSettings
+        };
+
+        sap.ui.require(
+            libs,
+            // eslint-disable-next-line no-shadow
+            async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
+                try {
+                    await startAdaptation(options, pluginScript);
+                } catch (error) {
+                    await handleHigherLayerChanges(error, ui5VersionInfo);
+                }
+            }
+        );
+    });
+}
+
+/**
  * Fetch the app state from the given application urls, then reset the app state.
  *
  * @param container the UShell container
@@ -257,64 +333,44 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
+ * @param params.enhancedHomePage boolean indicating if enhanced homepage is enabled
  * @returns promise
  */
 export async function init({
     appUrls,
     flex,
-    customInit
+    customInit,
+    enhancedHomePage
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
+    enhancedHomePage?: boolean | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ??
-        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
+    const container =
+        sap?.ushell?.Container ??
+        ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
     let scenario: string = '';
     const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
     if (flex) {
         const flexSettings = JSON.parse(flex) as FlexSettings;
         scenario = flexSettings.scenario;
-        container.attachRendererCreatedEvent(async function () {
-            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-            lifecycleService.attachAppLoaded((event) => {
-                const view = event.getParameter('componentInstance');
-                const pluginScript = flexSettings.pluginScript ?? '';
 
-                let libs: string[] = [];
+        // Attach renderer created event to trigger adaptation, or trigger adaptation directly if enhancedHomePage is enabled
+        // as the ushell is bootstrapped via cdm where the renderer is created before the init script is executed
+        if (!enhancedHomePage) {
+            container.attachRendererCreatedEvent(triggerAdaptation.bind(null, flexSettings, ui5VersionInfo));
+        } else {
+            await triggerAdaptation(flexSettings, ui5VersionInfo);
+        }
+    }
 
-                if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
-                    libs.push('open/ux/preview/client/flp/initRta');
-                } else {
-                    libs.push('sap/ui/rta/api/startAdaptation');
-                }
-
-                if (flexSettings.pluginScript) {
-                    libs.push(pluginScript as string);
-                    delete flexSettings.pluginScript;
-                }
-
-                const options: RTAOptions = {
-                    rootControl: view,
-                    validateAppVersion: false,
-                    flexSettings
-                };
-
-                sap.ui.require(
-                    libs,
-                    // eslint-disable-next-line no-shadow
-                    async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
-                        try {
-                            await startAdaptation(options, pluginScript);
-                        } catch (error) {
-                            await handleHigherLayerChanges(error, ui5VersionInfo);
-                        }
-                    }
-                );
-            });
-        });
+    // disable implicit personalisation save if new home page is enabled
+    if (enhancedHomePage) {
+        const pages = await container.getServiceAsync<Pages>('Pages');
+        pages.enableImplicitSave(false);
     }
 
     // reset app state if requested
@@ -340,11 +396,14 @@ export async function init({
     setI18nTitle(resourceBundle);
     registerSAPFonts();
 
-    const renderer =
-        ui5VersionInfo.major < 2
-            ? await container.createRenderer(undefined, true)
-            : await container.createRendererInternal(undefined, true);
-    renderer.placeAt('content');
+    // eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
+    if (!document.getElementById('canvas')) {
+        const renderer =
+            ui5VersionInfo.major < 2
+                ? await container.createRenderer(undefined, true)
+                : await container.createRendererInternal(undefined, true);
+        renderer.placeAt('content');
+    }
 }
 
 // eslint-disable-next-line fiori-custom/sap-no-dom-access,fiori-custom/sap-browser-api-warning
@@ -353,34 +412,10 @@ if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
+        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage')
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);
     });
-}
-
-/**
- * Handle higher layer changes when starting UI Adaptation.
- * When RTA detects higher layer changes an error with Reload triggered text is thrown, the RTA instance is destroyed and the application is reloaded.
- * For UI5 version lower than 1.84.0 RTA is showing a popup with notification text about the detection of higher layer changes.
- *
- * @param error the error thrown when there are higher layer changes when starting UI Adaptation.
- * @param ui5VersionInfo ui5 version info
- */
-export async function handleHigherLayerChanges(error: unknown, ui5VersionInfo: Ui5VersionInfo): Promise<void> {
-    const err = getError(error);
-    if (err.message.includes('Reload triggered')) {
-        if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 84 })) {
-            const bundle = await getTextBundle();
-            const action = showMessage({
-                message: bundle.getText('HIGHER_LAYER_CHANGES_INFO_MESSAGE'),
-                shouldHideIframe: false
-            });
-            CommunicationService.sendAction(action);
-        }
-
-        // eslint-disable-next-line fiori-custom/sap-no-location-reload
-        window.location.reload();
-    }
 }
