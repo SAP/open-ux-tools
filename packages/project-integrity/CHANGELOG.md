@@ -1,5 +1,31 @@
 # @sap-ux/project-integrity
 
+## 0.1.13
+
+### Patch Changes
+
+-   5148043: Fix to ensure writing of encoded integrity data
+
+## 0.1.12
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+
+## 0.1.10
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.13
+
 ## 0.1.9
 
 ### Patch Changes

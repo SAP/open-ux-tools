@@ -6,6 +6,7 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import Log from 'sap/base/Log';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
+import { MessageBarType } from '@sap-ux-private/control-property-editor-common';
 
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -14,7 +15,6 @@ const mockChangeService = {
 jest.useFakeTimers();
 
 describe('index', () => {
- 
     const mockSendAction = jest.fn();
     const mockAttachEvent = jest.fn();
     const transformNodesSpy = jest.spyOn(nodes, 'transformNodes');
@@ -117,7 +117,7 @@ describe('index', () => {
         expect(transformNodesSpy.mock.calls[0][0]).toBe('mockViewNodes');
     });
 
-    test('initOutLine - send action for reuse components for ADAPTATION_PROJECT scenario', async () => {
+    test('initOutLine - skip sending action for reuse components for ADAPTATION_PROJECT scenario for OnPremise project', async () => {
         (nodes.transformNodes as jest.Mock).mockImplementation(async (nodes, scenario, reuseComponentsIds) => {
             reuseComponentsIds.add('someViewId');
             return nodes;
@@ -127,12 +127,26 @@ describe('index', () => {
         });
         const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
         await service.init(mockSendAction);
+        expect(mockSendAction).toHaveBeenNthCalledWith(1, { payload: 'mockViewNodes', type: '[ext] outline-changed' });
+    });
+
+    test('initOutLine - send action for reuse components for ADAPTATION_PROJECT scenario for Cloud project', async () => {
+        (nodes.transformNodes as jest.Mock).mockImplementation(async (nodes, scenario, reuseComponentsIds) => {
+            reuseComponentsIds.add('someViewId');
+            return nodes;
+        });
+        rtaMock.getFlexSettings.mockReturnValue({
+            scenario: 'ADAPTATION_PROJECT',
+            isCloud: true
+        });
+        const service = new OutlineService(rtaMock as unknown as RuntimeAuthoring, mockChangeService);
+        await service.init(mockSendAction);
         expect(mockSendAction).toHaveBeenNthCalledWith(2, {
-            type: '[ext] show-dialog-message',
+            type: '[ext] show-info-center-message',
             payload: {
-                message:
-                    'Reuse components are detected for some views in this application. Controller extensions, adding fragments and manifest changes are not supported for such views and will be disabled.',
-                shouldHideIframe: false
+                type: MessageBarType.warning,
+                title: 'Reuse components detected',
+                description: 'Reuse components are detected for some views in this application. Controller extensions, adding fragments and manifest changes are not supported for such views and will be disabled.'
             }
         });
     });

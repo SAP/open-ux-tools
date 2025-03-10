@@ -119,7 +119,7 @@ describe('App Router Prompt Generation Tests', () => {
             expect(routerTypePrompt?.type).toBe('list');
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(true);
-            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Standard);
+            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Managed);
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
                 { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard },
                 { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed }
