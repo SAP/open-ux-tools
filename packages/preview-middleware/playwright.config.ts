@@ -6,7 +6,6 @@ import type { PlaywrightTestConfig } from '@sap-ux-private/playwright';
  */
 import 'dotenv/config';
 
-const timeout = 5 * 60000 + 30000;
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -35,8 +34,6 @@ const config: PlaywrightTestConfig = {
             use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1720, height: 900 } }
         }
     ],
-    /* 5 min for npm i + 30000 ms default timeout */
-    timeout,
     globalSetup: require.resolve('./test/integration/utils/global-setup')
 };
 export default defineConfig(config);
