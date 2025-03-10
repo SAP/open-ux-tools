@@ -8,19 +8,18 @@ import {
     TargetName,
     getExtensionGenPromptOpts
 } from '@sap-ux/deploy-config-generator-shared';
-import { parseTarget, getYUIDetails } from './utils';
+import { parseTarget } from './utils';
 import {
     getApiHubOptions,
     getEnvApiHubConfig,
     t,
     generatorNamespace,
-    generatorTitle,
     getBackendConfig,
     getSupportedTargets
 } from '../utils';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting';
 import { promptNames } from '../prompts/deploy-target';
+import { AppWizard, type Prompts } from '@sap-devx/yeoman-ui-types';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { DeployConfigGenerator, DeployConfigOptions } from '../types';
@@ -91,17 +90,6 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.apiHubConfig = this.options.apiHubConfig ?? getEnvApiHubConfig();
             this.launchStandaloneFromYui = false;
         }
-
-        // If launched standalone, set the header, title and description
-        if (this.launchStandaloneFromYui) {
-            this.appWizard.setHeaderTitle(generatorTitle);
-            this.prompts = new Prompts(getYUIDetails(this.options.projectRoot));
-            this.setPromptsCallback = (fn): void => {
-                if (this.prompts) {
-                    this.prompts.setCallback(fn);
-                }
-            };
-        }
     }
 
     /**
@@ -126,7 +114,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.fs,
             this.options as DeployConfigOptions,
             this.launchStandaloneFromYui,
-            this.options.projectRoot
+            this.options.appRootPath
         ));
         const { destinationName, servicePath } = await getApiHubOptions(this.fs, {
             appPath: this.options.appRootPath,
@@ -176,7 +164,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.answers = answers;
         }
 
-        if ((this.answers as Answers)?.confirmConfigUpdate !== false && this.target) {
+        if (this.target) {
             this._composeWithSubGenerator(this.target, this.answers);
         } else {
             DeploymentGenerator.logger?.debug(t('debug.exit'));
@@ -212,7 +200,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             }
             this.composeWith(generatorNamespace(this.genNamespace, generatorName), subGenOpts);
         } catch (error) {
-            DeploymentGenerator.logger?.error(error);
+            DeploymentGenerator.logger?.error(error.message);
         }
     }
 }

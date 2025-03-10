@@ -7,5 +7,3 @@ export const generatorNamespace = (bundledRootGeneratorName: string, subGenName:
 
 export const abapChoice: Target = { name: TargetName.ABAP, description: 'ABAP' };
 export const cfChoice: Target = { name: TargetName.CF, description: 'Cloud Foundry' };
-
-export const generatorTitle = 'Deployment Configuration Generator';
