@@ -16,14 +16,6 @@ export default async function initConnectors(): Promise<void> {
             enableFakeConnector();
         });
     } else {
-        /*
-        sap.ui.define(
-            'custom.connectors.WorkspaceConnector',
-            ['open/ux/preview/client/flp/WorkspaceConnector'],
-            (connector: object) => connector,
-            true
-        );
-        */
         sap.ui.require(['open/ux/preview/client/flp/WorkspaceConnector'], (connector: object) => connector);
     }
 }

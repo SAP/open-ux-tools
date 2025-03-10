@@ -271,7 +271,7 @@ describe('flp/init', () => {
                 expect.anything()
             );
 
-            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
+            const requireCb = sapMock.ui.require.mock.calls[1][1] as (
                 startAdaptation: StartAdaptation,
                 pluginScript?: RTAPlugin
             ) => void;
@@ -347,7 +347,11 @@ describe('flp/init', () => {
             VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
 
             // Mocking `sap.ui.require` to throw the correct error structure
-            sapMock.ui.require.mockImplementationOnce((libs, callback) => {
+            sapMock.ui.require.mockImplementation((libs, callback) => {
+                if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
+                    callback({}); // WorkspaceConnector
+                    return;
+                }
                 callback(async () => {
                     throw 'Reload triggered';
                 }, {});

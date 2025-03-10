@@ -5,6 +5,7 @@ import initConnectors from '../../../src/flp/initConnectors';
 describe('flp/initConnectors', () => {
     afterEach(() => {
         jest.restoreAllMocks();
+        sapMock.ui.require.mockReset();
     });
 
     test('enables fake lrep connector when ui5 version is 1.71', async () => {
@@ -36,7 +37,7 @@ describe('flp/initConnectors', () => {
         await initConnectors();
 
         const WorkspaceConnectorMock = { layers: [] };
-        const requireCb = sapMock.ui.define.mock.calls[0][2] as (WorkspaceConnector: unknown) => void;
+        const requireCb = sapMock.ui.require.mock.calls[0][1];
 
         const wsMock = requireCb(WorkspaceConnectorMock);
         expect(wsMock).toEqual(WorkspaceConnectorMock);
