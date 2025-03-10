@@ -1,5 +1,11 @@
 # @sap-ux/odata-vocabularies
 
+## 0.4.7
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+
 ## 0.4.6
 
 ### Patch Changes
