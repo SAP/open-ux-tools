@@ -59,6 +59,7 @@
         "pnpm": "8.14.0",
         "node": ">=18.x"
     },
+    "packageManager": "pnpm@8.14.0",
     "pnpm": {
         "overrides": {
             "router>path-to-regexp": "0.1.12",
