@@ -65,3 +65,5 @@ export const fioriToolsDirectory = join(homedir(), FioriToolsSettings.dir);
  * Directory where modules are cached
  */
 export const moduleCacheRoot = join(fioriToolsDirectory, DirName.ModuleCache);
+
+export const MinCdsVersionUi5Plugin = '6.8.2';
