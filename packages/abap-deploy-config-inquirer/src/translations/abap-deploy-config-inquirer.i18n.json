@@ -135,7 +135,7 @@
             "abapPackageInvalidFormat": "The package name does not match the expected format. The expected format is `/<namespace>/<package_name>` or a package name. If a namespace is not specified, the package name must start with '$', 'Z', 'Y', or 'SAP'.",
             "abapPackageStartingPrefix": "The package must start with either a namespace, '$', 'Z', 'Y', or 'SAP'",
             "abapInvalidNamespace": "The namespace is invalid because there are too many forward slashes.",
-            "abapInvalidNamespaceLength": "The namespace is limited to 10 characters, but you entered {{length}}.",
+            "abapInvalidNamespaceLength": "The namespace is limited to 10 characters. You entered {{length}}.",
             "abapInvalidAppNameLength": "Application name limited to 15 characters, entered {{length}}",
             "abapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
             "charactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
