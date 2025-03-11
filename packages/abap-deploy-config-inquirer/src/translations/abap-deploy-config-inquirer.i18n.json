@@ -140,7 +140,7 @@
             "abapInvalidAppName": "The application name must be prefixed with [{{prefix}}]",
             "charactersForbiddenInAppName": "Only alphanumeric, underscore, and slash characters are allowed",
             "charactersForbiddenInPackage": "Only alphanumeric, underscore, $, and slash characters are allowed",
-            "invalidNamespace": "Namespace invalid as there are too many forward slashes",
+            "invalidNamespace": "The namespace is invalid because there are too many forward slashes.",
             "forbiddenCharacters": "Only alphanumeric, underscore and slash characters are allowed",
             "descriptionLength": "Deployment Description must not exceed 60 characters",
             "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve existing transport requests",
