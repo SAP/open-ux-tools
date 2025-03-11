@@ -22,7 +22,6 @@ import { handleTransportConfigError } from '../error-handler';
 import { AuthenticationType } from '@sap-ux/store';
 import { getHelpUrl, HELP_TREE } from '@sap-ux/guided-answers-helper';
 import LoggerHelper from '../logger-helper';
-import type { TargetSystemPromptOptions, UI5AbapRepoPromptOptions } from '../types';
 import {
     ClientChoiceValue,
     PackageInputChoices,
@@ -32,7 +31,9 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
     type BackendTarget,
-    type PackagePromptOptions
+    type PackagePromptOptions,
+    type TargetSystemPromptOptions,
+    type UI5AbapRepoPromptOptions
 } from '../types';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
@@ -51,7 +52,7 @@ async function validateSystemType(options?: TargetSystemPromptOptions): Promise<
         const isSelectedS4HC = PromptState?.abapDeployConfig?.isS4HC;
         if (isDefaultProviderAbapCloud === true && isSelectedS4HC === false) {
             return t('errors.validators.invalidCloudSystem');
-        } else if (isDefaultProviderAbapCloud === false && isSelectedS4HC == true) {
+        } else if (isDefaultProviderAbapCloud === false && isSelectedS4HC) {
             return t('errors.validators.invalidOnPremSystem');
         }
     }
