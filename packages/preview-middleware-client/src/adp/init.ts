@@ -32,8 +32,8 @@ export default async function (rta: RuntimeAuthoring) {
     const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
     const quickActionRegistries = await loadDefinitions(applicationType);
 
-    const reuseComponentsIds = await init(rta, quickActionRegistries);
-    initDialogs(rta, syncViewsIds, reuseComponentsIds);
+    const { outlineService } = await init(rta, quickActionRegistries);
+    initDialogs(rta, syncViewsIds, outlineService);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         CommunicationService.sendAction(

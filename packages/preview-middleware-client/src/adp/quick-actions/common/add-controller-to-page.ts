@@ -44,9 +44,10 @@ export class AddControllerToPageQuickAction
             const isActiveAction = isControllerExtensionEnabledForControl(
                 control,
                 syncViewsIds,
-                this.context.reuseComponentsIds,
+                this.context.outlineService,
                 this.context.flexSettings.isCloud
             );
+            
             this.control = isActiveAction ? control : undefined;
             break;
         }

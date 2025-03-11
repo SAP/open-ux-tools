@@ -3,16 +3,16 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import Log from 'sap/base/Log';
 
-import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
 import { getControlById } from '../../utils/core';
 import { getError } from '../../utils/error';
 
 import type { ControlTreeIndex } from '../types';
-import { getOverlay, isReuseComponent } from '../utils';
+import { getOverlay } from '../utils';
 
 import { isEditable } from './editable';
 import { ChangeService } from '../changes';
 import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4';
+import { OutlineService } from './service';
 
 interface AdditionalData {
     text?: string;
@@ -139,11 +139,11 @@ export async function transformNodes(
     reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
     changeService: ChangeService,
-    propertyIdMap: Map<string, string[]>
+    propertyIdMap: Map<string, string[]>,
+    outlineService: OutlineService
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
-    const ui5VersionInfo = await getUi5Version();
     while (stack.length) {
         try {
             const current = stack.shift();
@@ -163,7 +163,8 @@ export async function transformNodes(
                           reuseComponentsIds,
                           controlIndex,
                           changeService,
-                          propertyIdMap
+                          propertyIdMap,
+                          outlineService
                       )
                     : await transformNodes(
                           children,
@@ -171,7 +172,8 @@ export async function transformNodes(
                           reuseComponentsIds,
                           controlIndex,
                           changeService,
-                          propertyIdMap
+                          propertyIdMap,
+                          outlineService
                       );
                 const node: OutlineNode = {
                     controlId: current.id,
@@ -184,7 +186,7 @@ export async function transformNodes(
 
                 indexNode(controlIndex, node);
                 addToPropertyIdMap(node, propertyIdMap);
-                await fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
+                fillReuseComponents(reuseComponentsIds, current, scenario, outlineService);
 
                 items.push(node);
             }
@@ -223,15 +225,14 @@ export async function transformNodes(
  * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param node view node
  * @param scenario type of project
- * @param ui5VersionInfo UI5 version information
  */
-async function fillReuseComponents(
+function fillReuseComponents(
     reuseComponentsIds: Set<string>,
     node: OutlineViewNode,
     scenario: Scenario,
-    ui5VersionInfo: Ui5VersionInfo
-): Promise<void> {
-    if (scenario === 'ADAPTATION_PROJECT' && node?.component && await isReuseComponent(node.id, ui5VersionInfo)) {
+    outlineService: OutlineService
+): void {
+    if (scenario === 'ADAPTATION_PROJECT' && node?.component && outlineService.isReuseComponent(node.id)) {
         reuseComponentsIds.add(node.id);
     }
 }
@@ -253,7 +254,8 @@ export async function handleDuplicateNodes(
     reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
     changeService: ChangeService,
-    propertyIdMap: Map<string, string[]>
+    propertyIdMap: Map<string, string[]>,
+    outlineService: OutlineService
 ): Promise<OutlineNode[]> {
     const extPointIDs = new Set<string>();
 
@@ -266,5 +268,5 @@ export async function handleDuplicateNodes(
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex, changeService, propertyIdMap);
+    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex, changeService, propertyIdMap, outlineService);
 }

@@ -91,23 +91,23 @@ export async function getLibrary(controlName: string): Promise<string> {
  * @param ui5VersionInfo UI5 version information
  * @returns boolean if control is from reused component view
  */
-export async function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionInfo): Promise<boolean>{
+export async function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionInfo): Promise<boolean> {
     const component = getComponent(controlId);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
         if (!component) {
             return false;
         }
-    
+
         const appComponent = FlUtils.getAppComponentForControl(component);
         if (!appComponent) {
             return false;
         }
-    
+
         const manifest = component.getManifest() as Manifest;
         const appManifest = appComponent.getManifest() as Manifest;
         const componentName = manifest?.['sap.app']?.id;
-    
+
         // Look for component name in component usages of app component manifest
         const componentUsages = appManifest?.['sap.ui5']?.componentUsages;
         return Object.values(componentUsages || {}).some((componentUsage) => {

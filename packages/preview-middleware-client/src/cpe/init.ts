@@ -20,7 +20,7 @@ import { ContextMenuService } from './context-menu-service';
 export default function init(
     rta: RuntimeAuthoring,
     registries: QuickActionDefinitionRegistry<string>[] = []
-): Promise<Set<string>> {
+): Promise<{ outlineService: OutlineService }> {
     Log.info('Initializing Control Property Editor');
 
     // enable telemetry if requested
@@ -74,5 +74,5 @@ export default function init(
     }
 
     //  * This is returned immediately to avoid promise deadlock, preventing services from waiting indefinitely.
-    return Promise.resolve(outlineService.reuseComponentsIds);
+    return Promise.resolve({outlineService});
 }

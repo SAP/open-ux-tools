@@ -14,13 +14,14 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import { isReuseComponent } from '../cpe/utils';
 import { DialogFactory, DialogNames } from './dialog-factory';
+import type { OutlineService } from '../cpe/outline/service';
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
  *
  * @param control UI5 control.
  * @param syncViewsIds Runtime Authoring
- * @param reuseComponentsIds Ids of all reuse components
+ * @param outlineService Outline service instance
  * @param isCloud Whether the application is running in the cloud
  *
  * @returns boolean whether menu item is enabled or not
@@ -28,15 +29,14 @@ import { DialogFactory, DialogNames } from './dialog-factory';
 export function isControllerExtensionEnabledForControl(
     control: ManagedObject,
     syncViewsIds: string[],
-    reuseComponentsIds: Set<string>,
+    outlineService: OutlineService,
     isCloud: boolean
 ): boolean {
     const view = FlUtils.getViewForControl(control);
     const isControlInSyncView = syncViewsIds.includes(view.getId());
 
     // if(isCloud) {
-        const hasReuseComponent: boolean = [...reuseComponentsIds].some(id => view.byId(id));
-        return !isControlInSyncView && !hasReuseComponent;
+        return !isControlInSyncView && !outlineService.hasReuseComponents;
     // }
     return !isControlInSyncView;
 }
@@ -46,7 +46,7 @@ export function isControllerExtensionEnabledForControl(
  *
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
- * @param reuseComponentsIds Ids of all reuse components
+ * @param outlineService Outline service instance
  * @param isCloud Whether the application is running in the cloud
  *
  * @returns boolean whether menu item is enabled or not
@@ -54,13 +54,13 @@ export function isControllerExtensionEnabledForControl(
 export const isControllerExtensionEnabled = (
     overlays: ElementOverlay[],
     syncViewsIds: string[],
-    reuseComponentsIds: Set<string>,
+    outlineService: OutlineService,
     isCloud: boolean
 ): boolean => {
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
-    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, reuseComponentsIds, isCloud);
+    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, outlineService, isCloud);
 };
 
 /**
@@ -98,9 +98,9 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
  *
  * @param rta Runtime Authoring
  * @param syncViewsIds Ids of all application sync views
- * @param reuseComponentsIds Ids of all reuse components
+ * @param outlineService Outline service instance
  */
-export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], reuseComponentsIds: Set<string>): void => {
+export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], outlineService: OutlineService): void => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
 
@@ -119,6 +119,6 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], reuse
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, reuseComponentsIds, isCloud)
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, outlineService, isCloud)
     });
 };

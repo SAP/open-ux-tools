@@ -15,6 +15,12 @@ import { getTextBundle } from '../../i18n';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 import { ChangeService } from '../changes';
+import XMLView from 'sap/ui/core/mvc/XMLView';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo, getUi5Version } from '../../utils/version';
+import { getComponent } from '../../utils/core';
+import FlUtils from 'sap/ui/fl/Utils';
+import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
+import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 
@@ -25,7 +31,8 @@ export interface OutlineChangedEventDetail {
  * A Class of WorkspaceConnectorService
  */
 export class OutlineService extends EventTarget {
-    public reuseComponentsIds = new Set<string>();
+    private reuseComponentsIds = new Set<string>();
+    public isReuseComponent: (controlId: string) => boolean;
     constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {
         super();
     }
@@ -44,6 +51,8 @@ export class OutlineService extends EventTarget {
         const title = resourceBundle.getText(titleKey);
         const description = resourceBundle.getText(descriptionKey);
         let hasSentWarning = false;
+        const ui5VersionInfo = await getUi5Version();
+        await this.initIsReuseComponentChecker(ui5VersionInfo);
         this.reuseComponentsIds = new Set<string>();
         const syncOutline = async () => {
             try {
@@ -56,7 +65,8 @@ export class OutlineService extends EventTarget {
                     this.reuseComponentsIds,
                     controlIndex,
                     this.changeService,
-                    configPropertyIdMap
+                    configPropertyIdMap,
+                    this
                 );
 
                 const event = new CustomEvent(OUTLINE_CHANGE_EVENT, {
@@ -67,7 +77,11 @@ export class OutlineService extends EventTarget {
 
                 this.dispatchEvent(event);
                 sendAction(outlineChanged(outlineNodes));
-                if (this.reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning /*&& isCloud*/) {
+                if (
+                    this.reuseComponentsIds.size > 0 &&
+                    scenario === SCENARIO.AdaptationProject &&
+                    !hasSentWarning /*&& isCloud*/
+                ) {
                     sendAction(
                         showInfoCenterMessage({
                             type: MessageBarType.warning,
@@ -88,5 +102,42 @@ export class OutlineService extends EventTarget {
 
     public onOutlineChange(handler: (event: CustomEvent<OutlineChangedEventDetail>) => void | Promise<void>): void {
         this.addEventListener(OUTLINE_CHANGE_EVENT, handler as EventListener);
+    }
+
+    public hasReuseComponents(view: XMLView): boolean {
+        return [...this.reuseComponentsIds].some((id) => view.byId(id));
+    }
+
+    private async initIsReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo): Promise<void> {
+        let reuseComponentApi: IsReuseComponentApi;
+        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
+            reuseComponentApi = (await import('sap/ui/rta/util/isReuseComponent')).default;
+        }
+
+        this.isReuseComponent = function isReuseComponent(controlId: string): boolean {
+            const component = getComponent(controlId);
+            if (reuseComponentApi) {
+                return reuseComponentApi.isReuseComponent(component);
+            }
+
+            if (!component) {
+                return false;
+            }
+
+            const appComponent = FlUtils.getAppComponentForControl(component);
+            if (!appComponent) {
+                return false;
+            }
+
+            const manifest = component.getManifest() as Manifest;
+            const appManifest = appComponent.getManifest() as Manifest;
+            const componentName = manifest?.['sap.app']?.id;
+
+            // Look for component name in component usages of app component manifest
+            const componentUsages = appManifest?.['sap.ui5']?.componentUsages;
+            return Object.values(componentUsages || {}).some((componentUsage) => {
+                return componentUsage.name === componentName;
+            });
+        };
     }
 }

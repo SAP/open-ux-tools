@@ -123,7 +123,7 @@ export class QuickActionService implements Service {
                     flexSettings: this.rta.getFlexSettings(),
                     resourceBundle: this.texts,
                     changeService: this.changeService,
-                    reuseComponentsIds: this.outlineService.reuseComponentsIds
+                    outlineService: this.outlineService
                 };
                 for (const Definition of definitions) {
                     try {

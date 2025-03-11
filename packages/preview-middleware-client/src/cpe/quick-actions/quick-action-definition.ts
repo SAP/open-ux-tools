@@ -14,6 +14,7 @@ import type {
 import type { TextBundle } from '../../i18n';
 import type { ControlTreeIndex } from '../types';
 import { ChangeService } from '../changes';
+import { OutlineService } from '../outline/service';
 
 export interface QuickActionActivationContext {
     controlIndex: ControlTreeIndex;
@@ -40,7 +41,7 @@ export interface QuickActionContext {
     flexSettings: FlexSettings;
     manifest: Manifest;
     changeService: ChangeService;
-    reuseComponentsIds: Set<string>;
+    outlineService: OutlineService;
 }
 
 interface QuickActionDefinitionBase {
