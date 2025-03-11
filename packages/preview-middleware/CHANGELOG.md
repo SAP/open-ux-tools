@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.18.16
+
+### Patch Changes
+
+-   32dafd7: feat: refactor lrep connectors used for preview
+
 ## 0.18.15
 
 ### Patch Changes
