@@ -136,7 +136,7 @@
             "abapPackageStartingPrefix": "The package must start with either a namespace, '$', 'Z', 'Y', or 'SAP'",
             "abapInvalidNamespace": "The namespace is invalid because there are too many forward slashes.",
             "abapInvalidNamespaceLength": "The namespace is limited to 10 characters. You entered {{length}}.",
-            "abapInvalidAppNameLength": "Application name limited to 15 characters, entered {{length}}",
+            "abapInvalidAppNameLength": "The application name is limited to 15 characters. You entered {{length}}.",
             "abapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
             "charactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
             "charactersForbiddenInPackage": "Only alphanumeric, underscore, $ and slash characters are allowed",
