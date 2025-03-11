@@ -643,9 +643,11 @@ export function validateConfirmQuestion(overwrite: boolean): boolean {
  * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
  */
 async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
-    const packageType = PromptState?.abapDeployConfig?.isS4HC
-        ? AdaptationProjectType.CLOUD_READY
-        : AdaptationProjectType.ON_PREMISE;
+    const isS4HC = PromptState?.abapDeployConfig?.isS4HC;
+    if (isS4HC === false && input === DEFAULT_PACKAGE_ABAP) {
+        return true;
+    }
+    const packageType = isS4HC ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
     const errorMsg =
         packageType === AdaptationProjectType.CLOUD_READY
             ? t('errors.validators.invalidCloudPackage')

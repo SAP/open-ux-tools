@@ -370,6 +370,16 @@ describe('Test validators', () => {
             PromptState.resetTransportAnswers();
         });
 
+        it('should return true for onPremise system with default onPremise package', async () => {
+            PromptState.abapDeployConfig.isS4HC = false;
+            const getSystemInfoSpy = jest.spyOn(serviceProviderUtils, 'getSystemInfo');
+            const result = await validatePackageExtended('$TMP', previousAnswers, {
+                additionalValidation: { shouldValidatePackageType: true }
+            });
+            expect(getSystemInfoSpy).not.toHaveBeenCalled();
+            expect(result).toBe(true);
+        });
+
         it('should return error when base validation fail', async () => {
             const result = await validatePackageExtended(' ', previousAnswers, {
                 additionalValidation: { shouldValidatePackageType: true }
