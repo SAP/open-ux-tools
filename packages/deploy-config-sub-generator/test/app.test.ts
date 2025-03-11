@@ -278,7 +278,20 @@ describe('Deployment Generator', () => {
             connectedSystem: undefined,
             indexGenerationAllowed: false,
             logger: expect.any(Object),
-            showOverwriteQuestion: false
+            showOverwriteQuestion: false,
+            promptOptions: {
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false
+                },
+                packageManual: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false
+                },
+                targetSystem: { shouldRestrictDifferentSystemType: false },
+                transportInputChoice: { hideIfOnPremise: false },
+                ui5AbapRepo: { hideIfOnPremise: false }
+            }
         });
     });
 
