@@ -129,7 +129,7 @@
             "appNameInvalid": "Application name invalid",
             "appNameInvalidLength": "Application name limited to 15 characters, entered {{length}}",
             "appNameInvalidPrefix": "Application name needs to be prefixed with [{{prefix}}]",
-            "abapAppDescLength": "Deployment Description should not exceed 60 characters",
+            "abapAppDescLength": "Deployment Description must not exceed 60 characters",
             "abapTransportNumRequired": "Provide a transport request for your application",
             "abapPackageWarn": "Provide a package",
             "abapPackageInvalidFormat": "Package name does not match the expected format. Expected format is '/<namespace>/<package_name>'  or just a single package name as a string. If namespace is not specified package name should starts with '$', 'Z', 'Y' or 'SAP'",
