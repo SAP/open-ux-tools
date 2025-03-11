@@ -91,7 +91,7 @@ export function getPackagePrompts(
                 breadcrumb: true
             },
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
-                defaultPackage(previousAnswers.packageManual ?? options.packageManual?.default, options?.packageManual),
+                defaultPackage(previousAnswers.packageManual || options.packageManual?.default, options?.packageManual),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
                 await validatePackageExtended(
                     input,
