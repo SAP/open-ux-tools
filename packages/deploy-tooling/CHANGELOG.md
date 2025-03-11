@@ -1,5 +1,16 @@
 # @sap-ux/deploy-tooling
 
+## 0.15.47
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/system-access@0.5.33
+
 ## 0.15.46
 
 ### Patch Changes

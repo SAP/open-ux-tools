@@ -1,5 +1,18 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.21
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/telemetry@0.5.70
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/project-access@1.29.16
+
 ## 2.2.20
 
 ### Patch Changes
