@@ -1,5 +1,13 @@
 # @sap-ux/reload-middleware
 
+## 0.2.18
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+
 ## 0.2.17
 
 ### Patch Changes

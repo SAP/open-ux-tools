@@ -1,5 +1,34 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.0.7
+
+### Patch Changes
+
+-   61a026c: fix running generator standalone
+
+## 0.0.6
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/odata-service-inquirer@2.2.21
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/deploy-config-generator-shared@0.0.37
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.51
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.27
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/nodejs-utils@0.1.8
+    -   @sap-ux/project-access@1.29.16
+
+## 0.0.5
+
+### Patch Changes
+
+-   625fb21: ensure destination is appended to backend config
+
 ## 0.0.4
 
 ### Patch Changes

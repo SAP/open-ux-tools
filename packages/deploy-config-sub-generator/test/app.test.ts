@@ -9,7 +9,6 @@ import { generatorNamespace, initI18n } from '../src/utils';
 import { TargetName } from '@sap-ux/deploy-config-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
-import * as envUtils from '@sap-ux/fiori-generator-shared';
 import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
 import Generator from 'yeoman-generator';
@@ -143,7 +142,7 @@ describe('Deployment Generator', () => {
                     launchDeployConfigAsSubGenerator: false,
                     projectPath: OUTPUT_DIR_PREFIX,
                     projectName: 'project1',
-                    appGenDestination: '~Destinaton',
+                    appGenDestination: '~Destination',
                     appGenServiceHost: '~Host',
                     appGenClient: '110'
                 })
@@ -160,6 +159,64 @@ describe('Deployment Generator', () => {
     });
 
     it('Validate deployment generator is loaded as sub generator', async () => {
+        cwd = join(OUTPUT_DIR_PREFIX, 'mta-app/project1');
+        mockIsAppStudio.mockReturnValueOnce(true);
+        const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
+        const getABAPPromptsSpy = jest
+            .spyOn(abapDeploySubGen, 'getAbapQuestions')
+            .mockResolvedValueOnce({ prompts: [], answers: {} });
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/mta-app/project1/ui5.yaml`]: testFixture.getContents(
+                    'mta1/app1/ui5-client-value.yaml'
+                ),
+                [`.${OUTPUT_DIR_PREFIX}/mta-app/mta.yaml`]: testFixture.getContents(
+                    'mta1/mta-with-router-deployer.yaml'
+                )
+            },
+            '/'
+        );
+
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/mta-app/project1`);
+        await expect(
+            yeomanTest
+                .create(
+                    DeployGenerator,
+                    {
+                        resolved: deployPath
+                    },
+                    { cwd: appDir }
+                )
+                .withOptions({
+                    overwrite: false,
+                    skipInstall: true,
+                    data: {
+                        destinationRoot: appDir,
+                        launchDeployConfigAsSubGenerator: true
+                    }
+                })
+                .withPrompts({
+                    targetName: TargetName.ABAP
+                })
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'abap')]])
+                .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
+                .run()
+        ).resolves.not.toThrow();
+        expect(getCFQuestionsSpy).toHaveBeenCalled();
+        expect(getABAPPromptsSpy).toHaveBeenCalledWith(
+            expect.objectContaining({
+                appRootPath: expect.stringContaining(join('/output/mta-app/project1')),
+                backendConfig: {
+                    client: 100,
+                    path: '/sap',
+                    scp: true,
+                    url: 'https://abap.staging.hana.ondemand.com'
+                }
+            })
+        );
+    });
+
+    it('Validate deployment generator is loaded and backend config is loaded from options', async () => {
         cwd = `${OUTPUT_DIR_PREFIX}${sep}project1`;
         mockIsAppStudio.mockReturnValueOnce(true);
         const getCFQuestionsSpy = jest.spyOn(cfInquirer, 'getPrompts');
@@ -186,13 +243,10 @@ describe('Deployment Generator', () => {
                 .withOptions({
                     overwrite: false,
                     skipInstall: true,
-                    appGenDestination: '~Destinaton',
+                    appGenDestination: '~Destination',
                     appGenServiceHost: '~Host',
                     appGenClient: '110',
-                    data: {
-                        destinationRoot: appDir,
-                        launchDeployConfigAsSubGenerator: true
-                    }
+                    launchDeployConfigAsSubGenerator: true
                 })
                 .withPrompts({
                     targetName: TargetName.ABAP
@@ -201,8 +255,31 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).toHaveBeenCalled();
-        expect(getABAPPromptsSpy).toHaveBeenCalled();
+        expect(getCFQuestionsSpy).toHaveBeenCalledWith({
+            addManagedAppRouter: true,
+            destinationName: {
+                addBTPDestinationList: false,
+                additionalChoiceList: expect.any(Array),
+                defaultValue: '~Destination',
+                hint: false,
+                useAutocomplete: true
+            },
+            overwriteDestinationName: false
+        });
+        expect(getABAPPromptsSpy).toHaveBeenCalledWith({
+            appRootPath: expect.stringContaining('project1'),
+            backendConfig: expect.objectContaining({
+                destination: '~Destination',
+                client: '110',
+                scp: false,
+                url: '~Host'
+            }),
+            configFile: undefined,
+            connectedSystem: undefined,
+            indexGenerationAllowed: false,
+            logger: expect.any(Object),
+            showOverwriteQuestion: false
+        });
     });
 
     it('Validate deployment generator is ran standalone (no backend config)', async () => {
