@@ -298,7 +298,7 @@ describe('Test validators', () => {
 
         it('should return error for valid UI5 ABAP repo name', () => {
             const result = validateUi5AbapRepoName('Z?()OSITORY');
-            expect(result).toBe('Only alphanumeric, underscore and slash characters are allowed');
+            expect(result).toBe(t('errors.validators.forbiddenCharacters'));
         });
     });
 
