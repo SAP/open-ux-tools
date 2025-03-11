@@ -137,7 +137,7 @@
             "abapInvalidNamespace": "The namespace is invalid because there are too many forward slashes.",
             "abapInvalidNamespaceLength": "The namespace is limited to 10 characters. You entered {{length}}.",
             "abapInvalidAppNameLength": "The application name is limited to 15 characters. You entered {{length}}.",
-            "abapInvalidAppName": "Application name needs to be prefixed with [{{prefix}}]",
+            "abapInvalidAppName": "The application name must be prefixed with [{{prefix}}]",
             "charactersForbiddenInAppName": "Only alphanumeric, underscore and slash characters are allowed",
             "charactersForbiddenInPackage": "Only alphanumeric, underscore, $ and slash characters are allowed",
             "invalidNamespace": "Namespace invalid as there are too many forward slashes",
