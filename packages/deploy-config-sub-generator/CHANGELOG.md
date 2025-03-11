@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.0.7
+
+### Patch Changes
+
+-   61a026c: fix running generator standalone
+
 ## 0.0.6
 
 ### Patch Changes
