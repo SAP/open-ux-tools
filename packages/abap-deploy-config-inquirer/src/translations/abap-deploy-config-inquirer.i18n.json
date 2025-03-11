@@ -144,7 +144,7 @@
             "invalidNamespace": "Namespace invalid as there are too many forward slashes",
             "forbiddenCharacters": "Only alphanumeric, underscore and slash characters are allowed",
             "descriptionLength": "Deployment Description must not exceed 60 characters",
-            "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve the existing Transport Requests",
+            "transportListPreReqs": "Name (SAPUI5 ABAP Repository) and Package are required to retrieve existing transport requests",
             "abapInvalidAppNameNamespaceOrStartingPrefix": "Both the SAPUI5 ABAP Repository and the Package that will be used should start in the same way, i.e. a namespace or capital letters 'Z', 'Y' or 'SAP'",
             "invalidCloudPackage": "The provided package is not intended for cloud deployments.",
             "invalidOnPremPackage": "The provided package is not intended for on-premise deployments.",
