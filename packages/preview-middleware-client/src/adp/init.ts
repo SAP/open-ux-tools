@@ -22,7 +22,6 @@ export default async function (rta: RuntimeAuthoring) {
 
     const ui5VersionInfo = await getUi5Version();
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
-    initDialogs(rta, syncViewsIds, ui5VersionInfo);
 
     if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 78 })) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
@@ -33,7 +32,8 @@ export default async function (rta: RuntimeAuthoring) {
     const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
     const quickActionRegistries = await loadDefinitions(applicationType);
 
-    await init(rta, quickActionRegistries);
+    const reuseComponentsIds = await init(rta, quickActionRegistries);
+    initDialogs(rta, syncViewsIds, reuseComponentsIds);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {
         CommunicationService.sendAction(

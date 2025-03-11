@@ -25,6 +25,7 @@ export interface OutlineChangedEventDetail {
  * A Class of WorkspaceConnectorService
  */
 export class OutlineService extends EventTarget {
+    public reuseComponentsIds = new Set<string>();
     constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {
         super();
     }
@@ -43,7 +44,7 @@ export class OutlineService extends EventTarget {
         const title = resourceBundle.getText(titleKey);
         const description = resourceBundle.getText(descriptionKey);
         let hasSentWarning = false;
-        const reuseComponentsIds = new Set<string>();
+        this.reuseComponentsIds = new Set<string>();
         const syncOutline = async () => {
             try {
                 const viewNodes = await outline.get();
@@ -52,7 +53,7 @@ export class OutlineService extends EventTarget {
                 const outlineNodes = await transformNodes(
                     viewNodes,
                     scenario,
-                    reuseComponentsIds,
+                    this.reuseComponentsIds,
                     controlIndex,
                     this.changeService,
                     configPropertyIdMap
@@ -66,7 +67,7 @@ export class OutlineService extends EventTarget {
 
                 this.dispatchEvent(event);
                 sendAction(outlineChanged(outlineNodes));
-                if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning && isCloud) {
+                if (this.reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning /*&& isCloud*/) {
                     sendAction(
                         showInfoCenterMessage({
                             type: MessageBarType.warning,

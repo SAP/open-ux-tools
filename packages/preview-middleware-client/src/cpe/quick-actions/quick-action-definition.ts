@@ -40,6 +40,7 @@ export interface QuickActionContext {
     flexSettings: FlexSettings;
     manifest: Manifest;
     changeService: ChangeService;
+    reuseComponentsIds: Set<string>;
 }
 
 interface QuickActionDefinitionBase {

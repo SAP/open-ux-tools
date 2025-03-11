@@ -184,7 +184,7 @@ export async function transformNodes(
 
                 indexNode(controlIndex, node);
                 addToPropertyIdMap(node, propertyIdMap);
-                fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
+                await fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
 
                 items.push(node);
             }
@@ -225,13 +225,13 @@ export async function transformNodes(
  * @param scenario type of project
  * @param ui5VersionInfo UI5 version information
  */
-function fillReuseComponents(
+async function fillReuseComponents(
     reuseComponentsIds: Set<string>,
     node: OutlineViewNode,
     scenario: Scenario,
     ui5VersionInfo: Ui5VersionInfo
-): void {
-    if (scenario === 'ADAPTATION_PROJECT' && node?.component && isReuseComponent(node.id, ui5VersionInfo)) {
+): Promise<void> {
+    if (scenario === 'ADAPTATION_PROJECT' && node?.component && await isReuseComponent(node.id, ui5VersionInfo)) {
         reuseComponentsIds.add(node.id);
     }
 }
