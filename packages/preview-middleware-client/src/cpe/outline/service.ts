@@ -16,7 +16,7 @@ import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 import { ChangeService } from '../changes';
 import XMLView from 'sap/ui/core/mvc/XMLView';
-import { isLowerThanMinimalUi5Version, Ui5VersionInfo, getUi5Version } from '../../utils/version';
+import { isHigherThanMinimalUi5Version, Ui5VersionInfo, getUi5Version } from '../../utils/version';
 import { getComponent } from '../../utils/core';
 import FlUtils from 'sap/ui/fl/Utils';
 import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
@@ -110,7 +110,7 @@ export class OutlineService extends EventTarget {
 
     private async initIsReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo): Promise<void> {
         let reuseComponentApi: IsReuseComponentApi;
-        if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
+        if (isHigherThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
             reuseComponentApi = (await import('sap/ui/rta/util/isReuseComponent')).default;
         }
 
