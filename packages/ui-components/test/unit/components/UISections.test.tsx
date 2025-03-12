@@ -1106,4 +1106,22 @@ describe('<Sections />', () => {
             { end: 0, percentage: false, size: 450, start: 200 }
         ]);
     });
+
+    it('Test "hidden" section - restore visibility', () => {
+        const hiddenWrapper = Enzyme.mount(
+            <UISections vertical={false} splitter={true} minSectionSize={6}>
+                <UISections.Section>
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section hidden={true}>
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+        jest.spyOn(UISections, 'getVisibleSections').mockReturnValueOnce([]);
+        hiddenWrapper.setProps({
+            minSectionSize: 100
+        });
+        expect(hiddenWrapper.find('.sections__item').length).toEqual(2);
+    });
 });
