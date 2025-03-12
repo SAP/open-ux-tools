@@ -1,6 +1,6 @@
 [
     {
-        "message": "Wrong element '$edmJS'. Did you mean '$edmJson'?",
+        "message": "`$edmJS` is incorrect. Did you mean `$edmJson`?",
         "range": "[(14,8)..(14,16)]",
         "severity": 1,
         "data": {

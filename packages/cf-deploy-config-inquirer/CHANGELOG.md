@@ -1,5 +1,79 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.18
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+
+## 0.2.17
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.28
+
+## 0.2.16
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.27
+
+## 0.2.15
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.26
+
+## 0.2.14
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.25
+
+## 0.2.13
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.24
+
+## 0.2.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.23
+
+## 0.2.11
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.22
+
+## 0.2.10
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.21
+
+## 0.2.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.20
+
+## 0.2.8
+
+### Patch Changes
+
+-   d6118c9: Changes to support adding CAP MTA prompt to allow user generate MTA
+
+## 0.2.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.19
+
 ## 0.2.6
 
 ### Patch Changes

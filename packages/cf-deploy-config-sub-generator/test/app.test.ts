@@ -15,6 +15,7 @@ import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as questions from '../src/app/questions';
 import * as cfConfigWriter from '@sap-ux/cf-deploy-config-writer';
+import type { Editor } from 'mem-fs-editor';
 
 const mockIsAppStudio = jest.fn();
 
@@ -86,7 +87,7 @@ describe('Cloud foundry generator tests', () => {
     const cfGenPath = join(__dirname, '../src/app');
     const OUTPUT_DIR_PREFIX = join('/output');
     const testFixture = new TestFixture();
-
+    let fsMock: Editor;
     beforeEach(() => {
         jest.clearAllMocks();
         memfs.vol.reset();
@@ -98,6 +99,10 @@ describe('Cloud foundry generator tests', () => {
 
     beforeAll(async () => {
         await initI18n();
+        fsMock = {
+            dump: jest.fn(),
+            commit: jest.fn().mockImplementation((callback) => callback())
+        } as Partial<Editor> as Editor;
     });
 
     afterAll(() => {
@@ -488,12 +493,13 @@ describe('Cloud foundry generator tests', () => {
                 .withOptions({
                     skipInstall: true,
                     appRootPath: join(appDir, projectName),
-                    addManagedAppRouter: true,
-                    launchDeployConfigAsSubGenerator: true,
-                    destinationName: 'testDestination',
+                    launchDeployConfigAsSubGenerator: false,
                     destinationAuthType: 'NoAuthentication' // Validating SH4
                 })
-                .withPrompts({ addManagedAppRouter: true })
+                .withPrompts({
+                    addManagedAppRouter: true,
+                    destinationName: 'testDestination'
+                })
                 .run()
         ).resolves.not.toThrow();
 
@@ -960,6 +966,42 @@ describe('Cloud foundry generator tests', () => {
         );
     });
 
+    it('Ensure init is loaded when loaded as a subgenerator', async () => {
+        hasbinSyncMock.mockReturnValue(true);
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        memfs.vol.fromNestedJSON({}, '/');
+        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
+                    testFixture.getContents('app1/webapp/manifest.json'),
+                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
+                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
+            },
+            '/'
+        );
+
+        await expect(
+            yeomanTest
+                .create(
+                    CFGenerator,
+                    {
+                        resolved: cfGenPath
+                    },
+                    { cwd: appDir }
+                )
+                .withOptions({
+                    skipInstall: true,
+                    launchDeployConfigAsSubGenerator: true
+                })
+                .withPrompts({})
+                .run()
+        ).resolves.not.toThrow();
+        expect(hasbinSyncMock).toHaveBeenCalledWith('mta');
+        expect(mockFindCapProjectRoot).toHaveBeenCalled();
+    });
+
     it('Should throw error when base config is not found', async () => {
         hasbinSyncMock.mockReturnValue(true);
         mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
@@ -1113,20 +1155,21 @@ describe('Cloud foundry generator tests', () => {
         mockSendTelemetry.mockImplementation(() => {
             throw new Error('Telemetry Error');
         });
-
+        jest.spyOn(cfConfigWriter, 'generateAppConfig').mockResolvedValue(fsMock);
+        const cfGenSpawnSpy = jest.spyOn(CFGenerator.prototype as any, 'spawnCommand').mockResolvedValue({});
         const managedRouterConfig = load(testFixture.getContents('mta-types/managed/mta.yaml'));
 
         memfs.vol.fromNestedJSON(
             {
-                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json`]:
+                [`.${OUTPUT_DIR_PREFIX}/telemetery/webapp/manifest.json`]:
                     testFixture.getContents('app1/webapp/manifest.json'),
-                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
-                [`.${OUTPUT_DIR_PREFIX}/app1/mta.yaml`]: dump(managedRouterConfig),
-                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
+                [`.${OUTPUT_DIR_PREFIX}/telemetery/package.json`]: JSON.stringify({ scripts: {} }),
+                [`.${OUTPUT_DIR_PREFIX}/telemetery/mta.yaml`]: dump(managedRouterConfig),
+                [`.${OUTPUT_DIR_PREFIX}/telemetery/ui5.yaml`]: testFixture.getContents('app1/ui5.yaml')
             },
             '/'
         );
-        const appDir = join(OUTPUT_DIR_PREFIX, 'app1');
+        const appDir = join(OUTPUT_DIR_PREFIX, 'telemetery');
 
         await expect(
             yeomanTest
@@ -1138,13 +1181,14 @@ describe('Cloud foundry generator tests', () => {
                     { cwd: appDir }
                 )
                 .withOptions({
-                    skipInstall: true,
+                    skipInstall: false,
                     appWizard: mockAppWizard,
                     launchStandaloneFromYui: true,
-                    launchDeployConfigAsSubGenerator: true
+                    launchDeployConfigAsSubGenerator: false
                 })
                 .withPrompts({})
                 .run()
         ).resolves.not.toThrow();
+        expect(cfGenSpawnSpy).toHaveBeenCalled();
     });
 });

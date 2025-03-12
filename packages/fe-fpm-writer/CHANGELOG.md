@@ -1,5 +1,86 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.33.16
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.4.19
+-   @sap-ux/project-access@1.29.16
+
+## 0.33.15
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/fiori-annotation-api@0.4.18
+
+## 0.33.14
+
+### Patch Changes
+
+-   Updated dependencies [282dd9a]
+    -   @sap-ux/fiori-annotation-api@0.4.17
+
+## 0.33.13
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/fiori-annotation-api@0.4.16
+
+## 0.33.12
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.13
+-   @sap-ux/fiori-annotation-api@0.4.15
+
+## 0.33.11
+
+### Patch Changes
+
+-   Updated dependencies [cf05ceb]
+    -   @sap-ux/fiori-annotation-api@0.4.14
+    -   @sap-ux/project-access@1.29.12
+
+## 0.33.10
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/fiori-annotation-api@0.4.13
+
+## 0.33.9
+
+### Patch Changes
+
+-   Updated dependencies [d443dde]
+    -   @sap-ux/fiori-annotation-api@0.4.12
+
+## 0.33.8
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.10
+-   @sap-ux/fiori-annotation-api@0.4.11
+
+## 0.33.7
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/fiori-annotation-api@0.4.10
+
+## 0.33.6
+
+### Patch Changes
+
+-   0c37c3d: Added support for 'showClearButton', 'showMessages', and 'liveMode' properties in FilterBar building block generation.
+
 ## 0.33.5
 
 ### Patch Changes

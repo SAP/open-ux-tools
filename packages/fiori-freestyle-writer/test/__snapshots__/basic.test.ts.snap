@@ -2181,7 +2181,9 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+    \\"unit-test\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/unit/unitTests.qunit.html'\\"
   }
 }
 ",
@@ -2189,31 +2191,38 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-    \\"compilerOptions\\": {
-        \\"target\\": \\"es2022\\",
-        \\"module\\": \\"es2022\\",
-        \\"skipLibCheck\\": true,
-        \\"allowJs\\": true,
-        \\"strict\\": true,
-        \\"strictPropertyInitialization\\": false,
-        \\"moduleResolution\\": \\"node\\",
-        \\"rootDir\\": \\"./webapp\\",
-        \\"outDir\\": \\"./dist\\",
-        \\"baseUrl\\": \\"./\\",
-        \\"paths\\": {
-            \\"nods1/*\\": [
-                \\"./webapp/*\\"
-            ]
-        },
-        \\"typeRoots\\": [
-            \\"./node_modules/@types\\",
-            \\"./node_modules/@sapui5/ts-types-esm\\"
-        ]
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2022\\",
+    \\"module\\": \\"es2022\\",
+    \\"skipLibCheck\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"./webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"nods1/*\\": [
+        \\"./webapp/*\\"
+      ],
+      \\"unit/*\\": [
+        \\"./webapp/test/unit/*\\"
+      ],
+      \\"integration/*\\": [
+        \\"./webapp/test/integration/*\\"
+      ]
     },
-    \\"include\\": [
-        \\"./webapp/**/*\\"
+    \\"typeRoots\\": [
+      \\"./node_modules/@types\\",
+      \\"./node_modules/@sapui5/ts-types-esm\\"
     ]
-}",
+  },
+  \\"include\\": [
+    \\"./webapp/**/*\\"
+  ]
+}
+",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -2741,6 +2750,229 @@ export function createDeviceModel () {
 ",
     "state": "modified",
   },
+  "webapp/test/integration/NavigationJourney.ts": Object {
+    "contents": "/*global QUnit*/
+import opaTest from \\"sap/ui/test/opaQunit\\";
+import AppPage from \\"./pages/AppPage\\";
+import ViewPage from \\"./pages/View1Page\\";
+
+import Opa5 from \\"sap/ui/test/Opa5\\";
+
+QUnit.module(\\"Navigation Journey\\");
+
+const onTheAppPage = new AppPage();
+const onTheViewPage = new ViewPage();
+Opa5.extendConfig({
+	viewNamespace: \\"nods1.view.\\",
+	autoWait: true
+});
+
+opaTest(\\"Should see the initial page of the app\\", function () {
+	// Arrangements
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
+	onTheAppPage.iStartMyUIComponent({
+		componentConfig: {
+			name: \\"nods1\\"
+		}
+	});
+
+	// Assertions
+	onTheAppPage.iShouldSeeTheApp();
+	onTheViewPage.iShouldSeeThePageView();
+
+
+	// Cleanup
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
+	onTheAppPage.iTeardownMyApp();
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=\\"utf-8\\" />
+	<title>Integration tests for Basic Template</title>
+
+	<script
+		id=\\"sap-ui-bootstrap\\"
+		src=\\"../../resources/sap-ui-core.js\\"
+		data-sap-ui-theme=\\"sap_belize\\"
+		data-sap-ui-resourceroots='{
+			\\"nods1\\": \\"../../\\",
+			\\"integration\\": \\"./\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-preload=\\"async\\"
+		data-sap-ui-oninit=\\"module:integration/opaTests.qunit\\">
+	</script>
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
+	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+// https://api.qunitjs.com/config/autostart/
+QUnit.config.autostart = false;
+
+// import all your OPA journeys here
+void Promise.all([
+	import(\\"integration/NavigationJourney\\")
+]).then(() => {
+	QUnit.start();
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/AppPage.ts": Object {
+    "contents": "import Opa5 from \\"sap/ui/test/Opa5\\";
+
+const sViewName = \\"App\\";
+
+export default class AppPage extends Opa5 {
+	// Actions
+
+
+	// Assertions
+	iShouldSeeTheApp() {
+		return this.waitFor({
+			id: \\"app\\",
+			viewName: sViewName,
+			success: function () {
+				Opa5.assert.ok(true, \\"The \\" + sViewName + \\" view is displayed\\");
+			},
+			errorMessage: \\"Did not find the \\" + sViewName + \\" view\\"
+		});
+	}
+
+}
+
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/View1Page.ts": Object {
+    "contents": "import Opa5 from \\"sap/ui/test/Opa5\\";
+
+const sViewName = \\"View1\\";
+
+export default class View1Page extends Opa5 {
+	// Actions
+
+
+	// Assertions
+	iShouldSeeThePageView() {
+		return this.waitFor({
+			id: \\"page\\",
+			viewName: sViewName,
+			success: function () {
+				Opa5.assert.ok(true, \\"The \\" + sViewName + \\" view is displayed\\");
+			},
+			errorMessage: \\"Did not find the \\" + sViewName + \\" view\\"
+		});
+	}
+
+}
+
+
+",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.ts": Object {
+    "contents": "/* global window, parent, location */
+
+// eslint-disable-next-line fiori-custom/sap-no-global-define,@typescript-eslint/ban-ts-comment
+// @ts-nocheck
+window.suite = function() {
+	// eslint-disable-next-line
+	var oSuite = new parent.jsUnitTestSuite(),
+	  	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
+
+	oSuite.addTestPage(sContextPath + \\"unit/unitTests.qunit.html\\");
+	oSuite.addTestPage(sContextPath + \\"integration/opaTests.qunit.html\\");
+
+	return oSuite;
+};
+",
+    "state": "modified",
+  },
+  "webapp/test/unit/controller/View1Page.controller.ts": Object {
+    "contents": "/*global QUnit*/
+import Controller from \\"nods1/controller/View1.controller\\";
+
+QUnit.module(\\"View1 Controller\\");
+
+QUnit.test(\\"I should test the View1 controller\\", function (assert: Assert) {
+	const oAppController = new Controller(\\"View1\\");
+	oAppController.onInit();
+	assert.ok(oAppController);
+});",
+    "state": "modified",
+  },
+  "webapp/test/unit/unitTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=\\"utf-8\\">
+	<title>Unit tests for nods1</title>
+	<script
+		id=\\"sap-ui-bootstrap\\"
+		src=\\"../../resources/sap-ui-core.js\\"
+		data-sap-ui-resourceroots='{
+			\\"nods1\\": \\"../../\\",
+			\\"unit\\": \\".\\"
+		}'
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-oninit=\\"module:unit/unitTests.qunit\\">
+	</script>
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
+	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+	<script src=\\"../../resources/sap/ui/qunit/qunit-coverage.js\\"></script>
+	<script src=\\"../../resources/sap/ui/thirdparty/sinon.js\\"></script>
+	<script src=\\"../../resources/sap/ui/thirdparty/sinon-qunit.js\\"></script>
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/unit/unitTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+// https://api.qunitjs.com/config/autostart/
+QUnit.config.autostart = false;
+
+// import all your QUnit tests here
+void Promise.all([
+import(\\"unit/controller/View1Page.controller\\")
+]).then(() => {
+	QUnit.start();
+});",
+    "state": "modified",
+  },
   "webapp/view/App.view.xml": Object {
     "contents": "<mvc:View controllerName=\\"nods1.controller.App\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\"
@@ -2824,7 +3056,9 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+    \\"unit-test\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/unit/unitTests.qunit.html'\\"
   }
 }
 ",
@@ -2832,31 +3066,38 @@ archive.zip
   },
   "tsconfig.json": Object {
     "contents": "{
-    \\"compilerOptions\\": {
-        \\"target\\": \\"es2022\\",
-        \\"module\\": \\"es2022\\",
-        \\"skipLibCheck\\": true,
-        \\"allowJs\\": true,
-        \\"strict\\": true,
-        \\"strictPropertyInitialization\\": false,
-        \\"moduleResolution\\": \\"node\\",
-        \\"rootDir\\": \\"./webapp\\",
-        \\"outDir\\": \\"./dist\\",
-        \\"baseUrl\\": \\"./\\",
-        \\"paths\\": {
-            \\"nods1/*\\": [
-                \\"./webapp/*\\"
-            ]
-        },
-        \\"typeRoots\\": [
-            \\"./node_modules/@types\\",
-            \\"./node_modules/@sapui5/ts-types-esm\\"
-        ]
+  \\"compilerOptions\\": {
+    \\"target\\": \\"es2022\\",
+    \\"module\\": \\"es2022\\",
+    \\"skipLibCheck\\": true,
+    \\"allowJs\\": true,
+    \\"strict\\": true,
+    \\"strictPropertyInitialization\\": false,
+    \\"moduleResolution\\": \\"node\\",
+    \\"rootDir\\": \\"./webapp\\",
+    \\"outDir\\": \\"./dist\\",
+    \\"baseUrl\\": \\"./\\",
+    \\"paths\\": {
+      \\"nods1/*\\": [
+        \\"./webapp/*\\"
+      ],
+      \\"unit/*\\": [
+        \\"./webapp/test/unit/*\\"
+      ],
+      \\"integration/*\\": [
+        \\"./webapp/test/integration/*\\"
+      ]
     },
-    \\"include\\": [
-        \\"./webapp/**/*\\"
+    \\"typeRoots\\": [
+      \\"./node_modules/@types\\",
+      \\"./node_modules/@sapui5/ts-types-esm\\"
     ]
-}",
+  },
+  \\"include\\": [
+    \\"./webapp/**/*\\"
+  ]
+}
+",
     "state": "modified",
   },
   "ui5-local.yaml": Object {
@@ -3371,6 +3612,229 @@ export function createDeviceModel () {
 
 </html>
 ",
+    "state": "modified",
+  },
+  "webapp/test/integration/NavigationJourney.ts": Object {
+    "contents": "/*global QUnit*/
+import opaTest from \\"sap/ui/test/opaQunit\\";
+import AppPage from \\"./pages/AppPage\\";
+import ViewPage from \\"./pages/View1Page\\";
+
+import Opa5 from \\"sap/ui/test/Opa5\\";
+
+QUnit.module(\\"Navigation Journey\\");
+
+const onTheAppPage = new AppPage();
+const onTheViewPage = new ViewPage();
+Opa5.extendConfig({
+	viewNamespace: \\"nods1.view.\\",
+	autoWait: true
+});
+
+opaTest(\\"Should see the initial page of the app\\", function () {
+	// Arrangements
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
+	onTheAppPage.iStartMyUIComponent({
+		componentConfig: {
+			name: \\"nods1\\"
+		}
+	});
+
+	// Assertions
+	onTheAppPage.iShouldSeeTheApp();
+	onTheViewPage.iShouldSeeThePageView();
+
+
+	// Cleanup
+	// eslint-disable-next-line @typescript-eslint/no-floating-promises
+	onTheAppPage.iTeardownMyApp();
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=\\"utf-8\\" />
+	<title>Integration tests for Basic Template</title>
+
+	<script
+		id=\\"sap-ui-bootstrap\\"
+		src=\\"../../resources/sap-ui-core.js\\"
+		data-sap-ui-theme=\\"sap_horizon\\"
+		data-sap-ui-resourceroots='{
+			\\"nods1\\": \\"../../\\",
+			\\"integration\\": \\"./\\"
+		}'
+		data-sap-ui-animation=\\"false\\"
+		data-sap-ui-compatVersion=\\"edge\\"
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-preload=\\"async\\"
+		data-sap-ui-oninit=\\"module:integration/opaTests.qunit\\">
+	</script>
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
+	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/opaTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+// https://api.qunitjs.com/config/autostart/
+QUnit.config.autostart = false;
+
+// import all your OPA journeys here
+void Promise.all([
+	import(\\"integration/NavigationJourney\\")
+]).then(() => {
+	QUnit.start();
+});",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/AppPage.ts": Object {
+    "contents": "import Opa5 from \\"sap/ui/test/Opa5\\";
+
+const sViewName = \\"App\\";
+
+export default class AppPage extends Opa5 {
+	// Actions
+
+
+	// Assertions
+	iShouldSeeTheApp() {
+		return this.waitFor({
+			id: \\"app\\",
+			viewName: sViewName,
+			success: function () {
+				Opa5.assert.ok(true, \\"The \\" + sViewName + \\" view is displayed\\");
+			},
+			errorMessage: \\"Did not find the \\" + sViewName + \\" view\\"
+		});
+	}
+
+}
+
+",
+    "state": "modified",
+  },
+  "webapp/test/integration/pages/View1Page.ts": Object {
+    "contents": "import Opa5 from \\"sap/ui/test/Opa5\\";
+
+const sViewName = \\"View1\\";
+
+export default class View1Page extends Opa5 {
+	// Actions
+
+
+	// Assertions
+	iShouldSeeThePageView() {
+		return this.waitFor({
+			id: \\"page\\",
+			viewName: sViewName,
+			success: function () {
+				Opa5.assert.ok(true, \\"The \\" + sViewName + \\" view is displayed\\");
+			},
+			errorMessage: \\"Did not find the \\" + sViewName + \\" view\\"
+		});
+	}
+
+}
+
+
+",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+  <head>
+    <title>QUnit test suite</title>
+    <script src=\\"../resources/sap/ui/qunit/qunit-redirect.js\\"></script>
+    <script src=\\"testsuite.qunit.js\\" data-sap-ui-testsuite></script>
+  </head>
+  <body></body>
+</html>",
+    "state": "modified",
+  },
+  "webapp/test/testsuite.qunit.ts": Object {
+    "contents": "/* global window, parent, location */
+
+// eslint-disable-next-line fiori-custom/sap-no-global-define,@typescript-eslint/ban-ts-comment
+// @ts-nocheck
+window.suite = function() {
+	// eslint-disable-next-line
+	var oSuite = new parent.jsUnitTestSuite(),
+	  	sContextPath = location.pathname.substring(0, location.pathname.lastIndexOf(\\"/\\") + 1);
+
+	oSuite.addTestPage(sContextPath + \\"unit/unitTests.qunit.html\\");
+	oSuite.addTestPage(sContextPath + \\"integration/opaTests.qunit.html\\");
+
+	return oSuite;
+};
+",
+    "state": "modified",
+  },
+  "webapp/test/unit/controller/View1Page.controller.ts": Object {
+    "contents": "/*global QUnit*/
+import Controller from \\"nods1/controller/View1.controller\\";
+
+QUnit.module(\\"View1 Controller\\");
+
+QUnit.test(\\"I should test the View1 controller\\", function (assert: Assert) {
+	const oAppController = new Controller(\\"View1\\");
+	oAppController.onInit();
+	assert.ok(oAppController);
+});",
+    "state": "modified",
+  },
+  "webapp/test/unit/unitTests.qunit.html": Object {
+    "contents": "<!DOCTYPE html>
+<html>
+<head>
+	<meta charset=\\"utf-8\\">
+	<title>Unit tests for nods1</title>
+	<script
+		id=\\"sap-ui-bootstrap\\"
+		src=\\"../../resources/sap-ui-core.js\\"
+		data-sap-ui-resourceroots='{
+			\\"nods1\\": \\"../../\\",
+			\\"unit\\": \\".\\"
+		}'
+		data-sap-ui-async=\\"true\\"
+		data-sap-ui-oninit=\\"module:unit/unitTests.qunit\\">
+	</script>
+	<link rel=\\"stylesheet\\" type=\\"text/css\\" href=\\"../../resources/sap/ui/thirdparty/qunit-2.css\\">
+	<script src=\\"../../resources/sap/ui/thirdparty/qunit-2.js\\"></script>
+	<script src=\\"../../resources/sap/ui/qunit/qunit-junit.js\\"></script>
+	<script src=\\"../../resources/sap/ui/qunit/qunit-coverage.js\\"></script>
+	<script src=\\"../../resources/sap/ui/thirdparty/sinon.js\\"></script>
+	<script src=\\"../../resources/sap/ui/thirdparty/sinon-qunit.js\\"></script>
+</head>
+<body>
+	<div id=\\"qunit\\"></div>
+	<div id=\\"qunit-fixture\\"></div>
+</body>
+</html>
+",
+    "state": "modified",
+  },
+  "webapp/test/unit/unitTests.qunit.ts": Object {
+    "contents": "/* global QUnit */
+// https://api.qunitjs.com/config/autostart/
+QUnit.config.autostart = false;
+
+// import all your QUnit tests here
+void Promise.all([
+import(\\"unit/controller/View1Page.controller\\")
+]).then(() => {
+	QUnit.start();
+});",
     "state": "modified",
   },
   "webapp/view/App.view.xml": Object {
@@ -4504,7 +4968,9 @@ title=App Title",
         \\"transition\\": \\"slide\\",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
-        \\"path\\": \\"nods1.view\\"
+        \\"path\\": \\"nods1.view\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
@@ -4525,7 +4991,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }
@@ -5028,7 +5495,9 @@ title=App Title",
         \\"transition\\": \\"slide\\",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
-        \\"path\\": \\"nods1.view\\"
+        \\"path\\": \\"nods1.view\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
@@ -5049,7 +5518,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }
@@ -5577,7 +6047,9 @@ title=App Title",
         \\"transition\\": \\"slide\\",
         \\"type\\": \\"View\\",
         \\"viewType\\": \\"XML\\",
-        \\"path\\": \\"nods1.view\\"
+        \\"path\\": \\"nods1.view\\",
+        \\"async\\": true,
+        \\"viewPath\\": \\"nods1.view\\"
       },
       \\"routes\\": [
         {
@@ -5598,7 +6070,8 @@ title=App Title",
     \\"rootView\\": {
       \\"viewName\\": \\"nods1.view.App\\",
       \\"type\\": \\"XML\\",
-      \\"id\\": \\"App\\"
+      \\"id\\": \\"App\\",
+      \\"async\\": true
     }
   }
 }

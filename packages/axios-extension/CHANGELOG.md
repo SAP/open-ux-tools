@@ -1,5 +1,19 @@
 # @sap-ux/axios-extension
 
+## 1.19.1
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+
+## 1.19.0
+
+### Minor Changes
+
+-   aaa432a: Export patchTls from `sap-ux/axios-extension`
+
 ## 1.18.6
 
 ### Patch Changes

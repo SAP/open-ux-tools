@@ -182,6 +182,7 @@ describe('Test utils', () => {
         previousAnswers.packageInputChoice = PackageInputChoices.EnterManualChoice;
         previousAnswers.packageManual = 'package2';
         expect(getPackageAnswer(previousAnswers)).toBe('package2');
+        expect(getPackageAnswer({} as AbapDeployConfigAnswersInternal, 'package3')).toBe('package3');
     });
 
     it('should return true when exisintg deploy task configuration has CREATE_TR_DURING_DEPLOY value', () => {

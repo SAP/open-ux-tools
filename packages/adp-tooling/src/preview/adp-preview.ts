@@ -47,6 +47,7 @@ export class AdpPreview {
 
     private lrep: LayeredRepositoryService | undefined;
     private descriptorVariantId: string | undefined;
+    private isCloud: boolean | undefined;
 
     /**
      * @returns merged manifest.
@@ -86,6 +87,17 @@ export class AdpPreview {
     }
 
     /**
+     * @returns {boolean} true if the project is an ABAP cloud project, false otherwise.
+     */
+    get isCloudProject(): boolean {
+        if (this.isCloud !== undefined) {
+            return this.isCloud;
+        } else {
+            throw new Error('Not initialized');
+        }
+    }
+
+    /**
      * Constructor taking the config and a logger as input.
      *
      * @param config adp config
@@ -119,6 +131,8 @@ export class AdpPreview {
         this.lrep = provider.getLayeredRepository();
         // fetch a merged descriptor from the backend
         await this.lrep.getCsrfToken();
+        // check if the project is an ABAP cloud project
+        this.isCloud = await provider.isAbapCloud();
 
         await this.sync();
         return descriptorVariant.layer;

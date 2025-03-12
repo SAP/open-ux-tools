@@ -1,5 +1,82 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.37
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/nodejs-utils@0.1.8
+
+## 0.0.36
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.8
+
+## 0.0.35
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+
+## 0.0.34
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.7
+
+## 0.0.33
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.6
+
+## 0.0.32
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.5
+
+## 0.0.31
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+
+## 0.0.30
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.3
+
+## 0.0.29
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.2
+
+## 0.0.28
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.1
+
+## 0.0.27
+
+### Patch Changes
+
+-   d6118c9: Changes to support adding CAP MTA prompt to allow user generate MTA
+
+## 0.0.26
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+
 ## 0.0.25
 
 ### Patch Changes

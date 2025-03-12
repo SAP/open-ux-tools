@@ -1,5 +1,25 @@
 # @sap-ux/ui5-application-writer
 
+## 1.3.2
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+
+## 1.3.1
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+
+## 1.3.0
+
+### Minor Changes
+
+-   88520b4: Export functions for Manifest Version Retrieval, and UI5 Version Info
+
 ## 1.2.10
 
 ### Patch Changes

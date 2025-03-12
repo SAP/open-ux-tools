@@ -6,6 +6,7 @@ const fiveMinutes = 5 * 60000;
 const TEST_DATA_ROOT = join(__dirname, 'test', 'data');
 const CDS_PROJECTS = [
     join(TEST_DATA_ROOT, 'cds', 'cap-start'),
+    join(TEST_DATA_ROOT, 'cds', 'cap-no-apps'),
     join(TEST_DATA_ROOT, 'cds', 'layering'),
     join(TEST_DATA_ROOT, 'cds', 'term-deletion')
 ];

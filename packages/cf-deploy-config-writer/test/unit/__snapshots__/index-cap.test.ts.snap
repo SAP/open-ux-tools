@@ -19,20 +19,19 @@ modules:
     type: nodejs
     path: gen/srv
     parameters:
+      instances: 1
       buildpack: nodejs_buildpack
-      readiness-health-check-type: http
-      readiness-health-check-http-endpoint: /health
     build-parameters:
-      builder: npm
+      builder: npm-ci
     provides:
       - name: srv-api
         properties:
           srv-url: '\${default-url}'
     requires:
-      - name: captestproject-db
-      - name: captestproject-auth
       - name: captestproject-connectivity
       - name: captestproject-destination
+      - name: captestproject-db
+      - name: captestproject-auth
   - name: captestproject-db-deployer
     type: hdb
     path: gen/db
@@ -49,7 +48,21 @@ modules:
           content-target: true
     build-parameters:
       build-result: app/
-      requires: null
+      requires:
+        - name: captestprojectproject1
+          artifacts:
+            - project1.zip
+          target-path: app/
+  - name: captestprojectproject1
+    type: html5
+    path: app/project1
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms: []
   - name: captestproject-destination-content
     type: com.sap.application.content
     requires:
@@ -81,21 +94,6 @@ modules:
     build-parameters:
       no-source: true
 resources:
-  - name: captestproject-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
-  - name: captestproject-auth
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      service-plan: application
-      path: ./xs-security.json
-      config:
-        xsappname: 'captestproject-\${org}-\${space}'
-        tenant-mode: dedicated
-      service-name: captestproject-xsuaa-service
   - name: captestproject-connectivity
     type: org.cloudfoundry.managed-service
     parameters:
@@ -124,12 +122,65 @@ resources:
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
+  - name: captestproject-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
   - name: captestproject-html5-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
       service-plan: app-host
       service-name: captestproject-html5-service
+  - name: captestproject-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: 'captestproject-\${org}-\${space}'
+        tenant-mode: dedicated
+      service-name: captestproject-xsuaa-service
+"
+`;
+
+exports[`CF Writer CAP Validate generation of CAP mta configurations managed 2`] = `
+"{
+  \\"name\\": \\"captestproject\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A simple CAP project.\\",
+  \\"repository\\": \\"<Add your repository here>\\",
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.8.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"cds-serve\\",
+    \\"undeploy\\": \\"cf undeploy captestproject --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"cds\\": {
+    \\"requires\\": {
+      \\"auth\\": \\"xsuaa\\",
+      \\"connectivity\\": true,
+      \\"destinations\\": true,
+      \\"html5-repo\\": true
+    }
+  }
+}
 "
 `;
 
@@ -152,20 +203,19 @@ modules:
     type: nodejs
     path: gen/srv
     parameters:
+      instances: 1
       buildpack: nodejs_buildpack
-      readiness-health-check-type: http
-      readiness-health-check-http-endpoint: /health
     build-parameters:
-      builder: npm
+      builder: npm-ci
     provides:
       - name: srv-api
         properties:
           srv-url: '\${default-url}'
     requires:
-      - name: captestproject-db
-      - name: captestproject-auth
       - name: captestproject-connectivity
       - name: captestproject-destination
+      - name: captestproject-db
+      - name: captestproject-auth
   - name: captestproject-db-deployer
     type: hdb
     path: gen/db
@@ -182,7 +232,21 @@ modules:
           content-target: true
     build-parameters:
       build-result: app/
-      requires: null
+      requires:
+        - name: captestprojectproject1
+          artifacts:
+            - project1.zip
+          target-path: app/
+  - name: captestprojectproject1
+    type: html5
+    path: app/project1
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms: []
   - name: captestproject-router
     type: approuter.nodejs
     path: router
@@ -199,20 +263,6 @@ modules:
           url: 'https://ui5.sap.com'
           forwardAuthToken: false
 resources:
-  - name: captestproject-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
-  - name: captestproject-auth
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      service-plan: application
-      path: ./xs-security.json
-      config:
-        xsappname: 'captestproject-\${org}-\${space}'
-        tenant-mode: dedicated
   - name: captestproject-connectivity
     type: org.cloudfoundry.managed-service
     parameters:
@@ -241,11 +291,25 @@ resources:
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
+  - name: captestproject-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
   - name: captestproject-html5-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
       service-plan: app-host
+  - name: captestproject-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: 'captestproject-\${org}-\${space}'
+        tenant-mode: dedicated
   - name: captestproject-uaa
     type: org.cloudfoundry.managed-service
     parameters:
@@ -263,6 +327,44 @@ resources:
 `;
 
 exports[`CF Writer CAP Validate generation of CAP mta configurations standard 2`] = `
+"{
+  \\"name\\": \\"captestproject\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"A simple CAP project.\\",
+  \\"repository\\": \\"<Add your repository here>\\",
+  \\"license\\": \\"UNLICENSED\\",
+  \\"private\\": true,
+  \\"dependencies\\": {
+    \\"@sap/cds\\": \\"^8\\",
+    \\"express\\": \\"^4\\",
+    \\"@sap/xssec\\": \\"^4\\"
+  },
+  \\"devDependencies\\": {
+    \\"@cap-js/cds-types\\": \\"^0.8.0\\",
+    \\"@cap-js/sqlite\\": \\"^1\\",
+    \\"@sap/cds-dk\\": \\"^8\\",
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  },
+  \\"scripts\\": {
+    \\"start\\": \\"cds-serve\\",
+    \\"undeploy\\": \\"cf undeploy captestproject --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"cds\\": {
+    \\"requires\\": {
+      \\"auth\\": \\"xsuaa\\",
+      \\"connectivity\\": true,
+      \\"destinations\\": true,
+      \\"html5-repo\\": true
+    }
+  }
+}
+"
+`;
+
+exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`] = `
 "{
     \\"name\\": \\"app-router\\",
     \\"private\\": true,
@@ -284,7 +386,7 @@ exports[`CF Writer CAP Validate generation of CAP mta configurations standard 2`
 "
 `;
 
-exports[`CF Writer CAP Validate generation of CAP mta configurations standard 3`] = `
+exports[`CF Writer CAP Validate generation of CAP mta configurations standard 4`] = `
 "{
   \\"authenticationMethod\\": \\"route\\",
   \\"routes\\": [

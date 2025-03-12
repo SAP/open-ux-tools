@@ -344,6 +344,30 @@ describe('FlpSandbox', () => {
             expect(response.text).toMatchSnapshot();
         });
 
+        test('test/flp.html UI5 legacy-free', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-legacy-free' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
+        test('test/flp.html UI5 snapshot', async () => {
+            const jsonSpy = () =>
+                Promise.resolve({ libraries: [{ name: 'sap.ui.core', version: '1.136.0-SNAPSHOT' }] });
+            fetchMock.mockResolvedValue({
+                json: jsonSpy,
+                text: jest.fn(),
+                ok: true
+            });
+            const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false').expect(200);
+            expect(response.text).toMatchSnapshot();
+        });
+
         test('test/flp.html', async () => {
             const response = await server.get('/test/flp.html?sap-ui-xx-viewCache=false#app-preview').expect(200);
             expect(response.text).toMatchSnapshot();
@@ -1059,5 +1083,41 @@ describe('initAdp', () => {
         await initAdp(mockAdpProject, config.adp, flp, {} as MiddlewareUtils, logger);
         expect(adpToolingMock).toBeCalled();
         expect(flpInitMock).toBeCalled();
+    });
+
+    test('initAdp - cloud scenario', async () => {
+        const adpToolingMock = jest.spyOn(adpTooling, 'AdpPreview').mockImplementation((): adpTooling.AdpPreview => {
+            return {
+                init: () => {
+                    return 'CUSTOMER_BASE';
+                },
+                descriptor: {
+                    manifest: {},
+                    name: 'descriptorName',
+                    url,
+                    asyncHints: {
+                        requests: []
+                    }
+                },
+                resources: [],
+                proxy: jest.fn(),
+                sync: syncSpy,
+                onChangeRequest: jest.fn(),
+                addApis: jest.fn(),
+                isCloudProject: true
+            } as unknown as adpTooling.AdpPreview;
+        });
+        const config = {
+            adp: { target: { url } },
+            rta: { options: {}, editors: [] }
+        } as unknown as Partial<MiddlewareConfig>;
+        const flp = new FlpSandbox(config, mockAdpProject, {} as MiddlewareUtils, logger);
+        const flpInitMock = jest.spyOn(flp, 'init').mockImplementation(async (): Promise<void> => {
+            jest.fn();
+        });
+        await initAdp(mockAdpProject, config.adp as AdpPreviewConfig, flp, {} as MiddlewareUtils, logger);
+        expect(adpToolingMock).toBeCalled();
+        expect(flpInitMock).toBeCalled();
+        expect(flp.rta?.options?.isCloud).toBe(true);
     });
 });

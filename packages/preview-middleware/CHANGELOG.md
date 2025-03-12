@@ -1,5 +1,141 @@
 # @sap-ux/preview-middleware
 
+## 0.18.16
+
+### Patch Changes
+
+-   32dafd7: feat: refactor lrep connectors used for preview
+
+## 0.18.15
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/adp-tooling@0.13.14
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/project-access@1.29.16
+
+## 0.18.14
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/adp-tooling@0.13.13
+    -   @sap-ux/system-access@0.5.32
+
+## 0.18.13
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+-   Updated dependencies [1c07ab9]
+    -   @sap-ux/adp-tooling@0.13.12
+
+## 0.18.12
+
+### Patch Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
+## 0.18.11
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/adp-tooling@0.13.11
+
+## 0.18.10
+
+### Patch Changes
+
+-   Updated dependencies [14bec21]
+    -   @sap-ux/adp-tooling@0.13.10
+
+## 0.18.9
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.9
+-   @sap-ux/project-access@1.29.13
+
+## 0.18.8
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.8
+-   @sap-ux/project-access@1.29.12
+
+## 0.18.7
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.7
+
+## 0.18.6
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.6
+
+## 0.18.5
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/adp-tooling@0.13.5
+
+## 0.18.4
+
+### Patch Changes
+
+-   78dd2c2: fix: TypeScript template causes the iframe to break when controller extension is loaded
+-   Updated dependencies [78dd2c2]
+    -   @sap-ux/adp-tooling@0.13.4
+
+## 0.18.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.3
+
+## 0.18.2
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/adp-tooling@0.13.2
+    -   @sap-ux/project-access@1.29.10
+
+## 0.18.1
+
+### Patch Changes
+
+-   1d4ba46: feat: handling of legacy free ui5 version
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/adp-tooling@0.13.1
+
+## 0.18.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
+### Patch Changes
+
+-   Updated dependencies [127bd12]
+    -   @sap-ux/adp-tooling@0.13.0
+
+## 0.17.48
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.12.138
+
 ## 0.17.47
 
 ### Patch Changes

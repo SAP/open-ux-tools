@@ -90,6 +90,9 @@
       "path": "packages/deploy-config-generator-shared"
     },
     {
+      "path": "packages/deploy-config-sub-generator"
+    },
+    {
       "path": "packages/deploy-tooling"
     },
     {

@@ -1,5 +1,35 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.2
+
+### Patch Changes
+
+-   32dafd7: feat: refactor lrep connectors used for preview
+
+## 0.13.1
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+
+## 0.13.0
+
+### Minor Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
+## 0.12.1
+
+### Patch Changes
+
+-   1d4ba46: feat: handling of legacy free ui5 version
+
+## 0.12.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
 ## 0.11.69
 
 ### Patch Changes

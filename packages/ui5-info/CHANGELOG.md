@@ -1,5 +1,17 @@
 # @sap-ux/ui5-info
 
+## 0.9.1
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+
+## 0.9.0
+
+### Minor Changes
+
+-   88520b4: Export functions for Manifest Version Retrieval, and UI5 Version Info
+
 ## 0.8.3
 
 ### Patch Changes
