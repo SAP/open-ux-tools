@@ -276,6 +276,14 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should not show transport list question', () => {
+        PromptState.abapDeployConfig.isS4HC = false;
+        PromptState.transportAnswers.transportList = [
+            { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport' }
+        ];
+        expect(defaultOrShowTransportListQuestion(TransportChoices.ListExistingChoice, { hideIfOnPremise: true })).toBe(
+            false
+        );
+
         PromptState.transportAnswers.transportList = [];
         expect(defaultOrShowTransportListQuestion(TransportChoices.ListExistingChoice)).toBe(false);
 

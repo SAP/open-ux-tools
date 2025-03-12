@@ -272,9 +272,13 @@ function isTransportListEmpty(transportList?: TransportListItem[]): boolean {
  * Determines if the transport list question should be shown.
  *
  * @param transportInputChoice - transportInputChoice from previous answers
+ * @param transportInputChoiceOptions - transportInputChoice options
  * @returns boolean
  */
-export function defaultOrShowTransportListQuestion(transportInputChoice?: string): boolean {
+export function defaultOrShowTransportListQuestion(
+    transportInputChoice?: string,
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions
+): boolean {
     const showQuestion = defaultOrShowTransportQuestion();
     if (!showQuestion) {
         return false;
@@ -282,7 +286,8 @@ export function defaultOrShowTransportListQuestion(transportInputChoice?: string
 
     return (
         transportInputChoice === TransportChoices.ListExistingChoice &&
-        !isTransportListEmpty(PromptState.transportAnswers.transportList)
+        !isTransportListEmpty(PromptState.transportAnswers.transportList) &&
+        !(transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false)
     );
 }
 

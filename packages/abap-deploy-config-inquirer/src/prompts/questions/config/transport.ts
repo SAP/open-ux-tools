@@ -100,7 +100,7 @@ export function getTransportRequestPrompts(
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
-                defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice),
+                defaultOrShowTransportListQuestion(previousAnswers.transportInputChoice, options.transportInputChoice),
             type: 'list',
             name: promptNames.transportFromList,
             message: t('prompts.config.transport.common.transportRequest'),
