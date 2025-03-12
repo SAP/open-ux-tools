@@ -1,24 +1,27 @@
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { Destination } from '@sap-ux/btp-utils';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
+import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
+import { type Logger } from '@sap-ux/logger';
 import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import { getConfigPrompts, getSystemSelectionPrompts } from '@sap-ux/ui-service-inquirer';
 import Generator from 'yeoman-generator';
-import { boUri, cdsUri, initI18n, prompts, t } from '../utils';
+import { boUri, cdsUri, initI18n, prompts, SERVICE_GENERATION_SUCCESS, t, UI_SERVICE_CACHE } from '../utils';
 import UiServiceGenLogger from '../utils/logger';
-//import { type YeomanEnvironment, type VSCodeInstance } from '@sap-ux/fiori-generator-shared';
-// import { type InquirerAdapter } from '@sap-ux/inquirer-common';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { Destination } from '@sap-ux/btp-utils';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
-import { type Logger } from '@sap-ux/logger';
 import { BAS_OBJECT } from './types';
 import {
+    addToCache,
     authenticateInputData,
     generateService,
     getAppGenSystemData,
+    getFromCache,
     runPostGenHook,
     setToolbarMessage,
     writeBASMetadata
 } from './utils';
+import { getTelemetryData } from './telemetryHelper';
 
 /**
  * Generator for creating a new UI Service.
@@ -69,6 +72,11 @@ export default class extends Generator {
             steps.shift();
         }
 
+        this.appWizard = AppWizard.create(opts);
+        if (!(this.appWizard as any)[UI_SERVICE_CACHE]) {
+            (this.appWizard as any)[UI_SERVICE_CACHE] = {};
+        }
+
         this.appWizard.setHeaderTitle('UI Service Generator');
         this.prompts = new Prompts(steps);
         this.setPromptsCallback = (fn): void => {
@@ -79,11 +87,23 @@ export default class extends Generator {
     }
 
     public async initializing(): Promise<void> {
+        await TelemetryHelper.initTelemetrySettings({
+            consumerModule: {
+                name: '@sap/generator-fiori-ui-service',
+                version: this.rootGeneratorVersion()
+            },
+            internalFeature: isInternalFeaturesSettingEnabled(),
+            watchTelemetrySettingStore: false
+        });
         await initI18n();
-        if (this.options.data) {
+        if (this.options.data?.systemName) {
             UiServiceGenLogger.logger.debug('Options passed into generator: ' + JSON.stringify(this.options.data));
             await this._initSteps();
         }
+        // if (this.options.data) {
+        //     UiServiceGenLogger.logger.info('Options passed into generator: ' + JSON.stringify(this.options.data));
+        //     //await this._initSteps();
+        // }
     }
 
     private async _initSteps(): Promise<void> {
@@ -120,12 +140,16 @@ export default class extends Generator {
 
     public async prompting(): Promise<void> {
         // SAP System step
-        if (!this.options.data) {
+        if (!this.options.data?.systemName) {
             // prompt system selection
-            const systemPrompts = await getSystemSelectionPrompts();
+            const systemPrompts = await getSystemSelectionPrompts(
+                ...getFromCache(this.appWizard),
+                UiServiceGenLogger.logger as unknown as Logger
+            );
             const systemSelectionAnswers = await this.prompt(systemPrompts.prompts);
             Object.assign(this.answers, systemSelectionAnswers);
             Object.assign(this.systemSelectionAnswers, systemPrompts.answers);
+            addToCache(this.appWizard, this.systemSelectionAnswers, this.answers);
         }
 
         // UI Service configuration step
@@ -146,10 +170,10 @@ export default class extends Generator {
         this.appWizard.showWarning(t('GENERATING_UI_SERVICE_WARNING'), MessageType.prompt);
         const transportReqNumber =
             (this.answers.transportFromList || this.answers.transportManual || this.answers.transportCreated) ?? '';
-        UiServiceGenLogger.logger.error('transportReqNumber: ' + transportReqNumber);
-        UiServiceGenLogger.logger.error(
-            'serviceConfigAnswers content: ' + JSON.stringify(this.serviceConfigAnswers.content)
-        );
+        TelemetryHelper.createTelemetryData({
+            ...getTelemetryData(this.answers, this.options)
+        });
+        TelemetryHelper.markAppGenStartTime();
         await generateService(
             this.systemSelectionAnswers.objectGenerator!,
             this.serviceConfigAnswers.content,
@@ -157,7 +181,9 @@ export default class extends Generator {
             this.appWizard
         ).then(async (res) => {
             if (res) {
-                //sendTelemetry(SERVICE_GENERATION_SUCCESS, TelemetryHelper.telemetryData);
+                sendTelemetry(SERVICE_GENERATION_SUCCESS, TelemetryHelper.telemetryData).catch((error) => {
+                    UiServiceGenLogger.logger.error(t('ERROR_SENDING_TELEMETRY', { error: error.message }));
+                });
 
                 // check if data passed from BAS service center to write BAS .service.metadata file
                 if (this.options.data?.path && this.options.data?.providerSystem) {
@@ -178,14 +204,14 @@ export default class extends Generator {
                     );
                     UiServiceGenLogger.logger.debug(`Generation response: ${JSON.stringify(res)}`);
                 }
-
+                UiServiceGenLogger.logger.info('Generation completed');
                 if (this.answers.launchAppGen && this.systemSelectionAnswers.connectedSystem) {
+                    UiServiceGenLogger.logger.info('Running post generation hook');
                     await runPostGenHook(
-                        this.options.vscode,
+                        this.options,
                         getAppGenSystemData(this.systemSelectionAnswers),
                         this.serviceConfigAnswers.content,
-                        this.systemSelectionAnswers.connectedSystem?.serviceProvider,
-                        this.options.data?.path
+                        this.systemSelectionAnswers.connectedSystem?.serviceProvider
                     );
                 }
             }

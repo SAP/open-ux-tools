@@ -9,9 +9,10 @@ import type { Question } from 'inquirer';
 export interface UiServiceAnswers extends AbapDeployConfigAnswersInternal {
     [promptNames.systemSelection]?: SystemSelectionAnswerType;
     businessObjectInterface?: string;
-    cdsView?: string;
+    abapCDSView?: string;
     objectType?: ObjectType;
     serviceName?: string;
+    draftEnabled?: boolean;
     launchAppGen?: boolean;
 }
 

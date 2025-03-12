@@ -1,19 +1,30 @@
 import { MessageType, type AppWizard } from '@sap-devx/yeoman-ui-types';
 import type { AbapServiceProvider, ServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
-import type { ServiceConfig, SystemSelectionAnswers } from '@sap-ux/ui-service-inquirer';
+import type { ServiceConfig, SystemSelectionAnswers, UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import type { ProviderSystem, ServiceConnectivityData } from '@sap/service-provider-apis';
 import { ProviderType } from '@sap/service-provider-apis';
 import type { Editor } from 'mem-fs-editor';
 import { basename, dirname, join } from 'path';
+import { SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils';
 import { t } from '../utils/i18n';
 import UiServiceGenLogger from '../utils/logger';
 import type { AppGenData, AppGenSystemSystemData, PromptOptions, ReqAuth } from './types';
-import { type VSCodeInstance } from '@sap-ux/fiori-generator-shared';
+import type { GeneratorOptions } from 'yeoman-generator';
 
+/**
+ * Generate the service.
+ *
+ * @param objectGeneator - the backend object generator for the object type
+ * @param content - the suggested content used to generate the service
+ * @param transportReqNumber - the transport request number
+ * @param appWizard - the app wizard reference
+ * @returns the generated service response
+ */
 export async function generateService(
     objectGeneator: UiServiceGenerator,
     content: string,
@@ -25,15 +36,26 @@ export async function generateService(
         UiServiceGenLogger.logger.error(`Error generating service: ${error.message}`);
         UiServiceGenLogger.logger.error(`${error.code} ${error.response?.status} ${error.response?.data}`);
 
-        // TelemetryHelper.createTelemetryData({
-        //     ErrorMessage: error.message,
-        //     ErrorCode: error.code,
-        //     ResponseStatus: error.response?.status
-        // });
-        // sendTelemetry(SERVICE_GENERATION_FAIL, TelemetryHelper.telemetryData);
+        TelemetryHelper.createTelemetryData({
+            ErrorMessage: error.message,
+            ErrorCode: error.code,
+            ResponseStatus: error.response?.status
+        });
+        sendTelemetry(SERVICE_GENERATION_FAIL, TelemetryHelper.telemetryData).catch((error: any) => {
+            UiServiceGenLogger.logger.error(`Error sending telemetry: ${error.message}`);
+        });
     });
 }
 
+/**
+ * Write the service metadata file into the BAS Storyboard project.
+ *
+ * @param serviceConfig - the service name and content object
+ * @param fs - the file system
+ * @param appWizard - the app wizard reference
+ * @param inputData - the input data provider to the service generator from BAS
+ * @param provider - the service provider
+ */
 export async function writeBASMetadata(
     serviceConfig: ServiceConfig,
     fs: Editor,
@@ -62,39 +84,62 @@ export async function writeBASMetadata(
             t('INFO_GENERATION_SUCCESSFUL_WRITE_FILE', { serviceName: serviceConfig.serviceName }),
             MessageType.notification
         );
-        // UiServiceGenLogger.logger.info(
-        //     t('INFO_GENERATION_SUCCESSFUL_WRITE_FILE', { serviceName: state.suggestedServiceName })
-        // );
+        UiServiceGenLogger.logger.info(
+            t('INFO_GENERATION_SUCCESSFUL_WRITE_FILE', { serviceName: serviceConfig.serviceName })
+        );
     } else {
         appWizard.showInformation(
             t('INFO_GENERATION_SUCCESSFUL_METADATA_FAIL', { serviceName: serviceConfig.serviceName }),
             MessageType.notification
         );
-        // UiServiceGenLogger.logger.info(
-        //     t('INFO_GENERATION_SUCCESSFUL_METADATA_FAIL', { serviceName: state.suggestedServiceName })
-        // );
+        UiServiceGenLogger.logger.info(
+            t('INFO_GENERATION_SUCCESSFUL_METADATA_FAIL', { serviceName: serviceConfig.serviceName })
+        );
     }
 }
 
+/**
+ * Get the relative URL from the service content.
+ *
+ * @param content - the suggested service content
+ * @returns the relative odata service URL
+ */
 export function getRelativeUrlFromContent(content: string): string {
     const contentJson = JSON.parse(content);
     return `/sap/opu/odata4/sap/${contentJson.businessService.serviceBinding.serviceBindingName}/srvd/sap/${contentJson.businessService.serviceDefinition.serviceDefinitionName}/0001/`;
 }
 
+/**
+ * Get the metadata for the service url provided. Has a 5 second retry if the metadata is not fetched on first attempt.
+ *
+ * @param relativeURL - the relative URL of the service
+ * @param provider - the service provider
+ * @param retry - whether retry should be attempted
+ * @returns the service metadata content as string
+ */
 export async function getMetadata(relativeURL: string, provider: ServiceProvider, retry = false): Promise<string> {
     return await provider
         .get(`${relativeURL}/$metadata`)
         .then((res: any) => {
             return res.data;
         })
-        .catch(() => {
+        .catch((error) => {
             if (retry) {
-                //UiServiceGenLogger.logger.error(`Error fetching metadata for generated service: ${error.message}`);
+                UiServiceGenLogger.logger.error(`Error fetching metadata for generated service: ${error.message}`);
             }
             return '';
         });
 }
 
+/**
+ * Get the service metadata content to be written to the .service.metadata file.
+ *
+ * @param providerSystem - the provider system
+ * @param relativeURL - the relative URL of the service
+ * @param metadata - the metadata content
+ * @param contentJson - the suggested service content as JSON
+ * @returns the service connectivity data object in form of .service.metadata file
+ */
 export function getServiceMedadataContent(
     providerSystem: ProviderSystem,
     relativeURL: string,
@@ -112,12 +157,19 @@ export function getServiceMedadataContent(
     };
 }
 
+/**
+ * Run the post generation hook to open the application generator via command with specific payload.
+ *
+ * @param options - options passed to the generator
+ * @param systemData - the system data
+ * @param content - the suggested service content
+ * @param provider - the service provider
+ */
 export async function runPostGenHook(
-    vscodeInstance: VSCodeInstance,
+    options: GeneratorOptions,
     systemData: AppGenSystemSystemData,
     content: string,
-    provider: ServiceProvider,
-    targetPath?: string
+    provider: ServiceProvider
 ): Promise<void> {
     const relativeUrl = getRelativeUrlFromContent(content);
     const appGenData: AppGenData = {
@@ -129,24 +181,34 @@ export async function runPostGenHook(
         }
     };
 
-    if (targetPath) {
+    if (options.data?.path) {
         Object.assign(appGenData, {
             project: {
-                targetPath: dirname(targetPath),
-                name: basename(targetPath)
+                targetPath: dirname(options.data?.path),
+                name: basename(options.data?.path)
             }
         });
     }
 
+    UiServiceGenLogger.logger.info(
+        `Launching App Generator with data: ${JSON.stringify(appGenData)} and command ${
+            options.data?.appGenLaunchCommand
+        }`
+    );
     setTimeout(() => {
-        vscodeInstance?.commands
-            ?.executeCommand?.('sap.ux.service.generated.handler', appGenData)
-            .catch((error: any) => {
-                UiServiceGenLogger.logger.error(`Error executing command: ${error.message}`);
-            });
+        options.vscode?.commands?.executeCommand?.(
+            options.data?.appGenLaunchCommand ?? 'sap.ux.service.generated.handler',
+            appGenData
+        );
     }, 500);
 }
 
+/**
+ * Get the system data for the application generator.
+ *
+ * @param system - the system selection answers
+ * @returns the system data to be passed to the application generator
+ */
 export function getAppGenSystemData(system: SystemSelectionAnswers): AppGenSystemSystemData {
     return isAppStudio()
         ? { destination: system.connectedSystem?.destination?.Name ?? '' }
@@ -157,23 +219,24 @@ export function getAppGenSystemData(system: SystemSelectionAnswers): AppGenSyste
           };
 }
 
+/**
+ * Authenticate the auth input data provided by BAS Service Center.
+ *
+ * @param data - the input data from BAS Service Center
+ * @param system - the system selection answers
+ */
 export async function authenticateInputData(data: PromptOptions, system: SystemSelectionAnswers): Promise<void> {
     const reqAuth = data.user && data.password ? { username: data.user, password: data.password } : undefined;
     await validateConnection(data.systemName, system, reqAuth);
-    // Object.assign(system, {
-    //     connectedSystem: {
-    //         serviceProvider: system.provider
-    //     }
-    // });
 }
 
-// /**
-//  * Validates the connection to the BAS destination
-//  * @param system - SAP system
-//  * @param state - UI service state
-//  * @param reqAuth - request authentication
-//  * @returns boolean
-//  */
+/**
+ * Validate the connection to the system.
+ *
+ * @param systemName - the system name
+ * @param system - the system selection answers
+ * @param reqAuth - the auth, user and password, provided by BAS Service Center
+ */
 export async function validateConnection(
     systemName: string,
     system: SystemSelectionAnswers,
@@ -204,12 +267,18 @@ export async function validateConnection(
         if (isAppStudio() && JSON.stringify(e) === '{}') {
             //state.authenticated = true;
         } else {
-            //UiServiceGenLogger.logger.error(t('ERROR_CONNECTION_FAILED', { system: systemName }));
+            UiServiceGenLogger.logger.error(t('ERROR_CONNECTION_FAILED', { system: systemName }));
             return;
         }
     }
 }
 
+/**
+ * Check the connection to the system.
+ *
+ * @param provider - the service provider
+ * @returns whether the connection is successful
+ */
 export async function checkConnection(provider: AbapServiceProvider): Promise<boolean> {
     try {
         await provider.get('/sap/bc/adt/discovery', {
@@ -223,15 +292,22 @@ export async function checkConnection(provider: AbapServiceProvider): Promise<bo
     }
 }
 
+/**
+ * Set the Yeoman UI (AppWizard) toolbar message based on the input data.
+ *
+ * @param data - the prompt options passed in from BAS Service Center
+ * @param systemSelectionAnswers - the system selection answers
+ * @param appWizard - the app wizard reference
+ */
 export function setToolbarMessage(
-    options: PromptOptions,
+    data: PromptOptions,
     systemSelectionAnswers: SystemSelectionAnswers,
     appWizard: AppWizard
 ): void {
-    if (options && !systemSelectionAnswers.connectedSystem?.serviceProvider) {
+    if (data?.systemName && !systemSelectionAnswers.connectedSystem?.serviceProvider) {
         // Could not authenticate with the system provided in the input data
         appWizard.showError(t('ERROR_AUTHENTICATION'), MessageType.prompt);
-    } else if (options && !systemSelectionAnswers.objectGenerator) {
+    } else if (data?.systemName && !systemSelectionAnswers.objectGenerator) {
         // Could not fetch the generator for the business object provided in the input data
         appWizard.showError(t('NO_GENERATOR_FOUND_BO'), MessageType.prompt);
     } else {
@@ -239,24 +315,37 @@ export function setToolbarMessage(
     }
 }
 
-// export function addToCache(appWizard: AppWizard, answers: UiServiceAnswers): void {
-//     if (appWizard[UI_SERVICE_CACHE]) {
-//         Object.assign(appWizard[UI_SERVICE_CACHE], {
-//             systemName: answers.sapSystem,
-//             objectType: answers.objectType,
-//             businessObjectInterface: answers.businessObjectInterface,
-//             abapCDSView: answers.abapCDSView
-//         });
-//     }
-// }
+/**
+ * Add the system selection and object answers to the cache.
+ *
+ * @param appWizard - the app wizard reference
+ * @param systemSelectionAnswers - the system selection answers
+ * @param objectAnswers - the remaining prompt answers from system selection step
+ */
+export function addToCache(
+    appWizard: AppWizard,
+    systemSelectionAnswers: SystemSelectionAnswers,
+    objectAnswers: UiServiceAnswers
+): void {
+    if ((appWizard as any)[UI_SERVICE_CACHE]) {
+        Object.assign((appWizard as any)[UI_SERVICE_CACHE], {
+            systemSelectionAnswers: objectAnswers,
+            systemName:
+                systemSelectionAnswers.connectedSystem?.destination?.Name ??
+                systemSelectionAnswers.connectedSystem?.backendSystem?.name
+        });
+    }
+}
 
-// export function getFromCache(appWizard: AppWizard) {
-//     if (appWizard[UI_SERVICE_CACHE].systemName) {
-//         return {
-//             systemName: appWizard[UI_SERVICE_CACHE].systemName,
-//             objectType: appWizard[UI_SERVICE_CACHE].objectType,
-//             businessObjectInterface: appWizard[UI_SERVICE_CACHE].businessObjectInterface,
-//             abapCDSView: appWizard[UI_SERVICE_CACHE].abapCDSView
-//         };
-//     }
-// }
+/**
+ * Get the system selection answers and system name from the cache.
+ *
+ * @param appWizard - the app wizard reference
+ * @returns the system selection answers and system name
+ */
+export function getFromCache(appWizard: AppWizard): [UiServiceAnswers, string] {
+    return [
+        (appWizard as any)[UI_SERVICE_CACHE].systemSelectionAnswers,
+        (appWizard as any)[UI_SERVICE_CACHE].systemName
+    ];
+}

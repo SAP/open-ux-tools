@@ -1,9 +1,14 @@
 {
-    "info": {
-        "LABEL_UI_SERVICE_GEN_SYSTEM_STEP": "SAP System selection",
-        "LABEL_UI_SERVICE_GEN_CONFIG_STEP": "UI Service Configuration",
-        "GENERATING_UI_SERVICE_WARNING": "Generating UI service...",
-        "INFO_GENERATION_WARNING": "Generation of UI Service might take a few minutes. Please be patient."
-    },
-    "UI_SERVICE_GENERATOR_TITLE": "UI Service Generator"
+    "GENERATING_UI_SERVICE_WARNING": "Generating UI service...",
+    "INFO_GENERATION_WARNING": "Generation of UI Service might take a few minutes. Please be patient.",
+    "UI_SERVICE_GENERATOR_TITLE": "UI Service Generator",
+    "ERROR_FETCHING_GENERATOR": "Error fetching generator: {{error}}",
+    "ERROR_SENDING_TELEMETRY": "Error sending telemetry event",
+    "INFO_GENERATION_SUCCESSFUL": "UI Service {{serviceName}} was generated successfully",
+    "ERROR_GENERATING_SERVICE": "The UI Service failed to create successfully. Please see the log in 'Application Wizard.Generators' output for more details.",
+    "INFO_GENERATION_SUCCESSFUL_WRITE_FILE": "UI Service {{serviceName}} has been created successfully and has been added to your project",
+    "INFO_GENERATION_SUCCESSFUL_METADATA_FAIL": "UI Service {{serviceName}} has been created successfully but could not be added to your project",
+    "ERROR_CONNECTION_FAILED": "Connection to the discovery service on backend system {{system}} failed.",
+    "ERROR_AUTHENTICATION": "Authentication failed with system data provided, unable to continue with UI Service generation.",
+    "NO_GENERATOR_FOUND_BO": "No generator found for the selected business object interface"
 }

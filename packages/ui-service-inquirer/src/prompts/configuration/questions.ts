@@ -14,10 +14,10 @@ import { PromptState } from '../prompt-state';
 /**
  * Get the configuration questions.
  *
- * @param logger - a logger compatible with the {@link Logger} interface
+ * @param logger - logger instance to use for logging
  * @returns the configuration questions
  */
-export function getConfigQuestions(logger?: Logger): ServiceConfigQuestion[] {
+export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
     PromptState.resetServiceConfig();
     let draftEnabled = true;
     const abapTarget = createAbapTarget(
@@ -61,14 +61,9 @@ export function getConfigQuestions(logger?: Logger): ServiceConfigQuestion[] {
             when: async (answers: UiServiceAnswers): Promise<boolean> => {
                 if (!!answers.packageManual || !!answers.packageAutocomplete) {
                     try {
-                        logger?.error('inside when block');
                         const packageValue = (answers.packageManual || answers.packageAutocomplete) ?? '';
                         PromptState.serviceConfig.content =
                             (await PromptState.systemSelection.objectGenerator?.getContent(packageValue)) ?? '';
-                        // if (content) {
-                        //     PromptState.serviceConfig.content = content;
-                        // }
-                        logger?.error('Content: ' + PromptState.serviceConfig.content);
                         const content = JSON.parse(PromptState.serviceConfig?.content);
                         content.businessObject.projectionBehavior.withDraft = true;
                         PromptState.serviceConfig.content = JSON.stringify(content);
@@ -98,7 +93,7 @@ export function getConfigQuestions(logger?: Logger): ServiceConfigQuestion[] {
                     }
                     return true;
                 } catch (e) {
-                    //UiServiceGenLogger.logger.error(`${t('ERROR_VALIDATING_CONTENT')}: ${e.message}`);
+                    logger.error(`${t('ERROR_VALIDATING_CONTENT')}: ${e.message}`);
                     return await getValidationErrorLink();
                 }
             }
@@ -126,7 +121,7 @@ export function getConfigQuestions(logger?: Logger): ServiceConfigQuestion[] {
                         }
                         draftEnabled = input;
                     } catch (error) {
-                        //UiServiceGenLogger.logger.error(error.message);
+                        logger.error(error.message);
                     }
                     draftEnabled = input;
                 }

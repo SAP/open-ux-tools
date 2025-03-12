@@ -1,24 +1,35 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { ListQuestion } from 'inquirer';
-//import { Severity } from '@sap-devx/yeoman-ui-types';
-//import type { SystemSelectionAnswerType } from '@sap-ux/odata-service-inquirer';
 import { getSystemSelectionQuestions, promptNames } from '@sap-ux/odata-service-inquirer';
-//import { getPackagePrompts, getTransportRequestPrompts } from '@sap-ux/abap-deploy-config-inquirer';
 import type { Question } from 'yeoman-generator';
 import { t } from '../../i18n';
 import { ObjectType, type UiServiceAnswers } from '../../types';
 import { getAbapCDSViews, getBusinessObjects } from '../prompt-helper';
 import { PromptState } from '../prompt-state';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Get the system questions.
  *
+ * @param logger - logger instance to use for logging
+ * @param previousAnswers - answers used to prepopulate the prompts
+ * @param systemName - the name of the system
  * @returns the system questions
  */
-export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]> {
+export async function getSystemQuestions(
+    logger: Logger,
+    previousAnswers?: UiServiceAnswers,
+    systemName?: string
+): Promise<Question<UiServiceAnswers>[]> {
     PromptState.reset();
-    const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, true);
-    const addtionalQuestions = [
+    const systemQuestions = await getSystemSelectionQuestions(
+        {
+            serviceSelection: { hide: true },
+            systemSelection: { defaultChoice: systemName }
+        },
+        true
+    );
+    const objectQuestions = [
         {
             when: (answers: any) => {
                 if (answers[promptNames.systemSelection] && systemQuestions.answers.connectedSystem?.serviceProvider) {
@@ -31,7 +42,7 @@ export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]
             guiOptions: {
                 breadcrumb: true
             },
-            default: '', //state.objectType
+            default: previousAnswers?.objectType ?? '',
             message: t('MESSAGE_OBJECT_TYPE'),
             choices: () => [
                 { name: t('MESSAGE_BUSINESS_OBJECT_INTERFACE'), value: ObjectType.BUSINESS_OBJECT },
@@ -46,7 +57,7 @@ export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]
                 breadcrumb: true,
                 applyDefaultWhenDirty: true
             },
-            default: '', //state.businessObjectInterface
+            default: previousAnswers?.businessObjectInterface ?? '',
             message: t('MESSAGE_BUSINESS_OBJECT_INTERFACE'),
             choices: async () => {
                 try {
@@ -54,7 +65,7 @@ export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]
                         PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                     );
                 } catch (error) {
-                    //UiServiceGenLogger.logger.error(t('ERROR_FETCHING_BUSINESS_OBJECTS' + error.message));
+                    logger.error(t('ERROR_FETCHING_BUSINESS_OBJECTS' + error.message));
                 }
             },
             validate: async (val: any) => {
@@ -64,7 +75,7 @@ export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]
                             PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                         ).getUiServiceGenerator(val);
                     } catch (error) {
-                        //UiServiceGenLogger.logger.error(t('ERROR_FETCHING_GENERATOR', { error: error.message }));
+                        logger.error(t('ERROR_FETCHING_GENERATOR', { error: error.message }));
                     }
                     return PromptState.systemSelection.objectGenerator ? true : t('NO_GENERATOR_FOUND_BO');
                 }
@@ -78,7 +89,7 @@ export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]
                 breadcrumb: true,
                 applyDefaultWhenDirty: true
             },
-            default: '', // state.abapCDSView ||
+            default: previousAnswers?.abapCDSView ?? '',
             message: t('MESSAGE_ABAP_CDS_SERVICE'),
             choices: async () => {
                 try {
@@ -86,7 +97,7 @@ export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]
                         PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                     );
                 } catch (error) {
-                    //UiServiceGenLogger.logger.error(t('ERROR_FETCHING_CDS_VIEWS', { error: error.message }));
+                    logger.error(t('ERROR_FETCHING_CDS_VIEWS', { error: error.message }));
                 }
             },
             validate: async (val: any) => {
@@ -96,7 +107,7 @@ export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]
                             PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                         ).getUiServiceGenerator(val);
                     } catch (error) {
-                        //UiServiceGenLogger.logger.error(t('ERROR_FETCHING_GENERATOR', { error: error.message }));
+                        logger.error(t('ERROR_FETCHING_GENERATOR', { error: error.message }));
                     }
                     return PromptState.systemSelection.objectGenerator ? true : t('NO_GENERATOR_FOUND_CDS_SERVICE');
                 }
@@ -105,6 +116,6 @@ export async function getSystemQuestions(): Promise<Question<UiServiceAnswers>[]
     ];
     return [
         ...(systemQuestions.prompts as Question<UiServiceAnswers>[]),
-        ...(addtionalQuestions as Question<UiServiceAnswers>[])
+        ...(objectQuestions as Question<UiServiceAnswers>[])
     ];
 }

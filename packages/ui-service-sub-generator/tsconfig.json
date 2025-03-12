@@ -16,6 +16,9 @@
       "path": "../btp-utils"
     },
     {
+      "path": "../feature-toggle"
+    },
+    {
       "path": "../fiori-generator-shared"
     },
     {
@@ -28,7 +31,13 @@
       "path": "../logger"
     },
     {
+      "path": "../store"
+    },
+    {
       "path": "../system-access"
+    },
+    {
+      "path": "../telemetry"
     },
     {
       "path": "../ui-service-inquirer"
