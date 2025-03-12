@@ -9,6 +9,8 @@ import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/qu
 import { isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { EnablementValidatorResult } from '../enablement-validator';
+import { getTextBundle } from '../../../i18n';
 
 export const OP_ADD_HEADER_FIELD_TYPE = 'op-add-header-field';
 const CONTROL_TYPES = ['sap.uxap.ObjectPageLayout'];
@@ -19,7 +21,24 @@ const CONTROL_TYPES = ['sap.uxap.ObjectPageLayout'];
 export class AddHeaderFieldQuickAction extends SimpleQuickActionDefinitionBase implements SimpleQuickActionDefinition {
     constructor(context: QuickActionContext) {
         super(OP_ADD_HEADER_FIELD_TYPE, CONTROL_TYPES, 'QUICK_ACTION_OP_ADD_HEADER_FIELD', context, [
-            DIALOG_ENABLEMENT_VALIDATOR
+            DIALOG_ENABLEMENT_VALIDATOR,
+            {
+                run: async (): Promise<EnablementValidatorResult> => {
+                    const i18n = await getTextBundle();
+                    const objectPageLayout = getRelevantControlFromActivePage(
+                        this.context.controlIndex,
+                        this.context.view,
+                        CONTROL_TYPES
+                    )[0] as ObjectPageLayout;
+                    if (!objectPageLayout.getShowHeaderContent()) {
+                        return {
+                            type: 'error',
+                            message: i18n.getText('DISABLE_SHOW_HEADER_CONTENT')
+                        };
+                    }
+                    return undefined;
+                }
+            }
         ]);
     }
 
