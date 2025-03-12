@@ -164,7 +164,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                     isAdp: this.isAdp
                 }
             );
-            this.target = target ?? TargetName.ABAP;
+            this.target = this.isAdp ? TargetName.ABAP : target;
             this.answers = answers;
         }
 
