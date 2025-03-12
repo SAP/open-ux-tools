@@ -68,16 +68,19 @@ export const isControllerExtensionEnabled = (
  * Determines whether the fragment command should be enabled based on the provided overlays.
  *
  * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
+ * @param {OutlineService} outlineService - The OutlineService instance.
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
-export const isFragmentCommandEnabled = (overlays: ElementOverlay[]): boolean => {
+export const isFragmentCommandEnabled = (overlays: ElementOverlay[], outlineService: OutlineService): boolean => {
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
 
     const control = overlays[0].getElement();
 
-    return hasStableId(overlays[0]) /*&& !(isReuseComponent(control.getId()))*/;
+    const view = FlUtils.getViewForControl(control);
+
+    return hasStableId(overlays[0]) && !(outlineService.hasReuseComponents(view as XMLView));
 };
 
 /**
@@ -111,7 +114,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], outli
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
-        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays)
+        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, outlineService)
     });
 
     contextMenu.addMenuItem({
