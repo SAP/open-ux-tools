@@ -307,12 +307,17 @@ export function defaultOrShowTransportCreatedQuestion(transportInputChoice?: str
  * Determines if the manual transport prompt should be shown.
  *
  * @param transportInputChoice - transportInputChoice from previous answers
+ * @param transportInputChoiceOptions - transportInputChoice options
  * @returns boolean
  */
-export function defaultOrShowManualTransportQuestion(transportInputChoice?: string): boolean {
+export function defaultOrShowManualTransportQuestion(
+    transportInputChoice?: string,
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions
+): boolean {
     return (
         defaultOrShowTransportQuestion() &&
-        (transportInputChoice === TransportChoices.EnterManualChoice || !transportInputChoice)
+        (transportInputChoice === TransportChoices.EnterManualChoice ||
+            transportInputChoiceOptions?.hideIfOnPremise === true)
     );
 }
 
