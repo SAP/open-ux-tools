@@ -25,12 +25,7 @@ export class AddHeaderFieldQuickAction extends SimpleQuickActionDefinitionBase i
             {
                 run: async (): Promise<EnablementValidatorResult> => {
                     const i18n = await getTextBundle();
-                    const objectPageLayout = getRelevantControlFromActivePage(
-                        this.context.controlIndex,
-                        this.context.view,
-                        CONTROL_TYPES
-                    )[0] as ObjectPageLayout;
-                    if (!objectPageLayout.getShowHeaderContent()) {
+                    if (!(this.control as ObjectPageLayout).getShowHeaderContent()) {
                         return {
                             type: 'error',
                             message: i18n.getText('DISABLE_SHOW_HEADER_CONTENT')
