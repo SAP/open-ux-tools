@@ -317,7 +317,7 @@ export function defaultOrShowManualTransportQuestion(
     return (
         defaultOrShowTransportQuestion() &&
         (transportInputChoice === TransportChoices.EnterManualChoice ||
-            transportInputChoiceOptions?.hideIfOnPremise === true)
+            (transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false))
     );
 }
 

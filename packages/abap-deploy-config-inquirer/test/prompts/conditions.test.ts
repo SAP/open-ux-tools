@@ -304,6 +304,7 @@ describe('Test abap deploy config inquirer conditions', () => {
     });
 
     test('should show manual transport question when transportInput choice is not provided and transportInputChoice is hidden', () => {
+        PromptState.abapDeployConfig.isS4HC = false;
         expect(defaultOrShowManualTransportQuestion(undefined, { hideIfOnPremise: true })).toBe(true);
     });
 
