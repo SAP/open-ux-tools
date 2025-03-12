@@ -3,4 +3,4 @@
 '@sap-ux/preview-middleware': patch
 ---
 
-fix: disable header field page action when show header content are set to false
+fix: disable "Add Header Field" Quick Action when `showHeaderContent` is set to `false` for `ObjectPageLayout`
