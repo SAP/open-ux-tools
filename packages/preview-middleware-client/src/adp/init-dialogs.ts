@@ -7,6 +7,7 @@ import hasStableId from 'sap/ui/rta/util/hasStableId';
 
 /** sap.ui.fl */
 import FlUtils from 'sap/ui/fl/Utils';
+import XMLView from 'sap/ui/core/mvc/XMLView';
 
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
@@ -36,7 +37,7 @@ export function isControllerExtensionEnabledForControl(
     const isControlInSyncView = syncViewsIds.includes(view.getId());
 
     // if(isCloud) {
-        return !isControlInSyncView && !outlineService.hasReuseComponents;
+        return !isControlInSyncView && !outlineService.hasReuseComponents(view as XMLView);
     // }
     return !isControlInSyncView;
 }
