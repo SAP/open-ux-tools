@@ -1,5 +1,3 @@
-import { t } from './i18n';
-
 export const STEP_SAP_SYSTEM_CONFIG = 'SAP_SYSTEM_CONFIG';
 export const STEP_SERVICE_CONFIG = 'SERVICE_CONFIG';
 export const prompts = [

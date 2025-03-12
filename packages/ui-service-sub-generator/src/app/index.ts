@@ -171,7 +171,7 @@ export default class extends Generator {
         const transportReqNumber =
             (this.answers.transportFromList || this.answers.transportManual || this.answers.transportCreated) ?? '';
         TelemetryHelper.createTelemetryData({
-            ...getTelemetryData(this.answers, this.options)
+            ...getTelemetryData(this.answers, this.options.data)
         });
         TelemetryHelper.markAppGenStartTime();
         await generateService(

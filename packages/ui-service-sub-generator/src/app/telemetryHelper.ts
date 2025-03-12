@@ -1,19 +1,20 @@
 import { ObjectType } from '@sap-ux/ui-service-inquirer';
 import type { UiServiceAnswers } from '@sap-ux/ui-service-inquirer';
 import type { TelemetryProperties } from '@sap-ux/telemetry';
+import type { PromptOptions } from './types';
 
 /**
  * Get the telemetry data for the UI Service generator event.
  *
  * @param answers - the answers to the UI Service prompts
- * @param options - the options passed to the generator
+ * @param optionsData - the options passed to the generator
  * @returns the telemetry data
  */
-export function getTelemetryData(answers: UiServiceAnswers, options: any): TelemetryProperties {
+export function getTelemetryData(answers: UiServiceAnswers, optionsData?: PromptOptions): TelemetryProperties {
     let source: string | undefined;
-    if (options.data?.path) {
+    if (optionsData?.path) {
         source = 'Storyboard';
-    } else if (options.data?.providerSystem) {
+    } else if (optionsData?.providerSystem) {
         source = 'ServiceCenter';
     }
     return {
