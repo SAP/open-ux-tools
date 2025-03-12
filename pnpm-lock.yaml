@@ -1538,9 +1538,6 @@ importers:
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
 
   packages/deploy-config-sub-generator:
     dependencies:
