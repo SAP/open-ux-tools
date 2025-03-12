@@ -16,20 +16,19 @@ modules:
     type: nodejs
     path: gen/srv
     parameters:
+      instances: 1
       buildpack: nodejs_buildpack
-      readiness-health-check-type: http
-      readiness-health-check-http-endpoint: /health
     build-parameters:
-      builder: npm
+      builder: npm-ci
     provides:
       - name: srv-api # required by consumers of CAP services (e.g. approuter)
         properties:
           srv-url: ${default-url}
     requires:
-      - name: captestproject-db
-      - name: captestproject-auth
       - name: captestproject-connectivity
       - name: captestproject-destination
+      - name: captestproject-db
+      - name: captestproject-auth
 
   - name: captestproject-db-deployer
     type: hdb
@@ -49,23 +48,24 @@ modules:
     build-parameters:
       build-result: app/
       requires:
+        - name: captestprojectproject1
+          artifacts:
+            - project1.zip
+          target-path: app/
 
+  - name: captestprojectproject1
+    type: html5
+    path: app/project1
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm ci
+        - npm run build
+      supported-platforms:
+        []
 
 resources:
-  - name: captestproject-db
-    type: com.sap.xs.hdi-container
-    parameters:
-      service: hana
-      service-plan: hdi-shared
-  - name: captestproject-auth
-    type: org.cloudfoundry.managed-service
-    parameters:
-      service: xsuaa
-      service-plan: application
-      path: ./xs-security.json
-      config:
-        xsappname: captestproject-${org}-${space}
-        tenant-mode: dedicated
   - name: captestproject-connectivity
     type: org.cloudfoundry.managed-service
     parameters:
@@ -94,8 +94,23 @@ resources:
                 Authentication: NoAuthentication
                 Type: HTTP
                 ProxyType: Internet
+  - name: captestproject-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+
   - name: captestproject-html5-repo-host
     type: org.cloudfoundry.managed-service
     parameters:
       service: html5-apps-repo
       service-plan: app-host
+  - name: captestproject-auth
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: xsuaa
+      service-plan: application
+      path: ./xs-security.json
+      config:
+        xsappname: captestproject-${org}-${space}
+        tenant-mode: dedicated

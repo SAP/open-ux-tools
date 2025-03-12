@@ -1,4 +1,3 @@
-import { basename } from 'path';
 import type { DeployConfigOptions } from '../types';
 
 /**
@@ -19,19 +18,4 @@ export function parseTarget(args: string | string[], opts: DeployConfigOptions):
         result = opts.target;
     }
     return result;
-}
-
-/**
- * Returns the details for the YUI prompt.
- *
- * @param appRootPath - path to the application to be displayed in YUI step description
- * @returns step details
- */
-export function getYUIDetails(appRootPath: string): { name: string; description: string }[] {
-    return [
-        {
-            name: 'Deployment Configuration',
-            description: `Configure Deployment settings - ${basename(appRootPath)}`
-        }
-    ];
 }

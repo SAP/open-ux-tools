@@ -80,6 +80,41 @@ describe('Test getModule()', () => {
             logger
         });
     });
+
+    test('Module failed to load and there no "package-lock.json" -> run "npm i"', async () => {
+        const npmCommandSpy = jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('');
+        jest.spyOn(fsMock, 'existsSync')
+            .mockReturnValueOnce(true)
+            .mockImplementationOnce(() => {
+                throw new Error('Simulate load failure');
+            });
+        const logger = new ToolsLogger();
+        const module = await getModule<Module>('@scope/module', '1.2.3', { logger });
+
+        expect(module.exec()).toBe('works');
+        expect(npmCommandSpy).toBeCalledWith(['install', '--prefix', modulePath, '@scope/module@1.2.3'], {
+            'cwd': modulePath,
+            logger
+        });
+    });
+
+    test('Module failed to load and there is "package-lock.json" -> run "npm ci"', async () => {
+        const npmCommandSpy = jest.spyOn(commandMock, 'execNpmCommand').mockResolvedValueOnce('');
+        jest.spyOn(fsMock, 'existsSync')
+            .mockReturnValueOnce(true)
+            .mockImplementationOnce(() => {
+                throw new Error('Simulate load failure');
+            })
+            .mockReturnValueOnce(true);
+        const logger = new ToolsLogger();
+        const module = await getModule<Module>('@scope/module', '1.2.3', { logger });
+
+        expect(module.exec()).toBe('works');
+        expect(npmCommandSpy).toBeCalledWith(['ci'], {
+            'cwd': modulePath,
+            logger
+        });
+    });
 });
 
 describe('Test deleteModule()', () => {
