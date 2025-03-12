@@ -1,14 +1,18 @@
 import Component from 'sap/ui/core/Component';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
-import ODataModel from 'sap/ui/model/odata/v2/ODataModel';
+import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
+import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
+import ODataMetaModelV2, { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
+import ODataMetaModelV4 from 'sap/ui/model/odata/v4/ODataMetaModel';
+import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
+import FEListReportComponent from 'sap/fe/templates/ListReport/Component';
 
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA } from '../../../utils/core';
-import ODataMetaModel, { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
 import { ApplicationType, getApplicationType } from '../../../utils/application';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { areManifestChangesSupported } from '../fe-v2/utils';
@@ -17,10 +21,16 @@ import { getV4ApplicationPages } from '../../../utils/fe-v4';
 import { EnablementValidatorResult } from '../enablement-validator';
 import { getTextBundle } from '../../../i18n';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { FeatureService } from '../../../cpe/feature-service';
 
 export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-subpage';
+const OBJECT_PAGE_COMPONENT_NAME_V2 = 'sap.suite.ui.generic.template.ObjectPage';
+const OBJECT_PAGE_COMPONENT_NAME_V4 = 'sap.fe.templates.ObjectPage.ObjectPage';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
+
+interface ApplicationPageData {
+    id: string;
+    entitySet: string | undefined;
+}
 
 /**
  * Quick Action for adding a custom page action.
@@ -37,6 +47,7 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
     };
 
     private appType: ApplicationType;
+    private existingPages: ApplicationPageData[];
 
     constructor(context: QuickActionContext) {
         super(ADD_NEW_OBJECT_PAGE_ACTION, [], 'QUICK_ACTION_ADD_NEW_SUB_PAGE', context, [
@@ -53,64 +64,90 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
                 }
             }
         ]);
-    }
-
-    private getApplicationPages() {
+        this.appType = getApplicationType(context.manifest);
         if (this.appType === 'fe-v2') {
-            return getV2ApplicationPages(this.context.manifest);
-        } else if (this.appType === 'fe-v4') {
-            return getV4ApplicationPages(this.context.manifest);
+            this.existingPages = getV2ApplicationPages(context.manifest);
+        } else {
+            this.existingPages = []; //getV4ApplicationPages(context.manifest);
         }
-        return [];
     }
 
-    private prepareNavigationData(entityType: EntityType, metaModel: ODataMetaModel): void {
-        const existingPages = this.getApplicationPages();
-        if (this.currentPageDescriptor.pageType === 'sap.suite.ui.generic.template.ObjectPage') {
-            // Navigation from Object Page
-            for (const navProp of entityType?.navigationProperty || []) {
-                const associationEnd = metaModel.getODataAssociationEnd(entityType, navProp.name);
-                if (associationEnd?.multiplicity !== '*') {
-                    continue;
-                }
-                const entityContainer = metaModel.getODataEntityContainer() as EntityContainer;
-                if (!entityContainer?.entitySet?.length) {
-                    continue;
-                }
-                const targetEntitySet = entityContainer.entitySet.find(
-                    (item) => item.entityType === associationEnd.type
-                );
-                const pageExists = existingPages.some((page) => page.entitySet === targetEntitySet?.name);
-                if (targetEntitySet && !pageExists) {
-                    this.currentPageDescriptor.navProperties.push({
-                        entitySet: targetEntitySet.name,
-                        navProperty: navProp.name
-                    });
-                }
-            }
+    private addNavigationOptionIfAvailable(targetEntitySet?: string, navProperty?: string) {
+        if (!targetEntitySet) {
             return;
         }
-
-        // navigation from LR or ALP (only OP based on current entitySet is possible)
-        const pageExists = existingPages.some((page) => page.entitySet === this.currentPageDescriptor.entitySet);
+        const pageExists = this.existingPages.some((page) => page.entitySet === targetEntitySet);
         if (!pageExists) {
             this.currentPageDescriptor.navProperties.push({
-                entitySet: this.currentPageDescriptor.entitySet,
-                navProperty: this.currentPageDescriptor.entitySet
+                entitySet: targetEntitySet,
+                navProperty: navProperty ?? targetEntitySet
             });
         }
     }
 
-    async initialize(): Promise<void> {
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
-            return Promise.resolve();
+    private isCurrentObjectPage(): boolean {
+        return [OBJECT_PAGE_COMPONENT_NAME_V2, OBJECT_PAGE_COMPONENT_NAME_V4].includes(
+            this.currentPageDescriptor.pageType
+        );
+    }
+
+    private prepareNavigationDataV2(entitySetName: string, metaModel: ODataMetaModelV2): void {
+        if (!this.isCurrentObjectPage()) {
+            // navigation from LR or ALP (only OP based on current entitySet is possible)
+            this.addNavigationOptionIfAvailable(this.currentPageDescriptor.entitySet);
+            return;
         }
+        // Navigation from Object Page
+        const entitySet = metaModel.getODataEntitySet(entitySetName) as EntitySet;
+        const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
+
+        for (const navProp of entityType?.navigationProperty || []) {
+            const associationEnd = metaModel.getODataAssociationEnd(entityType, navProp.name);
+            if (associationEnd?.multiplicity !== '*') {
+                continue;
+            }
+            const entityContainer = metaModel.getODataEntityContainer() as EntityContainer;
+            if (!entityContainer?.entitySet?.length) {
+                continue;
+            }
+            const targetEntitySet = entityContainer.entitySet.find((item) => item.entityType === associationEnd.type);
+            this.addNavigationOptionIfAvailable(targetEntitySet?.name, navProp.name);
+        }
+    }
+
+    private async prepareNavigationDataV4(entitySetName: string, metaModel: ODataMetaModelV4) {
+        if (!this.isCurrentObjectPage()) {
+            this.addNavigationOptionIfAvailable(this.currentPageDescriptor.entitySet);
+            return;
+        }
+        const entitySet = (await metaModel.requestObject(`/${entitySetName}`)) as {
+            $Type: string;
+            $NavigationPropertyBinding: { [key: string]: string };
+        }; // NO SONAR;
+        var entityTypePath = entitySet.$Type;
+        const entitySetNavigationKeys = Object.keys(entitySet.$NavigationPropertyBinding);
+
+        for (const navigationProperty of entitySetNavigationKeys) {
+            const associationEnd = (await metaModel.requestObject(`/${entityTypePath}/${navigationProperty}`)) as {
+                $Type: string;
+                $isCollection: boolean;
+                $kind: 'NavigationProperty';
+            };
+            if (associationEnd?.$isCollection) {
+                const targetEntitySet = entitySet.$NavigationPropertyBinding[navigationProperty];
+                this.addNavigationOptionIfAvailable(targetEntitySet, navigationProperty);
+            }
+        }
+    }
+
+    async initialize(): Promise<void> {
+        // if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
+        //     return Promise.resolve();
+        // }
 
         if (!(await areManifestChangesSupported(this.context.manifest))) {
             return Promise.resolve();
         }
-
-        this.appType = getApplicationType(this.context.manifest);
 
         const allControls = CONTROL_TYPES.flatMap((item) => this.context.controlIndex[item] ?? []);
         const control = allControls.find((c) => pageHasControlId(this.context.view, c.controlId));
@@ -118,7 +155,9 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         const pageType = this.context.view.getViewName().split('.view.')[0];
         this.currentPageDescriptor.pageType = pageType;
 
-        const metaModel = (this.context.rta.getRootControlInstance().getModel() as ODataModel)?.getMetaModel();
+        const metaModel = (
+            this.context.rta.getRootControlInstance().getModel() as ODataModelV2 | ODataModelV4
+        )?.getMetaModel();
         if (!metaModel || !control) {
             return Promise.resolve();
         }
@@ -129,7 +168,11 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         }
 
         const component = Component.getOwnerComponentFor(modifiedControl);
-        if (!isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
+        if (
+            !isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component) &&
+            !isA<FEObjectPageComponent>('sap.fe.templates.ListReport.Component', component) &&
+            !isA<FEListReportComponent>('sap.fe.templates.ObjectPage.Component', component)
+        ) {
             return Promise.reject(new Error('Unexpected type of page owner component'));
         }
 
@@ -137,14 +180,13 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         if (!entitySetName) {
             return Promise.resolve();
         }
-
         this.currentPageDescriptor.entitySet = entitySetName;
 
-        const entitySet = metaModel.getODataEntitySet(entitySetName) as EntitySet;
-        const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
-
-        this.prepareNavigationData(entityType, metaModel);
-
+        if (this.appType === 'fe-v2') {
+            this.prepareNavigationDataV2(entitySetName, metaModel as ODataMetaModelV2);
+        } else {
+            await this.prepareNavigationDataV4(entitySetName, metaModel as ODataMetaModelV4);
+        }
         this.control = modifiedControl;
 
         return Promise.resolve();
