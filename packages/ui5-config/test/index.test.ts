@@ -430,7 +430,7 @@ describe('UI5Config', () => {
     });
 
     describe('getBackendConfigFromFioriToolsProxydMiddleware', () => {
-        test('return existing backend configuration', () => {
+        test('finds the exact fit in case of a single backend entry', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
             const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxydMiddleware(path);
             expect(matchingBackend).toStrictEqual({
@@ -439,10 +439,26 @@ describe('UI5Config', () => {
             });
         });
 
-        test('return unexisting backend configuration', () => {
+        test('returns undefined if no backend was found', () => {
             ui5Config.addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ url, path }] });
             const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxydMiddleware('dummy');
             expect(matchingBackend).toBeUndefined();
+        });
+
+        it('finds the exact fit in case of a multiple backend entries', async () => {
+            ui5Config.addFioriToolsProxydMiddleware({
+                ui5: {},
+                backend: [
+                    { url: 'https://sap.mock2.ondemand.com', path: '/sap/opu' },
+                    { url: 'https://sap.mock.ondemand.com', path: '/sap' },
+                    { url, path }
+                ]
+            });
+            const matchingBackend = ui5Config.getBackendConfigFromFioriToolsProxydMiddleware(path);
+            expect(matchingBackend).toStrictEqual({
+                path: '/~testpath~',
+                url: 'http://localhost:8080'
+            });
         });
     });
 
