@@ -113,6 +113,7 @@ function setDefaultAnnotationsName(service: OdataService): void {
 
 /**
  * Sets default preview settings of a given service.
+ *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose preview settings needs to be set or modified.
  * @param {Editor} fs - the memfs editor instance

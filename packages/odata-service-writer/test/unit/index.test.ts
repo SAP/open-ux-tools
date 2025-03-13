@@ -532,7 +532,9 @@ describe('generate', () => {
                 fs.writeJSON(join('webapp', 'manifest.json'), {
                     'sap.app': { dataSources: { exisitingSerivce: { type: 'OData' } } }
                 });
-                const configCopy = cloneDeep(Object.assign({}, config, { name: 'aname', annotations: { name: 'aname' } }));
+                const configCopy = cloneDeep(
+                    Object.assign({}, config, { name: 'aname', annotations: { name: 'aname' } })
+                );
                 await enhanceData('', configCopy, fs);
                 expect(configCopy).toMatchInlineSnapshot(`
                     Object {
