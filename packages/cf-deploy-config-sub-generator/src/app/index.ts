@@ -45,7 +45,6 @@ import {
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Answers } from 'inquirer';
-import { readJSON } from '@sap-ux/project-access/dist/file';
 
 /**
  * Cloud Foundry deployment configuration generator.
@@ -156,7 +155,7 @@ export default class extends DeploymentGenerator {
             this.projectRoot = capRoot;
             try {
                 this.packageName =
-                    (await readJSON<Package>(join(this.projectRoot, FileName.Package), this.fs))?.name ?? '';
+                    (this.fs.readJSON(join(this.projectRoot, FileName.Package)) as unknown as Package)?.name ?? '';
             } catch {
                 // Ignore errors while reading the package.json file, will be handled in the validators of the respective modules
             }
