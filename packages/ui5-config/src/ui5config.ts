@@ -331,23 +331,22 @@ export class UI5Config {
             throw new Error('Could not find fiori-tools-proxy');
         }
         const comments = getBackendComments(backend);
-        let backendNode;
         const proxyMiddlewareYamlContent = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
         const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration;
+        const configuration = this.document.getMap({
+            start: proxyMiddleware as YAMLMap,
+            path: 'configuration'
+        });
+        const backendNode = this.document.createNode({
+            value: backend,
+            comments
+        });
+        if (ignoreCertError !== undefined && proxyMiddlewareConfig?.ignoreCertError !== ignoreCertError) {
+            configuration.set('ignoreCertError', ignoreCertError);
+        }
         // Add new entry to existing backend configurations in yaml, avoid duplicates
         if (proxyMiddlewareConfig?.backend) {
             if (!proxyMiddlewareConfig?.backend.find((existingBackend) => existingBackend.path === backend.path)) {
-                backendNode = this.document.createNode({
-                    value: backend,
-                    comments
-                });
-                const configuration = this.document.getMap({
-                    start: proxyMiddleware as YAMLMap,
-                    path: 'configuration'
-                });
-                if (ignoreCertError !== undefined && proxyMiddlewareConfig.ignoreCertError !== ignoreCertError) {
-                    configuration.set('ignoreCertError', ignoreCertError);
-                }
                 const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
                 if (backendConfigs.items.length === 0) {
                     configuration.set('backend', [backendNode]);
@@ -357,15 +356,7 @@ export class UI5Config {
             }
         } else {
             // Create a new 'backend' node in yaml for middleware config
-            backendNode = this.document.createNode({ value: backend, comments });
-            this.document
-                .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-                .set('backend', [backendNode]);
-            if (ignoreCertError !== undefined && proxyMiddlewareConfig?.ignoreCertError !== ignoreCertError) {
-                this.document
-                    .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-                    .set('ignoreCertError', ignoreCertError);
-            }
+            configuration.set('backend', [backendNode]);
         }
         return this;
     }
