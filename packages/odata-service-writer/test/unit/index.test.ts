@@ -508,7 +508,6 @@ describe('generate', () => {
                     .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
                     .toString();
                 fs.write(ui5Yaml, join('', 'ui5.yaml'));
-                fs.delete(join('webapp', 'manifest.json'));
                 // "/sap" entry already exists, it should not be used
                 const configCopy = cloneDeep(Object.assign({}, config, { path: '/sap/test/path/' }));
                 await enhanceData('', configCopy, fs);
@@ -553,6 +552,7 @@ describe('generate', () => {
                       "version": "2",
                     }
                 `);
+                fs.delete(join('webapp', 'manifest.json'));
             });
             test('model called mainService is being added, "" should be used for model', async () => {
                 // mainService model already exists
@@ -576,6 +576,7 @@ describe('generate', () => {
                       "version": "2",
                     }
                 `);
+                fs.delete(join('webapp', 'manifest.json'));
             });
             test('model called differentService is being added, "differentService" should be used for model', async () => {
                 // mainService model already exists
@@ -598,6 +599,7 @@ describe('generate', () => {
                       "version": "2",
                     }
                 `);
+                fs.delete(join('webapp', 'manifest.json'));
             });
         });
     });
