@@ -108,30 +108,32 @@ export const translationInput = () => {
                     }}
                 />
             </Stack>
-            <UITranslationInput
-                entries={i18nBundle}
-                id="test"
-                i18nPrefix="i18n"
-                allowedI18nPrefixes={['i18n', '@i18n']}
-                allowedPatterns={[
-                    TranslationTextPattern.SingleBracketBinding,
-                    TranslationTextPattern.DoubleBracketReplace
-                ]}
-                defaultPattern={TranslationTextPattern.SingleBracketBinding}
-                value={value}
-                onChange={onChange}
-                onCreateNewEntry={onCreateNewEntry}
-                onShowExistingEntry={onShowExistingEntry}
-                disabled={disabled}
-                busy={
-                    busy
-                        ? {
-                              busy,
-                              useMinWaitingTime: true
-                          }
-                        : undefined
-                }
-            />
+            <Stack style={{ width: '300px' }}>
+                <UITranslationInput
+                    entries={i18nBundle}
+                    id="test"
+                    i18nPrefix="i18n"
+                    allowedI18nPrefixes={['i18n', '@i18n']}
+                    allowedPatterns={[
+                        TranslationTextPattern.SingleBracketBinding,
+                        TranslationTextPattern.DoubleBracketReplace
+                    ]}
+                    defaultPattern={TranslationTextPattern.SingleBracketBinding}
+                    value={value}
+                    onChange={onChange}
+                    onCreateNewEntry={onCreateNewEntry}
+                    onShowExistingEntry={onShowExistingEntry}
+                    disabled={disabled}
+                    busy={
+                        busy
+                            ? {
+                                  busy,
+                                  useMinWaitingTime: true
+                              }
+                            : undefined
+                    }
+                />{' '}
+            </Stack>
             <I18nTable tableData={tableData} onDelete={onDeleteEntry} />
         </Stack>
     );
