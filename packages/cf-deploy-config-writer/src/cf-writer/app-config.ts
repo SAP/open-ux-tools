@@ -100,7 +100,8 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
         destinationName: cfAppConfig.destinationName || destination,
-        addManagedAppRouter: cfAppConfig.addManagedAppRouter ?? true,
+        addManagedAppRouter: cfAppConfig.addManagedAppRouter ?? false,
+        addManagedAppFrontend: cfAppConfig.addManagedAppFrontend ?? false,
         addMtaDestination: cfAppConfig.addMtaDestination ?? false,
         cloudServiceName: cfAppConfig.cloudServiceName,
         lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
@@ -261,7 +262,10 @@ export function generateMTAFile(cfConfig: CFConfig): void {
 async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (mtaInstance) {
-        await mtaInstance.addRoutingModules({ isManagedApp: cfConfig.addManagedAppRouter });
+        await mtaInstance.addRoutingModules({
+            isManagedApp: cfConfig.addManagedAppRouter,
+            isAppFrontApp: cfConfig.addManagedAppFrontend
+        });
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');

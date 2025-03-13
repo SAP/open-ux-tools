@@ -1,0 +1,71 @@
+_schema-version: "3.2"
+ID: test
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: test-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: test-uaa
+      - name: test_app-front
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - artifacts:
+            - manageproductsneo2911c.zip
+          name: manageproductsneo2911c
+          target-path: resources/
+  - name: manageproductsneo2911c
+    type: html5
+    path: fioriapp
+    build-parameters:
+      build-result: dist
+      builder: custom
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: test-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: test-xsuaa-srv
+      service-plan: application
+  - name: test-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      config:
+        HTML5Runtime_enabled: true
+        init_data:
+          instance:
+            destinations:
+              - Authentication: NoAuthentication
+                Name: ui5
+                ProxyType: Internet
+                Type: HTTP
+                URL: https://ui5.sap.com
+            existing_destinations_policy: update
+        version: 1.0.0
+      service: destination
+      service-name: test-destination-service
+      service-plan: lite
+  - name: test_app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-name: test-app-front-service
+      service-plan: developer
+  - name: test-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: test-xsuaa-srv
+      service-plan: application
+parameters:
+  deploy_mode: html5-repo

@@ -262,6 +262,8 @@ export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promis
     const mtaConfigInstance = await MtaConfig.newInstance(config.mtaPath);
     if (config.routerType === RouterModuleType.Standard) {
         await addStandaloneRouter(config, mtaConfigInstance, fs);
+    } else if (config.routerType === RouterModuleType.Managed) {
+        await mtaConfigInstance.addRoutingModules({ isManagedApp: true, addMissingModules: false });
     } else {
         await mtaConfigInstance.addRoutingModules({ isManagedApp: true, addMissingModules: false });
     }

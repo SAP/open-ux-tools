@@ -29,7 +29,8 @@ export type MTADestinationType = Destination & {
 };
 export const RouterModuleType = {
     Standard: 'standard',
-    Managed: 'managed'
+    Managed: 'managed',
+    Appfront: 'appfront'
 } as const;
 
 export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
@@ -50,6 +51,7 @@ export interface CFBaseConfig extends MTABaseConfig {
 export interface CFAppConfig {
     appPath: string;
     addManagedAppRouter?: boolean; // Enabled by default
+    addManagedAppFrontend?: boolean;
     destinationName?: string;
     apiHubConfig?: ApiHubConfig;
     serviceHost?: string; // Data service host
