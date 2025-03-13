@@ -89,6 +89,7 @@ declare module 'sap/ui/fl/Utils' {
         checkControlId(control: ManagedObject): boolean;
         getViewForControl(control: ManagedObject): ControlView;
         getAppComponentForControl(control: ManagedObject): Component;
+        getComponentForControl(control: ManagedObject): Component;
     }
 
     interface ControlView {

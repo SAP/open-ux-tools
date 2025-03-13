@@ -13,7 +13,6 @@ import XMLView from 'sap/ui/core/mvc/XMLView';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { isReuseComponent } from '../cpe/utils';
 import { DialogFactory, DialogNames } from './dialog-factory';
 import type { OutlineService } from '../cpe/outline/service';
 

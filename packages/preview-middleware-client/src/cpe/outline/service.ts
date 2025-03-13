@@ -13,7 +13,7 @@ import {
 import { getError } from '../../utils/error';
 import { getTextBundle } from '../../i18n';
 import { ControlTreeIndex } from '../types';
-import { transformNodes } from './nodes';
+import { transformNodes, fillReuseComponents } from './nodes';
 import { ChangeService } from '../changes';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import { isHigherThanMinimalUi5Version, Ui5VersionInfo, getUi5Version } from '../../utils/version';
@@ -21,6 +21,7 @@ import { getComponent } from '../../utils/core';
 import FlUtils from 'sap/ui/fl/Utils';
 import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import { getControlById } from '../../utils/core';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 
@@ -96,8 +97,16 @@ export class OutlineService extends EventTarget {
                 Log.error('Outline sync failed!', getError(error));
             }
         };
+
         await syncOutline();
         outline.attachEvent('update', syncOutline);
+
+        this.onOutlineChange((event) => {
+            const controlTreeIndex = event?.detail?.controlIndex;
+            if (scenario === SCENARIO.AdaptationProject) {
+                fillReuseComponents(controlTreeIndex, this.reuseComponentsIds, this);
+            }
+        });
     }
 
     public onOutlineChange(handler: (event: CustomEvent<OutlineChangedEventDetail>) => void | Promise<void>): void {
@@ -110,12 +119,18 @@ export class OutlineService extends EventTarget {
 
     private async initIsReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo): Promise<void> {
         let reuseComponentApi: IsReuseComponentApi;
-        if (isHigherThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
+        if (isHigherThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 133 })) {
             reuseComponentApi = (await import('sap/ui/rta/util/isReuseComponent')).default;
         }
 
         this.isReuseComponent = function isReuseComponent(controlId: string): boolean {
-            const component = getComponent(controlId);
+            const ui5Control = getControlById(controlId);
+            if (!ui5Control) {
+                return false;
+            }
+
+            const component = FlUtils.getComponentForControl(ui5Control)
+
             if (reuseComponentApi) {
                 return reuseComponentApi.isReuseComponent(component);
             }
