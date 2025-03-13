@@ -1,13 +1,13 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { BusinessObjectsService, AbapCDSViewService } from '@sap-ux/axios-extension';
+import { AbapCDSViewService, BusinessObjectsService } from '@sap-ux/axios-extension';
 import { isAppStudio, type Destination } from '@sap-ux/btp-utils';
+import { HELP_NODES } from '@sap-ux/guided-answers-helper';
+import type { ValidationLink } from '@sap-ux/inquirer-common';
+import { ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
 import type { BackendSystem } from '@sap-ux/store';
 import type { AbapTarget, DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access';
-import type { ListChoiceOptions } from 'inquirer';
-import { ERROR_TYPE, ErrorHandler, setTelemetryClient } from '@sap-ux/inquirer-common';
-import type { ValidationLink } from '@sap-ux/inquirer-common';
 import { ClientFactory } from '@sap-ux/telemetry';
-import { HELP_NODES } from '@sap-ux/guided-answers-helper';
+import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 
 /**

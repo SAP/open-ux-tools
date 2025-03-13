@@ -1,12 +1,12 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { ListQuestion } from 'inquirer';
+import type { Logger } from '@sap-ux/logger';
 import { getSystemSelectionQuestions, promptNames } from '@sap-ux/odata-service-inquirer';
+import type { ListQuestion } from 'inquirer';
 import type { Question } from 'yeoman-generator';
 import { t } from '../../i18n';
 import { ObjectType, type UiServiceAnswers } from '../../types';
 import { getAbapCDSViews, getBusinessObjects } from '../prompt-helper';
 import { PromptState } from '../prompt-state';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * Get the system questions.

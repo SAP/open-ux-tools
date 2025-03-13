@@ -10,6 +10,7 @@ import { getConfigPrompts, getSystemSelectionPrompts } from '@sap-ux/ui-service-
 import Generator from 'yeoman-generator';
 import { boUri, cdsUri, initI18n, prompts, SERVICE_GENERATION_SUCCESS, t, UI_SERVICE_CACHE } from '../utils';
 import UiServiceGenLogger from '../utils/logger';
+import { getTelemetryData } from './telemetryHelper';
 import { BAS_OBJECT } from './types';
 import {
     addToCache,
@@ -21,7 +22,6 @@ import {
     setToolbarMessage,
     writeBASMetadata
 } from './utils';
-import { getTelemetryData } from './telemetryHelper';
 
 /**
  * Generator for creating a new UI Service.

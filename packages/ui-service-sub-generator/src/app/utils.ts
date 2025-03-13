@@ -10,11 +10,11 @@ import type { ProviderSystem, ServiceConnectivityData } from '@sap/service-provi
 import { ProviderType } from '@sap/service-provider-apis';
 import type { Editor } from 'mem-fs-editor';
 import { basename, dirname, join } from 'path';
+import type { GeneratorOptions } from 'yeoman-generator';
 import { SERVICE_GENERATION_FAIL, UI_SERVICE_CACHE } from '../utils';
 import { t } from '../utils/i18n';
 import UiServiceGenLogger from '../utils/logger';
 import type { AppGenData, AppGenSystemSystemData, PromptOptions, ReqAuth } from './types';
-import type { GeneratorOptions } from 'yeoman-generator';
 
 /**
  * Generate the service.

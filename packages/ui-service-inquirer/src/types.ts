@@ -1,9 +1,9 @@
-import type { ServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
-import type { BackendSystem } from '@sap-ux/store';
-import type { Destination } from '@sap-ux/btp-utils';
-import type { promptNames, SystemSelectionAnswerType } from '@sap-ux/odata-service-inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
+import type { ServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
+import type { Destination } from '@sap-ux/btp-utils';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
+import type { promptNames, SystemSelectionAnswerType } from '@sap-ux/odata-service-inquirer';
+import type { BackendSystem } from '@sap-ux/store';
 import type { Question } from 'inquirer';
 
 export interface UiServiceAnswers extends AbapDeployConfigAnswersInternal {

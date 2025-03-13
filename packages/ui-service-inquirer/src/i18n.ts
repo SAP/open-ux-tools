@@ -1,7 +1,6 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
 import translations from './translations/ui-service-inquirer.i18n.json';
-import { addi18nResourceBundle as addInquirerCommoni18nResourceBundle } from '@sap-ux/inquirer-common';
 
 const uiServiceI18nNamespace = 'ui-service-inquirer';
 /**
@@ -10,8 +9,6 @@ const uiServiceI18nNamespace = 'ui-service-inquirer';
 export async function initI18n(): Promise<void> {
     await i18next.init({ lng: 'en', fallbackLng: 'en' });
     i18next.addResourceBundle('en', uiServiceI18nNamespace, translations);
-    // add the inquirer common i18n resource bundle to ensure all translations are available
-    addInquirerCommoni18nResourceBundle();
 }
 
 /**

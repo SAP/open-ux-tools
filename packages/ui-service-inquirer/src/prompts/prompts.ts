@@ -1,10 +1,10 @@
-import { getSystemQuestions } from './system-selection/questions';
-import type { Question } from 'inquirer';
-import type { ServiceConfig, ServiceConfigQuestion, SystemSelectionAnswers, UiServiceAnswers } from '../types';
-import { PromptState } from './prompt-state';
-import { getConfigQuestions } from './configuration/questions';
 import type { Logger } from '@sap-ux/logger';
+import type { Question } from 'inquirer';
 import LoggerHelper from '../logger-helper';
+import type { ServiceConfig, ServiceConfigQuestion, SystemSelectionAnswers, UiServiceAnswers } from '../types';
+import { getConfigQuestions } from './configuration/questions';
+import { PromptState } from './prompt-state';
+import { getSystemQuestions } from './system-selection/questions';
 
 /**
  * Get the system selection prompts.

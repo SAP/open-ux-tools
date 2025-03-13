@@ -3491,8 +3491,8 @@ importers:
   packages/ui-service-inquirer:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.16.9
+        version: 1.16.9
       '@sap-ux/abap-deploy-config-inquirer':
         specifier: workspace:*
         version: link:../abap-deploy-config-inquirer
@@ -3514,12 +3514,6 @@ importers:
       '@sap-ux/odata-service-inquirer':
         specifier: workspace:*
         version: link:../odata-service-inquirer
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
-      '@sap-ux/system-access':
-        specifier: workspace:*
-        version: link:../system-access
       '@sap-ux/telemetry':
         specifier: workspace:*
         version: link:../telemetry
@@ -3533,6 +3527,12 @@ importers:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
         version: link:../jest-file-matchers
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/system-access':
+        specifier: workspace:*
+        version: link:../system-access
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
@@ -3570,8 +3570,8 @@ importers:
   packages/ui-service-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
+        specifier: 1.16.9
+        version: 1.16.9
       '@sap-ux/axios-extension':
         specifier: workspace:*
         version: link:../axios-extension
