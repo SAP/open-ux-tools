@@ -122,16 +122,6 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
     service.previewSettings = service.previewSettings ?? {};
     service.previewSettings.path =
         service.previewSettings.path ?? `/${service.path?.split('/').filter((s: string) => s !== '')[0] ?? ''}`;
-    const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
-    if (fs.exists(ui5Yamlpath)) {
-        const yamlContents = fs.read(ui5Yamlpath);
-        const ui5Config = await UI5Config.newInstance(yamlContents);
-        const backends = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware();
-        // enhance preview settings with service configuration
-        if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
-            service.previewSettings.path = service.path;
-        }
-    }
     service.previewSettings.url = service.previewSettings.url ?? service.url ?? 'http://localhost';
     if (service.client && !service.previewSettings.client) {
         service.previewSettings.client = service.client;
@@ -140,6 +130,16 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
         service.previewSettings.destination = service.destination.name;
         if (service.destination.instance) {
             service.previewSettings.destinationInstance = service.destination.instance;
+        }
+    }
+    const ui5Yamlpath = join(basePath, FileName.Ui5Yaml);
+    if (fs.exists(ui5Yamlpath)) {
+        const yamlContents = fs.read(ui5Yamlpath);
+        const ui5Config = await UI5Config.newInstance(yamlContents);
+        const backends = ui5Config.getBackendConfigsFromFioriToolsProxydMiddleware();
+        // There should be only one /sap entry
+        if (backends.find((existingBackend) => existingBackend.path === '/sap')) {
+            service.previewSettings.path = service.path;
         }
     }
 }
