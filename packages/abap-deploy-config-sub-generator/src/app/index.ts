@@ -173,12 +173,13 @@ export default class extends DeploymentGenerator {
                 packageManual: { shouldValidatePackageForStartingPrefix: isAdp, shouldValidatePackageType: isAdp },
                 targetSystem: { shouldRestrictDifferentSystemType: isAdp }
             };
+            const indexGenerationAllowed = this.indexGenerationAllowed && !isAdp;
             const { prompts: abapDeployConfigPrompts, answers: abapAnswers = {} } = await getAbapQuestions({
                 appRootPath: this.destinationRoot(),
                 connectedSystem: this.options.connectedSystem,
                 backendConfig: this.backendConfig,
                 configFile: this.options.config,
-                indexGenerationAllowed: this.indexGenerationAllowed && !isAdp,
+                indexGenerationAllowed,
                 showOverwriteQuestion: showOverwriteQuestion(
                     this.launchDeployConfigAsSubGenerator,
                     this.launchStandaloneFromYui,
