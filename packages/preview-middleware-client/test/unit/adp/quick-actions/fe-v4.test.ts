@@ -46,6 +46,7 @@ import { TableQuickActionDefinitionBase } from '../../../../src/adp/quick-action
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
+import hasStableId from 'mock/sap/ui/rta/util/hasStableId';
 
 describe('FE V4 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -212,6 +213,9 @@ describe('FE V4 quick actions', () => {
 
             test('available since UI5 version 1.130', async () => {
                 VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.130.1' });
+                hasStableId.mockImplementation(() => {
+                    return true;
+                });
                 await setupContext();
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
@@ -1195,21 +1199,16 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(
-                    rtaMock,
-                    new OutlineService(rtaMock, mockChangeService),
-                    [registry],
-                    {
-                        onStackChange: jest.fn(),
-                        getConfigurationPropertyValue: jest
-                            .fn()
-                            .mockReturnValueOnce(undefined)
-                            .mockReturnValueOnce(undefined)
-                            .mockReturnValueOnce(true)
-                            .mockReturnValueOnce(undefined)
-                            .mockReturnValue(undefined)
-                    } as any
-                );
+                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
+                    onStackChange: jest.fn(),
+                    getConfigurationPropertyValue: jest
+                        .fn()
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValueOnce(true)
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValue(undefined)
+                } as any);
             });
 
             test('initialize and execute action', async () => {
@@ -1338,6 +1337,9 @@ describe('FE V4 quick actions', () => {
                 jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                     testCase.ui5version ?? { major: 1, minor: 131 }
                 );
+                hasStableId.mockImplementation(() => {
+                    return true;
+                });
                 fetchMock.mockResolvedValue({
                     json: jest
                         .fn()
@@ -1537,6 +1539,9 @@ describe('FE V4 quick actions', () => {
             describe('add header field', () => {
                 test('initialize and execute action', async () => {
                     const pageView = new XMLView();
+                    hasStableId.mockImplementation(() => {
+                        return true;
+                    });
                     FlexUtils.getViewForControl.mockImplementation(() => {
                         return {
                             getId: () => 'MyView',
@@ -2224,6 +2229,9 @@ describe('FE V4 quick actions', () => {
                     jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                         testCase.ui5version ?? { major: 1, minor: 131 }
                     );
+                    hasStableId.mockImplementation(() => {
+                        return true;
+                    });
                     fetchMock.mockResolvedValue({
                         json: jest
                             .fn()
