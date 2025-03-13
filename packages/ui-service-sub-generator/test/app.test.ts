@@ -14,13 +14,13 @@ import * as utils from '../src/app/utils';
 import * as UiServiceInquirer from '@sap-ux/ui-service-inquirer';
 
 const mockIsAppStudio = jest.fn();
+jest.setTimeout(30000);
 jest.mock('@sap-ux/btp-utils', () => {
     return {
         ...(jest.requireActual('@sap-ux/btp-utils') as object),
         isAppStudio: () => mockIsAppStudio()
     };
 });
-
 jest.mock('@sap-ux/system-access', () => {
     return {
         ...(jest.requireActual('@sap-ux/system-access') as object),
@@ -30,65 +30,19 @@ jest.mock('@sap-ux/system-access', () => {
         })
     };
 });
-
-jest.setTimeout(30000);
+const mockSendTelemetry = jest.fn().mockResolvedValue({});
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+    sendTelemetry: () => mockSendTelemetry(),
+    TelemetryHelper: {
+        initTelemetrySettings: jest.fn(),
+        createTelemetryData: jest.fn(),
+        markAppGenStartTime: jest.fn()
+    }
+}));
 
 const serviceGenPath = join(__dirname, '../src/app');
 const businessObjectName = 'I_BANKTP';
-
-const mockSystemPrompts = [
-    {
-        name: 'systemSelection'
-    },
-    {
-        name: 'user'
-    },
-    {
-        name: 'password'
-    },
-    {
-        name: 'objectType'
-    },
-    {
-        name: 'businessObjectInterface'
-    },
-    {
-        name: 'abapCdsView'
-    }
-];
-
-const configPrompts = [
-    {
-        name: 'packageInputChoice'
-    },
-    {
-        name: 'packageManual'
-    },
-    {
-        name: 'packageAutocomplete'
-    },
-    {
-        name: 'transportInputChoice'
-    },
-    {
-        name: 'transportManual'
-    },
-    {
-        name: 'transportFromList'
-    },
-    {
-        name: 'transportCreated'
-    },
-    {
-        name: 'draftEnabled'
-    },
-    {
-        name: 'launchAppGen'
-    },
-    {
-        name: 'serviceName'
-    }
-];
 
 describe('BAS service center', () => {
     beforeEach(() => {

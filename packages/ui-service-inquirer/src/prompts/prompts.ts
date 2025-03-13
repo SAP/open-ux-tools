@@ -39,13 +39,13 @@ export async function getSystemSelectionPrompts(
  * @returns the configuration prompts
  */
 export function getConfigPrompts(
-    systemSelectionAnswers?: SystemSelectionAnswers,
+    systemSelectionAnswers: SystemSelectionAnswers,
     logger?: Logger
 ): { prompts: ServiceConfigQuestion[]; answers: Partial<ServiceConfig> } {
     if (logger) {
         LoggerHelper.logger = logger;
     }
-    if (systemSelectionAnswers && !PromptState.systemSelection.connectedSystem) {
+    if (!PromptState.systemSelection.connectedSystem) {
         Object.assign(PromptState.systemSelection, systemSelectionAnswers);
     }
     return {
