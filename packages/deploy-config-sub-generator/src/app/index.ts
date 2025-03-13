@@ -103,16 +103,16 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.vscode
         );
         const capRoot = await findCapProjectRoot(this.options.appRootPath);
-        const appType = await getAppType(this.options.appRootPath);
-        const isAdp = appType === 'Fiori Adaptation';
-        if (isAdp) {
-            this.target = TargetName.ABAP;
-            this.launchDeployConfigAsSubGenerator = false;
-        }
         this.isCap = !!capRoot;
         this.mtaPath = (await getMtaPath(this.options.appRootPath))?.mtaPath;
         if (this.isCap && !this.mtaPath) {
             this.target = TargetName.CF; // when CAP project and no mta.yaml, default to Cloud Foundry
+        }
+        const appType = await getAppType(this.options.appRootPath);
+        const isAdp = appType === 'Fiori Adaptation';
+        if (isAdp) {
+            this.target = TargetName.ABAP; // Adp projects support only ABAP deployment
+            this.launchDeployConfigAsSubGenerator = false;
         }
         this.options.projectRoot = capRoot ?? this.mtaPath ?? this.options.appRootPath;
 
