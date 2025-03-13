@@ -5,8 +5,7 @@
         "outDir": "dist",
         "rootDir": "src",
         "lib": ["ES2021"],
-        "target": "ES2021",
-        "strictNullChecks": false
+        "target": "ES2021"
     },
   "include": [
     "src/**/*.ts",
