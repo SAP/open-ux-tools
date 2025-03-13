@@ -16,7 +16,7 @@ export default async function initCdm(container: typeof sap.ushell.Container): P
                     config: {
                         enablePersonalization: false,
                         enableAppFinder: true
-                    },
+                    }
                 }
             }
         },
