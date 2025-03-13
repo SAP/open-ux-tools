@@ -52,6 +52,6 @@ export function registerNamespaces(
     lookup: GeneratorOptions['env.lookup']
 ): void {
     if (rootGenerator && !isPackageRegistered(generatorNamespace)) {
-        lookup({ packagePatterns: [generatorNamespace] });
+        lookup({ packagePatterns: [rootGenerator] });
     }
 }

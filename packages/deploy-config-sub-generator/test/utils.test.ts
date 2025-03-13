@@ -70,6 +70,6 @@ describe('Test utils - Deploy', () => {
         const generatorNamespace = 'sub-generator';
         registerNamespaces(rootGenerator, generatorNamespace, isPackageRegistered, lookup);
         expect(isPackageRegistered).toHaveBeenCalledWith(generatorNamespace);
-        expect(lookup).toHaveBeenCalledWith({ packagePatterns: [generatorNamespace] });
+        expect(lookup).toHaveBeenCalledWith({ packagePatterns: [rootGenerator] });
     });
 });
