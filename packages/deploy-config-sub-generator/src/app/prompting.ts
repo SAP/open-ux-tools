@@ -24,7 +24,6 @@ import type { GeneratorOptions } from 'yeoman-generator';
  * @param promptOpts.isCap - whether the project is a CAP project
  * @param promptOpts.apiHubConfig - API Hub configuration
  * @param promptOpts.isLibrary - whether the project is a library
- * @param promptOpts.isAdp - whether the project is an Adaptation Project
  * @returns - target deployment CF | ABAP and answers
  */
 export async function promptDeployConfigQuestions(
@@ -40,8 +39,7 @@ export async function promptDeployConfigQuestions(
         cfDestination,
         isCap,
         apiHubConfig,
-        isLibrary,
-        isAdp
+        isLibrary
     }: {
         launchDeployConfigAsSubGenerator: boolean;
         launchStandaloneFromYui: boolean;
@@ -52,7 +50,6 @@ export async function promptDeployConfigQuestions(
         isCap: boolean;
         apiHubConfig: ApiHubConfig;
         isLibrary: boolean;
-        isAdp: boolean;
     }
 ): Promise<{
     target?: string;
@@ -70,8 +67,7 @@ export async function promptDeployConfigQuestions(
             cfDestination,
             isCap,
             apiHubConfig,
-            isLibrary,
-            isAdp
+            isLibrary
         });
         const subGenAnswers = await prompt(questions);
         Object.assign(answers, subGenAnswers, abapAnswers);

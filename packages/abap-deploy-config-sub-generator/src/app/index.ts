@@ -178,7 +178,7 @@ export default class extends DeploymentGenerator {
                 connectedSystem: this.options.connectedSystem,
                 backendConfig: this.backendConfig,
                 configFile: this.options.config,
-                indexGenerationAllowed: this.indexGenerationAllowed,
+                indexGenerationAllowed: this.indexGenerationAllowed && !isAdp,
                 showOverwriteQuestion: showOverwriteQuestion(
                     this.launchDeployConfigAsSubGenerator,
                     this.launchStandaloneFromYui,

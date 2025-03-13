@@ -4,7 +4,7 @@ import {
     PackageInputChoices,
     TargetSystemType,
     TransportChoices,
-    TransportConfig
+    type TransportConfig
 } from '../../src/types';
 import {
     defaultOrShowManualPackageQuestion,

@@ -39,9 +39,9 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     readonly appWizard: AppWizard;
     readonly prompts: Prompts;
     readonly genNamespace: string;
-    readonly launchDeployConfigAsSubGenerator: boolean;
     readonly launchStandaloneFromYui: boolean;
     readonly apiHubConfig: ApiHubConfig;
+    launchDeployConfigAsSubGenerator: boolean;
     extensionPromptOpts?: Record<string, CommonPromptOptions>;
     vscode: VSCodeInstance;
     cfDestination: string;
@@ -49,7 +49,6 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     backendConfig: FioriToolsProxyConfigBackend;
     isLibrary = false;
     isCap = false;
-    isAdp = false;
 
     target: string | undefined;
     answers?: Answers;
@@ -104,6 +103,12 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.vscode
         );
         const capRoot = await findCapProjectRoot(this.options.appRootPath);
+        const appType = await getAppType(this.options.appRootPath);
+        const isAdp = appType === 'Fiori Adaptation';
+        if (isAdp) {
+            this.target = TargetName.ABAP;
+            this.launchDeployConfigAsSubGenerator = false;
+        }
         this.isCap = !!capRoot;
         this.mtaPath = (await getMtaPath(this.options.appRootPath))?.mtaPath;
         if (this.isCap && !this.mtaPath) {
@@ -123,8 +128,6 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         });
         this.options.appGenServicePath ||= servicePath;
         this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig?.destination;
-        const appType = await getAppType(this.options.appRootPath);
-        this.isAdp = appType === 'Fiori Adaptation';
     }
 
     /**
@@ -160,11 +163,10 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
                     cfDestination: this.cfDestination,
                     isCap: this.isCap,
                     apiHubConfig: this.apiHubConfig,
-                    isLibrary: this.isLibrary,
-                    isAdp: this.isAdp
+                    isLibrary: this.isLibrary
                 }
             );
-            this.target = this.isAdp ? TargetName.ABAP : target;
+            this.target = target;
             this.answers = answers;
         }
 
