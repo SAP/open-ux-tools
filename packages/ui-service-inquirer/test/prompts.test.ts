@@ -1,6 +1,4 @@
-//import { getServiceConfigQuestions, getSystemQuestions } from '../src/app/prompts';
 import { getSystemSelectionPrompts, getConfigPrompts } from '../src';
-//import { PackageInputChoices } from '../src/types';
 import nock from 'nock';
 import type { Answers, Question as YoQuestion } from 'inquirer';
 import * as promptHelper from '../src/prompts/prompt-helper';
@@ -8,9 +6,7 @@ import { genContent } from './fixtures/constants';
 import { PromptState } from '../src/prompts/prompt-state';
 import { ObjectType } from '../src/types';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
-import Prompt from 'inquirer/lib/prompts/base';
-import type { AbapServiceProvider, ServiceProvider } from '@sap-ux/axios-extension';
-import { Destination } from '@sap-ux/btp-utils';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 jest.mock('../src/logger-helper');
 
@@ -22,6 +18,24 @@ jest.mock('@sap-ux/btp-utils', () => {
     };
 });
 
+jest.mock('../src/logger-helper', () => ({
+    logger: {
+        warn: jest.fn(),
+        error: jest.fn()
+    }
+}));
+
+jest.mock('@sap-ux/inquirer-common', () => ({
+    ...(jest.requireActual('@sap-ux/inquirer-common') as {}),
+    setTelemetryClient: () => jest.fn()
+}));
+
+jest.mock('@sap-ux/telemetry', () => ({
+    ...(jest.requireActual('@sap-ux/telemetry') as {}),
+    ClientFactory: {
+        getTelemetryClient: jest.fn().mockResolvedValue({})
+    }
+}));
 interface Question extends YoQuestion {
     when?: (answers: Answers) => boolean | Promise<boolean>;
     message?: (answers?: Answers) => string;
@@ -126,13 +140,7 @@ describe('getSystemQuestions', () => {
 
         jest.spyOn(promptHelper, 'getBusinessObjects').mockResolvedValue([businessObjectMockResp]);
         jest.spyOn(promptHelper, 'getAbapCDSViews').mockResolvedValue([abapCDSViewsMockResp]);
-        //jest.spyOn(promptHelper, 'checkConnection').mockResolvedValue(true);
         questions = (await getSystemSelectionPrompts()).prompts;
-        // PromptState.systemSelection = {
-        //     connectedSystem: {
-        //         serviceProvider: { getUiServiceGenerator: { generate: jest.fn() } } as unknown as AbapServiceProvider
-        //     }
-        // };
         questions.forEach((question: any) => {
             q[question.name] = question as Question;
         });
@@ -155,60 +163,45 @@ describe('getSystemQuestions', () => {
             description: 'Grant Claim Item',
             uri: '/sap/bc/adt/ddic/ddl/sources/C_GRANTORCLAIMITEMDEX'
         };
-
+        expect(await q.businessObjectInterface.when!({ objectType: ObjectType.BUSINESS_OBJECT })).toEqual(true);
+        expect(await q.businessObjectInterface.when!({ objectType: ObjectType.CDS_VIEW })).toEqual(false);
         expect(await q.businessObjectInterface.choices!()).toEqual([businessObjectMockResp]);
-        // expect(await q.businessObjectInterface.validate!(businessObjectMock, answersMock)).toEqual(
-        //     'No generator found for the selected business object interface'
-        // );
+        expect(await q.businessObjectInterface.validate!(businessObjectMock, answersMock)).toEqual(
+            'NO_GENERATOR_FOUND_BO'
+        );
 
+        expect(await q.abapCDSView.when!({ objectType: ObjectType.CDS_VIEW })).toEqual(true);
         expect(await q.abapCDSView.choices!()).toEqual([abapCDSViewsMockResp]);
-        // expect(await q.abapCDSView.validate!(abapCDSViewMock, answersMock)).toEqual(
-        //     'No generator found for the selected abap cds service'
-        // );
+        expect(await q.abapCDSView.validate!(abapCDSViewMock, answersMock)).toEqual('NO_GENERATOR_FOUND_CDS_SERVICE');
 
-        // jest.spyOn(promptHelper, 'checkConnection').mockImplementation(() => {
-        //     throw new Error('error');
-        // });
-        const providerMock = {
-            getUiServiceGenerator: jest.fn().mockResolvedValue({})
-        } as any;
         mockIsAppStudio.mockReturnValue(false);
-        //PromptState.provider = providerMock;
         questions = (await getSystemSelectionPrompts()).prompts;
         questions.forEach((question: any) => {
             q[question.name] = question as Question;
         });
-        // expect(await q.businessObjectInterface.validate!(businessObjectMock)).toEqual(true);
-        // expect(await q.abapCDSView.validate!(abapCDSViewMock)).toEqual(true);
     });
 
     test('getServiceConfigQuestions', async () => {
-        PromptState.reset();
-        const providerMock = {
-            getAdtService: jest.fn().mockResolvedValue({ listPackages: jest.fn().mockResolvedValue(['testPackage']) })
-        } as any;
-        //jest.spyOn(promptHelper, 'checkConnection').mockResolvedValue(true);
-        const genMock = {
-            getContent: jest.fn().mockResolvedValue(
-                JSON.stringify({
-                    businessService: {
-                        serviceBinding: {
-                            serviceBindingName: 'serviceName'
-                        }
-                    },
-                    businessObject: {
-                        projectionBehavior: {
-                            withDraft: undefined
-                        }
+        const getContentMock = jest.fn().mockResolvedValue(
+            JSON.stringify({
+                businessService: {
+                    serviceBinding: {
+                        serviceBindingName: 'serviceName'
                     }
-                })
-            ),
+                },
+                businessObject: {
+                    projectionBehavior: {
+                        withDraft: undefined
+                    }
+                }
+            })
+        );
+        const genMock = {
+            getContent: getContentMock,
             validateContent: jest.fn().mockResolvedValue({
                 severity: 'OK'
             })
         } as any;
-        // PromptState.uiCreateService = genMock;
-        // PromptState.provider = providerMock;
         const systemSelectionAnswers = {
             connectedSystem: {
                 backendSystem: {
@@ -222,10 +215,7 @@ describe('getSystemQuestions', () => {
                     getUiServiceGenerator: jest.fn().mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
                 }
             },
-            objectGenerator: {
-                getContent: jest.fn().mockResolvedValue(genContent),
-                generate: jest.fn().mockResolvedValue({})
-            }
+            objectGenerator: genMock
         } as any;
 
         questions = getConfigPrompts(systemSelectionAnswers).prompts;
@@ -233,70 +223,77 @@ describe('getSystemQuestions', () => {
             q[question.name] = question as Question;
         });
         expect(questions).toMatchSnapshot();
-
         expect(q.transportInputChoice.choices!()).toMatchSnapshot();
-
-        const answersMockAuto = {
-            sapSystem: 'system1',
-            transport: 'transport1',
-            serviceConfig: 'serviceConfig1',
-            packageInputChoice: 'manualInput',
-            packageAutocomplete: 'testPackage',
-            packageManual: 'testPackage'
-        };
-
         expect(await q.serviceName.when!({ packageAutocomplete: 'package' })).toEqual(true);
-        // expect(JSON.parse(state.content)).toEqual({
-        //     businessObject: {
-        //         projectionBehavior: {
-        //             withDraft: true
-        //         }
-        //     },
-        //     businessService: {
-        //         serviceBinding: {
-        //             serviceBindingName: 'serviceName'
-        //         }
-        //     }
-        // });
-        // expect(await q.draftEnabled.validate!(true)).toEqual(true);
-        // expect(await q.draftEnabled.validate!(false)).toEqual(true);
-
+        expect(q.serviceName.default()).toEqual(0);
+        expect(await q.serviceName.validate!('testPackage')).toEqual(true);
+        expect(await q.draftEnabled.validate!(true)).toEqual(true);
+        expect(await q.draftEnabled.validate!(false)).toEqual(true);
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(false)).toBeUndefined();
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(true)).toEqual({
             message: 'INFO_APP_GEN_LAUNCH',
             severity: 2
         });
 
-        const genMockValidateContent = {
+        const genMockValidateContent1 = {
+            getContent: getContentMock,
             validateContent: jest.fn().mockResolvedValue({
                 severity: 'ERROR'
             })
         } as any;
-        //PromptState.uiCreateService = genMockValidateContent;
-        questions = getConfigPrompts(systemSelectionAnswers).prompts;
+        const systemSelectionAnswers1 = {
+            connectedSystem: {
+                backendSystem: {
+                    name: 'system1'
+                },
+                destination: {
+                    Name: 'system1'
+                },
+                serviceProvider: {
+                    get: jest.fn(),
+                    getUiServiceGenerator: jest.fn().mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                }
+            },
+            objectGenerator: genMockValidateContent1
+        } as any;
+
+        PromptState.resetConnectedSystem();
+        questions = getConfigPrompts(systemSelectionAnswers1).prompts;
         questions.forEach((question) => {
             q[question.name] = question as Question;
         });
-        //expect(await q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
-        expect(q.serviceName.default()).toEqual(0);
-        //expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
+        expect(await q.serviceName.when!({ packageAutocomplete: 'package' })).toEqual(true);
+        expect(await q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
+        expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
+        expect(await q.draftEnabled.validate!(false)).toEqual('ERROR_VALIDATING_CONTENT');
 
-        //expect(await q.draftEnabled.validate!(false)).toMatchSnapshot();
-
-        const genMockValidateContent1 = {
+        const genMockValidateContent2 = {
+            getContent: getContentMock,
             validateContent: jest.fn().mockImplementation(() => {
                 throw new Error('error');
             })
         } as any;
-        //PromptState.uiCreateService = genMockValidateContent1;
-        //expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
-
-        const genMockValidateContent2 = {
-            validateContent: jest.fn().mockResolvedValue({
-                severity: 'OK'
-            })
+        const systemSelectionAnswers2 = {
+            connectedSystem: {
+                backendSystem: {
+                    name: 'system1'
+                },
+                destination: {
+                    Name: 'system1'
+                },
+                serviceProvider: {
+                    get: jest.fn(),
+                    getUiServiceGenerator: jest.fn().mockResolvedValue({ generate: jest.fn().mockResolvedValue({}) })
+                }
+            },
+            objectGenerator: genMockValidateContent2
         } as any;
-        //PromptState.uiCreateService = genMockValidateContent2;
-        //expect(await q.serviceName.validate!('testPackage')).toEqual(true);
+        PromptState.resetConnectedSystem();
+        questions = getConfigPrompts(systemSelectionAnswers2).prompts;
+        questions.forEach((question) => {
+            q[question.name] = question as Question;
+        });
+        expect(await q.serviceName.when!({ packageAutocomplete: 'package' })).toEqual(true);
+        expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
     });
 });
