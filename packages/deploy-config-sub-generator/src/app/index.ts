@@ -70,7 +70,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.target = parseTarget(args, opts);
         this.vscode = opts.vscode;
 
-        if (!this.env.isPackageRegistered(this.genNamespace)) {
+        if (this.rootGeneratorName() && !this.env.isPackageRegistered(this.genNamespace)) {
             // registers all the root generator's namespaces i.e the subgenerators
             this.env.lookup({ packagePatterns: [this.rootGeneratorName()] });
         }
