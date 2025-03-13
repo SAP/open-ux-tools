@@ -438,139 +438,165 @@ describe('generate', () => {
             });
         });
 
-        it('Enhance unspecified input data with defaults', async () => {
+        describe('Enhance unspecified input data with defaults', () => {
             const config = {
                 url: 'https://services.odata.org',
                 path: '/V2/Northwind/Northwind.svc',
                 version: OdataVersion.v2
             } as OdataService;
-            // No services are defined - mainService used for service name and '' for service model
-            let configCopy = cloneDeep(config);
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "",
-                  "name": "mainService",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            // Services already defined - actual service name and service model are used
-            configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
-            fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.app': { dataSources: { existingService: { type: 'OData' } } },
-                'sap.ui5': { models: { existingModel: { dataSource: 'existingService' } } }
+            test('No services are defined - mainService used for service name and "" for service model', async () => {
+                const configCopy = cloneDeep(config);
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "",
+                      "name": "mainService",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
             });
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "modelName",
-                  "name": "datasourceName",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            fs.delete(join('webapp', 'manifest.json'));
-            // Undefined path does not throw but sets valid path
-            configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "",
-                  "name": "mainService",
-                  "path": "/",
-                  "previewSettings": Object {
-                    "path": "/",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            // Service and annotation names are the same
-            fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.app': { dataSources: { exisitingSerivce: { type: 'OData' } } }
+            test('Services already defined - actual service name and service model are used', async () => {
+                const configCopy = cloneDeep(Object.assign({}, config, { model: 'modelName', name: 'datasourceName' }));
+                fs.writeJSON(join('webapp', 'manifest.json'), {
+                    'sap.app': { dataSources: { existingService: { type: 'OData' } } },
+                    'sap.ui5': { models: { existingModel: { dataSource: 'existingService' } } }
+                });
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "modelName",
+                      "name": "datasourceName",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+                fs.delete(join('webapp', 'manifest.json'));
             });
-            configCopy = cloneDeep(Object.assign({}, config, { name: 'aname', annotations: { name: 'aname' } }));
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "annotations": Object {
-                    "name": "aname_Annotation",
-                  },
-                  "model": "",
-                  "name": "aname",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            // mainService model already exists
-            fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.app': { dataSources: { mainService: { type: 'OData' } } },
-                'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+            test('Undefined path does not throw but sets valid path', async () => {
+                const configCopy = cloneDeep(Object.assign({}, config, { path: undefined }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "",
+                      "name": "mainService",
+                      "path": "/",
+                      "previewSettings": Object {
+                        "path": "/",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
             });
-            // model called mainService is being added, '' should be used for model
-            configCopy = cloneDeep(Object.assign({}, config, { name: 'mainService' }));
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "",
-                  "name": "mainService",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
-
-            // mainService model already exists
-            fs.writeJSON(join('webapp', 'manifest.json'), {
-                'sap.app': { dataSources: { mainService: { type: 'OData' } } },
-                'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+            test('/sap path is not used for preview settings', async () => {
+                const ui5Yaml = (await UI5Config.newInstance(''))
+                    .addFioriToolsProxydMiddleware({ ui5: {}, backend: [{ path: '/sap', url: 'https://localhost' }] })
+                    .toString();
+                fs.write(ui5Yaml, join('', 'ui5.yaml'));
+                fs.delete(join('webapp', 'manifest.json'));
+                // "/sap" entry already exists, it should not be used
+                const configCopy = cloneDeep(Object.assign({}, config, { path: '/sap/test/path/' }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "",
+                      "name": "mainService",
+                      "path": "/sap/test/path/",
+                      "previewSettings": Object {
+                        "path": "/sap",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+                fs.delete(join('', 'ui5.yaml'));
             });
-            // model called differentService is being added, 'differentService' should be used for model
-            configCopy = cloneDeep(Object.assign({}, config, { model: 'differentService' }));
-            await enhanceData('', configCopy, fs);
-            expect(configCopy).toMatchInlineSnapshot(`
-                Object {
-                  "model": "differentService",
-                  "path": "/V2/Northwind/Northwind.svc/",
-                  "previewSettings": Object {
-                    "path": "/V2",
-                    "url": "https://services.odata.org",
-                  },
-                  "type": "edmx",
-                  "url": "https://services.odata.org",
-                  "version": "2",
-                }
-            `);
+            test('Service and annotation names are the same', async () => {
+                fs.writeJSON(join('webapp', 'manifest.json'), {
+                    'sap.app': { dataSources: { exisitingSerivce: { type: 'OData' } } }
+                });
+                const configCopy = cloneDeep(Object.assign({}, config, { name: 'aname', annotations: { name: 'aname' } }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "annotations": Object {
+                        "name": "aname_Annotation",
+                      },
+                      "model": "",
+                      "name": "aname",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+            });
+            test('model called mainService is being added, "" should be used for model', async () => {
+                // mainService model already exists
+                fs.writeJSON(join('webapp', 'manifest.json'), {
+                    'sap.app': { dataSources: { mainService: { type: 'OData' } } },
+                    'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+                });
+                const configCopy = cloneDeep(Object.assign({}, config, { name: 'mainService' }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "",
+                      "name": "mainService",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+            });
+            test('model called differentService is being added, "differentService" should be used for model', async () => {
+                // mainService model already exists
+                fs.writeJSON(join('webapp', 'manifest.json'), {
+                    'sap.app': { dataSources: { mainService: { type: 'OData' } } },
+                    'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
+                });
+                const configCopy = cloneDeep(Object.assign({}, config, { model: 'differentService' }));
+                await enhanceData('', configCopy, fs);
+                expect(configCopy).toMatchInlineSnapshot(`
+                    Object {
+                      "model": "differentService",
+                      "path": "/V2/Northwind/Northwind.svc/",
+                      "previewSettings": Object {
+                        "path": "/V2",
+                        "url": "https://services.odata.org",
+                      },
+                      "type": "edmx",
+                      "url": "https://services.odata.org",
+                      "version": "2",
+                    }
+                `);
+            });
         });
     });
 });
