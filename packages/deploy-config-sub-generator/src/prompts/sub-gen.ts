@@ -69,6 +69,7 @@ export async function getSubGenPrompts(
     );
     const indexGenerationAllowed =
         !isLibrary && launchStandaloneFromYui && !(await indexHtmlExists(fs, options.appRootPath));
+
     // ABAP prompts
     const { prompts: abapPrompts, answers: abapAnswers } = await getAbapQuestions({
         appRootPath: options.appRootPath,
