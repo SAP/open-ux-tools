@@ -17,7 +17,7 @@ const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
  * @returns array with page descriptors
  */
 export function getV2ApplicationPages(manifest: Manifest): { id: string; entitySet: string | undefined }[] {
-    // TODO: do we need to distinguish both navigation source and target entitySets to differentiate alternative routes?
+    // do we need to distinguish both navigation source and target entitySets to differentiate alternative routes?
     const rootEntry = manifest['sap.ui.generic.app'] || manifest['sap.ovp'];
     if (rootEntry) {
         const result: { id: string; entitySet: string | undefined }[] = [];
