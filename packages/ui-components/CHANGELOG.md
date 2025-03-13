@@ -1,5 +1,17 @@
 # @sap-ux/ui-components
 
+## 1.24.11
+
+### Patch Changes
+
+-   21292ad: Feat(UI components): issue #32314 - UITranslationInput inverted theme
+
+## 1.24.10
+
+### Patch Changes
+
+-   17847f9: UISections. Error `Cannot read properties of undefined (reading 'size')` is throws for section on initial rendering
+
 ## 1.24.9
 
 ### Patch Changes
