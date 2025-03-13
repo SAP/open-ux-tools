@@ -354,10 +354,15 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
             destination: cfConfig.destinationName,
             servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isDestinationFullUrl ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
             targetPath: `${cfConfig.isDestinationFullUrl ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
-            authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa'
+            authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa',
+            service: cfConfig.addManagedAppFrontend ? 'app-front' : 'html5-apps-repo-rt',
+            authenticationType: cfConfig.addManagedAppFrontend ? 'ias' : 'xsuaa'
         });
     } else {
-        fs.copyTpl(getTemplatePath('app/xs-app-no-destination.json'), join(cfConfig.appPath, XSAppFile));
+        fs.copyTpl(getTemplatePath('app/xs-app-no-destination.json'), join(cfConfig.appPath, XSAppFile), {
+            service: cfConfig.addManagedAppFrontend ? 'app-front' : 'html5-apps-repo-rt',
+            authenticationType: cfConfig.addManagedAppFrontend ? 'ias' : 'xsuaa'
+        });
     }
     await generateUI5DeployConfig(cfConfig, fs);
 }

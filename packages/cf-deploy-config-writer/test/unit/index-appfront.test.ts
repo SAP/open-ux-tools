@@ -1,14 +1,14 @@
 import { join } from 'path';
 import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
-import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import * as btp from '@sap-ux/btp-utils';
 import { generateAppConfig } from '../../src';
+import { create, type Editor } from 'mem-fs-editor';
+import { create as createStorage } from 'mem-fs';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn(),
-    listDestinations: jest.fn()
+    isAppStudio: jest.fn().mockReturnValue(false)
 }));
 
 jest.mock('hasbin', () => ({
@@ -24,35 +24,18 @@ jest.mock('@sap/mta-lib', () => {
 });
 
 let hasSyncMock: jest.SpyInstance;
-let isAppStudioMock: jest.SpyInstance;
-let listDestinationsMock: jest.SpyInstance;
+let unitTestFs: Editor;
 
 describe('CF Writer App - Application Frontend', () => {
     jest.setTimeout(10000);
 
-    const destinationsMock = {
-        'TestDestination': {
-            Name: 'TestDestination',
-            Type: 'MockType',
-            Authentication: 'NoAuthentication',
-            ProxyType: 'NoProxy',
-            Description: 'MockDestination',
-            Host: 'MockHost',
-            WebIDEAdditionalData: btp.WebIDEAdditionalData.FULL_URL,
-            WebIDEUsage: btp.WebIDEUsage.ODATA_GENERIC
-        }
-    };
-    const logger = new ToolsLogger({
-        transports: [new NullTransport()]
-    });
     const outputDir = join(__dirname, '../test-output', 'appfrontend');
 
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
-        isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
-        listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
+        unitTestFs = create(createStorage());
     });
 
     beforeAll(() => {
@@ -71,30 +54,29 @@ describe('CF Writer App - Application Frontend', () => {
         jest.resetAllMocks();
     });
 
-    test('Generate deployment configs - HTML5 App and destination read from ui5.yaml', async () => {
-        isAppStudioMock.mockResolvedValue(true);
-        listDestinationsMock.mockResolvedValue(destinationsMock);
-        const appName = 'basicapp01';
-        const appPath = join(outputDir, appName);
-        fsExtra.mkdirSync(outputDir, { recursive: true });
-        fsExtra.mkdirSync(appPath);
-        fsExtra.copySync(join(__dirname, '../sample/basicapp'), appPath);
-        const localFs = await generateAppConfig({ appPath, addManagedAppFrontend: true }, undefined, logger);
-        expect(isAppStudioMock).toBeCalledTimes(1);
-        // Since mta.yaml is not in memfs, read from disk
-        expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
-    });
-
     test('Generate deployment configs - HTML5 App with app frontend approuter attached with no destination available', async () => {
-        isAppStudioMock.mockResolvedValue(false);
         const appName = 'lrop';
         const appPath = join(outputDir, appName);
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, `../sample/lrop`), appPath);
-        const localFs = await generateAppConfig({ appPath, addManagedAppFrontend: true }, undefined, logger);
-        expect(listDestinationsMock).toBeCalledTimes(0);
+        await generateAppConfig({ appPath, addManagedAppFrontend: true }, unitTestFs);
         // Since mta.yaml is not in memfs, read from disk
-        expect(localFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(unitTestFs.read(join(appPath, 'xs-app.json'))).toMatchSnapshot();
+    });
+
+    test('Generate deployment configs - Add 2nd HTML5 app to app frontend router', async () => {
+        const rootName = 'rootmta';
+        const rootPath = join(outputDir, rootName);
+        const appPath = join(rootPath, 'basicapp');
+        fsExtra.mkdirSync(outputDir, { recursive: true });
+        fsExtra.mkdirSync(rootPath);
+        fsExtra.copySync(join(__dirname, `../sample/rootmta`), rootPath); // Base mta
+        fsExtra.copySync(join(__dirname, `../sample/basicapp`), appPath); // Base -> App
+        await generateAppConfig({ appPath: appPath, addManagedAppFrontend: true }, unitTestFs);
+        // unitTestFs.dump(rootPath);
+        expect(unitTestFs.read(join(rootPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(unitTestFs.read(join(appPath, 'xs-app.json'))).toMatchSnapshot();
     });
 });

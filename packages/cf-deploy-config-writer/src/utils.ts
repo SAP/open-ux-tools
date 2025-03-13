@@ -189,7 +189,10 @@ export async function generateSupportingConfig(config: CFConfig, fs: Editor): Pr
     if (mtaId && !fs.exists(join(config.rootPath, 'package.json'))) {
         addRootPackage(mtaConfig, fs);
     }
-    if (config.addManagedAppRouter && !fs.exists(join(config.rootPath, XSSecurityFile))) {
+    if (
+        (config.addManagedAppRouter || config.addManagedAppFrontend) &&
+        !fs.exists(join(config.rootPath, XSSecurityFile))
+    ) {
         addXSSecurityConfig(mtaConfig, fs);
     }
     // Be a good developer and add a .gitignore if missing from the existing project root

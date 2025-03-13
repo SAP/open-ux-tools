@@ -59,6 +59,10 @@ export const UI5Destination = {
     ProxyType: 'Internet',
     Authentication: 'NoAuthentication'
 };
+export const UI5DestinationParameter = {
+    name: 'ui5',
+    url: UI5_DEFAULT.SAPUI5_CDN
+};
 export const UI5ResourceDestination = {
     'init_data': {
         instance: {
