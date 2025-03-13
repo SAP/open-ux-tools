@@ -538,67 +538,6 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <meta
-        name=\\"sap.ushellConfig.crossPlatformDefaults\\"
-        content='{
-            \\"defaultRenderer\\": \\"fiori2\\",
-            \\"renderers\\": {
-                \\"fiori2\\": {
-                    \\"componentData\\": {
-                        \\"config\\": {
-                            \\"enableSearch\\": false,
-                            \\"enablePersonalization\\": false,
-                            \\"enableUserDefaultParameters\\": true
-                        }
-                    }
-                }
-            },
-            \\"ushell\\": {
-                \\"spaces\\": {
-                    \\"enabled\\": true,
-                    \\"myHome\\": {
-                        \\"enabled\\": true
-                    }
-                },
-                \\"homeApp\\": {
-                    \\"component\\": {
-                        \\"name\\": \\"open.ux.preview.client.flp.homepage\\",
-                        \\"url\\": \\"/preview/client/flp/homepage\\"
-                    }
-                }
-            },
-            \\"services\\": {
-                \\"Container\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"userProfile\\": {
-                                \\"defaults\\": {
-                                    \\"email\\": \\"john.doe@sap.com\\",
-                                    \\"firstName\\": \\"John\\",
-                                    \\"lastName\\": \\"Doe\\",
-                                    \\"fullName\\": \\"John Doe\\",
-                                    \\"id\\": \\"DOEJ\\"
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"CommonDataModel\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"/cdm.json\\"
-                        }
-                    }
-                },
-                \\"LaunchPage\\": {
-                    \\"adapter\\": {
-                        \\"module\\": \\"sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter\\"
-                    }
-                }
-            }
-        }'
-    />
     <title>Local FLP Sandbox</title>
 
     <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
@@ -616,11 +555,6 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-    <script type=\\"text/javascript\\">
-        window['sap-ui-config'] = {
-            oninit: \\"module:open/ux/preview/client/flp/init\\"
-        };
-    </script>
 
     <script type=\\"text/javascript\\">
         window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
@@ -628,7 +562,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap/ushell/bootstrap/cdm.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
@@ -640,6 +574,7 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -647,16 +582,13 @@ exports[`FlpSandbox router - connect API GET default routes with connect API whe
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\">
-    <div id=\\"canvas\\">
-        <div class=\\"sapMShellBG sapUiGlobalBackgroundImage\\"></div>
-    </div>
+<body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
 
 </html>"
 `;
 
-exports[`FlpSandbox router - connect API GET default routes with connect API when enhancedHomePage is enabled 2`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\"}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\"}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
+exports[`FlpSandbox router - connect API GET default routes with connect API when enhancedHomePage is enabled 2`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"site\\":{\\"payload\\":{\\"groupsOrder\\":[]}},\\"groups\\":{},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\"}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\"}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
 
 exports[`FlpSandbox router GET /preview/api/changes 1`] = `"{\\"sap.ui.fl.myid\\":{\\"id\\":\\"myId\\"}}"`;
 
@@ -1207,67 +1139,6 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <meta
-        name=\\"sap.ushellConfig.crossPlatformDefaults\\"
-        content='{
-            \\"defaultRenderer\\": \\"fiori2\\",
-            \\"renderers\\": {
-                \\"fiori2\\": {
-                    \\"componentData\\": {
-                        \\"config\\": {
-                            \\"enableSearch\\": false,
-                            \\"enablePersonalization\\": false,
-                            \\"enableUserDefaultParameters\\": true
-                        }
-                    }
-                }
-            },
-            \\"ushell\\": {
-                \\"spaces\\": {
-                    \\"enabled\\": true,
-                    \\"myHome\\": {
-                        \\"enabled\\": true
-                    }
-                },
-                \\"homeApp\\": {
-                    \\"component\\": {
-                        \\"name\\": \\"open.ux.preview.client.flp.homepage\\",
-                        \\"url\\": \\"/preview/client/flp/homepage\\"
-                    }
-                }
-            },
-            \\"services\\": {
-                \\"Container\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"userProfile\\": {
-                                \\"defaults\\": {
-                                    \\"email\\": \\"john.doe@sap.com\\",
-                                    \\"firstName\\": \\"John\\",
-                                    \\"lastName\\": \\"Doe\\",
-                                    \\"fullName\\": \\"John Doe\\",
-                                    \\"id\\": \\"DOEJ\\"
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"CommonDataModel\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"/cdm.json\\"
-                        }
-                    }
-                },
-                \\"LaunchPage\\": {
-                    \\"adapter\\": {
-                        \\"module\\": \\"sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter\\"
-                    }
-                }
-            }
-        }'
-    />
     <title>Local FLP Sandbox</title>
 
     <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
@@ -1285,11 +1156,6 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-    <script type=\\"text/javascript\\">
-        window['sap-ui-config'] = {
-            oninit: \\"module:open/ux/preview/client/flp/init\\"
-        };
-    </script>
 
     <script type=\\"text/javascript\\">
         window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
@@ -1297,7 +1163,7 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap/ushell/bootstrap/cdm.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
@@ -1309,6 +1175,7 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -1316,16 +1183,13 @@ exports[`FlpSandbox router enhanced homepage enabled editor with config 1`] = `
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\">
-    <div id=\\"canvas\\">
-        <div class=\\"sapMShellBG sapUiGlobalBackgroundImage\\"></div>
-    </div>
+<body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
 
 </html>"
 `;
 
-exports[`FlpSandbox router enhanced homepage enabled test/cdm.json should return cdm when homepage is enabled 1`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\"}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\"}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
+exports[`FlpSandbox router enhanced homepage enabled test/cdm.json should return cdm when homepage is enabled 1`] = `"{\\"_version\\":\\"3.1.0\\",\\"catalogs\\":{\\"homeCatalog\\":{\\"identification\\":{\\"id\\":\\"homeCatalog\\",\\"title\\":\\"Homepage Apps\\"},\\"payload\\":{\\"viz\\":[\\"VIZ:test.fe.v2.app\\",\\"VIZ:test.fe.v2.other\\"]}}},\\"site\\":{\\"payload\\":{\\"groupsOrder\\":[]}},\\"groups\\":{},\\"visualizations\\":{\\"VIZ:test.fe.v2.app\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.app\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.app\\",\\"inboundId\\":\\"app-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}},\\"VIZ:test.fe.v2.other\\":{\\"vizType\\":\\"sap.ushell.StaticAppLauncher\\",\\"businessApp\\":\\"test.fe.v2.other\\",\\"vizConfig\\":{\\"sap.app\\":{\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\"},\\"sap.flp\\":{\\"target\\":{\\"appId\\":\\"test.fe.v2.other\\",\\"inboundId\\":\\"testfev2other-preview\\",\\"parameters\\":[{\\"name\\":\\"sap-ui-tech-hint\\",\\"value\\":\\"UI5\\"}]}}}}},\\"applications\\":{\\"test.fe.v2.app\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"title\\":\\"My Simple App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"app-preview\\":{\\"semanticObject\\":\\"app\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Simple App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.app\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"..\\"}}},\\"test.fe.v2.other\\":{\\"sap.app\\":{\\"id\\":\\"test.fe.v2.other\\",\\"title\\":\\"My Other App\\",\\"crossNavigation\\":{\\"inbounds\\":{\\"testfev2other-preview\\":{\\"semanticObject\\":\\"testfev2other\\",\\"action\\":\\"preview\\",\\"title\\":\\"My Other App\\",\\"subTitle\\":\\"This is a very simple application.\\",\\"signature\\":{\\"additionalParameters\\":\\"allowed\\"}}}}},\\"sap.ui5\\":{\\"componentName\\":\\"test.fe.v2.other\\"},\\"sap.ui\\":{\\"technology\\":\\"UI5\\"},\\"sap.platform.runtime\\":{\\"componentProperties\\":{\\"url\\":\\"/yet/another/app\\"}}}},\\"pages\\":{\\"SAP_BASIS_PG_UI_MYHOME\\":{\\"identification\\":{\\"id\\":\\"SAP_BASIS_PG_UI_MYHOME\\"},\\"payload\\":{\\"layout\\":{\\"sectionOrder\\":[\\"homeAppsSection\\"]},\\"sections\\":{\\"homeAppsSection\\":{\\"id\\":\\"homeAppsSection\\",\\"title\\":\\"Recently Added Apps\\",\\"default\\":true,\\"layout\\":{\\"vizOrder\\":[\\"test.fe.v2.app\\",\\"test.fe.v2.other\\"]},\\"viz\\":{\\"test.fe.v2.app\\":{\\"id\\":\\"test.fe.v2.app\\",\\"vizId\\":\\"VIZ:test.fe.v2.app\\"},\\"test.fe.v2.other\\":{\\"id\\":\\"test.fe.v2.other\\",\\"vizId\\":\\"VIZ:test.fe.v2.other\\"}}}}}}}}"`;
 
 exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
 "<!DOCTYPE HTML>
@@ -1336,67 +1200,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <meta
-        name=\\"sap.ushellConfig.crossPlatformDefaults\\"
-        content='{
-            \\"defaultRenderer\\": \\"fiori2\\",
-            \\"renderers\\": {
-                \\"fiori2\\": {
-                    \\"componentData\\": {
-                        \\"config\\": {
-                            \\"enableSearch\\": false,
-                            \\"enablePersonalization\\": false,
-                            \\"enableUserDefaultParameters\\": true
-                        }
-                    }
-                }
-            },
-            \\"ushell\\": {
-                \\"spaces\\": {
-                    \\"enabled\\": true,
-                    \\"myHome\\": {
-                        \\"enabled\\": true
-                    }
-                },
-                \\"homeApp\\": {
-                    \\"component\\": {
-                        \\"name\\": \\"open.ux.preview.client.flp.homepage\\",
-                        \\"url\\": \\"/preview/client/flp/homepage\\"
-                    }
-                }
-            },
-            \\"services\\": {
-                \\"Container\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"userProfile\\": {
-                                \\"defaults\\": {
-                                    \\"email\\": \\"john.doe@sap.com\\",
-                                    \\"firstName\\": \\"John\\",
-                                    \\"lastName\\": \\"Doe\\",
-                                    \\"fullName\\": \\"John Doe\\",
-                                    \\"id\\": \\"DOEJ\\"
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"CommonDataModel\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"/cdm.json\\"
-                        }
-                    }
-                },
-                \\"LaunchPage\\": {
-                    \\"adapter\\": {
-                        \\"module\\": \\"sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter\\"
-                    }
-                }
-            }
-        }'
-    />
     <title>Local FLP Sandbox</title>
 
     <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
@@ -1414,11 +1217,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-    <script type=\\"text/javascript\\">
-        window['sap-ui-config'] = {
-            oninit: \\"module:open/ux/preview/client/flp/init\\"
-        };
-    </script>
 
     <script type=\\"text/javascript\\">
         window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
@@ -1426,7 +1224,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap/ushell/bootstrap/cdm.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
@@ -1438,6 +1236,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -1445,10 +1244,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html 1`] = `
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\">
-    <div id=\\"canvas\\">
-        <div class=\\"sapMShellBG sapUiGlobalBackgroundImage\\"></div>
-    </div>
+<body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
 
 </html>"
@@ -1609,67 +1405,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <meta
-        name=\\"sap.ushellConfig.crossPlatformDefaults\\"
-        content='{
-            \\"defaultRenderer\\": \\"fiori2\\",
-            \\"renderers\\": {
-                \\"fiori2\\": {
-                    \\"componentData\\": {
-                        \\"config\\": {
-                            \\"enableSearch\\": false,
-                            \\"enablePersonalization\\": false,
-                            \\"enableUserDefaultParameters\\": true
-                        }
-                    }
-                }
-            },
-            \\"ushell\\": {
-                \\"spaces\\": {
-                    \\"enabled\\": true,
-                    \\"myHome\\": {
-                        \\"enabled\\": true
-                    }
-                },
-                \\"homeApp\\": {
-                    \\"component\\": {
-                        \\"name\\": \\"open.ux.preview.client.flp.homepage\\",
-                        \\"url\\": \\"/preview/client/flp/homepage\\"
-                    }
-                }
-            },
-            \\"services\\": {
-                \\"Container\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"userProfile\\": {
-                                \\"defaults\\": {
-                                    \\"email\\": \\"john.doe@sap.com\\",
-                                    \\"firstName\\": \\"John\\",
-                                    \\"lastName\\": \\"Doe\\",
-                                    \\"fullName\\": \\"John Doe\\",
-                                    \\"id\\": \\"DOEJ\\"
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"CommonDataModel\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"/cdm.json\\"
-                        }
-                    }
-                },
-                \\"LaunchPage\\": {
-                    \\"adapter\\": {
-                        \\"module\\": \\"sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter\\"
-                    }
-                }
-            }
-        }'
-    />
     <title>Local FLP Sandbox</title>
 
     <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
@@ -1687,11 +1422,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-    <script type=\\"text/javascript\\">
-        window['sap-ui-config'] = {
-            oninit: \\"module:open/ux/preview/client/flp/init\\"
-        };
-    </script>
 
     <script type=\\"text/javascript\\">
         window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
@@ -1699,7 +1429,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap/ushell/bootstrap/cdm.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
@@ -1711,6 +1441,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -1718,10 +1449,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html UI5 snapshot 
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\">
-    <div id=\\"canvas\\">
-        <div class=\\"sapMShellBG sapUiGlobalBackgroundImage\\"></div>
-    </div>
+<body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
 
 </html>"
@@ -1738,67 +1466,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
     <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
     <meta charset=\\"UTF-8\\">
     <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <meta
-        name=\\"sap.ushellConfig.crossPlatformDefaults\\"
-        content='{
-            \\"defaultRenderer\\": \\"fiori2\\",
-            \\"renderers\\": {
-                \\"fiori2\\": {
-                    \\"componentData\\": {
-                        \\"config\\": {
-                            \\"enableSearch\\": false,
-                            \\"enablePersonalization\\": false,
-                            \\"enableUserDefaultParameters\\": true
-                        }
-                    }
-                }
-            },
-            \\"ushell\\": {
-                \\"spaces\\": {
-                    \\"enabled\\": true,
-                    \\"myHome\\": {
-                        \\"enabled\\": true
-                    }
-                },
-                \\"homeApp\\": {
-                    \\"component\\": {
-                        \\"name\\": \\"open.ux.preview.client.flp.homepage\\",
-                        \\"url\\": \\"/preview/client/flp/homepage\\"
-                    }
-                }
-            },
-            \\"services\\": {
-                \\"Container\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"userProfile\\": {
-                                \\"defaults\\": {
-                                    \\"email\\": \\"john.doe@sap.com\\",
-                                    \\"firstName\\": \\"John\\",
-                                    \\"lastName\\": \\"Doe\\",
-                                    \\"fullName\\": \\"John Doe\\",
-                                    \\"id\\": \\"DOEJ\\"
-                                }
-                            }
-                        }
-                    }
-                },
-                \\"CommonDataModel\\": {
-                    \\"adapter\\": {
-                        \\"config\\": {
-                            \\"ignoreSiteDataPersonalization\\": true,
-                            \\"siteDataUrl\\": \\"/cdm.json\\"
-                        }
-                    }
-                },
-                \\"LaunchPage\\": {
-                    \\"adapter\\": {
-                        \\"module\\": \\"sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter\\"
-                    }
-                }
-            }
-        }'
-    />
     <title>Local FLP Sandbox</title>
 
     <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
@@ -1816,11 +1483,6 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
          The sandbox platform is restricted to development or demo use cases and must NOT be used
          for productive scenarios.
     -->
-    <script type=\\"text/javascript\\">
-        window['sap-ui-config'] = {
-            oninit: \\"module:open/ux/preview/client/flp/init\\"
-        };
-    </script>
 
     <script type=\\"text/javascript\\">
         window[\\"data-open-ux-preview-basePath\\"] = \\"..\\";
@@ -1828,7 +1490,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
 
     <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"' is a NON-SECURE setting for test environments -->
     <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap/ushell/bootstrap/cdm.js\\"
+        src=\\"../resources/sap-ui-core.js\\"
         data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.ushell,sap.f,sap.ui.comp,sap.ui.generic.app,sap.suite.ui.generic.template\\"
         data-sap-ui-async=\\"true\\"
         data-sap-ui-preload=\\"async\\"
@@ -1840,6 +1502,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
         data-sap-ui-resourceroots='{\\"open.ux.preview.client\\":\\"../preview/client\\",\\"test.fe.v2.app\\":\\"..\\",\\"test.fe.v2.other\\":\\"/yet/another/app\\"}'
         data-sap-ui-frameOptions=\\"allow\\"
         data-sap-ui-xx-componentPreload=\\"off\\"
+        data-sap-ui-oninit=\\"module:open/ux/preview/client/flp/init\\"
         data-open-ux-preview-enhanced-homepage='true'>
     </script>
 
@@ -1847,10 +1510,7 @@ exports[`FlpSandbox router enhanced homepage enabled test/flp.html sap-ui-xx-vie
 </head>
 
 <!-- UI Content -->
-<body class=\\"sapUiBody\\">
-    <div id=\\"canvas\\">
-        <div class=\\"sapMShellBG sapUiGlobalBackgroundImage\\"></div>
-    </div>
+<body class=\\"sapUiBody\\" id=\\"content\\">
 </body>
 
 </html>"

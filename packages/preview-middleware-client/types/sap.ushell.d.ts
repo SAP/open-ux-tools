@@ -8,6 +8,7 @@ declare namespace sap.ushell {
         static createRenderer(async: true): Promise<ComponentContainer>;
         static createRenderer(renderer?: string, async?: true): Promise<ComponentContainer>;
         static createRendererInternal(renderer?: string, async: true): Promise<ComponentContainer>;
+        static init(platform: string): Promise<void>;
     }
 }
 
@@ -28,4 +29,10 @@ declare module 'sap/ushell/services/AppState' {
     }
 
     export default AppState;
+}
+
+declare module 'sap/ushell/bootstrap/cdm/cdm.constants' {
+    export const defaultConfig: {
+        [key: string]: unknown;
+    };
 }

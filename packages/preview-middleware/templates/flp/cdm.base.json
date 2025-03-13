@@ -11,6 +11,12 @@
             }
         }
     },
+    "site": {
+        "payload": {
+            "groupsOrder": []
+        }
+    },
+    "groups": {},
     "visualizations": {},
     "applications": {},
     "pages": {

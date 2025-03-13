@@ -79,6 +79,7 @@ Object {
       },
     },
   },
+  "groups": Object {},
   "pages": Object {
     "SAP_BASIS_PG_UI_MYHOME": Object {
       "identification": Object {
@@ -114,6 +115,11 @@ Object {
           },
         },
       },
+    },
+  },
+  "site": Object {
+    "payload": Object {
+      "groupsOrder": Array [],
     },
   },
   "visualizations": Object {
@@ -180,6 +186,7 @@ Object {
       },
     },
   },
+  "groups": Object {},
   "pages": Object {
     "SAP_BASIS_PG_UI_MYHOME": Object {
       "identification": Object {
@@ -203,6 +210,11 @@ Object {
           },
         },
       },
+    },
+  },
+  "site": Object {
+    "payload": Object {
+      "groupsOrder": Array [],
     },
   },
   "visualizations": Object {},
