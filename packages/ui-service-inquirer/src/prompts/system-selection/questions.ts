@@ -1,7 +1,7 @@
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
 import { getSystemSelectionQuestions, promptNames } from '@sap-ux/odata-service-inquirer';
-import type { ListQuestion } from 'inquirer';
+import type { ListChoiceOptions, ListQuestion } from 'inquirer';
 import type { Question } from 'yeoman-generator';
 import { t } from '../../i18n';
 import { ObjectType, type UiServiceAnswers } from '../../types';
@@ -31,11 +31,12 @@ export async function getSystemQuestions(
     );
     const objectQuestions = [
         {
-            when: (answers: any) => {
+            when: (answers: any): boolean => {
                 if (answers[promptNames.systemSelection] && systemQuestions.answers.connectedSystem?.serviceProvider) {
                     PromptState.systemSelection.connectedSystem = systemQuestions.answers.connectedSystem;
                     return true;
                 }
+                return false;
             },
             type: 'list',
             name: 'objectType',
@@ -44,7 +45,7 @@ export async function getSystemQuestions(
             },
             default: previousAnswers?.objectType ?? '',
             message: t('prompts.objectTypeLabel'),
-            choices: () => [
+            choices: (): ListChoiceOptions[] => [
                 { name: t('prompts.businessObjectInterfaceLabel'), value: ObjectType.BUSINESS_OBJECT },
                 { name: t('prompts.abapCdsServiceLabel'), value: ObjectType.CDS_VIEW }
             ]
@@ -59,13 +60,14 @@ export async function getSystemQuestions(
             },
             default: previousAnswers?.businessObjectInterface ?? '',
             message: t('prompts.businessObjectInterfaceLabel'),
-            choices: async () => {
+            choices: async (): Promise<ListChoiceOptions[]> => {
                 try {
                     return await getBusinessObjects(
                         PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                     );
                 } catch (error) {
                     logger.error(t('error.fetchingBusinessObjects' + error.message));
+                    return [];
                 }
             },
             validate: async (val: any) => {
@@ -79,6 +81,7 @@ export async function getSystemQuestions(
                     }
                     return PromptState.systemSelection.objectGenerator ? true : t('error.noGeneratorFoundBo');
                 }
+                return false;
             }
         } as ListQuestion,
         {
@@ -91,13 +94,14 @@ export async function getSystemQuestions(
             },
             default: previousAnswers?.abapCDSView ?? '',
             message: t('prompts.abapCdsServiceLabel'),
-            choices: async () => {
+            choices: async (): Promise<ListChoiceOptions[]> => {
                 try {
                     return await getAbapCDSViews(
                         PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                     );
                 } catch (error) {
                     logger.error(t('error.fetchingCdsViews', { error: error.message }));
+                    return [];
                 }
             },
             validate: async (val: any) => {
@@ -111,6 +115,7 @@ export async function getSystemQuestions(
                     }
                     return PromptState.systemSelection.objectGenerator ? true : t('error.noGeneratorFoundCdsService');
                 }
+                return false;
             }
         } as ListQuestion
     ];

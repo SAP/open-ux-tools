@@ -1,4 +1,5 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 import {
     type AbapDeployConfigQuestion,
     getPackagePrompts,
@@ -61,7 +62,7 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
             when: async (answers: UiServiceAnswers): Promise<boolean> => {
                 if (!!answers.packageManual || !!answers.packageAutocomplete) {
                     try {
-                        const packageValue = (answers.packageManual || answers.packageAutocomplete) ?? '';
+                        const packageValue = answers.packageManual ?? answers.packageAutocomplete ?? '';
                         PromptState.serviceConfig.content =
                             (await PromptState.systemSelection.objectGenerator?.getContent(packageValue)) ?? '';
                         const content = JSON.parse(PromptState.serviceConfig?.content);
@@ -135,13 +136,15 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
             guiOptions: {
                 breadcrumb: t('prompts.launchAppGenBreadcrumb')
             },
-            additionalMessages: (val: boolean) => {
+            additionalMessages: (val: boolean): IMessageSeverity | undefined => {
+                let additionalMessage;
                 if (val) {
-                    return {
+                    additionalMessage = {
                         message: t('info.appGenLaunch'),
                         severity: Severity.information
                     };
                 }
+                return additionalMessage;
             },
             default: false
         } as ConfirmQuestion<UiServiceAnswers>

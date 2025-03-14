@@ -165,7 +165,7 @@ export default class extends Generator {
         // UI Service Generation
         this.appWizard.showWarning(t('info.generatingUiService'), MessageType.prompt);
         const transportReqNumber =
-            (this.answers.transportFromList || this.answers.transportManual || this.answers.transportCreated) ?? '';
+            this.answers.transportFromList ?? this.answers.transportManual ?? this.answers.transportCreated ?? '';
         TelemetryHelper.createTelemetryData({
             ...getTelemetryData(this.answers, this.options.data)
         });
