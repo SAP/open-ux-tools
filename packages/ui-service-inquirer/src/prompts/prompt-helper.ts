@@ -82,6 +82,6 @@ export async function getValidationErrorLink(): Promise<ValidationLink> {
     return ErrorHandler.getHelpLink(
         HELP_NODES.UI_SERVICE_GENERATOR,
         ERROR_TYPE.INTERNAL_SERVER_ERROR,
-        t('ERROR_VALIDATING_CONTENT')
+        t('error.validatingContent')
     );
 }

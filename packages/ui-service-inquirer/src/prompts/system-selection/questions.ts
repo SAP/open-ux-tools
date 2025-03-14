@@ -43,10 +43,10 @@ export async function getSystemQuestions(
                 breadcrumb: true
             },
             default: previousAnswers?.objectType ?? '',
-            message: t('MESSAGE_OBJECT_TYPE'),
+            message: t('prompts.objectTypeLabel'),
             choices: () => [
-                { name: t('MESSAGE_BUSINESS_OBJECT_INTERFACE'), value: ObjectType.BUSINESS_OBJECT },
-                { name: t('MESSAGE_ABAP_CDS_SERVICE'), value: ObjectType.CDS_VIEW }
+                { name: t('prompts.businessObjectInterfaceLabel'), value: ObjectType.BUSINESS_OBJECT },
+                { name: t('prompts.abapCdsServiceLabel'), value: ObjectType.CDS_VIEW }
             ]
         },
         {
@@ -58,14 +58,14 @@ export async function getSystemQuestions(
                 applyDefaultWhenDirty: true
             },
             default: previousAnswers?.businessObjectInterface ?? '',
-            message: t('MESSAGE_BUSINESS_OBJECT_INTERFACE'),
+            message: t('prompts.businessObjectInterfaceLabel'),
             choices: async () => {
                 try {
                     return await getBusinessObjects(
                         PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                     );
                 } catch (error) {
-                    logger.error(t('ERROR_FETCHING_BUSINESS_OBJECTS' + error.message));
+                    logger.error(t('error.fetchingBusinessObjects' + error.message));
                 }
             },
             validate: async (val: any) => {
@@ -75,9 +75,9 @@ export async function getSystemQuestions(
                             PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                         ).getUiServiceGenerator(val);
                     } catch (error) {
-                        logger.error(t('ERROR_FETCHING_GENERATOR', { error: error.message }));
+                        logger.error(t('error.fetchingGenerator', { error: error.message }));
                     }
-                    return PromptState.systemSelection.objectGenerator ? true : t('NO_GENERATOR_FOUND_BO');
+                    return PromptState.systemSelection.objectGenerator ? true : t('error.noGeneratorFoundBo');
                 }
             }
         } as ListQuestion,
@@ -90,14 +90,14 @@ export async function getSystemQuestions(
                 applyDefaultWhenDirty: true
             },
             default: previousAnswers?.abapCDSView ?? '',
-            message: t('MESSAGE_ABAP_CDS_SERVICE'),
+            message: t('prompts.abapCdsServiceLabel'),
             choices: async () => {
                 try {
                     return await getAbapCDSViews(
                         PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                     );
                 } catch (error) {
-                    logger.error(t('ERROR_FETCHING_CDS_VIEWS', { error: error.message }));
+                    logger.error(t('error.fetchingCdsViews', { error: error.message }));
                 }
             },
             validate: async (val: any) => {
@@ -107,9 +107,9 @@ export async function getSystemQuestions(
                             PromptState.systemSelection.connectedSystem?.serviceProvider as AbapServiceProvider
                         ).getUiServiceGenerator(val);
                     } catch (error) {
-                        logger.error(t('ERROR_FETCHING_GENERATOR', { error: error.message }));
+                        logger.error(t('error.fetchingGenerator', { error: error.message }));
                     }
-                    return PromptState.systemSelection.objectGenerator ? true : t('NO_GENERATOR_FOUND_CDS_SERVICE');
+                    return PromptState.systemSelection.objectGenerator ? true : t('error.noGeneratorFoundCdsService');
                 }
             }
         } as ListQuestion

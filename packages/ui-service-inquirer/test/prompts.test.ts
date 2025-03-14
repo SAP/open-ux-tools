@@ -148,8 +148,8 @@ describe('getSystemQuestions', () => {
 
         expect(q.objectType.when!({ systemSelection: 'system1' })).toEqual(true);
         expect(q.objectType.choices!()).toEqual([
-            { name: 'MESSAGE_BUSINESS_OBJECT_INTERFACE', value: ObjectType.BUSINESS_OBJECT },
-            { name: 'MESSAGE_ABAP_CDS_SERVICE', value: ObjectType.CDS_VIEW }
+            { name: 'prompts.businessObjectInterfaceLabel', value: ObjectType.BUSINESS_OBJECT },
+            { name: 'prompts.abapCdsServiceLabel', value: ObjectType.CDS_VIEW }
         ]);
 
         const businessObjectMock = {
@@ -167,12 +167,12 @@ describe('getSystemQuestions', () => {
         expect(await q.businessObjectInterface.when!({ objectType: ObjectType.CDS_VIEW })).toEqual(false);
         expect(await q.businessObjectInterface.choices!()).toEqual([businessObjectMockResp]);
         expect(await q.businessObjectInterface.validate!(businessObjectMock, answersMock)).toEqual(
-            'NO_GENERATOR_FOUND_BO'
+            'error.noGeneratorFoundBo'
         );
 
         expect(await q.abapCDSView.when!({ objectType: ObjectType.CDS_VIEW })).toEqual(true);
         expect(await q.abapCDSView.choices!()).toEqual([abapCDSViewsMockResp]);
-        expect(await q.abapCDSView.validate!(abapCDSViewMock, answersMock)).toEqual('NO_GENERATOR_FOUND_CDS_SERVICE');
+        expect(await q.abapCDSView.validate!(abapCDSViewMock, answersMock)).toEqual('error.noGeneratorFoundCdsService');
 
         mockIsAppStudio.mockReturnValue(false);
         questions = (await getSystemSelectionPrompts()).prompts;
@@ -231,7 +231,7 @@ describe('getSystemQuestions', () => {
         expect(await q.draftEnabled.validate!(false)).toEqual(true);
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(false)).toBeUndefined();
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(true)).toEqual({
-            message: 'INFO_APP_GEN_LAUNCH',
+            message: 'info.appGenLaunch',
             severity: 2
         });
 
@@ -265,7 +265,7 @@ describe('getSystemQuestions', () => {
         expect(await q.serviceName.when!({ packageAutocomplete: 'package' })).toEqual(true);
         expect(await q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
-        expect(await q.draftEnabled.validate!(false)).toEqual('ERROR_VALIDATING_CONTENT');
+        expect(await q.draftEnabled.validate!(false)).toEqual('error.validatingContent');
 
         const genMockValidateContent2 = {
             getContent: getContentMock,

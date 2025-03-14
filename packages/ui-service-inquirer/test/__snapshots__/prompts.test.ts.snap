@@ -99,9 +99,9 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "choices": [Function],
     "default": [Function],
     "guiOptions": {
-      "breadcrumb": "PROMPT_SERVICE_NAME_BREADCRUMB",
+      "breadcrumb": "prompts.serviceNameBreadcrumb",
     },
-    "message": "PROMPT_SERVICE_NAME",
+    "message": "prompts.serviceName",
     "name": "serviceName",
     "type": "expand",
     "validate": [Function],
@@ -113,7 +113,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
       "breadcrumb": true,
       "mandatory": true,
     },
-    "message": "PROMPT_DRAFT_ENABLED",
+    "message": "prompts.draftEnabled",
     "name": "draftEnabled",
     "type": "confirm",
     "validate": [Function],
@@ -122,9 +122,9 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "additionalMessages": [Function],
     "default": false,
     "guiOptions": {
-      "breadcrumb": "PROMPT_LAUNCH_APP_GEN_BREADCRUMB",
+      "breadcrumb": "prompts.launchAppGenBreadcrumb",
     },
-    "message": "PROMPT_LAUNCH_APP_GEN",
+    "message": "prompts.launchAppGen",
     "name": "launchAppGen",
     "type": "confirm",
   },
@@ -155,7 +155,7 @@ ValidationLink {
     "text": "guidedAnswers.validationErrorHelpText",
     "url": "https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/63068",
   },
-  "message": "ERROR_VALIDATING_CONTENT",
+  "message": "error.validatingContent",
 }
 `;
 
@@ -166,7 +166,7 @@ ValidationLink {
     "text": "guidedAnswers.validationErrorHelpText",
     "url": "https://ga.support.sap.com/dtp/viewer/index.html#/tree/3046/actions/63068",
   },
-  "message": "ERROR_VALIDATING_CONTENT",
+  "message": "error.validatingContent",
 }
 `;
 
@@ -197,7 +197,7 @@ exports[`getSystemQuestions getSystemQuestions 1`] = `
     "guiOptions": {
       "breadcrumb": true,
     },
-    "message": "MESSAGE_OBJECT_TYPE",
+    "message": "prompts.objectTypeLabel",
     "name": "objectType",
     "type": "list",
     "when": [Function],
@@ -209,7 +209,7 @@ exports[`getSystemQuestions getSystemQuestions 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
     },
-    "message": "MESSAGE_BUSINESS_OBJECT_INTERFACE",
+    "message": "prompts.businessObjectInterfaceLabel",
     "name": "businessObjectInterface",
     "type": "list",
     "validate": [Function],
@@ -222,7 +222,7 @@ exports[`getSystemQuestions getSystemQuestions 1`] = `
       "applyDefaultWhenDirty": true,
       "breadcrumb": true,
     },
-    "message": "MESSAGE_ABAP_CDS_SERVICE",
+    "message": "prompts.abapCdsServiceLabel",
     "name": "abapCDSView",
     "type": "list",
     "validate": [Function],

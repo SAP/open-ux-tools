@@ -129,7 +129,7 @@ export default class extends Generator {
                     Name: this.options.data.systemName
                 } as Destination;
             } catch (error) {
-                UiServiceGenLogger.logger.error(t('ERROR_FETCHING_GENERATOR', { error: error.message }));
+                UiServiceGenLogger.logger.error(t('error.fetchingGenerator', { error: error.message }));
             }
         }
     }
@@ -163,7 +163,7 @@ export default class extends Generator {
 
     async end(): Promise<void> {
         // UI Service Generation
-        this.appWizard.showWarning(t('GENERATING_UI_SERVICE_WARNING'), MessageType.prompt);
+        this.appWizard.showWarning(t('info.generatingUiService'), MessageType.prompt);
         const transportReqNumber =
             (this.answers.transportFromList || this.answers.transportManual || this.answers.transportCreated) ?? '';
         TelemetryHelper.createTelemetryData({
@@ -178,7 +178,7 @@ export default class extends Generator {
         ).then(async (res) => {
             if (res) {
                 sendTelemetry(SERVICE_GENERATION_SUCCESS, TelemetryHelper.telemetryData).catch((error) => {
-                    UiServiceGenLogger.logger.error(t('ERROR_SENDING_TELEMETRY', { error: error.message }));
+                    UiServiceGenLogger.logger.error(t('error.sendingTelemetry', { error: error.message }));
                 });
 
                 // check if data passed from BAS service center to write BAS .service.metadata file
@@ -192,7 +192,7 @@ export default class extends Generator {
                     );
                 } else {
                     this.appWizard.showInformation(
-                        t('INFO_GENERATION_SUCCESSFUL', { serviceName: this.serviceConfigAnswers.serviceName }),
+                        t('info.generationSuccessful', { serviceName: this.serviceConfigAnswers.serviceName }),
                         MessageType.notification
                     );
                     UiServiceGenLogger.logger.info(

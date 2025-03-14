@@ -70,7 +70,7 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
                         PromptState.serviceConfig.serviceName =
                             content.businessService.serviceBinding.serviceBindingName;
                     } catch (e) {
-                        logger?.error(`${t('ERROR_FETCHING_CONTENT_FOR_SERVICE_BINDING')}: ${e.message}`);
+                        logger?.error(`${t('error.fetchingContentForServiceBinding')}: ${e.message}`);
                     }
                 }
                 return !!PromptState.serviceConfig.serviceName || !!PromptState.serviceConfig.content;
@@ -78,9 +78,9 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
             type: 'expand',
             name: 'serviceName',
             guiOptions: {
-                breadcrumb: t('PROMPT_SERVICE_NAME_BREADCRUMB')
+                breadcrumb: t('prompts.serviceNameBreadcrumb')
             },
-            message: t('PROMPT_SERVICE_NAME'),
+            message: t('prompts.serviceName'),
             choices: () => getServiceNameChoices(PromptState.serviceConfig.serviceName),
             default: () => 0,
             validate: async () => {
@@ -93,7 +93,7 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
                     }
                     return true;
                 } catch (e) {
-                    logger.error(`${t('ERROR_VALIDATING_CONTENT')}: ${e.message}`);
+                    logger.error(`${t('error.validatingContent')}: ${e.message}`);
                     return await getValidationErrorLink();
                 }
             }
@@ -101,7 +101,7 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
         {
             name: 'draftEnabled',
             type: 'confirm',
-            message: t('PROMPT_DRAFT_ENABLED'),
+            message: t('prompts.draftEnabled'),
             guiOptions: {
                 breadcrumb: true,
                 mandatory: true
@@ -117,7 +117,7 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
                             PromptState.serviceConfig.content
                         );
                         if (validation?.severity === 'ERROR') {
-                            return t('ERROR_VALIDATING_CONTENT');
+                            return t('error.validatingContent');
                         }
                         draftEnabled = input;
                     } catch (error) {
@@ -131,14 +131,14 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
         {
             name: 'launchAppGen',
             type: 'confirm',
-            message: t('PROMPT_LAUNCH_APP_GEN'),
+            message: t('prompts.launchAppGen'),
             guiOptions: {
-                breadcrumb: t('PROMPT_LAUNCH_APP_GEN_BREADCRUMB')
+                breadcrumb: t('prompts.launchAppGenBreadcrumb')
             },
             additionalMessages: (val: boolean) => {
                 if (val) {
                     return {
-                        message: t('INFO_APP_GEN_LAUNCH'),
+                        message: t('info.appGenLaunch'),
                         severity: Severity.information
                     };
                 }

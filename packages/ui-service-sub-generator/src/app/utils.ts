@@ -32,7 +32,7 @@ export async function generateService(
     appWizard: AppWizard
 ): Promise<unknown> {
     return await objectGeneator.generate(content, transportReqNumber).catch((error: any) => {
-        appWizard.showError(`${t('ERROR_GENERATING_SERVICE')}`, MessageType.notification);
+        appWizard.showError(`${t('error.generatingService')}`, MessageType.notification);
         UiServiceGenLogger.logger.error(`Error generating service: ${error.message}`);
         UiServiceGenLogger.logger.error(`${error.code} ${error.response?.status} ${error.response?.data}`);
 
@@ -81,19 +81,19 @@ export async function writeBASMetadata(
         // path was already validated in calling function
         fs.writeJSON(join(inputData.path!, '.service.metadata'), serviceMetadataContent);
         appWizard.showInformation(
-            t('INFO_GENERATION_SUCCESSFUL_WRITE_FILE', { serviceName: serviceConfig.serviceName }),
+            t('info.generationSuccessfulWriteFile', { serviceName: serviceConfig.serviceName }),
             MessageType.notification
         );
         UiServiceGenLogger.logger.info(
-            t('INFO_GENERATION_SUCCESSFUL_WRITE_FILE', { serviceName: serviceConfig.serviceName })
+            t('info.generationSuccessfulWriteFile', { serviceName: serviceConfig.serviceName })
         );
     } else {
         appWizard.showInformation(
-            t('INFO_GENERATION_SUCCESSFUL_METADATA_FAIL', { serviceName: serviceConfig.serviceName }),
+            t('info.generationSuccessfulMetadataFail', { serviceName: serviceConfig.serviceName }),
             MessageType.notification
         );
         UiServiceGenLogger.logger.info(
-            t('INFO_GENERATION_SUCCESSFUL_METADATA_FAIL', { serviceName: serviceConfig.serviceName })
+            t('info.generationSuccessfulMetadataFail', { serviceName: serviceConfig.serviceName })
         );
     }
 }
@@ -263,7 +263,7 @@ export async function validateConnection(
         });
         return;
     } catch (e) {
-        UiServiceGenLogger.logger.error(t('ERROR_CONNECTION_FAILED', { system: systemName }));
+        UiServiceGenLogger.logger.error(t('error.connectionFailed', { system: systemName }));
         return;
     }
 }
@@ -301,12 +301,12 @@ export function setToolbarMessage(
 ): void {
     if (data?.systemName && !systemSelectionAnswers.connectedSystem?.serviceProvider) {
         // Could not authenticate with the system provided in the input data
-        appWizard.showError(t('ERROR_AUTHENTICATION'), MessageType.prompt);
+        appWizard.showError(t('error.authentication'), MessageType.prompt);
     } else if (data?.systemName && !systemSelectionAnswers.objectGenerator) {
         // Could not fetch the generator for the business object provided in the input data
-        appWizard.showError(t('NO_GENERATOR_FOUND_BO'), MessageType.prompt);
+        appWizard.showError(t('error.noGeneratorFoundBo'), MessageType.prompt);
     } else {
-        appWizard.showWarning(t('INFO_GENERATION_WARNING'), MessageType.prompt);
+        appWizard.showWarning(t('info.generationWarning'), MessageType.prompt);
     }
 }
 

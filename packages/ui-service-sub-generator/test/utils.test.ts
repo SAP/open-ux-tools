@@ -6,7 +6,6 @@ import { create as createEditor } from 'mem-fs-editor';
 import { join } from 'path';
 import fs from 'fs';
 import type { Destination } from '@sap-ux/btp-utils';
-import type { BackendSystem } from '@sap-ux/store';
 
 const mockIsAppStudio = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -43,9 +42,7 @@ const providerMock = {
 } as any;
 
 describe('test helper functions', () => {
-    afterAll(() => {
-        //rimraf.sync(testOutputDir);
-    });
+    afterAll(() => {});
     test('test checkConnection', () => {
         const providerMock = {
             get: jest.fn()
@@ -63,37 +60,6 @@ describe('test helper functions', () => {
         expect(await checkConnection(providerMock)).toEqual(false);
         expect(providerMock.get).toBeCalled();
     });
-
-    // test('getBusinessObjects', async () => {
-    //     const testBusinessObjects = [{ name: 'I_BANKTP', description: 'Banking', type: 'Business Object' }];
-    //     const providerMock = {
-    //         get: jest.fn(),
-    //         getAdtService: jest.fn().mockResolvedValue({
-    //             getBusinessObjects: jest.fn().mockResolvedValue(testBusinessObjects)
-    //         })
-    //     } as any;
-    //     expect(await utils.getBusinessObjects(providerMock)).toEqual([
-    //         { name: 'I_BANKTP (Banking)', value: { description: 'Banking', name: 'I_BANKTP', type: 'Business Object' } }
-    //     ]);
-    // });
-
-    // test('getAbapCDSViews', async () => {
-    //     const testCDSViews = [
-    //         { name: 'C_GRANTORCLAIMITEMDEX', description: 'Abap CDS View', uri: 'test/uri/for/cds/view' }
-    //     ];
-    //     const providerMock = {
-    //         get: jest.fn(),
-    //         getAdtService: jest.fn().mockResolvedValue({
-    //             getAbapCDSViews: jest.fn().mockResolvedValue(testCDSViews)
-    //         })
-    //     } as any;
-    //     expect(await utils.getAbapCDSViews(providerMock)).toEqual([
-    //         {
-    //             name: 'C_GRANTORCLAIMITEMDEX (Abap CDS View)',
-    //             value: { description: 'Abap CDS View', name: 'C_GRANTORCLAIMITEMDEX', uri: 'test/uri/for/cds/view' }
-    //         }
-    //     ]);
-    // });
 
     describe('generate functions', () => {
         test('generateService', async () => {
@@ -220,7 +186,6 @@ describe('test helper functions', () => {
                 get: jest.fn().mockResolvedValue({ data: metadata }),
                 getAdtService: jest.fn()
             } as any;
-            //utils.PromptState.provider = providerMock;
 
             await expect(
                 utils.generateService(generatorMock, state.content, 'tr12345', appWizardMock as AppWizard)
@@ -243,9 +208,6 @@ describe('test helper functions', () => {
                     }
                 }
             });
-            // const system1 = {};
-            // await utils.validateConnection('testSystem', system1);
-            // expect(system).toEqual({});
         });
     });
 
@@ -285,7 +247,6 @@ describe('test helper functions', () => {
             get: jest.fn().mockResolvedValue({ data: metadata }),
             getAdtService: jest.fn()
         } as any;
-        //utils.PromptState.provider = providerMock;
 
         const inputData = {
             systemName: 'testSystem',
@@ -305,10 +266,9 @@ describe('test helper functions', () => {
             get: jest.fn().mockRejectedValue('error'),
             getAdtService: jest.fn()
         } as any;
-        //utils.PromptState.provider = providerMockError;
         await utils.writeBASMetadata(serviceConfig, memFs, appWizardMock, inputData, providerMockError);
         expect(appWizardMock.showInformation).toHaveBeenLastCalledWith(
-            'UI Service ZUI_BANKTP132_O4 has been created successfully but could not be added to your project',
+            'UI Service ZUI_BANKTP132_O4 has been created successfully, but could not be added to your project',
             1
         );
     });
@@ -326,11 +286,6 @@ describe('test helper functions', () => {
                 serviceProvider: providerMock
             }
         });
-        // const vsCodeMock = {
-        //     commands: {
-        //         executeCommand: jest.fn()
-        //     }
-        // };
         const options = {
             vscode: {
                 commands: {
@@ -383,11 +338,6 @@ describe('test helper functions', () => {
                 serviceProvider: providerMock
             }
         });
-        // const vsCodeMock = {
-        //     commands: {
-        //         executeCommand: jest.fn()
-        //     }
-        // };
         const content = `{"businessService": {
             "serviceDefinition": {
                 "serviceDefinitionName": "ZUI_BANKTP134_O4",
@@ -486,25 +436,5 @@ describe('test helper functions', () => {
         expect(systemData).toEqual({
             destination: 'testSystem'
         });
-
-        // const systemData1 = getAppGenSystemData({
-        //     systemName: 'testSystem'
-        // });
-        // expect(systemData1).toEqual({
-        //     destination: 'testSystem'
-        // });
     });
-
-    // test('createAbapTarget', () => {
-    //     const destination = { Name: 'testSystem' } as Destination;
-    //     const abapTarget = utils.createAbapTarget(destination);
-    //     expect(abapTarget).toEqual({ destination: 'testSystem' });
-
-    //     const backendSystem = {
-    //         url: 'http://testsystem:44300',
-    //         client: '001'
-    //     } as BackendSystem;
-    //     const abapTarget1 = utils.createAbapTarget(undefined, backendSystem);
-    //     expect(abapTarget1).toEqual({ url: 'http://testsystem:44300', client: '001' });
-    // });
 });
