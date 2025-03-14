@@ -1,4 +1,5 @@
 ---
+'@sap-ux-private/preview-middleware': patch
 '@sap-ux-private/preview-middleware-client': patch
 ---
 
