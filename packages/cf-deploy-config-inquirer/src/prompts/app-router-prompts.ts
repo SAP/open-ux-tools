@@ -99,8 +99,8 @@ function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
         default: () => RouterModuleType.Managed, // Should always be the preferred choice
         message: t('prompts.routerTypeMessage'),
         choices: [
-            { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard },
-            { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed }
+            { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
+            { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard }
         ]
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
 }
