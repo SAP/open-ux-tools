@@ -114,9 +114,9 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * @returns Calculated sizes and position for all sections
      */
     updateStateSizes(
-        layoutSize: number,
+        newSize: number,
         sizes: Array<number | UISectionSize | undefined>,
-        oldSize = layoutSize
+        oldSize = newSize
     ): UISectionSize[] {
         let uiSizes: UISectionSize[] = sizes as UISectionSize[];
         const dynamicSectionIndex = this.getDynamicSectionIndex();
@@ -130,7 +130,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 availableSize += (typeof section === 'object' ? section.size : section) ?? 0;
             }
         });
-        availableSize = layoutSize - availableSize;
+        availableSize = newSize - availableSize;
         // Check if number array is passed as sizes. Convert array of number to array of UISectionSize
         if (typeof sizes[0] !== 'object') {
             uiSizes = [];
