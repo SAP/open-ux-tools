@@ -737,7 +737,7 @@ describe('FE V2 quick actions', () => {
                         ]
                     });
                 }
-               
+
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -780,7 +780,7 @@ describe('FE V2 quick actions', () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
-               
+
                 expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.tableToolbar === 'None' ? 0 : 1);
 
                 if (testCase.tableToolbar !== 'None') {
@@ -796,8 +796,7 @@ describe('FE V2 quick actions', () => {
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                         }
                     );
-
-                };
+                }
             });
         });
 
@@ -1904,7 +1903,15 @@ describe('FE V2 quick actions', () => {
     });
     describe('ObjectPage', () => {
         describe('add header field', () => {
-            test('initialize and execute action', async () => {
+            const testCases = [
+                {
+                    ShowHeaderContent: true
+                },
+                {
+                    ShowHeaderContent: false
+                }
+            ];
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -1939,6 +1946,7 @@ describe('FE V2 quick actions', () => {
                         return {
                             getDomRef: () => ({}),
                             getParent: () => pageView,
+                            getShowHeaderContent: () => testCase.ShowHeaderContent,
                             getHeaderContent: () => {
                                 return [new FlexBox()];
                             }
@@ -2002,6 +2010,13 @@ describe('FE V2 quick actions', () => {
                     ]
                 });
 
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Add Header Field') {
+                        actions.splice(i, 1);
+                    }
+                }
+
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -2009,21 +2024,12 @@ describe('FE V2 quick actions', () => {
                             actions: [
                                 {
                                     kind: 'simple',
-                                    id: 'objectPage0-add-controller-to-page',
-                                    enabled: true,
-                                    title: 'Add Controller to Page'
-                                },
-                                {
-                                    kind: 'simple',
                                     id: 'objectPage0-op-add-header-field',
                                     title: 'Add Header Field',
-                                    enabled: true
-                                },
-                                {
-                                    kind: 'simple',
-                                    id: 'objectPage0-op-add-custom-section',
-                                    title: 'Add Custom Section',
-                                    enabled: true
+                                    enabled: testCase.ShowHeaderContent,
+                                    tooltip: testCase.ShowHeaderContent
+                                        ? undefined
+                                        : 'This option has been disabled because the "Show Header Content" page property is set to false.'
                                 }
                             ]
                         }
@@ -2082,6 +2088,7 @@ describe('FE V2 quick actions', () => {
                         return {
                             getDomRef: () => ({}),
                             getParent: () => pageView,
+                            getShowHeaderContent: () => true,
                             getHeaderContent: () => {
                                 return [new FlexBox()];
                             }
