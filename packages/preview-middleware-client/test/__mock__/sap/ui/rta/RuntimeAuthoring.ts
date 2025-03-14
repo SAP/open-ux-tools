@@ -31,7 +31,8 @@ class RuntimeAuthoringMock {
     public redo = jest.fn();
     public save = jest.fn();
     public getRootControlInstance = jest.fn().mockReturnValue({
-        getManifest: jest.fn().mockReturnValue({})
+        getManifest: jest.fn().mockReturnValue({}),
+        getModel: jest.fn()
     });
     public _serializeToLrep = jest.fn();
 }

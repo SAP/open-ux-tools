@@ -256,7 +256,7 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
         let recalculateSizes = false;
         const sizesInfo: Array<SizeCalculationInfo> = [];
         for (let i = 0; i < this.props.children.length; i++) {
-            const size = sizes[i].size ?? 0;
+            const size = sizes[i]?.size ?? 0;
             const minSize = this.getMinSectionSize(i);
             if (minSize > size) {
                 recalculateSizes = true;
