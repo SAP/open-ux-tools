@@ -59,6 +59,10 @@ export interface FlpConfig {
      * Optional: allows to specify a custom init script executed in addition to the default one
      */
     init?: string;
+    /**
+     * Optional: if set to true then the new FLP homepage will be enabled
+     */
+    enhancedHomePage?: boolean;
 }
 
 interface OptionalTestConfig {
@@ -127,4 +131,115 @@ export type DefaultFlpPath = '/test/flp.html';
 export type DefaultIntent = {
     object: 'app';
     action: 'preview';
+};
+
+type FLPAppsCatalog = {
+    identification: {
+        id: string;
+        title: string;
+    };
+    payload: {
+        viz: string[];
+    };
+};
+
+type FLPAppVisualization = {
+    vizType: string;
+    businessApp: string;
+    vizConfig: {
+        'sap.app': {
+            title: string;
+            subTitle: string;
+        };
+        'sap.flp': {
+            target: {
+                appId: string;
+                inboundId: string;
+                parameters: {
+                    name: string;
+                    value: string;
+                }[];
+            };
+        };
+    };
+};
+
+type FLPApp = {
+    'sap.app': {
+        id: string;
+        title: string;
+        crossNavigation: {
+            inbounds: {
+                [key: string]: {
+                    semanticObject: string;
+                    action: string;
+                    title: string;
+                    subTitle: string;
+                    signature: {
+                        additionalParameters: string;
+                    };
+                };
+            };
+        };
+    };
+    'sap.ui5': {
+        componentName: string;
+    };
+    'sap.ui': {
+        technology: string;
+    };
+    'sap.platform.runtime': {
+        componentProperties: {
+            url: string;
+            asyncHints: Record<string, unknown>;
+        };
+    };
+};
+
+type FLPSectionVizConfig = {
+    id: string;
+    vizId: string;
+};
+
+type FLPSection = {
+    id: string;
+    title: string;
+    default: boolean;
+    layout: {
+        vizOrder: FLPSectionVizConfig['id'][];
+    };
+    viz: Record<FLPSectionVizConfig['id'], FLPSectionVizConfig>;
+};
+
+type FLPPage = {
+    identification: {
+        id: string;
+        title: string;
+    };
+    payload: {
+        layout: {
+            sectionOrder: FLPSection['id'][];
+        };
+        sections: Record<FLPSection['id'], FLPSection>;
+    };
+};
+
+/**
+ * FLP CDM configuration.
+ */
+export type FLPCdmConfig = {
+    _version: string;
+    catalogs: Record<FLPAppsCatalog['identification']['id'], FLPAppsCatalog>;
+    visualizations: Record<string, FLPAppVisualization>;
+    applications: Record<FLPApp['sap.app']['id'], FLPApp>;
+    pages: Record<FLPPage['identification']['id'], FLPPage>;
+};
+
+/**
+ * Default FLP homepage configuration.
+ */
+export const FLPHomePageDefaults = {
+    pageName: 'SAP_BASIS_PG_UI_MYHOME',
+    catalogId: 'homeCatalog',
+    sectionId: 'homeAppsSection'
 };

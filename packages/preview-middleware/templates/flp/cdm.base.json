@@ -1,0 +1,47 @@
+{
+    "_version": "3.1.0",
+    "catalogs": {
+        "homeCatalog": {
+            "identification": {
+                "id": "homeCatalog",
+                "title": "Homepage Apps"
+            },
+            "payload": {
+                "viz": []
+            }
+        }
+    },
+    "site": {
+        "payload": {
+            "groupsOrder": []
+        }
+    },
+    "groups": {},
+    "visualizations": {},
+    "applications": {},
+    "pages": {
+        "SAP_BASIS_PG_UI_MYHOME": {
+            "identification": {
+                "id": "SAP_BASIS_PG_UI_MYHOME"
+            },
+            "payload": {
+                "layout": {
+                    "sectionOrder": [
+                        "homeAppsSection"
+                    ]
+                },
+                "sections": {
+                    "homeAppsSection": {
+                        "id": "homeAppsSection",
+                        "title": "Recently Added Apps",
+                        "default": true,
+                        "layout": {
+                            "vizOrder": []
+                        },
+                        "viz": {}
+                    }
+                }
+            }
+        }
+    }
+}

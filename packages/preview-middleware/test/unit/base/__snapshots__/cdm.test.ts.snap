@@ -1,0 +1,224 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`cdm generate cdm with additional apps 1`] = `
+Object {
+  "_version": "3.1.0",
+  "applications": Object {
+    "my.app": Object {
+      "sap.app": Object {
+        "crossNavigation": Object {
+          "inbounds": Object {
+            "my-app": Object {
+              "action": "app",
+              "semanticObject": "my",
+              "signature": Object {
+                "additionalParameters": "allowed",
+              },
+              "subTitle": "My App Description",
+              "title": "My App",
+            },
+          },
+        },
+        "id": "my.app",
+        "title": "My App",
+      },
+      "sap.platform.runtime": Object {
+        "componentProperties": Object {
+          "asyncHints": Object {},
+          "url": "/my/app",
+        },
+      },
+      "sap.ui": Object {
+        "technology": "UI5",
+      },
+      "sap.ui5": Object {
+        "componentName": "my.app",
+      },
+    },
+    "my.app2": Object {
+      "sap.app": Object {
+        "crossNavigation": Object {
+          "inbounds": Object {
+            "my-app2": Object {
+              "action": "app2",
+              "semanticObject": "my",
+              "signature": Object {
+                "additionalParameters": "allowed",
+              },
+              "subTitle": "My App Description 2",
+              "title": "My App 2",
+            },
+          },
+        },
+        "id": "my.app2",
+        "title": "My App 2",
+      },
+      "sap.platform.runtime": Object {
+        "componentProperties": Object {
+          "asyncHints": Object {},
+          "url": "/my/app2",
+        },
+      },
+      "sap.ui": Object {
+        "technology": "UI5",
+      },
+      "sap.ui5": Object {
+        "componentName": "my.app2",
+      },
+    },
+  },
+  "catalogs": Object {
+    "homeCatalog": Object {
+      "identification": Object {
+        "id": "homeCatalog",
+        "title": "Homepage Apps",
+      },
+      "payload": Object {
+        "viz": Array [
+          "VIZ:my.app",
+          "VIZ:my.app2",
+        ],
+      },
+    },
+  },
+  "groups": Object {},
+  "pages": Object {
+    "SAP_BASIS_PG_UI_MYHOME": Object {
+      "identification": Object {
+        "id": "SAP_BASIS_PG_UI_MYHOME",
+      },
+      "payload": Object {
+        "layout": Object {
+          "sectionOrder": Array [
+            "homeAppsSection",
+          ],
+        },
+        "sections": Object {
+          "homeAppsSection": Object {
+            "default": true,
+            "id": "homeAppsSection",
+            "layout": Object {
+              "vizOrder": Array [
+                "my.app",
+                "my.app2",
+              ],
+            },
+            "title": "Recently Added Apps",
+            "viz": Object {
+              "my.app": Object {
+                "id": "my.app",
+                "vizId": "VIZ:my.app",
+              },
+              "my.app2": Object {
+                "id": "my.app2",
+                "vizId": "VIZ:my.app2",
+              },
+            },
+          },
+        },
+      },
+    },
+  },
+  "site": Object {
+    "payload": Object {
+      "groupsOrder": Array [],
+    },
+  },
+  "visualizations": Object {
+    "VIZ:my.app": Object {
+      "businessApp": "my.app",
+      "vizConfig": Object {
+        "sap.app": Object {
+          "subTitle": "My App Description",
+          "title": "My App",
+        },
+        "sap.flp": Object {
+          "target": Object {
+            "appId": "my.app",
+            "inboundId": "my-app",
+            "parameters": Array [
+              Object {
+                "name": "sap-ui-tech-hint",
+                "value": "UI5",
+              },
+            ],
+          },
+        },
+      },
+      "vizType": "sap.ushell.StaticAppLauncher",
+    },
+    "VIZ:my.app2": Object {
+      "businessApp": "my.app2",
+      "vizConfig": Object {
+        "sap.app": Object {
+          "subTitle": "My App Description 2",
+          "title": "My App 2",
+        },
+        "sap.flp": Object {
+          "target": Object {
+            "appId": "my.app2",
+            "inboundId": "my-app2",
+            "parameters": Array [
+              Object {
+                "name": "sap-ui-tech-hint",
+                "value": "UI5",
+              },
+            ],
+          },
+        },
+      },
+      "vizType": "sap.ushell.StaticAppLauncher",
+    },
+  },
+}
+`;
+
+exports[`cdm generate cdm without any apps 1`] = `
+Object {
+  "_version": "3.1.0",
+  "applications": Object {},
+  "catalogs": Object {
+    "homeCatalog": Object {
+      "identification": Object {
+        "id": "homeCatalog",
+        "title": "Homepage Apps",
+      },
+      "payload": Object {
+        "viz": Array [],
+      },
+    },
+  },
+  "groups": Object {},
+  "pages": Object {
+    "SAP_BASIS_PG_UI_MYHOME": Object {
+      "identification": Object {
+        "id": "SAP_BASIS_PG_UI_MYHOME",
+      },
+      "payload": Object {
+        "layout": Object {
+          "sectionOrder": Array [
+            "homeAppsSection",
+          ],
+        },
+        "sections": Object {
+          "homeAppsSection": Object {
+            "default": true,
+            "id": "homeAppsSection",
+            "layout": Object {
+              "vizOrder": Array [],
+            },
+            "title": "Recently Added Apps",
+            "viz": Object {},
+          },
+        },
+      },
+    },
+  },
+  "site": Object {
+    "payload": Object {
+      "groupsOrder": Array [],
+    },
+  },
+  "visualizations": Object {},
+}
+`;
