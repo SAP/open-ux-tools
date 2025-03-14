@@ -241,6 +241,7 @@ describe('flp/init', () => {
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRendererInternal).not.toBeCalled();
         });
 
         test('flex configured', async () => {
@@ -326,7 +327,18 @@ describe('flp/init', () => {
 
             await init({ customInit: customInit });
 
+            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toBeCalled();
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
+        });
+
+        test('custom init module configured & ui5 version is legacy-free', async () => {
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0-legacy-free' });
+
+            await init({});
+
+            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toBeCalled();
         });
 
         test('handle higher layer changes', async () => {

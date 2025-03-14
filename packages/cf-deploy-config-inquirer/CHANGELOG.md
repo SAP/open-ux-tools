@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.19
+
+### Patch Changes
+
+-   c3e7f11: remove mta id prompt for CAP flow
+
 ## 0.2.18
 
 ### Patch Changes
