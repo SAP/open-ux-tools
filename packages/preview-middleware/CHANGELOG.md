@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.18.18
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
+## 0.18.17
+
+### Patch Changes
+
+-   f659540: fix: disable "Add Header Field" Quick Action when `showHeaderContent` is set to `false` for `ObjectPageLayout`
+
 ## 0.18.16
 
 ### Patch Changes

@@ -1,5 +1,18 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.0.9
+
+### Patch Changes
+
+-   Updated dependencies [c3e7f11]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.28
+
+## 0.0.8
+
+### Patch Changes
+
+-   ffbcf28: support yui standalone
+
 ## 0.0.7
 
 ### Patch Changes
