@@ -1,4 +1,5 @@
 import type { Destination, Authentication } from '@sap-ux/btp-utils';
+import { HTML5RepoHost, ManagedAppFront, ManagedDestination, ManagedXSUAA } from '../constants';
 
 export type ResourceType =
     | 'xsuaa'
@@ -50,6 +51,7 @@ export interface CFBaseConfig extends MTABaseConfig {
 export interface CFAppConfig {
     appPath: string;
     addManagedAppRouter?: boolean; // Enabled by default
+    addAppFrontendRouter?: boolean;
     destinationName?: string;
     apiHubConfig?: ApiHubConfig;
     serviceHost?: string; // Data service host
@@ -106,3 +108,9 @@ export interface HTML5App {
     name: string;
     type: string;
 }
+
+export type SupportedResources =
+    | typeof ManagedAppFront
+    | typeof HTML5RepoHost
+    | typeof ManagedXSUAA
+    | typeof ManagedDestination;
