@@ -6,6 +6,7 @@ import { Mta, type mta } from '@sap/mta-lib';
 import { type Destination, isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import { YamlDocument } from '@sap-ux/yaml';
 import { getMtaPath } from '@sap-ux/project-access';
+import type { ManagedDestination } from '../constants';
 import {
     CloudFoundry,
     RouterModule,
@@ -26,8 +27,7 @@ import {
     HTMLAppBuildParams,
     HTML5RepoHost,
     UI5DestinationParameter,
-    ManagedAppFront,
-    ManagedDestination
+    ManagedAppFront
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';

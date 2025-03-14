@@ -1,5 +1,5 @@
 import type { Destination, Authentication } from '@sap-ux/btp-utils';
-import { HTML5RepoHost, ManagedAppFront, ManagedDestination, ManagedXSUAA } from '../constants';
+import type { HTML5RepoHost, ManagedAppFront, ManagedDestination, ManagedXSUAA } from '../constants';
 
 export type ResourceType =
     | 'xsuaa'
