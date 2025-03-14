@@ -100,10 +100,6 @@ export default class extends Generator {
             UiServiceGenLogger.logger.debug('Options passed into generator: ' + JSON.stringify(this.options.data));
             await this._initSteps();
         }
-        // if (this.options.data) {
-        //     UiServiceGenLogger.logger.info('Options passed into generator: ' + JSON.stringify(this.options.data));
-        //     //await this._initSteps();
-        // }
     }
 
     private async _initSteps(): Promise<void> {

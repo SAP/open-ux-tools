@@ -7,8 +7,44 @@ import type { ServiceConfig, SystemSelectionAnswers } from '../types';
  *
  */
 export class PromptState {
-    public static systemSelection: SystemSelectionAnswers = {};
-    public static serviceConfig: ServiceConfig;
+    private static _systemSelection: SystemSelectionAnswers = {};
+    private static _serviceConfig: ServiceConfig;
+
+    /**
+     * Returns the current state of the service config.
+     *
+     * @returns {ServiceConfig} service config
+     */
+    public static get systemSelection(): SystemSelectionAnswers {
+        return this._systemSelection;
+    }
+
+    /**
+     * Set the state of the system selection.
+     *
+     * @param {SystemSelectionAnswers} value - system selection value
+     */
+    public static set systemSelection(value: Partial<SystemSelectionAnswers>) {
+        this._systemSelection = value;
+    }
+
+    /**
+     * Returns the current state of the service config.
+     *
+     * @returns {ServiceConfig} service config
+     */
+    public static get serviceConfig(): ServiceConfig {
+        return this._serviceConfig;
+    }
+
+    /**
+     * Set the state of the service config.
+     *
+     * @param {ServiceConfig} value - service config value
+     */
+    public static set serviceConfig(value: ServiceConfig) {
+        this._serviceConfig = value;
+    }
 
     static reset(): void {
         PromptState.systemSelection = {};
