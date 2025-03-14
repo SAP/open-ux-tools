@@ -331,39 +331,32 @@ export class UI5Config {
             throw new Error('Could not find fiori-tools-proxy');
         }
         const comments = getBackendComments(backend);
-        let backendNode;
         const proxyMiddlewareYamlContent = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
         const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration;
-        // Add new entry to existing backend configurations in yaml
+        const configuration = this.document.getMap({
+            start: proxyMiddleware as YAMLMap,
+            path: 'configuration'
+        });
+        const backendNode = this.document.createNode({
+            value: backend,
+            comments
+        });
+        if (ignoreCertError !== undefined && proxyMiddlewareConfig?.ignoreCertError !== ignoreCertError) {
+            configuration.set('ignoreCertError', ignoreCertError);
+        }
+        // Add new entry to existing backend configurations in yaml, avoid duplicates
         if (proxyMiddlewareConfig?.backend) {
-            backendNode = this.document.createNode({
-                value: backend,
-                comments
-            });
-            const configuration = this.document.getMap({
-                start: proxyMiddleware as YAMLMap,
-                path: 'configuration'
-            });
-            if (ignoreCertError !== undefined && proxyMiddlewareConfig.ignoreCertError !== ignoreCertError) {
-                configuration.set('ignoreCertError', ignoreCertError);
-            }
-            const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
-            if (backendConfigs.items.length === 0) {
-                configuration.set('backend', [backendNode]);
-            } else {
-                backendConfigs.add(backendNode);
+            if (!proxyMiddlewareConfig?.backend.find((existingBackend) => existingBackend.path === backend.path)) {
+                const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+                if (backendConfigs.items.length === 0) {
+                    configuration.set('backend', [backendNode]);
+                } else {
+                    backendConfigs.add(backendNode);
+                }
             }
         } else {
             // Create a new 'backend' node in yaml for middleware config
-            backendNode = this.document.createNode({ value: backend, comments });
-            this.document
-                .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-                .set('backend', [backendNode]);
-            if (ignoreCertError !== undefined && proxyMiddlewareConfig?.ignoreCertError !== ignoreCertError) {
-                this.document
-                    .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
-                    .set('ignoreCertError', ignoreCertError);
-            }
+            configuration.set('backend', [backendNode]);
         }
         return this;
     }
@@ -371,11 +364,11 @@ export class UI5Config {
     /**
      * Removes a backend configuration from an existing fiori-tools-proxy middleware backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
-     * @param backendUrl url of the backend to delete.
+     * @param path Path of the backend to delete.
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public removeBackendFromFioriToolsProxydMiddleware(backendUrl: string): this {
+    public removeBackendFromFioriToolsProxydMiddleware(path: string): this {
         const fioriToolsProxyMiddleware = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
         if (!fioriToolsProxyMiddleware) {
             throw new Error('Could not find fiori-tools-proxy');
@@ -383,17 +376,32 @@ export class UI5Config {
             const proxyMiddlewareConfig = fioriToolsProxyMiddleware?.configuration;
             // Remove backend from middleware configurations in yaml
             if (proxyMiddlewareConfig?.backend) {
-                // Avoid using filter method, because multiple services could have same backend url, we should delete one entry per service
-                const existingBackendIndex = proxyMiddlewareConfig.backend.findIndex(
-                    (backend) => backend.url === backendUrl
+                const reservedBackendPath = '/sap';
+                // Make sure entry with "/sap" path is not getting deleted
+                const backendIndexToKeep = proxyMiddlewareConfig.backend.findIndex(
+                    (existingBackend) => existingBackend.path === reservedBackendPath
                 );
-                if (existingBackendIndex !== -1) {
-                    proxyMiddlewareConfig.backend.splice(existingBackendIndex, 1);
-                }
+                proxyMiddlewareConfig.backend = proxyMiddlewareConfig.backend.filter((existingBackend, index) => {
+                    if (index === backendIndexToKeep) {
+                        return true;
+                    }
+                    return existingBackend.path !== path;
+                });
                 this.updateCustomMiddleware(fioriToolsProxyMiddleware);
             }
         }
         return this;
+    }
+
+    /**
+     * Returns the backend configuration from the fiori-tools-proxy middleware.
+     *
+     * @param path Path of the backend.
+     * @returns {FioriToolsProxyConfigBackend} the backend configuration
+     */
+    public getBackendConfigFromFioriToolsProxydMiddleware(path: string): FioriToolsProxyConfigBackend | undefined {
+        const backendConfigs: FioriToolsProxyConfigBackend[] = this.getBackendConfigsFromFioriToolsProxydMiddleware();
+        return backendConfigs.find((backendConfig) => backendConfig.path === path);
     }
 
     /**
