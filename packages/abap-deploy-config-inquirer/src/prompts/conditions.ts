@@ -14,7 +14,8 @@ import {
     type AbapDeployConfigAnswersInternal,
     type AbapDeployConfigPromptOptions,
     type BackendTarget,
-    type TransportListItem
+    type TransportListItem,
+    type TransportInputChoicePromptOptions
 } from '../types';
 
 /**
@@ -148,8 +149,12 @@ export function showPasswordQuestion(): boolean {
  * @returns boolean
  */
 export function showUi5AppDeployConfigQuestion(ui5AbapPromptOptions?: UI5AbapRepoPromptOptions): boolean {
-    // if hideIfOnPremise option is true and the target system is on-premise, hide the prompt
-    if (!ui5AbapPromptOptions?.hide && ui5AbapPromptOptions?.hideIfOnPremise && !PromptState.abapDeployConfig?.scp) {
+    if (
+        !ui5AbapPromptOptions?.hide &&
+        ui5AbapPromptOptions?.hideIfOnPremise &&
+        !PromptState.abapDeployConfig?.scp &&
+        !PromptState.abapDeployConfig?.isS4HC
+    ) {
         return false;
     }
     return !PromptState.transportAnswers.transportConfigNeedsCreds;
@@ -238,9 +243,18 @@ function defaultOrShowTransportQuestion(): boolean {
 /**
  * Determines if the transport input choice question should be shown.
  *
+ * @param options - abap deploy config prompt options
  * @returns boolean
  */
-export function showTransportInputChoice(): boolean {
+export function showTransportInputChoice(options?: TransportInputChoicePromptOptions): boolean {
+    if (
+        options?.hideIfOnPremise === true &&
+        !PromptState.abapDeployConfig?.isS4HC &&
+        !PromptState.abapDeployConfig?.scp
+    ) {
+        return false;
+    }
+
     return defaultOrShowTransportQuestion();
 }
 
@@ -258,9 +272,13 @@ function isTransportListEmpty(transportList?: TransportListItem[]): boolean {
  * Determines if the transport list question should be shown.
  *
  * @param transportInputChoice - transportInputChoice from previous answers
+ * @param transportInputChoiceOptions - transportInputChoice options
  * @returns boolean
  */
-export function defaultOrShowTransportListQuestion(transportInputChoice?: string): boolean {
+export function defaultOrShowTransportListQuestion(
+    transportInputChoice?: string,
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions
+): boolean {
     const showQuestion = defaultOrShowTransportQuestion();
     if (!showQuestion) {
         return false;
@@ -268,7 +286,8 @@ export function defaultOrShowTransportListQuestion(transportInputChoice?: string
 
     return (
         transportInputChoice === TransportChoices.ListExistingChoice &&
-        !isTransportListEmpty(PromptState.transportAnswers.transportList)
+        !isTransportListEmpty(PromptState.transportAnswers.transportList) &&
+        !(transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false)
     );
 }
 
@@ -293,10 +312,18 @@ export function defaultOrShowTransportCreatedQuestion(transportInputChoice?: str
  * Determines if the manual transport prompt should be shown.
  *
  * @param transportInputChoice - transportInputChoice from previous answers
+ * @param transportInputChoiceOptions - transportInputChoice options
  * @returns boolean
  */
-export function defaultOrShowManualTransportQuestion(transportInputChoice?: string): boolean {
-    return defaultOrShowTransportQuestion() && transportInputChoice === TransportChoices.EnterManualChoice;
+export function defaultOrShowManualTransportQuestion(
+    transportInputChoice?: string,
+    transportInputChoiceOptions?: TransportInputChoicePromptOptions
+): boolean {
+    return (
+        defaultOrShowTransportQuestion() &&
+        (transportInputChoice === TransportChoices.EnterManualChoice ||
+            (transportInputChoiceOptions?.hideIfOnPremise === true && PromptState?.abapDeployConfig?.isS4HC === false))
+    );
 }
 
 /**

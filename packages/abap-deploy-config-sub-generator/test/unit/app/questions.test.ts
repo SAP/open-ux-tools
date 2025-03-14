@@ -53,7 +53,17 @@ describe('Test getAbapQuestions', () => {
             backendConfig: undefined,
             indexGenerationAllowed: true,
             showOverwriteQuestion: false,
-            logger: DefaultLogger
+            logger: DefaultLogger,
+            promptOptions: {
+                ui5AbapRepo: { hideIfOnPremise: false },
+                transportInputChoice: { hideIfOnPremise: false },
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false
+                },
+                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false },
+                targetSystem: { shouldRestrictDifferentSystemType: false }
+            }
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -70,13 +80,27 @@ describe('Test getAbapQuestions', () => {
                     serviceProvider: undefined,
                     type: 'application'
                 },
-                ui5AbapRepo: { default: undefined },
+                ui5AbapRepo: { default: undefined, hideIfOnPremise: false },
                 description: { default: undefined },
-                packageManual: { default: undefined },
+                packageManual: {
+                    default: undefined,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
                 transportManual: { default: undefined },
                 index: { indexGenerationAllowed: true },
-                packageAutocomplete: { useAutocomplete: true },
-                overwrite: { hide: true }
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
+                overwrite: { hide: true },
+                transportInputChoice: { hideIfOnPremise: false },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
             expect.any(Object),
             true
@@ -101,7 +125,17 @@ describe('Test getAbapQuestions', () => {
             },
             backendConfig: undefined,
             configFile: 'ui5-deploy.yaml',
-            logger: DefaultLogger
+            logger: DefaultLogger,
+            promptOptions: {
+                ui5AbapRepo: { hideIfOnPremise: false },
+                transportInputChoice: { hideIfOnPremise: false },
+                packageAutocomplete: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false
+                },
+                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false },
+                targetSystem: { shouldRestrictDifferentSystemType: false }
+            }
         });
 
         expect(getPromptsSpy).toBeCalledWith(
@@ -118,13 +152,27 @@ describe('Test getAbapQuestions', () => {
                     serviceProvider: undefined,
                     type: 'application'
                 },
-                ui5AbapRepo: { default: undefined },
+                ui5AbapRepo: { default: undefined, hideIfOnPremise: false },
                 description: { default: undefined },
-                packageManual: { default: undefined },
+                packageManual: {
+                    default: undefined,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
                 transportManual: { default: undefined },
                 index: { indexGenerationAllowed: false },
-                packageAutocomplete: { useAutocomplete: true },
-                overwrite: { hide: true }
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
+                overwrite: { hide: true },
+                transportInputChoice: { hideIfOnPremise: false },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
             expect.any(Object),
             false

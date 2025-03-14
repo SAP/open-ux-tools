@@ -78,7 +78,7 @@ function validateAppName(name: string, prefix?: string): boolean | string {
     }
 
     if (name.split('/').length > 3) {
-        return t('errors.validators.abapInvalidNamespace');
+        return t('errors.validators.invalidNamespace');
     } else if (/^\/.*\/\w*$/g.test(name)) {
         const splitNames = name.split('/');
         let accumulatedMsg = '';

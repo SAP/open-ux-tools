@@ -97,7 +97,7 @@ describe('validator-utils', () => {
             const output = isAppNameValid('/ns1/ns2/ns3/ztest');
             expect(output).toStrictEqual({
                 valid: false,
-                errorMessage: t('errors.validators.abapInvalidNamespace')
+                errorMessage: t('errors.validators.invalidNamespace')
             });
         });
 
