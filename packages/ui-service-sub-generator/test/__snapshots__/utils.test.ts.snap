@@ -1,0 +1,574 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`test helper functions writeBASMetadata 1`] = `
+{
+  "metadata": {
+    "odataContent": "<?xml version="1.0" encoding="utf-8" ?>
+<edmx:Edmx
+    Version="4.0"
+    xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx"
+    xmlns="http://docs.oasis-open.org/odata/ns/edm">
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PERSONALDATA',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.PersonalData.v1" Alias="PersonalData" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ANALYTICS',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Analytics.v1" Alias="Analytics" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="SAP__common" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_MEASURES',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Measures.V1" Alias="SAP__measures" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CORE',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Core.V1" Alias="SAP__core" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1" Alias="SAP__capabilities" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_AGGREGATION',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Aggregation.V1" Alias="SAP__aggregation" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_VALIDATION',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="Org.OData.Validation.V1" Alias="SAP__validation" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="SAP__UI" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HTML5',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.HTML5.v1" Alias="SAP__HTML5" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_PDF',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.PDF.v1" Alias="SAP__PDF" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_SESSION',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Session.v1" Alias="SAP__session" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_ODM',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.ODM.v1" Alias="SAP__ODM" />
+    </edmx:Reference>
+    <edmx:Reference
+        Uri="/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_HIERARCHY',Version='0001',SAP__Origin='LOCAL')/$value">
+        <edmx:Include Namespace="com.sap.vocabularies.Hierarchy.v1" Alias="SAP__hierarchy" />
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema Namespace="com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001" Alias="SAP__self">
+            <Annotation Term="SAP__core.SchemaVersion" String="1.0.0" />
+            <EntityType Name="CPWFInstanceType">
+                <Key>
+                    <PropertyRef Name="CpWfHandle" />
+                </Key>
+                <Property Name="CpWfHandle" Type="Edm.Guid" Nullable="false" />
+                <Property Name="RetentionTime" Type="Edm.Int32" Nullable="false" />
+                <Property Name="CpWfDefId" Type="Edm.String" Nullable="false" MaxLength="64" />
+                <Property Name="PaWfDefId" Type="Edm.String" Nullable="false" MaxLength="255" />
+                <Property Name="Consumer" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Property Name="LastChangeOn" Type="Edm.DateTimeOffset" Precision="7" />
+                <Property Name="Context" Type="Edm.Binary" Nullable="false" />
+                <Property Name="CallbackClass" Type="Edm.String" Nullable="false" MaxLength="30" />
+                <Property
+                    Name="__OperationControl"
+                    Type="com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001.CPWFInstanceOperationControl"
+                />
+                <Property
+                    Name="SAP__Messages"
+                    Type="Collection(com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001.SAP__Message)"
+                    Nullable="false"
+                />
+            </EntityType>
+            <ComplexType Name="CPWFInstanceOperationControl">
+                <Property Name="registerWorkflow" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="registerWorkflowCancel" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="registerWorkflowStart" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="setPayload" Type="Edm.Boolean" Nullable="false" />
+            </ComplexType>
+            <ComplexType Name="SAP__Message">
+                <Property Name="code" Type="Edm.String" Nullable="false" />
+                <Property Name="message" Type="Edm.String" Nullable="false" />
+                <Property Name="target" Type="Edm.String" />
+                <Property Name="additionalTargets" Type="Collection(Edm.String)" Nullable="false" />
+                <Property Name="transition" Type="Edm.Boolean" Nullable="false" />
+                <Property Name="numericSeverity" Type="Edm.Byte" Nullable="false" />
+                <Property Name="longtextUrl" Type="Edm.String" />
+            </ComplexType>
+            <Action Name="registerWorkflowCancel" IsBound="true">
+                <Parameter
+                    Name="_it"
+                    Type="com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001.CPWFInstanceType"
+                    Nullable="false"
+                />
+            </Action>
+            <Action Name="registerWorkflowStart" IsBound="true">
+                <Parameter
+                    Name="_it"
+                    Type="com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001.CPWFInstanceType"
+                    Nullable="false"
+                />
+                <Parameter Name="CpWfDefId" Type="Edm.String" Nullable="false" MaxLength="64" />
+                <Parameter Name="PaWfDefId" Type="Edm.String" Nullable="false" MaxLength="255" />
+                <Parameter Name="RetentionTime" Type="Edm.Int32" Nullable="false" />
+                <Parameter Name="Consumer" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Parameter Name="CallbackClass" Type="Edm.String" Nullable="false" MaxLength="30" />
+            </Action>
+            <Action Name="registerWorkflow" IsBound="true">
+                <Parameter
+                    Name="_it"
+                    Type="com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001.CPWFInstanceType"
+                    Nullable="false"
+                />
+                <Parameter Name="CpWfDefId" Type="Edm.String" Nullable="false" MaxLength="64" />
+                <Parameter Name="PaWfDefId" Type="Edm.String" Nullable="false" MaxLength="255" />
+                <Parameter Name="RetentionTime" Type="Edm.Int32" Nullable="false" />
+                <Parameter Name="Consumer" Type="Edm.String" Nullable="false" MaxLength="10" />
+                <Parameter Name="CallbackClass" Type="Edm.String" Nullable="false" MaxLength="30" />
+            </Action>
+            <Action Name="setPayload" EntitySetPath="_it" IsBound="true">
+                <Parameter
+                    Name="_it"
+                    Type="com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001.CPWFInstanceType"
+                    Nullable="false"
+                />
+                <Parameter Name="context" Type="Edm.String" Nullable="false" />
+                <ReturnType Type="com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001.CPWFInstanceType" Nullable="false" />
+            </Action>
+            <EntityContainer Name="Container">
+                <EntitySet
+                    Name="CPWFInstance"
+                    EntityType="com.sap.gateway.srvd.zui_cpwf_inst005_o4.v0001.CPWFInstanceType"
+                />
+            </EntityContainer>
+            <Annotations Target="SAP__self.CPWFInstanceType/CpWfHandle">
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: Workflow Handle" />
+                <Annotation Term="SAP__core.Computed" />
+                <Annotation Term="SAP__common.Label" String="WF Handle ID" />
+                <Annotation Term="SAP__common.Heading" String="Workflow Handle ID" />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SWF_CPWF_HANDLE"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/RetentionTime">
+                <Annotation
+                    Term="SAP__common.QuickInfo"
+                    String="CP WF Integration: CP Workflow Retention Time In Days"
+                />
+                <Annotation Term="SAP__common.Label" String="Retention In Days" />
+                <Annotation Term="SAP__common.Heading" String="SAP Workflow Service Retention Time In Days" />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SWF_CPWF_RETENTION"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/CpWfDefId">
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: CP Workflow Definition ID" />
+                <Annotation Term="SAP__common.Label" String="Ext Workflow ID" />
+                <Annotation Term="SAP__common.Heading" String="Extension Workflow Definition ID" />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SWF_CPWF_DEFID"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/PaWfDefId">
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: CP Workflow Definition ID" />
+                <Annotation Term="SAP__common.Label" String="Ext Workflow ID" />
+                <Annotation Term="SAP__common.Heading" String="Extension Workflow Definition ID" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/Consumer">
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: Consumer Type" />
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.Label" String="Consumer Type (WF)" />
+                <Annotation Term="SAP__common.Heading" String="Consumer Type (Workflow)" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/LastChangeOn">
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: changed on timestamp" />
+                <Annotation Term="SAP__common.Label" String="Changed on" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/Context">
+                <Annotation Term="SAP__common.Label" String="Context" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/CallbackClass">
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: Callback Class" />
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.Label" String="Callback Class" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/__OperationControl">
+                <Annotation Term="SAP__core.Computed" />
+                <Annotation Term="SAP__UI.HiddenFilter" />
+                <Annotation Term="SAP__UI.Hidden" />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflowCancel(SAP__self.CPWFInstanceType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/registerWorkflowCancel" />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflowStart(SAP__self.CPWFInstanceType)/RetentionTime">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.Label" String="Retention In Days" />
+                <Annotation Term="SAP__common.Heading" String="SAP Workflow Service Retention Time In Days" />
+                <Annotation
+                    Term="SAP__common.QuickInfo"
+                    String="CP WF Integration: CP Workflow Retention Time In Days"
+                />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SWF_CPWF_RETENTION"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflowStart(SAP__self.CPWFInstanceType)/Consumer">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.Label" String="Consumer Type (WF)" />
+                <Annotation Term="SAP__common.Heading" String="Consumer Type (Workflow)" />
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: Consumer Type" />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflowStart(SAP__self.CPWFInstanceType)/CallbackClass">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.Label" String="Class/Interface" />
+                <Annotation Term="SAP__common.Heading" String="Object Type Name" />
+                <Annotation Term="SAP__common.QuickInfo" String="Object Type Name" />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SEOCLSNAME"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflowStart(SAP__self.CPWFInstanceType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/registerWorkflowStart" />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflow(SAP__self.CPWFInstanceType)/RetentionTime">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.Label" String="Retention In Days" />
+                <Annotation Term="SAP__common.Heading" String="SAP Workflow Service Retention Time In Days" />
+                <Annotation
+                    Term="SAP__common.QuickInfo"
+                    String="CP WF Integration: CP Workflow Retention Time In Days"
+                />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SWF_CPWF_RETENTION"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflow(SAP__self.CPWFInstanceType)/Consumer">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.Label" String="Consumer Type (WF)" />
+                <Annotation Term="SAP__common.Heading" String="Consumer Type (Workflow)" />
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: Consumer Type" />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflow(SAP__self.CPWFInstanceType)/CallbackClass">
+                <Annotation Term="SAP__common.IsUpperCase" />
+                <Annotation Term="SAP__common.Label" String="Class/Interface" />
+                <Annotation Term="SAP__common.Heading" String="Object Type Name" />
+                <Annotation Term="SAP__common.QuickInfo" String="Object Type Name" />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SEOCLSNAME"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflow(SAP__self.CPWFInstanceType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/registerWorkflow" />
+            </Annotations>
+            <Annotations Target="SAP__self.setPayload(SAP__self.CPWFInstanceType)">
+                <Annotation Term="SAP__core.OperationAvailable" Path="_it/__OperationControl/setPayload" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType">
+                <Annotation Term="SAP__common.Label" String="Cloud Platform Workflow Instances" />
+                <Annotation Term="SAP__UI.Facets">
+                    <Collection>
+                        <Record Type="SAP__UI.ReferenceFacet">
+                            <PropertyValue Property="Label" String="General Information" />
+                            <PropertyValue Property="ID" String="GeneralInfo" />
+                            <PropertyValue Property="Target" AnnotationPath="@SAP__UI.Identification" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__UI.HeaderInfo">
+                    <Record>
+                        <PropertyValue Property="TypeName" String="Projection CDS View for I_CPWF_INST" />
+                        <PropertyValue Property="TypeNamePlural" String="Projection CDS View for I_CPWF_INST" />
+                        <PropertyValue Property="Title">
+                            <Record Type="SAP__UI.DataField">
+                                <PropertyValue Property="Value" Path="CpWfHandle" />
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Description">
+                            <Record Type="SAP__UI.DataField">
+                                <PropertyValue Property="Value" Path="CpWfHandle" />
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__UI.Identification">
+                    <Collection>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="CpWfHandle" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="RetentionTime" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="CpWfDefId" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="PaWfDefId" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="Consumer" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="LastChangeOn" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Context" />
+                            <PropertyValue Property="Value" Path="Context" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="CallbackClass" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__UI.LineItem">
+                    <Collection>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="CpWfHandle" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="RetentionTime" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="CpWfDefId" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="PaWfDefId" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="Consumer" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="LastChangeOn" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Label" String="Context" />
+                            <PropertyValue Property="Value" Path="Context" />
+                        </Record>
+                        <Record Type="SAP__UI.DataField">
+                            <PropertyValue Property="Value" Path="CallbackClass" />
+                        </Record>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>CpWfHandle</PropertyPath>
+                        <PropertyPath>RetentionTime</PropertyPath>
+                        <PropertyPath>CpWfDefId</PropertyPath>
+                        <PropertyPath>PaWfDefId</PropertyPath>
+                        <PropertyPath>Consumer</PropertyPath>
+                        <PropertyPath>LastChangeOn</PropertyPath>
+                        <PropertyPath>Context</PropertyPath>
+                        <PropertyPath>CallbackClass</PropertyPath>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__common.Messages" Path="SAP__Messages" />
+            </Annotations>
+            <Annotations Target="SAP__self.Container/CPWFInstance">
+                <Annotation Term="SAP__capabilities.SearchRestrictions">
+                    <Record>
+                        <PropertyValue Property="Searchable" Bool="false" />
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.FilterRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonFilterableProperties">
+                            <Collection>
+                                <PropertyPath>__OperationControl</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.SortRestrictions">
+                    <Record>
+                        <PropertyValue Property="NonSortableProperties">
+                            <Collection>
+                                <PropertyPath>__OperationControl</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.InsertRestrictions">
+                    <Record>
+                        <PropertyValue Property="Insertable" Bool="false" />
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.DeleteRestrictions">
+                    <Record>
+                        <PropertyValue Property="Deletable" Bool="false" />
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.UpdateRestrictions">
+                    <Record>
+                        <PropertyValue Property="Updatable" Bool="false" />
+                        <PropertyValue Property="QueryOptions">
+                            <Record>
+                                <PropertyValue Property="SelectSupported" Bool="true" />
+                            </Record>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="SAP__self.Container">
+                <Annotation Term="SAP__common.ApplyMultiUnitBehaviorForSortingAndFiltering" Bool="true" />
+                <Annotation Term="SAP__UI.LeadingEntitySet" String="CPWFInstance" />
+                <Annotation Term="SAP__capabilities.FilterFunctions">
+                    <Collection>
+                        <String>eq</String>
+                        <String>ne</String>
+                        <String>gt</String>
+                        <String>ge</String>
+                        <String>lt</String>
+                        <String>le</String>
+                        <String>and</String>
+                        <String>or</String>
+                        <String>contains</String>
+                        <String>startswith</String>
+                        <String>endswith</String>
+                        <String>any</String>
+                        <String>all</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.SupportedFormats">
+                    <Collection>
+                        <String>application/json</String>
+                        <String>application/pdf</String>
+                    </Collection>
+                </Annotation>
+                <Annotation Term="SAP__PDF.Features">
+                    <Record>
+                        <PropertyValue
+                            Property="DocumentDescriptionReference"
+                            String="../../../../default/iwbep/common/0001/$metadata"
+                        />
+                        <PropertyValue Property="DocumentDescriptionCollection" String="MyDocumentDescriptions" />
+                        <PropertyValue Property="ArchiveFormat" Bool="true" />
+                        <PropertyValue Property="Border" Bool="true" />
+                        <PropertyValue Property="CoverPage" Bool="true" />
+                        <PropertyValue Property="FitToPage" Bool="true" />
+                        <PropertyValue Property="FontName" Bool="true" />
+                        <PropertyValue Property="FontSize" Bool="true" />
+                        <PropertyValue Property="HeaderFooter" Bool="true" />
+                        <PropertyValue Property="IANATimezoneFormat" Bool="true" />
+                        <PropertyValue Property="Margin" Bool="true" />
+                        <PropertyValue Property="Padding" Bool="true" />
+                        <PropertyValue Property="ResultSizeDefault" Int="20000" />
+                        <PropertyValue Property="ResultSizeMaximum" Int="20000" />
+                        <PropertyValue Property="Signature" Bool="true" />
+                        <PropertyValue Property="TextDirectionLayout" Bool="true" />
+                        <PropertyValue Property="Treeview" Bool="true" />
+                        <PropertyValue Property="UploadToFileShare" Bool="true" />
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__capabilities.KeyAsSegmentSupported" />
+                <Annotation Term="SAP__capabilities.AsynchronousRequestsSupported" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/__OperationControl/registerWorkflow">
+                <Annotation Term="SAP__common.Label" String="Dyn. Action Control" />
+                <Annotation Term="SAP__common.Heading" String="Dynamic Action Control" />
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Action Property" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/__OperationControl/registerWorkflowCancel">
+                <Annotation Term="SAP__common.Label" String="Dyn. Action Control" />
+                <Annotation Term="SAP__common.Heading" String="Dynamic Action Control" />
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Action Property" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/__OperationControl/registerWorkflowStart">
+                <Annotation Term="SAP__common.Label" String="Dyn. Action Control" />
+                <Annotation Term="SAP__common.Heading" String="Dynamic Action Control" />
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Action Property" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceType/__OperationControl/setPayload">
+                <Annotation Term="SAP__common.Label" String="Dyn. Action Control" />
+                <Annotation Term="SAP__common.Heading" String="Dynamic Action Control" />
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Action Property" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceOperationControl/registerWorkflow">
+                <Annotation Term="SAP__common.Label" String="Dyn. Action Control" />
+                <Annotation Term="SAP__common.Heading" String="Dynamic Action Control" />
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Action Property" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceOperationControl/registerWorkflowCancel">
+                <Annotation Term="SAP__common.Label" String="Dyn. Action Control" />
+                <Annotation Term="SAP__common.Heading" String="Dynamic Action Control" />
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Action Property" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceOperationControl/registerWorkflowStart">
+                <Annotation Term="SAP__common.Label" String="Dyn. Action Control" />
+                <Annotation Term="SAP__common.Heading" String="Dynamic Action Control" />
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Action Property" />
+            </Annotations>
+            <Annotations Target="SAP__self.CPWFInstanceOperationControl/setPayload">
+                <Annotation Term="SAP__common.Label" String="Dyn. Action Control" />
+                <Annotation Term="SAP__common.Heading" String="Dynamic Action Control" />
+                <Annotation Term="SAP__common.QuickInfo" String="Dynamic Action Property" />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflowStart(SAP__self.CPWFInstanceType)/CpWfDefId">
+                <Annotation Term="SAP__common.Label" String="Ext Workflow ID" />
+                <Annotation Term="SAP__common.Heading" String="Extension Workflow Definition ID" />
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: CP Workflow Definition ID" />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SWF_CPWF_DEFID"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflowStart(SAP__self.CPWFInstanceType)/PaWfDefId">
+                <Annotation Term="SAP__common.Label" String="Ext Workflow ID" />
+                <Annotation Term="SAP__common.Heading" String="Extension Workflow Definition ID" />
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: CP Workflow Definition ID" />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflow(SAP__self.CPWFInstanceType)/CpWfDefId">
+                <Annotation Term="SAP__common.Label" String="Ext Workflow ID" />
+                <Annotation Term="SAP__common.Heading" String="Extension Workflow Definition ID" />
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: CP Workflow Definition ID" />
+                <Annotation
+                    Term="SAP__common.DocumentationRef"
+                    String="urn:sap-com:documentation:key?=type=DE&amp;id=SWF_CPWF_DEFID"
+                />
+            </Annotations>
+            <Annotations Target="SAP__self.registerWorkflow(SAP__self.CPWFInstanceType)/PaWfDefId">
+                <Annotation Term="SAP__common.Label" String="Ext Workflow ID" />
+                <Annotation Term="SAP__common.Heading" String="Extension Workflow Definition ID" />
+                <Annotation Term="SAP__common.QuickInfo" String="CP WF Integration: CP Workflow Definition ID" />
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
+",
+  },
+  "providerSystem": {
+    "authenticationType": "BasicAuthentication",
+    "dataType": 1,
+    "description": "test system",
+    "name": "testSystem",
+    "product": "S/4 HANA",
+    "proxyType": 2,
+    "url": "http://testsystem:44300",
+  },
+  "providerType": "SapSystem",
+  "relativeURL": "/sap/opu/odata4/sap/ZUI_BANKTP132_O4/srvd/sap/ZUI_BANKTP134_O4/0001/",
+  "serviceName": "ZUI_BANKTP132_O4",
+}
+`;
