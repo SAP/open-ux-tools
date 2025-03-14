@@ -21,7 +21,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 /** sap.ui.fl */
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
-import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { reportTelemetry, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
 import { getResourceModel, getTextBundle } from '../../i18n';
 import { CommunicationService } from '../../cpe/communication-service';
@@ -37,6 +37,7 @@ import {
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from '../quick-actions/control-types';
+import { TelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -64,7 +65,8 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
+    private telemetryData: TelemetryData | undefined;
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions, telemetryData?: TelemetryData) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -73,6 +75,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             completeView: options.aggregation === undefined
         });
         this.commandExecutor = new CommandExecutor(this.rta);
+        this.telemetryData = telemetryData;
     }
 
     /**
@@ -135,6 +138,9 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
+        if (this.telemetryData) {
+            reportTelemetry({ category: 'Create Fragment', ...this.telemetryData });
+        }
         const source = event.getSource<Button>();
         source.setEnabled(false);
 

@@ -1,7 +1,9 @@
 interface TelemetryData {
     category: string;
+    actionName?: string;
     propertyName?: string;
     controlName?: string;
+    timestamp?: string;
 }
 
 let enabled = false;
