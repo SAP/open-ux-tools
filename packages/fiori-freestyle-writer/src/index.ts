@@ -198,4 +198,4 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
 }
 
 export { generate, FreestyleApp };
-export { WorklistSettings, ListDetailSettings, TemplateType, Template, OdataVersion } from './types';
+export { WorklistSettings, ListDetailSettings, BasicAppSettings, TemplateType, Template, OdataVersion } from './types';
