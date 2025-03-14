@@ -8,18 +8,19 @@ import {
     TargetName,
     getExtensionGenPromptOpts
 } from '@sap-ux/deploy-config-generator-shared';
-import { parseTarget } from './utils';
+import { parseTarget, getYUIDetails, registerNamespaces } from './utils';
 import {
     getApiHubOptions,
     getEnvApiHubConfig,
     t,
     generatorNamespace,
     getBackendConfig,
-    getSupportedTargets
+    getSupportedTargets,
+    generatorTitle
 } from '../utils';
+import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting';
 import { promptNames } from '../prompts/deploy-target';
-import { AppWizard, type Prompts } from '@sap-devx/yeoman-ui-types';
 import type { Answers } from 'inquirer';
 import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-sub-generator';
 import type { DeployConfigGenerator, DeployConfigOptions } from '../types';
@@ -69,6 +70,13 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.target = parseTarget(args, opts);
         this.vscode = opts.vscode;
 
+        registerNamespaces(
+            this.rootGeneratorName(),
+            this.genNamespace,
+            this.env.isPackageRegistered.bind(this.env),
+            this.env.lookup.bind(this.env)
+        );
+
         // Extensions use options.data to pass in the options
         if (this.options.data?.destinationRoot) {
             this.launchStandaloneFromYui = true;
@@ -89,6 +97,17 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             dotenv.config();
             this.apiHubConfig = this.options.apiHubConfig ?? getEnvApiHubConfig();
             this.launchStandaloneFromYui = false;
+        }
+
+        // If launched standalone, set the header, title and description
+        if (this.launchStandaloneFromYui) {
+            this.appWizard.setHeaderTitle(generatorTitle);
+            this.prompts = new Prompts(getYUIDetails(this.options.projectRoot));
+            this.setPromptsCallback = (fn): void => {
+                if (this.prompts) {
+                    this.prompts.setCallback(fn);
+                }
+            };
         }
     }
 
@@ -114,8 +133,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.target = TargetName.ABAP; // Adp projects support only ABAP deployment
             this.launchDeployConfigAsSubGenerator = false;
         }
-        this.options.projectRoot = capRoot ?? this.mtaPath ?? this.options.appRootPath;
-
+        this.options.projectRoot = capRoot ?? (this.mtaPath && dirname(this.mtaPath)) ?? this.options.appRootPath;
         ({ backendConfig: this.backendConfig, isLibrary: this.isLibrary } = await getBackendConfig(
             this.fs,
             this.options as DeployConfigOptions,
