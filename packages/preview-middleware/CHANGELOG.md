@@ -1,5 +1,17 @@
 # @sap-ux/preview-middleware
 
+## 0.18.19
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
+## 0.18.18
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
 ## 0.18.17
 
 ### Patch Changes
