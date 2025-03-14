@@ -30,6 +30,7 @@ import {
 } from '../constants';
 import {
     addCommonPackageDependencies,
+    enforceValidRouterConfig,
     generateSupportingConfig,
     getDestinationProperties,
     getTemplatePath,
@@ -97,10 +98,13 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
         cfAppConfig.destinationName ?? destination
     );
 
+    enforceValidRouterConfig(cfAppConfig);
+
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
         destinationName: cfAppConfig.destinationName || destination,
-        addManagedAppRouter: cfAppConfig.addManagedAppRouter ?? true,
+        addManagedAppRouter: cfAppConfig.addManagedAppRouter,
+        addAppFrontendRouter: cfAppConfig.addAppFrontendRouter,
         addMtaDestination: cfAppConfig.addMtaDestination ?? false,
         cloudServiceName: cfAppConfig.cloudServiceName,
         lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
@@ -261,7 +265,11 @@ export function generateMTAFile(cfConfig: CFConfig): void {
 async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (mtaInstance) {
-        await mtaInstance.addRoutingModules({ isManagedApp: cfConfig.addManagedAppRouter });
+        await mtaInstance.addRoutingModules({
+            isManagedApp: cfConfig.addManagedAppRouter,
+            isAppFrontApp: cfConfig.addAppFrontendRouter,
+            addMissingModules: !cfConfig.addAppFrontendRouter
+        });
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
@@ -345,15 +353,24 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void
  */
 async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor): Promise<void> {
     // When data source is none in app generator, it is not required to provide destination
+    const defaultProperties = {
+        service: cfConfig.addAppFrontendRouter ? 'app-front' : 'html5-apps-repo-rt',
+        authenticationType: cfConfig.addAppFrontendRouter ? 'ias' : 'xsuaa'
+    };
     if (cfConfig.destinationName && cfConfig.destinationName !== EmptyDestination) {
         fs.copyTpl(getTemplatePath('app/xs-app-destination.json'), join(cfConfig.appPath, XSAppFile), {
+            ...defaultProperties,
             destination: cfConfig.destinationName,
             servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isDestinationFullUrl ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
             targetPath: `${cfConfig.isDestinationFullUrl ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
             authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa'
         });
     } else {
-        fs.copyTpl(getTemplatePath('app/xs-app-no-destination.json'), join(cfConfig.appPath, XSAppFile));
+        fs.copyTpl(
+            getTemplatePath('app/xs-app-no-destination.json'),
+            join(cfConfig.appPath, XSAppFile),
+            defaultProperties
+        );
     }
     await generateUI5DeployConfig(cfConfig, fs);
 }
