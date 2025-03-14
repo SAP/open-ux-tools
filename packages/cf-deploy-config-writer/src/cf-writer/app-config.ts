@@ -353,20 +353,24 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void
  */
 async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor): Promise<void> {
     // When data source is none in app generator, it is not required to provide destination
+    const defaultProperties = {
+        service: cfConfig.addAppFrontendRouter ? 'app-front' : 'html5-apps-repo-rt',
+        authenticationType: cfConfig.addAppFrontendRouter ? 'ias' : 'xsuaa'
+    };
     if (cfConfig.destinationName && cfConfig.destinationName !== EmptyDestination) {
         fs.copyTpl(getTemplatePath('app/xs-app-destination.json'), join(cfConfig.appPath, XSAppFile), {
+            ...defaultProperties,
             destination: cfConfig.destinationName,
             servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isDestinationFullUrl ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
             targetPath: `${cfConfig.isDestinationFullUrl ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
-            authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa',
-            service: cfConfig.addAppFrontendRouter ? 'app-front' : 'html5-apps-repo-rt',
-            authenticationType: cfConfig.addAppFrontendRouter ? 'ias' : 'xsuaa'
+            authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa'
         });
     } else {
-        fs.copyTpl(getTemplatePath('app/xs-app-no-destination.json'), join(cfConfig.appPath, XSAppFile), {
-            service: cfConfig.addAppFrontendRouter ? 'app-front' : 'html5-apps-repo-rt',
-            authenticationType: cfConfig.addAppFrontendRouter ? 'ias' : 'xsuaa'
-        });
+        fs.copyTpl(
+            getTemplatePath('app/xs-app-no-destination.json'),
+            join(cfConfig.appPath, XSAppFile),
+            defaultProperties
+        );
     }
     await generateUI5DeployConfig(cfConfig, fs);
 }
