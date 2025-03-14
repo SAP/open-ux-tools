@@ -108,18 +108,23 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     /**
      * Updates state sizes.
      *
-     * @param {number} layoutSize
-     * @param {Array<number | UISectionSize | undefine>} sizes
-     * @returns {UISectionSize[]}
+     * @param newSize Latest size of root
+     * @param sizes Sizes of sections
+     * @param oldSize Old size of root before resize of window
+     * @returns Calculated sizes and position for all sections
      */
-    updateStateSizes(layoutSize: number, sizes: Array<number | UISectionSize | undefined>): UISectionSize[] {
+    updateStateSizes(
+        layoutSize: number,
+        sizes: Array<number | UISectionSize | undefined>,
+        oldSize = layoutSize
+    ): UISectionSize[] {
         let uiSizes: UISectionSize[] = sizes as UISectionSize[];
         const dynamicSectionIndex = this.getDynamicSectionIndex();
         // Calculate size for dynamic section
         let availableSize = 0;
         sizes.forEach((section, index) => {
             if (typeof section === 'object' && section.size === undefined) {
-                section.size = this.getSize(section);
+                section.size = this.getSize(section, oldSize);
             }
             if (index !== dynamicSectionIndex) {
                 availableSize += (typeof section === 'object' ? section.size : section) ?? 0;
@@ -289,10 +294,11 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
     onWindowResize(): void {
         let { sizes } = this.state;
         // Dynamic section index
-        const layoutSize = this.getRootSize();
+        const oldSize = this.rootSize;
+        this.rootSize = this.getRootSize();
         if (sizes) {
             // Update sizes after resize
-            sizes = this.updateStateSizes(layoutSize, sizes);
+            sizes = this.updateStateSizes(this.rootSize, sizes, oldSize);
             // Update cached section's sizes
             for (let i = 0; i < sizes.length; i++) {
                 if (this.resizeSections[i]) {
@@ -305,7 +311,6 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
                 sizes: sizes
             });
         }
-        this.rootSize = layoutSize;
     }
 
     /**
@@ -999,14 +1004,15 @@ export class UISections extends React.Component<UISectionsProps, UISectionsState
      * Returns the size of a section based on its properties(size, start, end).
      *
      * @param sizes The section size object containing size, start, and end properties.
+     * @param rootSize Size of root container.
      * @returns The computed size of the section. Returns 0 if no valid size is found.
      */
-    private getSize(sizes: UISectionSize): number {
+    private getSize(sizes: UISectionSize, rootSize = this.rootSize): number {
         if (sizes.size !== undefined) {
             return sizes.size;
         }
         if (sizes.end !== undefined && sizes.start !== undefined) {
-            return Math.abs(this.rootSize - sizes.end - sizes.start);
+            return Math.abs(rootSize - sizes.end - sizes.start);
         }
         return 0;
     }
