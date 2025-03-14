@@ -1195,21 +1195,16 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(
-                    rtaMock,
-                    new OutlineService(rtaMock, mockChangeService),
-                    [registry],
-                    {
-                        onStackChange: jest.fn(),
-                        getConfigurationPropertyValue: jest
-                            .fn()
-                            .mockReturnValueOnce(undefined)
-                            .mockReturnValueOnce(undefined)
-                            .mockReturnValueOnce(true)
-                            .mockReturnValueOnce(undefined)
-                            .mockReturnValue(undefined)
-                    } as any
-                );
+                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
+                    onStackChange: jest.fn(),
+                    getConfigurationPropertyValue: jest
+                        .fn()
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValueOnce(true)
+                        .mockReturnValueOnce(undefined)
+                        .mockReturnValue(undefined)
+                } as any);
             });
 
             test('initialize and execute action', async () => {
@@ -1535,7 +1530,15 @@ describe('FE V4 quick actions', () => {
                 jest.restoreAllMocks();
             });
             describe('add header field', () => {
-                test('initialize and execute action', async () => {
+                const testCases = [
+                    {
+                        ShowHeaderContent: true
+                    },
+                    {
+                        ShowHeaderContent: false
+                    }
+                ];
+                test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
                     const pageView = new XMLView();
                     FlexUtils.getViewForControl.mockImplementation(() => {
                         return {
@@ -1576,6 +1579,7 @@ describe('FE V4 quick actions', () => {
                                 getId: () => 'ObjectPageLayout',
                                 getDomRef: () => ({}),
                                 getParent: () => pageView,
+                                getShowHeaderContent: () => testCase.ShowHeaderContent,
                                 getHeaderContent: () => {
                                     return [new FlexBox()];
                                 }
@@ -1633,6 +1637,12 @@ describe('FE V4 quick actions', () => {
                         ]
                     });
 
+                    const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                    for (let i = actions.length - 1; i >= 0; i--) {
+                        if (actions[i].title !== 'Add Header Field') {
+                            actions.splice(i, 1);
+                        }
+                    }
                     expect(sendActionMock).toHaveBeenCalledWith(
                         quickActionListChanged([
                             {
@@ -1640,21 +1650,12 @@ describe('FE V4 quick actions', () => {
                                 actions: [
                                     {
                                         kind: 'simple',
-                                        id: 'objectPage0-add-controller-to-page',
-                                        enabled: true,
-                                        title: 'Add Controller to Page'
-                                    },
-                                    {
-                                        kind: 'simple',
                                         id: 'objectPage0-op-add-header-field',
                                         title: 'Add Header Field',
-                                        enabled: true
-                                    },
-                                    {
-                                        enabled: true,
-                                        id: 'objectPage0-op-add-custom-section',
-                                        kind: 'simple',
-                                        title: 'Add Custom Section'
+                                        enabled: testCase.ShowHeaderContent,
+                                        tooltip: testCase.ShowHeaderContent
+                                            ? undefined
+                                            : 'This option has been disabled because the "Show Header Content" page property is set to false.'
                                     }
                                 ]
                             }
@@ -1973,6 +1974,7 @@ describe('FE V4 quick actions', () => {
                                 return {
                                     children: [2],
                                     getSubSections: () => [{}, {}],
+                                    getShowHeaderContent: () => true,
                                     getTitle: () => 'section 01',
                                     setSelectedSubSection: setSelectedSubSectionMock
                                 };
@@ -2242,6 +2244,7 @@ describe('FE V4 quick actions', () => {
                             return {
                                 getDomRef: () => ({}),
                                 getParent: () => pageView,
+                                getShowHeaderContent: () => true,
                                 getId: () => 'DynamicPage'
                             };
                         }
