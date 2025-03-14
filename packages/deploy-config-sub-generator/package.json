@@ -68,7 +68,6 @@
         "js-yaml": "4.1.0",
         "memfs": "3.4.13",
         "rimraf": "5.0.5",
-        "typescript": "5.3.3",
         "unionfs": "4.4.0",
         "yeoman-test": "6.3.0"
     },
