@@ -290,7 +290,7 @@ export type SystemSelectionPromptOptions = {
     /**
      * Only show the default choice in the system selection prompt, this is used to skip the system selection prompt if the default choice is already known.
      * If the `defaultChoice` value is not found in the systems choices, or the `defaultChoice` option is not specified,
-     * this option will not be applied and the full list of choices will be presented to the user.
+     * this option will not be applied and the full list of choices will be presented to the user. dummy change to check pipeline.
      */
     onlyShowDefaultChoice?: boolean;
 };
