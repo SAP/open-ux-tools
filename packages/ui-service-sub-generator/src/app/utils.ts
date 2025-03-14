@@ -263,13 +263,8 @@ export async function validateConnection(
         });
         return;
     } catch (e) {
-        // Review if this is still needed for BAS flow
-        if (isAppStudio() && JSON.stringify(e) === '{}') {
-            //state.authenticated = true;
-        } else {
-            UiServiceGenLogger.logger.error(t('ERROR_CONNECTION_FAILED', { system: systemName }));
-            return;
-        }
+        UiServiceGenLogger.logger.error(t('ERROR_CONNECTION_FAILED', { system: systemName }));
+        return;
     }
 }
 
