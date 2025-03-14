@@ -24,6 +24,7 @@ Object {
       },
       "sap.platform.runtime": Object {
         "componentProperties": Object {
+          "asyncHints": Object {},
           "url": "/my/app",
         },
       },
@@ -54,6 +55,7 @@ Object {
       },
       "sap.platform.runtime": Object {
         "componentProperties": Object {
+          "asyncHints": Object {},
           "url": "/my/app2",
         },
       },

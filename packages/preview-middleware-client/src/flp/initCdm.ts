@@ -1,5 +1,3 @@
-import merge from 'sap/base/util/merge';
-import { defaultConfig } from 'sap/ushell/bootstrap/cdm/cdm.constants';
 import { Window } from 'types/global';
 
 /**
@@ -9,13 +7,17 @@ import { Window } from 'types/global';
  * @returns {Promise<void>} A promise that resolves when the initialization is complete.
  */
 export default async function initCdm(container: typeof sap.ushell.Container): Promise<void> {
-    (window as unknown as Window)['sap-ushell-config'] = merge({}, defaultConfig, {
+    (window as unknown as Window)['sap-ushell-config'] = {
+        defaultRenderer: 'fiori2',
         renderers: {
             fiori2: {
                 componentData: {
                     config: {
                         enablePersonalization: false,
-                        enableAppFinder: true
+                        enableAppFinder: true,
+                        enableSearch: false,
+                        enableRecentActivity: true,
+                        rootIntent: 'Shell-home'
                     }
                 }
             }
@@ -42,6 +44,13 @@ export default async function initCdm(container: typeof sap.ushell.Container): P
                 adapter: {
                     config: {
                         userProfile: {
+                            metadata: {
+                                editablePropterties: [
+                                    'accessibility',
+                                    'contentDensity',
+                                    'theme'
+                                ]
+                            },
                             defaults: {
                                 email: 'john.doe@sap.com',
                                 firstName: 'John',
@@ -61,14 +70,39 @@ export default async function initCdm(container: typeof sap.ushell.Container): P
                     }
                 }
             },
+            PersonalizationV2: {
+                adapter: {
+                    module: 'sap.ushell.adapters.local.PersonalizationAdapter'
+                }
+            },
+            AppState: {
+                adapter: {
+                    module: 'sap.ushell.adapters.local.AppStateAdapter'
+                },
+                config: {
+                    transient: true
+                }
+            },
+            NavTargetResolutionInternal: {
+                config: {
+                    allowTestUrlComponentConfig: false,
+                    enableClientSideTargetResolution: true
+                },
+                adapter: {
+                    module: 'sap.ushell.adapters.local.NavTargetResolutionInternalAdapter'
+                }
+            },
+            UserInfo: {
+                adapter: {
+                    module: 'sap.ushell.adapters.local.UserInfoAdapter'
+                }
+            },
             FlpLaunchPage: {
                 adapter: {
                     module: 'sap.ushell.adapters.cdm.v3.FlpLaunchPageAdapter'
                 }
             }
         }
-    }) as {
-        [key: string]: unknown;
     };
 
     await container.init('cdm');

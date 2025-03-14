@@ -73,7 +73,8 @@ export function generateCdm(apps: TemplateConfig['apps'] = {}): FLPCdmConfig {
             },
             'sap.platform.runtime': {
                 'componentProperties': {
-                    url
+                    url,
+                    'asyncHints': {}
                 }
             }
         };

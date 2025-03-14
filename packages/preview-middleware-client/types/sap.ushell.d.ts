@@ -30,9 +30,3 @@ declare module 'sap/ushell/services/AppState' {
 
     export default AppState;
 }
-
-declare module 'sap/ushell/bootstrap/cdm/cdm.constants' {
-    export const defaultConfig: {
-        [key: string]: unknown;
-    };
-}

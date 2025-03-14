@@ -191,6 +191,7 @@ type FLPApp = {
     'sap.platform.runtime': {
         componentProperties: {
             url: string;
+            asyncHints: Record<string, unknown>;
         };
     };
 };
