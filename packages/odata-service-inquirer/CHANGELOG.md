@@ -1,5 +1,270 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.21
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/telemetry@0.5.70
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/project-access@1.29.16
+
+## 2.2.20
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/fiori-generator-shared@0.9.8
+    -   @sap-ux/telemetry@0.5.69
+    -   @sap-ux/inquirer-common@0.6.28
+
+## 2.2.19
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/fiori-generator-shared@0.9.7
+    -   @sap-ux/telemetry@0.5.68
+    -   @sap-ux/inquirer-common@0.6.27
+
+## 2.2.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.13
+-   @sap-ux/telemetry@0.5.67
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.6
+-   @sap-ux/inquirer-common@0.6.26
+
+## 2.2.17
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.5
+-   @sap-ux/telemetry@0.5.66
+-   @sap-ux/inquirer-common@0.6.25
+
+## 2.2.16
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+    -   @sap-ux/inquirer-common@0.6.24
+
+## 2.2.15
+
+### Patch Changes
+
+-   Updated dependencies [aaa432a]
+    -   @sap-ux/axios-extension@1.19.0
+
+## 2.2.14
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/fiori-generator-shared@0.9.3
+    -   @sap-ux/telemetry@0.5.65
+    -   @sap-ux/inquirer-common@0.6.23
+
+## 2.2.13
+
+### Patch Changes
+
+-   0ff192b: handle exception thrown when creating CF destination
+
+## 2.2.12
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.22
+
+## 2.2.11
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/telemetry@0.5.64
+    -   @sap-ux/fiori-generator-shared@0.9.2
+    -   @sap-ux/inquirer-common@0.6.21
+    -   @sap-ux/project-access@1.29.10
+    -   @sap-ux/axios-extension@1.18.6
+
+## 2.2.10
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/fiori-generator-shared@0.9.1
+    -   @sap-ux/telemetry@0.5.63
+    -   @sap-ux/inquirer-common@0.6.20
+
+## 2.2.9
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+    -   @sap-ux/inquirer-common@0.6.19
+
+## 2.2.8
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/fiori-generator-shared@0.8.1
+    -   @sap-ux/telemetry@0.5.62
+    -   @sap-ux/inquirer-common@0.6.18
+
+## 2.2.7
+
+### Patch Changes
+
+-   Updated dependencies [4fd3029]
+    -   @sap-ux/axios-extension@1.18.6
+
+## 2.2.6
+
+### Patch Changes
+
+-   fb4e328: Adds interoperability between `@vscode-logging/logger` and `@sap-ux/logger` to prevent crashes where non-implemented log functions were being called.
+    Fix entity-helper.ts to log error at correct level.
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+    -   @sap-ux/inquirer-common@0.6.17
+
+## 2.2.5
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.29
+    -   @sap-ux/telemetry@0.5.61
+    -   @sap-ux/inquirer-common@0.6.16
+
+## 2.2.4
+
+### Patch Changes
+
+-   7a6def1: Fix for connected system not returned for Cloud Foundry related prompts
+
+## 2.2.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/telemetry@0.5.60
+-   @sap-ux/axios-extension@1.18.5
+-   @sap-ux/fiori-generator-shared@0.7.28
+-   @sap-ux/inquirer-common@0.6.15
+
+## 2.2.2
+
+### Patch Changes
+
+-   cfa9b8c: add param to set isYUI for getSystemSelectionQuestions
+
+## 2.2.1
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/axios-extension@1.18.5
+-   @sap-ux/fiori-generator-shared@0.7.27
+-   @sap-ux/telemetry@0.5.59
+-   @sap-ux/inquirer-common@0.6.14
+
+## 2.2.0
+
+### Minor Changes
+
+-   65f15d9: Fix for btp-utils create dest api mapping. Adds feature CF Abap prompts for BAS.
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.26
+    -   @sap-ux/inquirer-common@0.6.13
+    -   @sap-ux/telemetry@0.5.58
+
+## 2.1.3
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/fiori-generator-shared@0.7.25
+    -   @sap-ux/telemetry@0.5.57
+    -   @sap-ux/inquirer-common@0.6.12
+
+## 2.1.2
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/fiori-generator-shared@0.7.24
+    -   @sap-ux/inquirer-common@0.6.11
+    -   @sap-ux/telemetry@0.5.56
+
+## 2.1.1
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/fiori-generator-shared@0.7.23
+    -   @sap-ux/telemetry@0.5.55
+    -   @sap-ux/inquirer-common@0.6.10
+
+## 2.1.0
+
+### Minor Changes
+
+-   5e3a5f8: Adds support for `showCollaborativeDraftWarning` option
+
+### Patch Changes
+
+-   2a85cad: Fix for qualifier prompt shown with no qualifiers
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
+## 2.0.1
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/fiori-generator-shared@0.7.22
+    -   @sap-ux/inquirer-common@0.6.8
+    -   @sap-ux/telemetry@0.5.54
+
 ## 2.0.0
 
 ### Major Changes

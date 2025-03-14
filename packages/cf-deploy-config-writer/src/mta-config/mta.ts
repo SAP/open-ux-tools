@@ -23,7 +23,8 @@ import {
     MTAAPIDestination,
     UI5StandaloneModuleDestination,
     ServiceAPIRequires,
-    HTMLAppBuildParams
+    HTMLAppBuildParams,
+    HTML5RepoHost
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
@@ -45,6 +46,7 @@ export class MtaConfig {
     private readonly modules: Map<string, mta.Module> = new Map();
     private readonly resources: Map<string, mta.Resource> = new Map();
     private readonly log: Logger | undefined;
+    private readonly mtaDir: string;
     private dirty = false;
     private mtaId: string;
 
@@ -70,6 +72,7 @@ export class MtaConfig {
     private constructor(mtaDir: string, logger: Logger | undefined) {
         this.mta = new Mta(mtaDir, false);
         this.log = logger;
+        this.mtaDir = mtaDir;
     }
 
     /**
@@ -82,8 +85,8 @@ export class MtaConfig {
             await this.loadMTAResources();
             await this.loadMTAModules();
             this.mtaId = await this.mta.getMtaID();
-        } catch (e) {
-            this.log?.error(t('error.unableToLoadMTA'));
+        } catch (error) {
+            this.log?.error(t('error.unableToLoadMTA', { error, mtaDir: this.mtaDir }));
         }
         return this;
     }
@@ -115,7 +118,7 @@ export class MtaConfig {
                 if (resource.parameters?.service === 'html5-apps-repo') {
                     this.resources.set(
                         resource.parameters['service-plan'] === 'app-host'
-                            ? 'html5-apps-repo:app-host'
+                            ? HTML5RepoHost
                             : 'html5-apps-repo:app-runtime',
                         resource
                     );
@@ -139,7 +142,7 @@ export class MtaConfig {
                     this.apps.set(module.name, module);
                 } else if (this.targetExists(module.requires ?? [], 'destination')) {
                     this.modules.set('com.sap.application.content:destination', module);
-                } else if (this.targetExists(module.requires ?? [], 'html5-apps-repo:app-host')) {
+                } else if (this.targetExists(module.requires ?? [], HTML5RepoHost)) {
                     this.modules.set('com.sap.application.content:resource', module);
                 } else {
                     this.modules.set(module.type as ModuleType, module); // i.e. 'approuter.nodejs'
@@ -150,11 +153,11 @@ export class MtaConfig {
     }
 
     private async addAppContent(): Promise<void> {
-        if (!this.resources.has('html5-apps-repo:app-host')) {
+        if (!this.resources.has(HTML5RepoHost)) {
             await this.addHtml5Host();
         }
-        // Setup the basic module template, artifacts will be added in another step
-        const appHostName = this.resources.get('html5-apps-repo:app-host')?.name;
+        // Set up the basic module template, artifacts will be added in another step
+        const appHostName = this.resources.get(HTML5RepoHost)?.name;
         if (appHostName) {
             const deployer: mta.Module = {
                 name: `${this.prefix.slice(0, 100)}-app-content`,
@@ -205,6 +208,24 @@ export class MtaConfig {
         this.dirty = true;
     }
 
+    /**
+     *
+     * @param serviceName
+     * @param resourceName
+     */
+    private async updateServiceName(serviceName: string, resourceName: string): Promise<void> {
+        const resource = this.resources.get(resourceName);
+        if (resource && !resource.parameters?.['service-name']) {
+            resource.parameters = {
+                ...(resource.parameters ?? {}),
+                'service-name': `${this.prefix.slice(0, 100)}-${serviceName}-service`
+            };
+            await this.mta.updateResource(resource);
+            this.resources.set(resourceName, resource);
+            this.dirty = true;
+        }
+    }
+
     private async addHtml5Host(): Promise<void> {
         const html5host = `${this.prefix.slice(0, 100)}-repo-host`; // Need to cater for -key being added too!
         const resource: mta.Resource = {
@@ -217,7 +238,7 @@ export class MtaConfig {
             }
         };
         await this.mta.addResource(resource);
-        this.resources.set('html5-apps-repo:app-host', resource);
+        this.resources.set(HTML5RepoHost, resource);
         this.dirty = true;
     }
 
@@ -444,38 +465,52 @@ export class MtaConfig {
     public async addApp(appModule: string, appPath: string): Promise<void> {
         // If an existing content module exists whether standalone/managed, append the new artifact
         const contentModule = this.modules.get('com.sap.application.content:resource');
+        let isHTML5AlreadyExisting = false; // False by default
         if (contentModule) {
             contentModule[MTABuildParams] = contentModule[MTABuildParams] ?? {};
             contentModule[MTABuildParams][MTABuildResult] =
                 contentModule[MTABuildParams]?.[MTABuildResult] ?? `resources`; // Default
             contentModule[MTABuildParams].requires = contentModule[MTABuildParams].requires ?? [];
+            const artifactName = `${appModule.slice(0, 128)}.zip`;
+            // The name of the HTML5 app will always be the artifact name
             if (
                 contentModule[MTABuildParams].requires?.findIndex(
-                    (app: mta.Requires) => app.name === appModule.slice(0, 128)
-                ) === -1
+                    (app: mta.Requires & { artifacts?: { [key: string]: any } }) =>
+                        app.artifacts?.includes?.(artifactName)
+                ) !== -1
             ) {
+                isHTML5AlreadyExisting = true;
+            } else {
                 contentModule[MTABuildParams].requires.push({
                     name: appModule.slice(0, 128),
-                    artifacts: [`${appModule.slice(0, 128)}.zip`],
-                    'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`
+                    artifacts: [artifactName],
+                    'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
             }
             await this.mta.updateModule(contentModule);
+            this.dirty = true;
         }
-
-        // Add application module
-        const html5Module = this.apps.get(appModule);
-        if (!html5Module) {
+        // Need to handle where existing HTML5 apps are added by `cds` which follow a different naming convention when added to mta
+        const modules = await this.mta.getModules();
+        for (const module of modules) {
+            if (module.type === 'html5' && module.name.endsWith(appModule) && isHTML5AlreadyExisting) {
+                module['build-parameters'] = HTMLAppBuildParams as HTML5App['build-parameters'];
+                await this.mta.updateModule(module);
+                this.dirty = true;
+            }
+        }
+        // Add application module, if not found already
+        if (!isHTML5AlreadyExisting && !this.apps.get(appModule)) {
             const app: HTML5App = {
                 name: appModule.slice(0, 128),
                 type: 'html5',
                 path: appPath,
                 'build-parameters': HTMLAppBuildParams as HTML5App['build-parameters']
-            };
+            } as HTML5App;
             await this.mta.addModule(app);
             this.apps.set(appModule, app);
+            this.dirty = true;
         }
-        this.dirty = true;
     }
 
     /**
@@ -525,7 +560,7 @@ export class MtaConfig {
         isManagedApp?: boolean;
         addMissingModules?: boolean;
     } = {}): Promise<void> {
-        if (isManagedApp && !this.modules.has('com.sap.application.content:destination')) {
+        if (isManagedApp) {
             await this.addManagedAppRouter();
         }
 
@@ -822,72 +857,79 @@ export class MtaConfig {
         if (!this.resources.has(ManagedXSUAA)) {
             await this.addManagedUaa();
         }
-        if (!this.resources.has('html5-apps-repo:app-host')) {
+        if (!this.resources.has(HTML5RepoHost)) {
             await this.addHtml5Host();
         }
 
-        const destinationName = this.resources.get('destination')?.name;
-        const appHostName = this.resources.get('html5-apps-repo:app-host')?.name;
-        const appHostServiceName = this.resources.get('html5-apps-repo:app-host')?.parameters?.['service-name'];
-        const managedXSUAAName = this.resources.get(ManagedXSUAA)?.name;
-        const managedXSUAAServiceName = this.resources.get(ManagedXSUAA)?.parameters?.['service-name'];
-        if (destinationName && appHostName && managedXSUAAName && managedXSUAAServiceName) {
-            const router: mta.Module = {
-                name: `${this.prefix.slice(0, 100)}-destination-content`,
-                type: 'com.sap.application.content',
-                requires: [
-                    {
-                        name: destinationName,
-                        parameters: {
-                            'content-target': true
-                        }
-                    },
-                    {
-                        name: appHostName,
-                        parameters: {
-                            'service-key': {
-                                name: `${appHostName}-key`
+        // Assume these need to be updated for safety!
+        await this.updateServiceName('html5', HTML5RepoHost);
+        await this.updateServiceName('xsuaa', ManagedXSUAA);
+
+        // We only want to append a new one, if missing from the existing mta config
+        if (!this.modules.has('com.sap.application.content:destination')) {
+            const destinationName = this.resources.get('destination')?.name;
+            const appHostName = this.resources.get(HTML5RepoHost)?.name;
+            const appHostServiceName = this.resources.get(HTML5RepoHost)?.parameters?.['service-name'];
+            const managedXSUAAName = this.resources.get(ManagedXSUAA)?.name;
+            const managedXSUAAServiceName = this.resources.get(ManagedXSUAA)?.parameters?.['service-name'];
+            if (destinationName && appHostName && managedXSUAAName && managedXSUAAServiceName) {
+                const router: mta.Module = {
+                    name: `${this.prefix.slice(0, 100)}-destination-content`,
+                    type: 'com.sap.application.content',
+                    requires: [
+                        {
+                            name: destinationName,
+                            parameters: {
+                                'content-target': true
                             }
-                        }
-                    },
-                    {
-                        name: managedXSUAAName,
-                        parameters: {
-                            'service-key': {
-                                name: `${managedXSUAAName}-key`
-                            }
-                        }
-                    }
-                ],
-                parameters: {
-                    content: {
-                        instance: {
-                            destinations: [
-                                {
-                                    Name: `${this.prefix.slice(0, 100)}_html_repo_host`,
-                                    ServiceInstanceName: appHostServiceName,
-                                    ServiceKeyName: `${appHostName}-key`,
-                                    'sap.cloud.service': `${this.prefix.slice(0, 100)}`
-                                },
-                                {
-                                    Authentication: 'OAuth2UserTokenExchange',
-                                    Name: `${this.prefix.slice(0, 100)}_uaa`,
-                                    ServiceInstanceName: managedXSUAAServiceName,
-                                    ServiceKeyName: `${managedXSUAAName}-key`,
-                                    'sap.cloud.service': `${this.prefix.slice(0, 100)}`
+                        },
+                        {
+                            name: appHostName,
+                            parameters: {
+                                'service-key': {
+                                    name: `${appHostName}-key`
                                 }
-                            ],
-                            'existing_destinations_policy': 'update'
+                            }
+                        },
+                        {
+                            name: managedXSUAAName,
+                            parameters: {
+                                'service-key': {
+                                    name: `${managedXSUAAName}-key`
+                                }
+                            }
                         }
+                    ],
+                    parameters: {
+                        content: {
+                            instance: {
+                                destinations: [
+                                    {
+                                        Name: `${this.prefix.slice(0, 100)}_html_repo_host`,
+                                        ServiceInstanceName: appHostServiceName,
+                                        ServiceKeyName: `${appHostName}-key`,
+                                        'sap.cloud.service': `${this.prefix.slice(0, 100)}`
+                                    },
+                                    {
+                                        Authentication: 'OAuth2UserTokenExchange',
+                                        Name: `${this.prefix.slice(0, 100)}_uaa`,
+                                        ServiceInstanceName: managedXSUAAServiceName,
+                                        ServiceKeyName: `${managedXSUAAName}-key`,
+                                        'sap.cloud.service': `${this.prefix.slice(0, 100)}`
+                                    }
+                                ],
+                                'existing_destinations_policy': 'update'
+                            }
+                        }
+                    },
+                    'build-parameters': {
+                        'no-source': true
                     }
-                },
-                'build-parameters': {
-                    'no-source': true
-                }
-            };
-            await this.mta.addModule(router);
-            this.modules.set('com.sap.application.content:destination', router);
-            this.dirty = true;
+                };
+                await this.mta.addModule(router);
+                this.modules.set('com.sap.application.content:destination', router);
+                this.dirty = true;
+            }
         }
     }
 

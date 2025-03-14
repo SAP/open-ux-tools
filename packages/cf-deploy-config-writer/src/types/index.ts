@@ -27,10 +27,12 @@ export type MTADestinationType = Destination & {
     ServiceKeyName: string;
     'sap.cloud.service': string;
 };
-export enum RouterModuleType {
-    Standard = 'standard',
-    Managed = 'managed'
-}
+export const RouterModuleType = {
+    Standard: 'standard',
+    Managed: 'managed'
+} as const;
+
+export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
 export interface MTABaseConfig {
     mtaId: string;
     mtaPath: string;
@@ -67,6 +69,7 @@ export interface CFConfig extends CFAppConfig, CFBaseConfig {
     firstServicePathSegment?: string;
     isMtaRoot?: boolean;
 }
+export interface CAPConfig extends Omit<CFBaseConfig, 'abapServiceProvider'> {}
 export const enum ApiHubType {
     apiHub = 'API_HUB',
     apiHubEnterprise = 'API_HUB_ENTERPRISE'

@@ -83,7 +83,7 @@ async function getDestinationNamePrompt(
  *
  * @returns {ConfirmQuestion<CfDeployConfigAnswers>} Returns a confirmation question object for configuring the application router.
  */
-function getAddManagedRouterPrompt(): CfDeployConfigQuestions {
+function getAddManagedAppRouterPrompt(): CfDeployConfigQuestions {
     return {
         type: 'confirm',
         name: promptNames.addManagedAppRouter,
@@ -134,7 +134,7 @@ export async function getQuestions(
 
     if (addManagedAppRouter) {
         log?.info(t('info.addManagedAppRouter'));
-        questions.push(getAddManagedRouterPrompt());
+        questions.push(getAddManagedAppRouterPrompt());
     }
 
     if (addOverwriteQuestion) {

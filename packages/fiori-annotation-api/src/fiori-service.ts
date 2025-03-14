@@ -38,6 +38,8 @@ import type {
 import { ApiError, ApiErrorCode } from './error';
 import { pathFromUri } from './utils';
 import { ChangeConverter } from './change-converter';
+import { join } from 'path';
+import { pathToFileURL } from 'url';
 
 export interface FioriAnnotationServiceConstructor<T> {
     new (
@@ -121,7 +123,7 @@ export class FioriAnnotationService {
         protected changeConverter: ChangeConverter,
         protected fs: Editor,
         protected options: FioriAnnotationServiceOptions,
-        project: Project,
+        private project: Project,
         protected serviceName: string,
         appName: string
     ) {
@@ -155,7 +157,7 @@ export class FioriAnnotationService {
             project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs'
         );
         const finalOptions = getOptionsWithDefaults(options);
-        const service = await getService(project, serviceName, appName, finalOptions.clearFileResolutionCache);
+        const service = await getService(project, serviceName, appName, fs, finalOptions.clearFileResolutionCache);
         const adapter = createAdapter(
             project,
             service,
@@ -238,6 +240,7 @@ export class FioriAnnotationService {
         for (const file of files) {
             this.fileCache.set(file.uri, file.content);
         }
+
         await this.adapter.sync(this.fileCache);
         this.isInitialSyncCompleted = true;
     }
@@ -461,12 +464,20 @@ async function getService(
     project: Project,
     serviceName: string,
     appName: string,
+    fsEditor: Editor | undefined,
     clearCache: boolean
 ): Promise<Service> {
     if (project.projectType === 'EDMXBackend') {
         return getLocalEDMXService(project, serviceName, appName);
     } else if (project.projectType === 'CAPJava' || project.projectType === 'CAPNodejs') {
-        return getCDSService(project.root, serviceName, clearCache);
+        const fileCache = new Map<string, string>();
+        if (fsEditor) {
+            for (const [relativePath, value] of Object.entries(fsEditor.dump())) {
+                const absolute = pathToFileURL(join(process.cwd(), relativePath)).toString();
+                fileCache.set(absolute, value.contents);
+            }
+        }
+        return getCDSService(project.root, serviceName, fileCache, clearCache);
     } else {
         throw new Error(`Unsupported project type "${project.projectType}"!`);
     }

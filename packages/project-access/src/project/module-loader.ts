@@ -57,17 +57,34 @@ export async function getModule<T>(module: string, version: string, options?: { 
     const logger = options?.logger;
     const moduleDirectory = join(moduleCacheRoot, module, version);
     const modulePackagePath = join(moduleDirectory, FileName.Package);
+    const installCommand = ['install', '--prefix', moduleDirectory, `${module}@${version}`];
     if (!existsSync(modulePackagePath)) {
         if (existsSync(moduleDirectory)) {
             await rm(moduleDirectory, { recursive: true });
         }
         await mkdir(moduleDirectory, { recursive: true });
-        await execNpmCommand(['install', '--prefix', moduleDirectory, `${module}@${version}`], {
+        await execNpmCommand(installCommand, {
             cwd: moduleDirectory,
             logger
         });
     }
-    return loadModuleFromProject<T>(moduleDirectory, module);
+    let resolvedModule: T;
+    try {
+        resolvedModule = await loadModuleFromProject<T>(moduleDirectory, module);
+    } catch (e) {
+        logger?.error(`Failed to load module: ${module}. Attempting to fix installation.`);
+        const modulePackageLockPath = join(moduleDirectory, FileName.PackageLock);
+        // If 'package-lock.json' file exists then use 'npm ci', otherwise try reinstall
+        const command = existsSync(modulePackageLockPath) ? ['ci'] : installCommand;
+        // Run reinstall only if the first attempt fails
+        await execNpmCommand(command, {
+            cwd: moduleDirectory,
+            logger
+        });
+        // Retry loading the module
+        resolvedModule = await loadModuleFromProject<T>(moduleDirectory, module);
+    }
+    return resolvedModule;
 }
 
 /**

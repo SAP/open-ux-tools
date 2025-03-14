@@ -153,11 +153,12 @@ sap-ux change inbound [path]
 Executing `sap-ux convert` converts an app to a new feature.
 
 ### [preview-config](#convert-preview-config)<a id="convert-preview-config"></a>
-Executing `sap-ux convert preview-config` in the root folder of an app will convert the respective app to the preview with virtual files. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.
+Executing `sap-ux convert preview-config` in the root folder of an app will convert the respective app to the preview with virtual endpoints. It will use the configuration from the scripts in the `package.json` file to adjust the UI5 configuration YAML files accordingly. The obsolete JS and TS sources will be deleted and the HTML files previously used for the preview will be renamed to `*_old.html`.
 ```sh
 sap-ux convert preview-config [path]
 ```
-- `-t | --tests` include test suite and test runners in the conversion to virtual files
+- `-s true | --simulate true | -s false | --simulate false` enable or disable simulate option without prompt
+- `-t true | --tests true | -t false | --tests false` enable or disable option to include test suite and test runners in the conversion to virtual files without prompt
 
 ## [sap-ux remove](#sap-ux-remove)
 Calling `sap-ux remove` allows removing a feature from a project.

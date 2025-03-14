@@ -82,6 +82,21 @@ describe('Test getCapProjectType() & isCapProject()', () => {
         const capPath = join(__dirname, '..', 'test-data', 'project', 'info', 'empty-project');
         expect(await getCapProjectType(capPath, memFs)).toBe(undefined);
     });
+
+    test('Test if getCapProjectType() considers deletions in memfs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'cap-app');
+        const memFsWithDeletion = create(createStorage());
+        memFsWithDeletion.delete(join(capPath, 'srv', 'keep'));
+        expect(await getCapProjectType(capPath, memFsWithDeletion)).toBe(undefined);
+    });
+
+    test('Test if getCapProjectType() considers addition in memfs', async () => {
+        const capPath = join(__dirname, '..', 'test-data', 'project', 'cap-root', 'invalid-cap-root-no-srv');
+        const memFsWithAddition = create(createStorage());
+        memFsWithAddition.write(join(capPath, 'srv', 'keep'), '');
+        memFsWithAddition.write(join('/tmp/any/file/test'), 'test');
+        expect(await getCapProjectType(capPath, memFsWithAddition)).toBe('CAPNodejs');
+    });
 });
 
 describe('Test isCapNodeJsProject()', () => {
@@ -153,6 +168,26 @@ describe('Test getCapModelAndServices()', () => {
                                 }
                             ],
                             'runtime': 'Node.js'
+                        },
+                        {
+                            'name': 'oDataV4Kind',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'odata-v4'
+                                }
+                            ],
+                            'runtime': 'Node.js'
+                        },
+                        {
+                            'name': 'withRuntime',
+                            'endpoints': [
+                                {
+                                    'path': 'url',
+                                    'kind': 'websocket'
+                                }
+                            ],
+                            'runtime': 'Node.js'
                         }
                     ])
                 }
@@ -180,6 +215,11 @@ describe('Test getCapModelAndServices()', () => {
                 },
                 {
                     'name': 'withRuntime',
+                    'urlPath': 'url',
+                    'runtime': 'Node.js'
+                },
+                {
+                    'name': 'oDataV4Kind',
                     'urlPath': 'url',
                     'runtime': 'Node.js'
                 }
@@ -231,7 +271,7 @@ describe('Test getCapModelAndServices()', () => {
                             'endpoints': [
                                 {
                                     'path': 'url',
-                                    'kind': 'rest'
+                                    'kind': 'odata'
                                 }
                             ],
                             'runtime': 'Node.js'
@@ -252,14 +292,6 @@ describe('Test getCapModelAndServices()', () => {
         expect(capMS).toEqual({
             model: 'MODEL',
             services: [
-                {
-                    'name': 'Forwardslash',
-                    'urlPath': 'odata/service/with/forwardslash/'
-                },
-                {
-                    'name': 'Backslash',
-                    'urlPath': 'odata/service/with/backslash/'
-                },
                 {
                     'name': 'withRuntime',
                     'urlPath': 'url',
@@ -786,12 +818,12 @@ describe('toReferenceUri', () => {
     });
     test('toReferenceUri with refUri starting with "../"', async () => {
         // mock reading of package json in root folder of sibling project
-        jest.spyOn(file, 'readFile').mockImplementation(async (uri) => {
+        jest.spyOn(file, 'readJSON').mockImplementation(async (uri) => {
             return uri ===
                 (os.platform() === 'win32'
                     ? '\\globalRoot\\monoRepo\\bookshop\\package.json'
                     : '/globalRoot/monoRepo/bookshop/package.json')
-                ? '{"name": "@capire/bookshop"}'
+                ? { 'name': '@capire/bookshop' }
                 : '';
         });
         // prepare

@@ -1,5 +1,5 @@
 import { spawn } from 'child_process';
-import { basename, dirname, join, normalize, relative, sep, resolve } from 'path';
+import { basename, dirname, join, normalize, relative, sep } from 'path';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import { FileName } from '../constants';
@@ -18,6 +18,7 @@ import {
     deleteDirectory,
     deleteFile,
     fileExists,
+    findBy,
     readDirectory,
     readFile,
     readJSON,
@@ -83,30 +84,11 @@ export async function isCapJavaProject(
  * @returns {Promise<boolean>} - Resolves to `true` if files are found in the `srv` folder; otherwise, `false`.
  */
 async function checkFilesInSrvFolder(srvFolderPath: string, memFs?: Editor): Promise<boolean> {
-    if (!memFs) {
-        return await fileExists(srvFolderPath);
+    try {
+        return (await findBy({ root: srvFolderPath, memFs })).length > 0;
+    } catch (error) {
+        return false;
     }
-    // Load the srv folder and its files into mem-fs
-    // This is necessary as mem-fs operates in-memory and doesn't automatically include files from disk.
-    // By loading the files, we ensure they are available within mem-fs.
-    if (await fileExists(srvFolderPath)) {
-        const fileSystemFiles = await readDirectory(srvFolderPath);
-        for (const file of fileSystemFiles) {
-            const filePath = join(srvFolderPath, file);
-            if (await fileExists(filePath)) {
-                const fileContent = await readFile(filePath);
-                memFs.write(filePath, fileContent);
-            }
-        }
-    }
-    // Dump the mem-fs state
-    const memFsDump = memFs.dump();
-    const memFsFiles = Object.keys(memFsDump).filter((filePath) => {
-        const normalisedFilePath = resolve(filePath);
-        const normalisedSrvPath = resolve(srvFolderPath);
-        return normalisedFilePath.startsWith(normalisedSrvPath);
-    });
-    return memFsFiles.length > 0;
 }
 
 /**
@@ -172,6 +154,17 @@ export async function getCapCustomPaths(capProjectPath: string): Promise<CapCust
 }
 
 /**
+ * Filters service endpoints to include only OData endpoints.
+ *
+ * @param endpoint The endpoint object to check.
+ * @param endpoint.kind The type of the endpoint.
+ * @returns `true` if the endpoint is of kind 'odata' or 'odata-v4'.
+ */
+function filterCapServiceEndpoints(endpoint: { kind: string }) {
+    return endpoint.kind === 'odata' || endpoint.kind === 'odata-v4';
+}
+
+/**
  * Return the CAP model and all services. The cds.root will be set to the provided project root path.
  *
  * @param projectRoot - CAP project root where package.json resides or object specifying project root and optional logger to log additional info
@@ -208,10 +201,19 @@ export async function getCapModelAndServices(
     _logger?.info(`@sap-ux/project-access:getCapModelAndServices - Using 'projectRoot': ${_projectRoot}`);
 
     let services = cds.compile.to.serviceinfo(model, { root: _projectRoot }) ?? [];
+    // filter services that have ( urlPath defined AND no endpoints) OR have endpoints with kind 'odata'
+    // i.e. ignore services for websockets and other unsupported protocols
+    if (services.filter) {
+        services = services.filter(
+            (service) =>
+                (service.urlPath && service.endpoints === undefined) ||
+                service.endpoints?.find(filterCapServiceEndpoints)
+        );
+    }
     if (services.map) {
         services = services.map((value) => {
             const { endpoints, urlPath } = value;
-            const odataEndpoint = endpoints?.find((endpoint) => endpoint.kind === 'odata');
+            const odataEndpoint = endpoints?.find(filterCapServiceEndpoints);
             const endpointPath = odataEndpoint?.path ?? urlPath;
             return {
                 name: value.name,
@@ -312,7 +314,7 @@ export async function getCdsServices(projectRoot: string, ignoreErrors = true): 
             model = await cds.load(roots, { root: projectRoot });
         } catch (e) {
             if (ignoreErrors && e.model) {
-                model = e.model;
+                model = e.model as csn;
             } else {
                 throw e;
             }
@@ -445,14 +447,14 @@ async function loadCdsModuleFromProject(capProjectPath: string, strict: boolean 
         // First approach, load @sap/cds from project
         module = await loadModuleFromProject<CdsFacade | { default: CdsFacade }>(capProjectPath, '@sap/cds');
     } catch (error) {
-        loadProjectError = error;
+        loadProjectError = error as Error;
     }
     if (!module) {
         try {
             // Second approach, load @sap/cds from @sap/cds-dk
             module = await loadGlobalCdsModule();
         } catch (error) {
-            loadError = error;
+            loadError = error as Error;
         }
     }
     if (!module) {
@@ -605,11 +607,10 @@ async function getPackageNameInFolder(
 async function readPackageNameForFolder(baseUri: string, relativeUri: string): Promise<string> {
     let packageName = '';
     try {
-        const path = normalize(baseUri + '/' + relativeUri + '/' + 'package.json');
-        const content = await readFile(path);
-        if (content) {
-            const parsed = JSON.parse(content);
-            packageName = parsed.name;
+        const path = normalize(baseUri + '/' + relativeUri + '/' + FileName.Package);
+        const content = await readJSON<Package>(path);
+        if (typeof content?.name === 'string') {
+            packageName = content.name;
         }
     } catch (e) {
         packageName = '';

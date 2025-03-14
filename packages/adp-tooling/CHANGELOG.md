@@ -1,5 +1,328 @@
 # @sap-ux/adp-tooling
 
+## 0.13.14
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/nodejs-utils@0.1.8
+    -   @sap-ux/odata-service-writer@0.26.11
+    -   @sap-ux/project-access@1.29.16
+
+## 0.13.13
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/odata-service-writer@0.26.10
+    -   @sap-ux/system-access@0.5.32
+    -   @sap-ux/inquirer-common@0.6.28
+
+## 0.13.12
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+
+## 0.13.11
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/odata-service-writer@0.26.9
+    -   @sap-ux/system-access@0.5.32
+    -   @sap-ux/inquirer-common@0.6.27
+
+## 0.13.10
+
+### Patch Changes
+
+-   14bec21: feat: Change "Add Local Annotation File" wizard dropdown option text in @sap-ux/adp-tooling
+
+## 0.13.9
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/odata-service-writer@0.26.8
+    -   @sap-ux/project-access@1.29.13
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/system-access@0.5.32
+    -   @sap-ux/inquirer-common@0.6.26
+
+## 0.13.8
+
+### Patch Changes
+
+-   Updated dependencies [cf05ceb]
+    -   @sap-ux/i18n@0.2.3
+    -   @sap-ux/project-access@1.29.12
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/odata-service-writer@0.26.7
+    -   @sap-ux/system-access@0.5.32
+    -   @sap-ux/inquirer-common@0.6.25
+
+## 0.13.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.24
+
+## 0.13.6
+
+### Patch Changes
+
+-   Updated dependencies [aaa432a]
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/system-access@0.5.32
+
+## 0.13.5
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/odata-service-writer@0.26.6
+    -   @sap-ux/system-access@0.5.31
+    -   @sap-ux/inquirer-common@0.6.23
+
+## 0.13.4
+
+### Patch Changes
+
+-   78dd2c2: fix: TypeScript template causes the iframe to break when controller extension is loaded
+
+## 0.13.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.22
+
+## 0.13.2
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/odata-service-writer@0.26.5
+    -   @sap-ux/i18n@0.2.2
+    -   @sap-ux/inquirer-common@0.6.21
+    -   @sap-ux/project-access@1.29.10
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/system-access@0.5.31
+
+## 0.13.1
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/odata-service-writer@0.26.4
+    -   @sap-ux/system-access@0.5.31
+    -   @sap-ux/inquirer-common@0.6.20
+
+## 0.13.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
+## 0.12.138
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.19
+
+## 0.12.137
+
+### Patch Changes
+
+-   df8d790: fix: 'Add Custom Table Column' CPE quick action is generating incorrect column fragment for Grid and Tree tables
+
+## 0.12.136
+
+### Patch Changes
+
+-   bb38bef: fix: Change fileName for the manifest change editors writers differs from the actual real file name
+
+## 0.12.135
+
+### Patch Changes
+
+-   Updated dependencies [dbd725a]
+    -   @sap-ux/odata-service-writer@0.26.3
+
+## 0.12.134
+
+### Patch Changes
+
+-   8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
+
+## 0.12.133
+
+### Patch Changes
+
+-   @sap-ux/odata-service-writer@0.26.2
+
+## 0.12.132
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/odata-service-writer@0.26.1
+    -   @sap-ux/system-access@0.5.31
+    -   @sap-ux/inquirer-common@0.6.18
+
+## 0.12.131
+
+### Patch Changes
+
+-   Updated dependencies [4fd3029]
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/system-access@0.5.31
+
+## 0.12.130
+
+### Patch Changes
+
+-   Updated dependencies [f1f9cbe]
+    -   @sap-ux/odata-service-writer@0.26.0
+
+## 0.12.129
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.17
+
+## 0.12.128
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/odata-service-writer@0.25.10
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.16
+
+## 0.12.127
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/odata-service-writer@0.25.9
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/project-access@1.29.6
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.15
+
+## 0.12.126
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 0.12.125
+
+### Patch Changes
+
+-   78bc772: Introduce ADP FLP config generator
+-   Updated dependencies [78bc772]
+    -   @sap-ux/i18n@0.2.1
+    -   @sap-ux/project-access@1.29.5
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/odata-service-writer@0.25.8
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.14
+
+## 0.12.124
+
+### Patch Changes
+
+-   Updated dependencies [4a90030]
+    -   @sap-ux/odata-service-writer@0.25.7
+
+## 0.12.123
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/inquirer-common@0.6.13
+    -   @sap-ux/system-access@0.5.30
+
+## 0.12.122
+
+### Patch Changes
+
+-   Updated dependencies [f349f56]
+    -   @sap-ux/odata-service-writer@0.25.6
+
+## 0.12.121
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/odata-service-writer@0.25.5
+    -   @sap-ux/system-access@0.5.29
+    -   @sap-ux/inquirer-common@0.6.12
+
+## 0.12.120
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/axios-extension@1.18.4
+    -   @sap-ux/inquirer-common@0.6.11
+    -   @sap-ux/system-access@0.5.29
+
+## 0.12.119
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/odata-service-writer@0.25.5
+    -   @sap-ux/system-access@0.5.28
+    -   @sap-ux/inquirer-common@0.6.10
+
+## 0.12.118
+
+### Patch Changes
+
+-   Updated dependencies [5e3a5f8]
+    -   @sap-ux/inquirer-common@0.6.9
+
+## 0.12.117
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/axios-extension@1.18.3
+    -   @sap-ux/inquirer-common@0.6.8
+    -   @sap-ux/system-access@0.5.28
+
 ## 0.12.116
 
 ### Patch Changes

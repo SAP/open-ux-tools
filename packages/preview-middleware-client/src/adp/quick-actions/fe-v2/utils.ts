@@ -5,6 +5,25 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { QuickActionContext } from '../../../cpe/quick-actions/quick-action-definition';
 import { getUi5Version, isLowerThanMinimalUi5Version, isVersionEqualOrHasNewerPatch } from '../../../utils/version';
 import { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import Component from 'sap/ui/core/Component';
+import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
+
+/**
+ * Gets app component of a v2 project.
+ *
+ * @param control - ManagedObject.
+ * @returns AppComponent.
+ */
+export function getV2AppComponent(control: ManagedObject): AppComponent | undefined {
+    const ownerComponent = Component.getOwnerComponentFor(control);
+    let result;
+    if (ownerComponent?.isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent')) {
+        result = ownerComponent.getAppComponent();
+    }
+    return result;
+}
 
 /**
  * Prepares the change for the manifest setting.
@@ -27,10 +46,11 @@ export async function prepareManifestChange(
     propertyValue: object | string
 ): Promise<FlexCommand[]> {
     const { flexSettings } = context;
-
+    const appComponent = getV2AppComponent(control);
     const modifiedValue = {
         changeType: 'appdescr_ui_generic_app_changePageConfiguration',
         reference: flexSettings.projectId,
+        appComponent,
         parameters: {
             parentPage: {
                 component,
@@ -62,7 +82,6 @@ export function isManifestArrayStructured(manifest: Manifest): boolean {
     return Array.isArray(manifest['sap.ui.generic.app']?.pages);
 }
 
-
 /**
  * Checks if the current UI5 version and manifest structure is supported in v2 applications.
  *
@@ -70,17 +89,17 @@ export function isManifestArrayStructured(manifest: Manifest): boolean {
  *
  * Returns `false`
  *
- *  - If the manifest is structured is an array
+ *  - If the manifest is structured is an array and is below version 1.134
  *  - If the UI5 version is not supported
  * Otherwise, returns `true`.
  *
  */
 export async function areManifestChangesSupported(manifest: Manifest): Promise<boolean> {
-    if (isManifestArrayStructured(manifest)) {
+    const version = await getUi5Version();
+    if (isLowerThanMinimalUi5Version(version, { major: 1, minor: 134 }) && isManifestArrayStructured(manifest)) {
         return false;
     }
 
-    const version = await getUi5Version();
     const isAboveOrEqualMinimalVersion = !isLowerThanMinimalUi5Version(version, { major: 1, minor: 128 });
     const isSupportedPatchVersion =
         isVersionEqualOrHasNewerPatch(version, { major: 1, minor: 96, patch: 35 }) ||

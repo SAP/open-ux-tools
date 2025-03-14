@@ -19,6 +19,7 @@ import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 import {
     ANALYTICAL_TABLE_TYPE,
     GRID_TABLE_TYPE,
+    MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from 'open/ux/preview/client/adp/quick-actions/control-types';
 
@@ -101,6 +102,80 @@ describe('AddFragment', () => {
             escapeHandlerCb({ resolve: jest.fn() });
 
             expect(openSpy).toHaveBeenCalledTimes(1);
+        });
+
+        test('fills json model with data and defaultAggregationArrayIndex', async () => {
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+
+            ControlUtils.getRuntimeControl = jest.fn().mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({
+                        'tooltip': {},
+                        'customData': {},
+                        'layoutData': {},
+                        'dependents': {},
+                        'dragDropConfig': {},
+                        'content': {}
+                    }),
+                    getDefaultAggregationName: jest.fn().mockReturnValue('content'),
+                    getName: jest.fn().mockReturnValue('Toolbar')
+                })
+            });
+
+            ControlUtils.getControlAggregationByName = jest
+                .fn()
+                .mockReturnValue({ 0: {}, 1: {}, 2: {}, 3: {}, 4: {}, 5: {}, 6: {} });
+
+            const overlayControl = {
+                getDesignTimeMetadata: jest.fn().mockReturnValue({
+                    getData: jest.fn().mockReturnValue({
+                        aggregations: { content: { actions: { move: null }, domRef: ':sap-domref' } }
+                    })
+                })
+            };
+            sapCoreMock.byId.mockReturnValue(overlayControl);
+
+            OverlayRegistry.getOverlay = jest.fn().mockReturnValue({
+                getDesignTimeMetadata: jest.fn().mockReturnValue({
+                    getData: jest.fn().mockReturnValue({
+                        aggregations: {}
+                    })
+                })
+            });
+
+            const addFragment = new AddFragment(
+                'adp.extension.controllers.AddFragment',
+                overlays as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring,
+                {
+                    title: 'ADP_ADD_FRAGMENT_DIALOG_TITLE',
+                    defaultAggregationArrayIndex: 1
+                }
+            );
+
+            const openSpy = jest.fn();
+            const setPropertySpy = jest.fn();
+            addFragment.model = {
+                setProperty: setPropertySpy
+            } as unknown as JSONModel;
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: openSpy,
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            const escapeHandlerCb = (addFragment.dialog.setEscapeHandler as jest.Mock).mock.calls[0][0];
+
+            escapeHandlerCb({ resolve: jest.fn() });
+
+            expect(openSpy).toHaveBeenCalledTimes(1);
+            const lastCall = setPropertySpy.mock.calls[setPropertySpy.mock.calls.length - 1];
+            expect(lastCall[0]).toBe('/selectedIndex');
+            expect(lastCall[1]).toBe(1);
         });
     });
 
@@ -1247,7 +1322,7 @@ describe('AddFragment', () => {
             jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                 getMetadata: jest.fn().mockReturnValue({
                     getAllAggregations: jest.fn().mockReturnValue({}),
-                    getName: jest.fn().mockReturnValue('sap.ui.mdc.ActionToolbar')
+                    getName: jest.fn().mockReturnValue('sap.ui.mdc.Table')
                 })
             } as unknown as ManagedObject);
 
@@ -1503,14 +1578,38 @@ describe('AddFragment', () => {
                 });
             });
 
-            const tableTypes = [TREE_TABLE_TYPE, GRID_TABLE_TYPE, ANALYTICAL_TABLE_TYPE];
-            test.each(tableTypes)(
+            const testCases: {
+                tableType:
+                    | typeof TREE_TABLE_TYPE
+                    | typeof GRID_TABLE_TYPE
+                    | typeof ANALYTICAL_TABLE_TYPE
+                    | typeof MDC_TABLE_TYPE;
+                templateName: 'ANALYTICAL_TABLE_COLUMN' | 'GRID_TREE_TABLE_COLUMN' | 'V4_MDC_TABLE_COLUMN';
+            }[] = [
+                {
+                    tableType: MDC_TABLE_TYPE,
+                    templateName: 'V4_MDC_TABLE_COLUMN'
+                },
+                {
+                    tableType: GRID_TABLE_TYPE,
+                    templateName: 'GRID_TREE_TABLE_COLUMN'
+                },
+                {
+                    tableType: TREE_TABLE_TYPE,
+                    templateName: 'GRID_TREE_TABLE_COLUMN'
+                },
+                {
+                    tableType: ANALYTICAL_TABLE_TYPE,
+                    templateName: 'ANALYTICAL_TABLE_COLUMN'
+                }
+            ];
+            test.each(testCases)(
                 'creates new analytical custom column fragment and a change (%s)',
-                async (tableType) => {
+                async (testCase) => {
                     jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
                         getMetadata: jest.fn().mockReturnValue({
                             getAllAggregations: jest.fn().mockReturnValue({}),
-                            getName: jest.fn().mockReturnValue(tableType)
+                            getName: jest.fn().mockReturnValue(testCase.tableType)
                         })
                     } as unknown as ManagedObject);
                     await addFragment.setup({
@@ -1535,7 +1634,7 @@ describe('AddFragment', () => {
 
                     expect(setContentSpy).toHaveBeenCalledWith({
                         ...dummyContent,
-                        templateName: 'ANALYTICAL_TABLE_COLUMN'
+                        templateName: testCase.templateName
                     });
                 }
             );

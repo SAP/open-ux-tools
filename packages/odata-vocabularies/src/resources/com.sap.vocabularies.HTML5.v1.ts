@@ -1,4 +1,4 @@
-// Last content update: Fri Jan 10 2025 12:27:42 GMT+0100 (Mitteleuropäische Normalzeit)
+// Last content update: Mon Feb 10 2025 23:35:57 GMT+0100 (Mitteleuropäische Normalzeit)
 import type { CSDL } from '@sap-ux/vocabularies/CSDL';
 
 export default {
@@ -77,7 +77,6 @@ export default {
             '$Kind': 'Term',
             '$Type': 'com.sap.vocabularies.HTML5.v1.LinkTargetType',
             '$DefaultValue': '_self',
-            '@com.sap.vocabularies.Common.v1.Experimental': true,
             '@Org.OData.Core.V1.Description':
                 'Where to open a link for the annotated [URL](https://oasis-tcs.github.io/odata-vocabularies/vocabularies/Org.OData.Core.V1.html#IsURL)',
             '@Org.OData.Core.V1.LongDescription':

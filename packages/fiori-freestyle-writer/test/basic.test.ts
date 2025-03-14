@@ -116,7 +116,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 ...commonConfig,
                 appOptions: {
                     loadReuseLibs: false,
-                    typescript: true
+                    typescript: true,
+                    addTests: true
                 }
             },
             settings: {}
@@ -127,7 +128,8 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 ...commonConfig,
                 appOptions: {
                     loadReuseLibs: false,
-                    typescript: true
+                    typescript: true,
+                    addTests: true
                 },
                 ui5: {
                     version: '1.108.1',
@@ -449,6 +451,57 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
                 projectPath: 'test/path',
                 serviceName: 'test-service',
                 capType: 'Node.js'
+            };
+
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                sapux: false,
+                typescript: false,
+                capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                sapux: false,
+                enableNPMWorkspaces: false,
+                enableCdsUi5Plugin: false
+            });
+        });
+        test('should perform CAP updates when CAP service is available, and isCdsUi5PluginEnabled is enabled', async () => {
+            const fs = create(createStorage());
+
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js',
+                cdsUi5PluginInfo: { isCdsUi5PluginEnabled: true }
+            };
+
+            const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({
+                sapux: false,
+                typescript: false,
+                capService: capServiceWithoutCdsUi5PluginInfo as CapServiceCdsInfo
+            });
+            await generate(curTestOutPath, freestyleApp, fs);
+
+            expect(applyCAPUpdates).toBeCalledTimes(1);
+            expect(applyCAPUpdates).toBeCalledWith(fs, capServiceWithoutCdsUi5PluginInfo, {
+                ...capProjectSettings,
+                sapux: false,
+                enableNPMWorkspaces: true,
+                enableCdsUi5Plugin: true
+            });
+        });
+
+        test('should NOT perform CAP updates when CAP service is available, and cds ui5 plugin is disabled', async () => {
+            const fs = create(createStorage());
+
+            const capServiceWithoutCdsUi5PluginInfo = {
+                projectPath: 'test/path',
+                serviceName: 'test-service',
+                capType: 'Node.js',
+                cdsUi5PluginInfo: { hasCdsUi5Plugin: false, isCdsUi5PluginEnabled: false, isWorkspaceEnabled: false }
             };
 
             const freestyleApp: FreestyleApp<BasicAppSettings> = getFreestyleApp({

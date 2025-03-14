@@ -7,6 +7,7 @@ import type {
     Intent,
     InternalTestConfig,
     MiddlewareConfig,
+    RtaConfig,
     TestConfig
 } from '../types';
 import { render } from 'ejs';
@@ -186,8 +187,14 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
  * @param logger logger instance
  */
 export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): void {
-    if (config.rta && config.adp === undefined) {
-        config.rta.editors = config.rta.editors.map((editor) => {
+    //prettier-ignore
+    if (config.rta) { //NOSONAR
+        config.editors ??= {};
+        config.editors.rta = sanitizeRtaConfig(config.rta, logger); //NOSONAR
+        delete config.rta; //NOSONAR
+    }
+    if (config.editors?.rta && config.adp === undefined) {
+        config.editors.rta.endpoints = config.editors.rta.endpoints.map((editor) => {
             if (editor.developerMode) {
                 logger.error('developerMode is ONLY supported for SAP UI5 adaptation projects.');
                 logger.warn(`developerMode for ${editor.path} disabled`);
@@ -199,13 +206,31 @@ export function sanitizeConfig(config: MiddlewareConfig, logger: ToolsLogger): v
 }
 
 /**
+ * Sanitize the deprecated RTA configuration.
+ *
+ * @param deprecatedRtaConfig deprecated RTA configuration
+ * @param logger logger instance
+ * @returns sanitized RTA configuration
+ */
+//prettier-ignore
+export function sanitizeRtaConfig(deprecatedRtaConfig: MiddlewareConfig['rta'], logger: Logger): RtaConfig | undefined { //NOSONAR
+    let rtaConfig: RtaConfig | undefined;
+    if (deprecatedRtaConfig) {
+        const { editors, ...rta } = deprecatedRtaConfig;
+        rtaConfig = { ...rta, endpoints: [...editors] };
+        logger.warn(`The configuration option 'rta' is deprecated. Please use 'editors.rta' instead.`);
+    }
+    return rtaConfig;
+}
+
+/**
  * Retrieves the configuration settings for UI5 flexibility services.
  *
  * @returns An array of flexibility service configurations, each specifying a connector
  *          and its options, such as the layers it applies to and its service URL, if applicable.
  */
 function getFlexSettings(): TemplateConfig['ui5']['flex'] {
-    const localConnectorPath = 'custom.connectors.WorkspaceConnector';
+    const localConnectorPath = 'open/ux/preview/client/flp/WorkspaceConnector';
 
     return [
         { connector: 'LrepConnector', layers: [], url: '/sap/bc/lrep' },
@@ -236,6 +261,12 @@ export async function addApp(
     logger: Logger
 ): Promise<void> {
     const id = manifest['sap.app']?.id ?? '';
+
+    if (manifest['sap.app']?.type === 'component') {
+        logger.debug(`No application added for id '${id}' because its type is 'component'`);
+        templateConfig.apps = templateConfig.apps ?? {};
+        return;
+    }
 
     const appName = getAppName(manifest, app.intent);
     templateConfig.ui5.resources[id] = app.target;
@@ -365,9 +396,9 @@ export function getPreviewPaths(config: MiddlewareConfig, logger: ToolsLogger = 
     const flpConfig = getFlpConfigWithDefaults(config.flp);
     urls.push({ path: `${flpConfig.path}#${flpConfig.intent.object}-${flpConfig.intent.action}`, type: 'preview' });
     // add editor urls
-    if (config.rta?.editors) {
-        config.rta.editors.forEach((editor) => {
-            urls.push({ path: editor.path, type: 'editor' });
+    if (config.editors?.rta) {
+        config.editors.rta.endpoints.forEach((endpoint) => {
+            urls.push({ path: endpoint.path, type: 'editor' });
         });
     }
     // add test urls if configured

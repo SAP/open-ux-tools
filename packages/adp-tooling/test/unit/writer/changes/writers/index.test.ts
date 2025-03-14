@@ -206,12 +206,7 @@ describe('ComponentUsagesWriter', () => {
         jest.useRealTimers();
 
         expect(writeChangeToFolderMock).toHaveBeenCalledTimes(1);
-        expect(writeChangeToFolderMock).toHaveBeenCalledWith(
-            mockProjectPath,
-            expect.any(Object),
-            `id_${systemTime.getTime()}_addComponentUsages.change`,
-            {}
-        );
+        expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 });
 
@@ -275,12 +270,7 @@ describe('NewModelWriter', () => {
             ChangeType.ADD_NEW_MODEL
         );
 
-        expect(writeChangeToFolderMock).toHaveBeenCalledWith(
-            mockProjectPath,
-            expect.any(Object),
-            expect.stringContaining('_addNewModel.change'),
-            {}
-        );
+        expect(writeChangeToFolderMock).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 });
 
@@ -342,12 +332,7 @@ describe('DataSourceWriter', () => {
             expect.anything()
         );
 
-        expect(writeChangeToFolder).toHaveBeenCalledWith(
-            mockProjectPath,
-            expect.any(Object),
-            `id_${systemTime.getTime()}_changeDataSource.change`,
-            {}
-        );
+        expect(writeChangeToFolder).toHaveBeenCalledWith(mockProjectPath, expect.any(Object), expect.any(Object));
     });
 
     it('should add annotation change if annotationUri is provided', async () => {

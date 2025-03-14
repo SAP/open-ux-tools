@@ -1,5 +1,169 @@
 # @sap-ux/inquirer-common
 
+## 0.6.29
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/telemetry@0.5.70
+    -   @sap-ux/ui5-info@0.9.1
+    -   @sap-ux/fiori-generator-shared@0.9.9
+
+## 0.6.28
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.8
+-   @sap-ux/telemetry@0.5.69
+
+## 0.6.27
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.7
+-   @sap-ux/telemetry@0.5.68
+
+## 0.6.26
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.67
+-   @sap-ux/fiori-generator-shared@0.9.6
+
+## 0.6.25
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.5
+-   @sap-ux/telemetry@0.5.66
+
+## 0.6.24
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+
+## 0.6.23
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.3
+-   @sap-ux/telemetry@0.5.65
+
+## 0.6.22
+
+### Patch Changes
+
+-   Updated dependencies [88520b4]
+    -   @sap-ux/ui5-info@0.9.0
+
+## 0.6.21
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/telemetry@0.5.64
+    -   @sap-ux/fiori-generator-shared@0.9.2
+
+## 0.6.20
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.1
+-   @sap-ux/telemetry@0.5.63
+
+## 0.6.19
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+
+## 0.6.18
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.8.1
+-   @sap-ux/telemetry@0.5.62
+
+## 0.6.17
+
+### Patch Changes
+
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+
+## 0.6.16
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.29
+-   @sap-ux/telemetry@0.5.61
+
+## 0.6.15
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.60
+-   @sap-ux/fiori-generator-shared@0.7.28
+
+## 0.6.14
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.27
+-   @sap-ux/telemetry@0.5.59
+
+## 0.6.13
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/fiori-generator-shared@0.7.26
+    -   @sap-ux/telemetry@0.5.58
+
+## 0.6.12
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.25
+-   @sap-ux/telemetry@0.5.57
+
+## 0.6.11
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+    -   @sap-ux/fiori-generator-shared@0.7.24
+    -   @sap-ux/telemetry@0.5.56
+
+## 0.6.10
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.23
+-   @sap-ux/telemetry@0.5.55
+
+## 0.6.9
+
+### Patch Changes
+
+-   5e3a5f8: Adds support for `showCollaborativeDraftWarning` option
+
+## 0.6.8
+
+### Patch Changes
+
+-   Updated dependencies [df2d965]
+    -   @sap-ux/btp-utils@0.18.0
+    -   @sap-ux/fiori-generator-shared@0.7.22
+    -   @sap-ux/telemetry@0.5.54
+
 ## 0.6.7
 
 ### Patch Changes

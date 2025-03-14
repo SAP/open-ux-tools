@@ -2,11 +2,25 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
-import { getTemplatePath } from '../utils';
-import { MTAYamlFile, MTAVersion, MTADescription, deployMode, enableParallelDeployments } from '../constants';
+import { getTemplatePath, setMtaDefaults, validateVersion } from '../utils';
+import {
+    MTAYamlFile,
+    MTAVersion,
+    MTADescription,
+    deployMode,
+    enableParallelDeployments,
+    CDSAddMtaParams,
+    CDSBinNotFound,
+    CDSExecutable,
+    MTABinNotFound,
+    MTAExecutable
+} from '../constants';
 import type { mta } from '@sap/mta-lib';
-import type { MTABaseConfig } from '../types';
+import { type MTABaseConfig, type CFBaseConfig } from '../types';
 import LoggerHelper from '../logger-helper';
+import { sync } from 'hasbin';
+import { spawnSync } from 'child_process';
+import { t } from '../i18n';
 
 /**
  * Get the MTA ID, read from the root path specified.
@@ -33,7 +47,7 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
                 break;
             }
         } catch (error) {
-            await new Promise((resolve) => setTimeout(resolve, 200));
+            await new Promise((resolve) => setTimeout(resolve, 300));
         }
     }
     LoggerHelper.logger?.info(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
@@ -64,6 +78,7 @@ export function createMTA(config: MTABaseConfig): void {
     });
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
     writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
+    LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 
 /**
@@ -91,6 +106,79 @@ export async function addMtaDeployParameters(mtaInstance: MtaConfig): Promise<vo
     params[deployMode] = 'html5-repo';
     params[enableParallelDeployments] = true;
     await mtaInstance.updateParameters(params);
+}
+
+/**
+ * Validate MTA binary is available.
+ *
+ */
+export function doesMTABinaryExist(): void {
+    // CF Writer is dependent on the mta-lib library, which in turn relies on the mta executable being installed and available in the path
+    if (!sync(MTAExecutable)) {
+        throw new Error(MTABinNotFound);
+    }
+}
+
+/**
+ * Validate CDS binary is available.
+ *
+ */
+export function doesCDSBinaryExist(): void {
+    // CF Writer is dependent on the cds library
+    if (!sync(CDSExecutable)) {
+        throw new Error(CDSBinNotFound);
+    }
+}
+
+/**
+ * Create MTA using `cds` binary to add mta and any optional services.
+ *
+ * @param cwd
+ * @param options
+ */
+export function createCAPMTA(cwd: string, options?: string[]): void {
+    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
+    if (result?.error) {
+        throw new Error(`Something went wrong creating mta.yaml! ${result.error}`);
+    }
+    // Ensure the package-lock is created otherwise mta build will fail
+    const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
+    result = spawnSync(cmd, ['install', '--ignore-engines'], { cwd });
+    if (result?.error) {
+        throw new Error(`Something went wrong installing node modules! ${result.error}`);
+    }
+    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
+}
+
+/**
+ * Validate the writer configuration to ensure all required parameters are present.
+ *
+ * @param config writer configuration
+ */
+export function validateMtaConfig(config: CFBaseConfig): void {
+    // We use mta-lib, which in turn relies on the mta executable being installed and available in the path
+    doesMTABinaryExist();
+
+    if (!config.routerType || !config.mtaId || !config.mtaPath) {
+        throw new Error(t('error.missingMtaParameters'));
+    }
+    if (config.mtaId.length > 128 || !/^[a-zA-Z_]/.test(config.mtaId)) {
+        throw new Error(t('error.invalidMtaId'));
+    }
+    if (!/^[\w\-.]*$/.test(config.mtaId)) {
+        throw new Error(t('error.invalidMtaIdWithChars'));
+    }
+
+    validateVersion(config.mtaVersion);
+
+    if (
+        config.abapServiceProvider &&
+        (!config.abapServiceProvider.abapService || !config.abapServiceProvider.abapServiceName)
+    ) {
+        throw new Error(t('error.missingABAPServiceBindingDetails'));
+    }
+
+    setMtaDefaults(config);
 }
 
 export * from './mta';

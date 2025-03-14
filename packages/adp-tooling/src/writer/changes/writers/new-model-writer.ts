@@ -82,6 +82,6 @@ export class NewModelWriter implements IWriter<NewModelData> {
         const content = this.constructContent(data);
         const change = getChange(data.variant, timestamp, content, ChangeType.ADD_NEW_MODEL);
 
-        writeChangeToFolder(this.projectPath, change, `id_${timestamp}_addNewModel.change`, this.fs);
+        writeChangeToFolder(this.projectPath, change, this.fs);
     }
 }

@@ -191,7 +191,7 @@ describe('flp-config generator', () => {
         const answers: FLPConfigAnswers = {
             semanticObject: 'com-fiori-tools-travel',
             action: 'inbound',
-            title: '{{flpTitle}}',
+            title: '{{com-fiori-tools-travel-inbound.flpTitle}}',
             overwrite: true
         };
 
@@ -209,15 +209,6 @@ describe('flp-config generator', () => {
                 .withPrompts({
                     s4Continue: true,
                     ...answers
-                })
-                .withOptions({
-                    data: {
-                        additionalPrompts: {
-                            confirmConfigUpate: {
-                                show: true
-                            }
-                        }
-                    }
                 })
                 .run()
         ).resolves.not.toThrow();
@@ -249,7 +240,7 @@ describe('flp-config generator', () => {
         const answers: FLPConfigAnswers = {
             semanticObject: 'com-fiori-tools-travel',
             action: 'inbound',
-            title: '{{flpTitle}}'
+            title: '{{com-fiori-tools-travel-inbound.flpTitle}}'
         };
 
         await expect(
@@ -290,8 +281,8 @@ describe('flp-config generator', () => {
         const answers: FLPConfigAnswers = {
             semanticObject: 'so1',
             action: 'action1',
-            title: '{{flpTitle}}',
-            subTitle: '{{flpSubtitle}}'
+            title: '{{so1-action1.flpTitle}}',
+            subTitle: '{{so1-action1.flpSubtitle}}'
         };
 
         await expect(
@@ -329,7 +320,7 @@ describe('flp-config generator', () => {
         const answers: FLPConfigAnswers = {
             semanticObject: 'so1',
             action: 'action1',
-            title: '{{flpTitle}}'
+            title: '{{so1-action1.flpTitle}}'
         };
 
         await expect(
@@ -367,7 +358,7 @@ describe('flp-config generator', () => {
         const answers: FLPConfigAnswers = {
             semanticObject: 'so1',
             action: 'action1',
-            title: '{{flpTitle}}'
+            title: '{{so1-action1.flpTitle}}'
         };
 
         await expect(
@@ -434,8 +425,8 @@ describe('flp-config generator', () => {
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers, true);
 
         const i18nContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/webapp/i18n/i18n.properties`).toString();
-        expect(i18nContent).toContain('flpTitle=title1');
-        expect(i18nContent).toContain('flpSubtitle=subtitle1');
+        expect(i18nContent).toContain(`${answers.semanticObject}-${answers.action}.flpTitle=${answers.title}`);
+        expect(i18nContent).toContain(`${answers.semanticObject}-${answers.action}.flpSubtitle=${answers.subTitle}`);
     });
 
     it('adds flp-config, updates i18n file using bundle reference', async () => {
@@ -480,8 +471,8 @@ describe('flp-config generator', () => {
         assertInboundsHasConfig(get(changedManifest, crossNavigationPropertyPath), answers, true);
 
         const i18nContent = fs.readFileSync(`${OUTPUT_DIR_PREFIX}/app1/webapp/i18n/i18n.properties`).toString();
-        expect(i18nContent).toContain('flpTitle=title1');
-        expect(i18nContent).toContain('flpSubtitle=subtitle1');
+        expect(i18nContent).toContain(`${answers.semanticObject}-${answers.action}.flpTitle=${answers.title}`);
+        expect(i18nContent).toContain(`${answers.semanticObject}-${answers.action}.flpSubtitle=${answers.subTitle}`);
     });
 
     it('shows error when createPropertiesI18nEntries fails', async () => {

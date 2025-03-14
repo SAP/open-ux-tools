@@ -28,7 +28,7 @@ import {
 import { fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
-import { join } from 'path';
+import { join, posix, relative, sep } from 'path';
 import { readFile } from 'fs/promises';
 import yaml from 'js-yaml';
 
@@ -317,10 +317,14 @@ export class UI5Config {
      * Adds a backend configuration to an existing fiori-tools-proxy middleware keeping any existing 'fiori-tools-proxy' backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
      * @param backend config of backend that is to be proxied
+     * @param ignoreCertError if true some certificate errors are ignored
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
-    public addBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): UI5Config {
+    public addBackendToFioriToolsProxydMiddleware(
+        backend: FioriToolsProxyConfigBackend,
+        ignoreCertError: boolean = false
+    ): this {
         const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
         const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
         if (!proxyMiddleware) {
@@ -340,6 +344,9 @@ export class UI5Config {
                 start: proxyMiddleware as YAMLMap,
                 path: 'configuration'
             });
+            if (ignoreCertError !== undefined && proxyMiddlewareConfig.ignoreCertError !== ignoreCertError) {
+                configuration.set('ignoreCertError', ignoreCertError);
+            }
             const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
             if (backendConfigs.items.length === 0) {
                 configuration.set('backend', [backendNode]);
@@ -352,6 +359,11 @@ export class UI5Config {
             this.document
                 .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
                 .set('backend', [backendNode]);
+            if (ignoreCertError !== undefined && proxyMiddlewareConfig?.ignoreCertError !== ignoreCertError) {
+                this.document
+                    .getMap({ start: proxyMiddleware as YAMLMap, path: 'configuration' })
+                    .set('ignoreCertError', ignoreCertError);
+            }
         }
         return this;
     }
@@ -429,20 +441,22 @@ export class UI5Config {
     /**
      * Adds a instance of the mockserver middleware to the config.
      *
+     * @param basePath - path to project root, where package.json and ui5.yaml is
+     * @param webappPath - path to webapp folder, where manifest.json is
      * @param dataSourcesConfig - annotations config that is to be mocked
      * @param annotationsConfig - annotations config that is to be mocked
-     * @param appRoot - root to the application
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public addMockServerMiddleware(
+        basePath: string,
+        webappPath: string,
         dataSourcesConfig: DataSourceConfig[],
-        annotationsConfig: MockserverConfig['annotations'],
-        appRoot?: string
+        annotationsConfig: MockserverConfig['annotations']
     ): this {
         this.document.appendTo({
             path: 'server.customMiddleware',
-            value: getMockServerMiddlewareConfig(dataSourcesConfig, annotationsConfig, appRoot)
+            value: getMockServerMiddlewareConfig(basePath, webappPath, dataSourcesConfig, annotationsConfig)
         });
         return this;
     }
@@ -450,15 +464,17 @@ export class UI5Config {
     /**
      * Adds a service configuration to an existing sap-fe-mockserver middleware keeping any existing service configurations. If the config does not contain a sap-fe-mockserver middleware, an error is thrown.
      *
+     * @param basePath - path to project root, where package.json and ui5.yaml is
+     * @param webappPath - path to webapp folder, where manifest.json is
      * @param dataSourceConfig - dataSource config from manifest to add to mockserver middleware services list
-     * @param appRoot - root to the application
      * @param annotationsConfig - optional, annotations config that is to be mocked
      * @returns {UI5Config} the UI5Config instance
      * @memberof UI5Config
      */
     public addServiceToMockserverMiddleware(
+        basePath: string,
+        webappPath: string,
         dataSourceConfig: DataSourceConfig,
-        appRoot?: string,
         annotationsConfig: MockserverConfig['annotations'] = []
     ): this {
         const mockserverMiddleware = this.findCustomMiddleware<MockserverConfig>('sap-fe-mockserver');
@@ -466,7 +482,10 @@ export class UI5Config {
             throw new Error('Could not find sap-fe-mockserver');
         } else {
             // Else append new data to current middleware config and then run middleware update
-            const serviceRoot = `${appRoot ?? './webapp'}/localService/${dataSourceConfig.serviceName}`;
+            const serviceRoot = `.${posix.sep}${relative(
+                basePath,
+                join(webappPath, 'localService', dataSourceConfig.serviceName)
+            ).replaceAll(sep, posix.sep)}`;
 
             const mockserverMiddlewareConfig = mockserverMiddleware?.configuration;
             if (mockserverMiddlewareConfig?.services) {
