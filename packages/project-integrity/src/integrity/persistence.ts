@@ -35,25 +35,26 @@ export async function readIntegrityData(integrityFilePath: string): Promise<Inte
  * @param content - content to write to the integrity file
  */
 export async function writeIntegrityData(integrityFilePath: string, content: Integrity): Promise<void> {
+    const clonedContent = structuredClone(content); // clone to ensure integrity data has no getters
     const integrityDir = dirname(integrityFilePath);
     if (!existsSync(integrityDir)) {
         await mkdir(integrityDir, { recursive: true });
     }
 
-    for (const fileIntegrity of content.fileIntegrity) {
+    for (const fileIntegrity of clonedContent.fileIntegrity) {
         fileIntegrity.filePath = relative(integrityDir, fileIntegrity.filePath);
         if (typeof fileIntegrity.content === 'string') {
             fileIntegrity.content = compressToBase64(fileIntegrity.content);
         }
     }
 
-    for (const contentIntegrity of content.contentIntegrity) {
+    for (const contentIntegrity of clonedContent.contentIntegrity) {
         if (typeof contentIntegrity.content === 'string') {
             contentIntegrity.content = compressToBase64(contentIntegrity.content);
         }
     }
 
-    await writeFile(integrityFilePath, JSON.stringify(content), { encoding: 'utf-8' });
+    await writeFile(integrityFilePath, JSON.stringify(clonedContent), { encoding: 'utf-8' });
 }
 
 /**
