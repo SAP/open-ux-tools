@@ -12,6 +12,7 @@ import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { CommunicationService } from '../cpe/communication-service';
 import { getTextBundle } from '../i18n';
+import Component from 'sap/ui/core/Component';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -297,7 +298,7 @@ export async function init({
                 }
 
                 const options: RTAOptions = {
-                    rootControl: view,
+                    rootControl: view as unknown as Component,
                     validateAppVersion: false,
                     flexSettings
                 };

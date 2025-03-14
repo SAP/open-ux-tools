@@ -3,25 +3,25 @@ import UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import hasStableId from 'sap/ui/rta/util/hasStableId';
+import hasStableId from 'sap/ui/rta/util/hasStableId';  
 
 /** sap.ui.fl */
 import FlUtils from 'sap/ui/fl/Utils';
+import XMLView from 'sap/ui/core/mvc/XMLView';
 
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { isReuseComponent } from '../cpe/utils';
-import { Ui5VersionInfo } from '../utils/version';
 import { DialogFactory, DialogNames } from './dialog-factory';
+import type { OutlineService } from '../cpe/outline/service';
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
  *
  * @param control UI5 control.
  * @param syncViewsIds Runtime Authoring
- * @param ui5VersionInfo UI5 version information
+ * @param outlineService Outline service instance
  * @param isCloud Whether the application is running in the cloud
  *
  * @returns boolean whether menu item is enabled or not
@@ -29,16 +29,15 @@ import { DialogFactory, DialogNames } from './dialog-factory';
 export function isControllerExtensionEnabledForControl(
     control: ManagedObject,
     syncViewsIds: string[],
-    ui5VersionInfo: Ui5VersionInfo,
+    outlineService: OutlineService,
     isCloud: boolean
 ): boolean {
-    const clickedControlId = FlUtils.getViewForControl(control).getId();
-    const isControlInSyncView = syncViewsIds.includes(clickedControlId);
+    const view = FlUtils.getViewForControl(control);
+    const isControlInSyncView = syncViewsIds.includes(view.getId());
 
-    if(isCloud) {
-        const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
-        return !isControlInSyncView && !isClickedControlReuseComponent;
-    }
+    // if(isCloud) {
+        return !isControlInSyncView && !outlineService.hasReuseComponents(view as XMLView);
+    // }
     return !isControlInSyncView;
 }
 
@@ -47,7 +46,7 @@ export function isControllerExtensionEnabledForControl(
  *
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
- * @param ui5VersionInfo UI5 version information
+ * @param outlineService Outline service instance
  * @param isCloud Whether the application is running in the cloud
  *
  * @returns boolean whether menu item is enabled or not
@@ -55,30 +54,32 @@ export function isControllerExtensionEnabledForControl(
 export const isControllerExtensionEnabled = (
     overlays: ElementOverlay[],
     syncViewsIds: string[],
-    ui5VersionInfo: Ui5VersionInfo,
+    outlineService: OutlineService,
     isCloud: boolean
 ): boolean => {
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
-    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, ui5VersionInfo, isCloud);
+    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, outlineService, isCloud);
 };
 
 /**
  * Determines whether the fragment command should be enabled based on the provided overlays.
  *
  * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
- * @param ui5VersionInfo UI5 version information
+ * @param {OutlineService} outlineService - The OutlineService instance.
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
-export const isFragmentCommandEnabled = (overlays: ElementOverlay[], ui5VersionInfo: Ui5VersionInfo): boolean => {
+export const isFragmentCommandEnabled = (overlays: ElementOverlay[], outlineService: OutlineService): boolean => {
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
 
     const control = overlays[0].getElement();
 
-    return hasStableId(overlays[0]) && !isReuseComponent(control.getId(), ui5VersionInfo);
+    const view = FlUtils.getViewForControl(control);
+
+    return hasStableId(overlays[0]) && !(outlineService.hasReuseComponents(view as XMLView));
 };
 
 /**
@@ -100,9 +101,9 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
  *
  * @param rta Runtime Authoring
  * @param syncViewsIds Ids of all application sync views
- * @param ui5VersionInfo UI5 version information
+ * @param outlineService Outline service instance
  */
-export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): void => {
+export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], outlineService: OutlineService): void => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
 
@@ -112,7 +113,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5Ve
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
-        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, ui5VersionInfo)
+        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, outlineService)
     });
 
     contextMenu.addMenuItem({
@@ -121,6 +122,6 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5Ve
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, ui5VersionInfo, isCloud)
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, outlineService, isCloud)
     });
 };
