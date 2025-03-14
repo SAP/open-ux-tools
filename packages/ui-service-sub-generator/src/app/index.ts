@@ -1,5 +1,5 @@
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, UiServiceGenerator } from '@sap-ux/axios-extension';
 import type { Destination } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -171,7 +171,7 @@ export default class extends Generator {
         });
         TelemetryHelper.markAppGenStartTime();
         await generateService(
-            this.systemSelectionAnswers.objectGenerator!,
+            this.systemSelectionAnswers.objectGenerator as UiServiceGenerator,
             this.serviceConfigAnswers.content,
             transportReqNumber,
             this.appWizard

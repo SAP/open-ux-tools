@@ -5,14 +5,14 @@
     "PROMPT_DRAFT_ENABLED": "Draft Enabled",
     "PROMPT_LAUNCH_APP_GEN": "Do you want to create an SAP Fiori application with the newly generated service?",
     "PROMPT_LAUNCH_APP_GEN_BREADCRUMB": "Create SAP Fiori Application?",
-    "ERROR_VALIDATING_CONTENT": "There was a backend validation error for the service content and package provided. Service generation cannot continue. Please try again or contact an admin for the backend system.",
-    "ERROR_FETCHING_CONTENT_FOR_SERVICE_BINDING": "Error fetching content for service binding of the business object. Please try again or contact an admin for the backend system.",
+    "ERROR_VALIDATING_CONTENT": "There was a back-end validation error for the service content and package provided. Service generation cannot continue. Please try again or contact an admin for the back-end system.",
+    "ERROR_FETCHING_CONTENT_FOR_SERVICE_BINDING": "Error fetching content for service binding of the business object. Please try again or contact an admin for the back-end system.",
     "PROMPT_SERVICE_NAME_BREADCRUMB": "Service Name",
     "PROMPT_SERVICE_NAME": "Service Name (not editable)",
     "INFO_APP_GEN_LAUNCH": "The SAP Fiori generator will launch after the UI service has been created",
-    "ERROR_FETCHING_BUSINESS_OBJECTS": "Error fetching business object interfaces from the backend system. Please try again or contact an admin for the backend system.",
+    "ERROR_FETCHING_BUSINESS_OBJECTS": "Error fetching business object interfaces from the back-end system. Please try again or contact an admin for the back-end system.",
     "ERROR_FETCHING_GENERATOR": "Error fetching generator: {{error}}",
     "NO_GENERATOR_FOUND_BO": "No generator was found for the selected business object interface",
-    "ERROR_FETCHING_CDS_VIEWS": "Error fetching CDS views from backend system: {{error}}",
+    "ERROR_FETCHING_CDS_VIEWS": "Error fetching CDS views from back-end system: {{error}}",
     "NO_GENERATOR_FOUND_CDS_SERVICE": "No generator was found for the selected ABAP CDS service"
 }

@@ -73,7 +73,7 @@ export async function writeBASMetadata(
     }
     if (metadata) {
         const serviceMetadataContent = getServiceMedadataContent(
-            inputData.providerSystem!,
+            inputData.providerSystem as ProviderSystem,
             relativeURL,
             metadata,
             JSON.parse(serviceConfig.content)
