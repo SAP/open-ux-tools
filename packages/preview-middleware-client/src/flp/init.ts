@@ -349,9 +349,9 @@ export async function init({
     }
 
     const renderer =
-        ui5VersionInfo.major < 2 || !enhancedHomePage
-            ? await container.createRenderer(undefined, true)
-            : await container.createRendererInternal(undefined, true);
+        ui5VersionInfo.major > 1 || enhancedHomePage
+            ? await container.createRendererInternal(undefined, true)
+            : await container.createRenderer(undefined, true);
     renderer.placeAt('content');
 }
 
