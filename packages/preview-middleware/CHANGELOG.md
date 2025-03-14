@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.18.19
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
 ## 0.18.18
 
 ### Patch Changes
