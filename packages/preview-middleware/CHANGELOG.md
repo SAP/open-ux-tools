@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.18.18
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
 ## 0.18.17
 
 ### Patch Changes
