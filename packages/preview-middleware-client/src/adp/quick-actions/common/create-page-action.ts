@@ -2,7 +2,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, SimpleQuickActionDefinition, TelemetryData } from '../../../cpe/quick-actions/quick-action-definition';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { ApplicationType, getApplicationType } from '../../../utils/application';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
@@ -31,14 +31,14 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
         await super.initialize();
     }
 
-    async execute(): Promise<FlexCommand[]> {
+    async execute(telemetryData: TelemetryData): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
             await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
                 aggregation: 'actions',
                 title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
                 defaultAggregationArrayIndex: 1
-            });
+            }, telemetryData);
         }
         return [];
     }

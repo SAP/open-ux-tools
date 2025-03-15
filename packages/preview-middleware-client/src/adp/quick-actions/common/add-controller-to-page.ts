@@ -6,7 +6,8 @@ import { getAllSyncViewsIds, getControllerInfoForControl } from '../../utils';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import type {
     QuickActionContext,
-    SimpleQuickActionDefinition
+    SimpleQuickActionDefinition,
+    TelemetryData
 } from '../../../cpe/quick-actions/quick-action-definition';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
@@ -51,10 +52,10 @@ export class AddControllerToPageQuickAction
         return this.controllerExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
     }
 
-    async execute(): Promise<FlexCommand[]> {
+    async execute(telemetryData: TelemetryData): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.CONTROLLER_EXTENSION);
+            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.CONTROLLER_EXTENSION, undefined, {}, telemetryData);
         }
         return [];
     }

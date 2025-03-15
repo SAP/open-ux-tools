@@ -5,7 +5,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, NestedQuickActionDefinition, TelemetryData } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
@@ -46,7 +46,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         // disable nested actions based on conditions
         this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
-    async execute(path: string): Promise<FlexCommand[]> {
+    async execute(path: string, telemetryData: TelemetryData): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
             return [];
@@ -75,7 +75,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                 aggregation: 'content',
                 title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION',
                 defaultAggregationArrayIndex: 1
-            });
+            }, telemetryData);
         }
         return [];
     }

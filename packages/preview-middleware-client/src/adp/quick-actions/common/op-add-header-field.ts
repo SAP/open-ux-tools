@@ -4,7 +4,7 @@ import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import FlexBox from 'sap/m/FlexBox';
 
 import { DialogFactory, DialogNames } from '../../dialog-factory';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, SimpleQuickActionDefinition, TelemetryData } from '../../../cpe/quick-actions/quick-action-definition';
 import { isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
@@ -39,7 +39,7 @@ export class AddHeaderFieldQuickAction
         ]);
     }
 
-    async execute(): Promise<FlexCommand[]> {
+    async execute(telemetryData: TelemetryData): Promise<FlexCommand[]> {
         if (!this.control) {
             return [];
         }
@@ -51,13 +51,13 @@ export class AddHeaderFieldQuickAction
             await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
                 aggregation: 'items',
                 title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-            });
+            }, telemetryData);
         } else if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
             await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
                 aggregation: 'headerContent',
                 title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-            });
+            }, telemetryData);
         }
         return [];
     }

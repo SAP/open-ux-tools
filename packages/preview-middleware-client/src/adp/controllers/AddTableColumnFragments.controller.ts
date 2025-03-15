@@ -23,7 +23,7 @@ import { AddTableCellFragmentChangeContentType } from 'sap/ui/fl/Change';
 /** sap.ui.layout */
 import { type SimpleForm } from 'sap/ui/layout/form';
 
-import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { reportTelemetry, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
 import { getResourceModel, getTextBundle } from '../../i18n';
 import { CommunicationService } from '../../cpe/communication-service';
@@ -38,6 +38,7 @@ import { ValueState } from 'sap/ui/core/library';
 import Input from 'sap/m/Input';
 import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
+import { TelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 const radix = 10;
 
@@ -59,7 +60,9 @@ interface CreateFragmentProps {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsFragmentsModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
+    private telemetryData: TelemetryData | undefined;
+    
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions, telemetryData?: TelemetryData) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -67,6 +70,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
             title: options.title
         }) as AddTableColumnsFragmentsModel;
         this.commandExecutor = new CommandExecutor(this.rta);
+        this.telemetryData = telemetryData;
     }
 
     /**
@@ -94,6 +98,9 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
+        if (this.telemetryData) {
+            reportTelemetry({ category: 'Create Table Column Fragment', ...this.telemetryData });
+        }
         const source = event.getSource<Button>();
         source.setEnabled(false);
 

@@ -13,6 +13,7 @@ import ExtensionPoint from './controllers/ExtensionPoint.controller';
 import { ExtensionPointData } from './extension-point';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
+import { TelemetryData } from '../cpe/quick-actions/quick-action-definition';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
@@ -58,7 +59,8 @@ export class DialogFactory {
         rta: RuntimeAuthoring,
         dialogName: DialogNames,
         extensionPointData?: ExtensionPointData,
-        options: Partial<AddFragmentOptions> | Partial<FileExistsDialogOptions> | AddSubpageOptions = {}
+        options: Partial<AddFragmentOptions> | Partial<FileExistsDialogOptions> | AddSubpageOptions = {},
+        telemetryData?: TelemetryData
     ): Promise<void> {
         if (this.isDialogOpen) {
             return;
@@ -74,7 +76,9 @@ export class DialogFactory {
                         defaultAggregationArrayIndex: options.defaultAggregationArrayIndex
                     }),
                     title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
-                });
+                },
+                telemetryData
+            );
                 break;
             case DialogNames.ADD_TABLE_COLUMN_FRAGMENTS:
                 controller = new AddTableColumnFragments(
@@ -84,14 +88,16 @@ export class DialogFactory {
                     {
                         ...('aggregation' in options && { aggregation: options.aggregation }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
-                    }
+                    },
+                    telemetryData
                 );
                 break;
             case DialogNames.CONTROLLER_EXTENSION:
                 controller = new ControllerExtension(
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
-                    rta
+                    rta,
+                    telemetryData
                 );
                 break;
             case DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT:

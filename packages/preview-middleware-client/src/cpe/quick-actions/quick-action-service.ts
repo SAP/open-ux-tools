@@ -11,7 +11,9 @@ import {
     QuickActionExecutionPayload,
     QuickActionGroup,
     updateQuickAction,
-    externalFileChange
+    externalFileChange,
+    reportTelemetry,
+    enableTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -150,11 +152,20 @@ export class QuickActionService implements Service {
     }
 
     private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+        enableTelemetry();
+        const timestamp = new Date().toISOString();
+        const telemetryData = {actionName:actionInstance.type, timestamp}
+        reportTelemetry({
+            category: "QuickAction",
+            actionName: actionInstance.type,
+            timestamp
+        })
+        
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
-            return actionInstance.execute();
+            return actionInstance.execute(telemetryData);
         }
         if (payload.kind === NESTED_QUICK_ACTION_KIND && actionInstance.kind === NESTED_QUICK_ACTION_KIND) {
-            return actionInstance.execute(payload.path);
+            return actionInstance.execute(payload.path, telemetryData);
         }
         return Promise.resolve([]);
     }

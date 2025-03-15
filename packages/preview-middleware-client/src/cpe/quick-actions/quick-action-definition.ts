@@ -21,6 +21,11 @@ export interface QuickActionActivationContext {
     manifest: Manifest;
 }
 
+export interface TelemetryData {
+    actionName: string; 
+    timestamp: string
+}
+
 export interface QuickActionContext {
     controlIndex: ControlTreeIndex;
     actionService: ActionService;
@@ -83,7 +88,7 @@ export interface SimpleQuickActionDefinition extends QuickActionDefinitionBase {
     /**
      * Executes the Quick Action.
      */
-    execute: () => FlexCommand[] | Promise<FlexCommand[]>;
+    execute: (telemetryData: TelemetryData) => FlexCommand[] | Promise<FlexCommand[]>;
 }
 
 export interface NestedQuickActionDefinition extends QuickActionDefinitionBase {
@@ -100,7 +105,7 @@ export interface NestedQuickActionDefinition extends QuickActionDefinitionBase {
      *
      * @param path - Path to the specific child action that needs to be executed (e.g '0/1').
      */
-    execute: (path: string) => FlexCommand[] | Promise<FlexCommand[]>;
+    execute: (path: string, telemetryData: TelemetryData) => FlexCommand[] | Promise<FlexCommand[]>;
 }
 export type QuickActionDefinition = SimpleQuickActionDefinition | NestedQuickActionDefinition;
 

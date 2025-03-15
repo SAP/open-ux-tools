@@ -12,7 +12,7 @@ import IconTabBar from 'sap/m/IconTabBar';
 
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, NestedQuickActionDefinition, TelemetryData } from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { DialogNames, DialogFactory } from '../../dialog-factory';
 import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
@@ -75,7 +75,7 @@ export class AddTableCustomColumnQuickAction
         );
     }
 
-    async execute(path: string): Promise<FlexCommand[]> {
+    async execute(path: string, telemetryData: TelemetryData): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
             return [];
@@ -118,7 +118,7 @@ export class AddTableCustomColumnQuickAction
         await DialogFactory.createDialog(overlay, this.context.rta, dialog, undefined, {
             aggregation: 'columns',
             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-        });
+        }, telemetryData);
 
         return [];
     }
