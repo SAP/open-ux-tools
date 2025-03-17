@@ -99,6 +99,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      */
     async onCreateBtnPress(event: Event) {
         if (this.telemetryData) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             reportTelemetry({ category: 'Create Table Column Fragment', ...this.telemetryData });
         }
         const source = event.getSource<Button>();

@@ -53,6 +53,7 @@ export class DialogFactory {
      * @param dialogName - Dialog name.
      * @param extensionPointData - Control ID.
      * @param options - Dialog options.
+     * @param telemetryData - Telemetry data.
      */
     public static async createDialog(
         overlay: UI5Element,

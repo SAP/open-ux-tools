@@ -298,7 +298,7 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
                 );
 
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension', undefined, {}, expect.objectContaining({ actionName: 'add-controller-to-page' }) );
             });
         });
 
@@ -797,7 +797,8 @@ describe('FE V2 quick actions', () => {
                             aggregation: 'content',
                             defaultAggregationArrayIndex: 1,
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                        }
+                        },
+                        expect.objectContaining({ actionName: 'create-table-action' })
                     );
                 }
             });

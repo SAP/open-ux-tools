@@ -154,12 +154,13 @@ export class QuickActionService implements Service {
     private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
         enableTelemetry();
         const timestamp = new Date().toISOString();
-        const telemetryData = {actionName:actionInstance.type, timestamp}
+        const telemetryData = {actionName:actionInstance.type, timestamp};
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
         reportTelemetry({
-            category: "QuickAction",
+            category: 'QuickAction',
             actionName: actionInstance.type,
             timestamp
-        })
+        });
         
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
             return actionInstance.execute(telemetryData);

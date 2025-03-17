@@ -139,6 +139,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      */
     async onCreateBtnPress(event: Event) {
         if (this.telemetryData) {
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
             reportTelemetry({ category: 'Create Fragment', ...this.telemetryData });
         }
         const source = event.getSource<Button>();
