@@ -7,32 +7,6 @@ import { checkEndpoints } from '@sap-ux/environment-check';
 import type { SystemDetails } from '../types';
 
 /**
- * Determines if authentication is not required for accessing a specified system.
- *
- * @param system - The name of the system to check.
- * @param endpoints - Array of system endpoints.
- * @returns True if no authentication is required, false otherwise.
- */
-function getDestinationRequiresAuth(system: string, endpoints: Endpoint[]): boolean {
-    const found = endpoints.find((endpoint: Endpoint) => endpoint.Name === system);
-    return found?.Authentication === 'NoAuthentication';
-}
-
-/**
- * Checks if a specified system requires authentication based on the endpoint information.
- *
- * @param system - The name of the system to check.
- * @param endpoints - Array of system endpoints.
- * @returns True if the system requires authentication, false otherwise.
- */
-function getSystemRequiresAuthentication(system: string, endpoints: Endpoint[]): boolean {
-    return !(
-        endpoints.filter((endpoint) => endpoint.Url === system).length > 0 ||
-        endpoints.filter((endpoint) => endpoint.Name === system).length > 0
-    );
-}
-
-/**
  * Retrieves the names of all stored endpoints, sorted alphabetically.
  *
  * @param endpoints - Array of system endpoints.
@@ -63,6 +37,15 @@ export class EndpointsManager {
     }
 
     /**
+     * Returns the stored endpoints.
+     *
+     * @returns An array of system endpoints.
+     */
+    public static getEndpoints(): Endpoint[] {
+        return this.endpoints;
+    }
+
+    /**
      * Fetches endpoints from a predefined source and stores them in the static state.
      */
     private static async loadEndpoints(): Promise<void> {
@@ -73,55 +56,6 @@ export class EndpointsManager {
             this.logger?.error(`Failed to fetch endpoints list. Reason: ${e.message}`);
             throw new Error(e.message);
         }
-    }
-
-    /**
-     * Returns the stored endpoints.
-     *
-     * @returns An array of system endpoints.
-     */
-    public static getEndpoints(): Endpoint[] {
-        return this.endpoints;
-    }
-
-    /**
-     * Checks if any endpoints have been loaded.
-     *
-     * @returns True if endpoints exist, false otherwise.
-     */
-    public static hasEndpoints(): boolean {
-        return this.endpoints.length > 0;
-    }
-
-    /**
-     * Determines whether local system details should be retrieved.
-     *
-     * @returns True if local system details should be fetched, false otherwise.
-     */
-    public static shouldGetLocalSystemDetails(): boolean {
-        return !isAppStudio() && !this.hasEndpoints();
-    }
-
-    /**
-     * Retrieves destination info for a specific system by name.
-     *
-     * @param system - The system name.
-     * @returns The matching Endpoint, or undefined if not found.
-     */
-    public static getDestinationInfoByName(system: string): Endpoint | undefined {
-        return this.endpoints.find((endpoint: Endpoint) => endpoint.Name === system);
-    }
-
-    /**
-     * Determines whether a system requires authentication.
-     *
-     * @param systemName - The system name to check.
-     * @returns True if authentication is required, false otherwise.
-     */
-    public static getSystemRequiresAuth(systemName: string): boolean {
-        return isAppStudio()
-            ? getDestinationRequiresAuth(systemName, this.endpoints)
-            : getSystemRequiresAuthentication(systemName, this.endpoints);
     }
 
     /**
@@ -156,5 +90,41 @@ export class EndpointsManager {
             return undefined;
         }
         return details;
+    }
+
+    /**
+     * Determines whether a system requires authentication.
+     *
+     * @param systemName - The system name to check.
+     * @returns True if authentication is required, false otherwise.
+     */
+    public static getSystemRequiresAuth(systemName: string): boolean {
+        return isAppStudio()
+            ? this.getDestinationRequiresAuth(systemName)
+            : this.getSystemRequiresAuthentication(systemName);
+    }
+
+    /**
+     * Determines if authentication is not required for accessing a specified system.
+     *
+     * @param system - The name of the system to check.
+     * @returns True if no authentication is required, false otherwise.
+     */
+    private static getDestinationRequiresAuth(system: string): boolean {
+        const found = this.endpoints.find((e: Endpoint) => e.Name === system);
+        return found?.Authentication === 'NoAuthentication';
+    }
+
+    /**
+     * Checks if a specified system requires authentication based on the endpoint information.
+     *
+     * @param system - The name of the system to check.
+     * @returns True if the system requires authentication, false otherwise.
+     */
+    private static getSystemRequiresAuthentication(system: string): boolean {
+        return !(
+            this.endpoints.filter((e) => e.Url === system).length > 0 ||
+            this.endpoints.filter((e) => e.Name === system).length > 0
+        );
     }
 }
