@@ -70,7 +70,5 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         proxyConfig.agent = new HttpsProxyAgent(corporateProxy);
     }
 
-    // Object.assign(proxyConfig, options);
-
     return createProxyMiddleware(proxyConfig);
 };
