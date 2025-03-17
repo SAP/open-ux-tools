@@ -59,8 +59,8 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         changeOrigin: true,
         pathRewrite: { [config.path]: ui5Ver + config.path },
         pathFilter: proxyFilter,
-        ...options
-        // logger
+        ...options,
+        logger
     };
 
     // update proxy config with values coming from args or ui5.yaml
