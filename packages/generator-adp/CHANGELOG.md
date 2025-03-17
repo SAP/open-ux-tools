@@ -1,3 +1,3 @@
-# @sap-ux/adp-flp-config-sub-generator
+# @sap-ux/generator-adp
 
 ## 0.0.1
