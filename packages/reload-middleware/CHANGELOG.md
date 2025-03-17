@@ -1,5 +1,11 @@
 # @sap-ux/reload-middleware
 
+## 0.2.19
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
 ## 0.2.18
 
 ### Patch Changes
