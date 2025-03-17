@@ -1,6 +1,7 @@
 {
     "name": "@sap-ux/generator-adp",
-    "description": "Generator for creating an Adaptation Project",
+    "displayName": "OSR SAPUI5 Adaptation Project",
+    "description": "Adaptation project allows you to create an app variant for an existing SAP Fiori elements-based or SAPUI5 freestyle application, without changing the original application.",
     "version": "0.0.1",
     "repository": {
         "type": "git",
@@ -65,5 +66,12 @@
     },
     "engines": {
         "node": ">=18.x"
+    },
+    "generator-filter": {
+        "types": [
+            "adaptation-project",
+            "project",
+            "tools-suite"
+        ]
     }
 }

@@ -98,21 +98,25 @@ export default class extends Generator {
     }
 
     async writing(): Promise<void> {
-        const provider = AbapProvider.getProvider();
-        const ato = await provider.getAtoInfo();
-        const layer = ato.tenantType === 'SAP' ? FlexLayer.VENDOR : FlexLayer.CUSTOMER_BASE;
-
-        const projectName = getDefaultProjectName(this.destinationPath());
-        const namespace = generateValidNamespace(projectName, layer === FlexLayer.CUSTOMER_BASE);
-        this.targetFolder = this.destinationPath(projectName);
-        /**
-         * Populate the config with the prompted system, and application answers
-         * as well as the default values for project name, title, namespace, etc to generate a working adaptation project
-         */
-        const config = await this._createConfigFromDefaults(this.configAnswers, ato.operationsType ?? 'P', layer, {
-            namespace
-        });
         try {
+            const provider = AbapProvider.getProvider();
+            const ato = await provider.getAtoInfo();
+            /**
+             * TODO: Need a way to identify the layer, we already have such functionality.
+             * import { isFeatureEnabled } from "@sap-devx/feature-toggle-node";
+             * await isFeatureEnabled("adaptation-project", "internal");
+             */
+            const layer = ato.tenantType === 'SAP' ? FlexLayer.VENDOR : FlexLayer.CUSTOMER_BASE;
+
+            const projectName = getDefaultProjectName(this.destinationPath());
+            const namespace = generateValidNamespace(projectName, layer === FlexLayer.CUSTOMER_BASE);
+            this.targetFolder = this.destinationPath(projectName);
+
+            const operationsType = ato.operationsType ?? 'P';
+            const config = await this._createConfigFromDefaults(operationsType, layer, {
+                namespace
+            });
+
             await generate(this.targetFolder, config, this.fs);
         } catch (error) {
             this.logger.error(`Writing phase failed: ${error}`);
@@ -147,7 +151,6 @@ export default class extends Generator {
      * @returns {Promise<AdpWriterConfig>} The generated project configuration.
      */
     private async _createConfigFromDefaults(
-        answers: ConfigAnswers,
         operationsType: OperationsType,
         layer: FlexLayer,
         defaults: {
@@ -161,7 +164,7 @@ export default class extends Generator {
         return {
             app: {
                 id: defaults.namespace,
-                reference: answers.application.id,
+                reference: this.configAnswers.application.id,
                 layer,
                 title: defaults.title ?? 'Some title',
                 content: [this.getNewModelChange()]
