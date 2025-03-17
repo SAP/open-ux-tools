@@ -155,7 +155,7 @@ function getUrlPrompt(
         },
         default: ({ targetSystem }: AbapDeployConfigAnswersInternal): string | undefined => defaultUrl(targetSystem),
         filter: (input: string): string => input?.trim(),
-        validate: async (url: string): Promise<boolean | string> => validateUrl(url)
+        validate: (url: string): boolean | string => validateUrl(url)
     } as InputQuestion<AbapDeployConfigAnswersInternal>;
 }
 
