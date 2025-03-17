@@ -4,7 +4,20 @@ import { exec } from 'child_process';
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
+import {
+    AbapProvider,
+    AdpWriterConfig,
+    CustomConfig,
+    EndpointsManager,
+    FlexLayer,
+    generate,
+    getPackageJSONInfo
+} from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { AbapTarget } from '@sap-ux/system-access';
+import { AuthenticationType } from '@sap-ux/store';
+import { OperationsType } from '@sap-ux/axios-extension';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 
@@ -12,26 +25,9 @@ import { t, initI18n } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
 import type { AdpGeneratorOptions } from './types';
-import {
-    AbapProvider,
-    AdpWriterConfig,
-    ApplicationManager,
-    CustomConfig,
-    EndpointsManager,
-    FlexLayer,
-    ManifestManager,
-    generate,
-    getEndpointNames,
-    getPackageJSONInfo
-} from '@sap-ux/adp-tooling';
+
 import { ConfigAnswers, getConfigurationQuestions } from './questions/configuration';
 import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { OperationsType } from '@sap-ux/axios-extension';
-import { join } from 'path';
-import { execNpmCommand } from '@sap-ux/project-access';
-import { AbapTarget } from '@sap-ux/system-access';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import { AuthenticationType } from '@sap-ux/store';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -45,7 +41,6 @@ export default class extends Generator {
     private readonly appWizard: AppWizard;
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
-    private readonly projectRootPath: string = '';
     private logger: ILogWrapper;
 
     private configAnswers: ConfigAnswers;
@@ -74,7 +69,7 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         await initI18n();
 
-        this._setupConfigurationPage();
+        this._setupPages();
 
         // Add telemetry to be sent once generator-adp is generated
         await TelemetryHelper.initTelemetrySettings({
@@ -114,9 +109,7 @@ export default class extends Generator {
          * Populate the config with the prompted system, and application answers
          * as well as the default values for project name, title, namespace, etc to generate a working adaptation project
          */
-        const config = await this._createConfigFromDefaults(this.configAnswers, {
-            operationsType: ato.operationsType ?? 'P',
-            layer,
+        const config = await this._createConfigFromDefaults(this.configAnswers, ato.operationsType ?? 'P', layer, {
             namespace
         });
         try {
@@ -138,61 +131,81 @@ export default class extends Generator {
                 ...this.options.telemetryData
             }) ?? {};
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this.projectRootPath).catch((error) => {
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this.targetFolder).catch((error) => {
                 this.logger.error(t('error.telemetry', { error }));
             });
         }
     }
 
+    /**
+     * Generates the configuration object for the Adaptation Project.
+     *
+     * @param {ConfigAnswers} answers - User-provided answers.
+     * @param {OperationsType} operationsType - Whether the project is cloud or on-premise.
+     * @param {FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
+     * @param {object} defaults - Default project parameters.
+     * @returns {Promise<AdpWriterConfig>} The generated project configuration.
+     */
     private async _createConfigFromDefaults(
         answers: ConfigAnswers,
+        operationsType: OperationsType,
+        layer: FlexLayer,
         defaults: {
-            operationsType: OperationsType;
             namespace: string;
-            layer: FlexLayer;
             title?: string;
-            client?: string;
-            ft?: boolean;
-            ts?: boolean;
         }
     ): Promise<AdpWriterConfig> {
-        const packageJson = getPackageJSONInfo();
-        const customConfig: CustomConfig = {
-            adp: {
-                environment: defaults.operationsType,
-                support: {
-                    id: packageJson.name,
-                    version: packageJson.version,
-                    toolsId: uuidv4()
-                }
-            }
-        };
-
-        const target = await this._getTarget(defaults.operationsType === 'C');
+        const target = await this._getTarget(operationsType === 'C');
+        const customConfig = this._getCustomConfig(operationsType);
 
         return {
             app: {
                 id: defaults.namespace,
                 reference: answers.application.id,
-                layer: defaults.layer,
+                layer,
                 title: defaults.title ?? 'Some title',
-                content: [
-                    {
-                        changeType: 'appdescr_ui5_addNewModelEnhanceWith',
-                        content: {
-                            modelId: 'i18n',
-                            bundleUrl: 'i18n/i18n.properties',
-                            supportedLocales: [''],
-                            fallbackLocale: ''
-                        }
-                    }
-                ]
+                content: [this.getNewModelChange()]
             },
             customConfig,
             target,
             options: {
-                fioriTools: defaults.ft ?? true,
-                enableTypeScript: defaults.ts ?? false
+                fioriTools: true,
+                enableTypeScript: false
+            }
+        };
+    }
+
+    /**
+     * Returns a model enhancement change configuration.
+     */
+    private getNewModelChange() {
+        return {
+            changeType: 'appdescr_ui5_addNewModelEnhanceWith',
+            content: {
+                modelId: 'i18n',
+                bundleUrl: 'i18n/i18n.properties',
+                supportedLocales: [''],
+                fallbackLocale: ''
+            }
+        };
+    }
+
+    /**
+     * Constructs a custom configuration object.
+     *
+     * @param {OperationsType} operationsType - Whether the project is cloud or on-premise.
+     * @returns {CustomConfig} The generated configuration.
+     */
+    private _getCustomConfig(operationsType: OperationsType): CustomConfig {
+        const packageJson = getPackageJSONInfo();
+        return {
+            adp: {
+                environment: operationsType,
+                support: {
+                    id: packageJson.name,
+                    version: packageJson.version,
+                    toolsId: uuidv4()
+                }
             }
         };
     }
@@ -222,6 +235,11 @@ export default class extends Generator {
         return target;
     }
 
+    /**
+     * Installs dependencies in the project directory.
+     *
+     * @param {string} projectPath - The project directory.
+     */
     private async _installDependencies(projectPath: string): Promise<void> {
         const execAsync = util.promisify(exec);
 
@@ -232,7 +250,10 @@ export default class extends Generator {
         }
     }
 
-    private _setupConfigurationPage(): void {
+    /**
+     * Sets up the initial pages.
+     */
+    private _setupPages(): void {
         this.prompts.splice(0, 0, [this._getInitialPage()]);
     }
 
@@ -263,7 +284,12 @@ export default class extends Generator {
         this.logger = AdpFlpConfigLogger.logger;
     }
 
-    private _getInitialPage() {
+    /**
+     * Returns the translated name and description for configuration page.
+     *
+     * @returns The initial configuration page.
+     */
+    private _getInitialPage(): { name: string; description: string } {
         return { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationName') };
     }
 }
