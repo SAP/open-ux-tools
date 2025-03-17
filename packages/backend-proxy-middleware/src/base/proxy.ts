@@ -305,16 +305,13 @@ export async function generateProxyMiddlewareOptions(
             },
             ...ProxyEventHandlers
         },
-        target: backend.url,
-        changeOrigin: true,
         ...options,
+        // always set the changeOrigin to true
+        changeOrigin: true,
+        // always set the target to the url provided in yaml
+        target: backend.url,
         logger
     };
-    proxyOptions.changeOrigin = true;
-    // proxyOptions.logProvider = () => logger;
-
-    // always set the target to the url provided in yaml
-    // proxyOptions.target = backend.url;
 
     // overwrite url if running in AppStudio
     if (isAppStudio()) {
