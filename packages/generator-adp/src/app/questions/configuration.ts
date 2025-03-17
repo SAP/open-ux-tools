@@ -3,9 +3,8 @@ import type { ListQuestionOptions } from 'inquirer';
 
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { t } from '../../utils/i18n';
-import { AbapProvider, ApplicationManager, EndpointsManager, getEndpointNames } from '@sap-ux/adp-tooling';
+import { AbapProvider, Application, ApplicationManager, EndpointsManager, getEndpointNames } from '@sap-ux/adp-tooling';
 import { getApplicationChoices } from './helper/choices';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
 
 /**
@@ -25,7 +24,7 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
-    application: string;
+    application: Application;
 }
 
 /**
@@ -105,26 +104,30 @@ export function getSystemListPrompt(appManager: ApplicationManager, options?: Sy
             breadcrumb: 'System',
             hint: t('prompts.systemTooltip')
         },
-        validate: async (value: string, answers: ConfigAnswers) => {
+        validate: async (value: string, answers: ConfigAnswers): Promise<boolean | string> => {
             const validationResult = validateEmptyString(value);
             if (typeof validationResult === 'string') {
                 return validationResult;
             }
 
-            // TODO:
-            // Connect to system -> Initialize a provider with the selected system
-            await AbapProvider.setProvider(value, undefined, answers.username, answers.password);
+            try {
+                await AbapProvider.setProvider(value, undefined, answers.username, answers.password);
 
-            const provider = AbapProvider.getProvider();
+                const provider = AbapProvider.getProvider();
 
-            const systemRequiresAuth = EndpointsManager.getSystemRequiresAuth(value);
+                const systemRequiresAuth = EndpointsManager.getSystemRequiresAuth(value);
 
-            console.log(systemRequiresAuth);
+                if (!systemRequiresAuth) {
+                    const isCloudSystem = await provider.isAbapCloud();
+                    await appManager.loadApps(isCloudSystem);
+                }
 
-            if (!systemRequiresAuth) {
-                const isCloudSystem = await provider.isAbapCloud();
-                await appManager.loadApps(isCloudSystem);
+                return true;
+            } catch (e) {
+                return e.message;
             }
+
+            // Connect to system -> Initialize a provider with the selected system
 
             // Check if system has authentication
             // const hasAuth = this.endpointsManager.getSystemRequiresAuth(value);
@@ -145,8 +148,6 @@ export function getSystemListPrompt(appManager: ApplicationManager, options?: Sy
             //      */
             //     return this.validateAdpTypes();
             // }
-
-            return true;
         }
     };
 }

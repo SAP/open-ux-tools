@@ -83,8 +83,6 @@ export class AbapProvider {
                 ignoreCertErrors: false
             };
 
-            console.log('setting provider')
-
             const target = await this.determineTarget(requestOptions, system, client);
 
             if (username && password) {

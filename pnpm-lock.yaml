@@ -2333,6 +2333,9 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      uuid:
+        specifier: 10.0.0
+        version: 10.0.0
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -2346,6 +2349,9 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
+      '@types/uuid':
+        specifier: 10.0.0
+        version: 10.0.0
       '@types/vscode':
         specifier: 1.73.1
         version: 1.73.1

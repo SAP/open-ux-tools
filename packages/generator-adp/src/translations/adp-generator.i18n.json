@@ -1,21 +1,16 @@
 {
     "yuiNavSteps": {
-        "flpCredentialsName": "FLP Configuration - Credentials",
-        "flpCredentialsDesc": "Enter credentials for your adaptation project's system ({{- system}})",
-        "sysConfirmDesc": "Validates connection to configured system",
-        "flpConfigName": "FLP Configuration",
-        "flpConfigDesc": "FLP Configuration for {{- projectName}}",
         "configurationName": "Adaptation Project - Configuration"
     },
     "info": {
         "flpConfigAdded": "FLP Configuration added successfully"
     },
     "prompts": {
-        "systemLabel": "Select System",
+        "systemLabel": "System",
         "systemTooltip": "Select a system to load its application list",
         "usernameLabel": "Enter the user name for the backend system",
         "passwordLabel": "Enter the password for the backend system",
-        "applicationListLabel": "Select Application",
+        "applicationListLabel": "Application",
         "applicationListTooltip": "Select the application for which you want to create an app variant"
     },
     "error": {
