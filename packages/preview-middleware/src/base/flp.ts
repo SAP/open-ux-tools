@@ -464,7 +464,7 @@ export class FlpSandbox {
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
 
-        if ((major < 2 && minor < 123) || major >= 2) {
+        if ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free')) {
             this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
             this.logger.warn(`Feature enhancedHomePage disabled: UI5 version ${version} not supported.`);
         }
@@ -490,7 +490,7 @@ export class FlpSandbox {
             }.`
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
-        const template = this.flpConfig.enhancedHomePage && filePrefix !== '2' ? 'cdm' : 'sandbox';
+        const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
         return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.html`), 'utf-8');
     }
 

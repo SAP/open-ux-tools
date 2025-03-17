@@ -349,9 +349,9 @@ export async function init({
     }
 
     const renderer =
-        ui5VersionInfo.major > 1 || enhancedHomePage || ui5VersionInfo.label?.includes('legacy-free')
-            ? await container.createRendererInternal(undefined, true)
-            : await container.createRenderer(undefined, true);
+        (ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free'))
+            ? await container.createRenderer(undefined, true)
+            : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
 }
 
