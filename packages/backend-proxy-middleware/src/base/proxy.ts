@@ -1,7 +1,7 @@
 import { HttpsProxyAgent } from 'https-proxy-agent';
 import type { ServerOptions } from 'http-proxy';
 import type { RequestHandler, Options } from 'http-proxy-middleware';
-import { legacyCreateProxyMiddleware as createProxyMiddleware } from 'http-proxy-middleware';
+import { createProxyMiddleware } from 'http-proxy-middleware';
 import i18n from 'i18next';
 import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { Logger } from '@sap-ux/logger';
