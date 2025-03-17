@@ -92,6 +92,24 @@ export interface AdpWriterConfig {
     };
 }
 
+export interface Application {
+    id: string;
+    title: string;
+    ach: string;
+    registrationIds: string[];
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
+}
+
+export interface SystemDetails {
+    url: string;
+    client: string;
+    username?: string;
+    password?: string;
+    authenticationType?: string;
+}
+
 export interface ChangeInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;

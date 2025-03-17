@@ -1,16 +1,17 @@
 {
   "extends": "../../tsconfig.json",
   "include": [
-    "../../types/ui5.d.ts",
-    "../../types/mem-fs-editor.d.ts",
     "src",
     "src/**/*.json"
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "generators"
   },
   "references": [
+    {
+      "path": "../adp-tooling"
+    },
     {
       "path": "../axios-extension"
     },
@@ -18,22 +19,13 @@
       "path": "../btp-utils"
     },
     {
-      "path": "../environment-check"
-    },
-    {
-      "path": "../i18n"
+      "path": "../feature-toggle"
     },
     {
       "path": "../inquirer-common"
     },
     {
       "path": "../logger"
-    },
-    {
-      "path": "../nodejs-utils"
-    },
-    {
-      "path": "../odata-service-writer"
     },
     {
       "path": "../project-access"
@@ -46,9 +38,6 @@
     },
     {
       "path": "../system-access"
-    },
-    {
-      "path": "../ui5-config"
     }
   ]
 }
