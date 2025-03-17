@@ -39,7 +39,7 @@ export const ProxyEventHandlers = {
      * @param _res (not used)
      * @param _options (not used)
      */
-    onProxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
+    proxyReq(proxyReq: ClientRequest, _req?: IncomingMessage, _res?: ServerResponse, _options?: ServerOptions): void {
         if (proxyReq.path?.includes('Fiorilaunchpad.html') && !proxyReq.headersSent) {
             proxyReq.setHeader('accept-encoding', '*');
         }
@@ -52,7 +52,7 @@ export const ProxyEventHandlers = {
      * @param _req (not used) original request
      * @param _res (not used)
      */
-    onProxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse): void {
+    proxyRes(proxyRes: IncomingMessage, _req?: IncomingMessage, _res?: ServerResponse): void {
         const header = proxyRes?.headers?.['set-cookie'];
         if (header?.length) {
             for (let i = header.length - 1; i >= 0; i--) {
@@ -294,7 +294,6 @@ export async function generateProxyMiddlewareOptions(
     // add required options
     const proxyOptions: Options & { headers: object } = {
         headers: {},
-        ...ProxyEventHandlers,
         on: {
             error: (
                 err: Error & { code?: string },
@@ -303,7 +302,8 @@ export async function generateProxyMiddlewareOptions(
                 target: string | Partial<Url> | undefined
             ) => {
                 proxyErrorHandler(err, req, logger, res, target);
-            }
+            },
+            ...ProxyEventHandlers
         },
         target: backend.url,
         changeOrigin: true,
