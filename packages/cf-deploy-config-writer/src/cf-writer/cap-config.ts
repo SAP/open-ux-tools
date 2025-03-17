@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { addSupportingConfig, addRoutingConfig } from '../utils';
+import { updateRootPackage, addRoutingConfig } from '../utils';
 import { createCAPMTA, validateMtaConfig, isMTAFound } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
@@ -26,11 +26,11 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     }
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
-    const cdsOptionalParams: string[] = [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService];
-    createCAPMTA(config.mtaPath, cdsOptionalParams);
+    // Run `cds` add against the project, it will append whatever it needs
+    createCAPMTA(config.mtaPath, [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService]);
     await addRoutingConfig(config, fs);
-    addSupportingConfig(config, fs);
-    LoggerHelper.logger?.debug(`CF CAP Config ${JSON.stringify(config, null, 2)}`);
+    await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
+    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
     return fs;
 }
 

@@ -16,9 +16,10 @@ import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
 import { type DestinationFilters } from '../../../../types';
 import { convertODataVersionType, PromptState } from '../../../../utils';
-import type { ConnectionValidator, ValidationResult } from '../../../connectionValidator';
+import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { type SystemSelectionAnswerType } from './questions';
+import type { ValidationResult } from '../../../types';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
 // since it will be used as a new system value in the system selection prompt.
@@ -42,6 +43,7 @@ export async function connectWithBackendSystem(
     requiredOdataVersion?: OdataVersion
 ): Promise<ValidationResult> {
     // Create a new connection with the selected system
+    PromptState.resetConnectedSystem();
     let connectValResult: ValidationResult = false;
     if (backendSystem) {
         // Assumption: non-BAS systems are BackendSystems
@@ -109,6 +111,7 @@ export async function connectWithDestination(
     requiredOdataVersion?: OdataVersion,
     addServicePath?: string
 ): Promise<ValidationResult> {
+    PromptState.resetConnectedSystem();
     const { valResult: connectValResult, errorType } = await connectionValidator.validateDestination(
         destination,
         convertODataVersionType(requiredOdataVersion),

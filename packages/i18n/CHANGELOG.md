@@ -1,5 +1,23 @@
 # @sap-ux/i18n
 
+## 0.2.3
+
+### Patch Changes
+
+-   cf05ceb: Update `vscode-languageserver-textdocument` dependency
+
+## 0.2.2
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+
+## 0.2.1
+
+### Patch Changes
+
+-   78bc772: Introduce ADP FLP config generator
+
 ## 0.2.0
 
 ### Minor Changes

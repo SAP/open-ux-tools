@@ -1,6 +1,14 @@
 import { basename, dirname, join } from 'path';
-import type { WorkspaceFolder } from '../../src';
-import { findAllApps, findCapProjects, findFioriArtifacts, findProjectRoot, getAppRootFromWebappPath } from '../../src';
+import type { CapProjectType, WorkspaceFolder } from '../../src';
+import {
+    findAllApps,
+    findCapProjectRoot,
+    findCapProjects,
+    findFioriArtifacts,
+    findProjectRoot,
+    findRootsForPath,
+    getAppRootFromWebappPath
+} from '../../src';
 
 /**
  * To get CAP project type we call cds --version using child_process.spawn() and cache global install path.
@@ -333,5 +341,47 @@ describe('Test findCapProjects()', () => {
             join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_fiori_elements')
         ].sort();
         expect(capProjects).toEqual(expectedProjects);
+    });
+});
+
+describe('Test findRootsForPath() with cache', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
+    test('Relative path, should return null', async () => {
+        expect(await findRootsForPath('../foo/bar')).toBeNull();
+    });
+
+    test('Test caching', async () => {
+        const capProjectType = new Map<string, CapProjectType | undefined>([
+            [join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix/app'), undefined],
+            [join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix'), 'CAPNodejs']
+        ]);
+        const capProjectTypeSpy = jest.spyOn(capProjectType, 'set');
+        const cache = { files: {}, capProjectType };
+
+        const roots = await findRootsForPath(
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix/app/fiori_elements'),
+            { cache }
+        );
+        expect(roots?.appRoot).toBe(
+            join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix/app/fiori_elements')
+        );
+        expect(roots?.projectRoot).toBe(join(__dirname, '../test-data/project/find-all-apps/CAP/CAPnode_mix'));
+        expect(capProjectTypeSpy).not.toHaveBeenCalled();
+    });
+});
+
+describe('Test findCapProjectRoot()', () => {
+    const appRoot = join(__dirname, '../test-data/project/cap-app/app');
+    const projectRoot = join(__dirname, '../test-data/project/cap-app');
+
+    test('Ignore apps in root/app folder', async () => {
+        expect(await findCapProjectRoot(appRoot)).toBe(null);
+    });
+
+    test('Do not ignore apps in root/app', async () => {
+        expect(await findCapProjectRoot(appRoot, false)).toBe(projectRoot);
     });
 });

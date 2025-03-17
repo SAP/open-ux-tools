@@ -1,10 +1,11 @@
 import { join } from 'path';
 import { writeAnnotations } from '../../src/writeAnnotations';
 import { TemplateType } from '../../src/types';
-import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { generateAnnotations } from '@sap-ux/annotation-generator';
 import type { Editor } from 'mem-fs-editor';
 import { applyBaseConfigToFEApp } from '../common';
+import type { Logger } from '@sap-ux/logger';
+import { t } from '../../src/i18n';
 
 jest.mock('@sap-ux/annotation-generator', () => ({
     ...jest.requireActual('@sap-ux/annotation-generator'),
@@ -74,5 +75,17 @@ describe('writeAnnotations', () => {
                 addValueHelps: false
             }
         );
+    });
+
+    it('should exit gracefully and log an error when generateAnnotations fails', async () => {
+        const log = {
+            error: jest.fn()
+        };
+        const appInfo = applyBaseConfigToFEApp('test', TemplateType.ListReportObjectPage);
+        appInfo.appOptions.addAnnotations = true;
+        delete appInfo.service.capService;
+        (generateAnnotations as jest.Mock).mockRejectedValue(new Error('test error'));
+        await writeAnnotations('test', appInfo, fs, log as unknown as Logger);
+        expect(log.error).toHaveBeenCalledWith(`${t('error.errorGeneratingDefaultAnnotations')} Error: test error`);
     });
 });

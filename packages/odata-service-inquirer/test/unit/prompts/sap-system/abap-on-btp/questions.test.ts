@@ -12,7 +12,7 @@ import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap
 const validateUrlMock = jest.fn().mockResolvedValue(true);
 const validateAuthMock = jest.fn().mockResolvedValue(true);
 const isAuthRequiredMock = jest.fn().mockResolvedValue(false);
-const serviceProviderMock = {} as Partial<ServiceProvider>;
+const serviceProviderMock = {} as Partial<ServiceProvider> | undefined;
 let validateServiceInfoMock: boolean | string = true;
 
 const connectionValidatorMock = {
@@ -36,7 +36,9 @@ jest.mock('../../../../../src/prompts/connectionValidator', () => {
 
 let cfDiscoveredAbapEnvsMock: ServiceInstanceInfo[] = [];
 const uaaCredsMock = {
-    credentials: {}
+    credentials: {
+        uaa: {}
+    }
 };
 jest.mock('@sap/cf-tools', () => {
     return {
@@ -279,6 +281,7 @@ describe('questions', () => {
         ]);
         expect(await ((cfDiscoPrompt as ListQuestion).validate as Function)(cfDiscoveredAbapEnvsMock[1])).toBe(true);
         expect(connectionValidatorMock.connectedSystemName).toBe('abap-cloud-test2-testorg-testspace');
+        expect(PromptState.odataService.connectedSystem).toEqual({ serviceProvider: serviceProviderMock });
 
         // Validation error message is returned
         validateServiceInfoMock = 'Cannot connect';
@@ -286,6 +289,7 @@ describe('questions', () => {
             'Cannot connect'
         );
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
+        expect(PromptState.odataService.connectedSystem).toBeUndefined();
     });
 
     test('Cloud Foundry discovery prompt should connect to the choosen Abap environment (cli)', async () => {
@@ -321,6 +325,7 @@ describe('questions', () => {
             })
         ).toBe(false); // cliCfServicePrompt is never shown so when always should be false
         expect(connectionValidatorMock.connectedSystemName).toBe('abap-cloud-test2-testorg-testspace');
+        expect(PromptState.odataService.connectedSystem).toEqual({ serviceProvider: serviceProviderMock });
 
         // Validation error message is returned
         validateServiceInfoMock = 'Cannot connect';
@@ -332,6 +337,7 @@ describe('questions', () => {
         ).rejects.toThrowError('Cannot connect');
 
         expect(connectionValidatorMock.connectedSystemName).toBe(undefined);
+        expect(PromptState.odataService.connectedSystem).toBeUndefined();
     });
 
     test('Service key prompt should validate service key and connect', async () => {

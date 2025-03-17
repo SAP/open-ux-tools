@@ -1,5 +1,89 @@
 # @sap-ux/project-access
 
+## 1.29.16
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+
+## 1.29.15
+
+### Patch Changes
+
+-   1ce7fe9: Improve `getModule` to attempt module reinstallation if loading fails.
+
+## 1.29.14
+
+### Patch Changes
+
+-   3cc8f8a: fix: check files in srv folder of CAP project when srv folder contains subfolders
+
+## 1.29.13
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+
+## 1.29.12
+
+### Patch Changes
+
+-   Updated dependencies [cf05ceb]
+    -   @sap-ux/i18n@0.2.3
+
+## 1.29.11
+
+### Patch Changes
+
+-   0f35b4b: ignore error thrown when no .library file found
+
+## 1.29.10
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/i18n@0.2.2
+
+## 1.29.9
+
+### Patch Changes
+
+-   c8c292c: Fix: method 'getCapModelAndServices' not returning 'odata-v4' services
+
+## 1.29.8
+
+### Patch Changes
+
+-   c50e09f: Improve performance and fix code smells
+
+## 1.29.7
+
+### Patch Changes
+
+-   2c0d657: Export `getI18nBundles` function
+
+## 1.29.6
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+
+## 1.29.5
+
+### Patch Changes
+
+-   Updated dependencies [78bc772]
+    -   @sap-ux/i18n@0.2.1
+
+## 1.29.4
+
+### Patch Changes
+
+-   29abc73: feat: support component type
+
 ## 1.29.3
 
 ### Patch Changes

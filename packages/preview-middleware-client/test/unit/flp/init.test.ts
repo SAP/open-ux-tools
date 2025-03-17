@@ -10,7 +10,7 @@ import IconPoolMock from 'mock/sap/ui/core/IconPool';
 import { default as mockBundle } from 'mock/sap/base/i18n/ResourceBundle';
 import * as apiHandler from '../../../src/adp/api-handler';
 import { fetchMock, sapMock } from 'mock/window';
-import type { InitRtaScript, RTAPlugin, StartAdaptation } from 'sap/ui/rta/api/startAdaptation';
+import type { InitRtaScript, RTAPlugin } from 'sap/ui/rta/api/startAdaptation';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { CommunicationService } from '../../../src/cpe/communication-service';
@@ -241,6 +241,7 @@ describe('flp/init', () => {
             await init({});
             expect(sapMock.ushell.Container.attachRendererCreatedEvent).not.toBeCalled();
             expect(sapMock.ushell.Container.createRenderer).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRendererInternal).not.toBeCalled();
         });
 
         test('flex configured', async () => {
@@ -270,15 +271,6 @@ describe('flp/init', () => {
                 ['sap/ui/rta/api/startAdaptation', flexSettings.pluginScript],
                 expect.anything()
             );
-
-            const requireCb = sapMock.ui.require.mock.calls[0][1] as (
-                startAdaptation: StartAdaptation,
-                pluginScript?: RTAPlugin
-            ) => void;
-            const startAdpMock = jest.fn();
-            const plugnScriptMock = jest.fn();
-            requireCb(startAdpMock, plugnScriptMock);
-            expect(startAdpMock).toBeCalledWith(expect.anything(), plugnScriptMock);
         });
 
         test('flex configured & ui5 version is 1.71.60', async () => {
@@ -335,7 +327,18 @@ describe('flp/init', () => {
 
             await init({ customInit: customInit });
 
+            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toBeCalled();
             expect(sapMock.ui.require).toBeCalledWith([customInit]);
+        });
+
+        test('custom init module configured & ui5 version is legacy-free', async () => {
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: '1.136.0-legacy-free' });
+
+            await init({});
+
+            expect(sapMock.ushell.Container.createRendererInternal).toBeCalledWith(undefined, true);
+            expect(sapMock.ushell.Container.createRenderer).not.toBeCalled();
         });
 
         test('handle higher layer changes', async () => {
@@ -347,7 +350,11 @@ describe('flp/init', () => {
             VersionInfo.load.mockResolvedValueOnce({ name: 'sap.ui.core', version: '1.84.50' });
 
             // Mocking `sap.ui.require` to throw the correct error structure
-            sapMock.ui.require.mockImplementationOnce((libs, callback) => {
+            sapMock.ui.require.mockImplementation((libs, callback) => {
+                if (libs[0] === 'open/ux/preview/client/flp/WorkspaceConnector') {
+                    callback({}); // WorkspaceConnector
+                    return;
+                }
                 callback(async () => {
                     throw 'Reload triggered';
                 }, {});

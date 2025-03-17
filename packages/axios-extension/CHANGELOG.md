@@ -1,5 +1,32 @@
 # @sap-ux/axios-extension
 
+## 1.19.1
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+
+## 1.19.0
+
+### Minor Changes
+
+-   aaa432a: Export patchTls from `sap-ux/axios-extension`
+
+## 1.18.6
+
+### Patch Changes
+
+-   4fd3029: Allow using an alias for the reentrance url
+
+## 1.18.5
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+
 ## 1.18.4
 
 ### Patch Changes

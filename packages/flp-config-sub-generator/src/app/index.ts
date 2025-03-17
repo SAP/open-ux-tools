@@ -2,8 +2,8 @@ import { join } from 'path';
 import Generator from 'yeoman-generator';
 import FlpGenLogger from '../utils/logger';
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
-import { handleErrorMessage, getConfirmConfigUpdatePrompt } from '@sap-ux/deploy-config-generator-shared';
-import { getPrompts } from '@sap-ux/flp-config-inquirer';
+import { handleErrorMessage, getExtensionGenPromptOpts } from '@sap-ux/deploy-config-generator-shared';
+import { getPrompts, promptNames } from '@sap-ux/flp-config-inquirer';
 import { generateInboundNavigationConfig } from '@sap-ux/app-config-writer';
 import { FileName, getWebappPath, getI18nPropertiesPaths } from '@sap-ux/project-access';
 import { createPropertiesI18nEntries } from '@sap-ux/i18n';
@@ -12,12 +12,10 @@ import {
     sendTelemetry,
     TelemetryHelper,
     isExtensionInstalled,
-    getHostEnvironment,
-    hostEnvironment,
     YUI_EXTENSION_ID,
     YUI_MIN_VER_FILES_GENERATED_MSG
 } from '@sap-ux/fiori-generator-shared';
-import { withCondition } from '@sap-ux/inquirer-common';
+import { extendWithOptions } from '@sap-ux/inquirer-common';
 import { generatorTitle, i18nKeySubTitle, i18nKeyTitle } from '../utils/constants';
 import { t } from '../utils';
 import { getYUIDetails } from '../utils/prompts';
@@ -26,7 +24,8 @@ import type { FLPConfigAnswers } from '@sap-ux/flp-config-inquirer';
 import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 import type { FlpConfigOptions } from './types';
-import type { Answers, Question } from 'inquirer';
+import type { Question } from 'inquirer';
+import type { CommonPromptOptions, YUIQuestion } from '@sap-ux/inquirer-common';
 
 /**
  * FLP config generator adds an inbound navigation config to an existing manifest.json.
@@ -42,6 +41,7 @@ export default class extends Generator {
     private abort = false;
     private manifest: Partial<Manifest>;
     private manifestPath: string;
+    private extensionPromptOpts?: Record<string, CommonPromptOptions>;
     public options: FlpConfigOptions;
 
     setPromptsCallback: (fn: object) => void;
@@ -87,6 +87,12 @@ export default class extends Generator {
         if ((this.env as unknown as YeomanEnvironment).conflicter) {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
+
+        this.extensionPromptOpts = await getExtensionGenPromptOpts(
+            this.env.create.bind(this.env),
+            this.rootGeneratorName(),
+            this.vscode
+        );
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -145,16 +151,8 @@ export default class extends Generator {
             createAnotherInbound: { hide: true }
         })) as Question[];
 
-        // Show specific prompt for config update when launched standalone or on CLI. Otherwise it should be handled by consuming generator in YUI.
-        if (
-            (getHostEnvironment() === hostEnvironment.cli || !this.options.launchFlpConfigAsSubGenerator) &&
-            this.options.data?.additionalPrompts?.confirmConfigUpdate?.show
-        ) {
-            const confirmConfigUpdatePrompts = getConfirmConfigUpdatePrompt(
-                this.options.data.additionalPrompts.confirmConfigUpdate.configType
-            );
-            questions = withCondition(questions, (answers: Answers) => answers.confirmConfigUpate);
-            questions.unshift(...confirmConfigUpdatePrompts);
+        if (this.extensionPromptOpts && !this.launchFlpConfigAsSubGenerator) {
+            questions = extendWithOptions(questions as YUIQuestion[], this.extensionPromptOpts);
         }
 
         this.answers = {} as FLPConfigAnswers;
@@ -264,6 +262,7 @@ export default class extends Generator {
         try {
             if (
                 !this.options.launchFlpConfigAsSubGenerator &&
+                this.abort !== true &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('info.filesGenerated'), MessageType.notification);
@@ -283,4 +282,5 @@ export default class extends Generator {
     }
 }
 
+export { promptNames };
 export type { FlpConfigOptions };

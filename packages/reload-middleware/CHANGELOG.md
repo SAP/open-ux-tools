@@ -1,5 +1,32 @@
 # @sap-ux/reload-middleware
 
+## 0.2.19
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
+## 0.2.18
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+
+## 0.2.17
+
+### Patch Changes
+
+-   59453ba: fix(security): security findings from github
+
+## 0.2.16
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+
 ## 0.2.15
 
 ### Patch Changes

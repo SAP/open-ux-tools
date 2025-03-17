@@ -10,6 +10,8 @@ export interface PackageJsonScripts {
     'start-noflp'?: string;
     /** Optional command to start the application with a mock server configuration. */
     'start-mock'?: string;
+    /** Optional command to run unit tests. */
+    'unit-test'?: string;
     /** Optional command to run tests. */
     'int-test'?: string;
     /** Optional command to add the variants management script. */

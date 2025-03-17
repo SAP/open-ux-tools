@@ -1,5 +1,131 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.5
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
+## 0.13.4
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
+## 0.13.3
+
+### Patch Changes
+
+-   f659540: fix: disable "Add Header Field" Quick Action when `showHeaderContent` is set to `false` for `ObjectPageLayout`
+
+## 0.13.2
+
+### Patch Changes
+
+-   32dafd7: feat: refactor lrep connectors used for preview
+
+## 0.13.1
+
+### Patch Changes
+
+-   1c07ab9: Allow controller extensions for reuse components on OnPremise systems
+
+## 0.13.0
+
+### Minor Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
+## 0.12.1
+
+### Patch Changes
+
+-   1d4ba46: feat: handling of legacy free ui5 version
+
+## 0.12.0
+
+### Minor Changes
+
+-   127bd12: feat: Add Typescript support for Adaptation Project
+
+## 0.11.69
+
+### Patch Changes
+
+-   df8d790: fix: 'Add Custom Table Column' CPE quick action is generating incorrect column fragment for Grid and Tree tables
+
+## 0.11.68
+
+### Patch Changes
+
+-   1bcd64f: Fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
+## 0.11.67
+
+### Patch Changes
+
+-   583c4cd: Fix: Default aggregation array index to 1 for create page action and create table action
+
+## 0.11.66
+
+### Patch Changes
+
+-   fd3bfb0: fix: "Add Table Custom Action" quick action not being working in some V2 apps
+
+## 0.11.65
+
+### Patch Changes
+
+-   8930179: fix: New column created by "Add Table Custom Column" quick action not being displayed, due to incomplete column data in the fragment
+
+## 0.11.64
+
+### Patch Changes
+
+-   931e735: Add stable ids to form elements
+
+## 0.11.63
+
+### Patch Changes
+
+-   354107e: fix: Fixed bug in CPE. In some ADP projects Change Table Columns Quick Action didn't work
+
+## 0.11.62
+
+### Patch Changes
+
+-   4d0b026: fix: undo redo issue for v2 manifest changes created via quickactions
+
+## 0.11.61
+
+### Patch Changes
+
+-   063a2f4: fix: enable manifest actions for v2 apps with array page structure
+
+## 0.11.60
+
+### Patch Changes
+
+-   d95bade: fix: Fixed various bugs related to Enable Variant Management for Tables quick action. It was unnecessarily disabled in some apps on List Report; changing Object Page table type led to enabling this action again; action is disabled now for custom tables, where it can't be applied.
+
+## 0.11.59
+
+### Patch Changes
+
+-   644a9a6: feat: Scroll into view when clicking on a control that is not currently visible in the iframe
+
+## 0.11.58
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
+## 0.11.57
+
+### Patch Changes
+
+-   5eff701: Fixed undo-redo issue for addAnnotationsToOdata change and updated title for the pending addAnnotationsToOdata change.
+
 ## 0.11.56
 
 ### Patch Changes

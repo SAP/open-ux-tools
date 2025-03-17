@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aadp-tooling"
     },
-    "version": "0.12.120",
+    "version": "0.13.14",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -20,8 +20,8 @@
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
         "lint": "eslint . --ext .ts",
         "lint:fix": "eslint . --ext .ts --fix",
-        "test": "jest FIORI_TOOLS_DISABLE_SECURE_STORE=true --ci --forceExit --detectOpenHandles --colors --testPathPattern=test/unit",
-        "test-u": "jest FIORI_TOOLS_DISABLE_SECURE_STORE=true --ci --forceExit --detectOpenHandles --colors -u",
+        "test": "cross-env FIORI_TOOLS_DISABLE_SECURE_STORE=true jest --ci --forceExit --detectOpenHandles --colors --testPathPattern=test/unit",
+        "test-u": "cross-env FIORI_TOOLS_DISABLE_SECURE_STORE=true jest --ci --forceExit --detectOpenHandles --colors -u",
         "link": "pnpm link --global",
         "unlink": "pnpm unlink --global"
     },
@@ -44,6 +44,7 @@
         "@sap-ux/system-access": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "@sap-ux/odata-service-writer": "workspace:*",
+        "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
         "adm-zip": "0.5.10",
         "ejs": "3.1.10",
@@ -67,10 +68,11 @@
         "@types/supertest": "2.0.12",
         "@types/uuid": "10.0.0",
         "dotenv": "16.3.1",
-        "express": "4.21.1",
+        "express": "4.21.2",
         "nock": "13.4.0",
         "rimraf": "5.0.5",
-        "supertest": "6.3.3"
+        "supertest": "6.3.3",
+        "cross-env": "^7.0.3"
     },
     "engines": {
         "node": ">=18.x"

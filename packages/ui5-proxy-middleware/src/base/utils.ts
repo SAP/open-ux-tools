@@ -5,7 +5,14 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import type { NextFunction, Request, Response } from 'express';
 import type { ProxyConfig } from './types';
 import { existsSync, readFileSync } from 'fs';
-import { BOOTSTRAP_LINK, BOOTSTRAP_REPLACE_REGEX, SANDBOX_LINK, SANDBOX_REPLACE_REGEX } from './constants';
+import {
+    BOOTSTRAP_LINK,
+    BOOTSTRAP_REPLACE_REGEX,
+    SANDBOX_LINK,
+    SANDBOX_REPLACE_REGEX,
+    SANDBOX2_LINK,
+    SANDBOX2_REPLACE_REGEX
+} from './constants';
 import type { Url } from 'url';
 import { t } from '../i18n';
 import type { ReaderCollection } from '@ui5/fs';
@@ -242,11 +249,17 @@ export function injectUI5Url(originalHtml: string, ui5Configs: ProxyConfig[]): s
         if (ui5Config.path === '/resources') {
             const resourcesUrl = `src="${ui5Url}/${BOOTSTRAP_LINK}"`;
             html = html.replace(BOOTSTRAP_REPLACE_REGEX, resourcesUrl);
+            //replace sandbox2 url as this is now part of /resources
+            const flpSandbox2Url = `src="${ui5Url}/${SANDBOX2_LINK}"`;
+            html = html.replace(SANDBOX2_REPLACE_REGEX, flpSandbox2Url);
         }
 
         if (ui5Config.path === '/test-resources') {
-            const testResourcesUrl = `src="${ui5Url}/${SANDBOX_LINK}"`;
-            html = html.replace(SANDBOX_REPLACE_REGEX, testResourcesUrl);
+            const flpSandboxUrl = `src="${ui5Url}/${SANDBOX_LINK}"`;
+            html = html.replace(SANDBOX_REPLACE_REGEX, flpSandboxUrl);
+            //replace sandbox2 url here as well although this is no longer part of /test-resources to be backwards compatible
+            const flpSandbox2Url = `src="${ui5Url}/${SANDBOX2_LINK}"`;
+            html = html.replace(SANDBOX2_REPLACE_REGEX, flpSandbox2Url);
         }
     }
     return html;

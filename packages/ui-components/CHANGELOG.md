@@ -1,5 +1,67 @@
 # @sap-ux/ui-components
 
+## 1.24.12
+
+### Patch Changes
+
+-   3a01535: UISections. Issue with window resize hiding section on fullscreen toggle event
+
+## 1.24.11
+
+### Patch Changes
+
+-   21292ad: Feat(UI components): issue #32314 - UITranslationInput inverted theme
+
+## 1.24.10
+
+### Patch Changes
+
+-   17847f9: UISections. Error `Cannot read properties of undefined (reading 'size')` is throws for section on initial rendering
+
+## 1.24.9
+
+### Patch Changes
+
+-   3190a55: UISections. Fixed incorrect position calculations when hiding sections with three or more sections present.
+
+## 1.24.8
+
+### Patch Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
+## 1.24.7
+
+### Patch Changes
+
+-   8b27155: UIToggle: Avoid triggering change when click happens on whitespace between label and toggle switch button
+
+## 1.24.6
+
+### Patch Changes
+
+-   689f1b8: UIIcons. Add new icon "DataSparkle"
+
+## 1.24.5
+
+### Patch Changes
+
+-   b410041: fix(ui-components): UIButtonAction set margin left icon to zero
+
+## 1.24.4
+
+### Patch Changes
+
+-   1215e5b: fix(ui-components): UIButtonAction underline in normal mode
+
+## 1.24.3
+
+### Patch Changes
+
+-   ec30d25: Update Icons.tsx
+
+    Shrunken down info icon
+
 ## 1.24.2
 
 ### Patch Changes

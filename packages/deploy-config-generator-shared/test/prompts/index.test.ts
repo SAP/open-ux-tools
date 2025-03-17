@@ -1,4 +1,4 @@
-import { getConfirmConfigUpdatePrompt } from '../../src/prompts';
+import { getConfirmMtaContinuePrompt } from '../../src/prompts';
 import { initI18n } from '../../src/utils/i18n';
 
 describe('prompts', () => {
@@ -6,14 +6,14 @@ describe('prompts', () => {
         await initI18n();
     });
 
-    test('should return config update confirm prompt', () => {
-        const configType = 'TEST';
-        const result = getConfirmConfigUpdatePrompt(configType);
+    test('should returncap mta continue confirm prompt', () => {
+        const result = getConfirmMtaContinuePrompt();
         expect(result).toEqual([
             {
                 type: 'confirm',
-                name: 'confirmConfigUpate',
-                message: `${configType} configuration is managed centrally as part of the CI pipeline, local updates to the configuration will not be for productive use. Are you sure you want to continue?`,
+                name: 'addCapMtaContinue',
+                message:
+                    'There is no `mta.yaml` file defined for this project. To add a deployment configuration for this application, this file must be present. Do you want to create an `mta.yaml` file to continue?',
                 default: false
             }
         ]);

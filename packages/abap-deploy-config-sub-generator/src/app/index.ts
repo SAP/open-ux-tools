@@ -29,7 +29,7 @@ import { DEFAULT_PACKAGE_ABAP } from '@sap-ux/abap-deploy-config-inquirer/dist/c
 import type { AbapDeployConfig, FioriToolsProxyConfigBackend } from '@sap-ux/ui5-config';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { AbapDeployConfigOptions } from './types';
-import type { AbapDeployConfigAnswersInternal } from '@sap-ux/abap-deploy-config-inquirer';
+import type { AbapDeployConfigAnswersInternal, AbapDeployConfigQuestion } from '@sap-ux/abap-deploy-config-inquirer';
 
 /**
  * ABAP deploy config generator.
@@ -316,6 +316,7 @@ export default class extends DeploymentGenerator {
     }
 }
 
+export { AbapDeployConfigQuestion, AbapDeployConfigAnswersInternal };
 export { getAbapQuestions } from './questions';
 export { indexHtmlExists } from '../utils';
 export { AbapDeployConfigOptions, DeployProjectType } from './types';

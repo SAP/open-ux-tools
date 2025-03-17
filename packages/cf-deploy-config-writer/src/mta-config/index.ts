@@ -47,7 +47,7 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
                 break;
             }
         } catch (error) {
-            await new Promise((resolve) => setTimeout(resolve, 200));
+            await new Promise((resolve) => setTimeout(resolve, 300));
         }
     }
     LoggerHelper.logger?.info(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
@@ -78,6 +78,7 @@ export function createMTA(config: MTABaseConfig): void {
     });
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
     writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
+    LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 
 /**
@@ -146,6 +147,7 @@ export function createCAPMTA(cwd: string, options?: string[]): void {
     if (result?.error) {
         throw new Error(`Something went wrong installing node modules! ${result.error}`);
     }
+    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
 }
 
 /**

@@ -111,6 +111,35 @@ describe('ADP writer', () => {
             ).toMatchSnapshot();
         });
 
+        test('enable TypeScript support', async () => {
+            const projectDir = join(outputDir, 'ts-support');
+            await generate(
+                projectDir,
+                {
+                    ...config,
+                    deploy: {
+                        package: '$TMP'
+                    },
+                    options: {
+                        fioriTools: true,
+                        enableTypeScript: true
+                    },
+                    ui5: {
+                        version: '1.133.0'
+                    }
+                },
+                fs
+            );
+            expect(
+                fs.dump(
+                    projectDir,
+                    (file) =>
+                        file.dirname === projectDir &&
+                        ['package.json', 'ui5.yaml', 'ui5-deploy.yaml', 'tsconfig.json'].includes(file.basename)
+                )
+            ).toMatchSnapshot();
+        });
+
         test('S/4HANA cloud config', async () => {
             const projectDir = join(outputDir, 's4hana');
             Object.assign(config.app, {
@@ -130,7 +159,8 @@ describe('ADP writer', () => {
                         package: '$TMP'
                     },
                     options: {
-                        fioriTools: true
+                        fioriTools: true,
+                        enableTypeScript: false
                     },
                     ui5: {
                         version: '1.122.1'
@@ -171,7 +201,7 @@ describe('ADP writer', () => {
                     reference: 'the.original.app'
                 },
                 target: {
-                    destination: 'UYTCLNT902'
+                    destination: 'DUMMY_DESTINATION'
                 }
             };
 
@@ -193,7 +223,8 @@ describe('ADP writer', () => {
                         package: '$TMP'
                     },
                     options: {
-                        fioriTools: true
+                        fioriTools: true,
+                        enableTypeScript: false
                     },
                     ui5: {
                         version: '1.122.1'
@@ -237,7 +268,8 @@ describe('ADP writer', () => {
                         package: '$TMP'
                     },
                     options: {
-                        fioriTools: true
+                        fioriTools: true,
+                        enableTypeScript: false
                     },
                     ui5: {
                         version: '1.122.1'
@@ -292,7 +324,11 @@ describe('ADP writer', () => {
                 }
             },
             options: {
-                fioriTools: true
+                fioriTools: true,
+                enableTypeScript: false
+            },
+            ui5: {
+                version: '1.133.0'
             }
         };
         const migrateInputDir = join(__dirname, '../../fixtures/webide-adaptation-project');

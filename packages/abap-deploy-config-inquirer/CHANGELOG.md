@@ -1,5 +1,204 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.31
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/fiori-generator-shared@0.9.9
+
+## 1.2.30
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.8
+-   @sap-ux/system-access@0.5.32
+-   @sap-ux/inquirer-common@0.6.28
+
+## 1.2.29
+
+### Patch Changes
+
+-   19a19dd: add new main deploy gen module
+
+## 1.2.28
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.7
+-   @sap-ux/system-access@0.5.32
+-   @sap-ux/inquirer-common@0.6.27
+
+## 1.2.27
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/fiori-generator-shared@0.9.6
+    -   @sap-ux/system-access@0.5.32
+    -   @sap-ux/inquirer-common@0.6.26
+
+## 1.2.26
+
+### Patch Changes
+
+-   2202356: cleanup package answer utility method
+
+## 1.2.25
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.5
+-   @sap-ux/system-access@0.5.32
+-   @sap-ux/inquirer-common@0.6.25
+
+## 1.2.24
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+    -   @sap-ux/inquirer-common@0.6.24
+
+## 1.2.23
+
+### Patch Changes
+
+-   Updated dependencies [aaa432a]
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/system-access@0.5.32
+
+## 1.2.22
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.6
+-   @sap-ux/fiori-generator-shared@0.9.3
+-   @sap-ux/system-access@0.5.31
+-   @sap-ux/inquirer-common@0.6.23
+
+## 1.2.21
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.22
+
+## 1.2.20
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.2
+-   @sap-ux/inquirer-common@0.6.21
+-   @sap-ux/axios-extension@1.18.6
+-   @sap-ux/system-access@0.5.31
+
+## 1.2.19
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.6
+-   @sap-ux/fiori-generator-shared@0.9.1
+-   @sap-ux/system-access@0.5.31
+-   @sap-ux/inquirer-common@0.6.20
+
+## 1.2.18
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+    -   @sap-ux/inquirer-common@0.6.19
+
+## 1.2.17
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.6
+-   @sap-ux/fiori-generator-shared@0.8.1
+-   @sap-ux/system-access@0.5.31
+-   @sap-ux/inquirer-common@0.6.18
+
+## 1.2.16
+
+### Patch Changes
+
+-   Updated dependencies [4fd3029]
+    -   @sap-ux/axios-extension@1.18.6
+    -   @sap-ux/system-access@0.5.31
+
+## 1.2.15
+
+### Patch Changes
+
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+    -   @sap-ux/inquirer-common@0.6.17
+
+## 1.2.14
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.5
+-   @sap-ux/fiori-generator-shared@0.7.29
+-   @sap-ux/system-access@0.5.30
+-   @sap-ux/inquirer-common@0.6.16
+
+## 1.2.13
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.28
+    -   @sap-ux/system-access@0.5.30
+    -   @sap-ux/inquirer-common@0.6.15
+
+## 1.2.12
+
+### Patch Changes
+
+-   c08e1e3: Add option to hide createDuringDeploy list item in getTransportChoices
+
+## 1.2.11
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.5
+-   @sap-ux/fiori-generator-shared@0.7.27
+-   @sap-ux/system-access@0.5.30
+-   @sap-ux/inquirer-common@0.6.14
+
+## 1.2.10
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+    -   @sap-ux/axios-extension@1.18.5
+    -   @sap-ux/fiori-generator-shared@0.7.26
+    -   @sap-ux/inquirer-common@0.6.13
+    -   @sap-ux/system-access@0.5.30
+
+## 1.2.9
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.18.4
+-   @sap-ux/fiori-generator-shared@0.7.25
+-   @sap-ux/system-access@0.5.29
+-   @sap-ux/inquirer-common@0.6.12
+
 ## 1.2.8
 
 ### Patch Changes
