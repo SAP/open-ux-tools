@@ -251,10 +251,14 @@ describe('getSystemQuestions', () => {
         questions.forEach((question) => {
             q[question.name] = question as Question;
         });
-        expect(await q.serviceName.when!({ packageAutocomplete: 'package' })).toEqual(true);
+        expect(await q.serviceName.when!({ packageManual: 'package' })).toEqual(true);
         expect(await q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
         expect(await q.draftEnabled.validate!(false)).toEqual('error.validatingContent');
+        PromptState.resetServiceConfig();
+        expect(await q.serviceName.when!({ packageManual: '', packageAutocomplete: '' })).toEqual(false);
+        PromptState.resetServiceConfig();
+        expect(await q.serviceName.when!({ packageManual: undefined, packageAutocomplete: undefined })).toEqual(false);
 
         const genMockValidateContent2 = {
             getContent: getContentMock,
