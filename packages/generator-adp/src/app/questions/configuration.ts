@@ -136,15 +136,20 @@ export function getSystemListPrompt(appManager: ApplicationManager, options?: Sy
             // if (!this.hasSystemAuthentication) {
             //     /**
             //      * 1. Fetches system supports Flex UI features.
+            //      * this.flexUISystem = await this.abapClient.getFlexUISupportedSystem();
             //      * 2. Fetches system information from the provider's layered repository.
+            //      * const lrep = provider.getLayeredRepository(); return lrep.getSystemInfo(language, packageName);
             //      */
             //     await this.getSystemData();
             //     /**
             //      * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
+            //      * const version = await this.abapClient.getSystemUI5Version();
+            //      * this.versionsOnSystem = await this.ui5Manager.getSystemRelevantVersions(version);
             //      */
             //     await this.validateSystemVersion(value);
             //     /**
             //      * Validates the adaptation project types based on the system information and user base.
+            //      * If no adaptationProjectTypes throws error or if is cloud ready and layer is VENDOR (internal)
             //      */
             //     return this.validateAdpTypes();
             // }
@@ -196,7 +201,6 @@ export function getPasswordPrompt(appManager: ApplicationManager, options?: Pass
             }
 
             try {
-                // TODO:
                 await AbapProvider.setProvider(answers.system, undefined, answers.username, value);
 
                 const provider = AbapProvider.getProvider();
@@ -208,6 +212,7 @@ export function getPasswordPrompt(appManager: ApplicationManager, options?: Pass
                     await appManager.loadApps(isCloudSystem);
                 }
 
+                // TODO:
                 // /**
                 //  * 1. Fetches system supports Flex UI features.
                 // await provider.get(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, acceptHeaders);
@@ -271,7 +276,8 @@ export function getApplicationListPrompt(
             /**
              * Determine if the application supports manifest-first approach and manifest url exists.
              */
-            // const isSupported = await this.manifestManager.isAppSupported(value.id);
+            // const isSupported = await appIndex.getIsManiFirstSupported(id); // If not supported throw error
+            // const url = await this.getUrl(id); // If manifest url is not found throw error
 
             /**
              * If supported, get the application manifest.
@@ -282,11 +288,18 @@ export function getApplicationListPrompt(
              * Get the system version and validate adp over adp and partial support
              */
             // this.evaluateApplicationSupport(manifest, value);
+            // const systemVersion = this.ui5Manager.systemVersion;
+            // const checkForSupport = this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
+            // const isPartialSupport = this.ui5VersionDetected && checkForSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
+
             /**
              * Check if app does not support manifest or adaptation
              */
-            // Validates the selected application for adaptation projects, checking for specific support flags
-            // * and validating the application manifest.
+            // Validates the selected application for adaptation projects, checking for specific support flags and validating the application manifest.
+            // this.appIdentifier.validateSelectedApplication(application, manifest, checkForSupport, isPartialSupport);
+
+            // Check if views are loaded synchronously or asynchronously in the UI5 settings of the manifest.
+            // this.checkForSyncLoadedViews(manifest['sap.ui5']);
             return true;
         },
         when: (answers: ConfigAnswers) => showApplicationQuestion(answers)
