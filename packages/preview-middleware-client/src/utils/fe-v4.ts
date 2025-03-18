@@ -131,3 +131,22 @@ export async function createManifestPropertyChange(
 
     return command;
 }
+
+/**
+ * Returns application object page definitions found in manifest
+ *
+ * @param manifest - manifest object
+ * @returns array with page descriptors
+ */
+export function getV4ApplicationPages(manifest: Manifest): { id: string; entitySet: string | undefined }[] {
+    if (manifest['sap.ui5']?.routing?.targets) {
+        const targets = manifest['sap.ui5'].routing?.targets ?? {};
+        const result = Object.keys(targets).map((key) => {
+            const entitySet = targets[key].options?.settings?.entitySet;
+            const id = targets[key].id;
+            return { id, entitySet };
+        });
+        return result;
+    }
+    return [];
+}
