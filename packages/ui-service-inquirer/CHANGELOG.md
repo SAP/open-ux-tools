@@ -1,5 +1,11 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.3
+
+### Patch Changes
+
+-   a566e73: use package from existing value correctly
+
 ## 0.0.2
 
 ### Patch Changes
