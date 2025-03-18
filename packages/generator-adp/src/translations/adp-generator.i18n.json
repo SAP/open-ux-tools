@@ -22,7 +22,7 @@
         "systemNotFoundInStore": "System not found in the system store: {{- systemUrl}}",
         "writingPhase": "Error in writing phase of the adaptation project FLP configuration",
         "telemetry": "Error sending telemetry data: {{- error}}",
-        "updatingApp": "Error creating a new Adaptation Project. Inspect the logs for full error.",
+        "updatingApp": "Error creating a new adaptation project. View the logs to see the full error.",
         "authenticationFailed": "Authentication failed."
     }
 }
