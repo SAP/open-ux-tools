@@ -60,7 +60,7 @@ interface CreateFragmentProps {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsFragmentsModel> {
-    private telemetryData: TelemetryData | undefined;
+    private readonly telemetryData: TelemetryData | undefined;
 
     constructor(
         name: string,

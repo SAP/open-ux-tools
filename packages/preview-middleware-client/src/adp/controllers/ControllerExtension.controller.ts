@@ -47,7 +47,7 @@ type ControllerModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
-    private telemetryData: TelemetryData | undefined;
+    private readonly telemetryData: TelemetryData | undefined;
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, telemetryData?: TelemetryData) {
         super(name);
         this.rta = rta;

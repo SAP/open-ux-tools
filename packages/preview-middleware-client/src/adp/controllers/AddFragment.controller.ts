@@ -65,7 +65,7 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    private telemetryData: TelemetryData | undefined;
+    private readonly telemetryData: TelemetryData | undefined;
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions, telemetryData?: TelemetryData) {
         super(name);
         this.rta = rta;

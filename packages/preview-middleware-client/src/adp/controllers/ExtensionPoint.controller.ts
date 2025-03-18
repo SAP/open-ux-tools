@@ -63,7 +63,7 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
      */
     onCreateBtnPress(event: Event): void {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        reportTelemetry({ category: 'Create Controller'});
+        reportTelemetry({ category: 'Create ExtensionPoint'});
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
