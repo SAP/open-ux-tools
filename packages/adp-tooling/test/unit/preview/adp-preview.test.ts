@@ -800,7 +800,9 @@ describe('AdaptationProject', () => {
             const response = await server.get('/adp/api/annotation').send().expect(200);
 
             const message = response.text;
-            expect(message).toMatchInlineSnapshot(`"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`);
+            expect(message).toMatchInlineSnapshot(
+                `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`
+            );
         });
     });
 });
