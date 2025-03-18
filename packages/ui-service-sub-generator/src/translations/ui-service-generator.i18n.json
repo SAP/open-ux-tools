@@ -1,0 +1,17 @@
+{
+    "error": {
+        "fetchingGenerator": "Error fetching generator: {{error}}",
+        "sendingTelemetry": "Error sending telemetry event",
+        "connectionFailed": "Connection to the discovery service on backend system {{system}} failed.",
+        "authentication": "Authentication failed with system data provided, unable to continue with UI Service generation.",
+        "generatingService": "The UI Service failed to create successfully. Please see the log in 'Application Wizard.Generators' output for more details.",
+        "noGeneratorFoundBo": "No generator found for the selected business object interface"
+    },
+    "info": {
+        "generationSuccessful": "UI Service {{serviceName}} was generated successfully",
+        "generationSuccessfulWriteFile": "UI Service {{serviceName}} has been created successfully and has been added to your project",
+        "generationSuccessfulMetadataFail": "UI Service {{serviceName}} has been created successfully, but could not be added to your project",
+        "generationWarning": "Generation of UI Service might take a few minutes. Please be patient.",
+        "generatingUiService": "Generating UI service..."
+    }
+}
