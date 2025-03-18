@@ -53,13 +53,22 @@ export class AddNewAnnotationFile
             if (Object.prototype.hasOwnProperty.call(annotationDataSourceMap, key)) {
                 const source = annotationDataSourceMap[key];
                 const { annotationExistsInWS } = source.annotationDetails;
-                this.children.push({
-                    enabled: true,
-                    label: annotationExistsInWS
-                        ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
-                        : this.context.resourceBundle.getText('ADD_ANNOTATION_FILE', [key]),
-                    children: []
-                });
+                if (source.metadataReadErrorMsg) {
+                    this.children.push({
+                        enabled: false,
+                        tooltip: source.metadataReadErrorMsg,
+                        label: this.context.resourceBundle.getText('ADD_ANNOTATION_FILE', [key]),
+                        children: []
+                    });
+                } else {
+                    this.children.push({
+                        enabled: true,
+                        label: annotationExistsInWS
+                            ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
+                            : this.context.resourceBundle.getText('ADD_ANNOTATION_FILE', [key]),
+                        children: []
+                    });
+                }
             }
         }
     }
