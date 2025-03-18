@@ -146,7 +146,7 @@
             "abapInvalidAppNameNamespaceOrStartingPrefix": "The SAPUI5 ABAP Repository and Package must start in the same way, that is, using a namespace or capital letters: 'Z', 'Y' or 'SAP'",
             "invalidCloudPackage": "The provided package is not intended for cloud deployment.",
             "invalidOnPremPackage": "The provided package is not intended for on-premise deployments.",
-            "invalidOnPremSystem": "You have selected a Cloud system, but you previously created project residing on an On-Premise system. Please select an On-Premise system to proceed with the deployment.",
+            "invalidOnPremSystem": "You have selected a cloud system, but you previously created a project residing on an on-premise system. Please select an on-premise system to proceed with the deployment.",
             "invalidCloudSystem": "You have selected an On-Premise system, but you previously created project residing on a Cloud system. Please select a Cloud system to proceed with the deployment."
         }
     }
