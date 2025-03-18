@@ -84,21 +84,6 @@ jest.mock('@sap-ux/odata-service-inquirer', () => ({
     })
 }));
 
-const state = {
-    service: {
-        serviceBindingName: 'serviceBindingName',
-        serviceType: 'serviceType',
-        uri: 'uri'
-    },
-    authenticated: true,
-    packageInputChoiceValid: true,
-    morePackageResultsMsg: 'morePackageResultsMsg',
-    newTransportNumber: '123456789',
-    transportList: [],
-    content: genContent,
-    suggestedServiceName: 'suggestedServiceName'
-};
-
 const answersMock = {
     systemSelection: 'system1',
     transport: 'transport1',
@@ -182,20 +167,23 @@ describe('getSystemQuestions', () => {
     });
 
     test('getServiceConfigQuestions', async () => {
-        const getContentMock = jest.fn().mockResolvedValue(
-            JSON.stringify({
-                businessService: {
-                    serviceBinding: {
-                        serviceBindingName: 'serviceName'
+        const getContentMock = jest.fn().mockImplementation((pckg) => {
+            const serviceName = pckg === '' ? '' : 'serviceName';
+            return Promise.resolve(
+                JSON.stringify({
+                    businessService: {
+                        serviceBinding: {
+                            serviceBindingName: serviceName
+                        }
+                    },
+                    businessObject: {
+                        projectionBehavior: {
+                            withDraft: undefined
+                        }
                     }
-                },
-                businessObject: {
-                    projectionBehavior: {
-                        withDraft: undefined
-                    }
-                }
-            })
-        );
+                })
+            );
+        });
         const genMock = {
             getContent: getContentMock,
             validateContent: jest.fn().mockResolvedValue({
@@ -224,7 +212,8 @@ describe('getSystemQuestions', () => {
         });
         expect(questions).toMatchSnapshot();
         expect(q.transportInputChoice.choices!()).toMatchSnapshot();
-        expect(await q.serviceName.when!({ packageAutocomplete: 'package' })).toEqual(true);
+        expect(await q.serviceName.when!({ packageManual: '', packageAutocomplete: 'package' })).toEqual(true);
+        expect(q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(q.serviceName.default()).toEqual(0);
         expect(await q.serviceName.validate!('testPackage')).toEqual(true);
         expect(await q.draftEnabled.validate!(true)).toEqual(true);

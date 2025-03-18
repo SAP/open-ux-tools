@@ -62,7 +62,7 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
             when: async (answers: UiServiceAnswers): Promise<boolean> => {
                 if (!!answers.packageManual || !!answers.packageAutocomplete) {
                     try {
-                        const packageValue = answers.packageManual ?? answers.packageAutocomplete ?? '';
+                        const packageValue = answers.packageManual || answers.packageAutocomplete || '';
                         PromptState.serviceConfig.content =
                             (await PromptState.systemSelection.objectGenerator?.getContent(packageValue)) ?? '';
                         const content = JSON.parse(PromptState.serviceConfig?.content);
