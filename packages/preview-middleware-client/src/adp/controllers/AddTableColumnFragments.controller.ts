@@ -61,8 +61,14 @@ interface CreateFragmentProps {
  */
 export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsFragmentsModel> {
     private telemetryData: TelemetryData | undefined;
-    
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions, telemetryData?: TelemetryData) {
+
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddFragmentOptions,
+        telemetryData?: TelemetryData
+    ) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -98,10 +104,8 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        if (this.telemetryData) {
-            // eslint-disable-next-line @typescript-eslint/no-floating-promises
-            reportTelemetry({ category: 'Create Table Column Fragment', ...this.telemetryData });
-        }
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        reportTelemetry({ category: 'Create Table Column Fragment', ...this.telemetryData });
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
