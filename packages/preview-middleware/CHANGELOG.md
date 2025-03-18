@@ -1,5 +1,47 @@
 # @sap-ux/preview-middleware
 
+## 0.18.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.15
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/system-access@0.5.33
+
+## 0.18.19
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
+## 0.18.18
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
+## 0.18.17
+
+### Patch Changes
+
+-   f659540: fix: disable "Add Header Field" Quick Action when `showHeaderContent` is set to `false` for `ObjectPageLayout`
+
+## 0.18.16
+
+### Patch Changes
+
+-   32dafd7: feat: refactor lrep connectors used for preview
+
+## 0.18.15
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/adp-tooling@0.13.14
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/project-access@1.29.16
+
 ## 0.18.14
 
 ### Patch Changes

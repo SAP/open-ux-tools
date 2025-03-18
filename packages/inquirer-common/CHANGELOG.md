@@ -1,5 +1,23 @@
 # @sap-ux/inquirer-common
 
+## 0.6.30
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.71
+-   @sap-ux/fiori-generator-shared@0.9.10
+
+## 0.6.29
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/telemetry@0.5.70
+    -   @sap-ux/ui5-info@0.9.1
+    -   @sap-ux/fiori-generator-shared@0.9.9
+
 ## 0.6.28
 
 ### Patch Changes

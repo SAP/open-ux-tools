@@ -34,7 +34,7 @@ export async function getBackendConfig(
     } else {
         // Launched as subgenerator from app gen
         backendConfig = {
-            destination: options.connectedSystem?.destination?.Name,
+            destination: options.appGenDestination || options.connectedSystem?.destination?.Name,
             url: options.appGenServiceHost,
             client: options.appGenClient,
             scp: !!options.connectedSystem?.backendSystem?.serviceKeys || false
