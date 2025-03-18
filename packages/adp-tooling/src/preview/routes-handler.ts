@@ -308,6 +308,12 @@ export default class RoutesHandler {
         }
     };
 
+    /**
+     *
+     * @param manifestService
+     * @param dataSrouceID
+     * @returns error message with reason
+     */
     private async getMetaDataReadErrorMsg(
         manifestService: ManifestService,
         dataSrouceID: string
