@@ -44,7 +44,6 @@ import UIComponent from 'sap/ui/core/UIComponent';
 import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
 
-
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -298,7 +297,14 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
                 );
 
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension', undefined, {}, expect.objectContaining({ actionName: 'add-controller-to-page' }) );
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'ControllerExtension',
+                    undefined,
+                    {},
+                    expect.objectContaining({ actionName: 'add-controller-to-page' })
+                );
             });
         });
 
@@ -806,6 +812,7 @@ describe('FE V2 quick actions', () => {
 
         describe('add page action', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:42:00.353Z');
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -930,7 +937,8 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'actions',
                         'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
-                    }
+                    },
+                    {actionName: "add-page-action", timestamp: "2025-03-17T20:42:00.353Z"}
                 );
             });
         });
@@ -951,6 +959,7 @@ describe('FE V2 quick actions', () => {
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:37:11.940Z');
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -1088,7 +1097,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    {actionName: "create-table-custom-column", timestamp: "2025-03-17T20:37:11.940Z"}
                 );
             });
         });
@@ -1712,6 +1722,7 @@ describe('FE V2 quick actions', () => {
                 });
             });
             test('initialize and execute action - when file exists', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:24:49.325Z');
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '1' })
                 );
@@ -1724,7 +1735,8 @@ describe('FE V2 quick actions', () => {
                         fileName: 'mock/adp.project.annotation/path',
                         filePath: 'mock/adp/project/annotation/path',
                         isRunningInBAS: false
-                    }
+                    },
+                    {actionName: "add-new-annotation-file", timestamp: "2025-03-17T20:24:49.325Z"}
                 );
             });
         });
@@ -1916,6 +1928,7 @@ describe('FE V2 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:24:49.347Z');
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -2052,12 +2065,14 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'items',
                         title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-                    }
+                    },
+                    { actionName: 'op-add-header-field', timestamp: '2025-03-17T20:24:49.347Z' }
                 );
             });
         });
         describe('add custom section', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:22:57.404Z');
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -2196,12 +2211,14 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'sections',
                         title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
-                    }
+                    },
+                    { actionName: 'op-add-custom-section', timestamp: '2025-03-17T20:22:57.404Z' }
                 );
             });
         });
         describe('create table action', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:01:19.650Z');
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -2361,7 +2378,8 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'content',
                         defaultAggregationArrayIndex: 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                    }
+                    },
+                    { actionName: 'create-table-action', timestamp: '2025-03-17T20:01:19.650Z' }
                 );
             });
         });
@@ -2382,6 +2400,7 @@ describe('FE V2 quick actions', () => {
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T15:14:25.947Z');
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -2549,7 +2568,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    { actionName: 'create-table-custom-column', timestamp: '2025-03-17T15:14:25.947Z' }
                 );
             });
             test('displays warning when no rows loaded', async () => {
@@ -3239,6 +3259,7 @@ describe('FE V2 quick actions', () => {
     describe('AnalyticalListPage', () => {
         describe('create table custom column', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:01:19.766Z');
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -3379,7 +3400,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    { actionName: 'create-table-custom-column', timestamp: '2025-03-17T20:01:19.766Z' }
                 );
             });
         });
