@@ -7,8 +7,6 @@ Object {
     "fiori2": Object {
       "componentData": Object {
         "config": Object {
-          "enableAppFinder": true,
-          "enablePersonalization": false,
           "enableRecentActivity": true,
           "enableSearch": false,
           "rootIntent": "Shell-home",
@@ -69,8 +67,19 @@ Object {
         "enableClientSideTargetResolution": true,
       },
     },
+    "Personalization": Object {
+      "adapter": Object {
+        "config": Object {
+          "storageType": "MEMORY",
+        },
+        "module": "sap.ushell.adapters.local.PersonalizationAdapter",
+      },
+    },
     "PersonalizationV2": Object {
       "adapter": Object {
+        "config": Object {
+          "storageType": "MEMORY",
+        },
         "module": "sap.ushell.adapters.local.PersonalizationAdapter",
       },
     },

@@ -13,8 +13,6 @@ export default async function initCdm(container: typeof sap.ushell.Container): P
             fiori2: {
                 componentData: {
                     config: {
-                        enablePersonalization: false,
-                        enableAppFinder: true,
                         enableSearch: false,
                         enableRecentActivity: true,
                         rootIntent: 'Shell-home'
@@ -70,9 +68,20 @@ export default async function initCdm(container: typeof sap.ushell.Container): P
                     }
                 }
             },
+            Personalization: {
+                adapter: {
+                    module: 'sap.ushell.adapters.local.PersonalizationAdapter',
+                    config: {
+                        storageType: 'MEMORY'
+                    }
+                }
+            },
             PersonalizationV2: {
                 adapter: {
-                    module: 'sap.ushell.adapters.local.PersonalizationAdapter'
+                    module: 'sap.ushell.adapters.local.PersonalizationAdapter',
+                    config: {
+                        storageType: 'MEMORY'
+                    }
                 }
             },
             AppState: {
