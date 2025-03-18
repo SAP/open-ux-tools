@@ -156,7 +156,7 @@ export class Ui5AbapRepositoryService extends ODataService {
                 }
             });
             const data = response.odata();
-            return data.ZipArchive ? Buffer.from(data.ZipArchive) : undefined;
+            return data.ZipArchive ? Buffer.from(data.ZipArchive, 'base64') : undefined;
         } catch (error) {
             this.log.debug(`Retrieving application ${app}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {
