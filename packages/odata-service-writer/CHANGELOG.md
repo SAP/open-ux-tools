@@ -1,5 +1,15 @@
 # @sap-ux/odata-service-writer
 
+## 0.26.12
+
+### Patch Changes
+
+-   224494c: Improved add, delete and get methods for service backends.
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/mockserver-config-writer@0.8.10
+    -   @sap-ux/project-access@1.29.17
+
 ## 0.26.11
 
 ### Patch Changes
