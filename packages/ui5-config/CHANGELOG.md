@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.26.5
+
+### Patch Changes
+
+-   224494c: Improved add, delete and get methods for service backends.
+
 ## 0.26.4
 
 ### Patch Changes
