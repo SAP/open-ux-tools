@@ -1708,6 +1708,7 @@ describe('FE V2 quick actions', () => {
                     settings: {},
                     type: 'appDescriptor',
                     value: {
+                        appComponent: {},
                         changeType: 'appdescr_app_addAnnotationsToOData',
                         generator: undefined,
                         parameters: {

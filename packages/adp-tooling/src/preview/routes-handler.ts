@@ -318,7 +318,7 @@ export default class RoutesHandler {
         manifestService: ManifestService,
         dataSrouceID: string
     ): Promise<string | undefined> {
-        let errorMessage = '';
+        let errorMessage;
         try {
             await manifestService.getDataSourceMetadata(dataSrouceID);
         } catch (error) {
