@@ -6,7 +6,8 @@ import type {
     SavedControlChange,
     PendingConfigurationChange,
     SavedConfigurationChange,
-    ConfigurationValue
+    ConfigurationValue,
+    SavedGenericChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -21,7 +22,8 @@ import {
     PropertyType,
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
-    UNKNOWN_CHANGE_KIND
+    UNKNOWN_CHANGE_KIND,
+    GENERIC_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 import { applyChange } from './flex-change';
 import type { ActionSenderFunction, SubscribeFunction, UI5AdaptationOptions } from '../types';
@@ -30,7 +32,7 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
-import FlexChange from 'sap/ui/fl/Change';
+import FlexChange, { ChangeDefinition } from 'sap/ui/fl/Change';
 import { getError } from '../../utils/error';
 import { isLowerThanMinimalUi5Version, getUi5Version } from '../../utils/version';
 import MessageToast from 'sap/m/MessageToast';
@@ -38,6 +40,7 @@ import { getTextBundle } from '../../i18n';
 import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
 import { getConfigMapControlIdMap } from '../../utils/fe-v4';
+import { GENERIC_CHANGE_HANDLER, GenericChange } from './generic-change';
 
 const TITLE_MAP: { [key: string]: string } = {
     appdescr_app_addAnnotationsToOData: 'Add New Annotation File'
@@ -91,7 +94,7 @@ interface ConfigChange extends BaseChange {
     content: ConfigurationChangeContent;
 }
 
-type SavedChangesResponse = Record<string, PropertyChange | ConfigChange>;
+type SavedChangesResponse = Record<string, PropertyChange | ConfigChange | GenericChange>;
 
 type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
 /**
@@ -161,6 +164,7 @@ function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
  */
 export class ChangeService extends EventTarget {
     private savedChanges:
+        | SavedGenericChange[]
         | SavedPropertyChange[]
         | UnknownSavedChange[]
         | SavedControlChange[]
@@ -262,6 +266,14 @@ export class ChangeService extends EventTarget {
         };
     }
 
+    private isGenericChange(change: PropertyChange | ConfigChange | GenericChange): change is GenericChange {
+        return (
+            change.changeType === 'appdescr_app_addAnnotationsToOData' ||
+            change.changeType === 'rename' ||
+            change.changeType === 'moveControls'
+        );
+    }
+
     /**
      * Fetches saved changes from the workspace and sorts them.
      */
@@ -269,6 +281,7 @@ export class ChangeService extends EventTarget {
         this.changedFiles = {};
         const savedChangesResponse = await fetch(FlexChangesEndPoints.changes + `?_=${Date.now()}`);
         const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
+        const textBundle = await getTextBundle();
         const changes = (
             (
                 await Promise.all(
@@ -280,11 +293,32 @@ export class ChangeService extends EventTarget {
                             | UnknownSavedChange
                             | SavedControlChange
                             | SavedConfigurationChange
+                            | SavedGenericChange
                             | undefined
                         > => {
-                            const change: PropertyChange | ConfigChange = savedChanges[key];
+                            const change: PropertyChange | ConfigChange | GenericChange = savedChanges[key];
                             let selectorId;
                             try {
+                                if (this.isGenericChange(change)) {
+                                    const { genericProps, changeTitle, controlId } =
+                                        GENERIC_CHANGE_HANDLER[change.changeType](change);
+                                    return {
+                                        kind: GENERIC_CHANGE_KIND,
+                                        type: 'saved',
+                                        fileName: change.fileName,
+                                        changeType: change.changeType,
+                                        timestamp: new Date(change.creation).getTime(),
+                                        ...(controlId && { controlId }),
+                                        genericProps: Object.keys(genericProps).map((currentKey) => {
+                                            const { i18nDisplayKey, value } = genericProps[currentKey];
+                                            return {
+                                                label: textBundle.getText(i18nDisplayKey),
+                                                value
+                                            };
+                                        }),
+                                        title: textBundle.getText(changeTitle)
+                                    };
+                                }
                                 if (change.changeType === MANIFEST_V4_CHANGE) {
                                     return this.getSavedConfigurationChange(change);
                                 } else {
@@ -625,7 +659,7 @@ export class ChangeService extends EventTarget {
         index: number
     ): Promise<PendingChange | undefined> {
         const change = command?.getPreparedChange?.();
-
+        const textBundle = await getTextBundle();
         const selectorId =
             typeof change?.getSelector === 'function'
                 ? await this.getControlIdByChange(change)
@@ -637,7 +671,29 @@ export class ChangeService extends EventTarget {
             return undefined;
         }
 
-        const { fileName } = change.getDefinition ? change.getDefinition() : (change.getJson() as { fileName: string });
+        const changeDefinition = change.getDefinition ? change.getDefinition() : (change.getJson() as ChangeDefinition);
+        const { fileName } = changeDefinition;
+        if (GENERIC_CHANGE_HANDLER?.[changeType]) {
+            const { genericProps, changeTitle, controlId } = GENERIC_CHANGE_HANDLER?.[changeType](
+                changeDefinition as GenericChange
+            );
+            return {
+                kind: GENERIC_CHANGE_KIND,
+                type: 'pending',
+                changeType,
+                isActive: index >= inactiveCommandCount,
+                title: textBundle.getText(changeTitle),
+                fileName,
+                ...(controlId && { controlId }),
+                genericProps: Object.keys(genericProps).map((currentKey) => {
+                    const { i18nDisplayKey, value } = genericProps[currentKey];
+                    return {
+                        label: textBundle.getText(i18nDisplayKey),
+                        value
+                    };
+                })
+            };
+        }
         if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {
             let value = '';
             switch (changeType) {
@@ -801,7 +857,7 @@ export class ChangeService extends EventTarget {
      */
     public async syncOutlineChanges(): Promise<void> {
         for (const change of this.savedChanges) {
-            if (change.kind !== 'unknown' && change.kind !== 'configuration') {
+            if (change.kind !== 'unknown' && change.kind !== 'configuration' && change.kind !== 'generic') {
                 const flexObject = await this.getFlexObject(this.changedFiles[change.fileName]);
                 change.controlId = (await this.getControlIdByChange(flexObject)) ?? '';
             }

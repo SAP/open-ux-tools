@@ -184,6 +184,16 @@ describe('main redux slice', () => {
                                 value: '{i18n>DELETE}',
                                 changeType: 'propertyChange',
                                 fileName: 'testFile1'
+                            },
+                            {
+                                kind: 'generic',
+                                type: 'pending',
+                                controlId: 'control1',
+                                isActive: true,
+                                fileName: 'testFile1',
+                                changeType: 'some',
+                                genericProps: [],
+                                title: 'test'
                             }
                         ],
                         saved: [
@@ -253,6 +263,16 @@ describe('main redux slice', () => {
                             propertyType: 'controlProperty',
                             propertyName: 'text',
                             value: '{i18n>DELETE}'
+                        },
+                        {
+                            changeType: 'some',
+                            controlId: 'control1',
+                            fileName: 'testFile1',
+                            genericProps: [],
+                            isActive: true,
+                            kind: 'generic',
+                            title: 'test',
+                            type: 'pending'
                         }
                     ],
                     saved: [

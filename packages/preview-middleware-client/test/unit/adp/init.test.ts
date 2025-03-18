@@ -130,7 +130,7 @@ describe('adp', () => {
             payload: []
         });
 
-        expect(sendActionMock).toHaveBeenNthCalledWith(4, {
+        expect(sendActionMock).toHaveBeenNthCalledWith(5, {
             type: '[ext] show-dialog-message',
             payload: {
                 message:

@@ -47,7 +47,8 @@ import {
     PROPERTY_CHANGE_KIND,
     CONFIGURATION_CHANGE_KIND,
     requestControlContextMenu,
-    showInfoCenterMessage
+    showInfoCenterMessage,
+    GENERIC_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -351,7 +352,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                 state.changes.controls = {};
 
                 for (const change of [...action.payload.pending, ...action.payload.saved].reverse()) {
-                    if (change.kind === UNKNOWN_CHANGE_KIND) {
+                    if (change.kind === UNKNOWN_CHANGE_KIND || change.kind === GENERIC_CHANGE_KIND) {
                         continue;
                     }
                     if (change.kind === CONFIGURATION_CHANGE_KIND) {

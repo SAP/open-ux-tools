@@ -121,6 +121,24 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   isActive: true,
                   fileName: 'testFile9',
                   propertyPath: '/test/components'
+              },
+              {
+                  kind: 'generic',
+                  type: 'pending',
+                  isActive: true,
+                  fileName: 'genericChange',
+                  changeType: 'demoChange',
+                  title: 'Demo Change',
+                  genericProps: [
+                      {
+                          label: 'Test Gen Prop1',
+                          value: 'GenValue1'
+                      },
+                      {
+                          label: 'Test Gen Prop2',
+                          value: 'GenValue2'
+                      }
+                  ]
               }
           ]
         : [];
@@ -207,6 +225,24 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   fileName: 'id_1698648267088_374_moveSimpleFormField',
                   kind: 'unknown',
                   timestamp: new Date('2023-10-12T12:06:53.939Z').getTime()
+              },
+              {
+                  kind: 'generic',
+                  type: 'saved',
+                  fileName: 'genericSavedChange.change',
+                  changeType: 'demoChange',
+                  title: 'Demo Saved Change',
+                  timestamp: new Date('2025-03-05T12:06:53.939Z').getTime(),
+                  genericProps: [
+                      {
+                          label: 'Test Saved P1',
+                          value: 'GenSavedValue1'
+                      },
+                      {
+                          label: 'Test Gen Prop2',
+                          value: 'GenSavedValue2'
+                      }
+                  ]
               }
           ]
         : [];
@@ -518,6 +554,95 @@ describe('ChangePanel', () => {
 
         const value3 = screen.getByText(/Table Filtered by Region/i);
         expect(value3).toBeInTheDocument();
+    });
+
+    test('pending changes - generic change', () => {
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(false, 'generic'),
+                filterQuery: filterInitOptions
+            }
+        });
+
+        // check saved changes
+        const savedChangesTitle = screen.getByText(/unsaved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const configChange = screen.getAllByText(/Demo Change/i);
+        expect(configChange.length).toBe(1);
+
+        const propertyName1 = screen.getByText(/Test Gen Prop1/i);
+        expect(propertyName1).toBeInTheDocument();
+
+        const value1 = screen.getByText(/GenValue1/i);
+        expect(value1).toBeInTheDocument();
+
+        const propertyName2 = screen.getByText(/Test Gen Prop2/i);
+        expect(propertyName2).toBeInTheDocument();
+
+        const value2 = screen.getByText(/GenValue2/i);
+        expect(value2).toBeInTheDocument();
+    });
+
+    test('saved changes - generic change', () => {
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(true, 'generic'),
+                filterQuery: filterInitOptions
+            }
+        });
+
+        // check saved changes
+        const savedChangesTitle = screen.getByText(/saved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const configChange = screen.getAllByText(/Demo Saved Change/i);
+        expect(configChange.length).toBe(1);
+
+        const propertyName1 = screen.getByText(/Test Saved P1/i);
+        expect(propertyName1).toBeInTheDocument();
+
+        const value1 = screen.getByText(/GenSavedValue1/i);
+        expect(value1).toBeInTheDocument();
+
+        const propertyName2 = screen.getByText(/Test Gen Prop2/i);
+        expect(propertyName2).toBeInTheDocument();
+
+        const value2 = screen.getByText(/GenSavedValue2/i);
+        expect(value2).toBeInTheDocument();
+    });
+
+    test('saved changes - generic change filter summary panel', () => {
+        const div = document.createElement('div');
+        div.style.lineHeight = '23px';
+        div.style.width = '300px';
+        document.body.appendChild(div);
+        render(<ChangesPanel />, {
+            initialState: {
+                changes: getChanges(true),
+                filterQuery: [{ name: FilterName.changeSummaryFilterQuery, value: 'Demo Saved Change' }]
+            },
+            container: div
+        });
+
+        // check saved changes
+        const savedChangesTitle = screen.getByText(/saved changes/i);
+        expect(savedChangesTitle).toBeInTheDocument();
+
+        const configChange = screen.getAllByText(/Demo Saved Change/i);
+        expect(configChange.length).toBe(1);
+
+        const propertyName1 = screen.getByText(/Test Saved P1/i);
+        expect(propertyName1).toBeInTheDocument();
+
+        const value1 = screen.getByText(/GenSavedValue1/i);
+        expect(value1).toBeInTheDocument();
+
+        const propertyName2 = screen.getByText(/Test Gen Prop2/i);
+        expect(propertyName2).toBeInTheDocument();
+
+        const value2 = screen.getByText(/GenSavedValue2/i);
+        expect(value2).toBeInTheDocument();
     });
 
     test('saved control change - link', () => {
