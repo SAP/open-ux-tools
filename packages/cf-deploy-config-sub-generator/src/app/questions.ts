@@ -86,7 +86,7 @@ async function getCFApprouterQuestionsForCap({
     // Disable some prompts, not required for CAP flow
     const appRouterPromptOptions: CfAppRouterDeployConfigPromptOptions = {
         [appRouterPromptNames.mtaPath]: projectRoot,
-        [appRouterPromptNames.mtaId]: true,
+        [appRouterPromptNames.mtaId]: false, // CDS Flow will auto generate this based on the package.json name property
         [appRouterPromptNames.mtaDescription]: false,
         [appRouterPromptNames.mtaVersion]: false,
         [appRouterPromptNames.routerType]: true,

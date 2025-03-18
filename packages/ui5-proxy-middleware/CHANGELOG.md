@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.19
+
+### Patch Changes
+
+-   66be708: fix: UI5 2 directLoad
+
 ## 1.4.18
 
 ### Patch Changes
