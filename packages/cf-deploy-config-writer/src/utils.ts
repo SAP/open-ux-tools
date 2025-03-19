@@ -256,7 +256,7 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
 }
 
 /**
- * Add standalone or managed approuter to the target folder.
+ * Add standalone | managed | appfront approuter to the target folder.
  *
  * @param config writer configuration
  * @param fs reference to a mem-fs editor
@@ -266,7 +266,7 @@ export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promis
     if (config.routerType === RouterModuleType.Standard) {
         await addStandaloneRouter(config, mtaConfigInstance, fs);
     } else {
-        await mtaConfigInstance.addRoutingModules({ isManagedApp: true, addMissingModules: false });
+        await mtaConfigInstance.addRouterType({ routerType: config.routerType, addMissingModules: false });
     }
     await addMtaDeployParameters(mtaConfigInstance);
     await mtaConfigInstance.save();

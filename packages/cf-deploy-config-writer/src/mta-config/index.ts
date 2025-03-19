@@ -13,10 +13,13 @@ import {
     CDSBinNotFound,
     CDSExecutable,
     MTABinNotFound,
-    MTAExecutable
+    MTAExecutable,
+    CDSXSUAAService,
+    CDSDestinationService,
+    CDSHTML5RepoService
 } from '../constants';
 import type { mta } from '@sap/mta-lib';
-import { type MTABaseConfig, type CFBaseConfig } from '../types';
+import { type MTABaseConfig, type CFBaseConfig, CDSServiceType, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { spawnSync } from 'child_process';
@@ -131,13 +134,21 @@ export function doesCDSBinaryExist(): void {
 }
 
 /**
- * Create MTA using `cds` binary to add mta and any optional services.
+ * Generate an MTA using `cds` binary, appending any optional services passed in. Specific services are added if the router type is defined.
  *
  * @param cwd
  * @param options
+ * @param routerType
  */
-export function createCAPMTA(cwd: string, options?: string[]): void {
-    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
+export function createCAPMTA(cwd: string, options?: CDSServiceType[], routerType?: RouterModuleType): void {
+    let defaultOptions: CDSServiceType[] = [];
+    if (routerType) {
+        defaultOptions = [
+            ...[CDSXSUAAService],
+            ...(routerType === RouterModuleType.AppFront ? [] : [CDSDestinationService, CDSHTML5RepoService])
+        ] as CDSServiceType[];
+    }
+    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? []), ...defaultOptions], { cwd });
     if (result?.error) {
         throw new Error(`Something went wrong creating mta.yaml! ${result.error}`);
     }

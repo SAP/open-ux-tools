@@ -1,5 +1,13 @@
 import type { Destination, Authentication } from '@sap-ux/btp-utils';
-import { HTML5RepoHost, ManagedAppFront, ManagedDestination, ManagedXSUAA } from '../constants';
+import {
+    CDSDestinationService,
+    CDSHTML5RepoService,
+    CDSXSUAAService,
+    HTML5RepoHost,
+    ManagedAppFront,
+    ManagedDestination,
+    ManagedXSUAA
+} from '../constants';
 
 export type ResourceType =
     | 'xsuaa'
@@ -30,7 +38,8 @@ export type MTADestinationType = Destination & {
 };
 export const RouterModuleType = {
     Standard: 'standard',
-    Managed: 'managed'
+    Managed: 'managed',
+    AppFront: 'appFront'
 } as const;
 
 export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
@@ -114,3 +123,5 @@ export type SupportedResources =
     | typeof HTML5RepoHost
     | typeof ManagedXSUAA
     | typeof ManagedDestination;
+
+export type CDSServiceType = typeof CDSXSUAAService | typeof CDSDestinationService | typeof CDSHTML5RepoService;

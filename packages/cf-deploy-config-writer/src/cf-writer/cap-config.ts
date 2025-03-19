@@ -4,7 +4,7 @@ import { updateRootPackage, addRoutingConfig } from '../utils';
 import { createCAPMTA, validateMtaConfig, isMTAFound } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
-import type { CAPConfig, CFBaseConfig } from '../types';
+import { type CAPConfig, CDSServiceType, type CFBaseConfig, RouterModuleType } from '../types';
 import { CDSDestinationService, CDSHTML5RepoService, CDSXSUAAService } from '../constants';
 import { t } from '../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
@@ -27,7 +27,7 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
     // Run `cds` add against the project, it will append whatever it needs
-    createCAPMTA(config.mtaPath, [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService]);
+    createCAPMTA(config.mtaPath, [], config.routerType);
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
     LoggerHelper.logger?.debug(t('debug.capMtaCreated'));

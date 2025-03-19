@@ -52,7 +52,14 @@ import {
 import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
 import { type Logger } from '@sap-ux/logger';
-import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
+import {
+    type XSAppDocument,
+    ApiHubType,
+    type CFAppConfig,
+    type CFConfig,
+    type MTABaseConfig,
+    RouterModuleType
+} from '../types';
 
 /**
  * Add a managed approuter configuration to an existing HTML5 application.
@@ -270,6 +277,7 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
             isAppFrontApp: cfConfig.addAppFrontendRouter,
             addMissingModules: !cfConfig.addAppFrontendRouter
         });
+
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
@@ -280,7 +288,12 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
                 cfConfig.destinationName === DefaultMTADestination
                     ? mtaInstance.getFormattedPrefix(ResourceMTADestination)
                     : cfConfig.destinationName;
-            await mtaInstance.appendInstanceBasedDestination(cfConfig.destinationName);
+            if (cfConfig.addAppFrontendRouter) {
+                // Append destination directly to app frontend
+                await mtaInstance.appendAppfrontCAPDestination(cfConfig.destinationName);
+            } else {
+                await mtaInstance.appendInstanceBasedDestination(cfConfig.destinationName);
+            }
             // This is required where a managed or standalone router hasn't been added yet to mta.yaml
             if (!mtaInstance.hasManagedXsuaaResource()) {
                 cfConfig.destinationAuthentication = Authentication.NO_AUTHENTICATION;
@@ -355,7 +368,8 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
     // When data source is none in app generator, it is not required to provide destination
     const defaultProperties = {
         service: cfConfig.addAppFrontendRouter ? 'app-front' : 'html5-apps-repo-rt',
-        authenticationType: cfConfig.addAppFrontendRouter ? 'ias' : 'xsuaa'
+        authenticationType: cfConfig.addAppFrontendRouter ? 'ias' : 'xsuaa',
+        addAppFrontendRoutes: cfConfig.addAppFrontendRouter ?? false
     };
     if (cfConfig.destinationName && cfConfig.destinationName !== EmptyDestination) {
         fs.copyTpl(getTemplatePath('app/xs-app-destination.json'), join(cfConfig.appPath, XSAppFile), {

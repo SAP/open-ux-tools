@@ -20,7 +20,18 @@
       "target": "/test-resources/$1",
       "authenticationType": "none",
       "destination": "ui5"
+    },<% if (addAppFrontendRoutes) { %>
+    {
+      "source": "^/logout-page.html$",
+      "service": "app-front",
+      "authenticationType": "none"
     },
+    {
+      "source": "^/index.html$",
+      "service": "app-front",
+      "cacheControl": "no-cache, no-store, must-revalidate"
+    },
+    <% } %>
     {
       "source": "^(.*)$",
       "target": "$1",
