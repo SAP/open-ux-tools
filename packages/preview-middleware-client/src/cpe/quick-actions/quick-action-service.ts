@@ -68,7 +68,6 @@ export class QuickActionService implements Service {
                 if (!actionInstance) {
                     return;
                 }
-                actionInstance.telemetryEventIdentifier = new Date().toISOString(); 
                 const commands = await this.executeAction(actionInstance, action.payload);
 
                 for (const command of commands) {
@@ -153,6 +152,7 @@ export class QuickActionService implements Service {
 
     private async executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
         try {
+            actionInstance.telemetryEventIdentifier = new Date().toISOString();
             await reportTelemetry({
                 category: 'QuickAction',
                 actionName: actionInstance.type,
