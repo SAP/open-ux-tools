@@ -3,7 +3,7 @@ import { extractYamlConfigFileName, isTestPath } from './ui5-yaml';
 import { generateVariantsConfig } from '../variants-config';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Package } from '@sap-ux/project-access';
+import { type Package, hasDependency } from '@sap-ux/project-access';
 import type { FlpConfig } from '@sap-ux/preview-middleware';
 import type { Script } from './ui5-yaml';
 
@@ -22,11 +22,8 @@ export function ensurePreviewMiddlewareDependency(fs: Editor, basePath: string):
         return;
     }
 
-    const hasDependency = (dependency: string): boolean =>
-        !!packageJson?.devDependencies?.[dependency] || !!packageJson?.dependencies?.[dependency];
-
     const dependencies = ['@sap-ux/preview-middleware', '@sap/ux-ui5-tooling'];
-    if (dependencies.some((dependency) => hasDependency(dependency))) {
+    if (dependencies.some((dependency) => hasDependency(packageJson, dependency))) {
         return;
     }
 
