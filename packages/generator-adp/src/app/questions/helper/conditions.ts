@@ -1,5 +1,4 @@
-import { AbapProvider } from '@sap-ux/adp-tooling';
-import { ConfigAnswers } from '../configuration';
+import { ConfigAnswers } from '../../types';
 
 /**
  * Determines if authentication is necessary based on the provided configuration answers.
@@ -8,8 +7,8 @@ import { ConfigAnswers } from '../configuration';
  * @param {ConfigurationInfoAnswers} answers - User provided configuration details.
  * @returns {boolean | string} True if authentication should proceed, false if there are issues with credentials.
  */
-export function shouldAuthenticate<T extends ConfigAnswers>(answers: T, hasSystemAuthentication: boolean): boolean {
-    return !!answers.system && hasSystemAuthentication && (answers.username === '' || answers.password === '');
+export function shouldAuthenticate<T extends ConfigAnswers>(answers: T, systemRequiresAuth: boolean): boolean {
+    return !!answers.system && systemRequiresAuth && (answers.username === '' || answers.password === '');
 }
 
 /**
@@ -18,8 +17,8 @@ export function shouldAuthenticate<T extends ConfigAnswers>(answers: T, hasSyste
  * @param {ConfigAnswers} answers - The user-provided answers containing application details.
  * @returns {boolean | undefined} True if a application question will be shown, otherwise false.
  */
-export function showApplicationQuestion<T extends ConfigAnswers>(answers: T): boolean {
-    return !!answers.system && !shouldAuthenticate(answers, AbapProvider.systemRequiresAuth);
+export function showApplicationQuestion<T extends ConfigAnswers>(answers: T, systemRequiresAuth: boolean): boolean {
+    return !!answers.system && !shouldAuthenticate(answers, systemRequiresAuth);
 }
 
 /**
@@ -28,9 +27,9 @@ export function showApplicationQuestion<T extends ConfigAnswers>(answers: T): bo
  * @param {ConfigAnswers} answers - The user-provided answers containing application details.
  * @returns {boolean | undefined} True if a credential question will be shown, otherwise false or undefined.
  */
-export function showCredentialQuestion(answers: ConfigAnswers): boolean {
+export function showCredentialQuestion(answers: ConfigAnswers, systemRequiresAuth: boolean): boolean {
     if (answers.system) {
-        return AbapProvider.systemRequiresAuth;
+        return systemRequiresAuth;
     } else {
         return false;
     }

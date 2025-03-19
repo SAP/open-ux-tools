@@ -1,12 +1,12 @@
-import * as util from 'util';
 import { v4 as uuidv4 } from 'uuid';
-import { exec } from 'child_process';
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import { isFeatureEnabled } from '@sap-devx/feature-toggle-node';
 
 import {
     AbapProvider,
     AdpWriterConfig,
+    Content,
     CustomConfig,
     EndpointsManager,
     FlexLayer,
@@ -24,9 +24,9 @@ import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-
 import { t, initI18n } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
-import type { AdpGeneratorOptions } from './types';
-
-import { ConfigAnswers, getConfigurationQuestions } from './questions/configuration';
+import { installDependencies } from '../utils/deps';
+import { ConfigPrompter } from './questions/configuration';
+import type { AdpGeneratorOptions, ConfigAnswers } from './types';
 import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
@@ -36,18 +36,33 @@ import { generateValidNamespace, getDefaultProjectName } from './questions/helpe
  */
 export default class extends Generator {
     setPromptsCallback: (fn: object) => void;
-    private prompts: Prompts;
 
     private readonly appWizard: AppWizard;
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
+
+    private prompts: Prompts;
     private logger: ILogWrapper;
-
+    /**
+     * Flex layer indicating customer or vendor base.
+     */
+    private layer: FlexLayer;
+    /**
+     * Answers collected from configuration prompts.
+     */
     private configAnswers: ConfigAnswers;
+    /**
+     * Target folder for the generated project.
+     */
     private targetFolder: string;
-
-    public isCustomerBase: boolean;
-    public isCloudProject: boolean;
+    /**
+     * EndpointsManager instance for managing system endpoints.
+     */
+    private endpointsManager: EndpointsManager;
+    /**
+     * AbapProvider instance for ABAP system connection.
+     */
+    private providerManager: AbapProvider;
 
     /**
      * Creates an instance of the generator.
@@ -68,13 +83,17 @@ export default class extends Generator {
 
     async initializing(): Promise<void> {
         await initI18n();
+        await this._setLayer();
 
         this._setupPages();
+
+        this.endpointsManager = await EndpointsManager.getInstance(this.toolsLogger);
+        this.providerManager = new AbapProvider(this.endpointsManager, this.toolsLogger);
 
         // Add telemetry to be sent once generator-adp is generated
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
-                name: '@sap/generator-fiori:generator-adp', // What should the namespace be?
+                name: '@sap/generator-fiori:generator-adp',
                 version: this.rootGeneratorVersion()
             },
             internalFeature: isInternalFeaturesSettingEnabled(),
@@ -83,13 +102,9 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        /**
-         * TODO: Add first page prompting configuration
-         */
-        await EndpointsManager.init(this.toolsLogger);
-        await AbapProvider.init(this.toolsLogger);
+        const prompter = new ConfigPrompter(this.providerManager, this.endpointsManager, this.layer, this.toolsLogger);
 
-        const configQuestions = getConfigurationQuestions();
+        const configQuestions = prompter.getPrompts();
 
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
 
@@ -99,21 +114,15 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
-            const provider = AbapProvider.getProvider();
-            const ato = await provider.getAtoInfo();
-            /**
-             * TODO: Need a way to identify the layer, we already have such functionality.
-             * import { isFeatureEnabled } from "@sap-devx/feature-toggle-node";
-             * await isFeatureEnabled("adaptation-project", "internal");
-             */
-            const layer = ato.tenantType === 'SAP' ? FlexLayer.VENDOR : FlexLayer.CUSTOMER_BASE;
-
             const projectName = getDefaultProjectName(this.destinationPath());
-            const namespace = generateValidNamespace(projectName, layer === FlexLayer.CUSTOMER_BASE);
+            const namespace = generateValidNamespace(projectName, this.layer);
             this.targetFolder = this.destinationPath(projectName);
 
+            const provider = this.providerManager.getProvider();
+            const ato = await provider.getAtoInfo();
+
             const operationsType = ato.operationsType ?? 'P';
-            const config = await this._createConfigFromDefaults(operationsType, layer, {
+            const config = await this._createConfigFromDefaults(operationsType, {
                 namespace
             });
 
@@ -125,7 +134,7 @@ export default class extends Generator {
     }
 
     async install(): Promise<void> {
-        await this._installDependencies(this.targetFolder);
+        await installDependencies(this.targetFolder);
     }
 
     end(): void {
@@ -144,15 +153,14 @@ export default class extends Generator {
     /**
      * Generates the configuration object for the Adaptation Project.
      *
-     * @param {ConfigAnswers} answers - User-provided answers.
-     * @param {OperationsType} operationsType - Whether the project is cloud or on-premise.
-     * @param {FlexLayer} layer - The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
+     * @param {OperationsType} operationsType - The operations type indicating a cloud ('C') or on-premise project.
      * @param {object} defaults - Default project parameters.
+     * @param {string} defaults.namespace - The namespace for the project.
+     * @param {string} [defaults.title] - Optional title for the project.
      * @returns {Promise<AdpWriterConfig>} The generated project configuration.
      */
     private async _createConfigFromDefaults(
         operationsType: OperationsType,
-        layer: FlexLayer,
         defaults: {
             namespace: string;
             title?: string;
@@ -165,8 +173,8 @@ export default class extends Generator {
             app: {
                 id: defaults.namespace,
                 reference: this.configAnswers.application.id,
-                layer,
-                title: defaults.title ?? 'Some title',
+                layer: this.layer,
+                title: defaults.title ?? '',
                 content: [this.getNewModelChange()]
             },
             customConfig,
@@ -180,8 +188,10 @@ export default class extends Generator {
 
     /**
      * Returns a model enhancement change configuration.
+     *
+     * @returns {Content} The model change configuration.
      */
-    private getNewModelChange() {
+    private getNewModelChange(): Content {
         return {
             changeType: 'appdescr_ui5_addNewModelEnhanceWith',
             content: {
@@ -196,8 +206,8 @@ export default class extends Generator {
     /**
      * Constructs a custom configuration object.
      *
-     * @param {OperationsType} operationsType - Whether the project is cloud or on-premise.
-     * @returns {CustomConfig} The generated configuration.
+     * @param {OperationsType} operationsType - The operations type indicating a cloud or on-premise project.
+     * @returns {CustomConfig} The generated custom configuration.
      */
     private _getCustomConfig(operationsType: OperationsType): CustomConfig {
         const packageJson = getPackageJSONInfo();
@@ -217,10 +227,10 @@ export default class extends Generator {
      * Constructs the ABAP target configuration based on the operational context and project type.
      *
      * @param {boolean} isCloudProject - Flag indicating whether the project is a cloud project.
-     * @returns {AbapTarget} The configured ABAP target object.
+     * @returns {Promise<AbapTarget>} The configured ABAP target object.
      */
     private async _getTarget(isCloudProject: boolean): Promise<AbapTarget> {
-        const systemDetails = await EndpointsManager.getSystemDetails(this.configAnswers.system);
+        const systemDetails = await this.endpointsManager.getSystemDetails(this.configAnswers.system);
 
         const target = {
             client: systemDetails?.client,
@@ -239,22 +249,29 @@ export default class extends Generator {
     }
 
     /**
-     * Installs dependencies in the project directory.
+     * Sets the flex layer for the project based on internal usage.
      *
-     * @param {string} projectPath - The project directory.
+     * @returns {Promise<void>}
      */
-    private async _installDependencies(projectPath: string): Promise<void> {
-        const execAsync = util.promisify(exec);
-
-        try {
-            await execAsync(`cd ${projectPath} && npm i`);
-        } catch (error) {
-            throw 'Installation of dependencies failed.';
-        }
+    private async _setLayer(): Promise<void> {
+        const isInternalUsage = await this._isInternalUsage();
+        this.layer = isInternalUsage ? FlexLayer.VENDOR : FlexLayer.CUSTOMER_BASE;
     }
 
     /**
-     * Sets up the initial pages.
+     * Determines whether the generator is being run in an internal context.
+     *
+     * @returns {Promise<boolean>} True if internal usage; otherwise, false.
+     */
+    private async _isInternalUsage(): Promise<boolean> {
+        if (isAppStudio()) {
+            return isFeatureEnabled('adaptation-project', 'internal');
+        }
+        return false;
+    }
+
+    /**
+     * Sets up the initial pages for the generator prompts.
      */
     private _setupPages(): void {
         this.prompts.splice(0, 0, [this._getInitialPage()]);
@@ -290,7 +307,7 @@ export default class extends Generator {
     /**
      * Returns the translated name and description for configuration page.
      *
-     * @returns The initial configuration page.
+     * @returns The initial configuration page with name and description.
      */
     private _getInitialPage(): { name: string; description: string } {
         return { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationName') };

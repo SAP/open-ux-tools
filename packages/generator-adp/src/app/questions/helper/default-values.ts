@@ -1,3 +1,4 @@
+import { FlexLayer } from '@sap-ux/adp-tooling';
 import { readdirSync } from 'fs';
 
 const APP_VARIANT_REGEX = /^app[.]variant\d{1,3}$/;
@@ -6,11 +7,11 @@ const APP_VARIANT_REGEX = /^app[.]variant\d{1,3}$/;
  * Generates a namespace for a project based on its layer.
  *
  * @param {string} projectName - The name of the project.
- * @param {boolean} isCustomerBase - Flag indicating whether the project is for a customer base layer.
+ * @param {FlexLayer} layer -  The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
  * @returns {string} The namespace string, prefixed appropriately if it's a customer base project.
  */
-export function generateValidNamespace(projectName: string, isCustomerBase: boolean): string {
-    return !isCustomerBase ? projectName : 'customer.' + projectName;
+export function generateValidNamespace(projectName: string, layer: FlexLayer): string {
+    return layer === FlexLayer.CUSTOMER_BASE ? `customer.${projectName}` : projectName;
 }
 
 /**

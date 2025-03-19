@@ -35,6 +35,7 @@
     ],
     "dependencies": {
         "@sap-devx/yeoman-ui-types": "1.14.4",
+        "@sap-devx/feature-toggle-node": "2.0.3",
         "@sap-ux/adp-tooling": "workspace:*",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/btp-utils": "workspace:*",

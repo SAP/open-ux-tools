@@ -1,335 +1,212 @@
-import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
-import type { ListQuestionOptions } from 'inquirer';
-
+import { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
+import { AbapProvider, ApplicationManager, EndpointsManager, FlexLayer, getEndpointNames } from '@sap-ux/adp-tooling';
+
+import type {
+    ApplicationPromptOptions,
+    ConfigAnswers,
+    ConfigPromptOptions,
+    ConfigQuestion,
+    PasswordPromptOptions,
+    SystemPromptOptions,
+    UsernamePromptOptions
+} from '../types';
 import { t } from '../../utils/i18n';
-import { AbapProvider, Application, ApplicationManager, EndpointsManager, getEndpointNames } from '@sap-ux/adp-tooling';
+import { configPromptNames } from '../types';
 import { getApplicationChoices } from './helper/choices';
 import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
 
 /**
- * Enumeration of prompt names used in the configuration.
+ * A stateful prompter class that creates configuration questions.
+ * This class accepts the needed dependencies and keeps track of state (e.g. the ApplicationManager instance).
+ * It exposes a single public method {@link getPrompts} to retrieve the configuration questions.
  */
-export enum configPromptNames {
-    system = 'system',
-    username = 'username',
-    password = 'password',
-    application = 'application'
-}
+export class ConfigPrompter {
+    private appsManager: ApplicationManager;
+    private logger: ToolsLogger;
 
-/**
- * Interface representing the answers collected from the configuration prompts.
- */
-export interface ConfigAnswers {
-    system: string;
-    username: string;
-    password: string;
-    application: Application;
-}
+    /**
+     * Indicates if the current layer is based on a customer base.
+     */
+    public isCustomerBase: boolean;
 
-/**
- * The question type specific to configuration prompts.
- */
-export interface ConfigQuestion extends YUIQuestion<ConfigAnswers>, Partial<Pick<ListQuestionOptions, 'choices'>> {
-    name: configPromptNames;
-    guiOptions?: GuiOptions;
-    additionalMessages?: PromptSeverityMessage;
-    mask?: string;
-}
+    /**
+     * Creates an instance of ConfigPrompter.
+     *
+     * @param {AbapProvider} provider - The ABAP provider instance.
+     * @param {EndpointsManager} endpointsManager - The endpoints manager to retrieve system endpoints.
+     * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
+     * @param {ToolsLogger} logger - The logger instance for logging.
+     */
+    constructor(
+        private provider: AbapProvider,
+        private endpointsManager: EndpointsManager,
+        layer: FlexLayer,
+        logger: ToolsLogger
+    ) {
+        this.logger = logger;
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+        this.appsManager = new ApplicationManager(this.provider, this.isCustomerBase, this.logger);
+    }
 
-/**
- * Options for the 'system' prompt.
- */
-export interface SystemPromptOptions {
-    default?: string;
-    hide?: boolean;
-}
+    /**
+     * Retrieves an array of configuration questions based on provided options.
+     * This is the only public method for retrieving prompts.
+     *
+     * @param {ConfigPromptOptions} promptOptions - Optional configuration to control prompt behavior and defaults.
+     * @returns An array of configuration questions.
+     */
+    public getPrompts(promptOptions?: ConfigPromptOptions): ConfigQuestion[] {
+        const keyedPrompts: Record<configPromptNames, ConfigQuestion> = {
+            [configPromptNames.system]: this.getSystemListPrompt(promptOptions?.[configPromptNames.system]),
+            [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
+            [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
+            [configPromptNames.application]: this.getApplicationListPrompt(
+                promptOptions?.[configPromptNames.application]
+            )
+        };
 
-/**
- * Options for the 'username' prompt.
- */
-export interface UsernamePromptOptions {
-    default?: string;
-    hide?: boolean;
-}
+        const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
+            .filter(([promptName, _]) => {
+                const options = promptOptions?.[promptName as configPromptNames];
+                return !(options && 'hide' in options && options.hide);
+            })
+            .map(([_, question]) => question);
 
-/**
- * Options for the 'password' prompt.
- */
-export interface PasswordPromptOptions {
-    hide?: boolean;
-}
+        return questions;
+    }
 
-/**
- * Options for the 'application' prompt.
- */
-export interface ApplicationPromptOptions {
-    default?: string;
-    hide?: boolean;
-}
+    /**
+     * Creates the system list prompt configuration.
+     *
+     * @param {SystemPromptOptions} _ - Optional configuration for the system prompt.
+     * @returns The system list prompt as a {@link ConfigQuestion}.
+     */
+    private getSystemListPrompt(_?: SystemPromptOptions): ConfigQuestion {
+        return {
+            type: 'list',
+            name: configPromptNames.system,
+            message: t('prompts.systemLabel'),
+            choices: () => getEndpointNames(this.endpointsManager.getEndpoints()),
+            guiOptions: {
+                mandatory: true,
+                breadcrumb: 'System',
+                hint: t('prompts.systemTooltip')
+            },
+            validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers)
+        };
+    }
 
-/**
- * Common options for the configuration inquirer.
- */
-export interface ConfigPromptCommonOptions {
-    silent?: boolean;
-}
+    /**
+     * Creates the username prompt configuration.
+     *
+     * @param {UsernamePromptOptions} options - Optional configuration for the username prompt.
+     * @returns The username prompt as a {@link ConfigQuestion}.
+     */
+    private getUsernamePrompt(options?: UsernamePromptOptions): ConfigQuestion {
+        return {
+            type: 'input',
+            name: configPromptNames.username,
+            message: t('prompts.usernameLabel'),
+            guiOptions: {
+                mandatory: true,
+                breadcrumb: 'Username'
+            },
+            default: options?.default,
+            filter: (val: string): string => val.trim(),
+            validate: (val: string) => validateEmptyString(val),
+            when: (answers: ConfigAnswers) =>
+                showCredentialQuestion(answers, this.endpointsManager.getSystemRequiresAuth(answers.system))
+        };
+    }
 
-/**
- * The options for the configuration inquirer & the prompts.
- */
-export type ConfigPromptOptions = Partial<{
-    [configPromptNames.system]: SystemPromptOptions;
-    [configPromptNames.username]: UsernamePromptOptions;
-    [configPromptNames.password]: PasswordPromptOptions;
-    [configPromptNames.application]: ApplicationPromptOptions;
-}> &
-    ConfigPromptCommonOptions;
+    /**
+     * Creates the password prompt configuration.
+     *
+     * @param {PasswordPromptOptions} _ - Optional configuration for the password prompt.
+     * @returns The password prompt as a {@link ConfigQuestion}.
+     */
+    private getPasswordPrompt(_?: PasswordPromptOptions): ConfigQuestion {
+        return {
+            type: 'password',
+            name: configPromptNames.password,
+            message: t('prompts.passwordLabel'),
+            mask: '*',
+            guiOptions: {
+                mandatory: true
+            },
+            validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
+            when: (answers: ConfigAnswers) =>
+                showCredentialQuestion(answers, this.endpointsManager.getSystemRequiresAuth(answers.system))
+        };
+    }
 
-/**
- * Creates the 'system' list prompt.
- *
- * @param choices - Array of available system names.
- * @param options - Optional configuration for the system prompt.
- * @returns {ConfigQuestion} The prompt configuration for system selection.
- */
-export function getSystemListPrompt(appManager: ApplicationManager, options?: SystemPromptOptions): ConfigQuestion {
-    return {
-        type: 'list',
-        name: configPromptNames.system,
-        message: t('prompts.systemLabel'),
-        choices: () => getEndpointNames(EndpointsManager.getEndpoints()),
-        guiOptions: {
-            mandatory: true,
-            breadcrumb: 'System',
-            hint: t('prompts.systemTooltip')
-        },
-        validate: async (value: string, answers: ConfigAnswers): Promise<boolean | string> => {
-            const validationResult = validateEmptyString(value);
-            if (typeof validationResult === 'string') {
-                return validationResult;
-            }
+    /**
+     * Creates the application list prompt configuration.
+     *
+     * @param {ApplicationPromptOptions} options - Optional configuration for the application prompt.
+     * @returns The application list prompt as a {@link ConfigQuestion}.
+     */
+    private getApplicationListPrompt(options?: ApplicationPromptOptions): ConfigQuestion {
+        return {
+            type: 'list',
+            name: configPromptNames.application,
+            message: t('prompts.applicationListLabel'),
+            guiOptions: {
+                mandatory: true,
+                breadcrumb: 'Application',
+                hint: t('prompts.applicationListTooltip'),
+                applyDefaultWhenDirty: true
+            },
+            choices: () => {
+                const apps = this.appsManager.getApps();
+                return getApplicationChoices(apps);
+            },
+            default: options?.default,
+            validate: (value: string) => this.validateApplicationSelection(value),
+            when: (answers: ConfigAnswers) =>
+                showApplicationQuestion(answers, this.endpointsManager.getSystemRequiresAuth(answers.system))
+        };
+    }
 
-            try {
-                await AbapProvider.setProvider(value, undefined, answers.username, answers.password);
-
-                const provider = AbapProvider.getProvider();
-
-                const systemRequiresAuth = EndpointsManager.getSystemRequiresAuth(value);
-
-                if (!systemRequiresAuth) {
-                    const isCloudSystem = await provider.isAbapCloud();
-                    await appManager.loadApps(isCloudSystem);
-                }
-
-                return true;
-            } catch (e) {
-                return e.message;
-            }
-
-            // Connect to system -> Initialize a provider with the selected system
-
-            // Check if system has authentication
-            // const hasAuth = this.endpointsManager.getSystemRequiresAuth(value);
-
-            // If doesn't have system authentication, validate system data fetching
-            // if (!this.hasSystemAuthentication) {
-            //     /**
-            //      * 1. Fetches system supports Flex UI features.
-            //      * this.flexUISystem = await this.abapClient.getFlexUISupportedSystem();
-            //      * 2. Fetches system information from the provider's layered repository.
-            //      * const lrep = provider.getLayeredRepository(); return lrep.getSystemInfo(language, packageName);
-            //      */
-            //     await this.getSystemData();
-            //     /**
-            //      * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
-            //      * const version = await this.abapClient.getSystemUI5Version();
-            //      * this.versionsOnSystem = await this.ui5Manager.getSystemRelevantVersions(version);
-            //      */
-            //     await this.validateSystemVersion(value);
-            //     /**
-            //      * Validates the adaptation project types based on the system information and user base.
-            //      * If no adaptationProjectTypes throws error or if is cloud ready and layer is VENDOR (internal)
-            //      */
-            //     return this.validateAdpTypes();
-            // }
+    /**
+     * Validates the selected application.
+     *
+     * @param {string} app - The selected application.
+     * @returns An error message if validation fails, or true if the selection is valid.
+     */
+    private validateApplicationSelection(app: string): string | boolean {
+        if (!app) {
+            return t('validators.inputCannotBeEmpty');
         }
-    };
-}
+        return true;
+    }
 
-/**
- * Creates the 'username' prompt.
- *
- * @param options - Optional configuration for the username prompt.
- * @returns {ConfigQuestion} The prompt configuration for entering the username.
- */
-export function getUsernamePrompt(options?: UsernamePromptOptions): ConfigQuestion {
-    return {
-        type: 'input',
-        name: configPromptNames.username,
-        message: t('prompts.usernameLabel'),
-        guiOptions: {
-            mandatory: true,
-            breadcrumb: 'Username'
-        },
-        default: options?.default,
-        filter: (val: string): string => val.trim(),
-        validate: (val: string) => validateEmptyString(val),
-        when: (answers: ConfigAnswers) => showCredentialQuestion(answers)
-    };
-}
+    /**
+     * Validates the system selection by setting up the provider and, if necessary,
+     * loading the available applications.
+     *
+     * @param {string} system - The selected system.
+     * @param {ConfigAnswers} answers - The configuration answers provided by the user.
+     * @returns An error message if validation fails, or true if the system selection is valid.
+     */
+    private async validateSystem(system: string, answers: ConfigAnswers): Promise<string | boolean> {
+        if (!system) {
+            return t('validators.inputCannotBeEmpty');
+        }
 
-/**
- * Creates the 'password' prompt.
- *
- * @param options - Optional configuration for the password prompt.
- * @returns {ConfigQuestion} The prompt configuration for entering the password.
- */
-export function getPasswordPrompt(appManager: ApplicationManager, options?: PasswordPromptOptions): ConfigQuestion {
-    return {
-        type: 'password',
-        name: configPromptNames.password,
-        message: t('prompts.passwordLabel'),
-        mask: '*',
-        guiOptions: {
-            mandatory: true
-        },
-        validate: async (value: string, answers: ConfigAnswers) => {
-            const validationResult = validateEmptyString(value);
-            if (typeof validationResult === 'string') {
-                return validationResult;
-            }
+        try {
+            await this.provider.setProvider(system, undefined, answers.username, answers.password);
 
-            try {
-                await AbapProvider.setProvider(answers.system, undefined, answers.username, value);
-
-                const provider = AbapProvider.getProvider();
-
-                const systemRequiresAuth = EndpointsManager.getSystemRequiresAuth(value);
-
-                if (!systemRequiresAuth) {
-                    const isCloudSystem = await provider.isAbapCloud();
-                    await appManager.loadApps(isCloudSystem);
-                }
-
-                // TODO:
-                // /**
-                //  * 1. Fetches system supports Flex UI features.
-                // await provider.get(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, acceptHeaders);
-                //  * 2. Fetches system information from the provider's layered repository.
-                //  */
-                // await this.getSystemData();
-                // /**
-                //  * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
-                //  */
-                // await this.validateSystemVersion(value);
-                // /**
-                //  * Retrieve applications
-                //  */
-                // await this.getApplications();
-                // /**
-                //  * Validates the adaptation project types based on the system information and user base.
-                //  */
-                // if (isAppStudio()) {
-                //     return this.validateAdpTypes();
-                // }
-            } catch (e) {
-                return e.message;
+            const systemRequiresAuth = this.endpointsManager.getSystemRequiresAuth(system);
+            if (!systemRequiresAuth) {
+                const providerInstance = this.provider.getProvider();
+                const isCloudSystem = await providerInstance.isAbapCloud();
+                await this.appsManager.loadApps(isCloudSystem);
             }
             return true;
-        },
-        when: (answers: ConfigAnswers) => showCredentialQuestion(answers)
-    };
-}
-
-/**
- * Creates the 'application' list prompt.
- *
- * @param options - Optional configuration for the application prompt.
- * @returns {ConfigQuestion} The prompt configuration for selecting an application.
- */
-export function getApplicationListPrompt(
-    appsManager: ApplicationManager,
-    options?: ApplicationPromptOptions
-): ConfigQuestion {
-    return {
-        type: 'list',
-        name: configPromptNames.application,
-        message: t('prompts.applicationListLabel'),
-        guiOptions: {
-            mandatory: true,
-            breadcrumb: 'Application',
-            hint: t('prompts.applicationListTooltip'),
-            applyDefaultWhenDirty: true
-        },
-        choices: () => {
-            const apps = appsManager.getApps() ?? [];
-            return getApplicationChoices(apps);
-        },
-        default: options?.default,
-        validate: async (value: string) => {
-            if (!value) {
-                return t('validators.inputCannotBeEmpty');
-            }
-
-            // TODO:
-            /**
-             * Determine if the application supports manifest-first approach and manifest url exists.
-             */
-            // const isSupported = await appIndex.getIsManiFirstSupported(id); // If not supported throw error
-            // const url = await this.getUrl(id); // If manifest url is not found throw error
-
-            /**
-             * If supported, get the application manifest.
-             */
-            // const manifest = await this.manifestManager.getManifest(value.id);
-
-            /**
-             * Get the system version and validate adp over adp and partial support
-             */
-            // this.evaluateApplicationSupport(manifest, value);
-            // const systemVersion = this.ui5Manager.systemVersion;
-            // const checkForSupport = this.ui5VersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
-            // const isPartialSupport = this.ui5VersionDetected && checkForSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
-
-            /**
-             * Check if app does not support manifest or adaptation
-             */
-            // Validates the selected application for adaptation projects, checking for specific support flags and validating the application manifest.
-            // this.appIdentifier.validateSelectedApplication(application, manifest, checkForSupport, isPartialSupport);
-
-            // Check if views are loaded synchronously or asynchronously in the UI5 settings of the manifest.
-            // this.checkForSyncLoadedViews(manifest['sap.ui5']);
-            return true;
-        },
-        when: (answers: ConfigAnswers) => showApplicationQuestion(answers)
-    };
-}
-
-/**
- * Combines and maps the configuration prompts based on provided options and choices.
- *
- * @param promptOptions - Optional configuration to control prompt behavior and defaults.
- * @returns {ConfigQuestion[]} An array of configuration prompt objects.
- */
-export function getConfigurationQuestions(promptOptions?: ConfigPromptOptions): ConfigQuestion[] {
-    const appManager = new ApplicationManager(true);
-    const keyedPrompts: Record<configPromptNames, ConfigQuestion> = {
-        [configPromptNames.system]: getSystemListPrompt(appManager, promptOptions?.[configPromptNames.system]),
-        [configPromptNames.username]: getUsernamePrompt(promptOptions?.[configPromptNames.username]),
-        [configPromptNames.password]: getPasswordPrompt(appManager, promptOptions?.[configPromptNames.password]),
-        [configPromptNames.application]: getApplicationListPrompt(
-            appManager,
-            promptOptions?.[configPromptNames.application]
-        )
-    };
-
-    const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
-        .filter(([promptName, _]) => {
-            const options = promptOptions?.[promptName as configPromptNames];
-            return !(options && 'hide' in options && options.hide);
-        })
-        .map(([_, question]) => question);
-
-    return questions;
+        } catch (e) {
+            return e.message;
+        }
+    }
 }

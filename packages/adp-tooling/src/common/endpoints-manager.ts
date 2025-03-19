@@ -19,21 +19,35 @@ export function getEndpointNames(endpoints: Endpoint[]): string[] {
 }
 
 /**
- * Static service class to manage and retrieve information about system endpoints.
- * This version uses static members to hold state, so it can be used anywhere in your code.
+ * Service class to manage and retrieve information about system endpoints,
+ * including their names, authentication requirements, and specific details.
  */
 export class EndpointsManager {
-    private static endpoints: Endpoint[] = [];
-    private static logger: ToolsLogger;
+    private static instance: EndpointsManager;
+    private endpoints: Endpoint[];
 
     /**
-     * Initializes the EndpointsManager by setting the logger and loading endpoints.
+     * Creates an instance of EndpointsManager.
      *
-     * @param logger - The logger instance.
+     * @param {ToolsLogger} logger - The logger.
      */
-    public static async init(logger: ToolsLogger): Promise<void> {
-        this.logger = logger;
-        await this.loadEndpoints();
+    private constructor(private logger: ToolsLogger) {
+        this.endpoints = [];
+    }
+
+    /**
+     * Creates an instance of EndpointsManager.
+     *
+     * @param {ToolsLogger} logger - The logger.
+     * @returns {EndpointsManager} instance of endpoints manager
+     */
+    static async getInstance(logger: ToolsLogger): Promise<EndpointsManager> {
+        if (!this.instance) {
+            this.instance = new EndpointsManager(logger);
+            await this.instance.loadEndpoints();
+        }
+
+        return this.instance;
     }
 
     /**
@@ -41,14 +55,14 @@ export class EndpointsManager {
      *
      * @returns An array of system endpoints.
      */
-    public static getEndpoints(): Endpoint[] {
+    public getEndpoints(): Endpoint[] {
         return this.endpoints;
     }
 
     /**
      * Fetches endpoints from a predefined source and stores them in the static state.
      */
-    private static async loadEndpoints(): Promise<void> {
+    private async loadEndpoints(): Promise<void> {
         try {
             const { endpoints } = await checkEndpoints();
             this.endpoints = endpoints;
@@ -64,7 +78,7 @@ export class EndpointsManager {
      * @param system - The system name or URL.
      * @returns System details including client, url, and credentials, or undefined if not found.
      */
-    public static async getSystemDetails(system: string): Promise<SystemDetails | undefined> {
+    public async getSystemDetails(system: string): Promise<SystemDetails | undefined> {
         const endpoint = this.endpoints.find((e) => e.Name === system || e.Url === system);
         if (!endpoint) {
             this.logger.warn(`No endpoint found for system: ${system}`);
@@ -98,7 +112,7 @@ export class EndpointsManager {
      * @param systemName - The system name to check.
      * @returns True if authentication is required, false otherwise.
      */
-    public static getSystemRequiresAuth(systemName: string): boolean {
+    public getSystemRequiresAuth(systemName: string): boolean {
         return isAppStudio()
             ? this.getDestinationRequiresAuth(systemName)
             : this.getSystemRequiresAuthentication(systemName);
@@ -110,7 +124,7 @@ export class EndpointsManager {
      * @param system - The name of the system to check.
      * @returns True if no authentication is required, false otherwise.
      */
-    private static getDestinationRequiresAuth(system: string): boolean {
+    private getDestinationRequiresAuth(system: string): boolean {
         const found = this.endpoints.find((e: Endpoint) => e.Name === system);
         return found?.Authentication === 'NoAuthentication';
     }
@@ -121,7 +135,7 @@ export class EndpointsManager {
      * @param system - The name of the system to check.
      * @returns True if the system requires authentication, false otherwise.
      */
-    private static getSystemRequiresAuthentication(system: string): boolean {
+    private getSystemRequiresAuthentication(system: string): boolean {
         return !(
             this.endpoints.filter((e) => e.Url === system).length > 0 ||
             this.endpoints.filter((e) => e.Name === system).length > 0

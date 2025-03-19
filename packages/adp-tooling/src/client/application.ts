@@ -62,14 +62,7 @@ export class ApplicationManager {
      * @param {boolean} isCustomerBase - Indicates if the current base is a customer base, which affects how applications are loaded.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private isCustomerBase: boolean, private logger?: ToolsLogger) {}
-
-    /**
-     * Clears the stored list of applications.
-     */
-    public resetApps(): void {
-        this.applications = [];
-    }
+    constructor(private provider: AbapProvider, private isCustomerBase: boolean, private logger?: ToolsLogger) {}
 
     /**
      * Retrieves the currently loaded list of applications.
@@ -77,7 +70,7 @@ export class ApplicationManager {
      * @returns {Application[]} An array of applications.
      */
     public getApps(): Application[] {
-        return this.applications;
+        return this.applications ?? [];
     }
 
     /**
@@ -90,7 +83,7 @@ export class ApplicationManager {
     public async loadApps(isCloudSystem: boolean): Promise<Application[]> {
         let result: AppIndex = [];
 
-        const provider = AbapProvider.getProvider();
+        const provider = this.provider.getProvider();
         const appIndex = provider.getAppIndex();
 
         try {

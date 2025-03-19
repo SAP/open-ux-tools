@@ -2297,6 +2297,9 @@ importers:
 
   packages/generator-adp:
     dependencies:
+      '@sap-devx/feature-toggle-node':
+        specifier: 2.0.3
+        version: 2.0.3
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
         version: 1.14.4
@@ -8787,6 +8790,13 @@ packages:
       picomatch: 4.0.2
       rollup: 3.29.5
     dev: true
+
+  /@sap-devx/feature-toggle-node@2.0.3:
+    resolution: {integrity: sha512-OxdJigAFybeZH9Uxm14EXp0NAb+pWzU4U0CvttJgmrRx+NL1loL0/o8gb/Vqk8wHAtNTqXjhz7GvLZ4tfDjUrA==}
+    engines: {node: '>=14.21.2'}
+    dependencies:
+      node-cache: 5.1.2
+    dev: false
 
   /@sap-devx/yeoman-ui-types@1.14.4:
     resolution: {integrity: sha512-HTgMqm3purAJUjirm6m57h8BaoF/Qx6wuXxiB9cy7ZilmriNHVx0aXJV514I1r8GMRdKKHCVixmhZW0/4L02hw==}
@@ -18336,6 +18346,13 @@ packages:
   /node-abort-controller@3.1.1:
     resolution: {integrity: sha512-AGK2yQKIjRuqnc6VkX2Xj5d+QW8xZ87pa1UK6yA6ouUyuxfHuMP6umE5QK7UmTeOAymo+Zx1Fxiuw9rVx8taHQ==}
     dev: true
+
+  /node-cache@5.1.2:
+    resolution: {integrity: sha512-t1QzWwnk4sjLWaQAS8CHgOJ+RAfmHpxFWmc36IWTiWHQfs0w5JDMBS1b1ZxQteo0vVVuWJvIUKHDkkeK7vIGCg==}
+    engines: {node: '>= 8.0.0'}
+    dependencies:
+      clone: 2.1.2
+    dev: false
 
   /node-fetch@2.6.7:
     resolution: {integrity: sha512-ZjMPFEfVx5j+y2yF35Kzx5sF7kDzxuDj6ziH4FFbOp87zKDZNx8yExJIb05OGF4Nlt9IHFIMBkRl41VdvcNdbQ==}
