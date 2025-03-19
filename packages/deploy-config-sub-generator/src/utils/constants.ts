@@ -5,5 +5,6 @@ import type { Target } from '../types';
 export const generatorNamespace = (bundledRootGeneratorName: string, subGenName: string): string =>
     `${bundledRootGeneratorName}_${subGenName}`;
 
+export const generatorTitle = 'Deployment Configuration Generator';
 export const abapChoice: Target = { name: TargetName.ABAP, description: 'ABAP' };
 export const cfChoice: Target = { name: TargetName.CF, description: 'Cloud Foundry' };

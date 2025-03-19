@@ -121,8 +121,8 @@ describe('App Router Prompt Generation Tests', () => {
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(true);
             expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Managed);
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
-                { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard },
-                { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed }
+                { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
+                { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard }
             ]);
         });
 

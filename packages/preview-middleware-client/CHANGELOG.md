@@ -1,5 +1,23 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.5
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
+## 0.13.4
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
+## 0.13.3
+
+### Patch Changes
+
+-   f659540: fix: disable "Add Header Field" Quick Action when `showHeaderContent` is set to `false` for `ObjectPageLayout`
+
 ## 0.13.2
 
 ### Patch Changes
