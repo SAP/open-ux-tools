@@ -237,7 +237,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     export interface RTAOptions {
         [key: string]: any;
         flexSettings: FlexSettings;
-        rootControl: Component;
+        rootControl: Component | Control;
         validateAppVersion: boolean;
     }
 
