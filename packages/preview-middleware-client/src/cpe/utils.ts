@@ -6,14 +6,18 @@ import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import UIComponent from 'sap/ui/core/UIComponent';
+import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
+import { getControlById } from '../utils/core';
+import FlUtils from 'sap/ui/fl/Utils';
 
 import { getComponent } from '../utils/core';
-import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { isLowerThanMinimalUi5Version, isHigherThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
 import { ChangeService } from './changes';
 import UI5Element from 'sap/ui/core/Element';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
+
 
 export interface PropertiesInfo {
     defaultValue: string;
@@ -81,6 +85,45 @@ export async function getLibrary(controlName: string): Promise<string> {
             }
         });
     });
+}
+
+export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo) {
+    let reuseComponentApi: IsReuseComponentApi;
+    if (isHigherThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 133 })) {
+        reuseComponentApi = (await import('sap/ui/rta/util/isReuseComponent')).default;
+    }
+
+    return function isReuseComponent(controlId: string): boolean {
+        const ui5Control = getControlById(controlId);
+        if (!ui5Control) {
+            return false;
+        }
+
+        const component = FlUtils.getComponentForControl(ui5Control)
+
+        if (reuseComponentApi) {
+            return reuseComponentApi.isReuseComponent(component);
+        }
+
+        if (!component) {
+            return false;
+        }
+
+        const appComponent = FlUtils.getAppComponentForControl(component);
+        if (!appComponent) {
+            return false;
+        }
+
+        const manifest = component.getManifest() as Manifest;
+        const appManifest = appComponent.getManifest() as Manifest;
+        const componentName = manifest?.['sap.app']?.id;
+
+        // Look for component name in component usages of app component manifest
+        const componentUsages = appManifest?.['sap.ui5']?.componentUsages;
+        return Object.values(componentUsages || {}).some((componentUsage) => {
+            return componentUsage.name === componentName;
+        });
+    }
 }
 
 /**

@@ -164,7 +164,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     import type ContextMenu from 'sap/ui/dt/plugin/ContextMenu';
     import type { Layer } from 'sap/ui/fl';
     import type { Scenario } from 'sap/ui/fl/Scenario';
-    import type Control from 'sap/ui/core/Control';
+    import type Component from 'sap/ui/core/Component';
 
     type Manifest = {
         [key: string]: unknown;
@@ -181,6 +181,11 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
                 >;
             };
             flexEnabled?: boolean;
+            componentUsages?: {
+                [key: string]: {
+                    name?: string
+                }
+            }
         };
         'sap.ui.generic.app': {
             [key: string]: string;
@@ -232,7 +237,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
     export interface RTAOptions {
         [key: string]: any;
         flexSettings: FlexSettings;
-        rootControl: Control;
+        rootControl: Component;
         validateAppVersion: boolean;
     }
 
@@ -284,6 +289,17 @@ declare module 'sap/ui/rta/util/hasStableId' {
     import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
     export default function hasStableId(overlay: ElementOverlay): boolean;
+}
+
+declare module 'sap/ui/rta/util/isReuseComponent' {
+    import type Component from 'sap/ui/core/Component';
+
+    interface IsReuseComponentApi {
+        isReuseComponent(component?: Component): boolean;
+    }
+
+    const IsReuseComponentApi: IsReuseComponentApi;
+    export default IsReuseComponentApi;
 }
 
 declare module 'sap/ui/rta/api/startAdaptation' {

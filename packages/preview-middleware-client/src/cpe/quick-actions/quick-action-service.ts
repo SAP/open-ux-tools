@@ -22,6 +22,8 @@ import { OutlineService } from '../outline/service';
 import { getTextBundle, TextBundle } from '../../i18n';
 import { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
+import { getReuseComponentChecker } from '../../cpe/utils';
+import { getUi5Version } from '../../utils/version';
 
 /**
  * Service providing Quick Actions.
@@ -33,6 +35,7 @@ export class QuickActionService implements Service {
 
     private actionService: ActionService;
     private texts: TextBundle;
+    private isReuseComponent: QuickActionContext['isReuseComponent'];
 
     /**
      * Quick action service constructor.
@@ -58,6 +61,8 @@ export class QuickActionService implements Service {
         this.sendAction = sendAction;
         this.actionService = await this.rta.getService('action');
         this.texts = await getTextBundle();
+        const version = await getUi5Version();
+        this.isReuseComponent = await getReuseComponentChecker(version);
 
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
@@ -122,7 +127,8 @@ export class QuickActionService implements Service {
                     rta: this.rta,
                     flexSettings: this.rta.getFlexSettings(),
                     resourceBundle: this.texts,
-                    changeService: this.changeService
+                    changeService: this.changeService,
+                    isReuseComponent: this.isReuseComponent
                 };
                 for (const Definition of definitions) {
                     try {

@@ -12,16 +12,18 @@ import FlUtils from 'sap/ui/fl/Utils';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { isReuseComponent } from '../cpe/utils';
+import { getReuseComponentChecker } from '../cpe/utils';
 import { Ui5VersionInfo } from '../utils/version';
 import { DialogFactory, DialogNames } from './dialog-factory';
+
+type isReuseComponentApi = (controlId: string) => boolean;
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
  *
  * @param control UI5 control.
  * @param syncViewsIds Runtime Authoring
- * @param ui5VersionInfo UI5 version information
+ * @param isReuseComponent Function to check if the control is a reuse component.
  * @param isCloud Whether the application is running in the cloud
  *
  * @returns boolean whether menu item is enabled or not
@@ -29,14 +31,14 @@ import { DialogFactory, DialogNames } from './dialog-factory';
 export function isControllerExtensionEnabledForControl(
     control: ManagedObject,
     syncViewsIds: string[],
-    ui5VersionInfo: Ui5VersionInfo,
+    isReuseComponent: isReuseComponentApi,
     isCloud: boolean
 ): boolean {
-    const clickedControlId = FlUtils.getViewForControl(control).getId();
-    const isControlInSyncView = syncViewsIds.includes(clickedControlId);
+    const viewId = FlUtils.getViewForControl(control).getId();
+    const isControlInSyncView = syncViewsIds.includes(viewId);
 
     if(isCloud) {
-        const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
+        const isClickedControlReuseComponent = isReuseComponent(control.getId());
         return !isControlInSyncView && !isClickedControlReuseComponent;
     }
     return !isControlInSyncView;
@@ -47,7 +49,7 @@ export function isControllerExtensionEnabledForControl(
  *
  * @param overlays Control overlays
  * @param syncViewsIds Runtime Authoring
- * @param ui5VersionInfo UI5 version information
+ * @param isReuseComponent Function to check if the control is a reuse component.
  * @param isCloud Whether the application is running in the cloud
  *
  * @returns boolean whether menu item is enabled or not
@@ -55,30 +57,30 @@ export function isControllerExtensionEnabledForControl(
 export const isControllerExtensionEnabled = (
     overlays: ElementOverlay[],
     syncViewsIds: string[],
-    ui5VersionInfo: Ui5VersionInfo,
+    isReuseComponent: isReuseComponentApi,
     isCloud: boolean
 ): boolean => {
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
-    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, ui5VersionInfo, isCloud);
+    return isControllerExtensionEnabledForControl(overlays[0].getElement(), syncViewsIds, isReuseComponent, isCloud);
 };
 
 /**
  * Determines whether the fragment command should be enabled based on the provided overlays.
  *
  * @param {ElementOverlay[]} overlays - An array of ElementOverlay objects representing the UI overlays.
- * @param ui5VersionInfo UI5 version information
+ * @param {isReuseComponentApi} isReuseComponent - Function to check if the control is a reuse component.
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
-export const isFragmentCommandEnabled = (overlays: ElementOverlay[], ui5VersionInfo: Ui5VersionInfo): boolean => {
+export const isFragmentCommandEnabled = (overlays: ElementOverlay[], isReuseComponent: isReuseComponentApi): boolean => {
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
 
     const control = overlays[0].getElement();
 
-    return hasStableId(overlays[0]) && !isReuseComponent(control.getId(), ui5VersionInfo);
+    return hasStableId(overlays[0]) && !isReuseComponent(control.getId());
 };
 
 /**
@@ -102,9 +104,11 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
  * @param syncViewsIds Ids of all application sync views
  * @param ui5VersionInfo UI5 version information
  */
-export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): void => {
+export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<void> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
+
+    const isReuseComponentApi = await getReuseComponentChecker(ui5VersionInfo);
 
     contextMenu.addMenuItem({
         id: 'ADD_FRAGMENT',
@@ -112,7 +116,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5Ve
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
-        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, ui5VersionInfo)
+        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, isReuseComponentApi)
     });
 
     contextMenu.addMenuItem({
@@ -121,6 +125,6 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5Ve
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, ui5VersionInfo, isCloud)
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentApi, isCloud)
     });
 };

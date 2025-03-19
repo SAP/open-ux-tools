@@ -22,7 +22,7 @@ export default async function (rta: RuntimeAuthoring) {
 
     const ui5VersionInfo = await getUi5Version();
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
-    initDialogs(rta, syncViewsIds, ui5VersionInfo);
+    await initDialogs(rta, syncViewsIds, ui5VersionInfo);
 
     if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 78 })) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
