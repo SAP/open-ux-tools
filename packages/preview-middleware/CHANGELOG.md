@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.18.23
+
+### Patch Changes
+
+-   02874f7: feat: Feature toggle removed for Add Subpage CPE quick action
+
 ## 0.18.22
 
 ### Patch Changes
