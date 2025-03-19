@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.18.22
+
+### Patch Changes
+
+-   e754cb0: fix: disable "Add New Annotation File" Quick Action with tooltip, when 'metadata' is not loaded
+-   Updated dependencies [e754cb0]
+    -   @sap-ux/adp-tooling@0.13.17
+
 ## 0.18.21
 
 ### Patch Changes
