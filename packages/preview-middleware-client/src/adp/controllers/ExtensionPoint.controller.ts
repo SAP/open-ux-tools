@@ -19,7 +19,6 @@ import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { ExtensionPointData, ExtensionPointInfo } from '../extension-point';
 import { notifyUser } from '../utils';
-import { reportTelemetry } from '@sap-ux-private/control-property-editor-common';
 
 type ExtensionPointModel = JSONModel & {
     getProperty(sPath: '/newFragmentName'): string;
@@ -62,8 +61,6 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
      * @param event Event
      */
     onCreateBtnPress(event: Event): void {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        reportTelemetry({ category: 'Create ExtensionPoint'});
         const source = event.getSource<Button>();
         source.setEnabled(false);
 

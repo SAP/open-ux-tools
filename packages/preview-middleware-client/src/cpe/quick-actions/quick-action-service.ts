@@ -68,6 +68,7 @@ export class QuickActionService implements Service {
                 if (!actionInstance) {
                     return;
                 }
+                actionInstance.telemetryEventIdentifier = new Date().toISOString(); 
                 const commands = await this.executeAction(actionInstance, action.payload);
 
                 for (const command of commands) {
@@ -129,7 +130,6 @@ export class QuickActionService implements Service {
                     try {
                         const instance = new Definition(actionContext);
                         await instance.initialize();
-                        instance.telemetryEventIdentifier = new Date().toISOString();
                         await this.addAction(group, instance);
                     } catch {
                         Log.warning(`Failed to initialize ${Definition.name} quick action.`);
