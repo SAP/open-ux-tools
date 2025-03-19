@@ -101,10 +101,10 @@ export class ConfigPrompter {
     /**
      * Creates the username prompt configuration.
      *
-     * @param {UsernamePromptOptions} options - Optional configuration for the username prompt.
+     * @param {UsernamePromptOptions} _ - Optional configuration for the username prompt.
      * @returns The username prompt as a {@link ConfigQuestion}.
      */
-    private getUsernamePrompt(options?: UsernamePromptOptions): ConfigQuestion {
+    private getUsernamePrompt(_?: UsernamePromptOptions): ConfigQuestion {
         return {
             type: 'input',
             name: configPromptNames.username,
@@ -114,7 +114,6 @@ export class ConfigPrompter {
                 breadcrumb: true,
                 hint: t('prompts.usernameTooltip')
             },
-            default: options?.default,
             filter: (val: string): string => val.trim(),
             validate: (val: string) => validateEmptyString(val),
             when: async (answers: ConfigAnswers) => {

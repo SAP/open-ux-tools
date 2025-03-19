@@ -92,7 +92,7 @@ export interface AdpWriterConfig {
     };
 }
 
-export interface Application {
+export interface TargetApplication {
     id: string;
     title: string;
     ach: string;

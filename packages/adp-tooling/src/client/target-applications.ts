@@ -2,7 +2,7 @@ import { t } from 'i18next';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { App, AppIndex } from '@sap-ux/axios-extension';
 
-import { Application } from '../types';
+import { TargetApplication } from '../types';
 import { AbapProvider } from './abap-provider';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../base/constants';
 
@@ -10,11 +10,11 @@ import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '
  * Compares two applications for sorting, using the title and falling back to the ID if titles are missing or equal.
  * This function ensures that applications are sorted alphabetically by their title or ID in a case-insensitive manner.
  *
- * @param {Application} appA - The first application to compare.
- * @param {Application} appB - The second application to compare.
+ * @param {TargetApplication} appA - The first application to compare.
+ * @param {TargetApplication} appB - The second application to compare.
  * @returns {number} A number indicating the sort order.
  */
-export const filterApps = (appA: Application, appB: Application): number => {
+export const filterApps = (appA: TargetApplication, appB: TargetApplication): number => {
     let titleA = appA.title.toUpperCase();
     let titleB = appB.title.toUpperCase();
 
@@ -40,7 +40,7 @@ export const filterApps = (appA: Application, appB: Application): number => {
  * @param {Partial<App>} app - The raw application data, possibly incomplete.
  * @returns {Application} A structured application object with defined properties, even if some may be empty.
  */
-export const mapApps = (app: Partial<App>): Application => ({
+export const mapApps = (app: Partial<App>): TargetApplication => ({
     id: app['sap.app/id'] ?? '',
     title: app['sap.app/title'] ?? '',
     ach: app['sap.app/ach'] ?? '',
@@ -54,7 +54,7 @@ export const mapApps = (app: Partial<App>): Application => ({
  * Provides services related to managing and loading applications from an ABAP provider.
  */
 export class TargetApplications {
-    private applications: Application[] = [];
+    private applications: TargetApplication[] = [];
 
     /**
      * Constructs an instance of ApplicationManager.
@@ -69,7 +69,7 @@ export class TargetApplications {
      *
      * @returns {Application[]} An array of applications.
      */
-    public async getApps(): Promise<Application[]> {
+    public async getApps(): Promise<TargetApplication[]> {
         if (!this.applications) {
             this.applications = await this.loadApps();
         }
@@ -82,7 +82,7 @@ export class TargetApplications {
      * @returns {Application[]} list of applications.
      * @throws {Error} Throws an error if the app data cannot be loaded.
      */
-    private async loadApps(): Promise<Application[]> {
+    private async loadApps(): Promise<TargetApplication[]> {
         let result: AppIndex = [];
 
         try {

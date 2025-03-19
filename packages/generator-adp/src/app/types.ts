@@ -2,7 +2,7 @@ import type Generator from 'yeoman-generator';
 import { ListQuestionOptions } from 'inquirer';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import { Application } from '@sap-ux/adp-tooling';
+import { TargetApplication } from '@sap-ux/adp-tooling';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 
@@ -23,12 +23,6 @@ export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
      * Telemetry data to be send after deployment configuration has been added
      */
     telemetryData?: TelemetryData;
-    /**
-     * Additional data for the generator
-     */
-    data?: {
-        projectRootPath: string;
-    };
 }
 
 /**
@@ -48,7 +42,7 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
-    application: Application;
+    application: TargetApplication;
 }
 
 /**
@@ -70,7 +64,6 @@ export interface SystemPromptOptions {
 }
 
 export interface UsernamePromptOptions {
-    default?: string;
     hide?: boolean;
 }
 
