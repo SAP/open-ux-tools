@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.18
+
+### Patch Changes
+
+-   c3ebc82: fix: wrong convert preview-config prerequisites check for usage of cds-plugin-ui5
+
 ## 1.29.17
 
 ### Patch Changes
