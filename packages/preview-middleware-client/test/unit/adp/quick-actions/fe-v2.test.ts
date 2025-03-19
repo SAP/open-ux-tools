@@ -938,7 +938,7 @@ describe('FE V2 quick actions', () => {
                         'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                     },
-                    {actionName: 'add-page-action', timestamp: '2025-03-17T20:42:00.353Z'}
+                    {actionName: 'add-page-action', telemetryEventIdentifier: '2025-03-17T20:42:00.353Z'}
                 );
             });
         });
@@ -1098,7 +1098,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                     },
-                    {actionName: 'create-table-custom-column', timestamp: '2025-03-17T20:37:11.940Z'}
+                    {actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T20:37:11.940Z'}
                 );
             });
         });
@@ -1722,7 +1722,6 @@ describe('FE V2 quick actions', () => {
                 });
             });
             test('initialize and execute action - when file exists', async () => {
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:24:49.325Z');
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '1' })
                 );
@@ -1735,8 +1734,7 @@ describe('FE V2 quick actions', () => {
                         fileName: 'mock/adp.project.annotation/path',
                         filePath: 'mock/adp/project/annotation/path',
                         isRunningInBAS: false
-                    },
-                    {actionName: 'add-new-annotation-file', timestamp: '2025-03-17T20:24:49.325Z'}
+                    }
                 );
             });
         });
@@ -2066,7 +2064,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'items',
                         title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
                     },
-                    { actionName: 'op-add-header-field', timestamp: '2025-03-17T20:24:49.347Z' }
+                    { actionName: 'op-add-header-field', telemetryEventIdentifier: '2025-03-17T20:24:49.347Z' }
                 );
             });
         });
@@ -2212,7 +2210,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'sections',
                         title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
                     },
-                    { actionName: 'op-add-custom-section', timestamp: '2025-03-17T20:22:57.404Z' }
+                    { actionName: 'op-add-custom-section', telemetryEventIdentifier: '2025-03-17T20:22:57.404Z' }
                 );
             });
         });
@@ -2379,7 +2377,7 @@ describe('FE V2 quick actions', () => {
                         defaultAggregationArrayIndex: 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                     },
-                    { actionName: 'create-table-action', timestamp: '2025-03-17T20:01:19.650Z' }
+                    { actionName: 'create-table-action', telemetryEventIdentifier: '2025-03-17T20:01:19.650Z' }
                 );
             });
         });
@@ -2569,7 +2567,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                     },
-                    { actionName: 'create-table-custom-column', timestamp: '2025-03-17T15:14:25.947Z' }
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T15:14:25.947Z' }
                 );
             });
             test('displays warning when no rows loaded', async () => {
@@ -3401,7 +3399,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                     },
-                    { actionName: 'create-table-custom-column', timestamp: '2025-03-17T20:01:19.766Z' }
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T20:01:19.766Z' }
                 );
             });
         });

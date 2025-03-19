@@ -6,9 +6,18 @@ import { EnablementValidator, EnablementValidatorError, EnablementValidatorResul
  * Base class for all  quick actions.
  */
 export abstract class QuickActionDefinitionBase<T extends string> {
+    private _telemetryIdentifier: string;
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
+
+    public get telemetryEventIdentifier(): string {
+        return this._telemetryIdentifier;
+    }
+    
+    public set telemetryEventIdentifier(data:string) {
+        this._telemetryIdentifier = data;
+    } 
 
     /**
      * Quick Actions tooltip.

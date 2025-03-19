@@ -23,7 +23,7 @@ export interface QuickActionActivationContext {
 
 export interface TelemetryData {
     actionName: string; 
-    timestamp: string
+    telemetryEventIdentifier: string;
 }
 
 export interface QuickActionContext {
@@ -62,6 +62,8 @@ interface QuickActionDefinitionBase {
      * however if that is not the case this property should be set to "true" to force Quick Action reload after the action is executed.
      */
     readonly forceRefreshAfterExecution?: boolean;
+    /* When we have two events */
+    telemetryEventIdentifier: string;
     /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.
      */
@@ -88,7 +90,7 @@ export interface SimpleQuickActionDefinition extends QuickActionDefinitionBase {
     /**
      * Executes the Quick Action.
      */
-    execute: (telemetryData: TelemetryData) => FlexCommand[] | Promise<FlexCommand[]>;
+    execute: () => FlexCommand[] | Promise<FlexCommand[]>;
 }
 
 export interface NestedQuickActionDefinition extends QuickActionDefinitionBase {
@@ -105,7 +107,7 @@ export interface NestedQuickActionDefinition extends QuickActionDefinitionBase {
      *
      * @param path - Path to the specific child action that needs to be executed (e.g '0/1').
      */
-    execute: (path: string, telemetryData: TelemetryData) => FlexCommand[] | Promise<FlexCommand[]>;
+    execute: (path: string) => FlexCommand[] | Promise<FlexCommand[]>;
 }
 export type QuickActionDefinition = SimpleQuickActionDefinition | NestedQuickActionDefinition;
 

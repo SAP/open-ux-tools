@@ -12,8 +12,7 @@ import {
     QuickActionGroup,
     updateQuickAction,
     externalFileChange,
-    reportTelemetry,
-    enableTelemetry
+    reportTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -130,6 +129,7 @@ export class QuickActionService implements Service {
                     try {
                         const instance = new Definition(actionContext);
                         await instance.initialize();
+                        instance.telemetryEventIdentifier = new Date().toISOString();
                         await this.addAction(group, instance);
                     } catch {
                         Log.warning(`Failed to initialize ${Definition.name} quick action.`);
@@ -152,21 +152,18 @@ export class QuickActionService implements Service {
     }
 
     private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
-        enableTelemetry();
-        const timestamp = new Date().toISOString();
-        const telemetryData = {actionName:actionInstance.type, timestamp};
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         reportTelemetry({
             category: 'QuickAction',
             actionName: actionInstance.type,
-            timestamp
+            timestamp: actionInstance.telemetryEventIdentifier
         });
         
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
-            return actionInstance.execute(telemetryData);
+            return actionInstance.execute();
         }
         if (payload.kind === NESTED_QUICK_ACTION_KIND && actionInstance.kind === NESTED_QUICK_ACTION_KIND) {
-            return actionInstance.execute(payload.path, telemetryData);
+            return actionInstance.execute(payload.path);
         }
         return Promise.resolve([]);
     }

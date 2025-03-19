@@ -505,7 +505,7 @@ describe('FE V4 quick actions', () => {
                     'ControllerExtension',
                     undefined,
                     {},
-                    { actionName: 'add-controller-to-page', timestamp: '2025-03-14T16:20:26.100Z' }
+                    { actionName: 'add-controller-to-page', telemetryEventIdentifier: '2025-03-14T16:20:26.100Z' }
                 );
             });
         });
@@ -1685,7 +1685,7 @@ describe('FE V4 quick actions', () => {
                             aggregation: 'items',
                             title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
                         },
-                        { actionName: 'op-add-header-field', timestamp: '2025-03-17T15:06:27.121Z' }
+                        { actionName: 'op-add-header-field', telemetryEventIdentifier: '2025-03-17T15:06:27.121Z' }
                     );
                 });
             });
@@ -1912,7 +1912,7 @@ describe('FE V4 quick actions', () => {
                             aggregation: 'columns',
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                         },
-                        { actionName: 'create-table-custom-column', timestamp: '2025-03-17T14:59:00.942Z' }
+                        { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T14:59:00.942Z' }
                     );
                 });
             });

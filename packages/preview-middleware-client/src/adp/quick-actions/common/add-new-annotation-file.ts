@@ -1,6 +1,9 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition, TelemetryData } from '../../../cpe/quick-actions/quick-action-definition';
+import {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import type { AnnotationDataSourceResponse } from '../../api-handler';
 import { getDataSourceAnnotationFileMap } from '../../api-handler';
 import {
@@ -74,7 +77,7 @@ export class AddNewAnnotationFile
         }
         return result;
     }
-    async execute(path: string, telemetryData: TelemetryData): Promise<FlexCommand[]> {
+    async execute(path: string): Promise<FlexCommand[]> {
         const { annotationDataSourceMap, isRunningInBAS } = this.annotationDataSourceData;
         const index = Number(path);
         if (index >= 0) {
@@ -92,8 +95,7 @@ export class AddNewAnnotationFile
                         fileName: annotationPathFromRoot,
                         filePath: annotationPath,
                         isRunningInBAS: isRunningInBAS
-                    },
-                    telemetryData
+                    }
                 );
             }
             // Create annotation file only, if no file exists already for datasource id or if the change file exist and but no annotation file exists in file system.

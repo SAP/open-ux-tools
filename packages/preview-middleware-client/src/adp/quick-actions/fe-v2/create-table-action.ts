@@ -5,7 +5,10 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import UI5Element from 'sap/ui/core/Element';
 
-import { QuickActionContext, NestedQuickActionDefinition, TelemetryData } from '../../../cpe/quick-actions/quick-action-definition';
+import {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
@@ -46,7 +49,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         // disable nested actions based on conditions
         this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
-    async execute(path: string, telemetryData: TelemetryData): Promise<FlexCommand[]> {
+    async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
             return [];
@@ -71,11 +74,18 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         // open dialogBox to add, and content is selected ByDefault
         if (headerToolbar) {
             const overlay = OverlayRegistry.getOverlay(headerToolbar as UI5Element) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-                aggregation: 'content',
-                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION',
-                defaultAggregationArrayIndex: 1
-            }, telemetryData);
+            await DialogFactory.createDialog(
+                overlay,
+                this.context.rta,
+                DialogNames.ADD_FRAGMENT,
+                undefined,
+                {
+                    aggregation: 'content',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION',
+                    defaultAggregationArrayIndex: 1
+                },
+                { actionName: this.type, telemetryEventIdentifier: this.telemetryEventIdentifier }
+            );
         }
         return [];
     }

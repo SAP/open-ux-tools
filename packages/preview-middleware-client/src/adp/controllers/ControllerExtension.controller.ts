@@ -28,7 +28,6 @@ import { getExistingController, readControllers, writeChange, writeController } 
 import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
 import { TelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-import { reportTelemetry } from '@sap-ux-private/control-property-editor-common';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -47,13 +46,11 @@ type ControllerModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
-    private readonly telemetryData: TelemetryData | undefined;
     constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, telemetryData?: TelemetryData) {
-        super(name);
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel();
-        this.telemetryData = telemetryData;
     }
 
     /**
@@ -131,9 +128,6 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        reportTelemetry({ category: 'Create Controller', ...this.telemetryData });
-
         const source = event.getSource<Button>();
         const controllerExists = this.model.getProperty('/controllerExists');
 

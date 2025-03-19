@@ -21,6 +21,7 @@ import {
 import { QuickActionDefinitionRegistry } from 'open/ux/preview/client/cpe/quick-actions/registry';
 
 class MockDefinition implements SimpleQuickActionDefinition {
+    telemetryEventIdentifier: string;
     readonly kind = 'simple';
     readonly type = 'MOCK_DEFINITION';
     public get id(): string {

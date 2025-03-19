@@ -23,7 +23,7 @@ import { AddTableCellFragmentChangeContentType } from 'sap/ui/fl/Change';
 /** sap.ui.layout */
 import { type SimpleForm } from 'sap/ui/layout/form';
 
-import { reportTelemetry, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
 import { getResourceModel, getTextBundle } from '../../i18n';
 import { CommunicationService } from '../../cpe/communication-service';
@@ -60,7 +60,6 @@ interface CreateFragmentProps {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsFragmentsModel> {
-    private readonly telemetryData: TelemetryData | undefined;
 
     constructor(
         name: string,
@@ -69,14 +68,13 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
         readonly options: AddFragmentOptions,
         telemetryData?: TelemetryData
     ) {
-        super(name);
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel({
             title: options.title
         }) as AddTableColumnsFragmentsModel;
         this.commandExecutor = new CommandExecutor(this.rta);
-        this.telemetryData = telemetryData;
     }
 
     /**
@@ -104,8 +102,6 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        reportTelemetry({ category: 'Create Table Column Fragment', ...this.telemetryData });
         const source = event.getSource<Button>();
         source.setEnabled(false);
 

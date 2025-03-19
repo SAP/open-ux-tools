@@ -6,8 +6,7 @@ import { getAllSyncViewsIds, getControllerInfoForControl } from '../../utils';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import type {
     QuickActionContext,
-    SimpleQuickActionDefinition,
-    TelemetryData
+    SimpleQuickActionDefinition
 } from '../../../cpe/quick-actions/quick-action-definition';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
@@ -42,7 +41,12 @@ export class AddControllerToPageQuickAction
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
-            const isActiveAction = isControllerExtensionEnabledForControl(control, syncViewsIds, version, this.context.flexSettings.isCloud);
+            const isActiveAction = isControllerExtensionEnabledForControl(
+                control,
+                syncViewsIds,
+                version,
+                this.context.flexSettings.isCloud
+            );
             this.control = isActiveAction ? control : undefined;
             break;
         }
@@ -52,10 +56,17 @@ export class AddControllerToPageQuickAction
         return this.controllerExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
     }
 
-    async execute(telemetryData: TelemetryData): Promise<FlexCommand[]> {
+    async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.CONTROLLER_EXTENSION, undefined, {}, telemetryData);
+            await DialogFactory.createDialog(
+                overlay,
+                this.context.rta,
+                DialogNames.CONTROLLER_EXTENSION,
+                undefined,
+                {},
+                { actionName: this.type, telemetryEventIdentifier: this.telemetryEventIdentifier }
+            );
         }
         return [];
     }

@@ -18,6 +18,8 @@ import { getControlById } from '../../utils/core';
 import ControlUtils from '../control-utils';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
+import { TelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { reportTelemetry } from '@sap-ux-private/control-property-editor-common';
 
 type BaseDialogModel = JSONModel & {
     getProperty(sPath: '/fragmentList'): Fragments;
@@ -57,6 +59,14 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
     abstract onCreateBtnPress(event: Event): Promise<void> | void;
 
     abstract buildDialogData(): Promise<void> | void;
+
+    constructor(name: string, private readonly telemetryData?: TelemetryData | undefined) {
+        super(name);
+    }
+    protected onCreateBtnPressHandler(event: Event): Promise<void> | void{
+        reportTelemetry({category: this.dialog.getId(), ...this.telemetryData});
+        this.onCreateBtnPress(event);
+    }
 
     /**
      * Method is used in add fragment dialog controllers to get current control metadata which are needed on the dialog

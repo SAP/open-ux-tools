@@ -21,7 +21,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 /** sap.ui.fl */
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
-import { reportTelemetry, setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
 import { getResourceModel, getTextBundle } from '../../i18n';
 import { CommunicationService } from '../../cpe/communication-service';
@@ -65,9 +65,14 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    private readonly telemetryData: TelemetryData | undefined;
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions, telemetryData?: TelemetryData) {
-        super(name);
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddFragmentOptions,
+        telemetryData?: TelemetryData
+    ) {
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel({
@@ -75,7 +80,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             completeView: options.aggregation === undefined
         });
         this.commandExecutor = new CommandExecutor(this.rta);
-        this.telemetryData = telemetryData;
     }
 
     /**
@@ -138,8 +142,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        reportTelemetry({ category: 'Create Fragment', ...this.telemetryData });
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
