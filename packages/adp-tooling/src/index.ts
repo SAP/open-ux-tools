@@ -8,7 +8,7 @@ export * from './base/abap/manifest-service';
 export * from './base/helper';
 export * from './client';
 export * from './preview/adp-preview';
-export { getPackageJSONInfo } from './writer/project-utils';
+export { getCustomConfig } from './writer/project-utils';
 export { generate, migrate } from './writer';
 export { generateChange } from './writer/editors';
 export { generateInboundConfig } from './writer/inbound-navigation';

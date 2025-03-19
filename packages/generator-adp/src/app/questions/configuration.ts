@@ -1,6 +1,6 @@
 import { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { AbapProvider, ApplicationManager, EndpointsManager, FlexLayer, getEndpointNames } from '@sap-ux/adp-tooling';
+import { AbapProvider, FlexLayer, TargetApplications, TargetSystems, getEndpointNames } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
@@ -22,31 +22,29 @@ import { showApplicationQuestion, showCredentialQuestion } from './helper/condit
  * It exposes a single public method {@link getPrompts} to retrieve the configuration questions.
  */
 export class ConfigPrompter {
-    private appsManager: ApplicationManager;
-    private logger: ToolsLogger;
+    private targetApps: TargetApplications;
 
     /**
      * Indicates if the current layer is based on a customer base.
      */
-    public isCustomerBase: boolean;
+    private isCustomerBase: boolean;
 
     /**
      * Creates an instance of ConfigPrompter.
      *
-     * @param {AbapProvider} provider - The ABAP provider instance.
-     * @param {EndpointsManager} endpointsManager - The endpoints manager to retrieve system endpoints.
+     * @param {AbapProvider} abapProvider - The ABAP provider instance.
+     * @param {TargetSystems} targetSystems - The target system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - The logger instance for logging.
      */
     constructor(
-        private provider: AbapProvider,
-        private endpointsManager: EndpointsManager,
+        private abapProvider: AbapProvider,
+        private targetSystems: TargetSystems,
         layer: FlexLayer,
-        logger: ToolsLogger
+        private logger: ToolsLogger
     ) {
-        this.logger = logger;
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-        this.appsManager = new ApplicationManager(this.provider, this.isCustomerBase, this.logger);
+        this.targetApps = new TargetApplications(this.abapProvider, this.isCustomerBase, this.logger);
     }
 
     /**
@@ -87,10 +85,13 @@ export class ConfigPrompter {
             type: 'list',
             name: configPromptNames.system,
             message: t('prompts.systemLabel'),
-            choices: () => getEndpointNames(this.endpointsManager.getEndpoints()),
+            choices: async () => {
+                const systems = await this.targetSystems.getSystems();
+                return getEndpointNames(systems);
+            },
             guiOptions: {
                 mandatory: true,
-                breadcrumb: 'System',
+                breadcrumb: true,
                 hint: t('prompts.systemTooltip')
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers)
@@ -110,13 +111,16 @@ export class ConfigPrompter {
             message: t('prompts.usernameLabel'),
             guiOptions: {
                 mandatory: true,
-                breadcrumb: 'Username'
+                breadcrumb: true,
+                hint: t('prompts.usernameTooltip')
             },
             default: options?.default,
             filter: (val: string): string => val.trim(),
             validate: (val: string) => validateEmptyString(val),
-            when: (answers: ConfigAnswers) =>
-                showCredentialQuestion(answers, this.endpointsManager.getSystemRequiresAuth(answers.system))
+            when: async (answers: ConfigAnswers) => {
+                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
+                return showCredentialQuestion(answers, systemRequiresAuth);
+            }
         };
     }
 
@@ -133,11 +137,14 @@ export class ConfigPrompter {
             message: t('prompts.passwordLabel'),
             mask: '*',
             guiOptions: {
-                mandatory: true
+                mandatory: true,
+                hint: t('prompts.passwordTooltip')
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
-            when: (answers: ConfigAnswers) =>
-                showCredentialQuestion(answers, this.endpointsManager.getSystemRequiresAuth(answers.system))
+            when: async (answers: ConfigAnswers) => {
+                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
+                return showCredentialQuestion(answers, systemRequiresAuth);
+            }
         };
     }
 
@@ -154,18 +161,20 @@ export class ConfigPrompter {
             message: t('prompts.applicationListLabel'),
             guiOptions: {
                 mandatory: true,
-                breadcrumb: 'Application',
+                breadcrumb: true,
                 hint: t('prompts.applicationListTooltip'),
                 applyDefaultWhenDirty: true
             },
-            choices: () => {
-                const apps = this.appsManager.getApps();
+            choices: async () => {
+                const apps = await this.targetApps.getApps();
                 return getApplicationChoices(apps);
             },
             default: options?.default,
             validate: (value: string) => this.validateApplicationSelection(value),
-            when: (answers: ConfigAnswers) =>
-                showApplicationQuestion(answers, this.endpointsManager.getSystemRequiresAuth(answers.system))
+            when: async (answers: ConfigAnswers) => {
+                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
+                return showApplicationQuestion(answers, systemRequiresAuth);
+            }
         };
     }
 
@@ -176,8 +185,9 @@ export class ConfigPrompter {
      * @returns An error message if validation fails, or true if the selection is valid.
      */
     private validateApplicationSelection(app: string): string | boolean {
-        if (!app) {
-            return t('validators.inputCannotBeEmpty');
+        const validationResult = validateEmptyString(app);
+        if (validationResult === 'string') {
+            return validationResult;
         }
         return true;
     }
@@ -191,18 +201,17 @@ export class ConfigPrompter {
      * @returns An error message if validation fails, or true if the system selection is valid.
      */
     private async validateSystem(system: string, answers: ConfigAnswers): Promise<string | boolean> {
-        if (!system) {
-            return t('validators.inputCannotBeEmpty');
+        const validationResult = validateEmptyString(system);
+        if (validationResult === 'string') {
+            return validationResult;
         }
 
         try {
-            await this.provider.setProvider(system, undefined, answers.username, answers.password);
+            await this.abapProvider.setProvider(system, undefined, answers.username, answers.password);
 
-            const systemRequiresAuth = this.endpointsManager.getSystemRequiresAuth(system);
+            const systemRequiresAuth = this.targetSystems.getSystemRequiresAuth(system);
             if (!systemRequiresAuth) {
-                const providerInstance = this.provider.getProvider();
-                const isCloudSystem = await providerInstance.isAbapCloud();
-                await this.appsManager.loadApps(isCloudSystem);
+                await this.targetApps.getApps();
             }
             return true;
         } catch (e) {

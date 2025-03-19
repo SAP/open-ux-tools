@@ -4,7 +4,7 @@ import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 
-import { EndpointsManager } from '../common';
+import { TargetSystems } from './target-systems';
 
 export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;
 
@@ -21,9 +21,7 @@ export class AbapProvider {
      * @param {EndpointsManager} endpointsManager - The endpoints service for retrieving system details.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private endpointsManager: EndpointsManager, private logger?: ToolsLogger) {
-        this.system = undefined;
-    }
+    constructor(private endpointsManager: TargetSystems, private logger?: ToolsLogger) {}
 
     /**
      * Retrieves the configured ABAP service provider if set, otherwise throws an error.

@@ -1,7 +1,8 @@
 import { join } from 'path';
 import { readFileSync } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig } from '../types';
+import type { CloudApp, AdpWriterConfig, CustomConfig } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -12,6 +13,7 @@ import {
 } from './options';
 
 import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
+import { OperationsType } from '@sap-ux/axios-extension';
 
 type PackageJSON = { name: string; version: string };
 
@@ -31,6 +33,26 @@ export function getPackageJSONInfo(): PackageJSON {
     } catch (e) {
         return defaultPackage;
     }
+}
+
+/**
+ * Constructs a custom configuration object.
+ *
+ * @param {OperationsType} environment - The operations type indicating a cloud or on-premise project.
+ * @returns {CustomConfig} The generated custom configuration.
+ */
+export function getCustomConfig(environment: OperationsType): CustomConfig {
+    const { name: id, version } = getPackageJSONInfo();
+    return {
+        adp: {
+            environment,
+            support: {
+                id,
+                version,
+                toolsId: uuidv4()
+            }
+        }
+    };
 }
 
 /**

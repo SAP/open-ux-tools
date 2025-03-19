@@ -1,4 +1,3 @@
-import { v4 as uuidv4 } from 'uuid';
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { isFeatureEnabled } from '@sap-devx/feature-toggle-node';
@@ -7,11 +6,10 @@ import {
     AbapProvider,
     AdpWriterConfig,
     Content,
-    CustomConfig,
-    EndpointsManager,
     FlexLayer,
+    TargetSystems,
     generate,
-    getPackageJSONInfo
+    getCustomConfig
 } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -58,11 +56,11 @@ export default class extends Generator {
     /**
      * EndpointsManager instance for managing system endpoints.
      */
-    private endpointsManager: EndpointsManager;
+    private targetSystems: TargetSystems;
     /**
      * AbapProvider instance for ABAP system connection.
      */
-    private providerManager: AbapProvider;
+    private abapProvider: AbapProvider;
 
     /**
      * Creates an instance of the generator.
@@ -87,10 +85,9 @@ export default class extends Generator {
 
         this._setupPages();
 
-        this.endpointsManager = await EndpointsManager.getInstance(this.toolsLogger);
-        this.providerManager = new AbapProvider(this.endpointsManager, this.toolsLogger);
+        this.targetSystems = new TargetSystems(this.toolsLogger);
+        this.abapProvider = new AbapProvider(this.targetSystems, this.toolsLogger);
 
-        // Add telemetry to be sent once generator-adp is generated
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
                 name: '@sap/generator-fiori:generator-adp',
@@ -102,7 +99,7 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const prompter = new ConfigPrompter(this.providerManager, this.endpointsManager, this.layer, this.toolsLogger);
+        const prompter = new ConfigPrompter(this.abapProvider, this.targetSystems, this.layer, this.toolsLogger);
 
         const configQuestions = prompter.getPrompts();
 
@@ -118,7 +115,7 @@ export default class extends Generator {
             const namespace = generateValidNamespace(projectName, this.layer);
             this.targetFolder = this.destinationPath(projectName);
 
-            const provider = this.providerManager.getProvider();
+            const provider = this.abapProvider.getProvider();
             const ato = await provider.getAtoInfo();
 
             const operationsType = ato.operationsType ?? 'P';
@@ -167,7 +164,7 @@ export default class extends Generator {
         }
     ): Promise<AdpWriterConfig> {
         const target = await this._getTarget(operationsType === 'C');
-        const customConfig = this._getCustomConfig(operationsType);
+        const customConfig = getCustomConfig(operationsType);
 
         return {
             app: {
@@ -175,7 +172,7 @@ export default class extends Generator {
                 reference: this.configAnswers.application.id,
                 layer: this.layer,
                 title: defaults.title ?? '',
-                content: [this.getNewModelChange()]
+                content: [this._getNewModelEnhanceWithChange()]
             },
             customConfig,
             target,
@@ -191,7 +188,7 @@ export default class extends Generator {
      *
      * @returns {Content} The model change configuration.
      */
-    private getNewModelChange(): Content {
+    private _getNewModelEnhanceWithChange(): Content {
         return {
             changeType: 'appdescr_ui5_addNewModelEnhanceWith',
             content: {
@@ -204,33 +201,13 @@ export default class extends Generator {
     }
 
     /**
-     * Constructs a custom configuration object.
-     *
-     * @param {OperationsType} operationsType - The operations type indicating a cloud or on-premise project.
-     * @returns {CustomConfig} The generated custom configuration.
-     */
-    private _getCustomConfig(operationsType: OperationsType): CustomConfig {
-        const packageJson = getPackageJSONInfo();
-        return {
-            adp: {
-                environment: operationsType,
-                support: {
-                    id: packageJson.name,
-                    version: packageJson.version,
-                    toolsId: uuidv4()
-                }
-            }
-        };
-    }
-
-    /**
      * Constructs the ABAP target configuration based on the operational context and project type.
      *
      * @param {boolean} isCloudProject - Flag indicating whether the project is a cloud project.
      * @returns {Promise<AbapTarget>} The configured ABAP target object.
      */
     private async _getTarget(isCloudProject: boolean): Promise<AbapTarget> {
-        const systemDetails = await this.endpointsManager.getSystemDetails(this.configAnswers.system);
+        const systemDetails = await this.targetSystems.getSystemDetails(this.configAnswers.system);
 
         const target = {
             client: systemDetails?.client,

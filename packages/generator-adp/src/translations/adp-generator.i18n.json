@@ -2,27 +2,19 @@
     "yuiNavSteps": {
         "configurationName": "Adaptation Project - Configuration"
     },
-    "info": {
-        "flpConfigAdded": "FLP Configuration added successfully"
-    },
     "prompts": {
         "systemLabel": "System",
         "systemTooltip": "Select a system to load its application list",
-        "usernameLabel": "Enter the user name for the backend system",
-        "passwordLabel": "Enter the password for the backend system",
-        "applicationListLabel": "Application",
+        "usernameLabel": "Username",
+        "usernameTooltip": "Enter the user name for the backend system",
+        "passwordLabel": "Password",
+        "passwordTooltip": "Enter the password for the backend system",
+        "applicationLabel": "Application",
         "applicationListTooltip": "Select the application for which you want to create an app variant"
     },
     "error": {
-        "projectNotSupported": "Unable to find a supported adaptation project",
-        "fetchingManifest": "Error fetching merged manifest for base application",
-        "destinationNotFound": "Missing destination configuration in ui5.yaml",
-        "destinationNotInSubaccount": "Destination not found in the subaccount: {{- destination}}",
-        "systemNotFound": "Missing system configuration in ui5.yaml",
-        "systemNotFoundInStore": "System not found in the system store: {{- systemUrl}}",
         "writingPhase": "Error in writing phase of the adaptation project FLP configuration",
         "telemetry": "Error sending telemetry data: {{- error}}",
-        "updatingApp": "Error creating a new adaptation project. View the logs to see the full error.",
-        "authenticationFailed": "Authentication failed."
+        "updatingApp": "Error creating a new adaptation project. View the logs to see the full error."
     }
 }

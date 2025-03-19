@@ -53,7 +53,7 @@ export const mapApps = (app: Partial<App>): Application => ({
 /**
  * Provides services related to managing and loading applications from an ABAP provider.
  */
-export class ApplicationManager {
+export class TargetApplications {
     private applications: Application[] = [];
 
     /**
@@ -62,31 +62,34 @@ export class ApplicationManager {
      * @param {boolean} isCustomerBase - Indicates if the current base is a customer base, which affects how applications are loaded.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private provider: AbapProvider, private isCustomerBase: boolean, private logger?: ToolsLogger) {}
+    constructor(private abapProvider: AbapProvider, private isCustomerBase: boolean, private logger?: ToolsLogger) {}
 
     /**
      * Retrieves the currently loaded list of applications.
      *
      * @returns {Application[]} An array of applications.
      */
-    public getApps(): Application[] {
-        return this.applications ?? [];
+    public async getApps(): Promise<Application[]> {
+        if (!this.applications) {
+            this.applications = await this.loadApps();
+        }
+        return this.applications;
     }
 
     /**
      * Loads applications based on system type and user parameters, merging results from different app sources as needed.
      *
-     * @param {boolean} isCloudSystem - Determines if the system is a cloud system, affecting which parameters to use for app searching.
      * @returns {Application[]} list of applications.
      * @throws {Error} Throws an error if the app data cannot be loaded.
      */
-    public async loadApps(isCloudSystem: boolean): Promise<Application[]> {
+    private async loadApps(): Promise<Application[]> {
         let result: AppIndex = [];
 
-        const provider = this.provider.getProvider();
-        const appIndex = provider.getAppIndex();
-
         try {
+            const provider = this.abapProvider.getProvider();
+            const isCloudSystem = await provider.isAbapCloud();
+            const appIndex = provider.getAppIndex();
+
             result = await appIndex.search(isCloudSystem ? S4HANA_APPS_PARAMS : ABAP_APPS_PARAMS);
 
             if (!isCloudSystem && this.isCustomerBase) {
@@ -94,8 +97,7 @@ export class ApplicationManager {
                 result = result.concat(extraApps);
             }
 
-            this.applications = result.map(mapApps).sort(filterApps);
-            return this.applications;
+            return result.map(mapApps).sort(filterApps);
         } catch (e) {
             this.logger?.error(`Could not load apps: ${e.message}`);
             throw new Error(t('validators.cannotLoadApplicationsError'));
