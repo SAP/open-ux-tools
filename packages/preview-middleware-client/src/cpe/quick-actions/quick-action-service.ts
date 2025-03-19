@@ -151,14 +151,16 @@ export class QuickActionService implements Service {
         }
     }
 
-    private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
-        // eslint-disable-next-line @typescript-eslint/no-floating-promises
-        reportTelemetry({
-            category: 'QuickAction',
-            actionName: actionInstance.type,
-            timestamp: actionInstance.telemetryEventIdentifier
-        });
-        
+    private async executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+        try {
+            await reportTelemetry({
+                category: 'QuickAction',
+                actionName: actionInstance.type,
+                telemetryEventIdentifier: actionInstance.telemetryEventIdentifier
+            });
+        } catch (error) {
+            Log.error('Error in reporting Telemetry:', error);
+        }
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
             return actionInstance.execute();
         }

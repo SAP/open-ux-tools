@@ -3,7 +3,7 @@ interface TelemetryData {
     actionName?: string;
     propertyName?: string;
     controlName?: string;
-    timestamp?: string;
+    telemetryEventIdentifier?: string;
 }
 
 let enabled = false;
