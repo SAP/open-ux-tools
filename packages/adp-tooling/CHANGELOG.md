@@ -1,5 +1,22 @@
 # @sap-ux/adp-tooling
 
+## 0.13.17
+
+### Patch Changes
+
+-   e754cb0: fix: disable "Add New Annotation File" Quick Action with tooltip, when 'metadata' is not loaded
+
+## 0.13.16
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/odata-service-writer@0.26.13
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/inquirer-common@0.6.31
+
 ## 0.13.15
 
 ### Patch Changes

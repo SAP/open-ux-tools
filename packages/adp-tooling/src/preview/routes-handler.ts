@@ -33,6 +33,7 @@ interface AnnotationDataSourceMap {
     [key: string]: {
         serviceUrl: string;
         annotationDetails: AnnotationFileDetails;
+        metadataReadErrorMsg: string | undefined;
     };
 }
 export interface AnnotationDataSourceResponse {
@@ -290,11 +291,13 @@ export default class RoutesHandler {
 
             for (const dataSourceId in dataSources) {
                 if (dataSources[dataSourceId].type === 'OData') {
+                    const metadataReadErrorMsg = await this.getMetaDataReadErrorMsg(manifestService, dataSourceId);
                     apiResponse.annotationDataSourceMap[dataSourceId] = {
                         annotationDetails: {
                             annotationExistsInWS: false
                         },
-                        serviceUrl: dataSources[dataSourceId].uri
+                        serviceUrl: dataSources[dataSourceId].uri,
+                        metadataReadErrorMsg
                     };
                 }
                 this.fillAnnotationDataSourceMap(dataSources, dataSourceId, apiResponse.annotationDataSourceMap);
@@ -304,6 +307,25 @@ export default class RoutesHandler {
             this.handleErrorMessage(res, next, e);
         }
     };
+
+    /**
+     *
+     * @param manifestService
+     * @param dataSrouceID
+     * @returns error message with reason
+     */
+    private async getMetaDataReadErrorMsg(
+        manifestService: ManifestService,
+        dataSrouceID: string
+    ): Promise<string | undefined> {
+        let errorMessage;
+        try {
+            await manifestService.getDataSourceMetadata(dataSrouceID);
+        } catch (error) {
+            errorMessage = `Metadata: ${error.message as string}`;
+        }
+        return errorMessage;
+    }
 
     /**
      * Add local annotation details to api response.
