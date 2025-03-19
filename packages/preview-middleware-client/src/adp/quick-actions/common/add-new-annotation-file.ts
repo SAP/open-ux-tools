@@ -17,6 +17,9 @@ import { QuickActionDefinitionBase } from '../quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import { getV2AppComponent } from '../fe-v2/utils';
+import { getV4AppComponent } from '../../../utils/fe-v4';
+import { getApplicationType } from '../../../utils/application';
 
 export const ADD_NEW_ANNOTATION_FILE = 'add-new-annotation-file';
 const ADD_NEW_ANNOTATION_FILE_TITLE = 'QUICK_ACTION_ADD_NEW_ANNOTATION_FILE';
@@ -52,17 +55,27 @@ export class AddNewAnnotationFile
         if (!Object.keys(this.annotationDataSourceData.annotationDataSourceMap).length) {
             throw new Error('No data sources found in the manifest');
         }
+
         for (const key in annotationDataSourceMap) {
             if (Object.prototype.hasOwnProperty.call(annotationDataSourceMap, key)) {
                 const source = annotationDataSourceMap[key];
                 const { annotationExistsInWS } = source.annotationDetails;
-                this.children.push({
-                    enabled: true,
-                    label: annotationExistsInWS
-                        ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
-                        : this.context.resourceBundle.getText('ADD_ANNOTATION_FILE', [key]),
-                    children: []
-                });
+                if (source.metadataReadErrorMsg) {
+                    this.children.push({
+                        enabled: false,
+                        tooltip: source.metadataReadErrorMsg,
+                        label: this.context.resourceBundle.getText('ADD_ANNOTATION_FILE', [key]),
+                        children: []
+                    });
+                } else {
+                    this.children.push({
+                        enabled: true,
+                        label: annotationExistsInWS
+                            ? this.context.resourceBundle.getText('SHOW_ANNOTATION_FILE', [key])
+                            : this.context.resourceBundle.getText('ADD_ANNOTATION_FILE', [key]),
+                        children: []
+                    });
+                }
             }
         }
     }
@@ -79,6 +92,7 @@ export class AddNewAnnotationFile
     }
     async execute(path: string): Promise<FlexCommand[]> {
         const { annotationDataSourceMap, isRunningInBAS } = this.annotationDataSourceData;
+        const appType = getApplicationType(this.context.rta.getRootControlInstance().getManifest());
         const index = Number(path);
         if (index >= 0) {
             const dataSourceId = Object.keys(annotationDataSourceMap)[index];
@@ -120,6 +134,10 @@ export class AddNewAnnotationFile
                 };
                 const modifiedValue = {
                     changeType: 'appdescr_app_addAnnotationsToOData',
+                    appComponent:
+                        appType === 'fe-v4'
+                            ? getV4AppComponent(this.context.view)
+                            : getV2AppComponent(this.context.view),
                     generator: this.context.flexSettings.generator,
                     reference: this.context.flexSettings.projectId,
                     parameters,

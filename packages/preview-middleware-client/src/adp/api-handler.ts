@@ -38,11 +38,11 @@ export interface CodeExtResponse {
 export interface AnnotationFileDetails {
     annotationExistsInWS: boolean;
     annotationPath: string;
-    annotationPathFromRoot: string;
+    annotationPathFromRoot: string | undefined;
 }
 
 export interface AnnotationDataSourceMap {
-    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails };
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails, metadataReadErrorMsg: string };
 }
 
 export interface AnnotationDataSourceResponse {
