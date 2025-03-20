@@ -29,6 +29,13 @@
         "contentDensities": {
             "compact": true,
             "cozy": true
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
         }
     }
 }

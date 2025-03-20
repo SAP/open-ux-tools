@@ -10,7 +10,7 @@
         showHeader="false"
         class="sapUiBaseLayout sapUiResponsiveContentPadding sapUiLayoutPadding sapCuxBaseLayout"
     >
-        <NewsAndPagesContainer id="newsContainer">
+        <NewsAndPagesContainer id="newsContainer" class="homeNewsContainer">
             <NewsPanel
                 id="news"
                 url="https://sapui5untested.int.sap.eu2.hana.ondemand.com/databinding/proxy/https/news.sap.com/feed"
