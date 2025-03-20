@@ -4,6 +4,11 @@
     "description": "Library that provides API for reading and writing annotations in SAP Fiori elements projects.",
     "publisher": "SAPSE",
     "author": "SAP SE",
+     "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/fiori-annotation-api"
+    },
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
