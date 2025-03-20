@@ -2,6 +2,11 @@
     "name": "@sap-ux/environment-check",
     "version": "0.17.92",
     "description": "SAP Fiori environment check",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/environment-check"
+    },
     "license": "Apache-2.0",
     "bin": {
         "envcheck": "bin/envcheck"

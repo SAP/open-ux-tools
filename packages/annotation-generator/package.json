@@ -3,6 +3,11 @@
     "version": "0.3.21",
     "description": "Library that provides API for generation of annotations by SAP Fiori App Generator",
     "publisher": "SAPSE",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/annotation-generator"
+    },
     "author": "SAP SE",
     "license": "Apache-2.0",
     "main": "dist/index.js",
