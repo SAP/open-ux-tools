@@ -1,5 +1,13 @@
 # @sap-ux/create
 
+## 0.12.26
+
+### Patch Changes
+
+-   1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
+-   Updated dependencies [1bca2d8]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.34
+
 ## 0.12.25
 
 ### Patch Changes
