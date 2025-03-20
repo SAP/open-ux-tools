@@ -145,7 +145,7 @@ export default class extends Generator {
      * @returns The initial configuration page with name and description.
      */
     private _getInitialPage(): { name: string; description: string } {
-        return { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationName') };
+        return { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') };
     }
 
     /**

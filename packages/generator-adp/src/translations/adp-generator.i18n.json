@@ -1,6 +1,7 @@
 {
     "yuiNavSteps": {
-        "configurationName": "Adaptation Project - Configuration"
+        "configurationName": "System and Application Selection",
+        "configurationDescr": "Configure the system and select an application."
     },
     "prompts": {
         "systemLabel": "System",
