@@ -14,6 +14,7 @@ import {
     type AbapDeployConfigPromptOptions,
     type AbapDeployConfigQuestion
 } from './types';
+import { AbapServiceProviderManager } from './service-provider-utils/abap-service-provider';
 
 /**
  * Get the inquirer prompts for abap deploy config.
@@ -35,6 +36,7 @@ async function getPrompts(
     LoggerHelper.logger = logger ?? new ToolsLogger({ logPrefix: '@sap-ux/abap-deploy-config-inquirer' });
     PromptState.isYUI = isYUI;
     PromptState.resetAbapDeployConfig();
+    AbapServiceProviderManager.resetIsDefaultProviderAbapCloud();
 
     return {
         prompts: await getAbapDeployConfigQuestions(promptOptions),
