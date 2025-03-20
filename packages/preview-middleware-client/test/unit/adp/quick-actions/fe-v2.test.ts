@@ -1534,6 +1534,16 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('create new annotation file', () => {
+            const testCases: {
+                metadataReadErrorMsg: string | undefined;
+            }[] = [
+                {
+                    metadataReadErrorMsg: 'Metadata fetch error'
+                },
+                {
+                    metadataReadErrorMsg: undefined
+                }
+            ];
             const pageView = new XMLView();
             let rtaMock: RuntimeAuthoring;
             beforeEach(async () => {
@@ -1553,6 +1563,171 @@ describe('FE V2 quick actions', () => {
                         }
                     };
                 });
+            });
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                fetchMock.mockResolvedValue({
+                    json: jest.fn().mockReturnValue({
+                        isRunningInBAS: false,
+                        annotationDataSourceMap: {
+                            mainService: {
+                                serviceUrl: 'main/service/url',
+                                isRunningInBAS: false,
+                                annotationDetails: {
+                                    annotationExistsInWS: false
+                                },
+                                metadataReadErrorMsg: testCase.metadataReadErrorMsg
+                            },
+                            dataService: {
+                                serviceUrl: 'data/service/url',
+                                isRunningInBAS: false,
+                                annotationDetails: {
+                                    annotationExistsInWS: true,
+                                    annotationPath: 'mock/adp/project/annotation/path',
+                                    annotationPathFromRoot: 'mock/adp.project.annotation/path'
+                                },
+                                metadataReadErrorMsg: testCase.metadataReadErrorMsg
+                            }
+                        }
+                    }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ],
+                    'sap.ui.core.XMLView': [
+                        {
+                            controlId: 'ListReportView'
+                        } as any
+                    ]
+                });
+                jest.spyOn(Date, 'now').mockReturnValue(1736143853603);
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Add Local Annotation File') {
+                        actions.splice(i, 1);
+                    }
+                }
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-add-new-annotation-file',
+                                    title: 'Add Local Annotation File',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: testCase.metadataReadErrorMsg ? false : true,
+                                            label: `Add Annotation File for ''{0}''`,
+                                            tooltip: testCase.metadataReadErrorMsg
+                                        },
+                                        {
+                                            children: [],
+                                            enabled: testCase.metadataReadErrorMsg ? false : true,
+                                            label: testCase.metadataReadErrorMsg
+                                                ? `Add Annotation File for ''{0}''`
+                                                : `Show Annotation File for ''{0}''`,
+                                            tooltip: testCase.metadataReadErrorMsg
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '0' })
+                );
+                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                    settings: {},
+                    type: 'appDescriptor',
+                    value: {
+                        appComponent: {},
+                        changeType: 'appdescr_app_addAnnotationsToOData',
+                        generator: undefined,
+                        parameters: {
+                            annotations: ['annotation.annotation_1736143853603'],
+                            annotationsInsertPosition: 'END',
+                            dataSource: {
+                                'annotation.annotation_1736143853603': {
+                                    type: 'ODataAnnotation',
+                                    uri: 'annotations/annotation_1736143853603.xml'
+                                }
+                            },
+                            dataSourceId: 'mainService'
+                        },
+                        reference: undefined,
+                        serviceUrl: 'main/service/url'
+                    }
+                });
+            });
+            test('initialize and execute action - when file exists', async () => {
                 fetchMock.mockResolvedValue({
                     json: jest.fn().mockReturnValue({
                         isRunningInBAS: false,
@@ -1647,70 +1822,6 @@ describe('FE V2 quick actions', () => {
                         } as any
                     ]
                 });
-            });
-            test('initialize and execute action', async () => {
-                jest.spyOn(Date, 'now').mockReturnValue(1736143853603);
-                expect(sendActionMock).toHaveBeenCalledWith(
-                    quickActionListChanged([
-                        {
-                            title: 'LIST REPORT',
-                            actions: [
-                                {
-                                    kind: 'simple',
-                                    id: 'listReport0-add-controller-to-page',
-                                    title: 'Add Controller to Page',
-                                    enabled: true,
-                                    tooltip: undefined
-                                },
-                                {
-                                    kind: 'nested',
-                                    id: 'listReport0-add-new-annotation-file',
-                                    title: 'Add Local Annotation File',
-                                    enabled: true,
-                                    children: [
-                                        {
-                                            children: [],
-                                            enabled: true,
-                                            label: `Add Annotation File for ''{0}''`
-                                        },
-                                        {
-                                            children: [],
-                                            enabled: true,
-                                            label: `Show Annotation File for ''{0}''`
-                                        }
-                                    ]
-                                }
-                            ]
-                        }
-                    ])
-                );
-
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '0' })
-                );
-                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-                    settings: {},
-                    type: 'appDescriptor',
-                    value: {
-                        changeType: 'appdescr_app_addAnnotationsToOData',
-                        generator: undefined,
-                        parameters: {
-                            annotations: ['annotation.annotation_1736143853603'],
-                            annotationsInsertPosition: 'END',
-                            dataSource: {
-                                'annotation.annotation_1736143853603': {
-                                    type: 'ODataAnnotation',
-                                    uri: 'annotations/annotation_1736143853603.xml'
-                                }
-                            },
-                            dataSourceId: 'mainService'
-                        },
-                        reference: undefined,
-                        serviceUrl: 'main/service/url'
-                    }
-                });
-            });
-            test('initialize and execute action - when file exists', async () => {
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '1' })
                 );

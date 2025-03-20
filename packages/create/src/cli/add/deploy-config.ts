@@ -1,9 +1,10 @@
-import { FileName } from '@sap-ux/project-access';
+import { type AppType, FileName, getAppType } from '@sap-ux/project-access';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import {
     type AbapDeployConfigAnswers,
+    type AbapDeployConfigPromptOptions,
     getPrompts as getAbapDeployConfigPrompts,
     reconcileAnswers
 } from '@sap-ux/abap-deploy-config-inquirer';
@@ -82,7 +83,14 @@ async function addDeployConfig(
 ): Promise<void> {
     const logger = getLogger();
     try {
-        target = await getTarget(target);
+        const appType = await getAppType(basePath);
+        const isAdp = isAdpProject(appType);
+
+        if (!isAdp) {
+            target = await getTarget(target);
+        } else {
+            target = 'abap';
+        }
 
         if (target === 'cf') {
             logger.info('Cloud Foundry deployment is not yet implemented.');
@@ -92,8 +100,26 @@ async function addDeployConfig(
 
             await validateBasePath(basePath);
 
+            const promptOptions: AbapDeployConfigPromptOptions = {
+                ui5AbapRepo: { hideIfOnPremise: isAdp },
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: isAdp,
+                        shouldValidatePackageForStartingPrefix: isAdp
+                    }
+                },
+                packageManual: {
+                    additionalValidation: {
+                        shouldValidatePackageType: isAdp,
+                        shouldValidatePackageForStartingPrefix: isAdp
+                    }
+                },
+                transportInputChoice: { hideIfOnPremise: isAdp },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: isAdp } }
+            };
             const { prompts: abapPrompts, answers: abapAnswers } = await getAbapDeployConfigPrompts(
-                { packageAutocomplete: { useAutocomplete: true } },
+                promptOptions,
                 logger,
                 false
             );
@@ -136,4 +162,14 @@ async function addDeployConfig(
         logger.error(`Error while executing add deploy-config '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
+}
+
+/**
+ * Checks if the given application type is a Fiori Adaptation project.
+ *
+ * @param {AppType} [appType] - The application type to check.
+ * @returns {boolean} `true` if the app type is 'Fiori Adaptation', otherwise `false`.
+ */
+function isAdpProject(appType?: AppType): boolean {
+    return appType === 'Fiori Adaptation';
 }

@@ -17,7 +17,6 @@ import { getV4ApplicationPages } from '../../../utils/fe-v4';
 import { EnablementValidatorResult } from '../enablement-validator';
 import { getTextBundle } from '../../../i18n';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
-import { FeatureService } from '../../../cpe/feature-service';
 
 export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-subpage';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -102,10 +101,6 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
     }
 
     async initialize(): Promise<void> {
-        if (FeatureService.isFeatureEnabled('cpe.beta.quick-actions') === false) {
-            return Promise.resolve();
-        }
-
         if (!(await areManifestChangesSupported(this.context.manifest))) {
             return Promise.resolve();
         }
