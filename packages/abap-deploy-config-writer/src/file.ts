@@ -10,7 +10,7 @@ import type { Editor } from 'mem-fs-editor';
  * Adds a new UI5 dependency to the package.json.
  * No longer required for `@ui5/cli` v3 and above.
  *
- * @param fs - the mem-fs editor instance
+ * @param fs - the memfs editor instance
  * @param basePath - the base path
  * @param depName - the dependency name
  */
@@ -52,7 +52,7 @@ export async function getLibraryPath(basePath: string): Promise<string> {
 /**
  * Writes the UI5 repository file.
  *
- * @param fs - the mem-fs editor instance
+ * @param fs - the memfs editor instance
  * @param basePath - the base path
  * @param ui5RepositoryFile - the UI5 repository file
  * @param addContent - the content to be added
@@ -91,7 +91,7 @@ async function getTypescriptFilePaths(typescriptPattern: string): Promise<string
 /**
  * Writes the UI5 repository files if typescript files are found.
  *
- * @param fs - the mem-fs editor instance
+ * @param fs - the memfs editor instance
  * @param path - the path where the file will be written
  */
 export async function writeUi5RepositoryFiles(fs: Editor, path?: string): Promise<void> {
@@ -106,7 +106,7 @@ export async function writeUi5RepositoryFiles(fs: Editor, path?: string): Promis
 /**
  * Writes the UI5 repository ignore file if typescript files are found.
  *
- * @param fs - the mem-fs editor instance
+ * @param fs - the memfs editor instance
  * @param path - the path where the file will be written
  */
 export async function writeUi5RepositoryIgnore(fs: Editor, path?: string): Promise<void> {
