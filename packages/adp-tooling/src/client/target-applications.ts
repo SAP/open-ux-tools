@@ -2,8 +2,8 @@ import { t } from 'i18next';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { App, AppIndex } from '@sap-ux/axios-extension';
 
-import { TargetApplication } from '../types';
-import { AbapProvider } from './abap-provider';
+import type { TargetApplication } from '../types';
+import type { AbapProvider } from './abap-provider';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../base/constants';
 
 /**
@@ -38,7 +38,7 @@ export const filterApps = (appA: TargetApplication, appB: TargetApplication): nu
  * This function maps properties from a loosely typed app data structure to a strongly typed Application object.
  *
  * @param {Partial<App>} app - The raw application data, possibly incomplete.
- * @returns {Application} A structured application object with defined properties, even if some may be empty.
+ * @returns {TargetApplication} A structured application object with defined properties, even if some may be empty.
  */
 export const mapApps = (app: Partial<App>): TargetApplication => ({
     id: app['sap.app/id'] ?? '',
@@ -59,6 +59,7 @@ export class TargetApplications {
     /**
      * Constructs an instance of ApplicationManager.
      *
+     * @param {AbapProvider} abapProvider - The instance of AbapProvider class.
      * @param {boolean} isCustomerBase - Indicates if the current base is a customer base, which affects how applications are loaded.
      * @param {ToolsLogger} [logger] - The logger.
      */
@@ -67,7 +68,7 @@ export class TargetApplications {
     /**
      * Retrieves the currently loaded list of applications.
      *
-     * @returns {Application[]} An array of applications.
+     * @returns {TargetApplication[]} An array of applications.
      */
     public async getApps(): Promise<TargetApplication[]> {
         if (!this.applications) {
@@ -79,7 +80,7 @@ export class TargetApplications {
     /**
      * Loads applications based on system type and user parameters, merging results from different app sources as needed.
      *
-     * @returns {Application[]} list of applications.
+     * @returns {TargetApplication[]} list of applications.
      * @throws {Error} Throws an error if the app data cannot be loaded.
      */
     private async loadApps(): Promise<TargetApplication[]> {

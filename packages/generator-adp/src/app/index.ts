@@ -1,19 +1,20 @@
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
-import { AbapProvider, ConfigAnswers, FlexLayer, TargetSystems, WriterConfig, generate } from '@sap-ux/adp-tooling';
 import { ToolsLogger } from '@sap-ux/logger';
+import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import { AbapProvider, TargetSystems, WriterConfig, generate } from '@sap-ux/adp-tooling';
 
+import { getFlexLayer } from './layer';
 import { t, initI18n } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
+import type { AdpGeneratorOptions } from './types';
 import { installDependencies } from '../utils/deps';
 import { ConfigPrompter } from './questions/configuration';
-import type { AdpGeneratorOptions } from './types';
 import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { getFlexLayer } from './layer';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -109,14 +110,18 @@ export default class extends Generator {
 
                 await generate(this.targetFolder, config, this.fs);
             }
-        } catch (error) {
-            this.logger.error(`Writing phase failed: ${error}`);
+        } catch (e) {
+            this.logger.error(`Writing phase failed: ${e}`);
             throw new Error(t('error.updatingApp'));
         }
     }
 
     async install(): Promise<void> {
-        await installDependencies(this.targetFolder);
+        try {
+            await installDependencies(this.targetFolder);
+        } catch (e) {
+            this.logger.error(`Installation of dependencies failed: ${e.message}`);
+        }
     }
 
     end(): void {

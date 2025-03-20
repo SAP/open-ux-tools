@@ -1,12 +1,11 @@
-import { AbapTarget } from '@sap-ux/ui5-config';
 import { isAppStudio } from '@sap-ux/btp-utils';
-import { getCustomConfig } from './project-utils';
 import { AuthenticationType } from '@sap-ux/store';
-import { OperationsType } from '@sap-ux/axios-extension';
+import type { AbapTarget } from '@sap-ux/ui5-config';
 
-import { AbapProvider } from '../client';
+import type { AbapProvider } from '../client';
+import { getCustomConfig } from './project-utils';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
-import { AdpWriterConfig, ConfigAnswers, FlexLayer, SystemDetails } from '../types';
+import type { AdpWriterConfig, ConfigAnswers, FlexLayer, SystemDetails } from '../types';
 
 /**
  * Constructs the ABAP target configuration based on the operational context and project type.
@@ -33,15 +32,25 @@ export function getTarget(
     return target;
 }
 
+/**
+ * A class that handles the construction of the ADP writer configuration needed from generating an Adaptation Project.
+ */
 export class WriterConfig {
+    /**
+     * Constructs an instance of WriterConfig class.
+     *
+     * @param {AbapProvider} abapProvider - The instance of AbapProvider class.
+     * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
+     */
     constructor(private abapProvider: AbapProvider, private layer: FlexLayer) {}
 
     /**
      * Generates the configuration object for the Adaptation Project.
      *
+     * @param {ConfigAnswers} configAnswers - The configuration answers (i.e system, application).
+     * @param {SystemDetails} systemDetails - The system details.
      * @param {object} defaults - Default project parameters.
      * @param {string} defaults.namespace - The namespace for the project.
-     * @param {string} [defaults.title] - Optional title for the project.
      * @returns {Promise<AdpWriterConfig>} The generated project configuration.
      */
     public async getConfig(

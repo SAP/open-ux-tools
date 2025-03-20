@@ -1,13 +1,7 @@
-import { ToolsLogger } from '@sap-ux/logger';
+import type { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import {
-    AbapProvider,
-    ConfigAnswers,
-    FlexLayer,
-    TargetApplications,
-    TargetSystems,
-    getEndpointNames
-} from '@sap-ux/adp-tooling';
+import { FlexLayer, TargetApplications, getEndpointNames } from '@sap-ux/adp-tooling';
+import type { AbapProvider, ConfigAnswers, TargetSystems } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,

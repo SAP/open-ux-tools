@@ -1,4 +1,4 @@
-import { Content } from '../types';
+import type { Content } from '../types';
 
 /**
  * Returns a model enhancement change configuration.

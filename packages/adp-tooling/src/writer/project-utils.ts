@@ -13,7 +13,7 @@ import {
 } from './options';
 
 import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-import { OperationsType } from '@sap-ux/axios-extension';
+import type { OperationsType } from '@sap-ux/axios-extension';
 
 type PackageJSON = { name: string; version: string };
 

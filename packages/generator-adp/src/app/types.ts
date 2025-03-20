@@ -1,10 +1,10 @@
 import type Generator from 'yeoman-generator';
-import { ListQuestionOptions } from 'inquirer';
+import type { ListQuestionOptions } from 'inquirer';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import { ConfigAnswers } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers } from '@sap-ux/adp-tooling';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
-import { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
+import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
     /**

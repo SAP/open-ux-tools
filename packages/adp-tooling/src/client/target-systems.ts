@@ -9,8 +9,8 @@ import type { SystemDetails } from '../types';
 /**
  * Retrieves the names of all stored systems, sorted alphabetically.
  *
- * @param systems - Array of system systems.
- * @returns An array of endpoint names in sorted order.
+ * @param {Endpoint[]} systems - Array of system systems.
+ * @returns {string[]} An array of endpoint names as strings in sorted order.
  */
 export function getEndpointNames(systems: Endpoint[]): string[] {
     return systems
@@ -35,7 +35,7 @@ export class TargetSystems {
     /**
      * Returns the stored systems.
      *
-     * @returns An array of system systems.
+     * @returns {Promise<Endpoint[]>} An array of system systems.
      */
     public async getSystems(): Promise<Endpoint[]> {
         if (!this.systems) {
@@ -45,7 +45,9 @@ export class TargetSystems {
     }
 
     /**
-     * Fetches systems from a predefined source and stores them in the static state.
+     * Fetches systems from a predefined source and stores them in the state.
+     *
+     * @returns {Promise<Endpoint[]>} Returns the endpoints as a list independent of environment (SAP Systems or BAS Destinations).
      */
     private async loadSystems(): Promise<Endpoint[]> {
         try {
@@ -60,8 +62,8 @@ export class TargetSystems {
     /**
      * Retrieves authentication details for a specified system, if available.
      *
-     * @param system - The system name or URL.
-     * @returns System details including client, url, and credentials, or undefined if not found.
+     * @param {string} system - The system name or URL.
+     * @returns {Promise<SystemDetails | undefined>} System details including client, url, and credentials, or undefined if not found.
      */
     public async getSystemDetails(system: string): Promise<SystemDetails | undefined> {
         const systems = await this.getSystems();
@@ -70,15 +72,18 @@ export class TargetSystems {
             this.logger.warn(`No endpoint found for system: ${system}`);
             return undefined;
         }
+
         const details: SystemDetails = {
             client: endpoint.Client ?? '',
             url: endpoint.Url ?? ''
         };
+
         try {
             const storedSystem = await getCredentialsFromStore(
                 { url: details.url, client: details.client },
                 this.logger
             );
+
             if (storedSystem) {
                 details.authenticationType = storedSystem.authenticationType;
                 details.username = storedSystem.username;
@@ -89,14 +94,15 @@ export class TargetSystems {
             this.logger.debug(e.message);
             return undefined;
         }
+
         return details;
     }
 
     /**
      * Determines whether a system requires authentication based on environment.
      *
-     * @param system - The system name or URL.
-     * @returns A promise that resolves to true if authentication is required, false otherwise.
+     * @param {string} system - The system name or URL.
+     * @returns {Promise<boolean>} A promise that resolves to true if authentication is required, false otherwise.
      */
     public async getSystemRequiresAuth(system: string): Promise<boolean> {
         const systems = await this.getSystems();

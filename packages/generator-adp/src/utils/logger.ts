@@ -1,6 +1,7 @@
-import { DefaultLogger, LogWrapper, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { Logger } from 'yeoman-environment';
 import type { IVSCodeExtLogger, LogLevel } from '@vscode-logging/logger';
+
+import { DefaultLogger, LogWrapper, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Static logger prevents passing of logger references through all functions, as this is a cross-cutting concern.
