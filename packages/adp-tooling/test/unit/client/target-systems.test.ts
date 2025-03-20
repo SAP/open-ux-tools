@@ -1,129 +1,184 @@
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Endpoint } from '@sap-ux/environment-check';
+import { checkEndpoints } from '@sap-ux/environment-check';
+import { getCredentialsFromStore } from '@sap-ux/system-access';
 
-import {
-    ABAP_APPS_PARAMS,
-    ABAP_VARIANT_APPS_PARAMS,
-    AbapProvider,
-    TargetApplication,
-    TargetApplications,
-    filterApps
-} from '../../../src';
+import { getEndpointNames, TargetSystems } from '../../../src';
 
-jest.mock('i18next', () => ({
-    t: jest.fn((key) => key)
+jest.mock('@sap-ux/environment-check', () => ({
+    ...jest.requireActual('@sap-ux/environment-check'),
+    checkEndpoints: jest.fn()
 }));
 
-const searchMock = jest.fn();
-const isAbapCloudMock = jest.fn().mockResolvedValue(false);
+jest.mock('@sap-ux/system-access', () => ({
+    ...jest.requireActual('@sap-ux/system-access'),
+    getCredentialsFromStore: jest.fn()
+}));
 
-const mockAbapProvider = {
-    getProvider: jest.fn().mockReturnValue({
-        getAppIndex: jest.fn().mockReturnValue({
-            search: searchMock
-        }),
-        isAbapCloud: isAbapCloudMock
-    })
-};
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    isAppStudio: jest.fn()
+}));
 
-describe('Target Applications', () => {
-    let service: TargetApplications;
+const mockIsAppStudio = isAppStudio as jest.Mock;
+const checkEndpointsMock = checkEndpoints as jest.Mock;
+const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
 
-    const loggerMock = {
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn()
-    } as Partial<ToolsLogger> as ToolsLogger;
+const logger: ToolsLogger = {
+    error: jest.fn(),
+    warn: jest.fn(),
+    debug: jest.fn(),
+    info: jest.fn()
+} as unknown as ToolsLogger;
 
-    const mockApps = [
-        { 'sap.app/id': '1', 'sap.app/title': 'App One' },
-        { 'sap.app/id': '2', 'sap.app/title': 'App Two' }
+describe('getEndpointNames', () => {
+    test('should return endpoint names sorted alphabetically (case-insensitive)', () => {
+        const endpoints: Endpoint[] = [
+            { Name: 'Zeta', Client: '001', Url: 'url1', Authentication: 'Basic' },
+            { Name: 'alpha', Client: '002', Url: 'url2', Authentication: 'NoAuthentication' },
+            { Name: 'Beta', Client: '003', Url: 'url3', Authentication: 'Basic' }
+        ];
+        const sortedNames = getEndpointNames(endpoints);
+        expect(sortedNames).toEqual(['alpha', 'Beta', 'Zeta']);
+    });
+});
+
+describe('TargetSystems', () => {
+    let targetSystems: TargetSystems;
+    const endpoints: Endpoint[] = [
+        { Name: 'SystemA', Client: '010', Url: 'http://systema.com', Authentication: 'Basic' },
+        { Name: 'SystemB', Client: '200', Url: 'http://systemb.com', Authentication: 'NoAuthentication' }
     ];
 
     beforeEach(() => {
-        service = new TargetApplications(mockAbapProvider as unknown as AbapProvider, true, loggerMock);
-    });
-
-    afterEach(() => {
         jest.clearAllMocks();
+        targetSystems = new TargetSystems(logger);
     });
 
-    describe('loadApps', () => {
-        it('should load applications correctly for cloud systems', async () => {
-            searchMock.mockResolvedValue(mockApps);
-            isAbapCloudMock.mockResolvedValue(true);
+    describe('getSystems', () => {
+        test('should fetch systems via checkEndpoints and cache the result', async () => {
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            const systemsFirstCall = await targetSystems.getSystems();
+            expect(systemsFirstCall).toEqual(endpoints);
 
-            const apps = await service.getApps();
-            expect(apps.length).toBe(2);
-            expect(apps[0].title).toEqual('App One');
+            // A second call should return the cached endpoints (checkEndpoints called only once)
+            const systemsSecondCall = await targetSystems.getSystems();
+            expect(checkEndpoints).toHaveBeenCalledTimes(1);
+            expect(systemsSecondCall).toEqual(endpoints);
         });
 
-        it('should load and merge applications correctly for on-premise systems', async () => {
-            const mockCloudApps = [{ 'sap.app/id': '1', 'sap.app/title': 'App One' }];
-            const mockVariantApps = [{ 'sap.app/id': '2', 'sap.app/title': 'App Two' }];
+        test('should throw an error if checkEndpoints fails', async () => {
+            const error = new Error('Fetch failed');
+            checkEndpointsMock.mockRejectedValue(error);
 
-            isAbapCloudMock.mockResolvedValue(false);
-            searchMock.mockResolvedValueOnce(mockCloudApps).mockResolvedValueOnce(mockVariantApps);
+            await expect(targetSystems.getSystems()).rejects.toThrow('Fetch failed');
 
-            const apps = await service.getApps();
+            expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Failed to fetch systems list. Reason:'));
+        });
+    });
 
-            expect(apps.length).toBe(2);
-            expect(apps).toEqual(
-                expect.arrayContaining([
-                    {
-                        ach: '',
-                        bspName: '',
-                        bspUrl: '',
-                        fileType: '',
-                        id: '1',
-                        registrationIds: [],
-                        title: 'App One'
-                    },
-                    {
-                        ach: '',
-                        bspName: '',
-                        bspUrl: '',
-                        fileType: '',
-                        id: '2',
-                        registrationIds: [],
-                        title: 'App Two'
-                    }
-                ])
+    describe('getSystemDetails', () => {
+        test('should return undefined and warn if no matching system is found', async () => {
+            const system = 'NonExistingSystem';
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+
+            const details = await targetSystems.getSystemDetails(system);
+
+            expect(details).toBeUndefined();
+            expect(logger.warn).toHaveBeenCalledWith(`No endpoint found for system: ${system}`);
+        });
+
+        test('should return system details without credentials if getCredentialsFromStore returns null', async () => {
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            getCredentialsFromStoreMock.mockResolvedValue(null);
+
+            const details = await targetSystems.getSystemDetails('SystemA');
+
+            expect(details).toEqual({
+                client: '010',
+                url: 'http://systema.com'
+            });
+        });
+
+        test('should return system details with credentials if getCredentialsFromStore returns credentials', async () => {
+            const storedCreds = {
+                authenticationType: 'Basic',
+                username: 'user1',
+                password: 'pass1'
+            };
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            getCredentialsFromStoreMock.mockResolvedValue(storedCreds);
+
+            const details = await targetSystems.getSystemDetails('SystemA');
+
+            expect(details).toEqual({
+                client: '010',
+                url: 'http://systema.com',
+                authenticationType: 'Basic',
+                username: 'user1',
+                password: 'pass1'
+            });
+        });
+
+        test('should return undefined if getCredentialsFromStore throws an error', async () => {
+            const error = new Error('Credential fetch error');
+
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            getCredentialsFromStoreMock.mockRejectedValue(error);
+
+            const details = await targetSystems.getSystemDetails('SystemA');
+
+            expect(details).toBeUndefined();
+            expect(logger.error).toHaveBeenCalledWith('Error fetching credentials from store for system: SystemA');
+            expect(logger.debug).toHaveBeenCalledWith(error.message);
+        });
+    });
+
+    describe('getSystemRequiresAuth', () => {
+        test('should throw error if system not found in BAS', async () => {
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            mockIsAppStudio.mockReturnValue(true);
+
+            await expect(targetSystems.getSystemRequiresAuth('NonExisting')).rejects.toThrow(
+                'System: NonExisting not found in AppStudio environment.'
             );
-            expect(searchMock).toHaveBeenCalledTimes(2);
-            expect(searchMock).toHaveBeenCalledWith(ABAP_APPS_PARAMS);
-            expect(searchMock).toHaveBeenCalledWith(ABAP_VARIANT_APPS_PARAMS);
         });
 
-        it('should throw an error if apps cannot be loaded', async () => {
-            searchMock.mockRejectedValue(new Error('Failed to fetch'));
+        test('should return true if found endpoint has Authentication "NoAuthentication" in BAS', async () => {
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            mockIsAppStudio.mockReturnValue(true);
 
-            await expect(service.getApps()).rejects.toThrow('validators.cannotLoadApplicationsError');
-            expect(loggerMock.error).toHaveBeenCalledWith('Could not load apps: Failed to fetch');
-        });
-    });
+            const result = await targetSystems.getSystemRequiresAuth('SystemB');
 
-    describe('filterApps', () => {
-        it('sorts applications alphabetically by title', () => {
-            const appA = { id: '1', title: 'Application B' } as TargetApplication;
-            const appB = { id: '2', title: 'Application A' } as TargetApplication;
-
-            expect(filterApps(appA, appB)).toBe(1);
-            expect(filterApps(appB, appA)).toBe(-1);
+            expect(result).toBe(true);
         });
 
-        it('uses IDs if titles are empty', () => {
-            const appA = { id: '2', title: '' } as TargetApplication;
-            const appB = { id: '1', title: '' } as TargetApplication;
+        test('should return false if found endpoint has different Authentication in BAS', async () => {
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            mockIsAppStudio.mockReturnValue(true);
 
-            expect(filterApps(appA, appB)).toBe(1);
-            expect(filterApps(appB, appA)).toBe(-1);
+            const result = await targetSystems.getSystemRequiresAuth('SystemA');
+
+            expect(result).toBe(false);
         });
 
-        it('returns 0 when both titles and IDs are identical', () => {
-            const appA = { id: '1', title: 'Application' } as TargetApplication;
-            const appB = { id: '1', title: 'Application' } as TargetApplication;
+        test('should return false if system is found in VS Code', async () => {
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            mockIsAppStudio.mockReturnValue(false);
 
-            expect(filterApps(appA, appB)).toBe(0);
+            const result = await targetSystems.getSystemRequiresAuth('SystemA');
+
+            expect(result).toBe(false);
+        });
+
+        test('should return true if system is not found in VS Code', async () => {
+            checkEndpointsMock.mockResolvedValue({ endpoints });
+            mockIsAppStudio.mockReturnValue(false);
+
+            const result = await targetSystems.getSystemRequiresAuth('NonExisting');
+
+            expect(result).toBe(true);
         });
     });
 });
