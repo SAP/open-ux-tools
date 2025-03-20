@@ -341,7 +341,7 @@ export async function init({
     registerSAPFonts();
 
     const renderer =
-        ui5VersionInfo.major < 2
+        (ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free'))
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
