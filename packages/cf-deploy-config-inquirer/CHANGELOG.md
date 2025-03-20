@@ -1,5 +1,31 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.21
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.31
+
+## 0.2.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.30
+
+## 0.2.19
+
+### Patch Changes
+
+-   c3e7f11: remove mta id prompt for CAP flow
+
+## 0.2.18
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+
 ## 0.2.17
 
 ### Patch Changes

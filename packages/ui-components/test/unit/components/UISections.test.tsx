@@ -1106,4 +1106,68 @@ describe('<Sections />', () => {
             { end: 0, percentage: false, size: 450, start: 200 }
         ]);
     });
+
+    it('Test "hidden" section - restore visibility', () => {
+        const hiddenWrapper = Enzyme.mount(
+            <UISections vertical={false} splitter={true} minSectionSize={6}>
+                <UISections.Section>
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section hidden={true}>
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+        jest.spyOn(UISections, 'getVisibleSections').mockReturnValueOnce([]);
+        hiddenWrapper.setProps({
+            minSectionSize: 100
+        });
+        expect(hiddenWrapper.find('.sections__item').length).toEqual(2);
+    });
+
+    it('Test window resize and ToggleFullscreen', () => {
+        const mockWidth = (windowWidth: number) => {
+            jest.spyOn(HTMLElement.prototype, 'clientWidth', 'get').mockImplementation(() => {
+                return windowWidth;
+            });
+            jest.spyOn(HTMLElement.prototype, 'getBoundingClientRect').mockImplementation(() => {
+                return {
+                    top: 0,
+                    height: 1000,
+                    width: windowWidth,
+                    left: 0
+                } as DOMRect;
+            });
+        };
+
+        const onToggleFullscreen = jest.fn().mockImplementation(() => {
+            jest.spyOn(UISections, 'getVisibleSections').mockReturnValueOnce([0]);
+        });
+        mockWidth(1000);
+        wrapper = Enzyme.mount(
+            <UISections
+                vertical={false}
+                splitter={true}
+                sizes={[450, undefined]}
+                minSectionSize={[430, 530]}
+                onToggleFullscreen={onToggleFullscreen}>
+                <UISections.Section>
+                    <div>Left</div>
+                </UISections.Section>
+                <UISections.Section>
+                    <div>Right</div>
+                </UISections.Section>
+            </UISections>
+        );
+
+        // Simulate restore for min size
+        mockWidth(670);
+
+        windowEventListenerMock.simulateEvent('resize', {});
+        expect(onToggleFullscreen).toBeCalledTimes(1);
+        expect(wrapper.state().sizes).toEqual([
+            { end: 220, percentage: false, size: 450, start: 0 },
+            { end: 0, percentage: false, size: 220, start: 450 }
+        ]);
+    });
 });

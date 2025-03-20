@@ -1,5 +1,30 @@
 # @sap-ux/telemetry
 
+## 0.5.72
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+
+## 0.5.71
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/project-access@1.29.17
+
+## 0.5.70
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/project-access@1.29.16
+
 ## 0.5.69
 
 ### Patch Changes

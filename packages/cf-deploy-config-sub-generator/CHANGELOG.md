@@ -1,5 +1,59 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.30
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/cf-deploy-config-writer@0.1.24
+    -   @sap-ux/fiori-generator-shared@0.9.11
+    -   @sap-ux/deploy-config-generator-shared@0.0.39
+    -   @sap-ux/inquirer-common@0.6.31
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.21
+
+## 0.1.29
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/cf-deploy-config-writer@0.1.23
+    -   @sap-ux/project-access@1.29.17
+    -   @sap-ux/fiori-generator-shared@0.9.10
+    -   @sap-ux/inquirer-common@0.6.30
+    -   @sap-ux/deploy-config-generator-shared@0.0.38
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.20
+
+## 0.1.28
+
+### Patch Changes
+
+-   c3e7f11: remove mta id prompt for CAP flow
+-   Updated dependencies [c3e7f11]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.19
+
+## 0.1.27
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/deploy-config-generator-shared@0.0.37
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.18
+    -   @sap-ux/cf-deploy-config-writer@0.1.22
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/project-access@1.29.16
+
+## 0.1.26
+
+### Patch Changes
+
+-   Updated dependencies [751865f]
+    -   @sap-ux/cf-deploy-config-writer@0.1.21
+
 ## 0.1.25
 
 ### Patch Changes

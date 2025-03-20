@@ -217,6 +217,12 @@
       "path": "packages/ui-prompting"
     },
     {
+      "path": "packages/ui-service-inquirer"
+    },
+    {
+      "path": "packages/ui-service-sub-generator"
+    },
+    {
       "path": "packages/ui5-application-inquirer"
     },
     {

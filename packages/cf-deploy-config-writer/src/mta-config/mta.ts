@@ -156,7 +156,7 @@ export class MtaConfig {
         if (!this.resources.has(HTML5RepoHost)) {
             await this.addHtml5Host();
         }
-        // Setup the basic module template, artifacts will be added in another step
+        // Set up the basic module template, artifacts will be added in another step
         const appHostName = this.resources.get(HTML5RepoHost)?.name;
         if (appHostName) {
             const deployer: mta.Module = {
@@ -465,38 +465,52 @@ export class MtaConfig {
     public async addApp(appModule: string, appPath: string): Promise<void> {
         // If an existing content module exists whether standalone/managed, append the new artifact
         const contentModule = this.modules.get('com.sap.application.content:resource');
+        let isHTML5AlreadyExisting = false; // False by default
         if (contentModule) {
             contentModule[MTABuildParams] = contentModule[MTABuildParams] ?? {};
             contentModule[MTABuildParams][MTABuildResult] =
                 contentModule[MTABuildParams]?.[MTABuildResult] ?? `resources`; // Default
             contentModule[MTABuildParams].requires = contentModule[MTABuildParams].requires ?? [];
+            const artifactName = `${appModule.slice(0, 128)}.zip`;
+            // The name of the HTML5 app will always be the artifact name
             if (
                 contentModule[MTABuildParams].requires?.findIndex(
-                    (app: mta.Requires) => app.name === appModule.slice(0, 128)
-                ) === -1
+                    (app: mta.Requires & { artifacts?: { [key: string]: any } }) =>
+                        app.artifacts?.includes?.(artifactName)
+                ) !== -1
             ) {
+                isHTML5AlreadyExisting = true;
+            } else {
                 contentModule[MTABuildParams].requires.push({
                     name: appModule.slice(0, 128),
-                    artifacts: [`${appModule.slice(0, 128)}.zip`],
-                    'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`
+                    artifacts: [artifactName],
+                    'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
             }
             await this.mta.updateModule(contentModule);
+            this.dirty = true;
         }
-
-        // Add application module
-        const html5Module = this.apps.get(appModule);
-        if (!html5Module) {
+        // Need to handle where existing HTML5 apps are added by `cds` which follow a different naming convention when added to mta
+        const modules = await this.mta.getModules();
+        for (const module of modules) {
+            if (module.type === 'html5' && module.name.endsWith(appModule) && isHTML5AlreadyExisting) {
+                module['build-parameters'] = HTMLAppBuildParams as HTML5App['build-parameters'];
+                await this.mta.updateModule(module);
+                this.dirty = true;
+            }
+        }
+        // Add application module, if not found already
+        if (!isHTML5AlreadyExisting && !this.apps.get(appModule)) {
             const app: HTML5App = {
                 name: appModule.slice(0, 128),
                 type: 'html5',
                 path: appPath,
                 'build-parameters': HTMLAppBuildParams as HTML5App['build-parameters']
-            };
+            } as HTML5App;
             await this.mta.addModule(app);
             this.apps.set(appModule, app);
+            this.dirty = true;
         }
-        this.dirty = true;
     }
 
     /**

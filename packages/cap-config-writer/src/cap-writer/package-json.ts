@@ -1,16 +1,16 @@
 import type { Package } from '@sap-ux/project-access';
-import { getCapCustomPaths } from '@sap-ux/project-access';
+import { getCapCustomPaths, checkCdsUi5PluginEnabled } from '@sap-ux/project-access';
 import type { Editor } from 'mem-fs-editor';
 import { dirname, join, normalize, posix } from 'path';
 import type { CapServiceCdsInfo } from '../cap-config/types';
-import { enableCdsUi5Plugin, checkCdsUi5PluginEnabled } from '../cap-config';
+import { enableCdsUi5Plugin } from '../cap-config';
 import type { Logger } from '@sap-ux/logger';
 
 /**
  * Retrieves the CDS watch script for the CAP app.
  *
  * @param {string} projectName - The project's name, which is the module name.
- * @param {string} appId - The application's ID, including its namespace and the module name. 
+ * @param {string} appId - The application's ID, including its namespace and the module name.
     If appId is provided, it will be used to open the application instead of the project name. This option is available for use with npm workspaces.
  * @returns {{ [x: string]: string }} The CDS watch script for the CAP app.
  */

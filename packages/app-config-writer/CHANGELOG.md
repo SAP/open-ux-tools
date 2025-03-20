@@ -1,5 +1,34 @@
 # @sap-ux/app-config-writer
 
+## 0.5.43
+
+### Patch Changes
+
+-   c3ebc82: fix: wrong convert preview-config prerequisites check for usage of cds-plugin-ui5
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/axios-extension@1.19.1
+
+## 0.5.42
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/project-access@1.29.17
+    -   @sap-ux/axios-extension@1.19.1
+
+## 0.5.41
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/project-access@1.29.16
+
 ## 0.5.40
 
 ### Patch Changes

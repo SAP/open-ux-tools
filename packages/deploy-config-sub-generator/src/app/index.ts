@@ -8,15 +8,15 @@ import {
     TargetName,
     getExtensionGenPromptOpts
 } from '@sap-ux/deploy-config-generator-shared';
-import { parseTarget, getYUIDetails } from './utils';
+import { parseTarget, getYUIDetails, registerNamespaces } from './utils';
 import {
     getApiHubOptions,
     getEnvApiHubConfig,
     t,
     generatorNamespace,
-    generatorTitle,
     getBackendConfig,
-    getSupportedTargets
+    getSupportedTargets,
+    generatorTitle
 } from '../utils';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { promptDeployConfigQuestions } from './prompting';
@@ -70,6 +70,13 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         this.target = parseTarget(args, opts);
         this.vscode = opts.vscode;
 
+        registerNamespaces(
+            this.rootGeneratorName(),
+            this.genNamespace,
+            this.env.isPackageRegistered.bind(this.env),
+            this.env.lookup.bind(this.env)
+        );
+
         // Extensions use options.data to pass in the options
         if (this.options.data?.destinationRoot) {
             this.launchStandaloneFromYui = true;
@@ -120,20 +127,20 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         if (this.isCap && !this.mtaPath) {
             this.target = TargetName.CF; // when CAP project and no mta.yaml, default to Cloud Foundry
         }
-        this.options.projectRoot = capRoot ?? this.mtaPath ?? this.options.appRootPath;
+        this.options.projectRoot = capRoot ?? (this.mtaPath && dirname(this.mtaPath)) ?? this.options.appRootPath;
 
         ({ backendConfig: this.backendConfig, isLibrary: this.isLibrary } = await getBackendConfig(
             this.fs,
             this.options as DeployConfigOptions,
             this.launchStandaloneFromYui,
-            this.options.projectRoot
+            this.options.appRootPath
         ));
         const { destinationName, servicePath } = await getApiHubOptions(this.fs, {
             appPath: this.options.appRootPath,
             servicePath: this.options.appGenServicePath
         });
         this.options.appGenServicePath ||= servicePath;
-        this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig.destination;
+        this.cfDestination = destinationName ?? this.options.appGenDestination ?? this.backendConfig?.destination;
     }
 
     /**
@@ -176,7 +183,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             this.answers = answers;
         }
 
-        if ((this.answers as Answers)?.confirmConfigUpdate !== false && this.target) {
+        if (this.target) {
             this._composeWithSubGenerator(this.target, this.answers);
         } else {
             DeploymentGenerator.logger?.debug(t('debug.exit'));
@@ -212,7 +219,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
             }
             this.composeWith(generatorNamespace(this.genNamespace, generatorName), subGenOpts);
         } catch (error) {
-            DeploymentGenerator.logger?.error(error);
+            DeploymentGenerator.logger?.error(error.message);
         }
     }
 }
