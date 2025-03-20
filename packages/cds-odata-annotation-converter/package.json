@@ -1,6 +1,11 @@
 {
     "name": "@sap-ux/cds-odata-annotation-converter",
     "description": "Converter for OData annotations in CDS format.",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/cds-odata-annotation-converter"
+    },     
     "version": "0.5.2",
     "publisher": "SAPSE",
     "author": "SAP SE",
