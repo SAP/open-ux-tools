@@ -25,13 +25,13 @@ import type { Editor } from 'mem-fs-editor';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 
 /**
- * Writes the template to the memfs editor instance.
+ * Writes the template to the mem-fs editor instance.
  *
  * @param basePath - the base path
  * @param abapDeployConfig - the abap deploy config
  * @param options - the deploy config options
- * @param fs - the memfs editor instance
- * @returns the updated memfs editor instance
+ * @param fs - the mem-fs editor instance
+ * @returns the updated mem-fs editor instance
  */
 async function generate(
     basePath: string,
