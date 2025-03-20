@@ -44,7 +44,7 @@ export class AddCustomSectionQuickAction
                 aggregation: 'sections',
                 title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
             },
-            { actionName: this.type, telemetryEventIdentifier: this.telemetryEventIdentifier }
+            { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
         );
         return [];
     }

@@ -60,7 +60,7 @@ export class AddHeaderFieldQuickAction
                     aggregation: 'items',
                     title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
                 },
-                { actionName: this.type, telemetryEventIdentifier: this.telemetryEventIdentifier }
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier()  }
             );
         } else if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
@@ -73,7 +73,7 @@ export class AddHeaderFieldQuickAction
                     aggregation: 'headerContent',
                     title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
                 },
-                { actionName: this.type, telemetryEventIdentifier: this.telemetryEventIdentifier }
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
             );
         }
         return [];

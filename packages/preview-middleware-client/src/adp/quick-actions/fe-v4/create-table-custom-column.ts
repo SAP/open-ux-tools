@@ -45,7 +45,7 @@ export class AddTableCustomColumnQuickAction
                 aggregation: 'columns',
                 title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
             },
-            { actionName: this.type, telemetryEventIdentifier: this.telemetryEventIdentifier }
+            { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
         );
         return [];
     }

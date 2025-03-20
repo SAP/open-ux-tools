@@ -47,7 +47,7 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
                     title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
                     defaultAggregationArrayIndex: 1
                 },
-                { actionName: this.type, telemetryEventIdentifier: this.telemetryEventIdentifier }
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
             );
         }
         return [];

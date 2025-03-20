@@ -152,11 +152,10 @@ export class QuickActionService implements Service {
 
     private async executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
         try {
-            actionInstance.telemetryEventIdentifier = new Date().toISOString();
             await reportTelemetry({
                 category: 'QuickAction',
                 actionName: actionInstance.type,
-                telemetryEventIdentifier: actionInstance.telemetryEventIdentifier
+                telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true)
             });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);

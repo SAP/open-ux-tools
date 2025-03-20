@@ -148,12 +148,19 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
     async execute(): Promise<FlexCommand[]> {
         const overlay = OverlayRegistry.getOverlay(this.control!);
         const appReference = this.context.flexSettings.projectId;
-        await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_SUBPAGE, undefined, {
-            appType: this.appType,
-            appReference,
-            title: 'ADD_SUB_PAGE_DIALOG_TITLE',
-            pageDescriptor: this.currentPageDescriptor
-        });
+        await DialogFactory.createDialog(
+            overlay,
+            this.context.rta,
+            DialogNames.ADD_SUBPAGE,
+            undefined,
+            {
+                appType: this.appType,
+                appReference,
+                title: 'ADD_SUB_PAGE_DIALOG_TITLE',
+                pageDescriptor: this.currentPageDescriptor
+            },
+            { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+        );
         return [];
     }
 }

@@ -938,7 +938,7 @@ describe('FE V2 quick actions', () => {
                         'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                     },
-                    {actionName: 'add-page-action', telemetryEventIdentifier: '2025-03-17T20:42:00.353Z'}
+                    { actionName: 'add-page-action', telemetryEventIdentifier: '2025-03-17T20:42:00.353Z' }
                 );
             });
         });
@@ -1098,7 +1098,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                     },
-                    {actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T20:37:11.940Z'}
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T20:37:11.940Z' }
                 );
             });
         });
@@ -3613,6 +3613,7 @@ describe('FE V2 quick actions', () => {
             jest.restoreAllMocks();
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+            jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-20T12:39:43.719Z');
             jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                 testCase.ui5version ?? { major: 1, minor: 131 }
             );
@@ -3883,30 +3884,37 @@ describe('FE V2 quick actions', () => {
             if (!testCase.expect.toBeAvailable) {
                 expect(DialogFactory.createDialog).toHaveBeenCalledTimes(0);
             } else {
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddSubpage', undefined, {
-                    appReference: 'dummyProjectId',
-                    appType: 'fe-v2',
-                    pageDescriptor: {
-                        entitySet: 'Travels',
-                        navProperties: testCase.isNewPageUnavailable
-                            ? []
-                            : [
-                                  testCase.isListReport
-                                      ? {
-                                            entitySet: 'Travels',
-                                            navProperty: 'Travels'
-                                        }
-                                      : {
-                                            entitySet: 'Bookings',
-                                            navProperty: 'to_Booking'
-                                        }
-                              ],
-                        pageType: testCase.isListReport
-                            ? 'sap.suite.ui.generic.template.ListReport'
-                            : 'sap.suite.ui.generic.template.ObjectPage'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddSubpage',
+                    undefined,
+                    {
+                        appReference: 'dummyProjectId',
+                        appType: 'fe-v2',
+                        pageDescriptor: {
+                            entitySet: 'Travels',
+                            navProperties: testCase.isNewPageUnavailable
+                                ? []
+                                : [
+                                      testCase.isListReport
+                                          ? {
+                                                entitySet: 'Travels',
+                                                navProperty: 'Travels'
+                                            }
+                                          : {
+                                                entitySet: 'Bookings',
+                                                navProperty: 'to_Booking'
+                                            }
+                                  ],
+                            pageType: testCase.isListReport
+                                ? 'sap.suite.ui.generic.template.ListReport'
+                                : 'sap.suite.ui.generic.template.ObjectPage'
+                        },
+                        title: 'ADD_SUB_PAGE_DIALOG_TITLE'
                     },
-                    title: 'ADD_SUB_PAGE_DIALOG_TITLE'
-                });
+                    { 'actionName': 'add-new-subpage', 'telemetryEventIdentifier': '2025-03-20T12:39:43.719Z' }
+                );
             }
         });
     });

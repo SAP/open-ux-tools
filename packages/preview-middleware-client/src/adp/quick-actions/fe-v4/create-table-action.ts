@@ -46,7 +46,7 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
                     defaultAggregationArrayIndex: 0,
                     title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                 },
-                { actionName: this.type, telemetryEventIdentifier: this.telemetryEventIdentifier }
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
             );
         }
 

@@ -21,12 +21,16 @@ import {
 import { QuickActionDefinitionRegistry } from 'open/ux/preview/client/cpe/quick-actions/registry';
 
 class MockDefinition implements SimpleQuickActionDefinition {
-    telemetryEventIdentifier: string;
+    
+    private telemetryEventIdentifier: string;
     readonly kind = 'simple';
     readonly type = 'MOCK_DEFINITION';
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
+
+   
+
     isApplicable = false;
     constructor(private context: QuickActionContext) {}
     getActionObject(): SimpleQuickAction {
@@ -50,7 +54,16 @@ class MockDefinition implements SimpleQuickActionDefinition {
     }
 
     runEnablementValidators(): void | Promise<void> {}
+
+   public getTelemetryIdentifier (update?: boolean) {
+        if (update === true) {
+            this.telemetryEventIdentifier = new Date().toISOString();
+        }
+        return this.telemetryEventIdentifier;
+    }
 }
+
+
 
 class MockRegistry extends QuickActionDefinitionRegistry<string> {
     getDefinitions(_context: QuickActionActivationContext): QuickActionDefinitionGroup[] {

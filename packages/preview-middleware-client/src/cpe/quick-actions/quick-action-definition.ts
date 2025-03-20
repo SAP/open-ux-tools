@@ -62,8 +62,6 @@ interface QuickActionDefinitionBase {
      * however if that is not the case this property should be set to "true" to force Quick Action reload after the action is executed.
      */
     readonly forceRefreshAfterExecution?: boolean;
-    /* When we have two events */
-    telemetryEventIdentifier: string;
     /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.
      */
@@ -76,6 +74,12 @@ interface QuickActionDefinitionBase {
      * Runs enablement validators to check if the action should be enabled.
      */
     runEnablementValidators: () => void | Promise<void>;
+    /**
+     * This method returns an identifier for telemetry used for grouping multiple events and differentiating
+     * between quick actions and other triggering points for fragment creation.
+     * @params update - flag for updating timestamp
+     */
+    getTelemetryIdentifier: (update?: boolean) => string | undefined;
 }
 
 export interface SimpleQuickActionDefinition extends QuickActionDefinitionBase {
