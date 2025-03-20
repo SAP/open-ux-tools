@@ -12,7 +12,7 @@ import {
 
 import { getError } from '../../utils/error';
 import { getTextBundle } from '../../i18n';
-import { ControlTreeIndex } from '../types';
+import { ControlTreeIndex, IsReuseComponentApi } from '../types';
 import { transformNodes } from './nodes';
 import { ChangeService } from '../changes';
 
@@ -25,7 +25,11 @@ export interface OutlineChangedEventDetail {
  * A Class of WorkspaceConnectorService
  */
 export class OutlineService extends EventTarget {
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {
+    constructor(
+        private readonly rta: RuntimeAuthoring,
+        private readonly changeService: ChangeService,
+        private readonly isReuseComponentChecker: IsReuseComponentApi
+    ) {
         super();
     }
 
@@ -66,7 +70,12 @@ export class OutlineService extends EventTarget {
 
                 this.dispatchEvent(event);
                 sendAction(outlineChanged(outlineNodes));
-                if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning && isCloud) {
+                if (
+                    reuseComponentsIds.size > 0 &&
+                    scenario === SCENARIO.AdaptationProject &&
+                    !hasSentWarning &&
+                    isCloud
+                ) {
                     sendAction(
                         showInfoCenterMessage({
                             type: MessageBarType.warning,

@@ -14,7 +14,7 @@ import {
     externalFileChange
 } from '@sap-ux-private/control-property-editor-common';
 
-import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
+import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction, IsReuseComponentApi } from '../types';
 
 import { QuickActionActivationContext, QuickActionContext, QuickActionDefinition } from './quick-action-definition';
 import { QuickActionDefinitionRegistry } from './registry';
@@ -22,8 +22,6 @@ import { OutlineService } from '../outline/service';
 import { getTextBundle, TextBundle } from '../../i18n';
 import { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
-import { getReuseComponentChecker } from '../../cpe/utils';
-import { getUi5Version } from '../../utils/version';
 
 /**
  * Service providing Quick Actions.
@@ -35,7 +33,6 @@ export class QuickActionService implements Service {
 
     private actionService: ActionService;
     private texts: TextBundle;
-    private isReuseComponent: QuickActionContext['isReuseComponent'];
 
     /**
      * Quick action service constructor.
@@ -48,7 +45,8 @@ export class QuickActionService implements Service {
         private readonly rta: RuntimeAuthoring,
         private readonly outlineService: OutlineService,
         private readonly registries: QuickActionDefinitionRegistry<string>[],
-        private readonly changeService: ChangeService
+        private readonly changeService: ChangeService,
+        private readonly isReuseComponentChecker: IsReuseComponentApi
     ) {}
 
     /**
@@ -61,8 +59,6 @@ export class QuickActionService implements Service {
         this.sendAction = sendAction;
         this.actionService = await this.rta.getService('action');
         this.texts = await getTextBundle();
-        const version = await getUi5Version();
-        this.isReuseComponent = await getReuseComponentChecker(version);
 
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeQuickAction.match(action)) {
@@ -128,7 +124,7 @@ export class QuickActionService implements Service {
                     flexSettings: this.rta.getFlexSettings(),
                     resourceBundle: this.texts,
                     changeService: this.changeService,
-                    isReuseComponent: this.isReuseComponent
+                    isReuseComponent: this.isReuseComponentChecker
                 };
                 for (const Definition of definitions) {
                     try {

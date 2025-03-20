@@ -3,7 +3,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { iconsLoaded, enableTelemetry, appLoaded } from '@sap-ux-private/control-property-editor-common';
 
-import type { ActionHandler, Service } from './types';
+import type { ActionHandler, Service, IsReuseComponentApi } from './types';
 import { OutlineService } from './outline/service';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
@@ -19,7 +19,8 @@ import { ContextMenuService } from './context-menu-service';
 
 export default function init(
     rta: RuntimeAuthoring,
-    registries: QuickActionDefinitionRegistry<string>[] = []
+    registries: QuickActionDefinitionRegistry<string>[] = [],
+    isReuseComponentChecker: IsReuseComponentApi
 ): Promise<void> {
     Log.info('Initializing Control Property Editor');
 
@@ -43,8 +44,14 @@ export default function init(
     const selectionService = new SelectionService(rta, changesService);
     const connectorService = new WorkspaceConnectorService();
     const contextMenuService = new ContextMenuService(rta);
-    const outlineService = new OutlineService(rta, changesService);
-    const quickActionService = new QuickActionService(rta, outlineService, registries, changesService);
+    const outlineService = new OutlineService(rta, changesService, isReuseComponentChecker);
+    const quickActionService = new QuickActionService(
+        rta,
+        outlineService,
+        registries,
+        changesService,
+        isReuseComponentChecker
+    );
     const services: Service[] = [
         connectorService,
         selectionService,
