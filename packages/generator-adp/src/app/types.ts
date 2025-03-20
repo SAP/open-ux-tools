@@ -2,7 +2,7 @@ import type Generator from 'yeoman-generator';
 import { ListQuestionOptions } from 'inquirer';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import { TargetApplication } from '@sap-ux/adp-tooling';
+import { ConfigAnswers } from '@sap-ux/adp-tooling';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 import { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 
@@ -33,16 +33,6 @@ export enum configPromptNames {
     username = 'username',
     password = 'password',
     application = 'application'
-}
-
-/**
- * Interface representing the answers collected from the configuration prompts.
- */
-export interface ConfigAnswers {
-    system: string;
-    username: string;
-    password: string;
-    application: TargetApplication;
 }
 
 /**

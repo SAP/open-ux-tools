@@ -1,5 +1,6 @@
-import { FlexLayer } from '@sap-ux/adp-tooling';
 import { readdirSync } from 'fs';
+
+import { FlexLayer } from '@sap-ux/adp-tooling';
 
 const APP_VARIANT_REGEX = /^app[.]variant\d{1,3}$/;
 

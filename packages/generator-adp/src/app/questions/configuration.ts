@@ -1,10 +1,16 @@
 import { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { AbapProvider, FlexLayer, TargetApplications, TargetSystems, getEndpointNames } from '@sap-ux/adp-tooling';
+import {
+    AbapProvider,
+    ConfigAnswers,
+    FlexLayer,
+    TargetApplications,
+    TargetSystems,
+    getEndpointNames
+} from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
-    ConfigAnswers,
     ConfigPromptOptions,
     ConfigQuestion,
     PasswordPromptOptions,
@@ -169,7 +175,7 @@ export class ConfigPrompter {
                 return getApplicationChoices(apps);
             },
             default: options?.default,
-            validate: (value: string) => this.validateApplicationSelection(value),
+            validate: (value: TargetApplications) => this.validateApplicationSelection(value),
             when: async (answers: ConfigAnswers) => {
                 const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
                 return showApplicationQuestion(answers, systemRequiresAuth);
@@ -183,10 +189,9 @@ export class ConfigPrompter {
      * @param {string} app - The selected application.
      * @returns An error message if validation fails, or true if the selection is valid.
      */
-    private validateApplicationSelection(app: string): string | boolean {
-        const validationResult = validateEmptyString(app);
-        if (validationResult === 'string') {
-            return validationResult;
+    private validateApplicationSelection(app: TargetApplications): string | boolean {
+        if (!app) {
+            return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
         return true;
     }
@@ -201,14 +206,14 @@ export class ConfigPrompter {
      */
     private async validateSystem(system: string, answers: ConfigAnswers): Promise<string | boolean> {
         const validationResult = validateEmptyString(system);
-        if (validationResult === 'string') {
+        if (typeof validationResult === 'string') {
             return validationResult;
         }
 
         try {
             await this.abapProvider.setProvider(system, undefined, answers.username, answers.password);
 
-            const systemRequiresAuth = this.targetSystems.getSystemRequiresAuth(system);
+            const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(system);
             if (!systemRequiresAuth) {
                 await this.targetApps.getApps();
             }

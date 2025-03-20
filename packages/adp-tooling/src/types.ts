@@ -92,6 +92,16 @@ export interface AdpWriterConfig {
     };
 }
 
+/**
+ * Interface representing the answers collected from the configuration prompts of Adaptation Project generator.
+ */
+export interface ConfigAnswers {
+    system: string;
+    username: string;
+    password: string;
+    application: TargetApplication;
+}
+
 export interface TargetApplication {
     id: string;
     title: string;

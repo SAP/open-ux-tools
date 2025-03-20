@@ -54,7 +54,7 @@ export const mapApps = (app: Partial<App>): TargetApplication => ({
  * Provides services related to managing and loading applications from an ABAP provider.
  */
 export class TargetApplications {
-    private applications: TargetApplication[] = [];
+    private applications: TargetApplication[];
 
     /**
      * Constructs an instance of ApplicationManager.

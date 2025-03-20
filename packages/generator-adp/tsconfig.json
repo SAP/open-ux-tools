@@ -1,43 +1,40 @@
 {
-  "extends": "../../tsconfig.json",
-  "include": [
-    "src",
-    "src/**/*.json"
-  ],
-  "compilerOptions": {
-    "rootDir": "src",
-    "outDir": "generators"
-  },
-  "references": [
-    {
-      "path": "../adp-tooling"
+    "extends": "../../tsconfig.json",
+    "include": ["src", "src/**/*.json"],
+    "compilerOptions": {
+        "rootDir": "src",
+        "outDir": "generators"
     },
-    {
-      "path": "../axios-extension"
-    },
-    {
-      "path": "../btp-utils"
-    },
-    {
-      "path": "../feature-toggle"
-    },
-    {
-      "path": "../inquirer-common"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../project-access"
-    },
-    {
-      "path": "../project-input-validator"
-    },
-    {
-      "path": "../store"
-    },
-    {
-      "path": "../system-access"
-    }
-  ]
+    "references": [
+        {
+            "path": "../adp-tooling"
+        },
+        {
+            "path": "../axios-extension"
+        },
+        {
+            "path": "../btp-utils"
+        },
+        {
+            "path": "../feature-toggle"
+        },
+        {
+            "path": "../inquirer-common"
+        },
+        {
+            "path": "../logger"
+        },
+        {
+            "path": "../project-access"
+        },
+        {
+            "path": "../project-input-validator"
+        },
+        {
+            "path": "../store"
+        },
+        {
+            "path": "../system-access"
+        }
+    ]
 }

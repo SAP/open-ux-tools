@@ -9,10 +9,11 @@
         "usernameTooltip": "Enter the user name for the backend system",
         "passwordLabel": "Password",
         "passwordTooltip": "Enter the password for the backend system",
-        "applicationLabel": "Application",
+        "applicationListLabel": "Application",
         "applicationListTooltip": "Select the application for which you want to create an app variant"
     },
     "error": {
+        "selectCannotBeEmptyError": "{{value}} has to be selected",
         "writingPhase": "Error in writing phase of the adaptation project FLP configuration",
         "telemetry": "Error sending telemetry data: {{- error}}",
         "updatingApp": "Error creating a new adaptation project. View the logs to see the full error."

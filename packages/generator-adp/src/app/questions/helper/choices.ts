@@ -1,8 +1,8 @@
-import { Application } from '@sap-ux/adp-tooling';
+import { TargetApplication } from '@sap-ux/adp-tooling';
 
 interface Choice {
     name: string;
-    value: Application;
+    value: TargetApplication;
 }
 
 /**
@@ -12,7 +12,7 @@ interface Choice {
  * @param {Application[]} apps - An array of applications to be transformed into display choices.
  * @returns {Choice[]} An array of objects each containing a value (the full application object) and a name (a formatted string).
  */
-export const getApplicationChoices = (apps: Application[]): Choice[] => {
+export const getApplicationChoices = (apps: TargetApplication[]): Choice[] => {
     return Array.isArray(apps)
         ? apps.map((app) => {
               const name = app.title

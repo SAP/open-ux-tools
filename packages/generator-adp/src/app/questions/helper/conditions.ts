@@ -1,4 +1,4 @@
-import { ConfigAnswers } from '../../types';
+import { ConfigAnswers } from '@sap-ux/adp-tooling';
 
 /**
  * Determines if authentication is necessary based on the provided configuration answers.
