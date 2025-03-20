@@ -5,14 +5,11 @@ import type RTAOutlineService from 'sap/ui/rta/command/OutlineService';
 import type { ExternalAction } from '@sap-ux-private/control-property-editor-common';
 import {
     outlineChanged,
-    SCENARIO,
-    showInfoCenterMessage,
-    MessageBarType
 } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../../utils/error';
 import { getTextBundle } from '../../i18n';
-import { ControlTreeIndex, IsReuseComponentApi } from '../types';
+import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 import { ChangeService } from '../changes';
 
@@ -28,7 +25,6 @@ export class OutlineService extends EventTarget {
     constructor(
         private readonly rta: RuntimeAuthoring,
         private readonly changeService: ChangeService,
-        private readonly isReuseComponentChecker: IsReuseComponentApi
     ) {
         super();
     }
@@ -44,10 +40,6 @@ export class OutlineService extends EventTarget {
         const resourceBundle = await getTextBundle();
         const titleKey = 'ADP_REUSE_COMPONENTS_MESSAGE_TITLE';
         const descriptionKey = 'ADP_REUSE_COMPONENTS_MESSAGE_DESCRIPTION';
-        const title = resourceBundle.getText(titleKey);
-        const description = resourceBundle.getText(descriptionKey);
-        let hasSentWarning = false;
-        const reuseComponentsIds = new Set<string>();
         const syncOutline = async () => {
             try {
                 const viewNodes = await outline.get();
@@ -56,7 +48,6 @@ export class OutlineService extends EventTarget {
                 const outlineNodes = await transformNodes(
                     viewNodes,
                     scenario,
-                    reuseComponentsIds,
                     controlIndex,
                     this.changeService,
                     configPropertyIdMap
@@ -70,21 +61,6 @@ export class OutlineService extends EventTarget {
 
                 this.dispatchEvent(event);
                 sendAction(outlineChanged(outlineNodes));
-                if (
-                    reuseComponentsIds.size > 0 &&
-                    scenario === SCENARIO.AdaptationProject &&
-                    !hasSentWarning &&
-                    isCloud
-                ) {
-                    sendAction(
-                        showInfoCenterMessage({
-                            type: MessageBarType.warning,
-                            title: title,
-                            description: description
-                        })
-                    );
-                    hasSentWarning = true;
-                }
                 await this.changeService.updateConfigurationProps(configPropertyIdMap);
             } catch (error) {
                 Log.error('Outline sync failed!', getError(error));

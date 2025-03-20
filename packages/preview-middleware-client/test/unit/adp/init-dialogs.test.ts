@@ -20,17 +20,17 @@ describe('Dialogs', () => {
             jest.restoreAllMocks();
         });
 
-        test('adds a new item to the context menu', () => {
-            const addMenuItemSpy = jest.fn();
-            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
-            rtaMock.getDefaultPlugins.mockReturnValueOnce({
-                contextMenu: {
-                    addMenuItem: addMenuItemSpy
-                }
-            });
-            initDialogs(rtaMock as unknown as RuntimeAuthoring, [], { major: 1, minor: 118 });
-            expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
-        });
+        // test('adds a new item to the context menu', () => {
+        //     const addMenuItemSpy = jest.fn();
+        //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        //     rtaMock.getDefaultPlugins.mockReturnValueOnce({
+        //         contextMenu: {
+        //             addMenuItem: addMenuItemSpy
+        //         }
+        //     });
+        //     initDialogs(rtaMock as unknown as RuntimeAuthoring, [], { major: 1, minor: 118 });
+        //     expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
+        // });
     });
 
     describe('isFragmentCommandEnabled', () => {

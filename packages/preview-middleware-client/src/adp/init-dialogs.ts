@@ -84,9 +84,13 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[], isReuseComp
  * Determines the text that should be displayed for the Add Fragment context menu item.
  *
  * @param {ElementOverlay} overlay - An ElementOverlay object representing the UI overlay.
+ * @param {isReuseComponentApi} isReuseComponentChecker - Function to check if the control is a reuse component.
  * @returns {string} The text of the Add Fragment context menu item.
  */
-export const getAddFragmentItemText = (overlay: ElementOverlay) => {
+export const getAddFragmentItemText = (overlay: ElementOverlay, isReuseComponentChecker: IsReuseComponentApi) => {
+    if (isReuseComponentChecker(overlay.getElement().getId())) {
+        return 'Add: Fragment (Unavailable due to control being a Reuse component)';
+    }
     if (!hasStableId(overlay)) {
         return 'Add: Fragment (Unavailable due to unstable ID of the control or its parent control)';
     }
@@ -95,11 +99,26 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
 };
 
 /**
+ * Determines the text that should be displayed for Controller Extension context menu item.
+ *
+ * @param {ElementOverlay} overlay - An ElementOverlay object representing the UI overlay.
+ * @param {isReuseComponentApi} isReuseComponentChecker - Function to check if the control is a reuse component.
+ * @returns {string} The text of the Add Fragment context menu item.
+ */
+export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComponentChecker: IsReuseComponentApi) => {
+    if (isReuseComponentChecker(overlay.getElement().getId())) {
+        return 'Extend With Controller (Unavailable due to control being a Reuse component)';
+    }
+
+    return 'Extend With Controller';
+};
+
+/**
  * Adds a new item to the context menu
  *
  * @param rta Runtime Authoring
  * @param syncViewsIds Ids of all application sync views
- * @param ui5VersionInfo UI5 version information
+ * @param isReuseComponentChecker Function to check if the control is a reuse component
  */
 export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], isReuseComponentChecker: IsReuseComponentApi): void => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
@@ -107,7 +126,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], isReu
 
     contextMenu.addMenuItem({
         id: 'ADD_FRAGMENT',
-        text: getAddFragmentItemText,
+        text: (overlay: ElementOverlay) => getAddFragmentItemText(overlay, isReuseComponentChecker),
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
@@ -116,7 +135,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], isReu
 
     contextMenu.addMenuItem({
         id: 'EXTEND_CONTROLLER',
-        text: 'Extend With Controller',
+        text: (overlay: ElementOverlay) => getExtendControllerItemText(overlay, isReuseComponentChecker),
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',

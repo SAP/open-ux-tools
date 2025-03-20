@@ -44,7 +44,7 @@ export default function init(
     const selectionService = new SelectionService(rta, changesService);
     const connectorService = new WorkspaceConnectorService();
     const contextMenuService = new ContextMenuService(rta);
-    const outlineService = new OutlineService(rta, changesService, isReuseComponentChecker);
+    const outlineService = new OutlineService(rta, changesService);
     const quickActionService = new QuickActionService(
         rta,
         outlineService,
