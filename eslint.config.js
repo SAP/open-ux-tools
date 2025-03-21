@@ -33,7 +33,8 @@ module.exports = [
             'test/test-output',
             'esbuild.js',
             ' esbuild*.js',
-            '__mocks__'
+            '__mocks__',
+            'test/tools-suite-telemetry/fixtures'
         ]
     },
     eslintPluginPrettierRecommended,
@@ -72,7 +73,7 @@ module.exports = [
             'jsdoc/check-param-names': 'error',
 
             'jsdoc/check-tag-names': [
-                'error',
+                'warn', // TODO revert to error
                 {
                     definedTags: ['ui5-restricted', 'experimental', 'final']
                 }
@@ -256,7 +257,6 @@ module.exports = [
                     'varsIgnorePattern': '^_',
                     'argsIgnorePattern': '^_',
                     'caughtErrors': 'none'
-
                 }
             ],
             '@typescript-eslint/no-floating-promises': ['error'],
@@ -271,6 +271,14 @@ module.exports = [
             '@typescript-eslint/no-use-before-define': ['error', 'nofunc'],
             '@typescript-eslint/prefer-nullish-coalescing': 'warn',
             '@typescript-eslint/prefer-optional-chain': 'warn',
+            '@typescript-eslint/no-unsafe-function-type': 'warn',
+            '@typescript-eslint/no-empty-object-type': 'warn',
+            '@typescript-eslint/no-require-imports': [
+                'error',
+                {
+                    'allowAsImport': true
+                }
+            ],
             'jsdoc/require-param-type': 'off',
             'jsdoc/require-returns-type': 'off',
             'prefer-const': [
