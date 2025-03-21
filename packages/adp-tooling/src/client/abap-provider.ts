@@ -21,7 +21,7 @@ export class AbapProvider {
      * @param {TargetSystems} targetSystems - The endpoints service for retrieving system details.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private targetSystems: TargetSystems, private logger?: ToolsLogger) {}
+    constructor(private readonly targetSystems: TargetSystems, private readonly logger?: ToolsLogger) {}
 
     /**
      * Retrieves the configured ABAP service provider if set, otherwise throws an error.

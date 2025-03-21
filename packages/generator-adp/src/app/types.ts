@@ -67,11 +67,6 @@ export interface ApplicationPromptOptions {
 }
 
 /**
- * Common options for the configuration inquirer.
- */
-export interface ConfigPromptCommonOptions {}
-
-/**
  * Options for the configuration inquirer & the prompts.
  */
 export type ConfigPromptOptions = Partial<{
@@ -79,5 +74,4 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.username]: UsernamePromptOptions;
     [configPromptNames.password]: PasswordPromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
-}> &
-    ConfigPromptCommonOptions;
+}>;

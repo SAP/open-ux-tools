@@ -55,6 +55,8 @@ export const mapApps = (app: Partial<App>): TargetApplication => ({
  */
 export class TargetApplications {
     private applications: TargetApplication[];
+    private isCustomerBase: boolean;
+    private logger?: ToolsLogger;
 
     /**
      * Constructs an instance of ApplicationManager.
@@ -63,7 +65,10 @@ export class TargetApplications {
      * @param {boolean} isCustomerBase - Indicates if the current base is a customer base, which affects how applications are loaded.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private abapProvider: AbapProvider, private isCustomerBase: boolean, private logger?: ToolsLogger) {}
+    constructor(private readonly abapProvider: AbapProvider, isCustomerBase: boolean, logger?: ToolsLogger) {
+        this.isCustomerBase = isCustomerBase;
+        this.logger = logger;
+    }
 
     /**
      * Retrieves the currently loaded list of applications.

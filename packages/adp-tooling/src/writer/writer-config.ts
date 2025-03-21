@@ -42,7 +42,7 @@ export class WriterConfig {
      * @param {AbapProvider} abapProvider - The instance of AbapProvider class.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      */
-    constructor(private abapProvider: AbapProvider, private layer: FlexLayer) {}
+    constructor(private readonly abapProvider: AbapProvider, private readonly layer: FlexLayer) {}
 
     /**
      * Generates the configuration object for the Adaptation Project.

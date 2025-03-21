@@ -30,7 +30,7 @@ export class TargetSystems {
      *
      * @param {ToolsLogger} logger - The logger.
      */
-    constructor(private logger: ToolsLogger) {}
+    constructor(private readonly logger: ToolsLogger) {}
 
     /**
      * Returns the stored systems.

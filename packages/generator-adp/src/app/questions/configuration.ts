@@ -28,6 +28,10 @@ export class ConfigPrompter {
      * Indicates if the current layer is based on a customer base.
      */
     private isCustomerBase: boolean;
+    /**
+     * Logger instance.
+     */
+    private logger: ToolsLogger;
 
     /**
      * Creates an instance of ConfigPrompter.
@@ -38,13 +42,14 @@ export class ConfigPrompter {
      * @param {ToolsLogger} logger - The logger instance for logging.
      */
     constructor(
-        private abapProvider: AbapProvider,
-        private targetSystems: TargetSystems,
+        private readonly abapProvider: AbapProvider,
+        private readonly targetSystems: TargetSystems,
         layer: FlexLayer,
-        private logger: ToolsLogger
+        logger: ToolsLogger
     ) {
-        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.targetApps = new TargetApplications(this.abapProvider, this.isCustomerBase, this.logger);
+        this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+        this.logger = logger;
     }
 
     /**
