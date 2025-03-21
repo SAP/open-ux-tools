@@ -7,15 +7,15 @@
         "systemLabel": "System",
         "systemTooltip": "Select a system to load its application list",
         "usernameLabel": "Username",
-        "usernameTooltip": "Enter the user name for the backend system",
+        "usernameTooltip": "Enter the user name for the back-end system",
         "passwordLabel": "Password",
-        "passwordTooltip": "Enter the password for the backend system",
+        "passwordTooltip": "Enter the password for the back-end system",
         "applicationListLabel": "Application",
         "applicationListTooltip": "Select the application for which you want to create an app variant"
     },
     "error": {
         "selectCannotBeEmptyError": "{{value}} has to be selected",
-        "writingPhase": "Error in writing phase of the adaptation project FLP configuration",
+        "writingPhase": "Error in writing phase of the adaptation project generation",
         "telemetry": "Error sending telemetry data: {{- error}}",
         "updatingApp": "Error creating a new adaptation project. View the logs to see the full error."
     }
