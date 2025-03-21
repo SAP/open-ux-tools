@@ -8,7 +8,6 @@ import {
 } from '@sap-ux-private/control-property-editor-common';
 
 import { getError } from '../../utils/error';
-import { getTextBundle } from '../../i18n';
 import { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
 import { ChangeService } from '../changes';
@@ -36,10 +35,7 @@ export class OutlineService extends EventTarget {
      */
     public async init(sendAction: (action: ExternalAction) => void): Promise<void> {
         const outline = await this.rta.getService<RTAOutlineService>('outline');
-        const { scenario, isCloud } = this.rta.getFlexSettings();
-        const resourceBundle = await getTextBundle();
-        const titleKey = 'ADP_REUSE_COMPONENTS_MESSAGE_TITLE';
-        const descriptionKey = 'ADP_REUSE_COMPONENTS_MESSAGE_DESCRIPTION';
+        const { scenario } = this.rta.getFlexSettings();
         const syncOutline = async () => {
             try {
                 const viewNodes = await outline.get();

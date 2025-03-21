@@ -2,13 +2,11 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type Control from 'sap/ui/core/Control';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import DataType from 'sap/ui/base/DataType';
-import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import ComponentContainer from 'sap/ui/core/ComponentContainer';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import UIComponent from 'sap/ui/core/UIComponent';
 
 import { getComponent } from '../utils/core';
-import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { DesigntimeSetting } from 'sap/ui/dt/DesignTimeMetadata';
 import { ChangeService } from './changes';
 import UI5Element from 'sap/ui/core/Element';
@@ -82,31 +80,6 @@ export async function getLibrary(controlName: string): Promise<string> {
             }
         });
     });
-}
-
-/**
- * Function that checks if control is reuse component
- *
- * @param controlId id control
- * @param ui5VersionInfo UI5 version information
- * @returns boolean if control is from reused component view
- */
-export function isReuseComponent(controlId: string, ui5VersionInfo: Ui5VersionInfo): boolean {
-    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 115 })) {
-        return false;
-    }
-
-    const component = getComponent(controlId);
-    if (!component) {
-        return false;
-    }
-
-    const manifest = component.getManifest() as Manifest;
-    if (!manifest) {
-        return false;
-    }
-
-    return manifest['sap.app']?.type === 'component';
 }
 
 /**

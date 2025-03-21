@@ -3,12 +3,11 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import Log from 'sap/base/Log';
 
-import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
 import { getControlById } from '../../utils/core';
 import { getError } from '../../utils/error';
 
 import type { ControlTreeIndex } from '../types';
-import { getOverlay, isReuseComponent } from '../utils';
+import { getOverlay } from '../utils';
 
 import { isEditable } from './editable';
 import { ChangeService } from '../changes';
@@ -127,7 +126,6 @@ function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string
  *
  * @param input outline view node
  * @param scenario type of project
- * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
  * @param propertyIdMap ChangeService for change stack event handling.
@@ -218,7 +216,6 @@ export async function transformNodes(
  *
  * @param children outline view node children
  * @param scenario type of project
- * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
  * @param propertyIdMap  Map<string, string[]>.

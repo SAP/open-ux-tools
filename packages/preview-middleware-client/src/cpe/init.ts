@@ -19,8 +19,8 @@ import { ContextMenuService } from './context-menu-service';
 
 export default function init(
     rta: RuntimeAuthoring,
-    registries: QuickActionDefinitionRegistry<string>[] = [],
-    isReuseComponentChecker: IsReuseComponentApi
+    isReuseComponentChecker: IsReuseComponentApi,
+    registries: QuickActionDefinitionRegistry<string>[] = []
 ): Promise<void> {
     Log.info('Initializing Control Property Editor');
 

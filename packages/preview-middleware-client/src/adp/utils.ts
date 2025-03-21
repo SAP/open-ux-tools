@@ -150,6 +150,12 @@ export function getControllerInfo(overlayControl: ElementOverlay): ControllerInf
     return getControllerInfoForControl(control);
 }
 
+/**
+ * Gets the reuse component checker function.
+ *
+ * @param ui5VersionInfo UI5 version information.
+ * @returns The reuse component checker function.
+ */
 export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo) {
     let reuseComponentApi: IsReuseComponentApi;
     if (isHigherThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 133 })) {
@@ -162,7 +168,7 @@ export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo) {
             return false;
         }
 
-        const component = FlexUtils.getComponentForControl(ui5Control)
+        const component = FlexUtils.getComponentForControl(ui5Control);
 
         if (reuseComponentApi) {
             return reuseComponentApi.isReuseComponent(component);
@@ -186,5 +192,5 @@ export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo) {
         return Object.values(componentUsages || {}).some((componentUsage) => {
             return componentUsage.name === componentName;
         });
-    }
+    };
 }

@@ -46,6 +46,7 @@ import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/
 
 
 describe('FE V2 quick actions', () => {
+    const isReuseComponentCheckerMock = jest.fn().mockReturnValue(false);
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
     const mockChangeService = {
@@ -81,225 +82,227 @@ describe('FE V2 quick actions', () => {
             jest.clearAllMocks();
         });
         describe('clear filter bar button', () => {
-            // test('initialize and execute action', async () => {
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartFilterBar') {
-            //             return {
-            //                 getShowClearOnFB: jest.fn().mockImplementation(() => false),
-            //                 getDomRef: () => ({})
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             const pageView = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+            test('initialize and execute action', async () => {
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartFilterBar') {
+                        return {
+                            getShowClearOnFB: jest.fn().mockImplementation(() => false),
+                            getDomRef: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        const pageView = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-            //         return { type, value, settings };
-            //     });
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.ui.comp.smartfilterbar.SmartFilterBar': [
-            //             {
-            //                 controlId: 'SmartFilterBar'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smartfilterbar.SmartFilterBar': [
+                        {
+                            controlId: 'SmartFilterBar'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'LIST REPORT',
-            //                 actions: [
-            //                     {
-            //                         'kind': 'simple',
-            //                         id: 'listReport0-enable-clear-filter-bar',
-            //                         title: 'Enable "Clear" Button in Filter Bar',
-            //                         enabled: true
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-enable-clear-filter-bar',
+                                    title: 'Enable "Clear" Button in Filter Bar',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-enable-clear-filter-bar', kind: 'simple' })
-            //     );
-            //     expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-            //         'settings': {},
-            //         'type': 'Property',
-            //         'value': {
-            //             'generator': undefined,
-            //             'newValue': true,
-            //             'propertyName': 'showClearOnFB'
-            //         }
-            //     });
-            // });
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-clear-filter-bar', kind: 'simple' })
+                );
+                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                    'settings': {},
+                    'type': 'Property',
+                    'value': {
+                        'generator': undefined,
+                        'newValue': true,
+                        'propertyName': 'showClearOnFB'
+                    }
+                });
+            });
         });
 
         describe('add controller to the page', () => {
-            // test('initialize and execute action', async () => {
-            //     const pageView = new XMLView();
-            //     FlexUtils.getViewForControl.mockImplementation(() => {
-            //         return {
-            //             getId: () => 'MyView',
-            //             getController: () => {
-            //                 return {
-            //                     getMetadata: () => {
-            //                         return {
-            //                             getName: () => 'MyController'
-            //                         };
-            //                     }
-            //                 };
-            //             }
-            //         };
-            //     });
-            //     fetchMock.mockResolvedValue({
-            //         json: jest
-            //             .fn()
-            //             .mockReturnValueOnce({
-            //                 controllerExists: false,
-            //                 controllerPath: '',
-            //                 controllerPathFromRoot: '',
-            //                 isRunningInBAS: false
-            //             })
-            //             .mockReturnValueOnce({ controllers: [] }),
-            //         text: jest.fn(),
-            //         ok: true
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'DynamicPage') {
-            //             return {
-            //                 getDomRef: () => ({}),
-            //                 getParent: () => pageView
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.f.DynamicPage': [
-            //             {
-            //                 controlId: 'DynamicPage'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'LIST REPORT',
-            //                 actions: [
-            //                     {
-            //                         'kind': 'simple',
-            //                         id: 'listReport0-add-controller-to-page',
-            //                         title: 'Add Controller to Page',
-            //                         enabled: true
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-add-controller-to-page',
+                                    title: 'Add Controller to Page',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
-            //     );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
+                );
 
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
-            // });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
+            });
         });
 
         describe('change table columns', () => {
@@ -345,209 +348,210 @@ describe('FE V2 quick actions', () => {
                 }
             ];
             const setSelectedKeyMock = jest.fn();
-            // test.each(testCases)('initialize and execute (%s)', async (testCase) => {
-            //     VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
-            //     const pageView = new XMLView();
-            //     const scrollIntoView = jest.fn();
-            //     let attachedEvent: (() => Promise<void>) | undefined = undefined;
-            //     const tableId = 'SmartTable' + testCase.isWithIconTabBar ? '-tab1' : '';
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == tableId) {
-            //             return {
-            //                 isA: (type: string) => type === testCase.tableType,
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
-            //                 getAggregation: () => {
-            //                     return [
-            //                         {
-            //                             getAggregation: () => 'headerToolbar'
-            //                         }
-            //                     ];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 getHeaderToolbar: () => ({
-            //                     getTitleControl: () => ({
-            //                         getText: () => 'MyTable'
-            //                     })
-            //                 }),
-            //                 getBindingInfo: () => undefined,
-            //                 getBindingContext: () => !testCase.isTableNotLoaded,
-            //                 attachEventOnce: (name: string, handler: () => Promise<void>) => {
-            //                     attachedEvent = handler;
-            //                 }
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //         if ((id = 'IconTabBar')) {
-            //             return {
-            //                 getParent: () => pageView,
-            //                 getId: () => id,
-            //                 isA: (type: string) => type === 'sap.m.IconTabBar',
-            //                 setSelectedKey: setSelectedKeyMock,
-            //                 getItems: () => [
-            //                     {
-            //                         isA: (type: string) =>
-            //                             ['sap.m.IconTabFilter', 'sap.ui.base.ManagedObject'].includes(type),
-            //                         getKey: () => 'tab1',
-            //                         getText: () => 'Tab 1'
-            //                     }
-            //                 ]
-            //             };
-            //         }
-            //     });
+            test.each(testCases)('initialize and execute (%s)', async (testCase) => {
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                let attachedEvent: (() => Promise<void>) | undefined = undefined;
+                const tableId = 'SmartTable' + testCase.isWithIconTabBar ? '-tab1' : '';
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == tableId) {
+                        return {
+                            isA: (type: string) => type === testCase.tableType,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        getAggregation: () => 'headerToolbar'
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            getHeaderToolbar: () => ({
+                                getTitleControl: () => ({
+                                    getText: () => 'MyTable'
+                                })
+                            }),
+                            getBindingInfo: () => undefined,
+                            getBindingContext: () => !testCase.isTableNotLoaded,
+                            attachEventOnce: (name: string, handler: () => Promise<void>) => {
+                                attachedEvent = handler;
+                            }
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                    if ((id = 'IconTabBar')) {
+                        return {
+                            getParent: () => pageView,
+                            getId: () => id,
+                            isA: (type: string) => type === 'sap.m.IconTabBar',
+                            setSelectedKey: setSelectedKeyMock,
+                            getItems: () => [
+                                {
+                                    isA: (type: string) =>
+                                        ['sap.m.IconTabFilter', 'sap.ui.base.ManagedObject'].includes(type),
+                                    getKey: () => 'tab1',
+                                    getText: () => 'Tab 1'
+                                }
+                            ]
+                        };
+                    }
+                });
 
-            //     const execute = jest.fn();
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
-            //         if (serviceName === 'action') {
-            //             return {
-            //                 get: (controlId: string) => {
-            //                     if (controlId === tableId) {
-            //                         return [{ id: testCase.actionId }];
-            //                     }
-            //                 },
-            //                 execute
-            //             };
-            //         }
-            //     });
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                const execute = jest.fn();
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
+                    if (serviceName === 'action') {
+                        return {
+                            get: (controlId: string) => {
+                                if (controlId === tableId) {
+                                    return [{ id: testCase.actionId }];
+                                }
+                            },
+                            execute
+                        };
+                    }
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         [testCase.tableType]: [
-            //             {
-            //                 controlId: tableId
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ],
+                await service.reloadQuickActions({
+                    [testCase.tableType]: [
+                        {
+                            controlId: tableId
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ],
 
-            //         'sap.m.IconTabBar': testCase.isWithIconTabBar
-            //             ? [
-            //                   {
-            //                       controlId: 'IconTabBar'
-            //                   } as any
-            //               ]
-            //             : []
-            //     });
+                    'sap.m.IconTabBar': testCase.isWithIconTabBar
+                        ? [
+                              {
+                                  controlId: 'IconTabBar'
+                              } as any
+                          ]
+                        : []
+                });
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'LIST REPORT',
-            //                 actions: [
-            //                     {
-            //                         'kind': 'nested',
-            //                         id: 'listReport0-change-table-columns',
-            //                         title: 'Change Table Columns',
-            //                         enabled: true,
-            //                         children: [
-            //                             {
-            //                                 children: [],
-            //                                 enabled: true,
-            //                                 label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
-            //                             }
-            //                         ]
-            //                     },
-            //                     {
-            //                         'kind': 'nested',
-            //                         id: 'listReport0-create-table-action',
-            //                         title: 'Add Custom Table Action',
-            //                         enabled: true,
-            //                         children: [
-            //                             {
-            //                                 children: [],
-            //                                 enabled: true,
-            //                                 label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
-            //                             }
-            //                         ]
-            //                     },
-            //                     {
-            //                         'children': [
-            //                             {
-            //                                 'children': [],
-            //                                 enabled: true,
-            //                                 label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
-            //                             }
-            //                         ],
-            //                         'enabled': true,
-            //                         'id': 'listReport0-create-table-custom-column',
-            //                         'kind': 'nested',
-            //                         'title': 'Add Custom Table Column'
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-change-table-columns',
+                                    title: 'Change Table Columns',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: true,
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
+                                        }
+                                    ]
+                                },
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: true,
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
+                                        }
+                                    ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Column'
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-change-table-columns', kind: 'nested', path: '0' })
-            //     );
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
-            //     );
-            //     if (testCase.isTableNotLoaded) {
-            //         expect(attachedEvent).toBeDefined();
-            //         await attachedEvent!();
-            //     } else {
-            //         expect(attachedEvent).toBeUndefined();
-            //     }
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-change-table-columns', kind: 'nested', path: '0' })
+                );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
+                );
+                if (testCase.isTableNotLoaded) {
+                    expect(attachedEvent).toBeDefined();
+                    await attachedEvent!();
+                } else {
+                    expect(attachedEvent).toBeUndefined();
+                }
 
-            //     expect(setSelectedKeyMock.mock.calls[0]).toStrictEqual(
-            //         testCase.isWithIconTabBar ? ['tab1'] : undefined
-            //     );
+                expect(setSelectedKeyMock.mock.calls[0]).toStrictEqual(
+                    testCase.isWithIconTabBar ? ['tab1'] : undefined
+                );
 
-            //     expect(scrollIntoView).toHaveBeenCalled();
-            //     expect(execute).toHaveBeenCalledWith(
-            //         tableId,
-            //         testCase.expectActionAvailable ? testCase.actionId : undefined
-            //     );
-            // });
+                expect(scrollIntoView).toHaveBeenCalled();
+                expect(execute).toHaveBeenCalledWith(
+                    tableId,
+                    testCase.expectActionAvailable ? testCase.actionId : undefined
+                );
+            });
         });
 
         describe('create table action', () => {
@@ -581,357 +585,359 @@ describe('FE V2 quick actions', () => {
                     expectedToolbarID: 'dummyOverflowToolbar'
                 }
             ];
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     const pageView = new XMLView();
-            //     const scrollIntoView = jest.fn();
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'mTable') {
-            //             return {
-            //                 isA: (type: string) => type === 'sap.m.Table',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
-            //                 getAggregation: () => {
-            //                     return {
-            //                         id: 'dummyMTableToolbar'
-            //                     }; // Return a simple string for headerToolbar
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getHeaderToolbar: () => {
-            //                     return {
-            //                         getTitleControl: () => {
-            //                             return {
-            //                                 getText: () => 'MyTable'
-            //                             };
-            //                         }
-            //                     };
-            //                 }
-            //             };
-            //         }
-            //         if (id == 'smartTable') {
-            //             return {
-            //                 isA: (type: string) => type === SMART_TABLE_TYPE,
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'mTable') {
+                        return {
+                            isA: (type: string) => type === 'sap.m.Table',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getAggregation: () => {
+                                return {
+                                    id: 'dummyMTableToolbar'
+                                }; // Return a simple string for headerToolbar
+                            },
+                            getParent: () => pageView,
+                            getHeaderToolbar: () => {
+                                return {
+                                    getTitleControl: () => {
+                                        return {
+                                            getText: () => 'MyTable'
+                                        };
+                                    }
+                                };
+                            }
+                        };
+                    }
+                    if (id == 'smartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
 
-            //                 getToolbar: () => {
-            //                     if (testCase.tableToolbar == 'smartTableProperty') {
-            //                         return {
-            //                             id: 'dummyPropertyToolbar'
-            //                         };
-            //                     } else {
-            //                         return null;
-            //                     }
-            //                 },
-            //                 getAggregation: (aggregationName: string) => {
-            //                     if (aggregationName === 'items') {
-            //                         if (testCase.tableToolbar === 'toolbarAggregation') {
-            //                             return [
-            //                                 {
-            //                                     isA: (type: string) => type === testCase.tableType,
-            //                                     getAggregation: (aggregationName: string) => {
-            //                                         if (aggregationName === 'headerToolbar') {
-            //                                             return {
-            //                                                 id: 'dummyToolbar'
-            //                                             }; // Return a simple string for headerToolbar
-            //                                         }
-            //                                     }
-            //                                 }
-            //                             ];
-            //                         } else if (testCase.tableToolbar === 'ItemAggregation') {
-            //                             return [
-            //                                 {
-            //                                     getAggregation: () => null,
-            //                                     isA: (type: string) => type === 'sap.m.OverflowToolbar',
-            //                                     id: 'dummyOverflowToolbar'
-            //                                 }
-            //                             ];
-            //                         } else {
-            //                             return [
-            //                                 {
-            //                                     getAggregation: () => null,
-            //                                     isA: (type: string) => type === 'test'
-            //                                 }
-            //                             ];
-            //                         }
-            //                     }
-            //                     return [];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 selectOverlay: () => ({})
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                            getToolbar: () => {
+                                if (testCase.tableToolbar == 'smartTableProperty') {
+                                    return {
+                                        id: 'dummyPropertyToolbar'
+                                    };
+                                } else {
+                                    return null;
+                                }
+                            },
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    if (testCase.tableToolbar === 'toolbarAggregation') {
+                                        return [
+                                            {
+                                                isA: (type: string) => type === testCase.tableType,
+                                                getAggregation: (aggregationName: string) => {
+                                                    if (aggregationName === 'headerToolbar') {
+                                                        return {
+                                                            id: 'dummyToolbar'
+                                                        }; // Return a simple string for headerToolbar
+                                                    }
+                                                }
+                                            }
+                                        ];
+                                    } else if (testCase.tableToolbar === 'ItemAggregation') {
+                                        return [
+                                            {
+                                                getAggregation: () => null,
+                                                isA: (type: string) => type === 'sap.m.OverflowToolbar',
+                                                id: 'dummyOverflowToolbar'
+                                            }
+                                        ];
+                                    } else {
+                                        return [
+                                            {
+                                                getAggregation: () => null,
+                                                isA: (type: string) => type === 'test'
+                                            }
+                                        ];
+                                    }
+                                }
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     if (testCase.tableType === M_TABLE_TYPE) {
-            //         await service.reloadQuickActions({
-            //             'sap.m.Table': [
-            //                 {
-            //                     controlId: 'mTable'
-            //                 } as any
-            //             ],
+                if (testCase.tableType === M_TABLE_TYPE) {
+                    await service.reloadQuickActions({
+                        'sap.m.Table': [
+                            {
+                                controlId: 'mTable'
+                            } as any
+                        ],
 
-            //             'sap.m.NavContainer': [
-            //                 {
-            //                     controlId: 'NavContainer'
-            //                 } as any
-            //             ]
-            //         });
-            //     } else if (testCase.tableType === SMART_TABLE_TYPE) {
-            //         await service.reloadQuickActions({
-            //             'sap.ui.comp.smarttable.SmartTable': [
-            //                 {
-            //                     controlId: 'smartTable'
-            //                 } as any
-            //             ],
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                } else if (testCase.tableType === SMART_TABLE_TYPE) {
+                    await service.reloadQuickActions({
+                        'sap.ui.comp.smarttable.SmartTable': [
+                            {
+                                controlId: 'smartTable'
+                            } as any
+                        ],
 
-            //             'sap.m.NavContainer': [
-            //                 {
-            //                     controlId: 'NavContainer'
-            //                 } as any
-            //             ]
-            //         });
-            //     }
+                        'sap.m.NavContainer': [
+                            {
+                                controlId: 'NavContainer'
+                            } as any
+                        ]
+                    });
+                }
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'LIST REPORT',
-            //                 actions: [
-            //                     {
-            //                         kind: 'nested',
-            //                         id: 'listReport0-create-table-action',
-            //                         title: 'Add Custom Table Action',
-            //                         enabled: true,
-            //                         children: [
-            //                             {
-            //                                 children: [],
-            //                                 enabled: !(testCase.tableToolbar === 'None'),
-            //                                 label: `'MyTable' table`,
-            //                                 ...(testCase.tableToolbar === 'None' && {
-            //                                     tooltip:
-            //                                         'This option has been disabled because the table does not have a header toolbar.'
-            //                                 })
-            //                             }
-            //                         ]
-            //                     },
-            //                     {
-            //                         children: [
-            //                             {
-            //                                 children: [],
-            //                                 enabled: true,
-            //                                 label: `'MyTable' table`
-            //                             }
-            //                         ],
-            //                         enabled: true,
-            //                         id: 'listReport0-create-table-custom-column',
-            //                         kind: 'nested',
-            //                         title: 'Add Custom Table Column'
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: !(testCase.tableToolbar === 'None'),
+                                            label: `'MyTable' table`,
+                                            ...(testCase.tableToolbar === 'None' && {
+                                                tooltip:
+                                                    'This option has been disabled because the table does not have a header toolbar.'
+                                            })
+                                        }
+                                    ]
+                                },
+                                {
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: true,
+                                            label: `'MyTable' table`
+                                        }
+                                    ],
+                                    enabled: true,
+                                    id: 'listReport0-create-table-custom-column',
+                                    kind: 'nested',
+                                    title: 'Add Custom Table Column'
+                                }
+                            ]
+                        }
+                    ])
+                );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
+                );
 
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.tableToolbar === 'None' ? 0 : 1);
+                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(testCase.tableToolbar === 'None' ? 0 : 1);
 
-            //     if (testCase.tableToolbar !== 'None') {
-            //         expect(OverlayRegistry.getOverlay.mock.calls[0][0].id).toBe(testCase.expectedToolbarID);
-            //         expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //             mockOverlay,
-            //             rtaMock,
-            //             'AddFragment',
-            //             undefined,
-            //             {
-            //                 aggregation: 'content',
-            //                 defaultAggregationArrayIndex: 1,
-            //                 title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-            //             }
-            //         );
-            //     }
-            // });
+                if (testCase.tableToolbar !== 'None') {
+                    expect(OverlayRegistry.getOverlay.mock.calls[0][0].id).toBe(testCase.expectedToolbarID);
+                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                        mockOverlay,
+                        rtaMock,
+                        'AddFragment',
+                        undefined,
+                        {
+                            aggregation: 'content',
+                            defaultAggregationArrayIndex: 1,
+                            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                        }
+                    );
+                }
+            });
         });
 
         describe('add page action', () => {
-            // test('initialize and execute action', async () => {
-            //     const pageView = new XMLView();
-            //     FlexUtils.getViewForControl.mockImplementation(() => {
-            //         return {
-            //             getId: () => 'MyView',
-            //             getController: () => {
-            //                 return {
-            //                     getMetadata: () => {
-            //                         return {
-            //                             getName: () => 'MyController'
-            //                         };
-            //                     }
-            //                 };
-            //             }
-            //         };
-            //     });
-            //     fetchMock.mockResolvedValue({
-            //         json: jest
-            //             .fn()
-            //             .mockReturnValueOnce({
-            //                 controllerExists: false,
-            //                 controllerPath: '',
-            //                 controllerPathFromRoot: '',
-            //                 isRunningInBAS: false
-            //             })
-            //             .mockReturnValueOnce({ controllers: [] }),
-            //         text: jest.fn(),
-            //         ok: true
-            //     });
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
 
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'DynamicPageTitle') {
-            //             return {
-            //                 getId: () => id,
-            //                 getDomRef: () => ({}),
-            //                 getParent: () => pageView
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPageTitle') {
+                        return {
+                            getId: () => id,
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.f.DynamicPageTitle': [
-            //             {
-            //                 controlId: 'DynamicPageTitle'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPageTitle': [
+                        {
+                            controlId: 'DynamicPageTitle'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'LIST REPORT',
-            //                 actions: [
-            //                     {
-            //                         kind: 'simple',
-            //                         id: 'listReport0-add-page-action',
-            //                         enabled: true,
-            //                         title: 'Add Custom Page Action'
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'simple',
+                                    id: 'listReport0-add-page-action',
+                                    enabled: true,
+                                    title: 'Add Custom Page Action'
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-add-page-action', kind: 'simple' })
-            //     );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-page-action', kind: 'simple' })
+                );
 
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //         mockOverlay,
-            //         rtaMock,
-            //         'AddFragment',
-            //         undefined,
-            //         {
-            //             aggregation: 'actions',
-            //             'defaultAggregationArrayIndex': 1,
-            //             title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
-            //         }
-            //     );
-            // });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'actions',
+                        'defaultAggregationArrayIndex': 1,
+                        title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
+                    }
+                );
+            });
         });
 
         describe('create table custom column', () => {
@@ -949,147 +955,148 @@ describe('FE V2 quick actions', () => {
                 },
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     const pageView = new XMLView();
-            //     const scrollIntoView = jest.fn();
-            //     jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
-            //         return undefined;
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartTable') {
-            //             return {
-            //                 isA: (type: string) => type === SMART_TABLE_TYPE,
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
 
-            //                 getAggregation: () => {
-            //                     return [
-            //                         {
-            //                             isA: (type: string) => type === testCase.tableType,
-            //                             getAggregation: () => 'columns'
-            //                         }
-            //                     ];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 selectOverlay: () => ({})
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        isA: (type: string) => type === testCase.tableType,
+                                        getAggregation: () => 'columns'
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
 
-            //     await service.init(sendActionMock, subscribeMock);
-            //     await service.reloadQuickActions({
-            //         'sap.ui.comp.smarttable.SmartTable': [
-            //             {
-            //                 controlId: 'SmartTable'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 'actions': [
-            //                     {
-            //                         'children': [
-            //                             {
-            //                                 'children': [],
-            //                                 enabled: true,
-            //                                 'label': `'MyTable' table`
-            //                             }
-            //                         ],
-            //                         'enabled': true,
-            //                         'id': 'listReport0-create-table-action',
-            //                         'kind': 'nested',
-            //                         'title': 'Add Custom Table Action'
-            //                     },
-            //                     {
-            //                         'children': [
-            //                             {
-            //                                 'children': [],
-            //                                 enabled: true,
-            //                                 'label': `'MyTable' table`
-            //                             }
-            //                         ],
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-action',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Action'
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
 
-            //                         'enabled': true,
+                                    'enabled': true,
 
-            //                         'id': 'listReport0-create-table-custom-column',
-            //                         'kind': 'nested',
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
 
-            //                         'title': 'Add Custom Table Column'
-            //                     }
-            //                 ],
-            //                 'title': 'LIST REPORT'
-            //             }
-            //         ])
-            //     );
+                                    'title': 'Add Custom Table Column'
+                                }
+                            ],
+                            'title': 'LIST REPORT'
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
-            //     );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-create-table-custom-column', kind: 'nested', path: '0' })
+                );
 
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //         mockOverlay,
-            //         rtaMock,
-            //         testCase.dialog,
-            //         undefined,
-            //         {
-            //             aggregation: 'columns',
-            //             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-            //         }
-            //     );
-            // });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    testCase.dialog,
+                    undefined,
+                    {
+                        aggregation: 'columns',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                    }
+                );
+            });
         });
 
         describe('Enable Semantic Date Range', () => {
@@ -1157,174 +1164,175 @@ describe('FE V2 quick actions', () => {
                     getAppComponent: jest.fn().mockReturnValue({} as any)
                 } as unknown as UIComponent;
             });
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartFilterBar') {
-            //             return {
-            //                 isA: (type: string) =>
-            //                     type ===
-            //                     (testCase.isAlp
-            //                         ? 'sap.suite.ui.generic.template.AnalyticalListPage.control.SmartFilterBarExt'
-            //                         : 'sap.ui.comp.smartfilterbar.SmartFilterBar'),
-            //                 getProperty: jest.fn().mockImplementation((name) => {
-            //                     if (name === 'persistencyKey') {
-            //                         return 'filterbar';
-            //                     }
-            //                     return false;
-            //                 }),
-            //                 getUseDateRangeType: () => false,
-            //                 getDomRef: () => ({}),
-            //                 getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
-            //                 getId: jest
-            //                     .fn()
-            //                     .mockImplementation(
-            //                         () => 's2p.template.ListReport.view.ListReport::testEntity--listReportFilter'
-            //                     ),
-            //                 data: (key: string) => {
-            //                     if (key === 'useDateRangeType') {
-            //                         return false;
-            //                     }
-            //                 }
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             const pageView = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(() =>
-            //                 testCase.isAlp
-            //                     ? 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage'
-            //                     : 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
-            //     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-            //         return { type, value, settings };
-            //     });
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartFilterBar') {
+                        return {
+                            isA: (type: string) =>
+                                type ===
+                                (testCase.isAlp
+                                    ? 'sap.suite.ui.generic.template.AnalyticalListPage.control.SmartFilterBarExt'
+                                    : 'sap.ui.comp.smartfilterbar.SmartFilterBar'),
+                            getProperty: jest.fn().mockImplementation((name) => {
+                                if (name === 'persistencyKey') {
+                                    return 'filterbar';
+                                }
+                                return false;
+                            }),
+                            getUseDateRangeType: () => false,
+                            getDomRef: () => ({}),
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
+                            getId: jest
+                                .fn()
+                                .mockImplementation(
+                                    () => 's2p.template.ListReport.view.ListReport::testEntity--listReportFilter'
+                                ),
+                            data: (key: string) => {
+                                if (key === 'useDateRangeType') {
+                                    return false;
+                                }
+                            }
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        const pageView = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(() =>
+                            testCase.isAlp
+                                ? 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage'
+                                : 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const pages = testCase.isManifestPagesAsArray
-            //         ? [{ name: 'test', id: 'test' }]
-            //         : { name: 'test', id: 'test' };
-            //     jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
-            //         'sap.ui.generic.app': {
-            //             pages
-            //         }
-            //     });
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
-            //     await service.reloadQuickActions({
-            //         [testCase.isAlp
-            //             ? 'sap.suite.ui.generic.template.AnalyticalListPage.control.SmartFilterBarExt'
-            //             : 'sap.ui.comp.smartfilterbar.SmartFilterBar']: [
-            //             {
-            //                 controlId: 'SmartFilterBar'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: testCase.isAlp ? 'ANALYTICAL LIST PAGE' : 'LIST REPORT',
-            //                 actions:
-            //                     testCase.validVersion && !testCase.isManifestPagesAsArray
-            //                         ? [
-            //                               {
-            //                                   'kind': 'simple',
-            //                                   id: testCase.isAlp
-            //                                       ? 'analyticalListPage0-enable-semantic-daterange-filterbar'
-            //                                       : 'listReport0-enable-semantic-daterange-filterbar',
-            //                                   title: 'Enable Semantic Date Range in Filter Bar',
-            //                                   enabled: true
-            //                               }
-            //                           ]
-            //                         : testCase.versionInfo === '1.134.0' && testCase.isManifestPagesAsArray // support manifest pages as array from version 1.134 and above
-            //                         ? [
-            //                               {
-            //                                   enabled: true,
-            //                                   id: 'listReport0-enable-semantic-daterange-filterbar',
-            //                                   kind: 'simple',
-            //                                   title: 'Enable Semantic Date Range in Filter Bar',
-            //                                   tooltip: undefined
-            //                               }
-            //                           ]
-            //                         : []
-            //             }
-            //         ])
-            //     );
-            //     if (testCase.validVersion && !testCase.isManifestPagesAsArray) {
-            //         await subscribeMock.mock.calls[0][0](
-            //             executeQuickAction({
-            //                 id: testCase.isAlp
-            //                     ? 'analyticalListPage0-enable-semantic-daterange-filterbar'
-            //                     : 'listReport0-enable-semantic-daterange-filterbar',
-            //                 kind: 'simple'
-            //             })
-            //         );
-            //         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-            //             'settings': {},
-            //             'type': 'appDescriptor',
-            //             'value': {
-            //                 'appComponent': {},
-            //                 'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
-            //                 'parameters': {
-            //                     'entityPropertyChange': {
-            //                         'operation': 'UPSERT',
-            //                         'propertyPath': 'component/settings/filterSettings/dateSettings',
-            //                         'propertyValue': {
-            //                             'useDateRange': true
-            //                         }
-            //                     },
-            //                     'parentPage': {
-            //                         'component': testCase.isAlp
-            //                             ? 'sap.suite.ui.generic.template.AnalyticalListPage'
-            //                             : 'sap.suite.ui.generic.template.ListReport',
-            //                         'entitySet': 'testEntity'
-            //                     }
-            //                 },
-            //                 'reference': undefined
-            //             }
-            //         });
-            //     }
-            // });
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const pages = testCase.isManifestPagesAsArray
+                    ? [{ name: 'test', id: 'test' }]
+                    : { name: 'test', id: 'test' };
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui.generic.app': {
+                        pages
+                    }
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    [testCase.isAlp
+                        ? 'sap.suite.ui.generic.template.AnalyticalListPage.control.SmartFilterBarExt'
+                        : 'sap.ui.comp.smartfilterbar.SmartFilterBar']: [
+                        {
+                            controlId: 'SmartFilterBar'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: testCase.isAlp ? 'ANALYTICAL LIST PAGE' : 'LIST REPORT',
+                            actions:
+                                testCase.validVersion && !testCase.isManifestPagesAsArray
+                                    ? [
+                                          {
+                                              'kind': 'simple',
+                                              id: testCase.isAlp
+                                                  ? 'analyticalListPage0-enable-semantic-daterange-filterbar'
+                                                  : 'listReport0-enable-semantic-daterange-filterbar',
+                                              title: 'Enable Semantic Date Range in Filter Bar',
+                                              enabled: true
+                                          }
+                                      ]
+                                    : testCase.versionInfo === '1.134.0' && testCase.isManifestPagesAsArray // support manifest pages as array from version 1.134 and above
+                                    ? [
+                                          {
+                                              enabled: true,
+                                              id: 'listReport0-enable-semantic-daterange-filterbar',
+                                              kind: 'simple',
+                                              title: 'Enable Semantic Date Range in Filter Bar',
+                                              tooltip: undefined
+                                          }
+                                      ]
+                                    : []
+                        }
+                    ])
+                );
+                if (testCase.validVersion && !testCase.isManifestPagesAsArray) {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: testCase.isAlp
+                                ? 'analyticalListPage0-enable-semantic-daterange-filterbar'
+                                : 'listReport0-enable-semantic-daterange-filterbar',
+                            kind: 'simple'
+                        })
+                    );
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        'settings': {},
+                        'type': 'appDescriptor',
+                        'value': {
+                            'appComponent': {},
+                            'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                            'parameters': {
+                                'entityPropertyChange': {
+                                    'operation': 'UPSERT',
+                                    'propertyPath': 'component/settings/filterSettings/dateSettings',
+                                    'propertyValue': {
+                                        'useDateRange': true
+                                    }
+                                },
+                                'parentPage': {
+                                    'component': testCase.isAlp
+                                        ? 'sap.suite.ui.generic.template.AnalyticalListPage'
+                                        : 'sap.suite.ui.generic.template.ListReport',
+                                    'entitySet': 'testEntity'
+                                }
+                            },
+                            'reference': undefined
+                        }
+                    });
+                }
+            });
         });
 
         describe('Enable Table Filtering', () => {
@@ -1368,169 +1376,170 @@ describe('FE V2 quick actions', () => {
                         'This option is disabled because table filtering for page variants is already enabled'
                 }
             ];
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     const pageView = new XMLView();
-            //     VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.ui5version });
-            //     const scrollIntoView = jest.fn();
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'mTable') {
-            //             return {
-            //                 isA: (type: string) => type === 'sap.m.Table',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
-            //                 getProperty: jest.fn().mockImplementation((name) => {
-            //                     if (name === 'persistencyKey') {
-            //                         return 'table';
-            //                     }
-            //                 }),
-            //                 getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
-            //                 getAggregation: () => 'headerToolbar',
-            //                 getParent: () => pageView,
-            //                 getHeaderToolbar: () => {
-            //                     return {
-            //                         getTitleControl: () => {
-            //                             return {
-            //                                 getText: () => 'MyTable'
-            //                             };
-            //                         }
-            //                     };
-            //                 },
-            //                 data: jest.fn().mockImplementation((key) => {
-            //                     if (key === 'p13nDialogSettings') {
-            //                         return {
-            //                             filter: {
-            //                                 visible: testCase.visible
-            //                             }
-            //                         };
-            //                     }
-            //                 })
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.ui5version });
+                const scrollIntoView = jest.fn();
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'mTable') {
+                        return {
+                            isA: (type: string) => type === 'sap.m.Table',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getProperty: jest.fn().mockImplementation((name) => {
+                                if (name === 'persistencyKey') {
+                                    return 'table';
+                                }
+                            }),
+                            getEntitySet: jest.fn().mockImplementation(() => 'testEntity'),
+                            getAggregation: () => 'headerToolbar',
+                            getParent: () => pageView,
+                            getHeaderToolbar: () => {
+                                return {
+                                    getTitleControl: () => {
+                                        return {
+                                            getText: () => 'MyTable'
+                                        };
+                                    }
+                                };
+                            },
+                            data: jest.fn().mockImplementation((key) => {
+                                if (key === 'p13nDialogSettings') {
+                                    return {
+                                        filter: {
+                                            visible: testCase.visible
+                                        }
+                                    };
+                                }
+                            })
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
 
-            //     const pages = { name: 'test', id: 'test' };
-            //     jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
-            //         'sap.ui.generic.app': {
-            //             pages
-            //         }
-            //     });
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         {
-            //             onStackChange: jest.fn(),
-            //             getConfigurationPropertyValue: jest.fn().mockReturnValue(undefined)
-            //         } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                const pages = { name: 'test', id: 'test' };
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui.generic.app': {
+                        pages
+                    }
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest.fn().mockReturnValue(undefined)
+                    } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.m.Table': [
-            //             {
-            //                 controlId: 'mTable'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.reloadQuickActions({
+                    'sap.m.Table': [
+                        {
+                            controlId: 'mTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     const isActionExpected = testCase.isValidUI5Version;
+                const isActionExpected = testCase.isValidUI5Version;
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 'actions': [
-            //                     {
-            //                         'kind': 'nested',
-            //                         id: 'listReport0-create-table-action',
-            //                         title: 'Add Custom Table Action',
-            //                         tooltip: undefined,
-            //                         enabled: true,
-            //                         children: [
-            //                             {
-            //                                 children: [],
-            //                                 enabled: true,
-            //                                 label: `'MyTable' table`
-            //                             }
-            //                         ]
-            //                     },
-            //                     {
-            //                         'children': [
-            //                             {
-            //                                 'children': [],
-            //                                 enabled: true,
-            //                                 'label': `'MyTable' table`
-            //                             }
-            //                         ],
-            //                         'enabled': true,
-            //                         'id': 'listReport0-create-table-custom-column',
-            //                         'kind': 'nested',
-            //                         'tooltip': undefined,
-            //                         'title': 'Add Custom Table Column'
-            //                     },
-            //                     ...(isActionExpected
-            //                         ? [
-            //                               {
-            //                                   'enabled': testCase.expectedIsEnabled,
-            //                                   'id': 'listReport0-enable-table-filtering',
-            //                                   'kind': 'simple',
-            //                                   'title': 'Enable Table Filtering for Page Variants',
-            //                                   'tooltip': testCase.expectedTooltip
-            //                               } as any
-            //                           ]
-            //                         : [])
-            //                 ],
-            //                 'title': 'LIST REPORT'
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'kind': 'nested',
+                                    id: 'listReport0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    tooltip: undefined,
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: true,
+                                            label: `'MyTable' table`
+                                        }
+                                    ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'listReport0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'tooltip': undefined,
+                                    'title': 'Add Custom Table Column'
+                                },
+                                ...(isActionExpected
+                                    ? [
+                                          {
+                                              'enabled': testCase.expectedIsEnabled,
+                                              'id': 'listReport0-enable-table-filtering',
+                                              'kind': 'simple',
+                                              'title': 'Enable Table Filtering for Page Variants',
+                                              'tooltip': testCase.expectedTooltip
+                                          } as any
+                                      ]
+                                    : [])
+                            ],
+                            'title': 'LIST REPORT'
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'simple' })
-            //     );
-            // });
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-enable-table-filtering', kind: 'simple' })
+                );
+            });
         });
 
         describe('create new annotation file', () => {
@@ -1564,279 +1573,281 @@ describe('FE V2 quick actions', () => {
                     };
                 });
             });
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     fetchMock.mockResolvedValue({
-            //         json: jest.fn().mockReturnValue({
-            //             isRunningInBAS: false,
-            //             annotationDataSourceMap: {
-            //                 mainService: {
-            //                     serviceUrl: 'main/service/url',
-            //                     isRunningInBAS: false,
-            //                     annotationDetails: {
-            //                         annotationExistsInWS: false
-            //                     },
-            //                     metadataReadErrorMsg: testCase.metadataReadErrorMsg
-            //                 },
-            //                 dataService: {
-            //                     serviceUrl: 'data/service/url',
-            //                     isRunningInBAS: false,
-            //                     annotationDetails: {
-            //                         annotationExistsInWS: true,
-            //                         annotationPath: 'mock/adp/project/annotation/path',
-            //                         annotationPathFromRoot: 'mock/adp.project.annotation/path'
-            //                     },
-            //                     metadataReadErrorMsg: testCase.metadataReadErrorMsg
-            //                 }
-            //             }
-            //         }),
-            //         text: jest.fn(),
-            //         ok: true
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'DynamicPage') {
-            //             return {
-            //                 getDomRef: () => ({}),
-            //                 getParent: () => pageView
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                fetchMock.mockResolvedValue({
+                    json: jest.fn().mockReturnValue({
+                        isRunningInBAS: false,
+                        annotationDataSourceMap: {
+                            mainService: {
+                                serviceUrl: 'main/service/url',
+                                isRunningInBAS: false,
+                                annotationDetails: {
+                                    annotationExistsInWS: false
+                                },
+                                metadataReadErrorMsg: testCase.metadataReadErrorMsg
+                            },
+                            dataService: {
+                                serviceUrl: 'data/service/url',
+                                isRunningInBAS: false,
+                                annotationDetails: {
+                                    annotationExistsInWS: true,
+                                    annotationPath: 'mock/adp/project/annotation/path',
+                                    annotationPathFromRoot: 'mock/adp.project.annotation/path'
+                                },
+                                metadataReadErrorMsg: testCase.metadataReadErrorMsg
+                            }
+                        }
+                    }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.f.DynamicPage': [
-            //             {
-            //                 controlId: 'DynamicPage'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ],
-            //         'sap.ui.core.XMLView': [
-            //             {
-            //                 controlId: 'ListReportView'
-            //             } as any
-            //         ]
-            //     });
-            //     jest.spyOn(Date, 'now').mockReturnValue(1736143853603);
-            //     const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
-            //     for (let i = actions.length - 1; i >= 0; i--) {
-            //         if (actions[i].title !== 'Add Local Annotation File') {
-            //             actions.splice(i, 1);
-            //         }
-            //     }
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ],
+                    'sap.ui.core.XMLView': [
+                        {
+                            controlId: 'ListReportView'
+                        } as any
+                    ]
+                });
+                jest.spyOn(Date, 'now').mockReturnValue(1736143853603);
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Add Local Annotation File') {
+                        actions.splice(i, 1);
+                    }
+                }
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'LIST REPORT',
-            //                 actions: [
-            //                     {
-            //                         kind: 'nested',
-            //                         id: 'listReport0-add-new-annotation-file',
-            //                         title: 'Add Local Annotation File',
-            //                         enabled: true,
-            //                         children: [
-            //                             {
-            //                                 children: [],
-            //                                 enabled: testCase.metadataReadErrorMsg ? false : true,
-            //                                 label: `Add Annotation File for ''{0}''`,
-            //                                 tooltip: testCase.metadataReadErrorMsg
-            //                             },
-            //                             {
-            //                                 children: [],
-            //                                 enabled: testCase.metadataReadErrorMsg ? false : true,
-            //                                 label: testCase.metadataReadErrorMsg
-            //                                     ? `Add Annotation File for ''{0}''`
-            //                                     : `Show Annotation File for ''{0}''`,
-            //                                 tooltip: testCase.metadataReadErrorMsg
-            //                             }
-            //                         ]
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    kind: 'nested',
+                                    id: 'listReport0-add-new-annotation-file',
+                                    title: 'Add Local Annotation File',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            children: [],
+                                            enabled: testCase.metadataReadErrorMsg ? false : true,
+                                            label: `Add Annotation File for ''{0}''`,
+                                            tooltip: testCase.metadataReadErrorMsg
+                                        },
+                                        {
+                                            children: [],
+                                            enabled: testCase.metadataReadErrorMsg ? false : true,
+                                            label: testCase.metadataReadErrorMsg
+                                                ? `Add Annotation File for ''{0}''`
+                                                : `Show Annotation File for ''{0}''`,
+                                            tooltip: testCase.metadataReadErrorMsg
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '0' })
-            //     );
-            //     expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-            //         settings: {},
-            //         type: 'appDescriptor',
-            //         value: {
-            //             appComponent: {},
-            //             changeType: 'appdescr_app_addAnnotationsToOData',
-            //             generator: undefined,
-            //             parameters: {
-            //                 annotations: ['annotation.annotation_1736143853603'],
-            //                 annotationsInsertPosition: 'END',
-            //                 dataSource: {
-            //                     'annotation.annotation_1736143853603': {
-            //                         type: 'ODataAnnotation',
-            //                         uri: 'annotations/annotation_1736143853603.xml'
-            //                     }
-            //                 },
-            //                 dataSourceId: 'mainService'
-            //             },
-            //             reference: undefined,
-            //             serviceUrl: 'main/service/url'
-            //         }
-            //     });
-            // });
-            // test('initialize and execute action - when file exists', async () => {
-            //     fetchMock.mockResolvedValue({
-            //         json: jest.fn().mockReturnValue({
-            //             isRunningInBAS: false,
-            //             annotationDataSourceMap: {
-            //                 mainService: {
-            //                     serviceUrl: 'main/service/url',
-            //                     isRunningInBAS: false,
-            //                     annotationDetails: {
-            //                         annotationExistsInWS: false
-            //                     }
-            //                 },
-            //                 dataService: {
-            //                     serviceUrl: 'data/service/url',
-            //                     isRunningInBAS: false,
-            //                     annotationDetails: {
-            //                         annotationExistsInWS: true,
-            //                         annotationPath: 'mock/adp/project/annotation/path',
-            //                         annotationPathFromRoot: 'mock/adp.project.annotation/path'
-            //                     }
-            //                 }
-            //             }
-            //         }),
-            //         text: jest.fn(),
-            //         ok: true
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'DynamicPage') {
-            //             return {
-            //                 getDomRef: () => ({}),
-            //                 getParent: () => pageView
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '0' })
+                );
+                expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                    settings: {},
+                    type: 'appDescriptor',
+                    value: {
+                        appComponent: {},
+                        changeType: 'appdescr_app_addAnnotationsToOData',
+                        generator: undefined,
+                        parameters: {
+                            annotations: ['annotation.annotation_1736143853603'],
+                            annotationsInsertPosition: 'END',
+                            dataSource: {
+                                'annotation.annotation_1736143853603': {
+                                    type: 'ODataAnnotation',
+                                    uri: 'annotations/annotation_1736143853603.xml'
+                                }
+                            },
+                            dataSourceId: 'mainService'
+                        },
+                        reference: undefined,
+                        serviceUrl: 'main/service/url'
+                    }
+                });
+            });
+            test('initialize and execute action - when file exists', async () => {
+                fetchMock.mockResolvedValue({
+                    json: jest.fn().mockReturnValue({
+                        isRunningInBAS: false,
+                        annotationDataSourceMap: {
+                            mainService: {
+                                serviceUrl: 'main/service/url',
+                                isRunningInBAS: false,
+                                annotationDetails: {
+                                    annotationExistsInWS: false
+                                }
+                            },
+                            dataService: {
+                                serviceUrl: 'data/service/url',
+                                isRunningInBAS: false,
+                                annotationDetails: {
+                                    annotationExistsInWS: true,
+                                    annotationPath: 'mock/adp/project/annotation/path',
+                                    annotationPathFromRoot: 'mock/adp.project.annotation/path'
+                                }
+                            }
+                        }
+                    }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.f.DynamicPage': [
-            //             {
-            //                 controlId: 'DynamicPage'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ],
-            //         'sap.ui.core.XMLView': [
-            //             {
-            //                 controlId: 'ListReportView'
-            //             } as any
-            //         ]
-            //     });
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '1' })
-            //     );
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //         mockOverlay,
-            //         rtaMock,
-            //         'FileExistsDialog',
-            //         undefined,
-            //         {
-            //             fileName: 'mock/adp.project.annotation/path',
-            //             filePath: 'mock/adp/project/annotation/path',
-            //             isRunningInBAS: false
-            //         }
-            //     );
-            // });
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ],
+                    'sap.ui.core.XMLView': [
+                        {
+                            controlId: 'ListReportView'
+                        } as any
+                    ]
+                });
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-new-annotation-file', kind: 'nested', path: '1' })
+                );
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'FileExistsDialog',
+                    undefined,
+                    {
+                        fileName: 'mock/adp.project.annotation/path',
+                        filePath: 'mock/adp/project/annotation/path',
+                        isRunningInBAS: false
+                    }
+                );
+            });
         });
 
         describe('enable variant management in tables and charts', () => {
@@ -1865,154 +1876,155 @@ describe('FE V2 quick actions', () => {
             afterEach(() => {
                 jest.restoreAllMocks();
             });
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     const pageView = new XMLView();
-            //     jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-            //         testCase.ui5version ?? { major: 1, minor: 131 }
-            //     );
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'DynamicPage') {
-            //             return {
-            //                 getId: () => id,
-            //                 getDomRef: () => ({}),
-            //                 getParent: () => pageView
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const component = new UIComponentMock();
-            //             const container = new NavContainer();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                    testCase.ui5version ?? { major: 1, minor: 131 }
+                );
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getId: () => id,
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const component = new UIComponentMock();
+                        const container = new NavContainer();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
 
-            //             jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
-            //                 return {
-            //                     getSmartVariantManagement: jest.fn().mockReturnValue(testCase.isEnabled),
-            //                     getEntitySet: jest.fn().mockReturnValue('testEntity'), // Use mockReturnValue for simple values
-            //                     getMetadata: jest.fn().mockImplementation(() => ({
-            //                         getComponentName: jest.fn().mockReturnValue('MyController') // Mock nested methods
-            //                     })),
-            //                     isA: (type: string) => type === 'sap.suite.ui.generic.template.ListReport.Component'
-            //                 } as unknown as UIComponent;
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                        jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                            return {
+                                getSmartVariantManagement: jest.fn().mockReturnValue(testCase.isEnabled),
+                                getEntitySet: jest.fn().mockReturnValue('testEntity'), // Use mockReturnValue for simple values
+                                getMetadata: jest.fn().mockImplementation(() => ({
+                                    getComponentName: jest.fn().mockReturnValue('MyController') // Mock nested methods
+                                })),
+                                isA: (type: string) => type === 'sap.suite.ui.generic.template.ListReport.Component'
+                            } as unknown as UIComponent;
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const pages = { name: 'test', id: 'test' };
-            //     jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
-            //         'sap.ui.generic.app': {
-            //             pages
-            //         }
-            //     });
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
-            //     );
-            //     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-            //         return { type, value, settings };
-            //     });
-            //     await service.init(sendActionMock, subscribeMock);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const pages = { name: 'test', id: 'test' };
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui.generic.app': {
+                        pages
+                    }
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.f.DynamicPage': [
-            //             {
-            //                 controlId: 'DynamicPage'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
-            //     let tooltip = undefined;
-            //     let enabled = true;
-            //     if (!testCase.isEnabled) {
-            //         (tooltip =
-            //             'This option has been disabled because variant management is already enabled for tables and charts'),
-            //             (enabled = false);
-            //     }
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'LIST REPORT',
-            //                 actions: testCase.supportedVersion
-            //                     ? [
-            //                           {
-            //                               kind: 'simple',
-            //                               id: 'listReport0-enable-variant-management-in-tables-charts',
-            //                               enabled,
-            //                               title: 'Enable Variant Management in Tables and Charts',
-            //                               tooltip
-            //                           }
-            //                       ]
-            //                     : []
-            //             }
-            //         ])
-            //     );
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+                let tooltip = undefined;
+                let enabled = true;
+                if (!testCase.isEnabled) {
+                    (tooltip =
+                        'This option has been disabled because variant management is already enabled for tables and charts'),
+                        (enabled = false);
+                }
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: testCase.supportedVersion
+                                ? [
+                                      {
+                                          kind: 'simple',
+                                          id: 'listReport0-enable-variant-management-in-tables-charts',
+                                          enabled,
+                                          title: 'Enable Variant Management in Tables and Charts',
+                                          tooltip
+                                      }
+                                  ]
+                                : []
+                        }
+                    ])
+                );
 
-            //     if (testCase.supportedVersion && testCase.isEnabled) {
-            //         await subscribeMock.mock.calls[0][0](
-            //             executeQuickAction({
-            //                 id: 'listReport0-enable-variant-management-in-tables-charts',
-            //                 kind: 'simple'
-            //             })
-            //         );
-            //         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-            //             'settings': {},
-            //             'type': 'appDescriptor',
-            //             'value': {
-            //                 'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
-            //                 'parameters': {
-            //                     'entityPropertyChange': {
-            //                         'operation': 'UPSERT',
-            //                         'propertyPath': 'component/settings',
-            //                         'propertyValue': {
-            //                             'smartVariantManagement': false
-            //                         }
-            //                     },
-            //                     'parentPage': {
-            //                         'component': 'MyController',
-            //                         'entitySet': 'testEntity'
-            //                     }
-            //                 },
-            //                 'reference': undefined
-            //             }
-            //         });
-            //     }
+                if (testCase.supportedVersion && testCase.isEnabled) {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: 'listReport0-enable-variant-management-in-tables-charts',
+                            kind: 'simple'
+                        })
+                    );
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        'settings': {},
+                        'type': 'appDescriptor',
+                        'value': {
+                            'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                            'parameters': {
+                                'entityPropertyChange': {
+                                    'operation': 'UPSERT',
+                                    'propertyPath': 'component/settings',
+                                    'propertyValue': {
+                                        'smartVariantManagement': false
+                                    }
+                                },
+                                'parentPage': {
+                                    'component': 'MyController',
+                                    'entitySet': 'testEntity'
+                                }
+                            },
+                            'reference': undefined
+                        }
+                    });
+                }
 
-            //     jest.clearAllMocks();
-            // });
+                jest.clearAllMocks();
+            });
         });
     });
     describe('ObjectPage', () => {
@@ -2025,455 +2037,458 @@ describe('FE V2 quick actions', () => {
                     ShowHeaderContent: false
                 }
             ];
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     const pageView = new XMLView();
-            //     FlexUtils.getViewForControl.mockImplementation(() => {
-            //         return {
-            //             getId: () => 'MyView',
-            //             getController: () => {
-            //                 return {
-            //                     getMetadata: () => {
-            //                         return {
-            //                             getName: () => 'MyController'
-            //                         };
-            //                     }
-            //                 };
-            //             }
-            //         };
-            //     });
-            //     fetchMock.mockResolvedValue({
-            //         json: jest
-            //             .fn()
-            //             .mockReturnValueOnce({
-            //                 controllerExists: false,
-            //                 controllerPath: '',
-            //                 controllerPathFromRoot: '',
-            //                 isRunningInBAS: false
-            //             })
-            //             .mockReturnValueOnce({ controllers: [] }),
-            //         text: jest.fn(),
-            //         ok: true
-            //     });
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
 
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'ObjectPageLayout') {
-            //             return {
-            //                 getDomRef: () => ({}),
-            //                 getParent: () => pageView,
-            //                 getShowHeaderContent: () => testCase.ShowHeaderContent,
-            //                 getHeaderContent: () => {
-            //                     return [new FlexBox()];
-            //                 }
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'ObjectPageLayout') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView,
+                            getShowHeaderContent: () => testCase.ShowHeaderContent,
+                            getHeaderContent: () => {
+                                return [new FlexBox()];
+                            }
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.uxap.ObjectPageLayout': [
-            //             {
-            //                 controlId: 'ObjectPageLayout'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.reloadQuickActions({
+                    'sap.uxap.ObjectPageLayout': [
+                        {
+                            controlId: 'ObjectPageLayout'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
-            //     for (let i = actions.length - 1; i >= 0; i--) {
-            //         if (actions[i].title !== 'Add Header Field') {
-            //             actions.splice(i, 1);
-            //         }
-            //     }
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Add Header Field') {
+                        actions.splice(i, 1);
+                    }
+                }
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'OBJECT PAGE',
-            //                 actions: [
-            //                     {
-            //                         kind: 'simple',
-            //                         id: 'objectPage0-op-add-header-field',
-            //                         title: 'Add Header Field',
-            //                         enabled: testCase.ShowHeaderContent,
-            //                         tooltip: testCase.ShowHeaderContent
-            //                             ? undefined
-            //                             : 'This option has been disabled because the "Show Header Content" page property is set to false.'
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: [
+                                {
+                                    kind: 'simple',
+                                    id: 'objectPage0-op-add-header-field',
+                                    title: 'Add Header Field',
+                                    enabled: testCase.ShowHeaderContent,
+                                    tooltip: testCase.ShowHeaderContent
+                                        ? undefined
+                                        : 'This option has been disabled because the "Show Header Content" page property is set to false.'
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'objectPage0-op-add-header-field', kind: 'simple' })
-            //     );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'objectPage0-op-add-header-field', kind: 'simple' })
+                );
 
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //         mockOverlay,
-            //         rtaMock,
-            //         'AddFragment',
-            //         undefined,
-            //         {
-            //             aggregation: 'items',
-            //             title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-            //         }
-            //     );
-            // });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'items',
+                        title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+                    }
+                );
+            });
         });
         describe('add custom section', () => {
-            // test('initialize and execute action', async () => {
-            //     const pageView = new XMLView();
-            //     FlexUtils.getViewForControl.mockImplementation(() => {
-            //         return {
-            //             getId: () => 'MyView',
-            //             getController: () => {
-            //                 return {
-            //                     getMetadata: () => {
-            //                         return {
-            //                             getName: () => 'MyController'
-            //                         };
-            //                     }
-            //                 };
-            //             }
-            //         };
-            //     });
-            //     fetchMock.mockResolvedValue({
-            //         json: jest
-            //             .fn()
-            //             .mockReturnValueOnce({
-            //                 controllerExists: false,
-            //                 controllerPath: '',
-            //                 controllerPathFromRoot: '',
-            //                 isRunningInBAS: false
-            //             })
-            //             .mockReturnValueOnce({ controllers: [] }),
-            //         text: jest.fn(),
-            //         ok: true
-            //     });
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
 
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'ObjectPageLayout') {
-            //             return {
-            //                 getDomRef: () => ({}),
-            //                 getParent: () => pageView,
-            //                 getShowHeaderContent: () => true,
-            //                 getHeaderContent: () => {
-            //                     return [new FlexBox()];
-            //                 }
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'ObjectPageLayout') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView,
+                            getShowHeaderContent: () => true,
+                            getHeaderContent: () => {
+                                return [new FlexBox()];
+                            }
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-            //     await service.init(sendActionMock, subscribeMock);
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
+                await service.init(sendActionMock, subscribeMock);
 
-            //     await service.reloadQuickActions({
-            //         'sap.uxap.ObjectPageLayout': [
-            //             {
-            //                 controlId: 'ObjectPageLayout'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.reloadQuickActions({
+                    'sap.uxap.ObjectPageLayout': [
+                        {
+                            controlId: 'ObjectPageLayout'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'OBJECT PAGE',
-            //                 actions: [
-            //                     {
-            //                         kind: 'simple',
-            //                         id: 'objectPage0-add-controller-to-page',
-            //                         enabled: true,
-            //                         title: 'Add Controller to Page'
-            //                     },
-            //                     {
-            //                         kind: 'simple',
-            //                         id: 'objectPage0-op-add-header-field',
-            //                         title: 'Add Header Field',
-            //                         enabled: true
-            //                     },
-            //                     {
-            //                         kind: 'simple',
-            //                         id: 'objectPage0-op-add-custom-section',
-            //                         title: 'Add Custom Section',
-            //                         enabled: true
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: [
+                                {
+                                    kind: 'simple',
+                                    id: 'objectPage0-add-controller-to-page',
+                                    enabled: true,
+                                    title: 'Add Controller to Page'
+                                },
+                                {
+                                    kind: 'simple',
+                                    id: 'objectPage0-op-add-header-field',
+                                    title: 'Add Header Field',
+                                    enabled: true
+                                },
+                                {
+                                    kind: 'simple',
+                                    id: 'objectPage0-op-add-custom-section',
+                                    title: 'Add Custom Section',
+                                    enabled: true
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'objectPage0-op-add-custom-section', kind: 'simple' })
-            //     );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'objectPage0-op-add-custom-section', kind: 'simple' })
+                );
 
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //         mockOverlay,
-            //         rtaMock,
-            //         'AddFragment',
-            //         undefined,
-            //         {
-            //             aggregation: 'sections',
-            //             title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
-            //         }
-            //     );
-            // });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'sections',
+                        title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
+                    }
+                );
+            });
         });
         describe('create table action', () => {
-            // test('initialize and execute action', async () => {
-            //     const pageView = new XMLView();
-            //     const scrollIntoView = jest.fn();
-            //     jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
-            //         if (type === 'sap.uxap.ObjectPageSection') {
-            //             // Return a mock object with the getSubSections method
-            //             return {
-            //                 children: [2],
-            //                 getSubSections: () => [{}, {}],
-            //                 getTitle: () => 'section 01',
-            //                 setSelectedSubSection: () => {}
-            //             };
-            //         }
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: () => {}
+                        };
+                    }
 
-            //         if (type === 'sap.uxap.ObjectPageSubSection') {
-            //             // Return a new instance of ManagedObject
-            //             return new ManagedObject() as any;
-            //         }
-            //         // Return undefined if no match is found
-            //         return undefined;
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartTable') {
-            //             return {
-            //                 isA: (type: string) => type === 'sap.ui.comp.smarttable.SmartTable',
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return new ManagedObject() as any;
+                    }
+                    // Return undefined if no match is found
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === 'sap.ui.comp.smarttable.SmartTable',
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
 
-            //                 getAggregation: (aggregationName: string) => {
-            //                     if (aggregationName === 'items') {
-            //                         return [
-            //                             {
-            //                                 isA: (type: string) => type === 'sap.ui.table.Table',
-            //                                 getAggregation: () => 'item' // Mock inner aggregation for table rows
-            //                             },
-            //                             {
-            //                                 isA: (type: string) => type === 'sap.m.Table',
-            //                                 getAggregation: () => 'item' // Mock another type of table
-            //                             }
-            //                         ];
-            //                     } else if (aggregationName === 'headerToolbar') {
-            //                         return 'headerToolbar'; // Return a simple string for headerToolbar
-            //                     }
-            //                     return [];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 selectOverlay: () => ({})
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === 'sap.ui.table.Table',
+                                            getAggregation: () => 'item' // Mock inner aggregation for table rows
+                                        },
+                                        {
+                                            isA: (type: string) => type === 'sap.m.Table',
+                                            getAggregation: () => 'item' // Mock another type of table
+                                        }
+                                    ];
+                                } else if (aggregationName === 'headerToolbar') {
+                                    return 'headerToolbar'; // Return a simple string for headerToolbar
+                                }
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
 
-            //     await service.init(sendActionMock, subscribeMock);
-            //     await service.reloadQuickActions({
-            //         'sap.ui.comp.smarttable.SmartTable': [
-            //             {
-            //                 controlId: 'SmartTable'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'OBJECT PAGE',
-            //                 actions: [
-            //                     {
-            //                         'kind': 'nested',
-            //                         id: 'objectPage0-create-table-action',
-            //                         title: 'Add Custom Table Action',
-            //                         enabled: true,
-            //                         children: [
-            //                             {
-            //                                 enabled: true,
-            //                                 children: [{ enabled: true, children: [], label: `'MyTable' table` }],
-            //                                 label: `'section 01' section`
-            //                             }
-            //                         ]
-            //                     },
-            //                     {
-            //                         'children': [
-            //                             {
-            //                                 enabled: true,
-            //                                 'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
-            //                                 'label': `'section 01' section`
-            //                             }
-            //                         ],
-            //                         'enabled': true,
-            //                         'id': 'objectPage0-create-table-custom-column',
-            //                         'kind': 'nested',
-            //                         'title': 'Add Custom Table Column'
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: [
+                                {
+                                    'kind': 'nested',
+                                    id: 'objectPage0-create-table-action',
+                                    title: 'Add Custom Table Action',
+                                    enabled: true,
+                                    children: [
+                                        {
+                                            enabled: true,
+                                            children: [{ enabled: true, children: [], label: `'MyTable' table` }],
+                                            label: `'section 01' section`
+                                        }
+                                    ]
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            enabled: true,
+                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
+                                            'label': `'section 01' section`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'objectPage0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Column'
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '0/0' })
-            //     );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'objectPage0-create-table-action', kind: 'nested', path: '0/0' })
+                );
 
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //         mockOverlay,
-            //         rtaMock,
-            //         'AddFragment',
-            //         undefined,
-            //         {
-            //             aggregation: 'content',
-            //             defaultAggregationArrayIndex: 1,
-            //             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-            //         }
-            //     );
-            // });
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddFragment',
+                    undefined,
+                    {
+                        aggregation: 'content',
+                        defaultAggregationArrayIndex: 1,
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
+                    }
+                );
+            });
         });
 
         describe('create table custom column', () => {
@@ -2491,294 +2506,296 @@ describe('FE V2 quick actions', () => {
                 },
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     const pageView = new XMLView();
-            //     const scrollIntoView = jest.fn();
-            //     jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
-            //         if (type === 'sap.uxap.ObjectPageSection') {
-            //             // Return a mock object with the getSubSections method
-            //             return {
-            //                 children: [2],
-            //                 getSubSections: () => [{}, {}],
-            //                 getTitle: () => 'section 01',
-            //                 setSelectedSubSection: () => {}
-            //             };
-            //         }
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: () => {}
+                        };
+                    }
 
-            //         if (type === 'sap.uxap.ObjectPageSubSection') {
-            //             // Return a new instance of ManagedObject
-            //             return new ManagedObject() as any;
-            //         }
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return new ManagedObject() as any;
+                    }
 
-            //         return undefined;
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartTable') {
-            //             return {
-            //                 isA: (type: string) => type === SMART_TABLE_TYPE,
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
 
-            //                 getAggregation: (aggregationName: string) => {
-            //                     if (aggregationName === 'items') {
-            //                         return [
-            //                             {
-            //                                 isA: (type: string) => type === testCase.tableType,
-            //                                 getAggregation: () => 'item'
-            //                             }
-            //                         ];
-            //                     } else if (aggregationName === 'headerToolbar') {
-            //                         return 'headerToolbar'; // Mock headerToolbar aggregation
-            //                     } else if (aggregationName === 'columns') {
-            //                         return [
-            //                             {
-            //                                 isA: (type: string) => type === testCase.tableType,
-            //                                 getAggregation: () => 'columns' // Mock column aggregation
-            //                             }
-            //                         ];
-            //                     }
-            //                     return [];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 selectOverlay: () => ({})
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.tableType,
+                                            getAggregation: () => 'item'
+                                        }
+                                    ];
+                                } else if (aggregationName === 'headerToolbar') {
+                                    return 'headerToolbar'; // Mock headerToolbar aggregation
+                                } else if (aggregationName === 'columns') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.tableType,
+                                            getAggregation: () => 'columns' // Mock column aggregation
+                                        }
+                                    ];
+                                }
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
 
-            //     await service.init(sendActionMock, subscribeMock);
-            //     await service.reloadQuickActions({
-            //         'sap.ui.comp.smarttable.SmartTable': [
-            //             {
-            //                 controlId: 'SmartTable'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     // filter out irrelevant actions
-            //     const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
-            //     for (let i = actions.length - 1; i >= 0; i--) {
-            //         if (actions[i].title !== 'Add Custom Table Column') {
-            //             actions.splice(i, 1);
-            //         }
-            //     }
+                // filter out irrelevant actions
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Add Custom Table Column') {
+                        actions.splice(i, 1);
+                    }
+                }
 
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 'title': 'OBJECT PAGE',
-            //                 'actions': [
-            //                     {
-            //                         'children': [
-            //                             {
-            //                                 enabled: true,
-            //                                 'children': [
-            //                                     {
-            //                                         'children': [],
-            //                                         enabled: true,
-            //                                         'label': `'MyTable' table`
-            //                                     }
-            //                                 ],
-            //                                 'label': `'section 01' section`
-            //                             }
-            //                         ],
-            //                         'enabled': true,
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'title': 'OBJECT PAGE',
+                            'actions': [
+                                {
+                                    'children': [
+                                        {
+                                            enabled: true,
+                                            'children': [
+                                                {
+                                                    'children': [],
+                                                    enabled: true,
+                                                    'label': `'MyTable' table`
+                                                }
+                                            ],
+                                            'label': `'section 01' section`
+                                        }
+                                    ],
+                                    'enabled': true,
 
-            //                         'id': 'objectPage0-create-table-custom-column',
-            //                         'kind': 'nested',
-            //                         'title': 'Add Custom Table Column'
-            //                     }
-            //                 ]
-            //             }
-            //         ])
-            //     );
+                                    'id': 'objectPage0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Column'
+                                }
+                            ]
+                        }
+                    ])
+                );
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({
-            //             id: 'objectPage0-create-table-custom-column',
-            //             kind: 'nested',
-            //             path: '0/0'
-            //         })
-            //     );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({
+                        id: 'objectPage0-create-table-custom-column',
+                        kind: 'nested',
+                        path: '0/0'
+                    })
+                );
 
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //         mockOverlay,
-            //         rtaMock,
-            //         testCase.dialog,
-            //         undefined,
-            //         {
-            //             aggregation: 'columns',
-            //             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-            //         }
-            //     );
-            // });
-            // test('displays warning when no rows loaded', async () => {
-            //     const pageView = new XMLView();
-            //     const scrollIntoView = jest.fn();
-            //     jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
-            //         if (type === 'sap.uxap.ObjectPageSection') {
-            //             // Return a mock object with the getSubSections method
-            //             return {
-            //                 children: [2],
-            //                 getSubSections: () => [{}, {}],
-            //                 getTitle: () => 'section 01',
-            //                 setSelectedSubSection: () => {}
-            //             };
-            //         }
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    testCase.dialog,
+                    undefined,
+                    {
+                        aggregation: 'columns',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                    }
+                );
+            });
+            test('displays warning when no rows loaded', async () => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: () => {}
+                        };
+                    }
 
-            //         if (type === 'sap.uxap.ObjectPageSubSection') {
-            //             // Return a new instance of ManagedObject
-            //             return new ManagedObject() as any;
-            //         }
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return new ManagedObject() as any;
+                    }
 
-            //         return undefined;
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartTable') {
-            //             return {
-            //                 isA: (type: string) => type === SMART_TABLE_TYPE,
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
 
-            //                 getAggregation: () => {
-            //                     return [
-            //                         {
-            //                             isA: (type: string) => type === M_TABLE_TYPE,
-            //                             getAggregation: () => []
-            //                         }
-            //                     ];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 selectOverlay: () => ({})
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        isA: (type: string) => type === M_TABLE_TYPE,
+                                        getAggregation: () => []
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
 
-            //     await service.init(sendActionMock, subscribeMock);
-            //     await service.reloadQuickActions({
-            //         'sap.ui.comp.smarttable.SmartTable': [
-            //             {
-            //                 controlId: 'SmartTable'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     const notifySpy = jest.spyOn(adpUtils, 'notifyUser');
+                const notifySpy = jest.spyOn(adpUtils, 'notifyUser');
 
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({
-            //             id: 'objectPage0-create-table-custom-column',
-            //             kind: 'nested',
-            //             path: '0/0'
-            //         })
-            //     );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({
+                        id: 'objectPage0-create-table-custom-column',
+                        kind: 'nested',
+                        path: '0/0'
+                    })
+                );
 
-            //     expect(notifySpy).toHaveBeenCalledWith(
-            //         'At least one table row is required to create new custom column. Make sure the table data is loaded and try again.',
-            //         8000
-            //     );
-            // });
+                expect(notifySpy).toHaveBeenCalledWith(
+                    'At least one table row is required to create new custom column. Make sure the table data is loaded and try again.',
+                    8000
+                );
+            });
         });
 
         describe('enable creation table rows', () => {
@@ -2847,233 +2864,234 @@ describe('FE V2 quick actions', () => {
                         'This action is disabled because empty row mode is not supported for analytical and tree tables'
                 }
             ];
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-            //         testCase.ui5version ?? { major: 1, minor: 131 }
-            //     );
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                    testCase.ui5version ?? { major: 1, minor: 131 }
+                );
 
-            //     const pageView = new XMLView();
-            //     pageView.getParent.mockReturnValue({
-            //         getProperty: (propName: string) => {
-            //             if (propName === 'entitySet') {
-            //                 return testCase.parentEntitySet ?? 'DummyEntitySet';
-            //             } else {
-            //                 return undefined;
-            //             }
-            //         }
-            //     });
-            //     const scrollIntoView = jest.fn();
-            //     const actionId = 'objectPage0-enable-table-empty-row-mode';
+                const pageView = new XMLView();
+                pageView.getParent.mockReturnValue({
+                    getProperty: (propName: string) => {
+                        if (propName === 'entitySet') {
+                            return testCase.parentEntitySet ?? 'DummyEntitySet';
+                        } else {
+                            return undefined;
+                        }
+                    }
+                });
+                const scrollIntoView = jest.fn();
+                const actionId = 'objectPage0-enable-table-empty-row-mode';
 
-            //     const setSelectedSubSectionMock = jest.fn();
-            //     const fakeSubSection = new ManagedObject() as any;
-            //     jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
-            //         if (type === 'sap.uxap.ObjectPageSection') {
-            //             // Return a mock object with the getSubSections method
-            //             return {
-            //                 children: [2],
-            //                 getSubSections: () => [{}, {}],
-            //                 getTitle: () => 'section 01',
-            //                 setSelectedSubSection: setSelectedSubSectionMock
-            //             };
-            //         }
+                const setSelectedSubSectionMock = jest.fn();
+                const fakeSubSection = new ManagedObject() as any;
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: setSelectedSubSectionMock
+                        };
+                    }
 
-            //         if (type === 'sap.uxap.ObjectPageSubSection') {
-            //             // Return a new instance of ManagedObject
-            //             return fakeSubSection;
-            //         }
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return fakeSubSection;
+                    }
 
-            //         return undefined;
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartTable') {
-            //             return {
-            //                 isA: (type: string) => type === SMART_TABLE_TYPE,
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
 
-            //                 getAggregation: (aggregationName: string) => {
-            //                     if (aggregationName === 'items') {
-            //                         return [
-            //                             {
-            //                                 isA: (type: string) => type === testCase.innerTableType,
-            //                                 getAggregation: () => 'item'
-            //                             }
-            //                         ];
-            //                     }
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === testCase.innerTableType,
+                                            getAggregation: () => 'item'
+                                        }
+                                    ];
+                                }
 
-            //                     return [];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 selectOverlay: () => ({}),
-            //                 data: (key: string) => {
-            //                     if (key === 'creationMode') {
-            //                         return testCase.value ?? 'inline';
-            //                     }
-            //                     if (key === 'sectionId') {
-            //                         return testCase.tableSectionId ?? 'DummyTableSectionID';
-            //                     }
-            //                 }
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({}),
+                            data: (key: string) => {
+                                if (key === 'creationMode') {
+                                    return testCase.value ?? 'inline';
+                                }
+                                if (key === 'sectionId') {
+                                    return testCase.tableSectionId ?? 'DummyTableSectionID';
+                                }
+                            }
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     rtaMock.getRootControlInstance = jest.fn().mockReturnValue({
-            //         getManifest: jest.fn().mockReturnValue({
-            //             ['sap.ui.generic.app']: {
-            //                 pages: testCase.manifestPages ?? {}
-            //             }
-            //         })
-            //     });
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                rtaMock.getRootControlInstance = jest.fn().mockReturnValue({
+                    getManifest: jest.fn().mockReturnValue({
+                        ['sap.ui.generic.app']: {
+                            pages: testCase.manifestPages ?? {}
+                        }
+                    })
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
 
-            //     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-            //         return { type, value, settings };
-            //     });
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
 
-            //     await service.init(sendActionMock, subscribeMock);
-            //     await service.reloadQuickActions({
-            //         'sap.ui.comp.smarttable.SmartTable': [
-            //             {
-            //                 controlId: 'SmartTable'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     // filter out irrelevant actions
-            //     const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
-            //     for (let i = actions.length - 1; i >= 0; i--) {
-            //         if (actions[i].title !== 'Enable Empty Row Mode for Tables') {
-            //             actions.splice(i, 1);
-            //         }
-            //     }
+                // filter out irrelevant actions
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Enable Empty Row Mode for Tables') {
+                        actions.splice(i, 1);
+                    }
+                }
 
-            //     let thrown;
-            //     try {
-            //         await subscribeMock.mock.calls[0][0](
-            //             executeQuickAction({
-            //                 id: actionId,
-            //                 kind: 'nested',
-            //                 path: '0/0'
-            //             })
-            //         );
-            //     } catch (e) {
-            //         thrown = (e as Error).message;
-            //     }
+                let thrown;
+                try {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: actionId,
+                            kind: 'nested',
+                            path: '0/0'
+                        })
+                    );
+                } catch (e) {
+                    thrown = (e as Error).message;
+                }
 
-            //     expect(thrown).toBe(testCase.expectToThrow);
+                expect(thrown).toBe(testCase.expectToThrow);
 
-            //     expect(sendActionMock).toHaveBeenNthCalledWith(
-            //         1,
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'OBJECT PAGE',
-            //                 actions: testCase.expectUnsupported
-            //                     ? []
-            //                     : [
-            //                           {
-            //                               kind: 'nested',
-            //                               id: actionId,
-            //                               enabled: true,
-            //                               tooltip: undefined,
-            //                               title: 'Enable Empty Row Mode for Tables',
-            //                               children: [
-            //                                   {
-            //                                       'children': [
-            //                                           {
-            //                                               'children': [],
-            //                                               'enabled': !testCase.expectDisabledReason,
-            //                                               'label': `'MyTable' table`,
-            //                                               tooltip: testCase.expectDisabledReason
-            //                                           }
-            //                                       ],
-            //                                       'enabled': true,
-            //                                       'label': `'section 01' section`
-            //                                   }
-            //                               ]
-            //                           }
-            //                       ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenNthCalledWith(
+                    1,
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: testCase.expectUnsupported
+                                ? []
+                                : [
+                                      {
+                                          kind: 'nested',
+                                          id: actionId,
+                                          enabled: true,
+                                          tooltip: undefined,
+                                          title: 'Enable Empty Row Mode for Tables',
+                                          children: [
+                                              {
+                                                  'children': [
+                                                      {
+                                                          'children': [],
+                                                          'enabled': !testCase.expectDisabledReason,
+                                                          'label': `'MyTable' table`,
+                                                          tooltip: testCase.expectDisabledReason
+                                                      }
+                                                  ],
+                                                  'enabled': true,
+                                                  'label': `'section 01' section`
+                                              }
+                                          ]
+                                      }
+                                  ]
+                        }
+                    ])
+                );
 
-            //     if (testCase.expectUnsupported || testCase.expectToThrow) {
-            //         expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
-            //         expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
-            //         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
-            //     } else {
-            //         expect(mockOverlay.setSelected).toHaveBeenCalledWith(true);
-            //         expect(setSelectedSubSectionMock).toHaveBeenCalledWith(fakeSubSection);
-            //         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-            //             'settings': {},
-            //             'type': 'appDescriptor',
-            //             'value': {
-            //                 'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
-            //                 'parameters': {
-            //                     'entityPropertyChange': {
-            //                         'operation': 'UPSERT',
-            //                         'propertyPath': 'component/settings/sections/DummyTableSectionID/createMode',
-            //                         'propertyValue': 'creationRows'
-            //                     },
-            //                     'parentPage': {
-            //                         'component': 'sap.suite.ui.generic.template.ObjectPage',
-            //                         'entitySet': 'DummyEntitySet'
-            //                     }
-            //                 },
-            //                 'reference': undefined
-            //             }
-            //         });
-            //     }
-            // });
+                if (testCase.expectUnsupported || testCase.expectToThrow) {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
+                } else {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledWith(true);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledWith(fakeSubSection);
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        'settings': {},
+                        'type': 'appDescriptor',
+                        'value': {
+                            'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                            'parameters': {
+                                'entityPropertyChange': {
+                                    'operation': 'UPSERT',
+                                    'propertyPath': 'component/settings/sections/DummyTableSectionID/createMode',
+                                    'propertyValue': 'creationRows'
+                                },
+                                'parentPage': {
+                                    'component': 'sap.suite.ui.generic.template.ObjectPage',
+                                    'entitySet': 'DummyEntitySet'
+                                }
+                            },
+                            'reference': undefined
+                        }
+                    });
+                }
+            });
         });
 
         describe('enable variant management in tables and charts', () => {
@@ -3108,242 +3126,243 @@ describe('FE V2 quick actions', () => {
             afterEach(() => {
                 jest.restoreAllMocks();
             });
-            // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            //     jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-            //         testCase.ui5version ?? { major: 1, minor: 131 }
-            //     );
+            test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                    testCase.ui5version ?? { major: 1, minor: 131 }
+                );
 
-            //     const pageView = new XMLView();
-            //     pageView.getParent.mockReturnValue({
-            //         getProperty: (propName: string) => {
-            //             if (propName === 'entitySet') {
-            //                 return 'DummyEntitySet';
-            //             } else {
-            //                 return undefined;
-            //             }
-            //         }
-            //     });
-            //     const scrollIntoView = jest.fn();
-            //     const actionId = 'objectPage0-enable-variant-management-in-tables-charts';
+                const pageView = new XMLView();
+                pageView.getParent.mockReturnValue({
+                    getProperty: (propName: string) => {
+                        if (propName === 'entitySet') {
+                            return 'DummyEntitySet';
+                        } else {
+                            return undefined;
+                        }
+                    }
+                });
+                const scrollIntoView = jest.fn();
+                const actionId = 'objectPage0-enable-variant-management-in-tables-charts';
 
-            //     const setSelectedSubSectionMock = jest.fn();
-            //     const fakeSubSection = new ManagedObject() as any;
-            //     jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
-            //         if (type === 'sap.uxap.ObjectPageSection') {
-            //             // Return a mock object with the getSubSections method
-            //             return {
-            //                 children: [2],
-            //                 getSubSections: () => [{}, {}],
-            //                 getTitle: () => 'section 01',
-            //                 setSelectedSubSection: setSelectedSubSectionMock
-            //             };
-            //         }
+                const setSelectedSubSectionMock = jest.fn();
+                const fakeSubSection = new ManagedObject() as any;
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
+                    if (type === 'sap.uxap.ObjectPageSection') {
+                        // Return a mock object with the getSubSections method
+                        return {
+                            children: [2],
+                            getSubSections: () => [{}, {}],
+                            getTitle: () => 'section 01',
+                            setSelectedSubSection: setSelectedSubSectionMock
+                        };
+                    }
 
-            //         if (type === 'sap.uxap.ObjectPageSubSection') {
-            //             // Return a new instance of ManagedObject
-            //             return fakeSubSection;
-            //         }
+                    if (type === 'sap.uxap.ObjectPageSubSection') {
+                        // Return a new instance of ManagedObject
+                        return fakeSubSection;
+                    }
 
-            //         return undefined;
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartTable') {
-            //             const tableData: Record<string, any> = {
-            //                 lineItemQualifier: 'lineItem123',
-            //                 sectionId: testCase.isCustomTable ? undefined : 'dummySection'
-            //             };
-            //             return {
-            //                 isA: (type: string) => type === SMART_TABLE_TYPE,
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        const tableData: Record<string, any> = {
+                            lineItemQualifier: 'lineItem123',
+                            sectionId: testCase.isCustomTable ? undefined : 'dummySection'
+                        };
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
 
-            //                 getAggregation: (aggregationName: string) => {
-            //                     if (aggregationName === 'items') {
-            //                         return [
-            //                             {
-            //                                 isA: (type: string) => type === SMART_TABLE_TYPE,
-            //                                 getAggregation: () => 'item'
-            //                             }
-            //                         ];
-            //                     }
+                            getAggregation: (aggregationName: string) => {
+                                if (aggregationName === 'items') {
+                                    return [
+                                        {
+                                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                                            getAggregation: () => 'item'
+                                        }
+                                    ];
+                                }
 
-            //                     return [];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 selectOverlay: () => ({}),
-            //                 getVariantManagement: () => testCase.isEnabled,
-            //                 data: jest.fn((prop: string) => {
-            //                     if (!prop) {
-            //                         return tableData;
-            //                     }
-            //                     return tableData[prop];
-            //                 })
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
+                                return [];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({}),
+                            getVariantManagement: () => testCase.isEnabled,
+                            data: jest.fn((prop: string) => {
+                                if (!prop) {
+                                    return tableData;
+                                }
+                                return tableData[prop];
+                            })
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ObjectPage.view.Details'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
 
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const pages = { name: 'test', id: 'test' };
-            //     jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
-            //         'sap.ui.generic.app': {
-            //             pages
-            //         }
-            //     });
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
-            //     );
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const pages = { name: 'test', id: 'test' };
+                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                    'sap.ui.generic.app': {
+                        pages
+                    }
+                });
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
+                    isReuseComponentCheckerMock
+                );
 
-            //     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-            //         return { type, value, settings };
-            //     });
+                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                    return { type, value, settings };
+                });
 
-            //     await service.init(sendActionMock, subscribeMock);
-            //     await service.reloadQuickActions({
-            //         'sap.ui.comp.smarttable.SmartTable': [
-            //             {
-            //                 controlId: 'SmartTable'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
 
-            //     // filter out irrelevant actions
-            //     const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
-            //     for (let i = actions.length - 1; i >= 0; i--) {
-            //         if (actions[i].title !== 'Enable Variant Management in Tables') {
-            //             actions.splice(i, 1);
-            //         }
-            //     }
+                // filter out irrelevant actions
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Enable Variant Management in Tables') {
+                        actions.splice(i, 1);
+                    }
+                }
 
-            //     let thrown;
-            //     try {
-            //         await subscribeMock.mock.calls[0][0](
-            //             executeQuickAction({
-            //                 id: actionId,
-            //                 kind: 'nested',
-            //                 path: '0/0'
-            //             })
-            //         );
-            //     } catch (e) {
-            //         thrown = e;
-            //     }
+                let thrown;
+                try {
+                    await subscribeMock.mock.calls[0][0](
+                        executeQuickAction({
+                            id: actionId,
+                            kind: 'nested',
+                            path: '0/0'
+                        })
+                    );
+                } catch (e) {
+                    thrown = e;
+                }
 
-            //     expect(thrown?.message).toBe(
-            //         testCase.isCustomTable ? 'Internal error. Table sectionId property not found' : undefined
-            //     );
+                expect(thrown?.message).toBe(
+                    testCase.isCustomTable ? 'Internal error. Table sectionId property not found' : undefined
+                );
 
-            //     expect(sendActionMock).toHaveBeenNthCalledWith(
-            //         1,
-            //         quickActionListChanged([
-            //             {
-            //                 title: 'OBJECT PAGE',
-            //                 actions: !testCase.supportedVersion
-            //                     ? []
-            //                     : [
-            //                           {
-            //                               kind: 'nested',
-            //                               id: actionId,
-            //                               enabled: true,
-            //                               tooltip: undefined,
-            //                               title: 'Enable Variant Management in Tables',
-            //                               children: [
-            //                                   {
-            //                                       'children': [
-            //                                           {
-            //                                               'children': [],
-            //                                               'enabled':
-            //                                                   testCase.isEnabled || testCase.isCustomTable
-            //                                                       ? false
-            //                                                       : true,
-            //                                               'label': `'MyTable' table`,
-            //                                               tooltip: testCase.tooltip
-            //                                           }
-            //                                       ],
-            //                                       'enabled': true,
-            //                                       'label': `'section 01' section`
-            //                                   }
-            //                               ]
-            //                           }
-            //                       ]
-            //             }
-            //         ])
-            //     );
+                expect(sendActionMock).toHaveBeenNthCalledWith(
+                    1,
+                    quickActionListChanged([
+                        {
+                            title: 'OBJECT PAGE',
+                            actions: !testCase.supportedVersion
+                                ? []
+                                : [
+                                      {
+                                          kind: 'nested',
+                                          id: actionId,
+                                          enabled: true,
+                                          tooltip: undefined,
+                                          title: 'Enable Variant Management in Tables',
+                                          children: [
+                                              {
+                                                  'children': [
+                                                      {
+                                                          'children': [],
+                                                          'enabled':
+                                                              testCase.isEnabled || testCase.isCustomTable
+                                                                  ? false
+                                                                  : true,
+                                                          'label': `'MyTable' table`,
+                                                          tooltip: testCase.tooltip
+                                                      }
+                                                  ],
+                                                  'enabled': true,
+                                                  'label': `'section 01' section`
+                                              }
+                                          ]
+                                      }
+                                  ]
+                        }
+                    ])
+                );
 
-            //     if (!testCase.supportedVersion || testCase.isCustomTable) {
-            //         expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
-            //         expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
-            //         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
-            //     } else {
-            //         expect(mockOverlay.setSelected).toHaveBeenCalledWith(true);
-            //         expect(setSelectedSubSectionMock).toHaveBeenCalledWith(fakeSubSection);
-            //         expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
-            //             'settings': {},
-            //             'type': 'appDescriptor',
-            //             'value': {
-            //                 'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
-            //                 'parameters': {
-            //                     'entityPropertyChange': {
-            //                         'operation': 'UPSERT',
-            //                         'propertyPath': 'component/settings/sections/dummySection/tableSettings',
-            //                         'propertyValue': {
-            //                             'variantManagement': true
-            //                         }
-            //                     },
-            //                     'parentPage': {
-            //                         'component': 'sap.suite.ui.generic.template.ObjectPage',
-            //                         'entitySet': 'DummyEntitySet'
-            //                     }
-            //                 },
-            //                 'reference': undefined
-            //             }
-            //         });
-            //     }
-            // });
+                if (!testCase.supportedVersion || testCase.isCustomTable) {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledTimes(0);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledTimes(0);
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledTimes(0);
+                } else {
+                    expect(mockOverlay.setSelected).toHaveBeenCalledWith(true);
+                    expect(setSelectedSubSectionMock).toHaveBeenCalledWith(fakeSubSection);
+                    expect(rtaMock.getCommandStack().pushAndExecute).toHaveBeenCalledWith({
+                        'settings': {},
+                        'type': 'appDescriptor',
+                        'value': {
+                            'changeType': 'appdescr_ui_generic_app_changePageConfiguration',
+                            'parameters': {
+                                'entityPropertyChange': {
+                                    'operation': 'UPSERT',
+                                    'propertyPath': 'component/settings/sections/dummySection/tableSettings',
+                                    'propertyValue': {
+                                        'variantManagement': true
+                                    }
+                                },
+                                'parentPage': {
+                                    'component': 'sap.suite.ui.generic.template.ObjectPage',
+                                    'entitySet': 'DummyEntitySet'
+                                }
+                            },
+                            'reference': undefined
+                        }
+                    });
+                }
+            });
         });
     });
     describe('AnalyticalListPage', () => {
@@ -3591,302 +3610,303 @@ describe('FE V2 quick actions', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
-        // test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-        //     jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-        //         testCase.ui5version ?? { major: 1, minor: 131 }
-        //     );
-        //     jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
+        test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+            jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                testCase.ui5version ?? { major: 1, minor: 131 }
+            );
+            jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
 
-        //     const pageView = new XMLView();
-        //     pageView.getParent.mockReturnValue({
-        //         getProperty: (propName: string) => {
-        //             if (propName === 'entitySet') {
-        //                 return 'DummyEntitySet';
-        //             } else {
-        //                 return undefined;
-        //             }
-        //         }
-        //     });
+            const pageView = new XMLView();
+            pageView.getParent.mockReturnValue({
+                getProperty: (propName: string) => {
+                    if (propName === 'entitySet') {
+                        return 'DummyEntitySet';
+                    } else {
+                        return undefined;
+                    }
+                }
+            });
 
-        //     const actionId = testCase.isListReport ? 'listReport0-add-new-subpage' : 'objectPage0-add-new-subpage';
+            const actionId = testCase.isListReport ? 'listReport0-add-new-subpage' : 'objectPage0-add-new-subpage';
 
-        //     jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
-        //         return {
-        //             isA: (type: string) =>
-        //                 type ===
-        //                 (testCase.isUnexpectedOwnerComponent
-        //                     ? 'wrongType'
-        //                     : 'sap.suite.ui.generic.template.lib.TemplateComponent'),
-        //             getEntitySet: jest.fn().mockReturnValue(testCase.componentHasNoEntitySet ? undefined : 'Travels')
-        //         } as unknown as UIComponent;
-        //     });
+            jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                return {
+                    isA: (type: string) =>
+                        type ===
+                        (testCase.isUnexpectedOwnerComponent
+                            ? 'wrongType'
+                            : 'sap.suite.ui.generic.template.lib.TemplateComponent'),
+                    getEntitySet: jest.fn().mockReturnValue(testCase.componentHasNoEntitySet ? undefined : 'Travels')
+                } as unknown as UIComponent;
+            });
 
-        //     sapCoreMock.byId.mockImplementation((id) => {
-        //         if (id == 'ObjectPage') {
-        //             return {
-        //                 isA: (type: string) => type === 'ObjectPageType',
-        //                 getId: () => id,
-        //                 getDomRef: () => ({ ref: 'OP' }),
-        //                 getParent: () => pageView
-        //             };
-        //         }
-        //         if (id == 'ListReport') {
-        //             return {
-        //                 isA: (type: string) => type === 'ListReportType',
-        //                 getId: () => id,
-        //                 getDomRef: () => ({ ref: 'LR' }),
-        //                 getParent: () => pageView
-        //             };
-        //         }
-        //         if (id == 'NavContainer') {
-        //             const container = new NavContainer();
-        //             const component = new UIComponentMock();
-        //             const view = new XMLView();
-        //             pageView.getDomRef.mockImplementation(() => {
-        //                 return {
-        //                     contains: () => true
-        //                 };
-        //             });
-        //             pageView.getViewName.mockImplementation(
-        //                 () =>
-        //                     `sap.suite.ui.generic.template.${
-        //                         testCase.isListReport ? 'ListReport.view.ListReport' : 'ObjectPage.view.Details'
-        //                     }`
-        //             );
-        //             const componentContainer = new ComponentContainer();
-        //             const spy = jest.spyOn(componentContainer, 'getComponent');
-        //             spy.mockImplementation(() => {
-        //                 return 'component-id';
-        //             });
-        //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-        //                 if (id === 'component-id') {
-        //                     return component;
-        //                 }
-        //             });
-        //             view.getContent.mockImplementation(() => {
-        //                 return [componentContainer];
-        //             });
-        //             container.getCurrentPage.mockImplementation(() => {
-        //                 return view;
-        //             });
-        //             component.getRootControl.mockImplementation(() => {
-        //                 return pageView;
-        //             });
-        //             return container;
-        //         }
-        //     });
+            sapCoreMock.byId.mockImplementation((id) => {
+                if (id == 'ObjectPage') {
+                    return {
+                        isA: (type: string) => type === 'ObjectPageType',
+                        getId: () => id,
+                        getDomRef: () => ({ ref: 'OP' }),
+                        getParent: () => pageView
+                    };
+                }
+                if (id == 'ListReport') {
+                    return {
+                        isA: (type: string) => type === 'ListReportType',
+                        getId: () => id,
+                        getDomRef: () => ({ ref: 'LR' }),
+                        getParent: () => pageView
+                    };
+                }
+                if (id == 'NavContainer') {
+                    const container = new NavContainer();
+                    const component = new UIComponentMock();
+                    const view = new XMLView();
+                    pageView.getDomRef.mockImplementation(() => {
+                        return {
+                            contains: () => true
+                        };
+                    });
+                    pageView.getViewName.mockImplementation(
+                        () =>
+                            `sap.suite.ui.generic.template.${
+                                testCase.isListReport ? 'ListReport.view.ListReport' : 'ObjectPage.view.Details'
+                            }`
+                    );
+                    const componentContainer = new ComponentContainer();
+                    const spy = jest.spyOn(componentContainer, 'getComponent');
+                    spy.mockImplementation(() => {
+                        return 'component-id';
+                    });
+                    jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        if (id === 'component-id') {
+                            return component;
+                        }
+                    });
+                    view.getContent.mockImplementation(() => {
+                        return [componentContainer];
+                    });
+                    container.getCurrentPage.mockImplementation(() => {
+                        return view;
+                    });
+                    component.getRootControl.mockImplementation(() => {
+                        return pageView;
+                    });
+                    return container;
+                }
+            });
 
-        //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-        //     const pages = testCase.isArrayStructuredManifest
-        //         ? [
-        //               {
-        //                   component: {
-        //                       name: 'sap.suite.ui.generic.template.ListReport'
-        //                   },
-        //                   entitySet: 'Travels',
-        //                   pages: [
-        //                       {
-        //                           component: {
-        //                               name: 'sap.suite.ui.generic.template.ObjectPage'
-        //                           },
-        //                           entitySet: 'Travels',
-        //                           pages: testCase.isNewPageUnavailable
-        //                               ? [
-        //                                     {
-        //                                         component: {
-        //                                             name: 'sap.suite.ui.generic.template.ObjectPage'
-        //                                         },
-        //                                         entitySet: 'Bookings'
-        //                                     }
-        //                                 ]
-        //                               : undefined
-        //                       }
-        //                   ]
-        //               }
-        //           ]
-        //         : {
-        //               'ListReport|Travel': {
-        //                   component: {
-        //                       name: 'sap.suite.ui.generic.template.ListReport'
-        //                   },
-        //                   entitySet: 'Travels',
-        //                   pages:
-        //                       testCase.isListReport && !testCase.isNewPageUnavailable
-        //                           ? undefined
-        //                           : {
-        //                                 'ObjectPage|Travels': {
-        //                                     component: {
-        //                                         name: 'sap.suite.ui.generic.template.ObjectPage'
-        //                                     },
-        //                                     entitySet: 'Travels',
-        //                                     pages: testCase.isNewPageUnavailable
-        //                                         ? {
-        //                                               'ObjectPage|Bookings': {
-        //                                                   component: {
-        //                                                       name: 'sap.suite.ui.generic.template.ObjectPage'
-        //                                                   },
-        //                                                   entitySet: 'Bookings'
-        //                                               }
-        //                                           }
-        //                                         : undefined
-        //                                 }
-        //                             }
-        //               }
-        //           };
-        //     jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
-        //         'sap.ui.generic.app': {
-        //             pages
-        //         }
-        //     });
-        //     jest.spyOn(rtaMock, 'getFlexSettings').mockReturnValue({
-        //         projectId: 'dummyProjectId'
-        //     } as unknown as FlexSettings);
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+            const pages = testCase.isArrayStructuredManifest
+                ? [
+                      {
+                          component: {
+                              name: 'sap.suite.ui.generic.template.ListReport'
+                          },
+                          entitySet: 'Travels',
+                          pages: [
+                              {
+                                  component: {
+                                      name: 'sap.suite.ui.generic.template.ObjectPage'
+                                  },
+                                  entitySet: 'Travels',
+                                  pages: testCase.isNewPageUnavailable
+                                      ? [
+                                            {
+                                                component: {
+                                                    name: 'sap.suite.ui.generic.template.ObjectPage'
+                                                },
+                                                entitySet: 'Bookings'
+                                            }
+                                        ]
+                                      : undefined
+                              }
+                          ]
+                      }
+                  ]
+                : {
+                      'ListReport|Travel': {
+                          component: {
+                              name: 'sap.suite.ui.generic.template.ListReport'
+                          },
+                          entitySet: 'Travels',
+                          pages:
+                              testCase.isListReport && !testCase.isNewPageUnavailable
+                                  ? undefined
+                                  : {
+                                        'ObjectPage|Travels': {
+                                            component: {
+                                                name: 'sap.suite.ui.generic.template.ObjectPage'
+                                            },
+                                            entitySet: 'Travels',
+                                            pages: testCase.isNewPageUnavailable
+                                                ? {
+                                                      'ObjectPage|Bookings': {
+                                                          component: {
+                                                              name: 'sap.suite.ui.generic.template.ObjectPage'
+                                                          },
+                                                          entitySet: 'Bookings'
+                                                      }
+                                                  }
+                                                : undefined
+                                        }
+                                    }
+                      }
+                  };
+            jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                'sap.ui.generic.app': {
+                    pages
+                }
+            });
+            jest.spyOn(rtaMock, 'getFlexSettings').mockReturnValue({
+                projectId: 'dummyProjectId'
+            } as unknown as FlexSettings);
 
-        //     const navigationProps: NavigationProperty[] = [
-        //         {
-        //             fromRole: 'fromRoleBooking',
-        //             toRole: 'toRoleBooking',
-        //             name: 'to_Booking',
-        //             relationship: 'Booking'
-        //         },
-        //         {
-        //             fromRole: 'fromRoleAirline',
-        //             toRole: 'toRoleAirline',
-        //             name: 'to_Airline',
-        //             relationship: 'Airline'
-        //         }
-        //     ];
-        //     const entityContainerMock: EntityContainer = {
-        //         entitySet: [
-        //             {
-        //                 entityType: 'Travel',
-        //                 name: 'Travels'
-        //             },
-        //             {
-        //                 entityType: 'Booking',
-        //                 name: 'Bookings'
-        //             },
-        //             {
-        //                 entityType: 'Airline',
-        //                 name: 'Airlines'
-        //             }
-        //         ]
-        //     } as unknown as EntityContainer;
-        //     const metaModelMock = {
-        //         getODataEntitySet: jest.fn().mockReturnValue({
-        //             name: 'Travels',
-        //             entityType: 'Travel'
-        //         } as EntitySet),
-        //         getODataEntityType: jest.fn().mockReturnValue({
-        //             name: 'Travel',
-        //             navigationProperty: navigationProps
-        //         } as EntityType),
-        //         getODataAssociationEnd: jest.fn().mockImplementation((entityType: EntityType, navProp: string) => {
-        //             return {
-        //                 multiplicity: entityType.name === 'Travel' && navProp === 'to_Booking' ? '*' : '1:1',
-        //                 type: navProp === 'to_Booking' ? 'Booking' : 'Airline'
-        //             };
-        //         }),
-        //         getODataEntityContainer: () => entityContainerMock
-        //     };
-        //     jest.spyOn(rtaMock.getRootControlInstance(), 'getModel').mockReturnValue({
-        //         getMetaModel: () => metaModelMock
-        //     } as unknown as Model);
+            const navigationProps: NavigationProperty[] = [
+                {
+                    fromRole: 'fromRoleBooking',
+                    toRole: 'toRoleBooking',
+                    name: 'to_Booking',
+                    relationship: 'Booking'
+                },
+                {
+                    fromRole: 'fromRoleAirline',
+                    toRole: 'toRoleAirline',
+                    name: 'to_Airline',
+                    relationship: 'Airline'
+                }
+            ];
+            const entityContainerMock: EntityContainer = {
+                entitySet: [
+                    {
+                        entityType: 'Travel',
+                        name: 'Travels'
+                    },
+                    {
+                        entityType: 'Booking',
+                        name: 'Bookings'
+                    },
+                    {
+                        entityType: 'Airline',
+                        name: 'Airlines'
+                    }
+                ]
+            } as unknown as EntityContainer;
+            const metaModelMock = {
+                getODataEntitySet: jest.fn().mockReturnValue({
+                    name: 'Travels',
+                    entityType: 'Travel'
+                } as EntitySet),
+                getODataEntityType: jest.fn().mockReturnValue({
+                    name: 'Travel',
+                    navigationProperty: navigationProps
+                } as EntityType),
+                getODataAssociationEnd: jest.fn().mockImplementation((entityType: EntityType, navProp: string) => {
+                    return {
+                        multiplicity: entityType.name === 'Travel' && navProp === 'to_Booking' ? '*' : '1:1',
+                        type: navProp === 'to_Booking' ? 'Booking' : 'Airline'
+                    };
+                }),
+                getODataEntityContainer: () => entityContainerMock
+            };
+            jest.spyOn(rtaMock.getRootControlInstance(), 'getModel').mockReturnValue({
+                getMetaModel: () => metaModelMock
+            } as unknown as Model);
 
-        //     const registry = new FEV2QuickActionRegistry();
-        //     const service = new QuickActionService(
-        //         rtaMock,
-        //         new OutlineService(rtaMock, mockChangeService),
-        //         [registry],
-        //         { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
-        //     );
+            const registry = new FEV2QuickActionRegistry();
+            const service = new QuickActionService(
+                rtaMock,
+                new OutlineService(rtaMock, mockChangeService),
+                [registry],
+                { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
+                isReuseComponentCheckerMock
+            );
 
-        //     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-        //         return { type, value, settings };
-        //     });
+            CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                return { type, value, settings };
+            });
 
-        //     await service.init(sendActionMock, subscribeMock);
+            await service.init(sendActionMock, subscribeMock);
 
-        //     await service.reloadQuickActions({
-        //         'sap.uxap.ObjectPageLayout': [
-        //             {
-        //                 controlId: 'ObjectPage'
-        //             } as any
-        //         ],
-        //         'sap.f.DynamicPage': [
-        //             {
-        //                 controlId: 'ListReport'
-        //             } as any
-        //         ],
-        //         'sap.m.NavContainer': [
-        //             {
-        //                 controlId: 'NavContainer'
-        //             } as any
-        //         ]
-        //     });
+            await service.reloadQuickActions({
+                'sap.uxap.ObjectPageLayout': [
+                    {
+                        controlId: 'ObjectPage'
+                    } as any
+                ],
+                'sap.f.DynamicPage': [
+                    {
+                        controlId: 'ListReport'
+                    } as any
+                ],
+                'sap.m.NavContainer': [
+                    {
+                        controlId: 'NavContainer'
+                    } as any
+                ]
+            });
 
-        //     // filter out irrelevant actions
-        //     const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
-        //     for (let i = actions.length - 1; i >= 0; i--) {
-        //         if (actions[i].title !== 'Add Subpage') {
-        //             actions.splice(i, 1);
-        //         }
-        //     }
-        //     await subscribeMock.mock.calls[0][0](
-        //         executeQuickAction({
-        //             id: actionId,
-        //             kind: 'simple'
-        //         })
-        //     );
+            // filter out irrelevant actions
+            const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+            for (let i = actions.length - 1; i >= 0; i--) {
+                if (actions[i].title !== 'Add Subpage') {
+                    actions.splice(i, 1);
+                }
+            }
+            await subscribeMock.mock.calls[0][0](
+                executeQuickAction({
+                    id: actionId,
+                    kind: 'simple'
+                })
+            );
 
-        //     expect(sendActionMock).toHaveBeenNthCalledWith(
-        //         1,
-        //         quickActionListChanged([
-        //             {
-        //                 title: testCase.isListReport ? 'LIST REPORT' : 'OBJECT PAGE',
-        //                 actions: !testCase.expect.toBeAvailable
-        //                     ? []
-        //                     : [
-        //                           {
-        //                               kind: 'simple',
-        //                               id: actionId,
-        //                               enabled: !!testCase.expect.toBeEnabled,
-        //                               tooltip: testCase.expect.tooltip,
-        //                               title: 'Add Subpage'
-        //                           }
-        //                       ]
-        //             }
-        //         ])
-        //     );
+            expect(sendActionMock).toHaveBeenNthCalledWith(
+                1,
+                quickActionListChanged([
+                    {
+                        title: testCase.isListReport ? 'LIST REPORT' : 'OBJECT PAGE',
+                        actions: !testCase.expect.toBeAvailable
+                            ? []
+                            : [
+                                  {
+                                      kind: 'simple',
+                                      id: actionId,
+                                      enabled: !!testCase.expect.toBeEnabled,
+                                      tooltip: testCase.expect.tooltip,
+                                      title: 'Add Subpage'
+                                  }
+                              ]
+                    }
+                ])
+            );
 
-        //     if (!testCase.expect.toBeAvailable) {
-        //         expect(DialogFactory.createDialog).toHaveBeenCalledTimes(0);
-        //     } else {
-        //         expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddSubpage', undefined, {
-        //             appReference: 'dummyProjectId',
-        //             appType: 'fe-v2',
-        //             pageDescriptor: {
-        //                 entitySet: 'Travels',
-        //                 navProperties: testCase.isNewPageUnavailable
-        //                     ? []
-        //                     : [
-        //                           testCase.isListReport
-        //                               ? {
-        //                                     entitySet: 'Travels',
-        //                                     navProperty: 'Travels'
-        //                                 }
-        //                               : {
-        //                                     entitySet: 'Bookings',
-        //                                     navProperty: 'to_Booking'
-        //                                 }
-        //                       ],
-        //                 pageType: testCase.isListReport
-        //                     ? 'sap.suite.ui.generic.template.ListReport'
-        //                     : 'sap.suite.ui.generic.template.ObjectPage'
-        //             },
-        //             title: 'ADD_SUB_PAGE_DIALOG_TITLE'
-        //         });
-        //     }
-        // });
+            if (!testCase.expect.toBeAvailable) {
+                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(0);
+            } else {
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddSubpage', undefined, {
+                    appReference: 'dummyProjectId',
+                    appType: 'fe-v2',
+                    pageDescriptor: {
+                        entitySet: 'Travels',
+                        navProperties: testCase.isNewPageUnavailable
+                            ? []
+                            : [
+                                  testCase.isListReport
+                                      ? {
+                                            entitySet: 'Travels',
+                                            navProperty: 'Travels'
+                                        }
+                                      : {
+                                            entitySet: 'Bookings',
+                                            navProperty: 'to_Booking'
+                                        }
+                              ],
+                        pageType: testCase.isListReport
+                            ? 'sap.suite.ui.generic.template.ListReport'
+                            : 'sap.suite.ui.generic.template.ObjectPage'
+                    },
+                    title: 'ADD_SUB_PAGE_DIALOG_TITLE'
+                });
+            }
+        });
     });
 });
