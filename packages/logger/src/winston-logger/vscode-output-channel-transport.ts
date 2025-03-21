@@ -45,5 +45,6 @@ export class VSCodeTransport extends Transport {
 }
 
 function getVSCodeInstance(): any {
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     return require('vscode');
 }

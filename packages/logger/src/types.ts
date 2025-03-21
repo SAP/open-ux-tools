@@ -74,7 +74,7 @@ export interface TransportOptions {
  */
 export abstract class Transport {
     /**
-     * A utility copy method to make immutable, deep copies of objects
+     * A utility copy method to make immutable, deep copies of objects.
      *
      * @param obj
      * @returns  a frozen deep clone of `obj`

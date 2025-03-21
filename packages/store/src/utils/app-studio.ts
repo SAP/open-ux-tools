@@ -1,7 +1,4 @@
-/**
- * @todo: This needs to be replaced by the functions from `@sap-ux/btp-utils`
- */
-
+// todo: This needs to be replaced by the functions from `@sap-ux/btp-utils`
 /**
  * Enumeration of environment variables used in AppStudio
  */

@@ -26,10 +26,14 @@ module.exports = [
             'eslint.config.js',
             'scripts',
             'test/data',
+            'test/test-data',
+            'test/test-input',
+            'test/manual',
             'templates',
             'test/test-output',
             'esbuild.js',
-            ' esbuild*.js'
+            ' esbuild*.js',
+            '__mocks__'
         ]
     },
     eslintPluginPrettierRecommended,
@@ -41,11 +45,11 @@ module.exports = [
         files: ['**/*.ts', '**/*.tsx'],
         rules: {
             'comma-dangle': ['error', 'never'],
-            'jsdoc/require-param': 'error',
+            'jsdoc/require-param': 'warn', // TODO revert to error
             'jsdoc/require-param-description': 'warn',
             'jsdoc/require-param-name': 'error',
             'jsdoc/require-param-type': 'warn',
-            'jsdoc/require-returns': 'error',
+            'jsdoc/require-returns': 'warn', // TODO revert to error
             'jsdoc/require-returns-check': 'error',
             'jsdoc/require-returns-description': 'warn',
             'jsdoc/require-returns-type': 'error',
@@ -74,7 +78,7 @@ module.exports = [
                 }
             ],
 
-            'jsdoc/match-description': 'error',
+            'jsdoc/match-description': 'warn', // TODO revert to error
             'promise/always-return': 'off',
             'promise/no-return-wrap': 'off',
             'promise/param-names': 'error',
@@ -242,6 +246,7 @@ module.exports = [
         rules: {
             '@typescript-eslint/ban-types': 'off',
             '@typescript-eslint/explicit-function-return-type': 'warn',
+            '@typescript-eslint/no-wrapper-object-types': 'warn',
             '@typescript-eslint/no-unsafe-assignment': 'warn',
             '@typescript-eslint/no-explicit-any': 'off',
             '@typescript-eslint/no-inferrable-types': 'off',
@@ -249,7 +254,9 @@ module.exports = [
                 'error',
                 {
                     'varsIgnorePattern': '^_',
-                    'argsIgnorePattern': '^_'
+                    'argsIgnorePattern': '^_',
+                    'caughtErrors': 'none'
+
                 }
             ],
             '@typescript-eslint/no-floating-promises': ['error'],

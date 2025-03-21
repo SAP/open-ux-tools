@@ -15,6 +15,7 @@ export interface SecureStore {
     delete(service: string, key: string): Promise<boolean>;
 
     /** Get all the values stored for the service
+     *
      * @param service
      */
     getAll<T>(service: string): Promise<{ [key: string]: T }>;
