@@ -1,4 +1,3 @@
-
 // const nx = require('@nx/eslint-plugin');
 // const vue = require('eslint-plugin-vue');
 // const vueTsEslint = require('@vue/eslint-config-typescript');
@@ -10,22 +9,33 @@ const tsParser = require('@typescript-eslint/parser');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 const globals = require('globals');
 const pluginPromise = require('eslint-plugin-promise');
-const pluginJsdoc= require('eslint-plugin-jsdoc');
+const pluginJsdoc = require('eslint-plugin-jsdoc');
 const tseslint = require('typescript-eslint');
 const importPlugin = require('eslint-plugin-import');
 const sonarjs = require('eslint-plugin-sonarjs');
 
-
 const compat = new FlatCompat({
     baseDirectory: __dirname, // optional; default: process.cwd()
-    resolvePluginsRelativeTo: __dirname, // optional
-  })
-
-
+    resolvePluginsRelativeTo: __dirname // optional
+});
 
 module.exports = [
     {
-        ignores: ['**/eslint.config.cjs', '**/*.d.ts', 'test', 'dist', 'coverage', 'node_modules', 'jest.config.js', 'jest*.js'  ],
+        ignores: [
+            '**/eslint.config.cjs',
+            '**/*.d.ts',
+            'dist',
+            'coverage',
+            'node_modules',
+            'jest.config.js',
+            'jest*.js',
+            'eslint.config.js',
+            'scripts',
+            'test/data',
+            'templates',
+            'test/test-output'
+
+        ]
     },
     eslintPluginPrettierRecommended,
     pluginPromise.configs['flat/recommended'],
@@ -43,25 +53,31 @@ module.exports = [
             'jsdoc/require-returns-check': 'error',
             'jsdoc/require-returns-description': 'warn',
             'jsdoc/require-returns-type': 'error',
-    
-            'jsdoc/require-jsdoc': ['warn', {
-                require: {
-                    ClassDeclaration: true,
-                    MethodDefinition: true,
-                },
-    
-                exemptEmptyFunctions: true,
-                contexts: ['TSMethodSignature'],
-            }],
-    
+
+            'jsdoc/require-jsdoc': [
+                'warn',
+                {
+                    require: {
+                        ClassDeclaration: true,
+                        MethodDefinition: true
+                    },
+
+                    exemptEmptyFunctions: true,
+                    contexts: ['TSMethodSignature']
+                }
+            ],
+
             'jsdoc/valid-types': 'error',
             'jsdoc/check-types': 'error',
             'jsdoc/check-param-names': 'error',
-    
-            'jsdoc/check-tag-names': ['error', {
-                definedTags: ['ui5-restricted', 'experimental', 'final'],
-            }],
-    
+
+            'jsdoc/check-tag-names': [
+                'error',
+                {
+                    definedTags: ['ui5-restricted', 'experimental', 'final']
+                }
+            ],
+
             'jsdoc/match-description': 'error',
             'promise/always-return': 'off',
             'promise/no-return-wrap': 'off',
@@ -143,13 +159,12 @@ module.exports = [
             'no-label-var': 'error',
             'no-shadow-restricted-names': 'error',
             'no-undef-init': 'error',
-            'no-undef': 'error',
-    
+            // 'no-undef': 'error', It is safe to disable this rule when using TypeScript because TypeScript's compiler enforces this check.
             // 'no-unused-vars': ['error', { // disable and use @typescript-eslint/no-unused-vars instead
             //     vars: 'all',
             //     args: 'none',
             // }],
-    
+
             'no-use-before-define': 'off',
             camelcase: 'warn',
             'consistent-this': ['warn', 'that'],
@@ -162,182 +177,199 @@ module.exports = [
             'no-nested-ternary': 'error',
             'no-new-object': 'error',
             'no-spaced-func': 'error',
-    
-            'quote-props': ['error', 'as-needed', {
-                keywords: false,
-                unnecessary: false,
-            }],
-    
-            'semi-spacing': ['warn', {
-                before: false,
-                after: true,
-            }],
-    
+
+            'quote-props': [
+                'error',
+                'as-needed',
+                {
+                    keywords: false,
+                    unnecessary: false
+                }
+            ],
+
+            'semi-spacing': [
+                'warn',
+                {
+                    before: false,
+                    after: true
+                }
+            ],
+
             semi: 'error',
-    
-            'keyword-spacing': ['error', {
-                after: true,
-            }],
-    
+
+            'keyword-spacing': [
+                'error',
+                {
+                    after: true
+                }
+            ],
+
             'sonarjs/cognitive-complexity': 'warn',
             'sonarjs/no-nested-template-literals': 'warn',
             'space-infix-ops': 'error',
-    
-            'space-unary-ops': ['error', {
-                words: true,
-                nonwords: false,
-            }],
-    
+
+            'space-unary-ops': [
+                'error',
+                {
+                    words: true,
+                    nonwords: false
+                }
+            ],
+
             'import/no-unresolved': 'error',
-    
-            'import/no-extraneous-dependencies': ['error', {
-                devDependencies: true,
-                optionalDependencies: true,
-                peerDependencies: true,
-                bundledDependencies: false,
-            }],
-    
-            'prettier/prettier': ['error', {
-                endOfLine: 'auto',
-                quoteProps: 'preserve',
-            }],
+
+            'import/no-extraneous-dependencies': [
+                'error',
+                {
+                    devDependencies: true,
+                    optionalDependencies: true,
+                    peerDependencies: true,
+                    bundledDependencies: false
+                }
+            ],
+
+            'prettier/prettier': [
+                'error',
+                {
+                    endOfLine: 'auto',
+                    quoteProps: 'preserve'
+                }
+            ]
         }
     },
     {
-            languageOptions: {
-                parser: tsParser,
-            },
-            files: ['**/*.ts', '**/*.tsx'],
-            // 'extends': ['plugin:@typescript-eslint/recommended'],
-            rules: {
-                '@typescript-eslint/ban-types': 'off',
-                '@typescript-eslint/explicit-function-return-type': 'warn',
-                '@typescript-eslint/no-unsafe-assignment': 'warn',
-                '@typescript-eslint/no-explicit-any': 'off',
-                '@typescript-eslint/no-inferrable-types': 'off',
-                '@typescript-eslint/no-unused-vars': [
-                    'error',
-                    {
-                        'varsIgnorePattern': '^_',
-                        'argsIgnorePattern': '^_'
-                    }
-                ],
-                '@typescript-eslint/no-floating-promises': ['error'],
-                '@typescript-eslint/consistent-type-imports': [
-                    'error',
-                    {
-                        'prefer': 'type-imports',
-                        'disallowTypeAnnotations': true
-                    }
-                ],
-                '@typescript-eslint/no-misused-promises': ['error', { 'checksVoidReturn': false }],
-                '@typescript-eslint/no-use-before-define': ['error', 'nofunc'],
-                '@typescript-eslint/prefer-nullish-coalescing': 'warn',
-                '@typescript-eslint/prefer-optional-chain': 'warn',
-                'jsdoc/require-param-type': 'off',
-                'jsdoc/require-returns-type': 'off',
-                'prefer-const': [
-                    'error',
-                    {
-                        'destructuring': 'all'
-                    }
-                ],
-                'jsdoc/tag-lines': [
-                    'error',
-                    'never',
-                    {
-                        'startLines': 1
-                    }
-                ]
-            },
-            'settings': {
-                'jsdoc': {
-                    'mode': 'typescript'
+        languageOptions: {
+            parser: tsParser
+        },
+        files: ['**/*.ts', '**/*.tsx'],
+        // 'extends': ['plugin:@typescript-eslint/recommended'],
+        rules: {
+            '@typescript-eslint/ban-types': 'off',
+            '@typescript-eslint/explicit-function-return-type': 'warn',
+            '@typescript-eslint/no-unsafe-assignment': 'warn',
+            '@typescript-eslint/no-explicit-any': 'off',
+            '@typescript-eslint/no-inferrable-types': 'off',
+            '@typescript-eslint/no-unused-vars': [
+                'error',
+                {
+                    'varsIgnorePattern': '^_',
+                    'argsIgnorePattern': '^_'
                 }
+            ],
+            '@typescript-eslint/no-floating-promises': ['error'],
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                {
+                    'prefer': 'type-imports',
+                    'disallowTypeAnnotations': true
+                }
+            ],
+            '@typescript-eslint/no-misused-promises': ['error', { 'checksVoidReturn': false }],
+            '@typescript-eslint/no-use-before-define': ['error', 'nofunc'],
+            '@typescript-eslint/prefer-nullish-coalescing': 'warn',
+            '@typescript-eslint/prefer-optional-chain': 'warn',
+            'jsdoc/require-param-type': 'off',
+            'jsdoc/require-returns-type': 'off',
+            'prefer-const': [
+                'error',
+                {
+                    'destructuring': 'all'
+                }
+            ],
+            'jsdoc/tag-lines': [
+                'error',
+                'never',
+                {
+                    'startLines': 1
+                }
+            ]
+        },
+        'settings': {
+            'jsdoc': {
+                'mode': 'typescript'
             }
+        }
     },
     {
         languageOptions: {
-            parser: tsParser,
+            parser: tsParser
         },
-            files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
-            rules: {
-                '@typescript-eslint/explicit-function-return-type': 'off',
-                'jsdoc/require-param': 'off',
-                'jsdoc/require-param-description': 'off',
-                'jsdoc/require-param-name': 'off',
-                'jsdoc/require-param-type': 'off',
-                'jsdoc/require-returns': 'off',
-                'jsdoc/require-returns-check': 'off',
-                'jsdoc/require-returns-description': 'off',
-                'jsdoc/require-returns-type': 'off',
-                'jsdoc/require-jsdoc': [
-                    'off',
-                    {
-                        'require': {
-                            'ClassDeclaration': true,
-                            'MethodDefinition': true
-                        },
-                        'exemptEmptyFunctions': true
-                    }
-                ],
-                'jsdoc/valid-types': 'off',
-                'jsdoc/check-types': 'off',
-                'jsdoc/check-tag-names': 'off',
-                'jsdoc/match-description': 'off',
-                'promise/param-names': 'off',
-                'promise/catch-or-return': 'off',
-                '@typescript-eslint/no-unused-vars': 'off',
-                '@typescript-eslint/consistent-type-imports': [
-                    'error',
-                    {
-                        'prefer': 'type-imports',
-                        'disallowTypeAnnotations': true
-                    }
-                ],
-                '@typescript-eslint/no-use-before-define': ['error', 'nofunc']
-            }
+        files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
+        rules: {
+            '@typescript-eslint/explicit-function-return-type': 'off',
+            'jsdoc/require-param': 'off',
+            'jsdoc/require-param-description': 'off',
+            'jsdoc/require-param-name': 'off',
+            'jsdoc/require-param-type': 'off',
+            'jsdoc/require-returns': 'off',
+            'jsdoc/require-returns-check': 'off',
+            'jsdoc/require-returns-description': 'off',
+            'jsdoc/require-returns-type': 'off',
+            'jsdoc/require-jsdoc': [
+                'off',
+                {
+                    'require': {
+                        'ClassDeclaration': true,
+                        'MethodDefinition': true
+                    },
+                    'exemptEmptyFunctions': true
+                }
+            ],
+            'jsdoc/valid-types': 'off',
+            'jsdoc/check-types': 'off',
+            'jsdoc/check-tag-names': 'off',
+            'jsdoc/match-description': 'off',
+            'promise/param-names': 'off',
+            'promise/catch-or-return': 'off',
+            '@typescript-eslint/no-unused-vars': 'off',
+            '@typescript-eslint/consistent-type-imports': [
+                'error',
+                {
+                    'prefer': 'type-imports',
+                    'disallowTypeAnnotations': true
+                }
+            ],
+            '@typescript-eslint/no-use-before-define': ['error', 'nofunc']
+        }
     },
     {
         files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
-            rules: {
-                'no-console': 'off',
-                'jsdoc/require-jsdoc': 'off',
-                'jsdoc/require-returns-description': 'off',
-                'jsdoc/require-param-description': 'off',
-                'max-nested-callbacks': ['warn', 5],
-                'sonarjs/cognitive-complexity': 'off'
-            }
+        rules: {
+            'no-console': 'off',
+            'jsdoc/require-jsdoc': 'off',
+            'jsdoc/require-returns-description': 'off',
+            'jsdoc/require-param-description': 'off',
+            'max-nested-callbacks': ['warn', 5],
+            'sonarjs/cognitive-complexity': 'off'
+        }
     },
     {
         plugins: { sonarjs },
         rules: {
-          'sonarjs/no-implicit-dependencies': 'error',
-        },
+            'sonarjs/no-implicit-dependencies': 'error'
+        }
     },
     {
         settings: {
-        jsdoc: {
-            tagNamePreference: {
-                augments: {
-                    message: '@extends is to be used over @augments as it is more evocative of classes than @augments',
-                    replacement: 'extends',
-                },
+            jsdoc: {
+                tagNamePreference: {
+                    augments: {
+                        message:
+                            '@extends is to be used over @augments as it is more evocative of classes than @augments',
+                        replacement: 'extends'
+                    }
+                }
             },
-        },
 
-        'import/resolver': {
-            typescript: {
-                alwaysTryTypes: true,
-                project: ['./packages/*/tsconfig.json', './tsconfig.json'],
-            },
-        },
-       },
+            'import/resolver': {
+                typescript: {
+                    alwaysTryTypes: true,
+                    project: ['./packages/*/tsconfig.json', './tsconfig.json']
+                }
+            }
+        }
     }
 ];
-
-
-
 
 // import { defineConfig } from 'eslint/config';
 // import promise from 'eslint-plugin-promise';
@@ -364,7 +396,6 @@ module.exports = [
 // const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
 // import { default as eslintPluginPrettierRecommended } from 'eslint-plugin-prettier/recommended';
 
-
 // export default defineConfig([
 //     eslintPluginPrettierRecommended,
 // ]);
@@ -386,7 +417,6 @@ module.exports = [
 //             ...globals.node,
 //         },
 //     },
-
 
 // }, {
 //     files: ['**/*.ts', '**/*.tsx'],
