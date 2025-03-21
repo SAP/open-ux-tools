@@ -8,10 +8,10 @@ import type { TargetApplication } from '@sap-ux/adp-tooling';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { AbapProvider, TargetApplications, TargetSystems } from '@sap-ux/adp-tooling';
+import { AbapProvider, TargetApplications, TargetSystems, WriterConfig } from '@sap-ux/adp-tooling';
 
 import adpGenerator from '../src/app';
-import { initI18n } from '../src/utils/i18n';
+import { initI18n, t } from '../src/utils/i18n';
 import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
@@ -68,8 +68,9 @@ const apps: TargetApplication[] = [
     }
 ];
 
+const getAtoInfoMock = jest.fn();
 const dummyProvider = {
-    getAtoInfo: jest.fn().mockResolvedValue({ operationsType: 'P' })
+    getAtoInfo: getAtoInfoMock
 } as unknown as AbapServiceProvider;
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
@@ -91,18 +92,43 @@ describe('Adaptation Project Generator Integration Test', () => {
         jest.spyOn(AbapProvider.prototype, 'getProvider').mockReturnValue(dummyProvider);
         sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
 
+        getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
         getDefaultProjectNameMock.mockReturnValue('app.variant1');
         getCredentialsFromStoreMock.mockResolvedValue(undefined);
     });
 
+    beforeAll(async () => {
+        await initI18n();
+    });
+
     afterEach(() => {
-        jest.resetAllMocks();
+        jest.clearAllMocks();
     });
 
     afterAll(async () => {
-        await initI18n();
         process.chdir(originalCwd);
         rimraf.sync(testOutputDir);
+    });
+
+    it('should throw error when writing phase fails', async () => {
+        const error = new Error('Test error');
+        mockIsAppStudio.mockReturnValue(false);
+        jest.spyOn(WriterConfig.prototype, 'getConfig').mockRejectedValueOnce(error);
+
+        const answers = {
+            system: 'http://systema.com',
+            username: 'user1',
+            password: 'pass1',
+            application: { id: 'sap.ui.demoapps.f1', title: 'App One' }
+        };
+
+        const runContext = yeomanTest
+            .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+            .withOptions({ shouldInstallDeps: false } as AdpGeneratorOptions)
+            .withPrompts(answers);
+
+        await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
+        (WriterConfig.prototype.getConfig as jest.Mock).mockRestore();
     });
 
     it('should generate an adaptation project successfully', async () => {
