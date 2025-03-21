@@ -1,4 +1,3 @@
-import { t } from 'i18next';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { App, AppIndex } from '@sap-ux/axios-extension';
 
@@ -104,8 +103,9 @@ export class TargetApplications {
 
             return result.map(mapApps).sort(filterApps);
         } catch (e) {
-            this.logger?.error(`Could not load apps: ${e.message}`);
-            throw new Error(t('validators.cannotLoadApplicationsError'));
+            const errorMsg = `Could not load applications: ${e.message}`;
+            this.logger?.error(errorMsg);
+            throw new Error(errorMsg);
         }
     }
 }

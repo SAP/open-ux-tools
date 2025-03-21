@@ -89,10 +89,11 @@ describe('Target Applications', () => {
         });
 
         it('should throw an error if apps cannot be loaded', async () => {
+            const errorMsg = 'Could not load applications: Failed to fetch';
             searchMock.mockRejectedValue(new Error('Failed to fetch'));
 
-            await expect(service.getApps()).rejects.toThrow('validators.cannotLoadApplicationsError');
-            expect(loggerMock.error).toHaveBeenCalledWith('Could not load apps: Failed to fetch');
+            await expect(service.getApps()).rejects.toThrow(errorMsg);
+            expect(loggerMock.error).toHaveBeenCalledWith(errorMsg);
         });
     });
 
