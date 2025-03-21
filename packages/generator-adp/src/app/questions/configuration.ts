@@ -22,16 +22,14 @@ import { showApplicationQuestion, showCredentialQuestion } from './helper/condit
  * It exposes a single public method {@link getPrompts} to retrieve the configuration questions.
  */
 export class ConfigPrompter {
-    private targetApps: TargetApplications;
-
+    /**
+     * Instance of target applications class for loading applications.
+     */
+    private readonly targetApps: TargetApplications;
     /**
      * Indicates if the current layer is based on a customer base.
      */
-    private isCustomerBase: boolean;
-    /**
-     * Logger instance.
-     */
-    private logger: ToolsLogger;
+    private readonly isCustomerBase: boolean;
 
     /**
      * Creates an instance of ConfigPrompter.
@@ -45,11 +43,10 @@ export class ConfigPrompter {
         private readonly abapProvider: AbapProvider,
         private readonly targetSystems: TargetSystems,
         layer: FlexLayer,
-        logger: ToolsLogger
+        private readonly logger: ToolsLogger
     ) {
         this.targetApps = new TargetApplications(this.abapProvider, this.isCustomerBase, this.logger);
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-        this.logger = logger;
     }
 
     /**
