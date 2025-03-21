@@ -1,5 +1,11 @@
 # @sap-ux/environment-check
 
+## 0.17.93
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+
 ## 0.17.92
 
 ### Patch Changes

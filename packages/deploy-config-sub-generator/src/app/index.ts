@@ -1,6 +1,6 @@
 import dotenv from 'dotenv';
 import { basename, dirname, join } from 'path';
-import { getMtaPath, findCapProjectRoot } from '@sap-ux/project-access';
+import { getMtaPath, findCapProjectRoot, getAppType } from '@sap-ux/project-access';
 import {
     bail,
     DeploymentGenerator,
@@ -40,9 +40,9 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
     readonly appWizard: AppWizard;
     readonly prompts: Prompts;
     readonly genNamespace: string;
-    readonly launchDeployConfigAsSubGenerator: boolean;
     readonly launchStandaloneFromYui: boolean;
     readonly apiHubConfig: ApiHubConfig;
+    launchDeployConfigAsSubGenerator: boolean;
     extensionPromptOpts?: Record<string, CommonPromptOptions>;
     vscode: VSCodeInstance;
     cfDestination: string;
@@ -127,8 +127,13 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
         if (this.isCap && !this.mtaPath) {
             this.target = TargetName.CF; // when CAP project and no mta.yaml, default to Cloud Foundry
         }
+        const appType = await getAppType(this.options.appRootPath);
+        const isAdp = appType === 'Fiori Adaptation';
+        if (isAdp) {
+            this.target = TargetName.ABAP; // Adp projects support only ABAP deployment
+            this.launchDeployConfigAsSubGenerator = false;
+        }
         this.options.projectRoot = capRoot ?? (this.mtaPath && dirname(this.mtaPath)) ?? this.options.appRootPath;
-
         ({ backendConfig: this.backendConfig, isLibrary: this.isLibrary } = await getBackendConfig(
             this.fs,
             this.options as DeployConfigOptions,

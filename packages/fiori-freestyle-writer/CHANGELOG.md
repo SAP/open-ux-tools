@@ -1,5 +1,11 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.2.5
+
+### Patch Changes
+
+-   4310ee1: Exports type required by consuming generators
+
 ## 2.2.4
 
 ### Patch Changes
