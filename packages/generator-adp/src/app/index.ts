@@ -80,7 +80,10 @@ export default class extends Generator {
 
     async initializing(): Promise<void> {
         await initI18n();
-        this._setupPages();
+
+        const pages = [{ name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') }];
+        this.prompts.splice(0, 0, pages);
+
         this.layer = await getFlexLayer();
 
         this.targetSystems = new TargetSystems(this.toolsLogger);
@@ -147,22 +150,6 @@ export default class extends Generator {
                 this.logger.error(t('error.telemetry', { error }));
             });
         }
-    }
-
-    /**
-     * Sets up the initial pages for the generator prompts.
-     */
-    private _setupPages(): void {
-        this.prompts.splice(0, 0, [this._getInitialPage()]);
-    }
-
-    /**
-     * Returns the translated name and description for configuration page.
-     *
-     * @returns The initial configuration page with name and description.
-     */
-    private _getInitialPage(): { name: string; description: string } {
-        return { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') };
     }
 
     /**
