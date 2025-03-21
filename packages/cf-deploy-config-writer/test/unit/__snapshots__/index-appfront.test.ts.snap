@@ -104,7 +104,6 @@ exports[`CF Writer App - Application Frontend Generate deployment configs - Add 
       \\"service\\": \\"app-front\\",
       \\"cacheControl\\": \\"no-cache, no-store, must-revalidate\\"
     },
-    
     {
       \\"source\\": \\"^(.*)$\\",
       \\"target\\": \\"$1\\",

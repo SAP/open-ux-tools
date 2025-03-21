@@ -5,7 +5,8 @@ import {
     type HTML5RepoHost,
     type ManagedAppFront,
     type ManagedDestination,
-    type ManagedXSUAA
+    type ManagedXSUAA,
+    type CDSXSUAAService
 } from '../constants';
 
 export type ResourceType =

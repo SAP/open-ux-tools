@@ -30,8 +30,7 @@
       "source": "^/index.html$",
       "service": "app-front",
       "cacheControl": "no-cache, no-store, must-revalidate"
-    },
-    <% } %>
+    },<% } %>
     {
       "source": "^(.*)$",
       "target": "$1",

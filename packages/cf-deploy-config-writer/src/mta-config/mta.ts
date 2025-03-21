@@ -169,7 +169,7 @@ export class MtaConfig {
         // Set up the basic module template, artifacts will be added in another step
         const appHostName = this.resources.get(HTML5RepoHost)?.name;
         if (appHostName) {
-            const deployer: mta.Module = {
+            const appContentModule: mta.Module = {
                 name: `${this.prefix.slice(0, 100)}-app-content`,
                 type: 'com.sap.application.content',
                 path: '.',
@@ -186,8 +186,8 @@ export class MtaConfig {
                     requires: []
                 }
             };
-            await this.mta.addModule(deployer);
-            this.modules.set('com.sap.application.content:resource', deployer);
+            await this.mta.addModule(appContentModule);
+            this.modules.set('com.sap.application.content:resource', appContentModule);
             this.dirty = true;
         }
     }
@@ -383,7 +383,7 @@ export class MtaConfig {
     }
 
     /**
-     * Cleanup missing content for the respective approuter types.
+     * Cleanup missing content for Managed | Standalone router types.
      *
      * @private
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
@@ -628,12 +628,15 @@ export class MtaConfig {
             addMissingModules = false; // Use
         }
 
-        // Only update if managed | standalone
-        if (addMissingModules) {
-            await this.cleanupMissingResources();
-        }
+        // Only Managed | Standalone should align ib missing resources | modules
+        if (routerType !== RouterModuleType.AppFront) {
+            // Only update if managed | standalone
+            if (addMissingModules) {
+                await this.cleanupMissingResources();
+            }
 
-        await this.cleanupModules();
+            await this.cleanupModules();
+        }
     }
 
     /**
@@ -725,7 +728,7 @@ export class MtaConfig {
      * @param {boolean} fromServerGenerator If true, the request is from the server generator, so the path changes.
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async addStandaloneRouter(fromServerGenerator = false): Promise<void> {
+    public async addStandaloneRouter(fromServerGenerator: boolean = false): Promise<void> {
         if (!this.resources.has('xsuaa')) {
             await this.addUaa();
         }
@@ -956,7 +959,7 @@ export class MtaConfig {
         if (!this.modules.has('com.sap.application.content:appfront')) {
             const appHostName = this.resources.get(ManagedAppFront)?.name;
             if (appHostName) {
-                const deployer: mta.Module = {
+                const appContentModule: mta.Module = {
                     name: `${this.prefix.slice(0, 100)}-app-content`,
                     type: 'com.sap.application.content',
                     path: '.',
@@ -978,8 +981,12 @@ export class MtaConfig {
                         }
                     }
                 };
-                await this.mta.addModule(deployer);
-                this.modules.set('com.sap.application.content:appfront', deployer);
+                // Add missing requires if nodejs (CAP) module is found
+                if (this.modules.has('nodejs')) {
+                    appContentModule.requires?.push({ name: SRV_API });
+                }
+                await this.mta.addModule(appContentModule);
+                this.modules.set('com.sap.application.content:appfront', appContentModule);
                 this.dirty = true;
             }
         }
