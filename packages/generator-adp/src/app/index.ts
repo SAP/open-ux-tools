@@ -23,12 +23,21 @@ import { generateValidNamespace, getDefaultProjectName } from './questions/helpe
  */
 export default class extends Generator {
     setPromptsCallback: (fn: object) => void;
-
     private readonly appWizard: AppWizard;
     private readonly vscode: any;
     private readonly toolsLogger: ToolsLogger;
 
+    /**
+     * A boolean flag indicating whether node_modules should be installed after project generation.
+     */
+    private readonly shouldInstallDeps: boolean;
+    /**
+     * Generator prompts.
+     */
     private prompts: Prompts;
+    /**
+     * Instance of the logger.
+     */
     private logger: ILogWrapper;
     /**
      * Flex layer indicating customer or vendor base.
@@ -60,9 +69,10 @@ export default class extends Generator {
     constructor(args: string | string[], opts: AdpGeneratorOptions) {
         super(args, opts);
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
+        this.shouldInstallDeps = opts.shouldInstallDeps ?? true;
         this.toolsLogger = new ToolsLogger();
-        this.options = opts;
         this.vscode = opts.vscode;
+        this.options = opts;
 
         this._setupPrompts();
         this._setupLogging();
@@ -118,7 +128,9 @@ export default class extends Generator {
 
     async install(): Promise<void> {
         try {
-            await installDependencies(this.targetFolder);
+            if (this.shouldInstallDeps) {
+                await installDependencies(this.targetFolder);
+            }
         } catch (e) {
             this.logger.error(`Installation of dependencies failed: ${e.message}`);
         }

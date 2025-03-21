@@ -13,6 +13,7 @@ import { AbapProvider, TargetApplications, TargetSystems } from '@sap-ux/adp-too
 import adpGenerator from '../src/app';
 import { initI18n } from '../src/utils/i18n';
 import { EventName } from '../src/telemetryEvents';
+import type { AdpGeneratorOptions } from '../src/app';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 
 jest.mock('@sap-devx/feature-toggle-node', () => ({
@@ -116,6 +117,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         const runContext = yeomanTest
             .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+            .withOptions({ shouldInstallDeps: false } as AdpGeneratorOptions)
             .withPrompts(answers);
 
         await expect(runContext.run()).resolves.not.toThrow();

@@ -1,10 +1,12 @@
-import type { TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from '../translations/adp-generator.i18n.json';
+import type { TOptions } from 'i18next';
+
 import { addi18nResourceBundle as addInquirerCommonResourceBundle } from '@sap-ux/inquirer-common';
 import { addi18nResourceBundle as addProjectInputValidatorBundle } from '@sap-ux/project-input-validator';
 
-const adpGeneratorI18nNamespace = 'adp-generator';
+import translations from '../translations/generator-adp.i18n.json';
+
+const adpGeneratorI18nNamespace = 'generator-adp';
 
 /**
  * Initialize i18next with the translations for this module.
