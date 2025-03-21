@@ -24,7 +24,10 @@ export class Uaa {
      * @param serviceInfo service Information
      * @param log logger
      */
-    constructor(serviceInfo: ServiceInfo, protected log: Logger) {
+    constructor(
+        serviceInfo: ServiceInfo,
+        protected log: Logger
+    ) {
         this.validatePropertyExists(serviceInfo.uaa.clientid, 'Client ID missing');
         this.validatePropertyExists(serviceInfo.uaa.clientsecret, 'Client Secret missing');
         this.validatePropertyExists(serviceInfo.uaa.url, 'UAA URL missing');

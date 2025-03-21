@@ -8,7 +8,7 @@ import {
 import { getAbapSystemChoices } from '../../src/prompts/helpers';
 import { mockTargetSystems } from '../fixtures/targets';
 import { PromptState } from '../../src/prompts/prompt-state';
-import { PackageInputChoices, TargetSystemType, TransportChoices, TransportConfig } from '../../src/types';
+import { PackageInputChoices, TargetSystemType, TransportChoices, type TransportConfig } from '../../src/types';
 
 describe('defaults', () => {
     beforeEach(() => {
