@@ -19,8 +19,7 @@ import {
     CDSHTML5RepoService
 } from '../constants';
 import type { mta } from '@sap/mta-lib';
-import type { CDSServiceType } from '../types';
-import { type MTABaseConfig, type CFBaseConfig, RouterModuleType } from '../types';
+import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { spawnSync } from 'child_process';
