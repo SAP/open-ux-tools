@@ -1,5 +1,24 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.8
+
+### Patch Changes
+
+-   6e32009: feat: introduce enhanced flp homepage
+    -   controlled via boolean property `flp.enhancedHomePage`, which is false by default
+
+## 0.13.7
+
+### Patch Changes
+
+-   02874f7: feat: Feature toggle removed for Add Subpage CPE quick action
+
+## 0.13.6
+
+### Patch Changes
+
+-   e754cb0: fix: disable "Add New Annotation File" Quick Action with tooltip, when 'metadata' is not loaded
+
 ## 0.13.5
 
 ### Patch Changes

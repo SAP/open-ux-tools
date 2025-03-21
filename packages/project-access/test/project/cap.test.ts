@@ -5,7 +5,14 @@ import { create, type Editor } from 'mem-fs-editor';
 import * as projectModuleMock from '../../src/project/module-loader';
 import type { Package } from '../../src';
 import { FileName } from '../../src/constants';
-import { clearCdsModuleCache, clearGlobalCdsModulePromiseCache, getCapServiceName } from '../../src/project/cap';
+import {
+    clearCdsModuleCache,
+    clearGlobalCdsModulePromiseCache,
+    getCapServiceName,
+    checkCdsUi5PluginEnabled,
+    satisfiesMinCdsVersion,
+    hasMinCdsVersion
+} from '../../src/project/cap';
 import {
     getCapCustomPaths,
     getCapEnvironment,
@@ -1402,6 +1409,250 @@ describe('deleteCapApp', () => {
         expect(logggerMock.error).toBeCalledWith(
             `Could not modify file '${join(capProject, 'apps', FileName.IndexCds)}'. Skipping this file.`
         );
+    });
+});
+
+const fixturesPath = join(__dirname, '../fixture');
+
+describe('Test checkCdsUi5PluginEnabled()', () => {
+    test('Empty project should return false', async () => {
+        expect(await checkCdsUi5PluginEnabled(__dirname)).toBe(false);
+        expect(await checkCdsUi5PluginEnabled(__dirname, undefined, true)).toBe(false);
+    });
+
+    test('CAP project with valid cds-plugin-ui', async () => {
+        expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'))).toBe(true);
+        expect(await checkCdsUi5PluginEnabled(join(fixturesPath, 'cap-valid-cds-plugin-ui'), undefined, true)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: true
+        });
+    });
+
+    test('CAP project with missing apps folder in workspaces', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: []
+        });
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(false);
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: false,
+            isWorkspaceEnabled: false
+        });
+    });
+
+    test('CAP project with workspaces config as object, but no apps folder', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: {}
+        });
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(false);
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: false,
+            isWorkspaceEnabled: false
+        });
+    });
+
+    test('CAP project with workspaces config as object, app folder in workspace', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: {
+                packages: ['app/*']
+            }
+        });
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(true);
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: true
+        });
+    });
+
+    test('CAP project with cds version info greater than minimum cds requirement', async () => {
+        const memFs = create(createStorage());
+        memFs.writeJSON(join(__dirname, 'package.json'), {
+            dependencies: { '@sap/cds': '6.8.2' },
+            devDependencies: { 'cds-plugin-ui5': '0.0.1' },
+            workspaces: {
+                packages: ['app/*']
+            }
+        });
+        const cdsVersionInfo = {
+            home: '/path',
+            version: '7.7.2',
+            root: '/path/root'
+        };
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs)).toBe(true);
+        expect(await checkCdsUi5PluginEnabled(__dirname, memFs, true, cdsVersionInfo)).toEqual({
+            hasCdsUi5Plugin: true,
+            hasMinCdsVersion: true,
+            isCdsUi5PluginEnabled: true,
+            isWorkspaceEnabled: true
+        });
+    });
+});
+
+describe('Test satisfiesMinCdsVersion()', () => {
+    test('CAP project with valid @sap/cds version using caret(^)', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '^6.7.0' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version using caret(^)', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '^4' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using x-range', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '6.x' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version using x-range', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '4.x' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using greater than (>)', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '>4.0.0' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with invalid @sap/cds version containing semver with letters', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': 'a.b.c' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version containing text', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': 'test' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version', async () => {
+        expect(
+            satisfiesMinCdsVersion({
+                dependencies: { '@sap/cds': '6.8.4' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version with caret (^)', async () => {
+        expect(satisfiesMinCdsVersion({ dependencies: { '@sap/cds': '^7' } })).toBe(true);
+    });
+
+    test('CAP project with missing @sap/cds', async () => {
+        expect(satisfiesMinCdsVersion({ dependencies: {} })).toBe(false);
+    });
+
+    test('CAP project with missing dependencies', async () => {
+        expect(satisfiesMinCdsVersion({})).toBe(false);
+    });
+});
+
+describe('Test hasMinCdsVersion()', () => {
+    test('CAP project with valid @sap/cds version using caret(^)', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '^6.7.0' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version using caret(^)', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '^4' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using x-range', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '6.x' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version using x-range', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '4.x' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using greater than (>)', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '>4.0.0' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version containing semver with letters', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': 'a.b.c' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with invalid @sap/cds version containing text', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': 'test' }
+            })
+        ).toBe(false);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '6.8.4' }
+            })
+        ).toBe(true);
+    });
+
+    test('CAP project with valid @sap/cds version using higher version with caret (^)', async () => {
+        expect(
+            hasMinCdsVersion({
+                dependencies: { '@sap/cds': '^7' }
+            })
+        ).toBe(true);
     });
 });
 
