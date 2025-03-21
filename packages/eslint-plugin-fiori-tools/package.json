@@ -17,7 +17,7 @@
         "test": "jest --ci --forceExit --detectOpenHandles --colors"
     },
     "devDependencies": {
-        "eslint": "8.57.0"
+        "eslint": "^9"
     },
     "dependencies": {
         "eslint-plugin-fiori-custom": "^2.6.7",

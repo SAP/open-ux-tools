@@ -1,9 +1,3 @@
-// const nx = require('@nx/eslint-plugin');
-// const vue = require('eslint-plugin-vue');
-// const vueTsEslint = require('@vue/eslint-config-typescript');
-// const skipFormatting = require('@vue/eslint-config-prettier/skip-formatting');
-// import { default as eslintPluginPrettierRecommended } from 'eslint-plugin-prettier/recommended';
-
 const { FlatCompat } = require('@eslint/eslintrc');
 const tsParser = require('@typescript-eslint/parser');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
@@ -33,8 +27,9 @@ module.exports = [
             'scripts',
             'test/data',
             'templates',
-            'test/test-output'
-
+            'test/test-output',
+            'esbuild.js',
+            ' esbuild*.js'
         ]
     },
     eslintPluginPrettierRecommended,
@@ -43,6 +38,7 @@ module.exports = [
     ...compat.extends('plugin:@typescript-eslint/recommended'),
     importPlugin.flatConfigs.recommended,
     {
+        files: ['**/*.ts', '**/*.tsx'],
         rules: {
             'comma-dangle': ['error', 'never'],
             'jsdoc/require-param': 'error',
@@ -370,157 +366,3 @@ module.exports = [
         }
     }
 ];
-
-// import { defineConfig } from 'eslint/config';
-// import promise from 'eslint-plugin-promise';
-// import prettier from 'eslint-plugin-prettier';
-// import jsdoc from 'eslint-plugin-jsdoc';
-// import typescriptEslint from '@typescript-eslint/eslint-plugin';
-// import _import from 'eslint-plugin-import';
-// import sonarjs from 'eslint-plugin-sonarjs';
-// import { fixupPluginRules } from '@eslint/compat';
-// import globals from 'globals';
-// import tsParser from '@typescript-eslint/parser';
-// import path from 'node:path';
-// import { fileURLToPath } from 'node:url';
-// import js from '@eslint/js';
-// import { FlatCompat } from '@eslint/eslintrc';
-
-// const __filename = fileURLToPath(import.meta.url);
-// const __dirname = path.dirname(__filename);
-// const compat = new FlatCompat({
-//     baseDirectory: __dirname,
-//     recommendedConfig: js.configs.recommended,
-//     allConfig: js.configs.all
-// });
-// const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
-// import { default as eslintPluginPrettierRecommended } from 'eslint-plugin-prettier/recommended';
-
-// export default defineConfig([
-//     eslintPluginPrettierRecommended,
-// ]);
-
-//     {
-//     // extends: compat.extends('plugin:jsdoc/recommended', 'plugin:prettier/recommended'),
-
-//     plugins: {
-//         promise,
-//         prettier,
-//         jsdoc,
-//         '@typescript-eslint': typescriptEslint,
-//         import: fixupPluginRules(_import),
-//         sonarjs,
-//     },
-
-//     languageOptions: {
-//         globals: {
-//             ...globals.node,
-//         },
-//     },
-
-// }, {
-//     files: ['**/*.ts', '**/*.tsx'],
-//     extends: compat.extends('plugin:@typescript-eslint/recommended'),
-
-//     languageOptions: {
-//         parser: tsParser,
-//     },
-
-//     settings: {
-//         jsdoc: {
-//             mode: 'typescript',
-//         },
-//     },
-
-//     rules: {
-//         '@typescript-eslint/ban-types': 'off',
-//         '@typescript-eslint/explicit-function-return-type': 'warn',
-//         '@typescript-eslint/no-unsafe-assignment': 'warn',
-//         '@typescript-eslint/no-explicit-any': 'off',
-//         '@typescript-eslint/no-inferrable-types': 'off',
-
-//         '@typescript-eslint/no-unused-vars': ['error', {
-//             varsIgnorePattern: '^_',
-//             argsIgnorePattern: '^_',
-//         }],
-
-//         '@typescript-eslint/no-floating-promises': ['error'],
-
-//         '@typescript-eslint/consistent-type-imports': ['error', {
-//             prefer: 'type-imports',
-//             disallowTypeAnnotations: true,
-//         }],
-
-//         '@typescript-eslint/no-misused-promises': ['error', {
-//             checksVoidReturn: false,
-//         }],
-
-//         '@typescript-eslint/no-use-before-define': ['error', 'nofunc'],
-//         '@typescript-eslint/prefer-nullish-coalescing': 'warn',
-//         '@typescript-eslint/prefer-optional-chain': 'warn',
-//         'jsdoc/require-param-type': 'off',
-//         'jsdoc/require-returns-type': 'off',
-
-//         'prefer-const': ['error', {
-//             destructuring: 'all',
-//         }],
-
-//         'jsdoc/tag-lines': ['error', 'never', {
-//             startLines: 1,
-//         }],
-//     },
-// }, {
-//     files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
-
-//     languageOptions: {
-//         parser: tsParser,
-//     },
-
-//     rules: {
-//         '@typescript-eslint/explicit-function-return-type': 'off',
-//         'jsdoc/require-param': 'off',
-//         'jsdoc/require-param-description': 'off',
-//         'jsdoc/require-param-name': 'off',
-//         'jsdoc/require-param-type': 'off',
-//         'jsdoc/require-returns': 'off',
-//         'jsdoc/require-returns-check': 'off',
-//         'jsdoc/require-returns-description': 'off',
-//         'jsdoc/require-returns-type': 'off',
-
-//         'jsdoc/require-jsdoc': ['off', {
-//             require: {
-//                 ClassDeclaration: true,
-//                 MethodDefinition: true,
-//             },
-
-//             exemptEmptyFunctions: true,
-//         }],
-
-//         'jsdoc/valid-types': 'off',
-//         'jsdoc/check-types': 'off',
-//         'jsdoc/check-tag-names': 'off',
-//         'jsdoc/match-description': 'off',
-//         'promise/param-names': 'off',
-//         'promise/catch-or-return': 'off',
-//         '@typescript-eslint/no-unused-vars': 'off',
-
-//         '@typescript-eslint/consistent-type-imports': ['error', {
-//             prefer: 'type-imports',
-//             disallowTypeAnnotations: true,
-//         }],
-
-//         '@typescript-eslint/no-use-before-define': ['error', 'nofunc'],
-//     },
-// }, {
-//     files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
-
-//     rules: {
-//         'no-console': 'off',
-//         'jsdoc/require-jsdoc': 'off',
-//         'jsdoc/require-returns-description': 'off',
-//         'jsdoc/require-param-description': 'off',
-//         'max-nested-callbacks': ['warn', 5],
-//         'sonarjs/cognitive-complexity': 'off',
-//     },
-// }
-// ]);
