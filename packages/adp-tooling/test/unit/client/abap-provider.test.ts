@@ -1,10 +1,11 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { AbapTarget } from '@sap-ux/ui5-config';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { AbapProvider, TargetSystems } from '../../../src';
-import { AbapTarget } from '@sap-ux/ui5-config';
+import { AbapProvider } from '../../../src';
+import type { TargetSystems } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),

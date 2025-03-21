@@ -139,7 +139,7 @@ export class ConfigPrompter {
                 mandatory: true,
                 hint: t('prompts.passwordTooltip')
             },
-            validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
+            validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
             when: async (answers: ConfigAnswers) => {
                 const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
                 return showCredentialQuestion(answers, systemRequiresAuth);
@@ -188,6 +188,31 @@ export class ConfigPrompter {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
         return true;
+    }
+
+    /**
+     * Validates the password by setting up the provider and, if necessary,
+     * loading the available applications.
+     *
+     * @param {string} password - The inputted password.
+     * @param {ConfigAnswers} answers - The configuration answers provided by the user.
+     * @returns An error message if validation fails, or true if the system selection is valid.
+     */
+    private async validatePassword(password: string, answers: ConfigAnswers): Promise<string | boolean> {
+        const validationResult = validateEmptyString(password);
+        if (typeof validationResult === 'string') {
+            return validationResult;
+        }
+
+        try {
+            await this.abapProvider.setProvider(answers.system, undefined, answers.username, password);
+
+            await this.targetApps.getApps();
+
+            return true;
+        } catch (e) {
+            return e.message;
+        }
     }
 
     /**

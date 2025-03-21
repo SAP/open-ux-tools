@@ -1,13 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import {
-    ABAP_APPS_PARAMS,
-    ABAP_VARIANT_APPS_PARAMS,
-    AbapProvider,
-    TargetApplication,
-    TargetApplications,
-    filterApps
-} from '../../../src';
+import type { TargetApplication, AbapProvider } from '../../../src';
+import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, TargetApplications, filterApps } from '../../../src';
 
 jest.mock('i18next', () => ({
     t: jest.fn((key) => key)
