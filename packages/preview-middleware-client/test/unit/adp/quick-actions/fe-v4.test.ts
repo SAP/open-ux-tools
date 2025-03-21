@@ -1,4 +1,5 @@
-import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
@@ -7,18 +8,15 @@ const mockChangeService = {
     syncOutlineChanges: jest.fn()
 } as unknown as ChangeService;
 
-import {
-    quickActionListChanged,
-    executeQuickAction,
-    QuickAction
-} from '@sap-ux-private/control-property-editor-common';
+import type { QuickAction } from '@sap-ux-private/control-property-editor-common';
+import { quickActionListChanged, executeQuickAction } from '@sap-ux-private/control-property-editor-common';
 
 import { QuickActionService } from '../../../../src/cpe/quick-actions/quick-action-service';
 import { OutlineService } from '../../../../src/cpe/outline/service';
 import { FeatureService } from '../../../../src/cpe/feature-service';
 
 import FEV4QuickActionRegistry from 'open/ux/preview/client/adp/quick-actions/fe-v4/registry';
-import { sapCoreMock } from 'mock/window';
+import { sapCoreMock, fetchMock } from 'mock/window';
 import NavContainer from 'mock/sap/m/NavContainer';
 import XMLView from 'mock/sap/ui/core/mvc/XMLView';
 import ComponentContainer from 'mock/sap/ui/core/ComponentContainer';
@@ -28,10 +26,9 @@ import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import FlexUtils from 'mock/sap/ui/fl/Utils';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 
-import { fetchMock } from 'mock/window';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 import ComponentMock from 'mock/sap/ui/core/Component';
-import UIComponent from 'sap/ui/core/UIComponent';
+import type UIComponent from 'sap/ui/core/UIComponent';
 import AppComponentMock from 'mock/sap/fe/core/AppComponent';
 import FlexRuntimeInfoAPI from 'mock/sap/ui/fl/apply/api/FlexRuntimeInfoAPI';
 import { DialogFactory, DialogNames } from 'open/ux/preview/client/adp/dialog-factory';
@@ -59,7 +56,7 @@ describe('FE V4 quick actions', () => {
     });
 
     afterEach(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
         if (typeof closeDialogFunction === 'function') {
             // make sure that dialog factory is in clean state after each test
@@ -1457,7 +1454,7 @@ describe('FE V4 quick actions', () => {
                         } as any
                     ]
                 });
-                let tooltip = undefined;
+                let tooltip;
                 let enabled = true;
                 if (testCase.varianManagmentValue === 'Control') {
                     (tooltip =
@@ -2353,7 +2350,7 @@ describe('FE V4 quick actions', () => {
                             } as any
                         ]
                     });
-                    let tooltip = undefined;
+                    let tooltip;
                     let enabled = true;
                     if (testCase.varianManagmentValue === 'Control') {
                         (tooltip =
@@ -2391,7 +2388,7 @@ describe('FE V4 quick actions', () => {
                             enabled,
                             title: 'Enable Variant Management in Tables and Charts',
                             tooltip
-                        } as QuickAction);
+                        }) as QuickAction;
 
                     expect(sendActionMock).toHaveBeenCalledWith(
                         quickActionListChanged([

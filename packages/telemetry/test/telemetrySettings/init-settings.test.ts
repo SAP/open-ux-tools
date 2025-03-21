@@ -6,7 +6,6 @@ import * as storeMock from '@sap-ux/store';
 const isAppStudioMock = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
         ...(jest.requireActual('@sap-ux/btp-utils') as {}),
         isAppStudio: (): boolean => isAppStudioMock()
     };

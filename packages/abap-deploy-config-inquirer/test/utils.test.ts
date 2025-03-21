@@ -17,12 +17,8 @@ import { getTransportConfigInstance } from '../src/service-provider-utils';
 import { listPackages } from '../src/validator-utils';
 import LoggerHelper from '../src/logger-helper';
 import { initI18n, t } from '../src/i18n';
-import {
-    AbapDeployConfigAnswers,
-    AbapDeployConfigAnswersInternal,
-    PackageInputChoices,
-    TransportChoices
-} from '../src/types';
+import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '../src/types';
+import { PackageInputChoices, TransportChoices } from '../src/types';
 import { CREATE_TR_DURING_DEPLOY } from '../src/constants';
 import { PromptState } from '../src/prompts/prompt-state';
 

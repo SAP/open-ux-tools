@@ -85,7 +85,6 @@ export function isValidPreviewScript(script: Script, convertTests: boolean = fal
     const isValidScriptName =
         script.name != 'start-variants-management' && script.name != 'start-control-property-editor';
 
-    //eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
     const startsWebServer = !!(script.value.includes('ui5 serve') || script.value.includes('fiori run'));
     const { path } = extractUrlDetails(script.value);
     const opensTest = isTestPath(script ?? '');

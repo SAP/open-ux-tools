@@ -11,7 +11,8 @@ import { AuthenticationType, getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
 import { TestFixture } from './fixtures';
 import { PackageInputChoices, TargetSystemType, TransportChoices } from '@sap-ux/abap-deploy-config-inquirer';
-import { AbapDeployConfig, UI5Config } from '@sap-ux/ui5-config';
+import type { AbapDeployConfig } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
 import { ABAP_DEPLOY_TASK } from '../src/utils/constants';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import * as projectAccess from '@sap-ux/project-access';
@@ -36,7 +37,6 @@ jest.mock('fs', () => {
 });
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: jest.fn(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),
@@ -47,7 +47,6 @@ const mockGetHostEnvironment = getHostEnvironment as jest.Mock;
 const mockSendTelemetry = sendTelemetry as jest.Mock;
 
 jest.mock('@sap-ux/telemetry', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/telemetry') as {}),
     initTelemetrySettings: jest.fn()
 }));

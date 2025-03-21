@@ -1,4 +1,4 @@
-import { Window } from 'types/global';
+import type { Window } from 'types/global';
 
 /**
  * Initializes the CDM (Common Data Model) configuration for the SAP Fiori Launchpad.
@@ -43,11 +43,7 @@ export default async function initCdm(container: typeof sap.ushell.Container): P
                     config: {
                         userProfile: {
                             metadata: {
-                                editablePropterties: [
-                                    'accessibility',
-                                    'contentDensity',
-                                    'theme'
-                                ]
+                                editablePropterties: ['accessibility', 'contentDensity', 'theme']
                             },
                             defaults: {
                                 email: 'john.doe@sap.com',

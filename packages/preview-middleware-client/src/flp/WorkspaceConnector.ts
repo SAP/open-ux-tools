@@ -1,7 +1,8 @@
 import merge from 'sap/base/util/merge';
 import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorageConnector';
 import Layer from 'sap/ui/fl/Layer';
-import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
+import type { FlexChange } from './common';
+import { CHANGES_API_PATH, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 
 const connector = merge({}, ObjectStorageConnector, {

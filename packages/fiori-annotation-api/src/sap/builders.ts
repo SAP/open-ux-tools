@@ -3,6 +3,13 @@ import { Edm, createElementNode, createAttributeNode, Location } from '@sap-ux/o
 
 import type { ValueWithOrigin } from './types';
 
+/**
+ *
+ * @param elementName
+ * @param nameAttribute
+ * @param name
+ * @param content
+ */
 function createComplexElement(elementName: Edm, nameAttribute: Edm, name: string, content: ElementChild[]): Element {
     return createElementNode({
         name: elementName,
@@ -13,6 +20,14 @@ function createComplexElement(elementName: Edm, nameAttribute: Edm, name: string
     });
 }
 
+/**
+ *
+ * @param elementName
+ * @param nameAttribute
+ * @param name
+ * @param valueType
+ * @param value
+ */
 function createPrimitiveElement(
     elementName: Edm,
     nameAttribute: Edm,

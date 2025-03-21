@@ -69,7 +69,7 @@ const reduceTokenInfo = (token: IToken): void => {
     if (hasNaNOrUndefined(token.endOffset)) {
         token.endOffset = -1;
     }
-    /* eslint-disable-next-line  @typescript-eslint/no-explicit-any */
+
     (token as any).tokenTypeName = token.tokenType.name;
     deleteObjProp(token, 'startLine');
     deleteObjProp(token, 'endLine');

@@ -10,9 +10,8 @@ import {
     getCapServiceChoices as getCapServiceChoicesMock
 } from '../../../../src/prompts/datasources/cap-project/cap-helpers';
 import * as capValidators from '../../../../src/prompts/datasources/cap-project/validators';
-import type { CapCustomPaths } from '@sap-ux/project-access';
+import type { CapCustomPaths, type CdsVersionInfo } from '@sap-ux/project-access';
 import { errorHandler } from '../../../../src/prompts/prompt-helpers';
-import { type CdsVersionInfo } from '@sap-ux/project-access';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 jest.mock('../../../../src/utils', () => ({

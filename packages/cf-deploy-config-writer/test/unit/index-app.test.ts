@@ -23,7 +23,6 @@ jest.mock('hasbin', () => ({
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         Mta: require('./mockMta').MockMta
     };
 });

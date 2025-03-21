@@ -1,7 +1,10 @@
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById } from '../../../utils/core';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
@@ -15,12 +18,20 @@ export const CREATE_TABLE_ACTION = 'create_table_action';
  * Quick Action for creating table action.
  */
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_ACTION, [MDC_TABLE_TYPE], 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, undefined, [
             DIALOG_ENABLEMENT_VALIDATOR
         ]);
     }
 
+    /**
+     *
+     * @param path
+     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, sectionInfo, iconTabBarFilterKey } = this.tableMap[path];
         if (!table) {

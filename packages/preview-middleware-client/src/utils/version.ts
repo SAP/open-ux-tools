@@ -3,9 +3,9 @@ import Log from 'sap/base/Log';
 
 type SingleVersionInfo =
     | {
-        name: string;
-        version: string;
-    }
+          name: string;
+          version: string;
+      }
     | undefined;
 
 export type Ui5VersionInfo = {
@@ -25,13 +25,12 @@ const minVersionInfo = {
 
 /**
  * Check if the given version info is valid.
+ *
  * @param versionInfo to check
  * @throws Error if the version info is invalid
  */
 function checkVersionInfo(versionInfo: Ui5VersionInfo): void {
-    if(isNaN(versionInfo.major) ||
-       isNaN(versionInfo.minor) ||
-       isNaN(versionInfo.patch ?? 0)) {
+    if (isNaN(versionInfo.major) || isNaN(versionInfo.minor) || isNaN(versionInfo.patch ?? 0)) {
         throw new Error('Invalid version info');
     }
 }
@@ -70,7 +69,6 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
  * @param ui5VersionInfo to check
  * @param minUi5VersionInfo to check against (default is 1.71)
  * @throws Error if the version info is invalid
- *
  * @returns boolean
  */
 export function isLowerThanMinimalUi5Version(
@@ -83,8 +81,8 @@ export function isLowerThanMinimalUi5Version(
         ui5VersionInfo.major < minUi5VersionInfo.major ||
         (ui5VersionInfo.major === minUi5VersionInfo.major && ui5VersionInfo.minor < minUi5VersionInfo.minor) ||
         (ui5VersionInfo.major === minUi5VersionInfo.major &&
-        ui5VersionInfo.minor === minUi5VersionInfo.minor &&
-        (ui5VersionInfo?.patch ?? 0) < (minUi5VersionInfo?.patch ?? 0))
+            ui5VersionInfo.minor === minUi5VersionInfo.minor &&
+            (ui5VersionInfo?.patch ?? 0) < (minUi5VersionInfo?.patch ?? 0))
     );
 }
 
@@ -96,7 +94,6 @@ export function isLowerThanMinimalUi5Version(
  * @param ui5VersionInfo to check
  * @param targetUi5VersionInfo to check against (default is 1.71)
  * @throws Error if the version info is invalid
- *
  * @returns boolean
  */
 export function isVersionEqualOrHasNewerPatch(
@@ -114,6 +111,7 @@ export function isVersionEqualOrHasNewerPatch(
 
 /**
  * Get UI5 version validation message.
+ *
  * @param ui5VersionInfo to be mentioned in the message
  * @returns string with validation message.
  */

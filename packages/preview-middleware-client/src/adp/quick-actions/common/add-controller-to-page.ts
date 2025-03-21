@@ -1,5 +1,5 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { getUi5Version } from '../../../utils/version';
 import { getAllSyncViewsIds, getControllerInfoForControl } from '../../utils';
@@ -24,6 +24,10 @@ export class AddControllerToPageQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(ADD_CONTROLLER_TO_PAGE_TYPE, CONTROL_TYPES, '', context, [DIALOG_ENABLEMENT_VALIDATOR]);
     }
@@ -41,16 +45,27 @@ export class AddControllerToPageQuickAction
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
-            const isActiveAction = isControllerExtensionEnabledForControl(control, syncViewsIds, version, this.context.flexSettings.isCloud);
+            const isActiveAction = isControllerExtensionEnabledForControl(
+                control,
+                syncViewsIds,
+                version,
+                this.context.flexSettings.isCloud
+            );
             this.control = isActiveAction ? control : undefined;
             break;
         }
     }
 
+    /**
+     *
+     */
     protected get textKey() {
         return this.controllerExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
     }
 
+    /**
+     *
+     */
     async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];

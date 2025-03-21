@@ -30,13 +30,13 @@ import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
 import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
-import FlexChange from 'sap/ui/fl/Change';
+import type FlexChange from 'sap/ui/fl/Change';
 import { getError } from '../../utils/error';
 import { isLowerThanMinimalUi5Version, getUi5Version } from '../../utils/version';
 import MessageToast from 'sap/m/MessageToast';
 import { getTextBundle } from '../../i18n';
 import { getControlById, isA } from '../../utils/core';
-import UI5Element from 'sap/ui/core/Element';
+import type UI5Element from 'sap/ui/core/Element';
 import { getConfigMapControlIdMap } from '../../utils/fe-v4';
 
 const TITLE_MAP: { [key: string]: string } = {
@@ -204,7 +204,7 @@ export class ChangeService extends EventTarget {
                     }
 
                     const error = getError(exception);
-                    // eslint-disable-next-line  @typescript-eslint/no-unsafe-call
+
                     const modifiedMessage = modifyRTAErrorMessage(error.toString(), id, name);
                     const errorMessage =
                         modifiedMessage || `RTA Exception applying expression "${action.payload.value}"`;
@@ -241,6 +241,10 @@ export class ChangeService extends EventTarget {
         );
     }
 
+    /**
+     *
+     * @param change
+     */
     private getSavedConfigurationChange(change: ConfigChange): SavedConfigurationChange {
         assertManifestChange(change);
         if ([change.content.entityPropertyChange.propertyValue].every((item) => item === undefined || item === null)) {
@@ -524,6 +528,14 @@ export class ChangeService extends EventTarget {
         }
     }
 
+    /**
+     *
+     * @param command
+     * @param value
+     * @param fileName
+     * @param index
+     * @param inactiveCommandCount
+     */
     private prepareV4ConfigurationChange(
         command: FlexCommand,
         value: ConfigurationValue,
@@ -565,6 +577,13 @@ export class ChangeService extends EventTarget {
         return result;
     }
 
+    /**
+     *
+     * @param command
+     * @param fileName
+     * @param index
+     * @param inactiveCommandCount
+     */
     private prepareV2ConfigurationChange(
         command: FlexCommand,
         fileName: string,
@@ -734,7 +753,7 @@ export class ChangeService extends EventTarget {
     private getCommandSelectorId(command: FlexCommand): string | undefined {
         return this.retryOperations([
             () => command.getSelector().id,
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
+
             () => command.getElement().getProperty('persistencyKey'),
             () => command.getElement().getId(),
             () => command.getParent()?.getElement().getId()
@@ -758,7 +777,7 @@ export class ChangeService extends EventTarget {
         }
 
         try {
-            let control = JsControlTreeModifier.bySelector(selector, appComponent);
+            const control = JsControlTreeModifier.bySelector(selector, appComponent);
             if (!control) {
                 return selector.id;
             }
@@ -809,6 +828,10 @@ export class ChangeService extends EventTarget {
         this.updateStack();
     }
 
+    /**
+     *
+     * @param handler
+     */
     public onStackChange(handler: (event: CustomEvent<StackChangedEventDetail>) => void | Promise<void>): void {
         this.addEventListener(STACK_CHANGE_EVENT, handler as EventListener);
     }

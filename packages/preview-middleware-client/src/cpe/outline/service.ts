@@ -12,9 +12,9 @@ import {
 
 import { getError } from '../../utils/error';
 import { getTextBundle } from '../../i18n';
-import { ControlTreeIndex } from '../types';
+import type { ControlTreeIndex } from '../types';
 import { transformNodes } from './nodes';
-import { ChangeService } from '../changes';
+import type { ChangeService } from '../changes';
 
 export const OUTLINE_CHANGE_EVENT = 'OUTLINE_CHANGED';
 
@@ -25,7 +25,15 @@ export interface OutlineChangedEventDetail {
  * A Class of WorkspaceConnectorService
  */
 export class OutlineService extends EventTarget {
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {
+    /**
+     *
+     * @param rta
+     * @param changeService
+     */
+    constructor(
+        private readonly rta: RuntimeAuthoring,
+        private readonly changeService: ChangeService
+    ) {
         super();
     }
 
@@ -66,7 +74,12 @@ export class OutlineService extends EventTarget {
 
                 this.dispatchEvent(event);
                 sendAction(outlineChanged(outlineNodes));
-                if (reuseComponentsIds.size > 0 && scenario === SCENARIO.AdaptationProject && !hasSentWarning && isCloud) {
+                if (
+                    reuseComponentsIds.size > 0 &&
+                    scenario === SCENARIO.AdaptationProject &&
+                    !hasSentWarning &&
+                    isCloud
+                ) {
                     sendAction(
                         showInfoCenterMessage({
                             type: MessageBarType.warning,
@@ -85,6 +98,10 @@ export class OutlineService extends EventTarget {
         outline.attachEvent('update', syncOutline);
     }
 
+    /**
+     *
+     * @param handler
+     */
     public onOutlineChange(handler: (event: CustomEvent<OutlineChangedEventDetail>) => void | Promise<void>): void {
         this.addEventListener(OUTLINE_CHANGE_EVENT, handler as EventListener);
     }

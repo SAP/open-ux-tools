@@ -1,5 +1,5 @@
 import type UI5Element from 'sap/ui/core/Element';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import Fragment, { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
@@ -15,7 +15,7 @@ import FileExistsDialog from '../../../src/adp/controllers/FileExistsDialog.cont
 
 describe('DialogFactory', () => {
     afterEach(() => {
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-member-access
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
         const closeDialogFunction = attachBeforeClose.mock.calls[0]?.[0];
         if (typeof closeDialogFunction === 'function') {
             // make sure that dialog factory is in clean state after each test
@@ -65,11 +65,11 @@ describe('DialogFactory', () => {
                 defaultAggregationArrayIndex: 1
             }
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.AddFragment');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddFragment);
 
         expect(DialogFactory.canOpenDialog).toBe(false);
@@ -87,13 +87,13 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.ADD_TABLE_COLUMN_FRAGMENTS
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual(
             'open.ux.preview.client.adp.ui.AddTableColumnFragments'
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(AddTableColumnFragments);
 
         expect(DialogFactory.canOpenDialog).toBe(false);
@@ -111,11 +111,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.CONTROLLER_EXTENSION
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.ControllerExtension');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(ControllerExtension);
 
         expect(DialogFactory.canOpenDialog).toBe(false);
@@ -133,11 +133,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.ExtensionPoint');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual('dialog--ExtensionPoint');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(ExtensionPoint);
 
         expect(DialogFactory.canOpenDialog).toBe(false);
@@ -155,11 +155,11 @@ describe('DialogFactory', () => {
             rtaMock as unknown as RuntimeAuthoring,
             DialogNames.FILE_EXISTS
         );
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].name).toStrictEqual('open.ux.preview.client.adp.ui.FileExistsDialog');
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].id).toStrictEqual(undefined);
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
+
         expect(Fragment.load.mock.calls[0][0].controller).toBeInstanceOf(FileExistsDialog);
     });
 });

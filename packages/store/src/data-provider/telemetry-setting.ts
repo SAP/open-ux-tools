@@ -13,15 +13,27 @@ export const TelemetryDataProvider: DataProviderConstructor<TelemetrySetting, Te
     private readonly entityName = Entities.TelemetrySetting;
     private readonly logger: Logger;
 
+    /**
+     *
+     * @param logger
+     */
     constructor(logger: Logger) {
         this.logger = logger;
         this.dataAccessor = getFilesystemStore(this.logger);
     }
 
+    /**
+     *
+     * @param key
+     */
     public read(key: TelemetrySettingKey): Promise<TelemetrySetting | undefined> {
         return this.dataAccessor.read({ entityName: this.entityName, id: key.getId() });
     }
 
+    /**
+     *
+     * @param entity
+     */
     public write(entity: TelemetrySetting): Promise<TelemetrySetting | undefined> {
         return this.dataAccessor.write({
             entityName: this.entityName,
@@ -30,6 +42,10 @@ export const TelemetryDataProvider: DataProviderConstructor<TelemetrySetting, Te
         });
     }
 
+    /**
+     *
+     * @param _entity
+     */
     public delete(_entity: TelemetrySetting): Promise<boolean> {
         return this.dataAccessor.del({
             entityName: this.entityName,
@@ -37,6 +53,9 @@ export const TelemetryDataProvider: DataProviderConstructor<TelemetrySetting, Te
         });
     }
 
+    /**
+     *
+     */
     public getAll(): Promise<TelemetrySetting[] | []> {
         return this.dataAccessor.getAll({ entityName: this.entityName });
     }

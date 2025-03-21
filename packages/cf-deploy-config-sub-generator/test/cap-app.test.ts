@@ -5,7 +5,7 @@ import { join } from 'path';
 import { TestFixture } from './fixtures';
 import { initI18n, t } from '../src/utils';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
-import * as fs from 'fs';
+import type * as fs from 'fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as cfDeployWriter from '@sap-ux/cf-deploy-config-writer';
@@ -50,7 +50,6 @@ jest.mock('@sap/mta-lib', () => {
 const mockGetHostEnvironment = jest.fn();
 const mockSendTelemetry = jest.fn();
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: () => mockSendTelemetry(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),

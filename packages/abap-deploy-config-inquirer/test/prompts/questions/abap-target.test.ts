@@ -1,5 +1,6 @@
 import { isAppStudio, isOnPremiseDestination } from '@sap-ux/btp-utils';
-import { promptNames, AbapDeployConfigPromptOptions, ClientChoiceValue, TargetSystemType } from '../../../src/types';
+import type { AbapDeployConfigPromptOptions } from '../../../src/types';
+import { promptNames, ClientChoiceValue, TargetSystemType } from '../../../src/types';
 import { getAbapTargetPrompts } from '../../../src/prompts/questions';
 import { getAbapSystems } from '../../../src/utils';
 import { mockDestinations } from '../../fixtures/destinations';
@@ -9,7 +10,7 @@ import * as validators from '../../../src/prompts/validators';
 import * as conditions from '../../../src/prompts/conditions';
 import { initI18n, t } from '../../../src/i18n';
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import { UrlAbapTarget } from '@sap-ux/system-access';
+import type { UrlAbapTarget } from '@sap-ux/system-access';
 import { PromptState } from '../../../src/prompts/prompt-state';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -193,7 +194,12 @@ describe('getAbapTargetPrompts', () => {
                     destination: 'mockDest1'
                 })
             ).toBe(false);
-            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations, undefined, undefined);
+            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith(
+                'mockDest1',
+                mockDestinations,
+                undefined,
+                undefined
+            );
         } else {
             throw new Error('Destination setter prompt not found');
         }

@@ -1,11 +1,14 @@
-import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
+import type { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
 
-import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
+import type { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
 
 /**
  * Base class for all  quick actions.
  */
 export abstract class QuickActionDefinitionBase<T extends string> {
+    /**
+     *
+     */
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
@@ -27,6 +30,9 @@ export abstract class QuickActionDefinitionBase<T extends string> {
     }
 
     protected validationResult: EnablementValidatorResult[] | undefined;
+    /**
+     *
+     */
     protected get isDisabled(): boolean {
         if (this.validationResult === undefined) {
             return false;
@@ -35,10 +41,21 @@ export abstract class QuickActionDefinitionBase<T extends string> {
         return validationErrors.length > 0;
     }
 
+    /**
+     *
+     */
     protected get textKey(): string {
         return this.defaultTextKey;
     }
 
+    /**
+     *
+     * @param type
+     * @param kind
+     * @param defaultTextKey
+     * @param context
+     * @param enablementValidators
+     */
     constructor(
         public readonly type: string,
         public readonly kind: T,

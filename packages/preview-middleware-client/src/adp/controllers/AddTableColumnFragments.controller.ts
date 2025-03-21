@@ -1,5 +1,5 @@
 /** sap.m */
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 
 /** sap.ui.core */
@@ -18,7 +18,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
 /** sap.ui.fl */
-import { AddTableCellFragmentChangeContentType } from 'sap/ui/fl/Change';
+import type { AddTableCellFragmentChangeContentType } from 'sap/ui/fl/Change';
 
 /** sap.ui.layout */
 import { type SimpleForm } from 'sap/ui/layout/form';
@@ -35,14 +35,20 @@ import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
 import { type AddFragmentModel, type AddFragmentOptions } from './AddFragment.controller';
 import { ValueState } from 'sap/ui/core/library';
-import Input from 'sap/m/Input';
-import Control from 'sap/ui/core/Control';
-import ManagedObject from 'sap/ui/base/ManagedObject';
+import type Input from 'sap/m/Input';
+import type Control from 'sap/ui/core/Control';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
 
 const radix = 10;
 
 type AddTableColumnsFragmentsModel = AddFragmentModel & {
+    /**
+     *
+     */
     getProperty(sPath: '/newColumnFragmentName'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/newCellFragmentName'): string;
 };
 
@@ -59,7 +65,19 @@ interface CreateFragmentProps {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsFragmentsModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
+    /**
+     *
+     * @param name
+     * @param overlays
+     * @param rta
+     * @param options
+     */
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddFragmentOptions
+    ) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;

@@ -807,7 +807,6 @@ describe('AdaptationProject', () => {
 
         test('GET /adp/api/annotation => Metadata fetch error', async () => {
             jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
                 getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('Metadata fetch error')),
                 getManifestDataSources: jest.fn().mockReturnValue({
                     mainService: {

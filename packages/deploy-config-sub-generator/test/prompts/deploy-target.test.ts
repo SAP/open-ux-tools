@@ -1,4 +1,4 @@
-import { Question } from 'inquirer';
+import type { Question } from 'inquirer';
 import { getDeployTargetQuestion } from '../../src/prompts/deploy-target';
 import { abapChoice, cfChoice } from '../../src/utils/constants';
 

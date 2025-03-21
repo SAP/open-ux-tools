@@ -3,7 +3,8 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import Log from 'sap/base/Log';
 
-import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
+import type { Ui5VersionInfo } from '../../utils/version';
+import { getUi5Version } from '../../utils/version';
 import { getControlById } from '../../utils/core';
 import { getError } from '../../utils/error';
 
@@ -11,7 +12,7 @@ import type { ControlTreeIndex } from '../types';
 import { getOverlay, isReuseComponent } from '../utils';
 
 import { isEditable } from './editable';
-import { ChangeService } from '../changes';
+import type { ChangeService } from '../changes';
 import { getConfigMapControlIdMap, getPageName } from '../../utils/fe-v4';
 
 interface AdditionalData {
@@ -32,7 +33,7 @@ function getAdditionalData(id: string): AdditionalData {
     }
 
     const metadata = control.getMetadata();
-    let details: AdditionalData = {};
+    const details: AdditionalData = {};
 
     const technicalName = metadata.getElementName();
     if (technicalName) {
@@ -57,7 +58,7 @@ function getAdditionalData(id: string): AdditionalData {
  */
 function getChildren(current: OutlineViewNode): OutlineViewNode[] {
     return (current.elements ?? []).flatMap((element: OutlineViewNode) =>
-        element.type === 'aggregation' ? element.elements ?? [] : []
+        element.type === 'aggregation' ? (element.elements ?? []) : []
     );
 }
 
@@ -97,6 +98,11 @@ function indexNode(controlIndex: ControlTreeIndex, node: OutlineNode): void {
     }
 }
 
+/**
+ *
+ * @param node
+ * @param propertyIdMap
+ */
 function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string[]>): void {
     const control = getControlById(node.controlId);
     if (control) {
@@ -192,7 +198,7 @@ export async function transformNodes(
             if (isAdp && isExtPoint) {
                 const { defaultContent = [], createdControls = [] } = current.extensionPointInfo;
 
-                let children: OutlineNode[] = [];
+                const children: OutlineNode[] = [];
                 // We can combine both because there can only be either defaultContent or createdControls for one extension point node.
                 [...defaultContent, ...createdControls].forEach((id: string) => {
                     addChildToExtensionPoint(id, children, changeService);

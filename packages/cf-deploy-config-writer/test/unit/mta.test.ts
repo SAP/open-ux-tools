@@ -8,16 +8,15 @@ import type { mta } from '@sap/mta-lib';
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-var-requires
+
     const vol = require('memfs').vol;
     return new Union().use(fs1).use(vol as unknown as typeof fs);
 });
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
         Mta: require('./mockMta').MockMta
     };
 });

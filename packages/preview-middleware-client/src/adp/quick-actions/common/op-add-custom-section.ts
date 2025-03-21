@@ -1,10 +1,13 @@
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
@@ -18,12 +21,19 @@ export class AddCustomSectionQuickAction
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(OP_ADD_CUSTOM_SECTION, CONTROL_TYPES, 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION', context, [
             DIALOG_ENABLEMENT_VALIDATOR
         ]);
     }
 
+    /**
+     *
+     */
     async execute(): Promise<FlexCommand[]> {
         const objectPageLayout = getRelevantControlFromActivePage(
             this.context.controlIndex,

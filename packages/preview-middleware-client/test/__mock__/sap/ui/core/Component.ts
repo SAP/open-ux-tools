@@ -1,5 +1,5 @@
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import Component from 'sap/ui/core/Component';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type Component from 'sap/ui/core/Component';
 
 export default class ComponentMock {
     static get(_id: string) {}

@@ -8,9 +8,21 @@ import type { ServiceOptions } from '../types';
  * could be written to the filesystem/OS secure store/network share, the client does not need to know this.
  */
 export interface DataProvider<E, K extends EntityKey> {
+    /**
+     *
+     */
     read(key: K): Promise<E | undefined>;
+    /**
+     *
+     */
     write(entity: E): Promise<E | undefined>;
+    /**
+     *
+     */
     delete(entity: E): Promise<boolean>;
+    /**
+     *
+     */
     getAll(): Promise<E[] | []>;
 }
 

@@ -7,6 +7,9 @@ export enum ENV {
     H2O_URL = 'H2O_URL'
 }
 
+/**
+ *
+ */
 export function isAppStudio(): boolean {
     return !!process.env[ENV.H2O_URL];
 }

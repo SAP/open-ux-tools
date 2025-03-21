@@ -1,20 +1,25 @@
 import Component from 'sap/ui/core/Component';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
-import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
-import ODataModel from 'sap/ui/model/odata/v2/ODataModel';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
+import type ODataModel from 'sap/ui/model/odata/v2/ODataModel';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
+import type TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
 
-import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import type {
+    QuickActionContext,
+    SimpleQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../../cpe/quick-actions/utils';
 import { getControlById, isA } from '../../../utils/core';
-import ODataMetaModel, { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
-import { ApplicationType, getApplicationType } from '../../../utils/application';
+import type { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
+import type ODataMetaModel from 'sap/ui/model/odata/ODataMetaModel';
+import type { ApplicationType } from '../../../utils/application';
+import { getApplicationType } from '../../../utils/application';
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { areManifestChangesSupported } from '../fe-v2/utils';
 import { getV2ApplicationPages } from '../../../utils/fe-v2';
 import { getV4ApplicationPages } from '../../../utils/fe-v4';
-import { EnablementValidatorResult } from '../enablement-validator';
+import type { EnablementValidatorResult } from '../enablement-validator';
 import { getTextBundle } from '../../../i18n';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 
@@ -37,6 +42,10 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
 
     private appType: ApplicationType;
 
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(ADD_NEW_OBJECT_PAGE_ACTION, [], 'QUICK_ACTION_ADD_NEW_SUB_PAGE', context, [
             {
@@ -54,6 +63,9 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         ]);
     }
 
+    /**
+     *
+     */
     private getApplicationPages() {
         if (this.appType === 'fe-v2') {
             return getV2ApplicationPages(this.context.manifest);
@@ -63,6 +75,11 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         return [];
     }
 
+    /**
+     *
+     * @param entityType
+     * @param metaModel
+     */
     private prepareNavigationData(entityType: EntityType, metaModel: ODataMetaModel): void {
         const existingPages = this.getApplicationPages();
         if (this.currentPageDescriptor.pageType === 'sap.suite.ui.generic.template.ObjectPage') {
@@ -100,6 +117,9 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         }
     }
 
+    /**
+     *
+     */
     async initialize(): Promise<void> {
         if (!(await areManifestChangesSupported(this.context.manifest))) {
             return Promise.resolve();
@@ -145,6 +165,9 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         return Promise.resolve();
     }
 
+    /**
+     *
+     */
     async execute(): Promise<FlexCommand[]> {
         const overlay = OverlayRegistry.getOverlay(this.control!);
         const appReference = this.context.flexSettings.projectId;

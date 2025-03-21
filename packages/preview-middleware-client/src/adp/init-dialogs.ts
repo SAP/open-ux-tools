@@ -1,5 +1,5 @@
 /** sap.ui.core */
-import UI5Element from 'sap/ui/core/Element';
+import type UI5Element from 'sap/ui/core/Element';
 
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
@@ -11,9 +11,9 @@ import FlUtils from 'sap/ui/fl/Utils';
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
-import ManagedObject from 'sap/ui/base/ManagedObject';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
 import { isReuseComponent } from '../cpe/utils';
-import { Ui5VersionInfo } from '../utils/version';
+import type { Ui5VersionInfo } from '../utils/version';
 import { DialogFactory, DialogNames } from './dialog-factory';
 
 /**
@@ -23,7 +23,6 @@ import { DialogFactory, DialogNames } from './dialog-factory';
  * @param syncViewsIds Runtime Authoring
  * @param ui5VersionInfo UI5 version information
  * @param isCloud Whether the application is running in the cloud
- *
  * @returns boolean whether menu item is enabled or not
  */
 export function isControllerExtensionEnabledForControl(
@@ -35,7 +34,7 @@ export function isControllerExtensionEnabledForControl(
     const clickedControlId = FlUtils.getViewForControl(control).getId();
     const isControlInSyncView = syncViewsIds.includes(clickedControlId);
 
-    if(isCloud) {
+    if (isCloud) {
         const isClickedControlReuseComponent = isReuseComponent(clickedControlId, ui5VersionInfo);
         return !isControlInSyncView && !isClickedControlReuseComponent;
     }
@@ -49,7 +48,6 @@ export function isControllerExtensionEnabledForControl(
  * @param syncViewsIds Runtime Authoring
  * @param ui5VersionInfo UI5 version information
  * @param isCloud Whether the application is running in the cloud
- *
  * @returns boolean whether menu item is enabled or not
  */
 export const isControllerExtensionEnabled = (
@@ -121,6 +119,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5Ve
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, ui5VersionInfo, isCloud)
+        enabled: (overlays: ElementOverlay[]) =>
+            isControllerExtensionEnabled(overlays, syncViewsIds, ui5VersionInfo, isCloud)
     });
 };

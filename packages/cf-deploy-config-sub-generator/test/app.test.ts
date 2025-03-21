@@ -4,7 +4,7 @@ import yeomanTest from 'yeoman-test';
 import { load, dump } from 'js-yaml';
 import { join } from 'path';
 import { TestFixture } from './fixtures';
-import { Manifest } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import { initI18n, t } from '../src/utils';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -58,7 +58,6 @@ jest.mock('@sap/mta-lib', () => {
 const mockGetHostEnvironment = jest.fn();
 const mockSendTelemetry = jest.fn();
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: () => mockSendTelemetry(),
     isExtensionInstalled: jest.fn().mockReturnValue(true),

@@ -39,14 +39,14 @@ export const escapeText = (input: string): string => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/([<&])/g, (_str, item: '<' | '&') => ({ '<': '&lt;', '&': '&amp;' }[item]));
+    return input.replace(/([<&])/g, (_str, item: '<' | '&') => ({ '<': '&lt;', '&': '&amp;' })[item]);
 };
 
 export const unescapeText = (input: string) => {
     if (!input || typeof input !== 'string') {
         return input;
     }
-    return input.replace(/(&lt;|&amp;)/g, (_str, item: '&lt;' | '&amp;') => ({ '&lt;': '<', '&amp;': '&' }[item]));
+    return input.replace(/(&lt;|&amp;)/g, (_str, item: '&lt;' | '&amp;') => ({ '&lt;': '<', '&amp;': '&' })[item]);
 };
 
 export const escapeAttribute = (input: string): string => {
@@ -55,7 +55,7 @@ export const escapeAttribute = (input: string): string => {
     }
     return input.replace(
         /([<&"])/g,
-        (_str, item: '<' | '&' | '"') => ({ '<': '&lt;', '&': '&amp;', '"': '&quot;' }[item])
+        (_str, item: '<' | '&' | '"') => ({ '<': '&lt;', '&': '&amp;', '"': '&quot;' })[item]
     );
 };
 
@@ -65,7 +65,7 @@ export const unescapeAttribute = (input: string) => {
     }
     return input.replace(
         /(&lt;|&amp;|&quot;)/g,
-        (_str, item: '&lt;' | '&amp;' | '&quot;') => ({ '&lt;': '<', '&amp;': '&', '&quot;': '"' }[item])
+        (_str, item: '&lt;' | '&amp;' | '&quot;') => ({ '&lt;': '<', '&amp;': '&', '&quot;': '"' })[item]
     );
 };
 

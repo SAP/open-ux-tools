@@ -42,7 +42,7 @@ export interface AnnotationFileDetails {
 }
 
 export interface AnnotationDataSourceMap {
-    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails, metadataReadErrorMsg: string };
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails; metadataReadErrorMsg: string };
 }
 
 export interface AnnotationDataSourceResponse {

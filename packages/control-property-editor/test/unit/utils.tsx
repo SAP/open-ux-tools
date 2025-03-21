@@ -7,8 +7,7 @@ import type { RenderOptions, RenderResult } from '@testing-library/react';
 import { render as rtlRender } from '@testing-library/react';
 import { Provider } from 'react-redux';
 
-import { initialState } from '../../src/slice';
-import reducer from '../../src/slice';
+import reducer, { initialState } from '../../src/slice';
 
 export type State = ReturnType<typeof reducer>;
 

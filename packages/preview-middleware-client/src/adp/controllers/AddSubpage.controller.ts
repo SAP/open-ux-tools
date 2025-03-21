@@ -1,5 +1,5 @@
 /** sap.m */
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 
@@ -22,20 +22,44 @@ import CommandExecutor from '../command-executor';
 import BaseDialog from './BaseDialog.controller';
 
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import { ApplicationType } from '../../utils/application';
+import type { ApplicationType } from '../../utils/application';
 import { CommunicationService } from '../../cpe/communication-service';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 
 type SubpageType = 'ObjectPage' | 'CustomPage';
 
 export type AddSubpageModel = JSONModel & {
+    /**
+     *
+     */
     getProperty(sPath: '/appType'): ApplicationType;
+    /**
+     *
+     */
     getProperty(sPath: '/pageType'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/appReference'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/currentEntitySet'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/title'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/navigationData'): { navProperty: string; entitySet: string }[];
+    /**
+     *
+     */
     getProperty(sPath: '/selectedPageType/key'): SubpageType;
+    /**
+     *
+     */
     getProperty(sPath: '/selectedNavigation/key'): string;
 };
 
@@ -46,15 +70,27 @@ export interface AddSubpageOptions {
     pageDescriptor: {
         pageType: string;
         entitySet: string;
-        navProperties: { navProperty: string; entitySet: string }[]; 
-    } 
+        navProperties: { navProperty: string; entitySet: string }[];
+    };
 }
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddSubpage extends BaseDialog<AddSubpageModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddSubpageOptions) {
+    /**
+     *
+     * @param name
+     * @param overlays
+     * @param rta
+     * @param options
+     */
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddSubpageOptions
+    ) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -92,6 +128,10 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         // TODO: to be supported in future releases
     }
 
+    /**
+     *
+     * @param event
+     */
     onNavigationChange(event: Event) {
         const source = event.getSource<ComboBox>();
         const selectedKey = source.getSelectedKey();

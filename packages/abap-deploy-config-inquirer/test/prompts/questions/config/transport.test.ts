@@ -3,7 +3,7 @@ import { getTransportRequestPrompts } from '../../../../src/prompts/questions';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
 import { promptNames, TransportChoices } from '../../../../src/types';
-import { ListQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { PromptState } from '../../../../src/prompts/prompt-state';
 
 describe('getTransportRequestPrompts', () => {

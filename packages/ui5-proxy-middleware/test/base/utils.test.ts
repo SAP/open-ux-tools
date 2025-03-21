@@ -478,8 +478,10 @@ describe('utils', () => {
         respMock.write = jest.fn();
         respMock.end = jest.fn();
 
-        const htmlSandbox1 = '<html><script src="../test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script></html>';
-        const htmlSandbox2 = '<html><script src="../resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>';
+        const htmlSandbox1 =
+            '<html><script src="../test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script></html>';
+        const htmlSandbox2 =
+            '<html><script src="../resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>';
 
         beforeEach(() => {
             nextMock.mockReset();
@@ -492,12 +494,20 @@ describe('utils', () => {
                 }
             ]);
 
-            await baseUtils.injectScripts({ url: 'test/flp.html' } as any, respMock, nextMock, [{path: '/test-resources', url: 'http://ui5.sap.com', version: '1.124.0'}], rootProject);
+            await baseUtils.injectScripts(
+                { url: 'test/flp.html' } as any,
+                respMock,
+                nextMock,
+                [{ path: '/test-resources', url: 'http://ui5.sap.com', version: '1.124.0' }],
+                rootProject
+            );
             expect(respMock.writeHead).toBeCalledTimes(1);
             expect(respMock.writeHead).toBeCalledWith(200, {
                 'Content-Type': 'text/html'
             });
-            expect(respMock.write).toBeCalledWith('<html><script src="http://ui5.sap.com/1.124.0/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script></html>');
+            expect(respMock.write).toBeCalledWith(
+                '<html><script src="http://ui5.sap.com/1.124.0/test-resources/sap/ushell/bootstrap/sandbox.js" id="sap-ushell-bootstrap"></script></html>'
+            );
             expect(respMock.end).toHaveBeenCalled();
             expect(nextMock).not.toHaveBeenCalled();
 
@@ -511,12 +521,20 @@ describe('utils', () => {
                 }
             ]);
 
-            await baseUtils.injectScripts({ url: 'test/flp.html' } as any, respMock, nextMock, [{path: '/test-resources', url: 'http://ui5.sap.com', version: '1.124.0'}], rootProject);
+            await baseUtils.injectScripts(
+                { url: 'test/flp.html' } as any,
+                respMock,
+                nextMock,
+                [{ path: '/test-resources', url: 'http://ui5.sap.com', version: '1.124.0' }],
+                rootProject
+            );
             expect(respMock.writeHead).toBeCalledTimes(1);
             expect(respMock.writeHead).toBeCalledWith(200, {
                 'Content-Type': 'text/html'
             });
-            expect(respMock.write).toBeCalledWith('<html><script src="http://ui5.sap.com/1.124.0/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>');
+            expect(respMock.write).toBeCalledWith(
+                '<html><script src="http://ui5.sap.com/1.124.0/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>'
+            );
             expect(respMock.end).toHaveBeenCalled();
             expect(nextMock).not.toHaveBeenCalled();
 
@@ -530,12 +548,20 @@ describe('utils', () => {
                 }
             ]);
 
-            await baseUtils.injectScripts({ url: 'test/flp.html' } as any, respMock, nextMock, [{path: '/resources', url: 'http://ui5.sap.com', version: '1.124.0'}], rootProject);
+            await baseUtils.injectScripts(
+                { url: 'test/flp.html' } as any,
+                respMock,
+                nextMock,
+                [{ path: '/resources', url: 'http://ui5.sap.com', version: '1.124.0' }],
+                rootProject
+            );
             expect(respMock.writeHead).toBeCalledTimes(1);
             expect(respMock.writeHead).toBeCalledWith(200, {
                 'Content-Type': 'text/html'
             });
-            expect(respMock.write).toBeCalledWith('<html><script src="http://ui5.sap.com/1.124.0/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>');
+            expect(respMock.write).toBeCalledWith(
+                '<html><script src="http://ui5.sap.com/1.124.0/resources/sap/ushell/bootstrap/sandbox2.js" id="sap-ushell-bootstrap"></script></html>'
+            );
             expect(respMock.end).toHaveBeenCalled();
             expect(nextMock).not.toHaveBeenCalled();
 

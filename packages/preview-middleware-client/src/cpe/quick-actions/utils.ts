@@ -1,12 +1,12 @@
-import UI5Element from 'sap/ui/core/Element';
-import Control from 'sap/ui/core/Control';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
+import type UI5Element from 'sap/ui/core/Element';
+import type Control from 'sap/ui/core/Control';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type { FEAppPage } from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getControlById, isA } from '../../utils/core';
 
 import type { ControlTreeIndex } from '../types';
-import Component from 'sap/ui/core/Component';
+import type Component from 'sap/ui/core/Component';
 
 export interface FEAppPageInfo {
     page: FEAppPage;
@@ -18,7 +18,7 @@ export interface FEAppPagesMap {
 
 /**
  * Checks if control is visible in the page.
- * 
+ *
  * @param page - Page control.
  * @param controlId - UI5 control id.
  * @returns True if control is visible in the page.
@@ -28,10 +28,9 @@ export function pageHasControlId(page: Control, controlId: string): boolean {
     return !!controlDomElement && !!page?.getDomRef()?.contains(controlDomElement);
 }
 
-
 /**
  * Checks if control is a child element of the rootControl.
- * 
+ *
  * @param control - UI5 Control to be tested.
  * @param rootControl - UI5 root control.
  * @returns True if control is the child of the specified rootControl.
@@ -57,7 +56,7 @@ function isDescendantOfPage(control: ManagedObject | null | undefined, rootContr
 
 /**
  * Find all controls in page that match the provided types.
- * 
+ *
  * @param controlIndex - Control tree index.
  * @param activePage - Active page control.
  * @param controlTypes - Relevant control types.
@@ -91,6 +90,11 @@ export function getRelevantControlFromActivePage<T extends UI5Element = UI5Eleme
     return relevantControls;
 }
 
+/**
+ *
+ * @param control
+ * @param type
+ */
 export function getParentContainer<T extends ManagedObject>(
     control: ManagedObject | null | undefined,
     type: string

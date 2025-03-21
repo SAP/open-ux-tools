@@ -14,15 +14,27 @@ export const SystemMigrationStatusDataProvider: DataProviderConstructor<
     private readonly entityName = Entities.SystemMigrationStatus;
     private readonly logger: Logger;
 
+    /**
+     *
+     * @param logger
+     */
     constructor(logger: Logger) {
         this.logger = logger;
         this.dataAccessor = getFilesystemStore(this.logger);
     }
 
+    /**
+     *
+     * @param key
+     */
     public read(key: SystemMigrationStatusKey): Promise<SystemMigrationStatus | undefined> {
         return this.dataAccessor.read({ entityName: this.entityName, id: key.getId() });
     }
 
+    /**
+     *
+     * @param entity
+     */
     public write(entity: SystemMigrationStatus): Promise<SystemMigrationStatus | undefined> {
         return this.dataAccessor.write({
             entityName: this.entityName,
@@ -31,6 +43,10 @@ export const SystemMigrationStatusDataProvider: DataProviderConstructor<
         });
     }
 
+    /**
+     *
+     * @param _entity
+     */
     public delete(_entity: SystemMigrationStatus): Promise<boolean> {
         return this.dataAccessor.del({
             entityName: this.entityName,
@@ -38,6 +54,9 @@ export const SystemMigrationStatusDataProvider: DataProviderConstructor<
         });
     }
 
+    /**
+     *
+     */
     public getAll(): Promise<SystemMigrationStatus[] | []> {
         return this.dataAccessor.getAll({ entityName: this.entityName });
     }

@@ -33,7 +33,7 @@ jest.mock('process', () => ({
 }));
 const processMock = process as jest.Mocked<typeof process>;
 
-let foundGenExts: Partial<PackageInfo>[] = [];
+const foundGenExts: Partial<PackageInfo>[] = [];
 
 const sapApp = 'sap.app';
 const crossNavigation = 'crossNavigation';
@@ -81,7 +81,9 @@ describe('flp-config generator', () => {
         await initI18n();
         cwdBeforeTests = jest.requireActual('process').cwd();
         processMock.chdir = jest.fn().mockImplementation((dir): void => {
-            if (dir && dir.startsWith(OUTPUT_DIR_PREFIX)) cwd = dir;
+            if (dir?.startsWith(OUTPUT_DIR_PREFIX)) {
+                cwd = dir;
+            }
         }) as any;
     });
 

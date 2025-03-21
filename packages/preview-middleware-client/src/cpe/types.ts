@@ -10,7 +10,7 @@ export type PropertyValue = boolean | object | number | string;
 
 export interface UI5ControlProperty {
     defaultValue: unknown;
-    enumValues: Record<string,string> | undefined;
+    enumValues: Record<string, string> | undefined;
     isArray: boolean;
     isDeprecated: boolean;
     isEnabled: boolean;
@@ -38,9 +38,12 @@ export type SubscribeFunction = (handler: ActionHandler) => void;
 export type UnSubscribeFunction = (handler: ActionHandler) => void;
 
 export interface Service {
+    /**
+     *
+     */
     init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void | Promise<void>;
 }
 
 export interface ControlTreeIndex {
-    [controlType: string]: OutlineNode[]
+    [controlType: string]: OutlineNode[];
 }

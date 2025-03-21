@@ -1,26 +1,33 @@
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import { ActionService } from 'sap/ui/rta/service/Action';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type { ActionService } from 'sap/ui/rta/service/Action';
 import Log from 'sap/base/Log';
 
+import type {
+    ExternalAction,
+    QuickActionExecutionPayload,
+    QuickActionGroup
+} from '@sap-ux-private/control-property-editor-common';
 import {
     executeQuickAction,
-    ExternalAction,
     quickActionListChanged,
     SIMPLE_QUICK_ACTION_KIND,
     NESTED_QUICK_ACTION_KIND,
-    QuickActionExecutionPayload,
-    QuickActionGroup,
     updateQuickAction,
     externalFileChange
 } from '@sap-ux-private/control-property-editor-common';
 
-import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
+import type { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
 
-import { QuickActionActivationContext, QuickActionContext, QuickActionDefinition } from './quick-action-definition';
-import { QuickActionDefinitionRegistry } from './registry';
-import { OutlineService } from '../outline/service';
-import { getTextBundle, TextBundle } from '../../i18n';
-import { ChangeService } from '../changes';
+import type {
+    QuickActionActivationContext,
+    QuickActionContext,
+    QuickActionDefinition
+} from './quick-action-definition';
+import type { QuickActionDefinitionRegistry } from './registry';
+import type { OutlineService } from '../outline/service';
+import type { TextBundle } from '../../i18n';
+import { getTextBundle } from '../../i18n';
+import type { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
 
 /**
@@ -40,6 +47,7 @@ export class QuickActionService implements Service {
      * @param rta - RTA object.
      * @param outlineService - Outline service instance.
      * @param registries - Quick action registries.
+     * @param changeService
      */
     constructor(
         private readonly rta: RuntimeAuthoring,
@@ -140,6 +148,11 @@ export class QuickActionService implements Service {
         this.sendAction(quickActionListChanged(groups));
     }
 
+    /**
+     *
+     * @param group
+     * @param instance
+     */
     private async addAction(group: QuickActionGroup, instance: QuickActionDefinition): Promise<void> {
         if (instance.isApplicable) {
             await instance.runEnablementValidators();
@@ -149,6 +162,11 @@ export class QuickActionService implements Service {
         }
     }
 
+    /**
+     *
+     * @param actionInstance
+     * @param payload
+     */
     private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
             return actionInstance.execute();

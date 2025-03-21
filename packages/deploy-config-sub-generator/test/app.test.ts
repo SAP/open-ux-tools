@@ -4,7 +4,7 @@ import yeomanTest from 'yeoman-test';
 import * as memfs from 'memfs';
 import hasbin from 'hasbin';
 import { TestFixture } from './fixtures';
-import fs from 'fs';
+import type fs from 'fs';
 import { generatorNamespace, initI18n } from '../src/utils';
 import { TargetName } from '@sap-ux/deploy-config-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';

@@ -1,5 +1,5 @@
 /** sap.m */
-import Button from 'sap/m/Button';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import type ComboBox from 'sap/m/ComboBox';
 
@@ -47,10 +47,25 @@ interface CreateFragmentProps {
 const radix = 10;
 
 export type AddFragmentModel = JSONModel & {
+    /**
+     *
+     */
     getProperty(sPath: '/title'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/completeView'): boolean;
+    /**
+     *
+     */
     getProperty(sPath: '/newFragmentName'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/selectedIndex'): number;
+    /**
+     *
+     */
     getProperty(sPath: '/selectedAggregation/value'): string;
 };
 
@@ -64,7 +79,19 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
+    /**
+     *
+     * @param name
+     * @param overlays
+     * @param rta
+     * @param options
+     */
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddFragmentOptions
+    ) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
@@ -256,6 +283,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
     /**
      * Determines fragment template name based on current control name and provided target aggregation
+     *
      * @param targetAggregation - target aggregation name
      * @returns fragment template name or empty string
      */
@@ -287,6 +315,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
     /**
      * Determines conditions for custom action fragment creation
+     *
      * @param currentControlName - current control name
      * @param targetAggregation - target aggregation name
      * @returns true if control and aggregation combination allows to create custom action fragment
@@ -306,6 +335,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
     /**
      * Determines conditions for object page header field fragment creation
+     *
      * @param currentControlName - current control name
      * @param targetAggregation - target aggregation name
      * @returns true if conditions allow to create object page header field fragment
