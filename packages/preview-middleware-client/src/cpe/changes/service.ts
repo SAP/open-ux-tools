@@ -75,7 +75,9 @@ interface BaseChange {
     selector: ChangeSelector;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PROPERTY_CHANGE = 'propertyChange';
+// eslint-disable-next-line @typescript-eslint/no-unused-vars
 const PROPERTY_BINDING_CHANGE = 'propertyBindingChange';
 const MANIFEST_V4_CHANGE = 'appdescr_fe_changePageConfiguration';
 
@@ -323,7 +325,7 @@ export class ChangeService extends EventTarget {
                                         changeType: change.changeType
                                     } as SavedPropertyChange;
                                 }
-                            } catch (error) {
+                            } catch {
                                 // Gracefully handle change files with invalid content
                                 const title = TITLE_MAP[change.changeType] ?? '';
                                 if (change.fileName) {
@@ -723,7 +725,7 @@ export class ChangeService extends EventTarget {
                     continue;
                 }
                 return result;
-            } catch (error) {
+            } catch {
                 continue;
             }
         }

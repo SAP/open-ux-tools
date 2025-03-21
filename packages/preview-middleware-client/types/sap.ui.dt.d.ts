@@ -136,6 +136,7 @@ declare module 'sap/ui/dt/plugin/ContextMenu' {
     export interface ContextMenuItem {
         id: string;
         text: string | ((overlay: ElementOverlay) => string);
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-function-type
         handler: Function;
         icon?: string;
         enabled: ((overlay: ElementOverlay[]) => boolean);

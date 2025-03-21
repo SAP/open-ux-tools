@@ -161,7 +161,7 @@ export async function getDocumentation(controlName: string, contLibName: string)
     let doc: Properties | undefined;
     try {
         doc = await getControlPropertyDocumentation(controlName, contLibName);
-    } catch (err) {
+    } catch {
         Log.error(`Error in getting documentation for ${contLibName}`);
     }
     return doc;

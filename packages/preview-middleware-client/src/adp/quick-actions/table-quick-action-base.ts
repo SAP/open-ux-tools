@@ -184,7 +184,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
                 );
             }
             return tableInternal as UI5Element | undefined;
-        } catch (error) {
+        } catch {
             return undefined;
         }
     }

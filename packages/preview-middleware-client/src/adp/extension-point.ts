@@ -67,7 +67,7 @@ export default class ExtensionPointService {
 
                     service.execute(controlId, this.actionId);
                     this.selectedExtensionPointName = name;
-                } catch (e) {
+                } catch {
                     throw new Error(`Failed to execute service with actionId: ${this.actionId}`);
                 }
             }
