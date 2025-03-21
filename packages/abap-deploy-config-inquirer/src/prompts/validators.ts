@@ -9,7 +9,7 @@ import {
     isAppNameValid
 } from '../validator-utils';
 import { DEFAULT_PACKAGE_ABAP } from '../constants';
-import { getTransportListFromService } from '../service-provider-utils';
+import { getTransportListFromService, getSystemInfo, isAbapCloud } from '../service-provider-utils';
 import { t } from '../i18n';
 import {
     findBackendSystemByUrl,
@@ -30,19 +30,56 @@ import {
     type SystemConfig,
     type AbapDeployConfigAnswersInternal,
     type AbapSystemChoice,
-    type BackendTarget
+    type BackendTarget,
+    type PackagePromptOptions,
+    type TargetSystemPromptOptions,
+    type UI5AbapRepoPromptOptions
 } from '../types';
+import { AdaptationProjectType } from '@sap-ux/axios-extension';
+import { AbapServiceProviderManager } from '../service-provider-utils/abap-service-provider';
 
+const allowedPackagePrefixes = ['$', 'Z', 'Y', 'SAP'];
+
+/**
+ * Validates the system type based on the provided options and backend target.
+ *
+ * @param options - target system options
+ * @returns boolean
+ */
+async function validateSystemType(options?: TargetSystemPromptOptions): Promise<boolean | string> {
+    if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
+        const isDefaultProviderAbapCloud = AbapServiceProviderManager.getIsDefaultProviderAbapCloud();
+        const isSelectedS4HC = PromptState?.abapDeployConfig?.isS4HC;
+        if (isDefaultProviderAbapCloud === true && isSelectedS4HC === false) {
+            return t('errors.validators.invalidCloudSystem');
+        } else if (isDefaultProviderAbapCloud === false && isSelectedS4HC) {
+            return t('errors.validators.invalidOnPremSystem');
+        }
+    }
+
+    return true;
+}
 /**
  * Validates the destination question and sets the destination in the prompt state.
  *
  * @param destination - chosen destination
  * @param destinations - list of destinations
+ * @param options - target system options
+ * @param backendTarget - backend target
  * @returns boolean
  */
-export function validateDestinationQuestion(destination: string, destinations?: Destinations): boolean {
+export async function validateDestinationQuestion(
+    destination: string,
+    destinations?: Destinations,
+    options?: TargetSystemPromptOptions,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
-    updateDestinationPromptState(destination, destinations);
+    await updateDestinationPromptState(destination, destinations, options, backendTarget);
+    const systemTypeValidation = await validateSystemType(options);
+    if (typeof systemTypeValidation === 'string') {
+        return systemTypeValidation;
+    }
     return !!destination?.trim();
 }
 
@@ -81,8 +118,15 @@ function updatePromptState({
  *
  * @param destination - destination
  * @param destinations - list of destinations
+ * @param options - target system options
+ * @param backendTarget - backend target
  */
-export function updateDestinationPromptState(destination: string, destinations: Destinations = {}): void {
+export async function updateDestinationPromptState(
+    destination: string,
+    destinations: Destinations = {},
+    options?: TargetSystemPromptOptions,
+    backendTarget?: BackendTarget
+): Promise<void> {
     const dest = destinations[destination];
     if (dest) {
         PromptState.abapDeployConfig.destination = dest.Name;
@@ -92,6 +136,11 @@ export function updateDestinationPromptState(destination: string, destinations: 
             isS4HC: isS4HC(dest),
             scp: isAbapEnvironmentOnBtp(dest)
         });
+
+        if (options?.additionalValidation?.shouldRestrictDifferentSystemType) {
+            const isS4HCloud = await isAbapCloud(backendTarget);
+            PromptState.abapDeployConfig.isS4HC = isS4HCloud ?? false;
+        }
     }
 }
 
@@ -100,9 +149,14 @@ export function updateDestinationPromptState(destination: string, destinations: 
  *
  * @param target - target system
  * @param choices - abab system choices
+ * @param options - target system options
  * @returns boolean or error message string
  */
-export function validateTargetSystem(target?: string, choices?: AbapSystemChoice[]): boolean | string {
+export async function validateTargetSystem(
+    target?: string,
+    choices?: AbapSystemChoice[],
+    options?: TargetSystemPromptOptions
+): Promise<boolean | string> {
     PromptState.resetAbapDeployConfig();
     if (!target || target === TargetSystemType.Url) {
         return true;
@@ -110,6 +164,7 @@ export function validateTargetSystem(target?: string, choices?: AbapSystemChoice
     const isValid = isValidUrl(target?.trim());
     if (isValid === true && choices) {
         const choice = choices.find((choice) => choice.value === target);
+
         if (choice) {
             updatePromptState({
                 url: choice.value,
@@ -118,6 +173,11 @@ export function validateTargetSystem(target?: string, choices?: AbapSystemChoice
                 isS4HC: choice.isS4HC,
                 target: target
             });
+        }
+
+        const systemTypeValidation = await validateSystemType(options);
+        if (typeof systemTypeValidation === 'string') {
+            return systemTypeValidation;
         }
     }
     return isValid;
@@ -351,27 +411,41 @@ export async function validatePackageChoiceInputForCli(
  * Validates the package name.
  *
  * @param input - package name entered
- * @param answers - previous answers
- * @param backendTarget - backend target
  * @returns boolean or error message as a string
  */
-export async function validatePackage(
-    input: string,
-    answers: AbapDeployConfigAnswersInternal,
-    backendTarget?: BackendTarget
-): Promise<boolean | string> {
+export async function validatePackage(input: string): Promise<boolean | string> {
     PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
     if (!input?.trim()) {
         return t('warnings.providePackage');
     }
-    if (input === DEFAULT_PACKAGE_ABAP) {
-        PromptState.transportAnswers.transportRequired = false;
-        return true;
+    //valiadtion for special characters
+    if (!/^[A-Za-z0-9$_/]*$/.test(input)) {
+        return t('errors.validators.charactersForbiddenInPackage');
+    }
+    //validate package format
+    if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
+        return t('errors.validators.abapPackageInvalidFormat');
     }
 
-    // checks if package is a local package and will update prompt state accordingly
-    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
     return true;
+}
+
+/**
+ * Determines the starting prefix of a package name.
+ *
+ * - If the package name is in the form `/namespace/PackageName`, it extracts the namespace as the prefix.
+ * - Otherwise, if the package name starts with "SAP" or "$", "Z", "Y", it returns it".
+ * - If none of the above, it uses the first character of the package name.
+ *
+ * @param {string} packageName - The name of the package to analyze.
+ * @returns {string} - The starting prefix of the package name.
+ */
+function getPackageStartingPrefix(packageName: string): string {
+    if (/^\/.*\/\w*$/g.test(packageName)) {
+        const splitNames = packageName.split('/');
+        return `/${splitNames[1]}/`;
+    }
+    return packageName.startsWith('SAP') ? 'SAP' : packageName[0];
 }
 
 /**
@@ -557,4 +631,121 @@ export function validateTransportQuestion(input?: string): boolean | string {
 export function validateConfirmQuestion(overwrite: boolean): boolean {
     PromptState.abapDeployConfig.abort = !overwrite;
     return true;
+}
+
+/**
+ * Checks if the given package is a cloud-ready package.
+ *
+ * - Fetches system information for the package using the provided system configuration and backend target.
+ * - Validates whether the adaptation project type for the package is "CLOUD_READY".
+ *
+ * @param {string} input - The name of the package to validate.
+ * @param {BackendTarget} [backendTarget] - Optional backend target for further system validation.
+ * @returns {Promise<boolean>} - Resolves to `true` if the package is cloud-ready, `false` otherwise.
+ */
+async function validatePackageType(input: string, backendTarget?: BackendTarget): Promise<boolean | string> {
+    const isS4HC = PromptState?.abapDeployConfig?.isS4HC;
+    if (isS4HC === false && input === DEFAULT_PACKAGE_ABAP) {
+        return true;
+    }
+    const packageType = isS4HC ? AdaptationProjectType.CLOUD_READY : AdaptationProjectType.ON_PREMISE;
+    const errorMsg =
+        packageType === AdaptationProjectType.CLOUD_READY
+            ? t('errors.validators.invalidCloudPackage')
+            : t('errors.validators.invalidOnPremPackage');
+    const systemInfoResult = await getSystemInfo(input, backendTarget);
+    if (!systemInfoResult.apiExist) {
+        return true;
+    }
+
+    const systemInfo = systemInfoResult.systemInfo;
+    const isValidPackageType =
+        systemInfo?.adaptationProjectTypes?.length === 1 && systemInfo?.adaptationProjectTypes[0] === packageType;
+
+    return isValidPackageType ? true : errorMsg;
+}
+
+/**
+ * Validates a package with extended criteria based on provided options and configurations.
+ *
+ * @param {string} input - The name of the package to validate.
+ * @param {AbapDeployConfigAnswersInternal} answers - Configuration answers for ABAP deployment.
+ * @param {PackagePromptOptions} [promptOption] - Optional settings for additional package validation.
+ * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional for ui5AbapRepo.
+ * @param {BackendTarget} [backendTarget] - The backend target for validation context.
+ * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
+ *                                        a `string` with an error message if validation fails,
+ *                                        or the result of additional cloud package validation if applicable.
+ */
+export async function validatePackageExtended(
+    input: string,
+    answers: AbapDeployConfigAnswersInternal,
+    promptOption?: PackagePromptOptions,
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
+    backendTarget?: BackendTarget
+): Promise<boolean | string> {
+    const baseValidation = await validatePackage(input);
+    if (typeof baseValidation === 'string') {
+        return baseValidation;
+    }
+    if (input === DEFAULT_PACKAGE_ABAP) {
+        PromptState.transportAnswers.transportRequired = false;
+        if (
+            !promptOption?.additionalValidation ||
+            (promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix === false &&
+                promptOption?.additionalValidation?.shouldValidatePackageType === false)
+        ) {
+            return true;
+        }
+    }
+
+    // checks if package is a local package and will update prompt state accordingly
+    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
+
+    if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions)) {
+        const startingPrefix = getPackageStartingPrefix(input);
+
+        //validate package starting prefix
+        if (!input.startsWith('/') && !allowedPackagePrefixes.find((prefix) => prefix === startingPrefix)) {
+            return t('errors.validators.abapPackageStartingPrefix');
+        }
+
+        //appName starting prefix
+        if (!answers.ui5AbapRepo?.startsWith(startingPrefix)) {
+            return t('errors.validators.abapInvalidAppNameNamespaceOrStartingPrefix');
+        }
+    }
+
+    if (promptOption?.additionalValidation?.shouldValidatePackageType) {
+        return await validatePackageType(input, backendTarget);
+    }
+
+    return true;
+}
+
+/**
+ * Determines whether the package should be validated for a starting prefix.
+ * based on the provided configuration answers and prompt options.
+ *
+ * @param {AbapDeployConfigAnswersInternal} answers - The user's deployment configuration answers.
+ * @param {PackagePromptOptions} [promptOption] - Optional package prompt options.
+ * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional UI5 ABAP repository prompt options.
+ * @returns {boolean} - Returns `true` if the package should be validated for a starting prefix, otherwise `false`.
+ */
+function shouldValidatePackageForStartingPrefix(
+    answers: AbapDeployConfigAnswersInternal,
+    promptOption?: PackagePromptOptions,
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
+): boolean {
+    const shouldValidatePackageForStartingPrefix = !!(
+        answers.ui5AbapRepo &&
+        promptOption?.additionalValidation?.shouldValidatePackageForStartingPrefix &&
+        !ui5AbapPromptOptions?.hide &&
+        !(
+            ui5AbapPromptOptions?.hideIfOnPremise === true &&
+            PromptState.abapDeployConfig?.isS4HC === false &&
+            PromptState.abapDeployConfig?.scp === false
+        )
+    );
+    return shouldValidatePackageForStartingPrefix;
 }

@@ -1,7 +1,12 @@
 {
     "name": "@sap-ux/cds-annotation-parser",
-    "version": "0.2.7",
+    "version": "0.2.8",
     "description": "Annotation Parser for CDS",
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/SAP/open-ux-tools.git",
+        "directory": "packages/cds-annotation-parser"
+    },
     "publisher": "SAPSE",
     "author": "SAP SE",
     "license": "Apache-2.0",
