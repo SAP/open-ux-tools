@@ -293,6 +293,7 @@ module.exports = [
         files: ['**/test/**/*.js', '**/test/**/*.ts', '**/test/**/*.tsx'],
         rules: {
             '@typescript-eslint/explicit-function-return-type': 'off',
+            '@typescript-eslint/no-floating-promises': 'off',
             'jsdoc/require-param': 'off',
             'jsdoc/require-param-description': 'off',
             'jsdoc/require-param-name': 'off',
