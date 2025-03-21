@@ -2,11 +2,10 @@ import type { Destination, Authentication } from '@sap-ux/btp-utils';
 import {
     CDSDestinationService,
     CDSHTML5RepoService,
-    CDSXSUAAService,
-    HTML5RepoHost,
-    ManagedAppFront,
-    ManagedDestination,
-    ManagedXSUAA
+    type HTML5RepoHost,
+    type ManagedAppFront,
+    type ManagedDestination,
+    type ManagedXSUAA
 } from '../constants';
 
 export type ResourceType =
