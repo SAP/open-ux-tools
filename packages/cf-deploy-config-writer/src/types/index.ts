@@ -1,7 +1,6 @@
 import type { Destination, Authentication } from '@sap-ux/btp-utils';
+import type { CDSDestinationService, CDSHTML5RepoService } from '../constants';
 import {
-    CDSDestinationService,
-    CDSHTML5RepoService,
     type HTML5RepoHost,
     type ManagedAppFront,
     type ManagedDestination,

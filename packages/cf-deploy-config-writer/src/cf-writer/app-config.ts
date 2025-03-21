@@ -52,14 +52,7 @@ import {
 import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
 import { type Logger } from '@sap-ux/logger';
-import {
-    type XSAppDocument,
-    ApiHubType,
-    type CFAppConfig,
-    type CFConfig,
-    type MTABaseConfig,
-    RouterModuleType
-} from '../types';
+import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
 
 /**
  * Add a managed approuter configuration to an existing HTML5 application.

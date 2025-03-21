@@ -605,8 +605,9 @@ export class MtaConfig {
     /**
      * Append different routers to mta configuration.
      *
-     * @param routerType
-     * @param addMissingModules if true, will ensure any missing modules | resources are appended
+     * @param {object} Options
+     * @param Options.routerType Router type to be generated managed | standalone | appfront
+     * @param Options.addMissingModules if true, will ensure any missing modules | resources are appended
      * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
      */
     public async addRouterType({
@@ -644,7 +645,7 @@ export class MtaConfig {
      *
      * @param {object} Options
      * @param {boolean} Options.isManagedApp - if true, append managed approuter configuration
-     * @param Options.isAppFrontApp - if true, append app frontend approuter configuration
+     * @param {boolean} Options.isAppFrontApp - if true, append app frontend approuter configuration
      * @param {boolean} Options.addMissingModules - if true, will ensure any missing modules | resources are appended
      * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
      */
@@ -862,7 +863,12 @@ export class MtaConfig {
         }
     }
 
-    public async appendAppfrontCAPDestination(cfDestination: string | undefined, isCap = false): Promise<void> {
+    /**
+     *  Add destination to App Frontend router.
+     *
+     * @param cfDestination Then name of the destination to be appended
+     */
+    public async appendAppfrontCAPDestination(cfDestination: string | undefined): Promise<void> {
         const module = this.modules.get('com.sap.application.content:appfront');
         if (module) {
             // If the destination provided is `fiori-default-srv-api` then use the default destination name
@@ -888,7 +894,7 @@ export class MtaConfig {
         }
     }
     /**
-     * Append a destination instance to the mta.yaml file, required by consumers of CAP services when using Standalone or Managed approuter
+     * Append a destination instance to the mta.yaml file, required by consumers of CAP services when using Standalone or Managed approuter.
      *
      * @param {string} cfDestination The new destination instance name
      * @returns {Promise<void>} A promise that resolves when the change request has been processed
@@ -981,17 +987,17 @@ export class MtaConfig {
                         }
                     }
                 };
-                // Add missing requires if nodejs (CAP) module is found
+                // Append missing requires if CAP is found
                 if (this.modules.has('nodejs')) {
                     appContentModule.requires?.push({ name: SRV_API });
                 }
                 await this.mta.addModule(appContentModule);
                 this.modules.set('com.sap.application.content:appfront', appContentModule);
-                this.dirty = true;
             }
         }
-        // Append resources to module
+        // Append XSUAA to module
         await this.updateServerModule('com.sap.application.content:appfront' as ModuleType, ManagedXSUAA, false);
+        this.dirty = true;
     }
 
     /**
@@ -1127,6 +1133,11 @@ export class MtaConfig {
         return format(formatString, this.prefix).replace(/[^\w-]/g, '_');
     }
 
+    /**
+     * Retrieve the app-content module, found in all router types.
+     *
+     * @returns {mta.Module} return the app-content module
+     */
     private getAppContentModule(): undefined | mta.Module {
         // Default for managed and standalone
         let contentModule = this.modules.get('com.sap.application.content:resource');
