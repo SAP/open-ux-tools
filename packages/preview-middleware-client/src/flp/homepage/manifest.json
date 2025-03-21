@@ -1,0 +1,41 @@
+{
+    "sap.app": {
+        "id": "open.ux.preview.client.flp.homepage",
+        "type": "application",
+        "title": "FLP HomePage"
+    },
+    "sap.ui": {
+        "technology": "UI5",
+        "deviceTypes": {
+            "desktop": true,
+            "tablet": true,
+            "phone": true
+        }
+    },
+    "sap.ui5": {
+        "rootView": {
+            "viewName": "open.ux.preview.client.flp.homepage.view.MyHome",
+            "type": "XML",
+            "async": true,
+            "id": "myhome"
+        },
+        "dependencies": {
+            "minUI5Version": "1.123.0",
+            "libs": {
+                "sap.ui.core": {},
+                "sap.cux.home": {}
+            }
+        },
+        "contentDensities": {
+            "compact": true,
+            "cozy": true
+        },
+        "resources": {
+            "css": [
+                {
+                    "uri": "css/style.css"
+                }
+            ]
+        }
+    }
+}

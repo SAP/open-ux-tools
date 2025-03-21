@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.19.0
+
+### Minor Changes
+
+-   6e32009: feat: introduce enhanced flp homepage
+    -   controlled via boolean property `flp.enhancedHomePage`, which is false by default
+
+## 0.18.23
+
+### Patch Changes
+
+-   02874f7: feat: Feature toggle removed for Add Subpage CPE quick action
+
 ## 0.18.22
 
 ### Patch Changes
