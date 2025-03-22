@@ -134,6 +134,7 @@ export const SAVED_CHANGE_TYPE = 'saved';
 export const PROPERTY_CHANGE_KIND = 'property';
 export const CONFIGURATION_CHANGE_KIND = 'configuration';
 export const UNKNOWN_CHANGE_KIND = 'unknown';
+export const GENERIC_CHANGE_KIND = 'generic';
 export const CONTROL_CHANGE_KIND = 'control';
 export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: typeof PENDING_CHANGE_TYPE;
@@ -179,8 +180,14 @@ export type PendingChange =
     | PendingPropertyChange
     | PendingOtherChange
     | PendingControlChange
-    | PendingConfigurationChange;
-export type SavedChange = SavedPropertyChange | SavedControlChange | UnknownSavedChange | SavedConfigurationChange;
+    | PendingConfigurationChange
+    | PendingGenericChange;
+export type SavedChange =
+    | SavedPropertyChange
+    | SavedControlChange
+    | UnknownSavedChange
+    | SavedConfigurationChange
+    | SavedGenericChange;
 
 export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
     type: typeof SAVED_CHANGE_TYPE;
@@ -204,6 +211,34 @@ export interface UnknownSavedChange {
     title?: string;
     controlId?: string;
     timestamp?: number;
+}
+
+export interface PendingGenericChange {
+    type: typeof PENDING_CHANGE_TYPE;
+    kind: typeof GENERIC_CHANGE_KIND;
+    title: string;
+    isActive: boolean;
+    fileName: string;
+    changeType: string;
+    controlId?: string;
+    genericProps: {
+        label: string;
+        value: string;
+    }[];
+}
+
+export interface SavedGenericChange {
+    type: typeof SAVED_CHANGE_TYPE;
+    kind: typeof GENERIC_CHANGE_KIND;
+    timestamp: number;
+    fileName: string;
+    title: string;
+    controlId?: string;
+    changeType: string;
+    genericProps: {
+        label: string;
+        value: string;
+    }[];
 }
 
 export interface SavedControlChange {

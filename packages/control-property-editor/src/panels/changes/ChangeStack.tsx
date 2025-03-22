@@ -3,9 +3,13 @@ import React from 'react';
 import { Stack } from '@fluentui/react';
 import type {
     Change,
+    PendingConfigurationChange,
     PendingControlChange,
+    PendingGenericChange,
     PendingPropertyChange,
+    SavedConfigurationChange,
     SavedControlChange,
+    SavedGenericChange,
     SavedPropertyChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
@@ -15,7 +19,8 @@ import {
     PROPERTY_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
     UNKNOWN_CHANGE_KIND,
-    CONFIGURATION_CHANGE_KIND
+    CONFIGURATION_CHANGE_KIND,
+    GENERIC_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
 
 import { Separator } from '../../components';
@@ -34,6 +39,7 @@ import type { ControlItemProps } from './ControlChange';
 import { ControlChange } from './ControlChange';
 import type { ConfigGroupProps } from './ConfigGroup';
 import { ConifgGroup } from './ConfigGroup';
+import { GenericGroup, type GenericGroupProps } from './GenericGroup';
 
 export interface ChangeStackProps {
     changes: Change[];
@@ -85,6 +91,12 @@ function renderChangeItem(item: Item, stackName: string): ReactElement {
                 <ControlGroup {...item} />
             </Stack.Item>
         );
+    } else if (isGenericChangeGroup(item)) {
+        return (
+            <Stack.Item key={`${stackName}-${item.text}-${item.index}`}>
+                <GenericGroup {...item} />
+            </Stack.Item>
+        );
     } else if (isControlItem(item)) {
         return (
             <Stack.Item key={`${item.fileName}`}>
@@ -125,7 +137,27 @@ function getKey(i: number): string {
     return `${i}-separator`;
 }
 
-type Item = ControlGroupProps | UnknownChangeProps | ControlItemProps | ConfigGroupProps;
+type Item = ControlGroupProps | UnknownChangeProps | ControlItemProps | ConfigGroupProps | GenericGroupProps;
+
+/**
+ * Test change is generic type.
+ *
+ * @param change supported change types
+ * @returns change is PendingGenericChange | SavedGenericChange
+ */
+function isGenericChange(change: Change): change is PendingGenericChange | SavedGenericChange {
+    return change.kind === 'generic';
+}
+
+/**
+ * Test change is configuration type.
+ *
+ * @param change supported change types
+ * @returns change is PendingConfigurationChange | SavedConfigurationChange
+ */
+function isConfigurationChange(change: Change): change is PendingConfigurationChange | SavedConfigurationChange {
+    return change.kind === CONFIGURATION_CHANGE_KIND;
+}
 
 /**
  * Converts an array of changes into an array of items, grouping changes by controlId and handling different kinds of changes.
@@ -140,13 +172,14 @@ function convertChanges(changes: Change[]): Item[] {
         const change: Change = changes[i];
         let group: ControlGroupProps;
         let configGroup: ConfigGroupProps;
+        let genericGroup: GenericGroupProps;
         if (change.kind === UNKNOWN_CHANGE_KIND) {
             items.push(handleUnknownChange(change));
             i++;
         } else if (change.kind === CONTROL_CHANGE_KIND) {
             items.push(handleControlChange(change));
             i++;
-        } else if (change.kind === CONFIGURATION_CHANGE_KIND) {
+        } else if (isConfigurationChange(change)) {
             configGroup = {
                 text: convertCamelCaseToPascalCase(change.kind),
                 configPath: change.propertyPath,
@@ -158,15 +191,31 @@ function convertChanges(changes: Change[]): Item[] {
             while (i < changes.length) {
                 // We don't need to add header again if the next control is the same
                 const nextChange = changes[i];
-                if (
-                    nextChange.kind === UNKNOWN_CHANGE_KIND ||
-                    nextChange.kind === PROPERTY_CHANGE_KIND ||
-                    nextChange.kind === CONTROL_CHANGE_KIND ||
-                    change.propertyPath !== nextChange?.propertyPath
-                ) {
+                if (!isConfigurationChange(nextChange) || change.propertyPath !== nextChange?.propertyPath) {
                     break;
                 }
                 configGroup.changes.push(nextChange);
+                i++;
+            }
+        } else if (isGenericChange(change)) {
+            genericGroup = handleGenericGroupeChange(change, i);
+            items.push(genericGroup);
+            i++;
+            while (i < changes.length) {
+                // We don't need to add header again if the next title is the same
+                const nextChange = changes[i];
+                if (
+                    !isGenericChange(nextChange) ||
+                    (isGenericChange(nextChange) &&
+                        (nextChange?.title !== change?.title ||
+                            (nextChange?.title === change?.title &&
+                                nextChange?.controlId &&
+                                change?.controlId &&
+                                nextChange?.controlId != change?.controlId)))
+                ) {
+                    break;
+                }
+                genericGroup.changes.push(nextChange);
                 i++;
             }
         } else {
@@ -180,6 +229,7 @@ function convertChanges(changes: Change[]): Item[] {
                     nextChange.kind === UNKNOWN_CHANGE_KIND ||
                     nextChange.kind === CONTROL_CHANGE_KIND ||
                     nextChange.kind === CONFIGURATION_CHANGE_KIND ||
+                    nextChange.kind === GENERIC_CHANGE_KIND ||
                     change.controlId !== nextChange.controlId
                 ) {
                     break;
@@ -247,12 +297,32 @@ function handleGroupedChange(change: PendingPropertyChange | SavedPropertyChange
 }
 
 /**
+ * Handles grouped changes by initializing a control group with a list of changes that share the same controlId.
+ *
+ * @param {Change} change - The initial change object to start the group.
+ * @param {number} i - The index of the initial change in the list.
+ * @returns {ControlGroupProps} A control group object containing grouped changes.
+ */
+function handleGenericGroupeChange(change: SavedGenericChange | PendingGenericChange, i: number): GenericGroupProps {
+    return {
+        text: String(change.title),
+        ...(change.controlId && { controlId: change.controlId }),
+        kind: 'generic',
+        index: i,
+        changes: [change],
+        timestamp: change.type === SAVED_CHANGE_TYPE ? change.timestamp : undefined
+    };
+}
+
+/**
  * Checks if item is of type {@link ControlGroupProps}.
  *
  * @param item ControlGroupProps | UnknownChangeProps | ControlItemProps
  * @returns boolean
  */
-function isPropertyGroup(item: ControlGroupProps | UnknownChangeProps | ControlItemProps): item is ControlGroupProps {
+function isPropertyGroup(
+    item: ControlGroupProps | UnknownChangeProps | ControlItemProps | GenericGroupProps
+): item is ControlGroupProps {
     return (item as ControlGroupProps).controlName !== undefined;
 }
 
@@ -268,7 +338,19 @@ function isControlItem(item: UnknownChangeProps | ControlItemProps): item is Con
 
 const filterPropertyChanges = (changes: Change[], query: string): Change[] => {
     return changes.filter((item): boolean => {
-        if (item.kind === PROPERTY_CHANGE_KIND || item.kind === CONFIGURATION_CHANGE_KIND) {
+        if (item.kind === GENERIC_CHANGE_KIND) {
+            return (
+                !query ||
+                !!item.genericProps.find(
+                    (val) =>
+                        String(val.label).toLowerCase().includes(query.toLowerCase()) ||
+                        String(val.value).toLowerCase().includes(query.toLowerCase())
+                ) ||
+                item.fileName.toLowerCase().includes(query.toLowerCase()) ||
+                (item.type === SAVED_CHANGE_TYPE &&
+                    getFormattedDateAndTime(item.timestamp).trim().toLowerCase().includes(query))
+            );
+        } else if (item.kind === PROPERTY_CHANGE_KIND || item.kind === CONFIGURATION_CHANGE_KIND) {
             return (
                 !query ||
                 item.propertyName.trim().toLowerCase().includes(query) ||
@@ -316,7 +398,7 @@ function filterGroup(model: Item[], query: string): Item[] {
     }
     for (const item of model) {
         let parentMatch = false;
-        if (!isConfigPropGroup(item) && !isPropertyGroup(item)) {
+        if (!isConfigPropGroup(item) && !isPropertyGroup(item) && !isGenericChangeGroup(item)) {
             if (isQueryMatchesChange(item, query)) {
                 filteredModel.push({ ...item, changes: [] });
             }
@@ -328,7 +410,7 @@ function filterGroup(model: Item[], query: string): Item[] {
             // add node without its children
             filteredModel.push({ ...item, changes: [] });
         }
-        const controlPropModel: ControlGroupProps | ConfigGroupProps = item;
+        const controlPropModel: ControlGroupProps | ConfigGroupProps | GenericGroupProps = item;
         if (controlPropModel.changes.length <= 0) {
             continue;
         }
@@ -354,6 +436,20 @@ function filterGroup(model: Item[], query: string): Item[] {
  * @param item ControlGroupProps | UnknownChangeProps | ConfigGroupProps
  * @returns boolean
  */
-function isConfigPropGroup(item: ControlGroupProps | UnknownChangeProps | ConfigGroupProps): item is ConfigGroupProps {
+function isConfigPropGroup(
+    item: ControlGroupProps | UnknownChangeProps | ConfigGroupProps | GenericGroupProps
+): item is ConfigGroupProps {
     return (item as ConfigGroupProps).configPath !== undefined;
+}
+
+/**
+ * Checks if item is of type {@link ConfigGroupProps}.
+ *
+ * @param item ControlGroupProps | UnknownChangeProps | ConfigGroupProps
+ * @returns boolean
+ */
+function isGenericChangeGroup(
+    item: ControlGroupProps | UnknownChangeProps | ConfigGroupProps | GenericGroupProps
+): item is GenericGroupProps {
+    return (item as GenericGroupProps).kind === 'generic';
 }
