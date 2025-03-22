@@ -27,7 +27,8 @@
     },
     "dependencies": {
         "i18next": "23.5.1",
-        "validate-npm-package-name": "5.0.0"
+        "validate-npm-package-name": "5.0.0",
+        "@sap-ux/project-access": "workspace:*"
     },
     "devDependencies": {
         "@types/validate-npm-package-name": "4.0.1",
