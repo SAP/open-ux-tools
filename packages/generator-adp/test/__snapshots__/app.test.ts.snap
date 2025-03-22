@@ -1,0 +1,44 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Adaptation Project Generator Integration Test should generate an adaptation project successfully 1`] = `
+"{
+  "fileName": "manifest",
+  "layer": "CUSTOMER_BASE",
+  "fileType": "appdescr_variant",
+  "reference": "sap.ui.demoapps.f1",
+  "id": "customer.app.variant1",
+  "namespace": "apps/sap.ui.demoapps.f1/appVariants/customer.app.variant1/",
+  "version": "0.1.0",
+  "content": [
+    {
+    "changeType": "appdescr_ui5_addNewModelEnhanceWith",
+    "content": {
+        "modelId": "i18n",
+        "bundleUrl": "i18n/i18n.properties",
+        "supportedLocales": [
+            ""
+        ],
+        "fallbackLocale": ""
+    }
+},
+    {
+      "changeType": "appdescr_app_setTitle",
+      "content": {},
+      "texts": {
+        "i18n": "i18n/i18n.properties"
+      }
+    }
+  ]
+}
+"
+`;
+
+exports[`Adaptation Project Generator Integration Test should generate an adaptation project successfully 2`] = `
+"# This is the resource bundle for customer.app.variant1
+
+#Texts for manifest.json
+
+#XTIT: Application name
+customer.app.variant1_sap.app.title=
+"
+`;

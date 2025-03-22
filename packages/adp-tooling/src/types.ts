@@ -92,6 +92,34 @@ export interface AdpWriterConfig {
     };
 }
 
+/**
+ * Interface representing the answers collected from the configuration prompts of Adaptation Project generator.
+ */
+export interface ConfigAnswers {
+    system: string;
+    username: string;
+    password: string;
+    application: TargetApplication;
+}
+
+export interface TargetApplication {
+    id: string;
+    title: string;
+    ach: string;
+    registrationIds: string[];
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
+}
+
+export interface SystemDetails {
+    url: string;
+    client: string;
+    username?: string;
+    password?: string;
+    authenticationType?: string;
+}
+
 export interface ChangeInboundNavigation {
     /** Identifier for the inbound navigation. */
     inboundId: string;
