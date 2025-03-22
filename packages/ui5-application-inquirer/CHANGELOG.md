@@ -1,5 +1,16 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.10.0
+
+### Minor Changes
+
+-   c69752b: Move validate target project path logic from ui5-application-inquirer to project-input-validator for improved reuse
+
+### Patch Changes
+
+-   Updated dependencies [c69752b]
+    -   @sap-ux/project-input-validator@0.4.0
+
 ## 0.9.31
 
 ### Patch Changes
