@@ -17,6 +17,7 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "strictNullChecks": true,
     "target": "ES2022",
     "skipLibCheck": true,
     "resolveJsonModule": true,
