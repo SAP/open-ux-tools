@@ -403,6 +403,12 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
     devDependencies:
       '@sap-ux/store':
         specifier: workspace:*
@@ -419,9 +425,6 @@ importers:
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
-      mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
       memfs:
         specifier: 3.4.13
         version: 3.4.13
@@ -1141,6 +1144,12 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -1598,6 +1607,12 @@ importers:
       inquirer-autocomplete-prompt:
         specifier: 2.0.1
         version: 2.0.1(inquirer@8.2.6)
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
