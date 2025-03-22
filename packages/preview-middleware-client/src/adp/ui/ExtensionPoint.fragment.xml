@@ -47,7 +47,7 @@
         <Button 
             id="createDialogBtn" 
             text="Create"
-            press="onCreateBtnPress"
+            press="onCreateBtnPressHandler"
             enabled="false"
             type="Emphasized" />
     </beginButton>

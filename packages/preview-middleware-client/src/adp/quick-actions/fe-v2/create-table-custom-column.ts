@@ -12,10 +12,19 @@ import IconTabBar from 'sap/m/IconTabBar';
 
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import { getControlById, isA } from '../../../utils/core';
 import { DialogNames, DialogFactory } from '../../dialog-factory';
-import { ANALYTICAL_TABLE_TYPE, GRID_TABLE_TYPE, M_TABLE_TYPE, SMART_TABLE_TYPE, TREE_TABLE_TYPE } from '../control-types';
+import {
+    ANALYTICAL_TABLE_TYPE,
+    GRID_TABLE_TYPE,
+    M_TABLE_TYPE,
+    SMART_TABLE_TYPE,
+    TREE_TABLE_TYPE
+} from '../control-types';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { notifyUser } from '../../utils';
 import { getTextBundle } from '../../../i18n';
@@ -115,10 +124,17 @@ export class AddTableCustomColumnQuickAction
         )
             ? DialogNames.ADD_FRAGMENT
             : DialogNames.ADD_TABLE_COLUMN_FRAGMENTS;
-        await DialogFactory.createDialog(overlay, this.context.rta, dialog, undefined, {
-            aggregation: 'columns',
-            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-        });
+        await DialogFactory.createDialog(
+            overlay,
+            this.context.rta,
+            dialog,
+            undefined,
+            {
+                aggregation: 'columns',
+                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+            },
+            { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+        );
 
         return [];
     }
