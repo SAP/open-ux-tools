@@ -9,6 +9,8 @@ export const MTABuildParams = 'build-parameters';
 export const MTAFileExtension = 'mta-ext.mtaext';
 export const DefaultServiceURL = '${default-url}';
 export const ManagedXSUAA = 'managed:xsuaa';
+export const ManagedAppFront = 'managed:app-front';
+export const ManagedDestination = 'destination';
 export const HTML5RepoHost = 'html5-apps-repo:app-host';
 export const SRV_API = 'srv-api';
 export const DefaultMTADestination = 'fiori-default-srv-api';
@@ -56,6 +58,15 @@ export const UI5Destination = {
     URL: UI5_DEFAULT.SAPUI5_CDN,
     ProxyType: 'Internet',
     Authentication: 'NoAuthentication'
+};
+export const UI5AppfrontDestinationParameter = {
+    name: 'ui5',
+    url: UI5_DEFAULT.SAPUI5_CDN
+};
+export const CAPAppfrontDestination = {
+    name: ResourceMTADestination,
+    url: '~{srv-api/srv-url}',
+    forwardAuthToken: true
 };
 export const UI5ResourceDestination = {
     'init_data': {
