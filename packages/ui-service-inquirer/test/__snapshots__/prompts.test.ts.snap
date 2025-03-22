@@ -117,6 +117,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "name": "draftEnabled",
     "type": "confirm",
     "validate": [Function],
+    "when": [Function],
   },
   {
     "additionalMessages": [Function],
@@ -127,6 +128,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "message": "prompts.launchAppGen",
     "name": "launchAppGen",
     "type": "confirm",
+    "when": [Function],
   },
 ]
 `;
