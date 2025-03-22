@@ -36,6 +36,7 @@ export type ActionHandler = (action: ExternalAction) => void | Promise<void>;
 export type ActionSenderFunction = (action: ExternalAction) => void;
 export type SubscribeFunction = (handler: ActionHandler) => void;
 export type UnSubscribeFunction = (handler: ActionHandler) => void;
+export type IsReuseComponentApi = (controlId: string) => boolean;
 
 export interface Service {
     init(sendAction: ActionSenderFunction, subscribe: SubscribeFunction): void | Promise<void>;

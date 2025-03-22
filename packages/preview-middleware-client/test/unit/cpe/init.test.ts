@@ -101,11 +101,13 @@ describe('main', () => {
 
     const spyPostMessage = jest.spyOn(CommunicationService, 'subscribe');
 
+    const isReuseComponentCheckerMock = jest.fn();
+
     test('init - 1', async () => {
         initOutlineSpy.mockResolvedValue();
         rtaSpy.mockResolvedValue();
         // const rta = new RuntimeAuthoringMock();
-        await init(rta);
+        await init(rta, isReuseComponentCheckerMock);
         const callBackFn = spyPostMessage.mock.calls[2][0];
         (callBackFn as any)('test');
         // apply change without error
@@ -133,7 +135,7 @@ describe('main', () => {
         rtaSpy.mockResolvedValue();
 
         // act
-        await init(rta);
+        await init(rta, isReuseComponentCheckerMock);
 
         // assert
         expect(initOutlineSpy).toHaveBeenCalledTimes(1);
@@ -151,7 +153,7 @@ describe('main', () => {
         quickActionServiceSpy.mockResolvedValue();
         contextMenuServiceSpy.mockResolvedValue();
 
-        await init(rta);
+        await init(rta, isReuseComponentCheckerMock);
         await Promise.all([
             initOutlineSpy,
             rtaSpy,

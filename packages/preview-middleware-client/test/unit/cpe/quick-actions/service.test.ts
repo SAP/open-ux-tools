@@ -71,6 +71,7 @@ const mockChangeService = {
 describe('quick action service', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
+    const isReuseComponentCheckerMock = jest.fn();
 
     beforeEach(() => {
         sendActionMock = jest.fn();
@@ -81,9 +82,15 @@ describe('quick action service', () => {
     test('initialize simple action definition', async () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
         const registry = new MockRegistry();
-        const service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
-            onStackChange: jest.fn()
-        } as any);
+        const service = new QuickActionService(
+            rtaMock,
+            new OutlineService(rtaMock, mockChangeService),
+            [registry],
+            {
+                onStackChange: jest.fn()
+            } as any,
+            isReuseComponentCheckerMock
+        );
         await service.init(sendActionMock, subscribeMock);
 
         await service.reloadQuickActions({});
@@ -118,7 +125,13 @@ describe('quick action service', () => {
         } as any;
         const outlineService = new OutlineService(rtaMock, mockChangeService);
         const onOutlineChangeCbSpy = jest.spyOn(outlineService, 'onOutlineChange');
-        const service = new QuickActionService(rtaMock, outlineService, [registry], onStackChangeMock);
+        const service = new QuickActionService(
+            rtaMock,
+            outlineService,
+            [registry],
+            onStackChangeMock,
+            isReuseComponentCheckerMock
+        );
         await service.init(sendActionMock, subscribeMock);
         const reloadQuickActions = jest.spyOn(service, 'reloadQuickActions');
         const controlIndex = {
@@ -144,9 +157,15 @@ describe('quick action service', () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
         const outlineService = new OutlineService(rtaMock, mockChangeService);
         const registry = new MockRegistry();
-        const service = new QuickActionService(rtaMock, outlineService, [registry], {
-            onStackChange: jest.fn()
-        } as any);
+        const service = new QuickActionService(
+            rtaMock,
+            outlineService,
+            [registry],
+            {
+                onStackChange: jest.fn()
+            } as any,
+            isReuseComponentCheckerMock
+        );
         const onOutlineChangeCbSpy = jest.spyOn(outlineService, 'onOutlineChange');
         const reloadQuickActions = jest.spyOn(service, 'reloadQuickActions');
         await service.init(sendActionMock, subscribeMock);

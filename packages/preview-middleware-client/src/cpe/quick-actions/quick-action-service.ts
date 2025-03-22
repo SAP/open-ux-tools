@@ -14,7 +14,7 @@ import {
     externalFileChange
 } from '@sap-ux-private/control-property-editor-common';
 
-import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
+import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction, IsReuseComponentApi } from '../types';
 
 import { QuickActionActivationContext, QuickActionContext, QuickActionDefinition } from './quick-action-definition';
 import { QuickActionDefinitionRegistry } from './registry';
@@ -45,7 +45,8 @@ export class QuickActionService implements Service {
         private readonly rta: RuntimeAuthoring,
         private readonly outlineService: OutlineService,
         private readonly registries: QuickActionDefinitionRegistry<string>[],
-        private readonly changeService: ChangeService
+        private readonly changeService: ChangeService,
+        private readonly isReuseComponentChecker: IsReuseComponentApi
     ) {}
 
     /**
@@ -122,7 +123,8 @@ export class QuickActionService implements Service {
                     rta: this.rta,
                     flexSettings: this.rta.getFlexSettings(),
                     resourceBundle: this.texts,
-                    changeService: this.changeService
+                    changeService: this.changeService,
+                    isReuseComponent: this.isReuseComponentChecker
                 };
                 for (const Definition of definitions) {
                     try {

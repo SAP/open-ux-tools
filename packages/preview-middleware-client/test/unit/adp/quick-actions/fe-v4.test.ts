@@ -50,6 +50,7 @@ import * as versionUtils from 'open/ux/preview/client/utils/version';
 describe('FE V4 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
+    const isReuseComponentCheckerMock = jest.fn().mockReturnValue(false);
 
     beforeEach(() => {
         sendActionMock = jest.fn();
@@ -180,7 +181,8 @@ describe('FE V4 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -285,14 +287,20 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
-                    onStackChange: jest.fn(),
-                    getConfigurationPropertyValue: jest
-                        .fn()
-                        .mockReturnValueOnce(false)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValue(undefined)
-                } as any);
+                service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(false)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValue(undefined)
+                    } as any,
+                    isReuseComponentCheckerMock
+                );
             });
 
             test('initialize and execute action', async () => {
@@ -461,7 +469,8 @@ describe('FE V4 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -574,7 +583,8 @@ describe('FE V4 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -722,7 +732,8 @@ describe('FE V4 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -841,7 +852,8 @@ describe('FE V4 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any
+                    { onStackChange: jest.fn() } as any,
+                    isReuseComponentCheckerMock
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -1004,7 +1016,8 @@ describe('FE V4 quick actions', () => {
                             .fn()
                             .mockReturnValueOnce(undefined)
                             .mockReturnValueOnce(undefined)
-                    } as any
+                    } as any,
+                    isReuseComponentCheckerMock
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -1195,16 +1208,22 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
-                    onStackChange: jest.fn(),
-                    getConfigurationPropertyValue: jest
-                        .fn()
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(true)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValue(undefined)
-                } as any);
+                service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(true)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValue(undefined)
+                    } as any,
+                    isReuseComponentCheckerMock
+                );
             });
 
             test('initialize and execute action', async () => {
@@ -1438,7 +1457,8 @@ describe('FE V4 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
+                    isReuseComponentCheckerMock
                 );
                 CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
                     return { type, value, settings };
@@ -1620,7 +1640,8 @@ describe('FE V4 quick actions', () => {
                         rtaMock,
                         new OutlineService(rtaMock, mockChangeService),
                         [registry],
-                        { onStackChange: jest.fn() } as any
+                        { onStackChange: jest.fn() } as any,
+                        isReuseComponentCheckerMock
                     );
                     await service.init(sendActionMock, subscribeMock);
 
@@ -1833,7 +1854,8 @@ describe('FE V4 quick actions', () => {
                         [registry],
                         {
                             onStackChange: jest.fn()
-                        } as any
+                        } as any,
+                        isReuseComponentCheckerMock
                     );
 
                     await service.init(sendActionMock, subscribeMock);
@@ -2100,7 +2122,8 @@ describe('FE V4 quick actions', () => {
                             [registry],
                             {
                                 onStackChange: jest.fn()
-                            } as unknown as ChangeService
+                            } as unknown as ChangeService,
+                            isReuseComponentCheckerMock
                         );
 
                         await service.init(sendActionMock, subscribeMock);
@@ -2334,7 +2357,8 @@ describe('FE V4 quick actions', () => {
                         rtaMock,
                         new OutlineService(rtaMock, mockChangeService),
                         [registry],
-                        { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
+                        { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
+                        isReuseComponentCheckerMock
                     );
                     CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
                         return { type, value, settings };
