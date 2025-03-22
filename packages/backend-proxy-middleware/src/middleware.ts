@@ -20,11 +20,11 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
             proxy = proxy.replace(proxy.slice(forwardSlashIndex + 2, atIndex), '***:***');
         }
     }
-    return proxy || 'none';
+    return proxy ?? 'none';
 }
 
 /**
- * UI5 middleware allowing to to proxy backends.
+ * UI5 middleware allowing to proxy backends.
  *
  * @param params input parameters for UI5 middleware
  * @param params.options configuration options
@@ -52,9 +52,9 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
             })}\noptions: ${JSON.stringify(configOptions)}'`
         );
 
-        return (req, res, next) => {
+        return async (req, res, next) => {
             if (req.path.startsWith(backend.path)) {
-                proxyFn(req, res, next);
+                await proxyFn(req, res, next);
             } else {
                 next();
             }
