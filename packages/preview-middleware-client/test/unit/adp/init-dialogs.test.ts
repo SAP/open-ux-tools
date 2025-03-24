@@ -10,7 +10,8 @@ import {
     initDialogs,
     isControllerExtensionEnabled,
     isFragmentCommandEnabled,
-    getAddFragmentItemText
+    getAddFragmentItemText,
+    getExtendControllerItemText
 } from '../../../src/adp/init-dialogs';
 
 describe('Dialogs', () => {
@@ -120,6 +121,81 @@ describe('Dialogs', () => {
             expect(hasStableId).toHaveBeenCalledWith({
                 getElement: expect.any(Function)
             });
+        });
+
+        it('should return extra text if the control is a reuse component in Cloud', () => {
+            const overlay = {
+                getElement: () => ({
+                    getId: () => {
+                        return 'controlId1';
+                    }
+                })
+            } as ElementOverlay;
+            hasStableId.mockImplementation(() => {
+                return true;
+            });
+            isReuseComponentMock.mockReturnValueOnce(true);
+
+            const result = getAddFragmentItemText(overlay, isReuseComponentMock, true);
+
+            expect(result).toBe('Add: Fragment (Unavailable due to control being a Reuse component)');
+            expect(hasStableId).toHaveBeenCalledWith({
+                getElement: expect.any(Function)
+            });
+            expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
+        });
+    });
+
+    describe('getExtendControllerItemText', () => {
+        beforeEach(() => {
+            jest.restoreAllMocks();
+            jest.resetAllMocks();
+        });
+
+
+        it('should return simple text if the control is a reuse component in OnPremise', () => {
+            const overlay = {
+                getElement: () => ({
+                    getId: () => {
+                        return 'controlId1';
+                    }
+                })
+            } as ElementOverlay;
+            isReuseComponentMock.mockReturnValueOnce(true);
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, false);
+
+            expect(result).toBe('Extend With Controller');
+            expect(isReuseComponentMock).not.toHaveBeenCalled();
+        });
+
+        it('should return simple text if the control is not a reuse component in Cloud', () => {
+            const overlay = {
+                getElement: () => ({
+                    getId: () => {
+                        return 'controlId1';
+                    }
+                })
+            } as ElementOverlay;
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true);
+
+            expect(result).toBe('Extend With Controller');
+            expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
+        });
+
+        it('should return extra text if the control is a reuse component in Cloud', () => {
+            const overlay = {
+                getElement: () => ({
+                    getId: () => {
+                        return 'controlId1';
+                    }
+                })
+            } as ElementOverlay;
+            isReuseComponentMock.mockReturnValueOnce(true);
+
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true);
+
+            expect(result).toBe('Extend With Controller (Unavailable due to control being a Reuse component)');
+            expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
     });
 
