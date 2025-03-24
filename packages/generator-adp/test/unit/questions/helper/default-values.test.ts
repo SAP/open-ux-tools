@@ -7,7 +7,7 @@ import {
     generateValidNamespace,
     getProjectNames,
     getDefaultProjectName
-} from '../../../src/app/questions/helper/default-values';
+} from '../../../../src/app/questions/helper/default-values';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),

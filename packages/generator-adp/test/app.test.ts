@@ -2,6 +2,7 @@ import fs from 'fs';
 import { join } from 'path';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
+import { exec } from 'child_process';
 
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { TargetApplication } from '@sap-ux/adp-tooling';
@@ -15,7 +16,6 @@ import { initI18n, t } from '../src/utils/i18n';
 import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
-import { exec } from 'child_process';
 
 jest.mock('@sap-devx/feature-toggle-node', () => ({
     // Is BAS this will mean that the layer is CUSTOMER_BASE

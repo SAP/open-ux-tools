@@ -3,7 +3,7 @@ import { isFeatureEnabled } from '@sap-devx/feature-toggle-node';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { FlexLayer } from '@sap-ux/adp-tooling';
 
-import { getFlexLayer, isInternalUsage } from '../src/app/layer';
+import { getFlexLayer, isInternalUsage } from '../../src/app/layer';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()

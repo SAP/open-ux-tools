@@ -2,12 +2,12 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { FlexLayer, TargetApplications } from '@sap-ux/adp-tooling';
 import type { AbapProvider, ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
 
-import { initI18n } from '../../src/utils/i18n';
-import { configPromptNames } from '../../src/app/types';
-import { ConfigPrompter } from '../../src/app/questions/configuration';
-import { showCredentialQuestion } from '../../src/app/questions/helper/conditions';
+import { initI18n } from '../../../src/utils/i18n';
+import { configPromptNames } from '../../../src/app/types';
+import { ConfigPrompter } from '../../../src/app/questions/configuration';
+import { showCredentialQuestion } from '../../../src/app/questions/helper/conditions';
 
-jest.mock('../../src/app/questions/helper/conditions', () => ({
+jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
     showCredentialQuestion: jest.fn().mockResolvedValue(true)
 }));

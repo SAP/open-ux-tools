@@ -1,5 +1,5 @@
 import { exec } from 'child_process';
-import { installDependencies } from '../../src/utils/deps';
+import { installDependencies } from '../../../src/utils/deps';
 
 jest.mock('child_process', () => ({
     ...jest.requireActual('child_process'),
