@@ -10,7 +10,7 @@ import type { ConnectedSystem } from '@sap-ux/deploy-config-generator-shared';
 import type { Logger } from '@sap-ux/logger';
 import type { Destination } from '@sap-ux/btp-utils';
 import type { BackendSystem } from '@sap-ux/store';
-import { DeployProjectType } from './types';
+import { DeployProjectType, type AbapDeployConfigPromptOptions } from './types';
 
 /**
  * Get the ABAP target based on the provided parameters.
@@ -75,6 +75,7 @@ function getAbapTarget(
  * @param params.showOverwriteQuestion - whether the overwrite question should be shown
  * @param params.projectType - the project type
  * @param params.logger - the logger
+ * @param params.promptOptions - A set of optional feature flags to prompts behavior.
  * @returns - the prompts and answers
  */
 export async function getAbapQuestions({
@@ -85,6 +86,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed = false,
     showOverwriteQuestion = false,
     projectType = DeployProjectType.Application,
+    promptOptions = {},
     logger
 }: {
     appRootPath: string;
@@ -94,6 +96,7 @@ export async function getAbapQuestions({
     indexGenerationAllowed?: boolean;
     showOverwriteQuestion?: boolean;
     projectType?: DeployProjectType;
+    promptOptions?: AbapDeployConfigPromptOptions;
     logger?: ILogWrapper;
 }): Promise<{ prompts: AbapDeployConfigQuestion[]; answers: Partial<AbapDeployConfigAnswersInternal> }> {
     const { backendSystem, serviceProvider, destination } = connectedSystem || {};
@@ -121,13 +124,37 @@ export async function getAbapQuestions({
                 serviceProvider,
                 type: projectType
             },
-            ui5AbapRepo: { default: deployAppConfig?.name },
+            ui5AbapRepo: {
+                default: deployAppConfig?.name,
+                hideIfOnPremise: promptOptions?.ui5AbapRepo?.hideIfOnPremise ?? false
+            },
             description: { default: deployAppConfig?.description },
-            packageManual: { default: deployAppConfig?.package },
+            packageManual: {
+                default: deployAppConfig?.package,
+                additionalValidation: {
+                    shouldValidatePackageType: promptOptions?.packageAutocomplete?.shouldValidatePackageType ?? false,
+                    shouldValidatePackageForStartingPrefix:
+                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false
+                }
+            },
             transportManual: { default: deployAppConfig?.transport },
             index: { indexGenerationAllowed },
-            packageAutocomplete: { useAutocomplete: true },
-            overwrite: { hide: !showOverwriteQuestion }
+            packageAutocomplete: {
+                useAutocomplete: true,
+                additionalValidation: {
+                    shouldValidatePackageType: promptOptions?.packageAutocomplete?.shouldValidatePackageType ?? false,
+                    shouldValidatePackageForStartingPrefix:
+                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false
+                }
+            },
+            overwrite: { hide: !showOverwriteQuestion },
+            transportInputChoice: { hideIfOnPremise: promptOptions?.transportInputChoice?.hideIfOnPremise ?? false },
+            targetSystem: {
+                additionalValidation: {
+                    shouldRestrictDifferentSystemType:
+                        promptOptions?.targetSystem?.shouldRestrictDifferentSystemType ?? false
+                }
+            }
         },
         logger as unknown as Logger,
         getHostEnvironment() !== hostEnvironment.cli
