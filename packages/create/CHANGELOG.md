@@ -1,5 +1,66 @@
 # @sap-ux/create
 
+## 0.12.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.18
+-   @sap-ux/flp-config-inquirer@0.2.63
+-   @sap-ux/preview-middleware@0.19.1
+-   @sap-ux/app-config-writer@0.5.43
+
+## 0.12.27
+
+### Patch Changes
+
+-   Updated dependencies [6e32009]
+    -   @sap-ux/preview-middleware@0.19.0
+    -   @sap-ux/app-config-writer@0.5.43
+
+## 0.12.26
+
+### Patch Changes
+
+-   1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
+-   Updated dependencies [1bca2d8]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.34
+
+## 0.12.25
+
+### Patch Changes
+
+-   Updated dependencies [02874f7]
+    -   @sap-ux/preview-middleware@0.18.23
+    -   @sap-ux/app-config-writer@0.5.43
+
+## 0.12.24
+
+### Patch Changes
+
+-   Updated dependencies [e754cb0]
+    -   @sap-ux/adp-tooling@0.13.17
+    -   @sap-ux/preview-middleware@0.18.22
+    -   @sap-ux/flp-config-inquirer@0.2.62
+    -   @sap-ux/app-config-writer@0.5.43
+
+## 0.12.23
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/app-config-writer@0.5.43
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/abap-deploy-config-writer@0.0.100
+    -   @sap-ux/adp-tooling@0.13.16
+    -   @sap-ux/cap-config-writer@0.9.22
+    -   @sap-ux/cards-editor-config-writer@0.4.13
+    -   @sap-ux/flp-config-inquirer@0.2.61
+    -   @sap-ux/mockserver-config-writer@0.8.11
+    -   @sap-ux/odata-service-writer@0.26.13
+    -   @sap-ux/preview-middleware@0.18.21
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.33
+
 ## 0.12.22
 
 ### Patch Changes

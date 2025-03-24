@@ -1,5 +1,19 @@
 # @sap-ux/environment-check
 
+## 0.17.93
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+
+## 0.17.92
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/axios-extension@1.19.1
+
 ## 0.17.91
 
 ### Patch Changes
