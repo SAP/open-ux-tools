@@ -40,7 +40,10 @@
         "nameContainsSpecialCharacters": "Module name cannot contain special characters (\"~'!()*)",
         "nameNotUrlFriendly": "Module name can only contain URL-friendly characters",
         "invalidModuleName": "Invalid module name",
-        "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path"
+        "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path",
+        "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}",
+        "folderContainsFioriApp": "The project folder path already contains an SAP Fiori application in the folder: {{-path}}. Please choose a different folder and try again.",
+        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must therefore use the local CAP project as the data source."
     },
     "general": {
         "invalidUrl": "Invalid URL: [{{-input}}]",
