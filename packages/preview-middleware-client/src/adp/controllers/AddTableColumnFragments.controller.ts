@@ -38,7 +38,7 @@ import { ValueState } from 'sap/ui/core/library';
 import Input from 'sap/m/Input';
 import Control from 'sap/ui/core/Control';
 import ManagedObject from 'sap/ui/base/ManagedObject';
-import { TelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 const radix = 10;
 
@@ -66,7 +66,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
         overlays: UI5Element,
         rta: RuntimeAuthoring,
         readonly options: AddFragmentOptions,
-        telemetryData?: TelemetryData
+        telemetryData?: QuickActionTelemetryData
     ) {
         super(name, telemetryData);
         this.rta = rta;

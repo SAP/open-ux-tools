@@ -27,7 +27,7 @@ import type { CodeExtResponse, ControllersResponse } from '../api-handler';
 import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
-import { TelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -46,7 +46,7 @@ type ControllerModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, telemetryData?: TelemetryData) {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, telemetryData?: QuickActionTelemetryData) {
         super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;

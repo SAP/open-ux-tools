@@ -48,4 +48,8 @@ export class AddCustomSectionQuickAction
         );
         return [];
     }
+
+    // public override getQuickActionStepType(): 'multi' | 'single' {
+    //     return 'multi';
+    // }
 }

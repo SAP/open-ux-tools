@@ -65,9 +65,13 @@ export class AddControllerToPageQuickAction
                 DialogNames.CONTROLLER_EXTENSION,
                 undefined,
                 {},
-                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier(), }
             );
         }
         return [];
     }
+
+    // public override getQuickActionStepType(): 'multi' | 'single' {
+    //     return 'multi';
+    // }
 }

@@ -155,7 +155,8 @@ export class QuickActionService implements Service {
             await reportTelemetry({
                 category: 'QuickAction',
                 actionName: actionInstance.type,
-                telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true)
+                telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true),
+                quickActionSteps: actionInstance.quickActionSteps
             });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);

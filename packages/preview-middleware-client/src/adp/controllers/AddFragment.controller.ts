@@ -37,7 +37,7 @@ import {
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from '../quick-actions/control-types';
-import { TelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -70,7 +70,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         overlays: UI5Element,
         rta: RuntimeAuthoring,
         readonly options: AddFragmentOptions,
-        telemetryData?: TelemetryData
+        telemetryData?: QuickActionTelemetryData
     ) {
         super(name, telemetryData);
         this.rta = rta;

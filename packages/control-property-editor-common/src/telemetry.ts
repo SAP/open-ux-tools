@@ -4,6 +4,8 @@ interface TelemetryData {
     propertyName?: string;
     controlName?: string;
     telemetryEventIdentifier?: string;
+    dialogName?: string;
+    quickActionSteps?: 'single' | 'multi';
 }
 
 let enabled = false;

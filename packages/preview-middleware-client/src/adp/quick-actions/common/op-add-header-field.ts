@@ -78,4 +78,8 @@ export class AddHeaderFieldQuickAction
         }
         return [];
     }
+
+    // public override getQuickActionStepType(): 'multi' | 'single' {
+    //     return 'multi';
+    // }
 }

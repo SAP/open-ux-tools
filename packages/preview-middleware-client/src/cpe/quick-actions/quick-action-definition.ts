@@ -21,7 +21,7 @@ export interface QuickActionActivationContext {
     manifest: Manifest;
 }
 
-export interface TelemetryData {
+export interface QuickActionTelemetryData {
     actionName: string; 
     telemetryEventIdentifier: string;
 }
@@ -62,6 +62,8 @@ interface QuickActionDefinitionBase {
      * however if that is not the case this property should be set to "true" to force Quick Action reload after the action is executed.
      */
     readonly forceRefreshAfterExecution?: boolean;
+
+    readonly quickActionSteps?: 'single' | 'multi';
     /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.
      */
@@ -80,6 +82,8 @@ interface QuickActionDefinitionBase {
      * @params update - flag for updating timestamp
      */
     getTelemetryIdentifier: (update?: boolean) => string | undefined;
+
+    // getQuickActionStepType: () => QuickActionStepType;
 }
 
 export interface SimpleQuickActionDefinition extends QuickActionDefinitionBase {
@@ -114,6 +118,8 @@ export interface NestedQuickActionDefinition extends QuickActionDefinitionBase {
     execute: (path: string) => FlexCommand[] | Promise<FlexCommand[]>;
 }
 export type QuickActionDefinition = SimpleQuickActionDefinition | NestedQuickActionDefinition;
+
+// export type QuickActionStepType = 'single' | 'multi';
 
 export interface QuickActionDefinitionConstructor<T extends QuickActionDefinition> {
     new (context: QuickActionContext): T;

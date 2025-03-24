@@ -163,4 +163,8 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
         );
         return [];
     }
+
+    // public override getQuickActionStepType(): 'multi' | 'single' {
+    //     return 'multi';
+    // }
 }

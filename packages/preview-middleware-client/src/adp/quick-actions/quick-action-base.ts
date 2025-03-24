@@ -1,6 +1,7 @@
 import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
 
 import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
+import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator';
 
 /**
  * Base class for all  quick actions.
@@ -17,6 +18,17 @@ export abstract class QuickActionDefinitionBase<T extends string> {
             this.telemetryIdentifier = new Date().toISOString();
         }
         return this.telemetryIdentifier;
+    }
+
+    // public getQuickActionStepType(): QuickActionStepType {
+    //     return 'single';
+    // }
+
+    public get quickActionSteps(): 'single' | 'multi' {
+        return this.enablementValidators.find((item) => item === DIALOG_ENABLEMENT_VALIDATOR) &&
+            this.type != 'add-new-annotation-file'
+            ? 'multi'
+            : 'single';
     }
 
     /**

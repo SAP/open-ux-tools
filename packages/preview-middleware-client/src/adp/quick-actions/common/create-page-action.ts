@@ -52,4 +52,8 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
         }
         return [];
     }
+
+    // public override getQuickActionStepType(): 'multi' | 'single' {
+    //     return 'multi';
+    // }
 }

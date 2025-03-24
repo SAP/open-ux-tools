@@ -18,7 +18,7 @@ import { getControlById } from '../../utils/core';
 import ControlUtils from '../control-utils';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import { TelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import { reportTelemetry } from '@sap-ux-private/control-property-editor-common';
 import Log from 'sap/base/Log';
 
@@ -61,12 +61,12 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
 
     abstract buildDialogData(): Promise<void> | void;
 
-    constructor(name: string, private readonly telemetryData?: TelemetryData | undefined) {
+    constructor(name: string, private readonly telemetryData?: QuickActionTelemetryData | undefined) {
         super(name);
     }
     protected async onCreateBtnPressHandler(event: Event): Promise<void> {
         try {
-            await reportTelemetry({category: this.dialog.getId(), ...this.telemetryData});
+            await reportTelemetry({ category: 'Dialog', dialogName: this.dialog.getId(), ...this.telemetryData });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);
         }
