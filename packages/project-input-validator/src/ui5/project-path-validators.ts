@@ -22,12 +22,16 @@ async function validateFioriAppProjectFolder(targetDir: string): Promise<string 
 }
 
 /**
- * @param targetPath the target directory path.
- * @param appName the application directory name.
- * @param validateFioriAppFolder if true, validates the target path as a Fiori App project.
- * @returns true if validated for Fiori App Project and Project Folder. Otherwise appropriate validation message.
+ * Validates the provided target path as a Fiori App project folder.
+ *
+ * @param {string} targetPath - The target directory path where the Fiori App project is to be generated.
+ * @param {string} appName - The application name.
+ * @param {boolean} [validateFioriAppFolder] - If true, performs additional validation to check
+ *        if the target path is a valid Fiori App project folder.
+ * @returns {Promise<string | boolean>} - Returns `true` if all validations pass successfully.
+ *        If a validation fails, returns an appropriate validation message as a string.
  */
-export async function validateTargetFolderForFioriApp(
+export async function validateFioriAppTargetFolder(
     targetPath: string,
     appName: string,
     validateFioriAppFolder?: boolean
