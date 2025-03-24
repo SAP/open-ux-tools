@@ -1,5 +1,14 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.22
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+-   Updated dependencies [d873cbd]
+    -   @sap-ux/cds-annotation-parser@0.2.8
+    -   @sap-ux/cds-odata-annotation-converter@0.5.3
+
 ## 0.4.21
 
 ### Patch Changes

@@ -1,5 +1,13 @@
 # @sap-ux/annotation-generator
 
+## 0.3.22
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+-   Updated dependencies [d873cbd]
+    -   @sap-ux/fiori-annotation-api@0.4.22
+
 ## 0.3.21
 
 ### Patch Changes
