@@ -568,9 +568,6 @@ importers:
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
-      '@sap-ux/environment-check':
-        specifier: workspace:*
-        version: link:../environment-check
       '@sap-ux/i18n':
         specifier: workspace:*
         version: link:../i18n

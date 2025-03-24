@@ -53,7 +53,7 @@ export const mapApps = (app: Partial<App>): TargetApplication => ({
  * Provides services related to managing and loading applications from an ABAP provider.
  */
 export class TargetApplications {
-    private applications: TargetApplication[];
+    private applications: TargetApplication[] | undefined;
 
     /**
      * Constructs an instance of ApplicationManager.
@@ -67,6 +67,13 @@ export class TargetApplications {
         private readonly isCustomerBase: boolean,
         private readonly logger?: ToolsLogger
     ) {}
+
+    /**
+     * Resets the current applications from the state.
+     */
+    public resetApps(): void {
+        this.applications = undefined;
+    }
 
     /**
      * Retrieves the currently loaded list of applications.

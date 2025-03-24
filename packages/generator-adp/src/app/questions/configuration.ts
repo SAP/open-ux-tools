@@ -232,6 +232,7 @@ export class ConfigPrompter {
         }
 
         try {
+            this.targetApps.resetApps();
             await this.abapProvider.setProvider(system, undefined, answers.username, answers.password);
 
             const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(system);

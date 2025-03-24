@@ -1,5 +1,6 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { AbapTarget } from '@sap-ux/ui5-config';
+import type { AuthenticationType } from '@sap-ux/store';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider, AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
@@ -58,7 +59,7 @@ export class AbapProvider {
                 ignoreCertErrors: false
             };
 
-            const target = await this.determineTarget(requestOptions, system, client);
+            const target = await this.determineTarget(system, requestOptions, client);
 
             if (username && password) {
                 requestOptions.auth = { username, password };
@@ -76,16 +77,12 @@ export class AbapProvider {
      * Determines the target configuration for the ABAP service provider based on whether the application
      * is running within SAP App Studio or outside of it.
      *
-     * @param {RequestOptions} requestOptions - The request options to be configured during this setup.
      * @param {string} system - The system identifier, which could be a URL or a system name.
+     * @param {RequestOptions} requestOptions - The request options to be configured during this setup.
      * @param {string} [client] - Optional client number, used in systems where multiple clients exist.
      * @returns {Promise<AbapTarget>} - The configuration object for the ABAP service provider, tailored based on the running environment.
      */
-    private async determineTarget(
-        requestOptions: RequestOptions,
-        system: string,
-        client?: string
-    ): Promise<AbapTarget> {
+    public async determineTarget(system: string, requestOptions: RequestOptions, client?: string): Promise<AbapTarget> {
         let target: AbapTarget;
 
         if (isAppStudio()) {
@@ -93,15 +90,24 @@ export class AbapProvider {
                 destination: system
             };
         } else {
-            const details = await this.targetSystems.getSystemDetails(system);
+            const details = await this.targetSystems.getSystemByName(system);
 
             target = {
-                ...details,
-                client: details?.client ?? client
+                client: details?.Client ?? client,
+                url: details?.Url
             } as AbapTarget;
 
-            if (details?.username && details?.password) {
-                requestOptions.auth = { username: details?.username, password: details?.password };
+            if (details?.Authentication) {
+                target.authenticationType = details?.Authentication as AuthenticationType;
+            }
+
+            const username = details?.Credentials?.username;
+            const password = details?.Credentials?.password;
+            if (username && password) {
+                requestOptions.auth = {
+                    username,
+                    password
+                };
             }
         }
 

@@ -46,6 +46,7 @@ describe('Target Applications', () => {
             searchMock.mockResolvedValue(mockApps);
             isAbapCloudMock.mockResolvedValue(true);
 
+            service.resetApps();
             const apps = await service.getApps();
             expect(apps.length).toBe(2);
             expect(apps[0].title).toEqual('App One');

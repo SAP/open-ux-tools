@@ -5,7 +5,7 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { AbapProvider } from '../../../src';
-import type { TargetSystems } from '../../../src';
+import type { Endpoint, TargetSystems } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -17,10 +17,10 @@ jest.mock('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn()
 }));
 
-const getSystemDetailsMock = jest.fn();
+const getSystemByNameMock = jest.fn();
 
 const targetSystems = {
-    getSystemDetails: getSystemDetailsMock
+    getSystemByName: getSystemByNameMock
 } as unknown as TargetSystems;
 
 const logger = {
@@ -76,20 +76,25 @@ describe('AbapProvider', () => {
 
         test('should call for system details and set provider in VS Code', async () => {
             const system = 'http://example.com';
-            const details = { client: '010', url: system, username: 'username', password: 'password' };
+            const details = {
+                Client: '010',
+                Url: system,
+                Authentication: 'Basic',
+                Credentials: { username: 'user1', password: 'pass1' }
+            } as Endpoint;
 
             mockIsAppStudio.mockReturnValue(false);
-            getSystemDetailsMock.mockResolvedValue(details);
+            getSystemByNameMock.mockResolvedValue(details);
             createAbapServiceProviderMock.mockResolvedValue(dummyProvider);
 
             await abapProvider.setProvider(system, undefined, 'user', 'pass');
 
-            expect(getSystemDetailsMock).toHaveBeenCalledWith(system);
+            expect(getSystemByNameMock).toHaveBeenCalledWith(system);
             const callArgs = createAbapServiceProviderMock.mock.calls[0];
             const target = callArgs[0] as AbapTarget;
 
-            expect(target.url).toBe(details.url);
-            expect(target.client).toBe(details.client);
+            expect(target.url).toBe(details.Url);
+            expect(target.client).toBe(details.Client);
 
             expect(abapProvider.getProvider()).toBe(dummyProvider);
             expect(abapProvider.getSystem()).toBe(system);

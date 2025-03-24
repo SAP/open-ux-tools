@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
-import type { AbapProvider, ConfigAnswers, SystemDetails, TargetApplication } from '../../../src';
+
 import { WriterConfig, FlexLayer } from '../../../src';
-import { AuthenticationType } from '@sap-ux/store';
+import type { AbapProvider, ConfigAnswers, TargetApplication } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -10,10 +10,16 @@ jest.mock('@sap-ux/btp-utils', () => ({
 
 const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
 
+const systemDetails = {
+    client: '010',
+    url: 'https://SYS010'
+};
+
 const mockAbapProvider = {
     getProvider: jest.fn().mockReturnValue({
         getAtoInfo: getAtoInfoMock
-    })
+    }),
+    determineTarget: jest.fn().mockResolvedValue(systemDetails)
 } as unknown as AbapProvider;
 
 const configAnswers: ConfigAnswers = {
@@ -21,11 +27,6 @@ const configAnswers: ConfigAnswers = {
     system: 'SYS010',
     password: '',
     username: ''
-};
-
-const systemDetails: SystemDetails = {
-    client: '010',
-    url: 'https://SYS010'
 };
 
 const defaults = {
@@ -46,14 +47,7 @@ describe('Writer Config', () => {
             mockIsAppStudio.mockReturnValue(false);
             getAtoInfoMock.mockResolvedValue({ operationsType: 'C' });
 
-            const config = await writerConfig.getConfig(
-                configAnswers,
-                {
-                    ...systemDetails,
-                    authenticationType: AuthenticationType.ReentranceTicket
-                },
-                defaults
-            );
+            const config = await writerConfig.getConfig(configAnswers, defaults);
 
             expect(config).toEqual({
                 app: {
@@ -74,7 +68,6 @@ describe('Writer Config', () => {
                     }
                 },
                 target: {
-                    authenticationType: AuthenticationType.ReentranceTicket,
                     client: '010',
                     url: 'https://SYS010'
                 },
@@ -86,7 +79,7 @@ describe('Writer Config', () => {
             mockIsAppStudio.mockReturnValue(false);
             getAtoInfoMock.mockResolvedValue({ operationsType: undefined });
 
-            const config = await writerConfig.getConfig(configAnswers, systemDetails, defaults);
+            const config = await writerConfig.getConfig(configAnswers, defaults);
 
             expect(config).toEqual({
                 app: {

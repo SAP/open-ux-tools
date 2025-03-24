@@ -3,6 +3,7 @@ import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import type { Destination } from '@sap-ux/btp-utils';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -112,12 +113,13 @@ export interface TargetApplication {
     bspName: string;
 }
 
-export interface SystemDetails {
-    url: string;
-    client: string;
-    username?: string;
-    password?: string;
-    authenticationType?: string;
+export interface Endpoint extends Partial<Destination> {
+    Name: string;
+    Url?: string;
+    Client?: string;
+    Credentials?: { username?: string; password?: string };
+    UserDisplayName?: string;
+    Scp?: boolean;
 }
 
 export interface ChangeInboundNavigation {

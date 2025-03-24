@@ -1,10 +1,9 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { getService } from '@sap-ux/store';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Endpoint } from '@sap-ux/environment-check';
-import { checkEndpoints } from '@sap-ux/environment-check';
-import { getCredentialsFromStore } from '@sap-ux/system-access';
+import { isAppStudio, listDestinations } from '@sap-ux/btp-utils';
+import type { BackendSystem, BackendSystemKey } from '@sap-ux/store';
 
-import type { SystemDetails } from '../types';
+import type { Endpoint } from '../types';
 
 /**
  * Retrieves the names of all stored systems, sorted alphabetically.
@@ -17,6 +16,25 @@ export function getEndpointNames(systems: Endpoint[]): string[] {
         .map((endpoint) => endpoint.Name)
         .sort((a, b) => a.toLowerCase().localeCompare(b.toLowerCase(), 'en', { sensitivity: 'base' }));
 }
+
+/**
+ * Transforms a BackendSystem object into an object matching the legacy Endpoint interface.
+ *
+ * @param {BackendSystem} system - The backend system to transform.
+ * @returns {Endpoint} The transformed endpoint object.
+ */
+export const transformBackendSystem = (system: BackendSystem): Endpoint => ({
+    Name: system.name,
+    Url: system.url,
+    Client: system.client,
+    UserDisplayName: system.userDisplayName,
+    Scp: !!system.serviceKeys,
+    Authentication: system.authenticationType,
+    Credentials: {
+        username: system.username,
+        password: system.password
+    }
+});
 
 /**
  * Service class to manage and retrieve information about system systems,
@@ -45,13 +63,26 @@ export class TargetSystems {
     }
 
     /**
-     * Fetches systems from a predefined source and stores them in the state.
+     * Loads systems from either BAS (via destinations) or from the backend system store.
      *
-     * @returns {Promise<Endpoint[]>} Returns the endpoints as a list independent of environment (SAP Systems or BAS Destinations).
+     * @returns {Promise<Endpoint[]>} A promise that resolves with an array of endpoints.
+     * @throws {Error} If fetching the systems fails.
      */
     private async loadSystems(): Promise<Endpoint[]> {
         try {
-            const { endpoints } = await checkEndpoints();
+            let endpoints: Endpoint[] = [];
+            if (isAppStudio()) {
+                const destinations = await listDestinations({
+                    stripS4HCApiHosts: true
+                });
+                endpoints = Object.values(destinations).filter((dest) => dest.WebIDEUsage?.includes('dev_abap'));
+            } else {
+                const systemStore = await getService<BackendSystem, BackendSystemKey>({
+                    entityName: 'system'
+                });
+                const backendSystems = await systemStore?.getAll();
+                endpoints = backendSystems.map(transformBackendSystem);
+            }
             return endpoints;
         } catch (e) {
             this.logger?.error(`Failed to fetch systems list. Reason: ${e.message}`);
@@ -60,42 +91,21 @@ export class TargetSystems {
     }
 
     /**
-     * Retrieves authentication details for a specified system, if available.
+     * Retrieves a particular system by its name.
      *
-     * @param {string} system - The system name or URL.
-     * @returns {Promise<SystemDetails | undefined>} System details including client, url, and credentials, or undefined if not found.
+     * @param {string} name - The system name or URL.
+     * @returns {Promise<Endpoint | undefined>} System details including client, url, and credentials, or undefined if not found.
      */
-    public async getSystemDetails(system: string): Promise<SystemDetails | undefined> {
+    public async getSystemByName(name: string): Promise<Endpoint | undefined> {
         const systems = await this.getSystems();
-        const endpoint = systems.find((e) => e.Name === system || e.Url === system);
-        if (!endpoint) {
-            this.logger.warn(`No endpoint found for system: ${system}`);
+        const system = systems.find((e) => e.Name === name || e.Url === name);
+
+        if (!system) {
+            this.logger.warn(`No endpoint found for system: ${name}`);
             return undefined;
         }
 
-        const details: SystemDetails = {
-            client: endpoint.Client ?? '',
-            url: endpoint.Url ?? ''
-        };
-
-        try {
-            const storedSystem = await getCredentialsFromStore(
-                { url: details.url, client: details.client },
-                this.logger
-            );
-
-            if (storedSystem) {
-                details.authenticationType = storedSystem.authenticationType;
-                details.username = storedSystem.username;
-                details.password = storedSystem.password;
-            }
-        } catch (e) {
-            this.logger.error(`Error fetching credentials from store for system: ${system}`);
-            this.logger.debug(e.message);
-            return undefined;
-        }
-
-        return details;
+        return system;
     }
 
     /**
@@ -105,18 +115,12 @@ export class TargetSystems {
      * @returns {Promise<boolean>} A promise that resolves to true if authentication is required, false otherwise.
      */
     public async getSystemRequiresAuth(system: string): Promise<boolean> {
-        const systems = await this.getSystems();
+        const found = await this.getSystemByName(system);
 
         if (isAppStudio()) {
-            const found = systems.find((e: Endpoint) => e.Name === system);
-
-            if (!found) {
-                throw new Error(`System: ${system} not found in AppStudio environment.`);
-            }
-
-            return found.Authentication === 'NoAuthentication';
+            return found?.Authentication === 'NoAuthentication';
         } else {
-            return !systems.find((e: Endpoint) => e.Url === system || e.Name === system);
+            return !found;
         }
     }
 }

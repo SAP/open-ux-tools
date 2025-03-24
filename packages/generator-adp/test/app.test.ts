@@ -15,6 +15,7 @@ import { initI18n, t } from '../src/utils/i18n';
 import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import { exec } from 'child_process';
 
 jest.mock('@sap-devx/feature-toggle-node', () => ({
     // Is BAS this will mean that the layer is CUSTOMER_BASE
@@ -29,6 +30,11 @@ jest.mock('../src/app/questions/helper/default-values.ts', () => ({
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),
     getCredentialsFromStore: jest.fn()
+}));
+
+jest.mock('child_process', () => ({
+    ...jest.requireActual('child_process'),
+    exec: jest.fn()
 }));
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
@@ -73,6 +79,7 @@ const dummyProvider = {
     getAtoInfo: getAtoInfoMock
 } as unknown as AbapServiceProvider;
 
+const execMock = exec as unknown as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
@@ -90,6 +97,9 @@ describe('Adaptation Project Generator Integration Test', () => {
         jest.spyOn(TargetApplications.prototype, 'getApps').mockResolvedValue(apps);
         jest.spyOn(AbapProvider.prototype, 'setProvider').mockResolvedValue();
         jest.spyOn(AbapProvider.prototype, 'getProvider').mockReturnValue(dummyProvider);
+        execMock.mockImplementation((_: string, callback: Function) => {
+            callback(null, { stdout: 'ok', stderr: '' });
+        });
         sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
 
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
@@ -143,7 +153,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         const runContext = yeomanTest
             .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
-            .withOptions({ shouldInstallDeps: false } as AdpGeneratorOptions)
+            .withOptions({ shouldInstallDeps: true } as AdpGeneratorOptions)
             .withPrompts(answers);
 
         await expect(runContext.run()).resolves.not.toThrow();

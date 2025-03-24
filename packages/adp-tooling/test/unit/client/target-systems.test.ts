@@ -1,15 +1,10 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import { getService } from '@sap-ux/store';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Endpoint } from '@sap-ux/environment-check';
-import { checkEndpoints } from '@sap-ux/environment-check';
+import type { BackendSystem } from '@sap-ux/store';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
+import { type Destination, isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 
-import { getEndpointNames, TargetSystems } from '../../../src';
-
-jest.mock('@sap-ux/environment-check', () => ({
-    ...jest.requireActual('@sap-ux/environment-check'),
-    checkEndpoints: jest.fn()
-}));
+import { type Endpoint, getEndpointNames, TargetSystems, transformBackendSystem } from '../../../src';
 
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),
@@ -18,11 +13,18 @@ jest.mock('@sap-ux/system-access', () => ({
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
+    isAppStudio: jest.fn(),
+    listDestinations: jest.fn()
 }));
 
+jest.mock('@sap-ux/store', () => ({
+    ...jest.requireActual('@sap-ux/store'),
+    getService: jest.fn()
+}));
+
+const getServiceMock = getService as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const checkEndpointsMock = checkEndpoints as jest.Mock;
+const listDestinationsMock = listDestinations as jest.Mock;
 const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
 
 const logger: ToolsLogger = {
@@ -31,6 +33,38 @@ const logger: ToolsLogger = {
     debug: jest.fn(),
     info: jest.fn()
 } as unknown as ToolsLogger;
+
+const backendSystems: BackendSystem[] = [
+    {
+        client: '010',
+        name: 'SYS_010',
+        password: 'some-pw',
+        url: 'https://sys010',
+        userDisplayName: 'some-name',
+        username: 'some-user'
+    }
+];
+
+const mappedBackendSystems: Endpoint[] = [transformBackendSystem(backendSystems[0])];
+
+const destinations: { [name: string]: Destination } = {
+    SystemA: {
+        Name: 'SystemA',
+        'sap-client': '010',
+        Host: 'http://systema.com',
+        Authentication: 'Basic',
+        WebIDEUsage: 'dev_abap'
+    } as Destination,
+    SystemB: {
+        Name: 'SystemB',
+        'sap-client': '200',
+        Host: 'http://systemb.com',
+        Authentication: 'NoAuthentication',
+        WebIDEUsage: 'dev_abap'
+    } as Destination
+};
+
+const endpoints = Object.values(destinations);
 
 describe('getEndpointNames', () => {
     test('should return endpoint names sorted alphabetically (case-insensitive)', () => {
@@ -46,10 +80,10 @@ describe('getEndpointNames', () => {
 
 describe('TargetSystems', () => {
     let targetSystems: TargetSystems;
-    const endpoints: Endpoint[] = [
-        { Name: 'SystemA', Client: '010', Url: 'http://systema.com', Authentication: 'Basic' },
-        { Name: 'SystemB', Client: '200', Url: 'http://systemb.com', Authentication: 'NoAuthentication' }
-    ];
+    // const endpoints: Endpoint[] = [
+    //     { Name: 'SystemA', Client: '010', Url: 'http://systema.com', Authentication: 'Basic' },
+    //     { Name: 'SystemB', Client: '200', Url: 'http://systemb.com', Authentication: 'NoAuthentication' }
+    // ];
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -57,20 +91,31 @@ describe('TargetSystems', () => {
     });
 
     describe('getSystems', () => {
-        test('should fetch systems via checkEndpoints and cache the result', async () => {
-            checkEndpointsMock.mockResolvedValue({ endpoints });
+        test('should fetch systems via loadSystems and cache the result in BAS', async () => {
+            mockIsAppStudio.mockReturnValue(true);
+            listDestinationsMock.mockResolvedValue(destinations);
             const systemsFirstCall = await targetSystems.getSystems();
             expect(systemsFirstCall).toEqual(endpoints);
 
             // A second call should return the cached endpoints (checkEndpoints called only once)
             const systemsSecondCall = await targetSystems.getSystems();
-            expect(checkEndpoints).toHaveBeenCalledTimes(1);
+            expect(listDestinationsMock).toHaveBeenCalledTimes(1);
             expect(systemsSecondCall).toEqual(endpoints);
         });
 
-        test('should throw an error if checkEndpoints fails', async () => {
+        test('should fetch systems via loadSystems and cache the result in VS Code', async () => {
+            mockIsAppStudio.mockReturnValue(false);
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue(backendSystems)
+            });
+            const systemsFirstCall = await targetSystems.getSystems();
+            expect(systemsFirstCall).toEqual(mappedBackendSystems);
+        });
+
+        test('should throw an error if loadSystems fails', async () => {
             const error = new Error('Fetch failed');
-            checkEndpointsMock.mockRejectedValue(error);
+            mockIsAppStudio.mockReturnValue(true);
+            listDestinationsMock.mockRejectedValue(error);
 
             await expect(targetSystems.getSystems()).rejects.toThrow('Fetch failed');
 
@@ -78,76 +123,40 @@ describe('TargetSystems', () => {
         });
     });
 
-    describe('getSystemDetails', () => {
-        test('should return undefined and warn if no matching system is found', async () => {
-            const system = 'NonExistingSystem';
-            checkEndpointsMock.mockResolvedValue({ endpoints });
-
-            const details = await targetSystems.getSystemDetails(system);
-
-            expect(details).toBeUndefined();
-            expect(logger.warn).toHaveBeenCalledWith(`No endpoint found for system: ${system}`);
+    describe('getSystemByName', () => {
+        beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(true);
+            listDestinationsMock.mockResolvedValue(destinations);
         });
 
-        test('should return system details without credentials if getCredentialsFromStore returns null', async () => {
-            checkEndpointsMock.mockResolvedValue({ endpoints });
+        test('should return undefined and warn if no matching system is found', async () => {
+            const nonExistingSystem = 'NonExistingSystem';
+
+            const system = await targetSystems.getSystemByName(nonExistingSystem);
+
+            expect(system).toBeUndefined();
+            expect(logger.warn).toHaveBeenCalledWith(`No endpoint found for system: ${nonExistingSystem}`);
+        });
+
+        test('should return system details', async () => {
             getCredentialsFromStoreMock.mockResolvedValue(null);
 
-            const details = await targetSystems.getSystemDetails('SystemA');
+            const system = await targetSystems.getSystemByName('SystemA');
 
-            expect(details).toEqual({
-                client: '010',
-                url: 'http://systema.com'
+            expect(system).toEqual({
+                Authentication: 'Basic',
+                Host: 'http://systema.com',
+                Name: 'SystemA',
+                WebIDEUsage: 'dev_abap',
+                'sap-client': '010'
             });
-        });
-
-        test('should return system details with credentials if getCredentialsFromStore returns credentials', async () => {
-            const storedCreds = {
-                authenticationType: 'Basic',
-                username: 'user1',
-                password: 'pass1'
-            };
-            checkEndpointsMock.mockResolvedValue({ endpoints });
-            getCredentialsFromStoreMock.mockResolvedValue(storedCreds);
-
-            const details = await targetSystems.getSystemDetails('SystemA');
-
-            expect(details).toEqual({
-                client: '010',
-                url: 'http://systema.com',
-                authenticationType: 'Basic',
-                username: 'user1',
-                password: 'pass1'
-            });
-        });
-
-        test('should return undefined if getCredentialsFromStore throws an error', async () => {
-            const error = new Error('Credential fetch error');
-
-            checkEndpointsMock.mockResolvedValue({ endpoints });
-            getCredentialsFromStoreMock.mockRejectedValue(error);
-
-            const details = await targetSystems.getSystemDetails('SystemA');
-
-            expect(details).toBeUndefined();
-            expect(logger.error).toHaveBeenCalledWith('Error fetching credentials from store for system: SystemA');
-            expect(logger.debug).toHaveBeenCalledWith(error.message);
         });
     });
 
     describe('getSystemRequiresAuth', () => {
-        test('should throw error if system not found in BAS', async () => {
-            checkEndpointsMock.mockResolvedValue({ endpoints });
-            mockIsAppStudio.mockReturnValue(true);
-
-            await expect(targetSystems.getSystemRequiresAuth('NonExisting')).rejects.toThrow(
-                'System: NonExisting not found in AppStudio environment.'
-            );
-        });
-
         test('should return true if found endpoint has Authentication "NoAuthentication" in BAS', async () => {
-            checkEndpointsMock.mockResolvedValue({ endpoints });
             mockIsAppStudio.mockReturnValue(true);
+            listDestinationsMock.mockResolvedValue(destinations);
 
             const result = await targetSystems.getSystemRequiresAuth('SystemB');
 
@@ -155,8 +164,8 @@ describe('TargetSystems', () => {
         });
 
         test('should return false if found endpoint has different Authentication in BAS', async () => {
-            checkEndpointsMock.mockResolvedValue({ endpoints });
             mockIsAppStudio.mockReturnValue(true);
+            listDestinationsMock.mockResolvedValue(destinations);
 
             const result = await targetSystems.getSystemRequiresAuth('SystemA');
 
@@ -164,17 +173,21 @@ describe('TargetSystems', () => {
         });
 
         test('should return false if system is found in VS Code', async () => {
-            checkEndpointsMock.mockResolvedValue({ endpoints });
             mockIsAppStudio.mockReturnValue(false);
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue(backendSystems)
+            });
 
-            const result = await targetSystems.getSystemRequiresAuth('SystemA');
+            const result = await targetSystems.getSystemRequiresAuth('SYS_010');
 
             expect(result).toBe(false);
         });
 
         test('should return true if system is not found in VS Code', async () => {
-            checkEndpointsMock.mockResolvedValue({ endpoints });
             mockIsAppStudio.mockReturnValue(false);
+            getServiceMock.mockResolvedValue({
+                getAll: jest.fn().mockResolvedValue(backendSystems)
+            });
 
             const result = await targetSystems.getSystemRequiresAuth('NonExisting');
 

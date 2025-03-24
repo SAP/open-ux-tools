@@ -116,13 +116,10 @@ export default class extends Generator {
             const namespace = generateValidNamespace(projectName, this.layer);
             this.targetFolder = this.destinationPath(projectName);
 
-            const systemDetails = await this.targetSystems.getSystemDetails(this.configAnswers.system);
-            if (systemDetails) {
-                const writerConfig = new WriterConfig(this.abapProvider, this.layer);
-                const config = await writerConfig.getConfig(this.configAnswers, systemDetails, { namespace });
+            const writerConfig = new WriterConfig(this.abapProvider, this.layer);
+            const config = await writerConfig.getConfig(this.configAnswers, { namespace });
 
-                await generate(this.targetFolder, config, this.fs);
-            }
+            await generate(this.targetFolder, config, this.fs);
         } catch (e) {
             this.logger.error(`Writing phase failed: ${e}`);
             throw new Error(t('error.updatingApp'));
