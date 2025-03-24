@@ -141,6 +141,22 @@ describe('utils', () => {
             expect(checker('controlId')).toBe(false);
         });
 
+        it('should return false if app manifest does not have any reuse components - 1.120', async () => {
+            const checker = await getReuseComponentChecker(ui5VersionInfo);
+            jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
+            FlexUtils.getComponentForControl.mockReturnValue({
+                getManifest: () => ({
+                    'sap.app': { id: 'componentName' }
+                })
+            });
+            FlexUtils.getAppComponentForControl.mockReturnValue({
+                getManifest: () => ({
+                    'sap.ui5': {}
+                })
+            });
+            expect(checker('controlId')).toBe(false);
+        });
+
         it('should return false if the control component does not match any reuse component in the app manifest - 1.120', async () => {
             const checker = await getReuseComponentChecker(ui5VersionInfo);
             jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
