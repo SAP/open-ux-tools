@@ -1,10 +1,9 @@
 import type Generator from 'yeoman-generator';
-import type { ListQuestionOptions } from 'inquirer';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 import type { ConfigAnswers } from '@sap-ux/adp-tooling';
+import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
-import type { YUIQuestion, GuiOptions, PromptSeverityMessage } from '@sap-ux/inquirer-common';
 
 export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
     /**
@@ -42,12 +41,7 @@ export enum configPromptNames {
 /**
  * The question type specific to configuration prompts.
  */
-export interface ConfigQuestion extends YUIQuestion<ConfigAnswers>, Partial<Pick<ListQuestionOptions, 'choices'>> {
-    name: configPromptNames;
-    guiOptions?: GuiOptions;
-    additionalMessages?: PromptSeverityMessage;
-    mask?: string;
-}
+export type ConfigQuestion = YUIQuestion<ConfigAnswers>;
 
 /**
  * Options for individual prompts.

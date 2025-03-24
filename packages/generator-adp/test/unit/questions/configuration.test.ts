@@ -1,4 +1,5 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { FlexLayer, TargetApplications } from '@sap-ux/adp-tooling';
 import type { AbapProvider, ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
 
@@ -42,6 +43,7 @@ const dummyAnswers: ConfigAnswers = {
     password: 'pass1',
     application: { id: 'app1', title: 'Some Title' } as unknown as TargetApplication
 };
+
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
     let getAppsMock: jest.SpyInstance;
@@ -70,7 +72,7 @@ describe('ConfigPrompter Integration Tests', () => {
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {
-                expect(name).toContain(configPromptNames[name]);
+                expect(name).toContain(configPromptNames[name as configPromptNames]);
             });
         });
     });
@@ -78,7 +80,9 @@ describe('ConfigPrompter Integration Tests', () => {
     describe('System Prompt', () => {
         it('system prompt choices should return sorted endpoint names', async () => {
             const prompts = configPrompter.getPrompts();
-            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            const systemPrompt = prompts.find(
+                (p) => p.name === configPromptNames.system
+            ) as ListQuestion<ConfigAnswers>;
             expect(systemPrompt).toBeDefined();
 
             const choicesFn = systemPrompt!.choices;
@@ -208,7 +212,9 @@ describe('ConfigPrompter Integration Tests', () => {
 
         it('application prompt choices should return values from getApplicationChoices', async () => {
             const prompts = configPrompter.getPrompts();
-            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            const appPrompt = prompts.find(
+                (p) => p.name === configPromptNames.application
+            ) as ListQuestion<ConfigAnswers>;
             expect(appPrompt).toBeDefined();
 
             const choicesFn = appPrompt!.choices;

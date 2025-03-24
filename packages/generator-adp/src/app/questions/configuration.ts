@@ -2,6 +2,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { FlexLayer, TargetApplications, getEndpointNames } from '@sap-ux/adp-tooling';
 import type { AbapProvider, ConfigAnswers, TargetSystems } from '@sap-ux/adp-tooling';
+import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
 
 import type {
     ApplicationPromptOptions,
@@ -82,7 +83,7 @@ export class ConfigPrompter {
      * @param {SystemPromptOptions} _ - Optional configuration for the system prompt.
      * @returns The system list prompt as a {@link ConfigQuestion}.
      */
-    private getSystemListPrompt(_?: SystemPromptOptions): ConfigQuestion {
+    private getSystemListPrompt(_?: SystemPromptOptions): ListQuestion<ConfigAnswers> {
         return {
             type: 'list',
             name: configPromptNames.system,
@@ -106,7 +107,7 @@ export class ConfigPrompter {
      * @param {UsernamePromptOptions} _ - Optional configuration for the username prompt.
      * @returns The username prompt as a {@link ConfigQuestion}.
      */
-    private getUsernamePrompt(_?: UsernamePromptOptions): ConfigQuestion {
+    private getUsernamePrompt(_?: UsernamePromptOptions): InputQuestion<ConfigAnswers> {
         return {
             type: 'input',
             name: configPromptNames.username,
@@ -131,13 +132,14 @@ export class ConfigPrompter {
      * @param {PasswordPromptOptions} _ - Optional configuration for the password prompt.
      * @returns The password prompt as a {@link ConfigQuestion}.
      */
-    private getPasswordPrompt(_?: PasswordPromptOptions): ConfigQuestion {
+    private getPasswordPrompt(_?: PasswordPromptOptions): PasswordQuestion<ConfigAnswers> {
         return {
             type: 'password',
             name: configPromptNames.password,
             message: t('prompts.passwordLabel'),
             mask: '*',
             guiOptions: {
+                type: 'login',
                 mandatory: true,
                 hint: t('prompts.passwordTooltip')
             },
@@ -155,7 +157,7 @@ export class ConfigPrompter {
      * @param {ApplicationPromptOptions} options - Optional configuration for the application prompt.
      * @returns The application list prompt as a {@link ConfigQuestion}.
      */
-    private getApplicationListPrompt(options?: ApplicationPromptOptions): ConfigQuestion {
+    private getApplicationListPrompt(options?: ApplicationPromptOptions): ListQuestion<ConfigAnswers> {
         return {
             type: 'list',
             name: configPromptNames.application,
