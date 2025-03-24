@@ -1,5 +1,49 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.10.0
+
+### Minor Changes
+
+-   c69752b: Move validate target project path logic from ui5-application-inquirer to project-input-validator for improved reuse
+
+### Patch Changes
+
+-   Updated dependencies [c69752b]
+    -   @sap-ux/project-input-validator@0.4.0
+
+## 0.9.31
+
+### Patch Changes
+
+-   c3ebc82: fix: wrong convert preview-config prerequisites check for usage of cds-plugin-ui5
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/inquirer-common@0.6.31
+
+## 0.9.30
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/inquirer-common@0.6.30
+
+## 0.9.29
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/ui5-info@0.9.1
+    -   @sap-ux/project-access@1.29.16
+
+## 0.9.28
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/inquirer-common@0.6.28
+
 ## 0.9.27
 
 ### Patch Changes

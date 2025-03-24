@@ -1,5 +1,65 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.1.35
+
+### Patch Changes
+
+-   Updated dependencies [d873cbd]
+    -   @sap-ux/annotation-generator@0.3.22
+    -   @sap-ux/fe-fpm-writer@0.33.19
+
+## 2.1.34
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.21
+-   @sap-ux/cap-config-writer@0.9.22
+-   @sap-ux/fe-fpm-writer@0.33.18
+-   @sap-ux/fiori-generator-shared@0.9.11
+-   @sap-ux/odata-service-writer@0.26.13
+-   @sap-ux/ui5-application-writer@1.3.3
+-   @sap-ux/ui5-test-writer@0.6.3
+
+## 2.1.33
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/odata-service-writer@0.26.12
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/ui5-application-writer@1.3.3
+    -   @sap-ux/annotation-generator@0.3.20
+    -   @sap-ux/cap-config-writer@0.9.21
+    -   @sap-ux/fe-fpm-writer@0.33.17
+    -   @sap-ux/fiori-generator-shared@0.9.10
+    -   @sap-ux/ui5-test-writer@0.6.3
+
+## 2.1.32
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/odata-service-writer@0.26.11
+    -   @sap-ux/ui5-application-writer@1.3.2
+    -   @sap-ux/cap-config-writer@0.9.20
+    -   @sap-ux/annotation-generator@0.3.19
+    -   @sap-ux/fe-fpm-writer@0.33.16
+    -   @sap-ux/ui5-test-writer@0.6.2
+
+## 2.1.31
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.18
+-   @sap-ux/cap-config-writer@0.9.19
+-   @sap-ux/fe-fpm-writer@0.33.15
+-   @sap-ux/fiori-generator-shared@0.9.8
+-   @sap-ux/odata-service-writer@0.26.10
+-   @sap-ux/ui5-application-writer@1.3.1
+-   @sap-ux/ui5-test-writer@0.6.1
+
 ## 2.1.30
 
 ### Patch Changes

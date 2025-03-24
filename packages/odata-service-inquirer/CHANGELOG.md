@@ -1,5 +1,57 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.24
+
+### Patch Changes
+
+-   Updated dependencies [c69752b]
+    -   @sap-ux/project-input-validator@0.4.0
+
+## 2.2.23
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/fiori-generator-shared@0.9.11
+    -   @sap-ux/telemetry@0.5.72
+    -   @sap-ux/inquirer-common@0.6.31
+
+## 2.2.22
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/telemetry@0.5.71
+-   @sap-ux/axios-extension@1.19.1
+-   @sap-ux/fiori-generator-shared@0.9.10
+-   @sap-ux/inquirer-common@0.6.30
+
+## 2.2.21
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/telemetry@0.5.70
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/project-access@1.29.16
+
+## 2.2.20
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/axios-extension@1.19.0
+    -   @sap-ux/fiori-generator-shared@0.9.8
+    -   @sap-ux/telemetry@0.5.69
+    -   @sap-ux/inquirer-common@0.6.28
+
 ## 2.2.19
 
 ### Patch Changes

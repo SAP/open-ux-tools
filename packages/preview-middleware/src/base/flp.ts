@@ -29,11 +29,13 @@ import {
     createFlpTemplateConfig,
     PREVIEW_URL,
     type TemplateConfig,
+    type CustomConnector,
     createTestTemplateConfig,
     addApp,
     getAppName,
     sanitizeRtaConfig
 } from './config';
+import { generateCdm } from './cdm';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -154,6 +156,9 @@ export class FlpSandbox {
             this.createTestSuite(this.test);
         }
 
+        if (this.flpConfig.enhancedHomePage) {
+            this.addCDMRoute();
+        }
         await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
@@ -191,6 +196,17 @@ export class FlpSandbox {
     }
 
     /**
+     * Overrides the custom connector to a non-existing dummy value.
+     * This is needed for UI5 versions 1.71 and below.
+     *
+     * @private
+     */
+    private overrideCustomConnector(): void {
+        (this.templateConfig.ui5.flex?.[1] as CustomConnector).applyConnector = 'FioriToolsNonexistentConnector';
+        (this.templateConfig.ui5.flex?.[1] as CustomConnector).writeConnector = 'FioriToolsNonexistentConnector';
+    }
+
+    /**
      * Generates the FLP sandbox for an editor.
      *
      * @param req the request
@@ -221,6 +237,10 @@ export class FlpSandbox {
         config.features = FeatureToggleAccess.getAllFeatureToggles();
 
         const ui5Version = await this.getUi5Version(req.protocol, req.headers.host, req['ui5-patched-router']?.baseUrl);
+
+        if (ui5Version.major === 1 && ui5Version.minor <= 71) {
+            this.overrideCustomConnector();
+        }
 
         if (editor.developerMode === true) {
             config.ui5.bootstrapOptions = serializeUi5Configuration(this.getDeveloperModeConfig(ui5Version.major));
@@ -438,11 +458,17 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
-            version = '1.121.0';
+            this.logger.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+            version = '1.130.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
+
+        if ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free')) {
+            this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
+            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version ${version} not supported.`);
+        }
+
         return {
             major,
             minor,
@@ -464,7 +490,8 @@ export class FlpSandbox {
             }.`
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
-        return readFileSync(join(__dirname, `../../templates/flp/sandbox${filePrefix}.html`), 'utf-8');
+        const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
+        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.html`), 'utf-8');
     }
 
     /**
@@ -520,6 +547,20 @@ export class FlpSandbox {
                 );
             }
         }
+    }
+
+    /**
+     * Add routes for cdm.json required by FLP during bootstrapping via cdm.
+     *
+     */
+    private addCDMRoute(): void {
+        this.router.get(
+            '/cdm.json',
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                const json = generateCdm(this.templateConfig.apps);
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
+            }
+        );
     }
 
     /**

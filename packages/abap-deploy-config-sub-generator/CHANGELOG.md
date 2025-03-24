@@ -1,5 +1,64 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.0.54
+
+### Patch Changes
+
+-   1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
+-   Updated dependencies [1bca2d8]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.34
+
+## 0.0.53
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/abap-deploy-config-writer@0.0.100
+    -   @sap-ux/fiori-generator-shared@0.9.11
+    -   @sap-ux/telemetry@0.5.72
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.33
+    -   @sap-ux/deploy-config-generator-shared@0.0.39
+
+## 0.0.52
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.32
+    -   @sap-ux/abap-deploy-config-writer@0.0.99
+    -   @sap-ux/project-access@1.29.17
+    -   @sap-ux/telemetry@0.5.71
+    -   @sap-ux/fiori-generator-shared@0.9.10
+    -   @sap-ux/deploy-config-generator-shared@0.0.38
+
+## 0.0.51
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/telemetry@0.5.70
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.31
+    -   @sap-ux/deploy-config-generator-shared@0.0.37
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/abap-deploy-config-writer@0.0.98
+    -   @sap-ux/project-access@1.29.16
+
+## 0.0.50
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/abap-deploy-config-writer@0.0.97
+    -   @sap-ux/fiori-generator-shared@0.9.8
+    -   @sap-ux/telemetry@0.5.69
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.30
+    -   @sap-ux/deploy-config-generator-shared@0.0.36
+
 ## 0.0.49
 
 ### Patch Changes

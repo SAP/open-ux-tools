@@ -81,7 +81,7 @@ export const UITranslationButton = <T extends TranslationEntry>(props: UITransla
                 <UICallout
                     target={`#${id}`}
                     gapSpace={5}
-                    directionalHint={6}
+                    directionalHint={5} // Bottom Center
                     calloutWidth={250}
                     calloutMinWidth={250}
                     beakWidth={8}

@@ -8,6 +8,7 @@ import ResourceBundle from 'sap/base/i18n/ResourceBundle';
 import AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
+import initCdm from './initCdm';
 import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { CommunicationService } from '../cpe/communication-service';
@@ -257,16 +258,19 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
  * @param params.appUrls JSON containing a string array of application urls
  * @param params.flex JSON containing the flex configuration
  * @param params.customInit path to the custom init module to be called
+ * @param params.enhancedHomePage boolean indicating if enhanced homepage is enabled
  * @returns promise
  */
 export async function init({
     appUrls,
     flex,
-    customInit
+    customInit,
+    enhancedHomePage
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
+    enhancedHomePage?: boolean | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ??
@@ -340,8 +344,12 @@ export async function init({
     setI18nTitle(resourceBundle);
     registerSAPFonts();
 
+    if (enhancedHomePage) {
+        await initCdm(container);
+    }
+
     const renderer =
-        ui5VersionInfo.major < 2
+        (ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free'))
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
@@ -353,7 +361,8 @@ if (bootstrapConfig) {
     init({
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
-        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit')
+        customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
+        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage')
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);

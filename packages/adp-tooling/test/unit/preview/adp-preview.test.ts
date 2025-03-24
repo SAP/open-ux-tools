@@ -804,5 +804,38 @@ describe('AdaptationProject', () => {
                 `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\"}}}"`
             );
         });
+
+        test('GET /adp/api/annotation => Metadata fetch error', async () => {
+            jest.spyOn(manifestService.ManifestService, 'initMergedManifest').mockResolvedValue({
+                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
+                getDataSourceMetadata: jest.fn().mockRejectedValue(new Error('Metadata fetch error')),
+                getManifestDataSources: jest.fn().mockReturnValue({
+                    mainService: {
+                        type: 'OData',
+                        uri: 'main/service/uri',
+                        settings: {
+                            annotations: ['annotation0']
+                        }
+                    },
+                    annotation0: {
+                        type: 'ODataAnnotation',
+                        uri: `ui5://adp/project/annotation0.xml`
+                    },
+                    secondaryService: {
+                        type: 'OData',
+                        uri: 'secondary/service/uri',
+                        settings: {
+                            annotations: []
+                        }
+                    }
+                })
+            } as any);
+            const response = await server.get('/adp/api/annotation').send().expect(200);
+
+            const message = response.text;
+            expect(message).toMatchInlineSnapshot(
+                `"{\\"isRunningInBAS\\":false,\\"annotationDataSourceMap\\":{\\"mainService\\":{\\"annotationDetails\\":{\\"fileName\\":\\"annotation0.xml\\",\\"annotationPath\\":\\"//adp.project/webapp/annotation0.xml\\",\\"annotationPathFromRoot\\":\\"adp.project/annotation0.xml\\"},\\"serviceUrl\\":\\"main/service/uri\\",\\"metadataReadErrorMsg\\":\\"Metadata: Metadata fetch error\\"},\\"secondaryService\\":{\\"annotationDetails\\":{\\"annotationExistsInWS\\":false},\\"serviceUrl\\":\\"secondary/service/uri\\",\\"metadataReadErrorMsg\\":\\"Metadata: Metadata fetch error\\"}}}"`
+            );
+        });
     });
 });

@@ -1,5 +1,52 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.34
+
+### Patch Changes
+
+-   1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
+
+## 1.2.33
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.19.1
+-   @sap-ux/fiori-generator-shared@0.9.11
+-   @sap-ux/system-access@0.5.33
+-   @sap-ux/inquirer-common@0.6.31
+
+## 1.2.32
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/fiori-generator-shared@0.9.10
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/inquirer-common@0.6.30
+
+## 1.2.31
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/fiori-generator-shared@0.9.9
+
+## 1.2.30
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.19.0
+-   @sap-ux/fiori-generator-shared@0.9.8
+-   @sap-ux/system-access@0.5.32
+-   @sap-ux/inquirer-common@0.6.28
+
 ## 1.2.29
 
 ### Patch Changes
