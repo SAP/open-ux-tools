@@ -2,10 +2,8 @@ import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import hasStableId from 'mock/sap/ui/rta/util/hasStableId';
-
 import FlUtils from 'sap/ui/fl/Utils';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
-
 import {
     initDialogs,
     isControllerExtensionEnabled,
@@ -13,6 +11,7 @@ import {
     getAddFragmentItemText,
     getExtendControllerItemText
 } from '../../../src/adp/init-dialogs';
+import { getTextBundle } from '../../../src/i18n';
 
 describe('Dialogs', () => {
     let isReuseComponentMock = jest.fn().mockReturnValue(false);
@@ -21,7 +20,7 @@ describe('Dialogs', () => {
             jest.restoreAllMocks();
         });
 
-        test('adds a new item to the context menu', () => {
+        test('adds a new item to the context menu', async () => {
             const addMenuItemSpy = jest.fn();
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             rtaMock.getDefaultPlugins.mockReturnValueOnce({
@@ -29,7 +28,7 @@ describe('Dialogs', () => {
                     addMenuItem: addMenuItemSpy
                 }
             });
-            initDialogs(rtaMock as unknown as RuntimeAuthoring, [], isReuseComponentMock);
+            await initDialogs(rtaMock as unknown as RuntimeAuthoring, [], isReuseComponentMock);
             expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
         });
     });
@@ -97,12 +96,12 @@ describe('Dialogs', () => {
             getElement: () => ({})
         } as ElementOverlay;
 
-        it('should return simple text if the control is with a stable ID', () => {
+        it('should return simple text if the control is with a stable ID', async () => {
+            const resources = await getTextBundle();
             hasStableId.mockImplementation(() => {
                 return true;
             });
-
-            const result = getAddFragmentItemText(overlay, isReuseComponentMock, false);
+            const result = getAddFragmentItemText(overlay, isReuseComponentMock, false, resources);
 
             expect(result).toBe('Add: Fragment');
             expect(hasStableId).toHaveBeenCalledWith({
@@ -110,12 +109,13 @@ describe('Dialogs', () => {
             });
         });
 
-        it('should return extra text if the control is with a unstable ID', () => {
+        it('should return extra text if the control is with a unstable ID', async () => {
+            const resources = await getTextBundle();
             hasStableId.mockImplementation(() => {
                 return false;
             });
 
-            const result = getAddFragmentItemText(overlay, isReuseComponentMock, false);
+            const result = getAddFragmentItemText(overlay, isReuseComponentMock, false, resources);
 
             expect(result).toBe('Add: Fragment (Unavailable due to unstable ID of the control or its parent control)');
             expect(hasStableId).toHaveBeenCalledWith({
@@ -123,7 +123,8 @@ describe('Dialogs', () => {
             });
         });
 
-        it('should return extra text if the control is a reuse component in Cloud', () => {
+        it('should return extra text if the control is a reuse component in Cloud', async () => {
+            const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
                     getId: () => {
@@ -136,7 +137,7 @@ describe('Dialogs', () => {
             });
             isReuseComponentMock.mockReturnValueOnce(true);
 
-            const result = getAddFragmentItemText(overlay, isReuseComponentMock, true);
+            const result = getAddFragmentItemText(overlay, isReuseComponentMock, true, resources);
 
             expect(result).toBe('Add: Fragment (Unavailable due to control being a Reuse component)');
             expect(hasStableId).toHaveBeenCalledWith({
@@ -153,7 +154,8 @@ describe('Dialogs', () => {
         });
 
 
-        it('should return simple text if the control is a reuse component in OnPremise', () => {
+        it('should return simple text if the control is a reuse component in OnPremise', async () => {
+            const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
                     getId: () => {
@@ -162,13 +164,14 @@ describe('Dialogs', () => {
                 })
             } as ElementOverlay;
             isReuseComponentMock.mockReturnValueOnce(true);
-            const result = getExtendControllerItemText(overlay, isReuseComponentMock, false);
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, false, resources);
 
             expect(result).toBe('Extend With Controller');
             expect(isReuseComponentMock).not.toHaveBeenCalled();
         });
 
-        it('should return simple text if the control is not a reuse component in Cloud', () => {
+        it('should return simple text if the control is not a reuse component in Cloud', async () => {
+            const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
                     getId: () => {
@@ -176,13 +179,14 @@ describe('Dialogs', () => {
                     }
                 })
             } as ElementOverlay;
-            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true);
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
 
             expect(result).toBe('Extend With Controller');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
 
-        it('should return extra text if the control is a reuse component in Cloud', () => {
+        it('should return extra text if the control is a reuse component in Cloud', async () => {
+            const resources = await getTextBundle();
             const overlay = {
                 getElement: () => ({
                     getId: () => {
@@ -192,7 +196,7 @@ describe('Dialogs', () => {
             } as ElementOverlay;
             isReuseComponentMock.mockReturnValueOnce(true);
 
-            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true);
+            const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
 
             expect(result).toBe('Extend With Controller (Unavailable due to control being a Reuse component)');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');

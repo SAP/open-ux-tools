@@ -14,6 +14,7 @@ import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import { DialogFactory, DialogNames } from './dialog-factory';
 import type { IsReuseComponentApi } from '../cpe/types';
+import { getTextBundle, type TextBundle } from '../i18n';
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -91,17 +92,18 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[], isReuseComp
  * @param {ElementOverlay} overlay - An ElementOverlay object representing the UI overlay.
  * @param {isReuseComponentApi} isReuseComponentChecker - Function to check if the control is a reuse component.
  * @param {boolean} isCloud - Whether the application is running in the cloud.
+ * @param {TextBundle} resources - The text bundle.
  * @returns {string} The text of the Add Fragment context menu item.
  */
-export const getAddFragmentItemText = (overlay: ElementOverlay, isReuseComponentChecker: IsReuseComponentApi, isCloud: boolean) => {
+export const getAddFragmentItemText = (overlay: ElementOverlay, isReuseComponentChecker: IsReuseComponentApi, isCloud: boolean, resources: TextBundle) => {
     if (isCloud && isReuseComponentChecker(overlay.getElement().getId())) {
-        return 'Add: Fragment (Unavailable due to control being a Reuse component)';
+        return resources.getText('ADP_ADD_FRAGMENT_MENU_ITEM_REUSE_COMPONENT');
     }
     if (!hasStableId(overlay)) {
-        return 'Add: Fragment (Unavailable due to unstable ID of the control or its parent control)';
+        return resources.getText('ADP_ADD_FRAGMENT_MENU_ITEM_UNSTABLE_ID');
     }
 
-    return 'Add: Fragment';
+    return resources.getText('ADP_ADD_FRAGMENT_MENU_ITEM');
 };
 
 /**
@@ -110,14 +112,15 @@ export const getAddFragmentItemText = (overlay: ElementOverlay, isReuseComponent
  * @param {ElementOverlay} overlay - An ElementOverlay object representing the UI overlay.
  * @param {isReuseComponentApi} isReuseComponentChecker - Function to check if the control is a reuse component.
  * @param {boolean} isCloud - Whether the application is running in the cloud.
+ * @param {TextBundle} resources - The text bundle.
  * @returns {string} The text of the Add Fragment context menu item.
  */
-export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComponentChecker: IsReuseComponentApi, isCloud: boolean) => {
+export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComponentChecker: IsReuseComponentApi, isCloud: boolean, resources: TextBundle) => {
     if (isCloud && isReuseComponentChecker(overlay.getElement().getId())) {
-        return 'Extend With Controller (Unavailable due to control being a Reuse component)';
+        return resources.getText('ADP_ADD_CONTROLLER_EXTENSION_MENU_ITEM_REUSE_COMPONENT');
     }
 
-    return 'Extend With Controller';
+    return resources.getText('ADP_ADD_CONTROLLER_EXTENSION_MENU_ITEM');
 };
 
 /**
@@ -127,13 +130,14 @@ export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComp
  * @param syncViewsIds Ids of all application sync views
  * @param isReuseComponentChecker Function to check if the control is a reuse component
  */
-export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], isReuseComponentChecker: IsReuseComponentApi): void => {
+export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], isReuseComponentChecker: IsReuseComponentApi): Promise<void> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
+    const resources = await getTextBundle();
 
     contextMenu.addMenuItem({
         id: 'ADD_FRAGMENT',
-        text: (overlay: ElementOverlay) => getAddFragmentItemText(overlay, isReuseComponentChecker, isCloud),
+        text: (overlay: ElementOverlay) => getAddFragmentItemText(overlay, isReuseComponentChecker, isCloud, resources),
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
         icon: 'sap-icon://attachment-html',
@@ -142,7 +146,7 @@ export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], isReu
 
     contextMenu.addMenuItem({
         id: 'EXTEND_CONTROLLER',
-        text: (overlay: ElementOverlay) => getExtendControllerItemText(overlay, isReuseComponentChecker, isCloud),
+        text: (overlay: ElementOverlay) => getExtendControllerItemText(overlay, isReuseComponentChecker, isCloud, resources),
         handler: async (overlays: UI5Element[]) =>
             await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
         icon: 'sap-icon://create-form',
