@@ -3101,6 +3101,9 @@ importers:
 
   packages/project-input-validator:
     dependencies:
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
       i18next:
         specifier: 23.5.1
         version: 23.5.1
