@@ -17,9 +17,10 @@ module.exports = [
     {
         ignores: [
             '**/eslint.config.cjs',
-            '**/*.d.ts',
+            // '**/*.d.ts',
             'dist',
             'coverage',
+            'test/unit/coverage',
             'node_modules',
             'jest.config.js',
             'jest*.js',
@@ -30,9 +31,12 @@ module.exports = [
             'test/test-input',
             'test/manual',
             'test/fixtures',
+            'test/__fixtures__',
             'test/**/fixtures',
+            '**/fixtures-copy/',
             'test/unit/expected-output',
             'test/unit/sample',
+            'test/sample',
             'test/__mocks__',
             'templates',
             'test/test-output',
@@ -46,7 +50,8 @@ module.exports = [
             'eslintrc-typescript.js',
             'eslintrc-test.js',
             'eslintrc-prod.js',
-            'eslintrc-common.js'
+            'eslintrc-common.js',
+            '.storybook'
         ]
     },
     eslintPluginPrettierRecommended,

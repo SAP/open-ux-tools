@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import type { XMLElement } from '@xml-tools/ast';
 import type { Element, FormatterOptions } from '@sap-ux/odata-annotation-core';
 import { EDMX_NAMESPACE_ALIAS, EDM_NAMESPACE_ALIAS, TextEdit, Position } from '@sap-ux/odata-annotation-core';

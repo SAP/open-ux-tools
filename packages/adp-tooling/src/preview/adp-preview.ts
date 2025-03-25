@@ -1,5 +1,7 @@
 import ZipFile from 'adm-zip';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import type { NextFunction, Request, Response, Router, RequestHandler } from 'express';
 

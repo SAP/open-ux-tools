@@ -5,6 +5,7 @@ import express from 'express';
 import { renderFile } from 'ejs';
 import supertest from 'supertest';
 import type { Editor } from 'mem-fs-editor';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { SuperTest, Test } from 'supertest';
 

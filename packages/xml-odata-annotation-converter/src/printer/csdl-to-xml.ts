@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-use-before-define */
 import type { Attributes, Element, ODataNamespaceAlias, TextNode } from '@sap-ux/odata-annotation-core';
 import { ELEMENT_TYPE, TEXT_TYPE, EDM_NAMESPACE_ALIAS, EDMX_NAMESPACE_ALIAS, Edm } from '@sap-ux/odata-annotation-core';
 

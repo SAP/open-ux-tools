@@ -1,3 +1,4 @@
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
@@ -10,6 +11,7 @@ import { Router as createRouter, static as serveStatic, json } from 'express';
 import type connect from 'connect';
 import { dirname, join, posix } from 'path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import { getWebappPath, type Manifest } from '@sap-ux/project-access';
 import {
