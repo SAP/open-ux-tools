@@ -51,7 +51,8 @@ module.exports = [
             'eslintrc-test.js',
             'eslintrc-prod.js',
             'eslintrc-common.js',
-            '.storybook'
+            '.storybook',
+            '**/snapshotResolver.js'
         ]
     },
     eslintPluginPrettierRecommended,

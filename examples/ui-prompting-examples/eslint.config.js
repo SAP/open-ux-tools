@@ -2,7 +2,6 @@ const base = require('../../eslint.config.js');
 const reactPlugin = require('eslint-plugin-react');
 const globals = require('globals');
 const storybookPlugin = require('eslint-plugin-storybook');
-const { ignores } = require('eslint-plugin-prettier/recommended');
 
 module.exports = [
     ...base,
