@@ -45,7 +45,7 @@ export class QuickActionService implements Service {
         private readonly rta: RuntimeAuthoring,
         private readonly outlineService: OutlineService,
         private readonly registries: QuickActionDefinitionRegistry<string>[],
-        private readonly changeService: ChangeService,
+        private readonly changeService: ChangeService
     ) {}
 
     /**
