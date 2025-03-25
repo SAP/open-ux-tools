@@ -11,7 +11,7 @@ import { getApplicationType } from '../utils/application';
 import { getTextBundle } from '../i18n';
 
 import { loadDefinitions } from './quick-actions/load';
-import { getAllSyncViewsIds, getReuseComponentChecker } from './utils';
+import { getAllSyncViewsIds } from './utils';
 import { initDialogs } from './init-dialogs';
 
 export default async function (rta: RuntimeAuthoring) {

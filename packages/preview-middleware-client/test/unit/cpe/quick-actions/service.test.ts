@@ -71,7 +71,6 @@ const mockChangeService = {
 describe('quick action service', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
-    const isReuseComponentCheckerMock = jest.fn();
 
     beforeEach(() => {
         sendActionMock = jest.fn();

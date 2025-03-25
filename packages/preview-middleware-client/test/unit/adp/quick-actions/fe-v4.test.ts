@@ -50,7 +50,6 @@ import * as versionUtils from 'open/ux/preview/client/utils/version';
 describe('FE V4 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
-    const isReuseComponentCheckerMock = jest.fn().mockReturnValue(false);
 
     beforeEach(() => {
         sendActionMock = jest.fn();

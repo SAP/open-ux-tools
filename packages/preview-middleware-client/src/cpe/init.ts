@@ -3,7 +3,7 @@ import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import { iconsLoaded, enableTelemetry, appLoaded } from '@sap-ux-private/control-property-editor-common';
 
-import type { ActionHandler, Service, IsReuseComponentApi } from './types';
+import type { ActionHandler, Service } from './types';
 import { OutlineService } from './outline/service';
 import { SelectionService } from './selection';
 import { ChangeService } from './changes/service';
