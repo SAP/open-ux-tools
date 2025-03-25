@@ -4,9 +4,14 @@
         "mtaLoaded": "MTA {{ type }} loaded",
         "ui5YamlDoesNotExist": "File ui5.yaml does not exist in the project",
         "capMtaCreated": "CAP MTA Configuration created",
+        "capMtaUpdated": "CAP MTA Configuration updated",
         "mtaCreated": "MTA Configuration created {{mtaPath}}.",
         "mtaSaved": "MTA Configuration has been saved.",
-        "mtaSavedFailed": "MTA saved failed with error {{- error }}"
+        "mtaSavedFailed": "MTA saved failed with error {{- error }}",
+        "addingRouter": "Adding {{routerType}} Approuter",
+        "addMissingModules": "Adding missing modules to mta configuration",
+        "cleanupModules": "Cleanup modules",
+        "creatingMta": "Creating MTA using {{- cdsParams }}"
     },
     "error": {
         "unableToLoadMTA": "Unable to load mta.yaml configuration {{- mtaDir }}, error thrown {{- error }}.",

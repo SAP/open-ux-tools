@@ -389,6 +389,7 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     private async cleanupMissingResources(): Promise<void> {
+        this.log?.debug(t('debug.addMissingModules'));
         if (!this.modules.has('com.sap.application.content:resource')) {
             await this.addAppContent();
         }
@@ -404,6 +405,7 @@ export class MtaConfig {
     }
 
     private async cleanupModules() {
+        this.log?.debug(t('debug.cleanupModules'));
         // Handle standalone | managed
         for (const module of [
             this.modules.get('com.sap.application.content:destination'),
@@ -629,13 +631,12 @@ export class MtaConfig {
             addMissingModules = false; // Use
         }
 
-        // Only Managed | Standalone should align ib missing resources | modules
+        // Only Managed | Standalone should align missing resources | modules
         if (routerType !== RouterModuleType.AppFront) {
             // Only update if managed | standalone
             if (addMissingModules) {
                 await this.cleanupMissingResources();
             }
-
             await this.cleanupModules();
         }
     }
@@ -730,6 +731,7 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async addStandaloneRouter(fromServerGenerator: boolean = false): Promise<void> {
+        this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Standard }));
         if (!this.resources.has('xsuaa')) {
             await this.addUaa();
         }
@@ -952,6 +954,7 @@ export class MtaConfig {
     }
 
     public async addAppFrontAppRouter(): Promise<void> {
+        this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.AppFront }));
         if (!this.resources.has(ManagedXSUAA)) {
             await this.addManagedUAAWithSecurity();
         }
@@ -1006,6 +1009,7 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async addManagedAppRouter(): Promise<void> {
+        this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Managed }));
         if (!this.resources.has('destination')) {
             await this.addDestinationResource(true);
         }

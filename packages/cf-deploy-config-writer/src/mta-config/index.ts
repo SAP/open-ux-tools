@@ -148,7 +148,9 @@ export function createCAPMTA(cwd: string, options?: CDSServiceType[], routerType
             ...(routerType === RouterModuleType.AppFront ? [] : [CDSDestinationService, CDSHTML5RepoService])
         ] as CDSServiceType[];
     }
-    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? []), ...defaultOptions], { cwd });
+    const cdsParams = [...CDSAddMtaParams, ...(options ?? []), ...defaultOptions];
+    LoggerHelper.logger?.debug(t('debug.creatingMta', { cdsParams: cdsParams.toString() }));
+    let result = spawnSync(CDSExecutable, cdsParams, { cwd });
     if (result?.error) {
         throw new Error(`Something went wrong creating mta.yaml! ${result.error}`);
     }

@@ -262,7 +262,7 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
  * @param fs reference to a mem-fs editor
  */
 export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
-    const mtaConfigInstance = await MtaConfig.newInstance(config.mtaPath);
+    const mtaConfigInstance = await MtaConfig.newInstance(config.mtaPath, LoggerHelper?.logger);
     if (config.routerType === RouterModuleType.Standard) {
         await addStandaloneRouter(config, mtaConfigInstance, fs);
     } else {

@@ -29,7 +29,7 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     createCAPMTA(config.mtaPath, [], config.routerType);
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
-    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
+    LoggerHelper.logger?.debug(t('debug.capMtaUpdated'));
     return fs;
 }
 
