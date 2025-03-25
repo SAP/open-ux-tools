@@ -10,13 +10,12 @@ import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName, FileName } from '@sap-ux/project-access';
+import { DirName } from '@sap-ux/project-access';
 import { type CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
 import type { DataSources } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
-import { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { getVariant, isTypescriptSupported } from '../base/helper';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -372,7 +371,6 @@ export default class RoutesHandler {
     /**
      * Returns manifest service.
      *
-     * @param provider AbapServiceProvider
      * @returns Promise<ManifestService>
      */
     private async getManifestService(): Promise<ManifestService> {
