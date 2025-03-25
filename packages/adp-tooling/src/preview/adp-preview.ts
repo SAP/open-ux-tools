@@ -110,9 +110,7 @@ export class AdpPreview {
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
         private readonly logger: ToolsLogger
-    ) {
-        this.routesHandler = new RoutesHandler(project, util, logger);
-    }
+    ) {}
 
     /**
      * Fetch all required configurations from the backend and initialize all configurations.
@@ -128,6 +126,8 @@ export class AdpPreview {
             true,
             this.logger
         );
+        this.routesHandler = new RoutesHandler(this.project, this.util, provider, this.logger);
+
         this.lrep = provider.getLayeredRepository();
         // fetch a merged descriptor from the backend
         await this.lrep.getCsrfToken();
