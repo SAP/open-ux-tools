@@ -6,8 +6,20 @@ module.exports = [
             parserOptions: {
                 parser: '@typescript-eslint/parser',
                 tsconfigRootDir: __dirname,
-                project: './tsconfig.eslint.json',
+                ecmaVersion: 'latest',
+                sourceType: 'module',
+                ecmaFeatures: {
+                    jsx: true
+                }
+            },
+            globals: {
+                sap: 'readonly',
+                jestUI5: 'readonly',
+                es2024: true,
+                jest: true,
+                browser: true
             },
         },
-    },
+        ignores: ['src/env/ui5loader.js']
+    }
 ];

@@ -1,3 +1,4 @@
+// es
 import type { ReaderCollection } from '@ui5/fs';
 import type { TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
