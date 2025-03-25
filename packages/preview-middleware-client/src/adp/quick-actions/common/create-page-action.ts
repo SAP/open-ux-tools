@@ -2,10 +2,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { DialogFactory, DialogNames } from '../../dialog-factory';
-import {
-    QuickActionContext,
-    SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { ApplicationType, getApplicationType } from '../../../utils/application';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
@@ -52,8 +49,4 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
         }
         return [];
     }
-
-    // public override getQuickActionStepType(): 'multi' | 'single' {
-    //     return 'multi';
-    // }
 }

@@ -70,8 +70,4 @@ export class AddControllerToPageQuickAction
         }
         return [];
     }
-
-    // public override getQuickActionStepType(): 'multi' | 'single' {
-    //     return 'multi';
-    // }
 }

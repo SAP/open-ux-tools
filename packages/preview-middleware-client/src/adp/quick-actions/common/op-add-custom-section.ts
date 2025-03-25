@@ -4,10 +4,7 @@ import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 
 import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import {
-    QuickActionContext,
-    SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
@@ -48,8 +45,4 @@ export class AddCustomSectionQuickAction
         );
         return [];
     }
-
-    // public override getQuickActionStepType(): 'multi' | 'single' {
-    //     return 'multi';
-    // }
 }

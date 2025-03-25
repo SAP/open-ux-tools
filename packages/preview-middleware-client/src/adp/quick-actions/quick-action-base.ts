@@ -20,17 +20,12 @@ export abstract class QuickActionDefinitionBase<T extends string> {
         return this.telemetryIdentifier;
     }
 
-    // public getQuickActionStepType(): QuickActionStepType {
-    //     return 'single';
-    // }
-
-    public get quickActionSteps(): 'single' | 'multi' {
-        return this.enablementValidators.find((item) => item === DIALOG_ENABLEMENT_VALIDATOR) &&
-            this.type != 'add-new-annotation-file'
-            ? 'multi'
-            : 'single';
+    public get quickActionSteps(): number {
+        return this.enablementValidators.find((item) => item === DIALOG_ENABLEMENT_VALIDATOR) 
+            ? 2
+            : 1;
     }
-
+    
     /**
      * Quick Actions tooltip.
      */

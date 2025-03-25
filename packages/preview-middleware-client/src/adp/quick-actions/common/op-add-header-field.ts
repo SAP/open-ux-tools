@@ -4,10 +4,7 @@ import ObjectPageLayout from 'sap/uxap/ObjectPageLayout';
 import FlexBox from 'sap/m/FlexBox';
 
 import { DialogFactory, DialogNames } from '../../dialog-factory';
-import {
-    QuickActionContext,
-    SimpleQuickActionDefinition
-} from '../../../cpe/quick-actions/quick-action-definition';
+import { QuickActionContext, SimpleQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
 import { isA } from '../../../utils/core';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
@@ -60,7 +57,7 @@ export class AddHeaderFieldQuickAction
                     aggregation: 'items',
                     title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
                 },
-                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier()  }
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
             );
         } else if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
@@ -78,8 +75,4 @@ export class AddHeaderFieldQuickAction
         }
         return [];
     }
-
-    // public override getQuickActionStepType(): 'multi' | 'single' {
-    //     return 'multi';
-    // }
 }
