@@ -15,6 +15,8 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import { DialogFactory, DialogNames } from './dialog-factory';
 import type { IsReuseComponentApi } from '../cpe/types';
 import { getTextBundle, type TextBundle } from '../i18n';
+import { getReuseComponentChecker } from './utils';
+import type { Ui5VersionInfo } from '../utils/version';
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -128,12 +130,13 @@ export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComp
  *
  * @param rta Runtime Authoring
  * @param syncViewsIds Ids of all application sync views
- * @param isReuseComponentChecker Function to check if the control is a reuse component
+ * @param ui5VersionInfo UI5 version information
  */
-export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], isReuseComponentChecker: IsReuseComponentApi): Promise<void> => {
+export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<void> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
     const resources = await getTextBundle();
+    const isReuseComponentChecker = await getReuseComponentChecker(ui5VersionInfo);
 
     contextMenu.addMenuItem({
         id: 'ADD_FRAGMENT',

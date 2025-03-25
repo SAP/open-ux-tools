@@ -19,7 +19,6 @@ import { ContextMenuService } from './context-menu-service';
 
 export default function init(
     rta: RuntimeAuthoring,
-    isReuseComponentChecker: IsReuseComponentApi,
     registries: QuickActionDefinitionRegistry<string>[] = []
 ): Promise<void> {
     Log.info('Initializing Control Property Editor');
@@ -45,13 +44,7 @@ export default function init(
     const connectorService = new WorkspaceConnectorService();
     const contextMenuService = new ContextMenuService(rta);
     const outlineService = new OutlineService(rta, changesService);
-    const quickActionService = new QuickActionService(
-        rta,
-        outlineService,
-        registries,
-        changesService,
-        isReuseComponentChecker
-    );
+    const quickActionService = new QuickActionService(rta, outlineService, registries, changesService);
     const services: Service[] = [
         connectorService,
         selectionService,

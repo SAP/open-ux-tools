@@ -40,7 +40,6 @@ export interface QuickActionContext {
     flexSettings: FlexSettings;
     manifest: Manifest;
     changeService: ChangeService;
-    isReuseComponent: (controlId: string) => boolean;
 }
 
 interface QuickActionDefinitionBase {

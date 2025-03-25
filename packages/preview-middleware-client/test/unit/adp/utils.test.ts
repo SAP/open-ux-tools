@@ -6,7 +6,7 @@ import isReuseComponentApi from 'mock/sap/ui/rta/util/isReuseComponent';
 import * as Utils from '../../../src/utils/core';
 import Element from 'sap/ui/core/Element';
 
-import { createDeferred, matchesFragmentName, notifyUser, getReuseComponentChecker } from '../../../src/adp/utils';
+import { createDeferred, matchesFragmentName, notifyUser, getReuseComponentChecker, resetReuseComponentChecker } from '../../../src/adp/utils';
 
 
 describe('utils', () => {
@@ -116,6 +116,11 @@ describe('utils', () => {
     describe('getReuseComponentChecker', () => {
         const ui5VersionInfo = {major: 1, minor: 120};
         const ui5Control = {} as Element;
+
+        beforeEach(() => {
+            resetReuseComponentChecker();
+        });
+
         it('should return reuse component checker function', async () => {
             expect(typeof await getReuseComponentChecker(ui5VersionInfo)).toBe('function');
         });

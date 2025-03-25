@@ -25,6 +25,17 @@ export interface FragmentChange {
     };
 }
 
+export type ReuseComponentChecker = (controlId: string) => boolean;
+
+let reuseComponentChecker: ReuseComponentChecker | undefined;
+
+/**
+ * Resets the reuse component checker.
+ */
+export function resetReuseComponentChecker(): void {
+    reuseComponentChecker = undefined;
+}
+
 /**
  * Defers the resolution of the promise, stores resolve/reject functions so that they can be accessed at a later stage.
  *
@@ -156,13 +167,17 @@ export function getControllerInfo(overlayControl: ElementOverlay): ControllerInf
  * @param ui5VersionInfo UI5 version information.
  * @returns The reuse component checker function.
  */
-export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo) {
+export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo): Promise<ReuseComponentChecker> {
+    if (reuseComponentChecker) {
+        return reuseComponentChecker;
+    }
+
     let reuseComponentApi: IsReuseComponentApi;
     if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
         reuseComponentApi = (await import('sap/ui/rta/util/isReuseComponent')).default;
     }
 
-    return function isReuseComponent(controlId: string): boolean {
+    reuseComponentChecker = function isReuseComponent(controlId: string): boolean {
         const ui5Control = getControlById(controlId);
         if (!ui5Control) {
             return false;
@@ -193,4 +208,6 @@ export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo) {
             return componentUsage.name === componentName;
         });
     };
+
+    return reuseComponentChecker;
 }

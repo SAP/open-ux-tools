@@ -88,8 +88,7 @@ describe('quick action service', () => {
             [registry],
             {
                 onStackChange: jest.fn()
-            } as any,
-            isReuseComponentCheckerMock
+            } as any
         );
         await service.init(sendActionMock, subscribeMock);
 
@@ -129,8 +128,7 @@ describe('quick action service', () => {
             rtaMock,
             outlineService,
             [registry],
-            onStackChangeMock,
-            isReuseComponentCheckerMock
+            onStackChangeMock
         );
         await service.init(sendActionMock, subscribeMock);
         const reloadQuickActions = jest.spyOn(service, 'reloadQuickActions');
@@ -163,8 +161,7 @@ describe('quick action service', () => {
             [registry],
             {
                 onStackChange: jest.fn()
-            } as any,
-            isReuseComponentCheckerMock
+            } as any
         );
         const onOutlineChangeCbSpy = jest.spyOn(outlineService, 'onOutlineChange');
         const reloadQuickActions = jest.spyOn(service, 'reloadQuickActions');

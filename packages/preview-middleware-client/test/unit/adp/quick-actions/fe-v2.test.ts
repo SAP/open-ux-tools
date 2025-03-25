@@ -44,9 +44,7 @@ import UIComponent from 'sap/ui/core/UIComponent';
 import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
 
-
 describe('FE V2 quick actions', () => {
-    const isReuseComponentCheckerMock = jest.fn().mockReturnValue(false);
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
     const mockChangeService = {
@@ -136,8 +134,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -263,8 +260,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -454,8 +450,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -711,8 +706,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -888,8 +882,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -1025,8 +1018,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
 
                 await service.init(sendActionMock, subscribeMock);
@@ -1250,8 +1242,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
@@ -1467,8 +1458,7 @@ describe('FE V2 quick actions', () => {
                     {
                         onStackChange: jest.fn(),
                         getConfigurationPropertyValue: jest.fn().mockReturnValue(undefined)
-                    } as any,
-                    isReuseComponentCheckerMock
+                    } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -1649,8 +1639,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -1811,8 +1800,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -1947,8 +1935,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                 );
                 CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
                     return { type, value, settings };
@@ -2119,8 +2106,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -2262,8 +2248,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
                 await service.init(sendActionMock, subscribeMock);
 
@@ -2419,8 +2404,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
 
                 await service.init(sendActionMock, subscribeMock);
@@ -2603,8 +2587,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
 
                 await service.init(sendActionMock, subscribeMock);
@@ -2763,8 +2746,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
 
                 await service.init(sendActionMock, subscribeMock);
@@ -2985,8 +2967,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn() } as any
                 );
 
                 CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
@@ -3249,8 +3230,7 @@ describe('FE V2 quick actions', () => {
                     rtaMock,
                     new OutlineService(rtaMock, mockChangeService),
                     [registry],
-                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
-                    isReuseComponentCheckerMock
+                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
                 );
 
                 CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
@@ -3367,150 +3347,143 @@ describe('FE V2 quick actions', () => {
     });
     describe('AnalyticalListPage', () => {
         describe('create table custom column', () => {
-            // test('initialize and execute action', async () => {
-            //     const pageView = new XMLView();
-            //     const scrollIntoView = jest.fn();
-            //     jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
-            //         return undefined;
-            //     });
-            //     sapCoreMock.byId.mockImplementation((id) => {
-            //         if (id == 'SmartTable') {
-            //             return {
-            //                 isA: (type: string) => type === SMART_TABLE_TYPE,
-            //                 getHeader: () => 'MyTable',
-            //                 getId: () => id,
-            //                 getDomRef: () => ({
-            //                     scrollIntoView
-            //                 }),
-
-            //                 getAggregation: () => {
-            //                     return [
-            //                         {
-            //                             isA: (type: string) => type === ANALYTICAL_TABLE_TYPE,
-            //                             getAggregation: () => 'columns'
-            //                         }
-            //                     ];
-            //                 },
-            //                 getParent: () => pageView,
-            //                 getBusy: () => false,
-            //                 selectOverlay: () => ({})
-            //             };
-            //         }
-            //         if (id == 'NavContainer') {
-            //             const container = new NavContainer();
-            //             const component = new UIComponentMock();
-            //             const view = new XMLView();
-            //             pageView.getDomRef.mockImplementation(() => {
-            //                 return {
-            //                     contains: () => true
-            //                 };
-            //             });
-            //             pageView.getViewName.mockImplementation(
-            //                 () => 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage'
-            //             );
-            //             const componentContainer = new ComponentContainer();
-            //             const spy = jest.spyOn(componentContainer, 'getComponent');
-            //             spy.mockImplementation(() => {
-            //                 return 'component-id';
-            //             });
-            //             jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-            //                 if (id === 'component-id') {
-            //                     return component;
-            //                 }
-            //             });
-            //             view.getContent.mockImplementation(() => {
-            //                 return [componentContainer];
-            //             });
-            //             container.getCurrentPage.mockImplementation(() => {
-            //                 return view;
-            //             });
-            //             component.getRootControl.mockImplementation(() => {
-            //                 return pageView;
-            //             });
-            //             return container;
-            //         }
-            //     });
-
-            //     const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-            //     const registry = new FEV2QuickActionRegistry();
-            //     const service = new QuickActionService(
-            //         rtaMock,
-            //         new OutlineService(rtaMock, mockChangeService),
-            //         [registry],
-            //         { onStackChange: jest.fn() } as any
-            //     );
-
-            //     await service.init(sendActionMock, subscribeMock);
-            //     await service.reloadQuickActions({
-            //         'sap.ui.comp.smarttable.SmartTable': [
-            //             {
-            //                 controlId: 'SmartTable'
-            //             } as any
-            //         ],
-            //         'sap.m.NavContainer': [
-            //             {
-            //                 controlId: 'NavContainer'
-            //             } as any
-            //         ]
-            //     });
-
-            //     expect(sendActionMock).toHaveBeenCalledWith(
-            //         quickActionListChanged([
-            //             {
-            //                 'actions': [
-            //                     {
-            //                         'children': [
-            //                             {
-            //                                 'children': [],
-            //                                 enabled: true,
-            //                                 'label': `'MyTable' table`
-            //                             }
-            //                         ],
-            //                         'enabled': true,
-            //                         'id': 'analyticalListPage0-create-table-action',
-            //                         'kind': 'nested',
-            //                         'title': 'Add Custom Table Action',
-            //                         'tooltip': undefined
-            //                     },
-            //                     {
-            //                         'children': [
-            //                             {
-            //                                 'children': [],
-            //                                 'enabled': true,
-            //                                 'label': `'MyTable' table`
-            //                             }
-            //                         ],
-            //                         'enabled': true,
-            //                         'id': 'analyticalListPage0-create-table-custom-column',
-            //                         'kind': 'nested',
-
-            //                         'title': 'Add Custom Table Column'
-            //                     }
-            //                 ],
-            //                 'title': 'ANALYTICAL LIST PAGE'
-            //             }
-            //         ])
-            //     );
-
-            //     await subscribeMock.mock.calls[0][0](
-            //         executeQuickAction({
-            //             id: 'analyticalListPage0-create-table-custom-column',
-            //             kind: 'nested',
-            //             path: '0'
-            //         })
-            //     );
-
-            //     expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-            //         mockOverlay,
-            //         rtaMock,
-            //         DialogNames.ADD_FRAGMENT,
-            //         undefined,
-            //         {
-            //             aggregation: 'columns',
-            //             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-            //         }
-            //     );
-            // });
+            test('initialize and execute action', async () => {
+                const pageView = new XMLView();
+                const scrollIntoView = jest.fn();
+                jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
+                    return undefined;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'SmartTable') {
+                        return {
+                            isA: (type: string) => type === SMART_TABLE_TYPE,
+                            getHeader: () => 'MyTable',
+                            getId: () => id,
+                            getDomRef: () => ({
+                                scrollIntoView
+                            }),
+                            getAggregation: () => {
+                                return [
+                                    {
+                                        isA: (type: string) => type === ANALYTICAL_TABLE_TYPE,
+                                        getAggregation: () => 'columns'
+                                    }
+                                ];
+                            },
+                            getParent: () => pageView,
+                            getBusy: () => false,
+                            selectOverlay: () => ({})
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+                await service.reloadQuickActions({
+                    'sap.ui.comp.smarttable.SmartTable': [
+                        {
+                            controlId: 'SmartTable'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            'actions': [
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            enabled: true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'analyticalListPage0-create-table-action',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Action',
+                                    'tooltip': undefined
+                                },
+                                {
+                                    'children': [
+                                        {
+                                            'children': [],
+                                            'enabled': true,
+                                            'label': `'MyTable' table`
+                                        }
+                                    ],
+                                    'enabled': true,
+                                    'id': 'analyticalListPage0-create-table-custom-column',
+                                    'kind': 'nested',
+                                    'title': 'Add Custom Table Column'
+                                }
+                            ],
+                            'title': 'ANALYTICAL LIST PAGE'
+                        }
+                    ])
+                );
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({
+                        id: 'analyticalListPage0-create-table-custom-column',
+                        kind: 'nested',
+                        path: '0'
+                    })
+                );
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    DialogNames.ADD_FRAGMENT,
+                    undefined,
+                    {
+                        aggregation: 'columns',
+                        title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+                    }
+                );
+            });
         });
     });
 
@@ -3817,8 +3790,7 @@ describe('FE V2 quick actions', () => {
                 rtaMock,
                 new OutlineService(rtaMock, mockChangeService),
                 [registry],
-                { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any,
-                isReuseComponentCheckerMock
+                { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
             );
 
             CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {

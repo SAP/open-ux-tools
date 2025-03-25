@@ -28,7 +28,7 @@ describe('Dialogs', () => {
                     addMenuItem: addMenuItemSpy
                 }
             });
-            await initDialogs(rtaMock as unknown as RuntimeAuthoring, [], isReuseComponentMock);
+            await initDialogs(rtaMock as unknown as RuntimeAuthoring, [], { major: 1, minor: 118 });
             expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
         });
     });
