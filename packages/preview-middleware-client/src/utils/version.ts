@@ -63,32 +63,6 @@ export async function getUi5Version(library: string = 'sap.ui.core'): Promise<Ui
 }
 
 /**
- * Checks if the given version is higher than the required minimal version.
- * Note that the patch version of actual SAPUI5 version might differ from the lib that has been used for the version request (e.g. SAPUI5 1.96.38 contains sap.ui.core 1.96.36).
- * For details see the patch info of the respective SAPUI5 version (e.g. https://ui5.sap.com/1.96.38/patchinfo.html).
- *
- * @param ui5VersionInfo to check
- * @param minUi5VersionInfo to check against (default is 1.71)
- * @throws Error if the version info is invalid
- *
- * @returns boolean
- */
-export function isHigherThanMinimalUi5Version(
-    ui5VersionInfo: Ui5VersionInfo,
-    minUi5VersionInfo: Ui5VersionInfo = minVersionInfo
-): boolean {
-    checkVersionInfo(ui5VersionInfo);
-    checkVersionInfo(minUi5VersionInfo);
-    return (
-        ui5VersionInfo.major > minUi5VersionInfo.major ||
-        (ui5VersionInfo.major === minUi5VersionInfo.major && ui5VersionInfo.minor > minUi5VersionInfo.minor) ||
-        (ui5VersionInfo.major === minUi5VersionInfo.major &&
-        ui5VersionInfo.minor === minUi5VersionInfo.minor &&
-        (ui5VersionInfo?.patch ?? 0) > (minUi5VersionInfo?.patch ?? 0))
-    );
-}
-
-/**
  * Checks if the given version is lower than the required minimal version.
  * Note that the patch version of actual SAPUI5 version might differ from the lib that has been used for the version request (e.g. SAPUI5 1.96.38 contains sap.ui.core 1.96.36).
  * For details see the patch info of the respective SAPUI5 version (e.g. https://ui5.sap.com/1.96.38/patchinfo.html).

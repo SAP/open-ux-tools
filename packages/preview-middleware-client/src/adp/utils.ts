@@ -11,7 +11,7 @@ import { getControlById } from '../utils/core';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getError } from '../utils/error';
-import { isLowerThanMinimalUi5Version, isHigherThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 
 export interface Deferred<T> {
     promise: Promise<T>;
@@ -158,7 +158,7 @@ export function getControllerInfo(overlayControl: ElementOverlay): ControllerInf
  */
 export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo) {
     let reuseComponentApi: IsReuseComponentApi;
-    if (isHigherThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 133 })) {
+    if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
         reuseComponentApi = (await import('sap/ui/rta/util/isReuseComponent')).default;
     }
 
