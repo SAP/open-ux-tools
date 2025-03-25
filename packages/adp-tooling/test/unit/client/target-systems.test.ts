@@ -80,10 +80,6 @@ describe('getEndpointNames', () => {
 
 describe('TargetSystems', () => {
     let targetSystems: TargetSystems;
-    // const endpoints: Endpoint[] = [
-    //     { Name: 'SystemA', Client: '010', Url: 'http://systema.com', Authentication: 'Basic' },
-    //     { Name: 'SystemB', Client: '200', Url: 'http://systemb.com', Authentication: 'NoAuthentication' }
-    // ];
 
     beforeEach(() => {
         jest.clearAllMocks();
