@@ -15,6 +15,7 @@ import { type CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
 import type { DataSources } from '../base/abap/manifest-service';
 import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
+import { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 
 interface WriteControllerBody {
@@ -50,11 +51,13 @@ export default class RoutesHandler {
      *
      * @param project Reference to the root of the project
      * @param util middleware utilities provided by the UI5 CLI
+     * @param provider AbapServiceProvider instance
      * @param logger Logger instance
      */
     constructor(
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
+        private readonly provider: AbapServiceProvider,
         private readonly logger: ToolsLogger
     ) {}
 
@@ -369,18 +372,15 @@ export default class RoutesHandler {
     /**
      * Returns manifest service.
      *
+     * @param provider AbapServiceProvider
      * @returns Promise<ManifestService>
      */
     private async getManifestService(): Promise<ManifestService> {
         const project = this.util.getProject();
         const basePath = project.getRootPath();
         const variant = await getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(
-            basePath,
-            path.join(basePath, FileName.Ui5Yaml)
-        );
-        const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, this.logger);
-        return await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
+
+        return await ManifestService.initMergedManifest(this.provider, basePath, variant, this.logger);
     }
 }
 
