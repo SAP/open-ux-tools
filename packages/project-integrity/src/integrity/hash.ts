@@ -2,6 +2,27 @@ import { createReadStream, existsSync } from 'fs';
 import { createHash } from 'crypto';
 import type { Content, ContentIntegrity, FileIntegrity } from '../types';
 
+
+/**
+ * Sanitizes the input text by normalizing line endings, removing empty lines,
+ * and trimming unnecessary spaces. This ensures consistent formatting.
+ *
+ * @param input - The input to sanitize, either as a `Buffer` or a `string`.
+ * @returns The sanitized text as a `string`.
+ */
+function sanitizeText(input: Buffer | string): string {
+    const inputString = Buffer.isBuffer(input) ? input.toString() : input;
+    const normalizedString = inputString.replace(/\r\n|\r/g, '\n'); // Normalize all line endings to '\n'
+    const sanitizedString = normalizedString
+        .split(' ')
+        .filter((i) => !!i)
+        .join('')
+        .split('\n')
+        .filter((i) => !!i)
+        .join('\n');
+    return sanitizedString;
+}
+
 /**
  * Create a md5 hash for a given file.
  *
@@ -15,7 +36,8 @@ async function computeFileIntegrityData(filePath: string): Promise<FileIntegrity
         const fileStream = createReadStream(filePath);
         fileStream.on('data', (chunk: Buffer) => {
             content += chunk.toString();
-            hash.update(chunk);
+            const sanitizedChunk = sanitizeText(chunk);
+            hash.update(Buffer.from(sanitizedChunk));
         });
         fileStream.on('end', () => resolve({ filePath, hash: hash.digest('hex'), content }));
         fileStream.on('error', (err) => reject(err));
