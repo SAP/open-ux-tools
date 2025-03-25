@@ -1,0 +1,64 @@
+{
+  "extends": "../../tsconfig.json",
+  "include": [
+    "src",
+    "src/**/*.json"
+  ],
+  "compilerOptions": {
+    "rootDir": "src",
+    "outDir": "generators"
+  },
+  "references": [
+    {
+      "path": "../abap-deploy-config-writer"
+    },
+    {
+      "path": "../btp-utils"
+    },
+    {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-elements-writer"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
+      "path": "../fiori-tools-settings"
+    },
+    {
+      "path": "../i18n"
+    },
+    {
+      "path": "../inquirer-common"
+    },
+    {
+      "path": "../launch-config"
+    },
+    {
+      "path": "../logger"
+    },
+    {
+      "path": "../nodejs-utils"
+    },
+    {
+      "path": "../odata-service-inquirer"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../project-input-validator"
+    },
+    {
+      "path": "../ui5-application-inquirer"
+    },
+    {
+      "path": "../ui5-application-writer"
+    },
+    {
+      "path": "../ui5-info"
+    }
+  ]
+}

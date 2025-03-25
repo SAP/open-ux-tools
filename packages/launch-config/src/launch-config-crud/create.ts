@@ -158,6 +158,7 @@ async function handleDebugOptions(
     } else {
         writeLaunchJsonFile(fs, launchJsonWritePath, configurations);
     }
+    debugger;
 
     // The `workspaceFolderUri` is a URI obtained from VS Code that specifies the path to the workspace folder.
     // This URI is populated when a reload of the workspace is required. It allows us to identify and update

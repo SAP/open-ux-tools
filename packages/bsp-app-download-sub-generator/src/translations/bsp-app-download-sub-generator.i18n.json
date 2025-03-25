@@ -1,0 +1,20 @@
+{
+    "error": {
+        "telemetry": "Failed to send telemetry data after downloading app from BSP. {{- error}}",
+        "noAppsDeployed": "No basic applications deployed to this system can be downloaded. Please see <GA link> for more details" 
+    },
+    "prompts": {
+        "appSelection": {
+            "message": "App",
+            "hint": "Select the app to download"
+        },
+        "targetPath": {
+            "targetPathMessage": "Project folder path",
+            "targetPathBreadcrumb": "Project Path"
+        }
+    },
+    "readMe": {
+        "appDescription" : "This application was converted from an ABAP basic app that was deployed from ADT",
+        "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+    }
+}
