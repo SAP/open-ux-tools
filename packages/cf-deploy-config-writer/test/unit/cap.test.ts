@@ -12,6 +12,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 
 jest.mock('@sap/mta-lib', () => {
     return {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });

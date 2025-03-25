@@ -30,7 +30,9 @@ jest.mock('@sap-ux/project-access', () => {
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-require-imports
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -43,6 +45,7 @@ jest.mock('hasbin', () => ({
 
 jest.mock('@sap/mta-lib', () => {
     return {
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./utils/mock-mta').MockMta
     };
 });

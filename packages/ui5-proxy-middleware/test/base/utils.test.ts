@@ -21,6 +21,7 @@ import type { IncomingMessage } from 'http';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { join } from 'path';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 
 describe('utils', () => {
