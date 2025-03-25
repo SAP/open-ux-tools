@@ -36,7 +36,12 @@ module.exports = [
             '__mocks__',
             'test/tools-suite-telemetry/fixtures',
             'lint-staged.config.js',
-            'generators/'
+            'generators/',
+            'lib',
+            'eslintrc-typescript.js',
+            'eslintrc-test.js',
+            'eslintrc-prod.js',
+            'eslintrc-common.js'
         ]
     },
     eslintPluginPrettierRecommended,

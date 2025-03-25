@@ -1,3 +1,4 @@
+const { rules } = require('eslint-plugin-promise');
 const base = require('../../eslint.config.js');
 module.exports = [
     ...base,
@@ -9,5 +10,8 @@ module.exports = [
                 project: './tsconfig.eslint.json',
             },
         },
+        rules: {
+            "sonarjs/no-implicit-dependencies": "warn",
+        }
     },
 ];
