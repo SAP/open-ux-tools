@@ -14,7 +14,8 @@ import {
 import Utils from 'sap/ui/fl/Utils';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
-import type { MergedSetting, getManifestProperties, type ManagedObjectMetadataProperties } from './utils';
+import type { MergedSetting, ManagedObjectMetadataProperties } from './utils';
+import { getManifestProperties } from './utils';
 import type { UI5ControlProperty } from './types';
 import DataType from 'sap/ui/base/DataType';
 import { getV4PageType } from '../utils/fe-v4';
