@@ -184,8 +184,6 @@ module.exports = [
             'no-mixed-spaces-and-tabs': ['error', 'smart-tabs'],
             'no-nested-ternary': 'error',
             'no-new-object': 'error',
-            'no-spaced-func': 'error',
-
             'quote-props': [
                 'error',
                 'as-needed',
