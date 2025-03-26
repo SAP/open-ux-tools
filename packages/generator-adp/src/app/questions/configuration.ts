@@ -121,10 +121,7 @@ export class ConfigPrompter {
             },
             filter: (val: string): string => val.trim(),
             validate: (val: string) => validateEmptyString(val),
-            when: async (answers: ConfigAnswers) => {
-                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
-                return showCredentialQuestion(answers, systemRequiresAuth);
-            }
+            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isLoginSuccessful)
         };
     }
 
@@ -146,10 +143,7 @@ export class ConfigPrompter {
                 hint: t('prompts.passwordTooltip')
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
-            when: async (answers: ConfigAnswers) => {
-                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
-                return showCredentialQuestion(answers, systemRequiresAuth);
-            }
+            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isLoginSuccessful)
         };
     }
 
@@ -173,10 +167,7 @@ export class ConfigPrompter {
             choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
             validate: (value: TargetApplication) => this.validateApplicationSelection(value),
-            when: async (answers: ConfigAnswers) => {
-                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
-                return showApplicationQuestion(answers, systemRequiresAuth, this.isLoginSuccessful);
-            }
+            when: (answers: ConfigAnswers) => showApplicationQuestion(answers, this.isLoginSuccessful)
         };
     }
 
@@ -218,7 +209,7 @@ export class ConfigPrompter {
             this.abapProvider = await getConfiguredProvider(options, this.logger);
 
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
-
+            this.isLoginSuccessful = true;
             return true;
         } catch (e) {
             this.isLoginSuccessful = false;
@@ -254,7 +245,10 @@ export class ConfigPrompter {
             if (!systemRequiresAuth) {
                 this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
                 this.isLoginSuccessful = true;
+            } else {
+                this.isLoginSuccessful = false;
             }
+
             return true;
         } catch (e) {
             this.isLoginSuccessful = false;

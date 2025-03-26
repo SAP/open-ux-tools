@@ -15,6 +15,8 @@ import type { AdpGeneratorOptions } from './types';
 import { installDependencies } from '../utils/deps';
 import { ConfigPrompter } from './questions/configuration';
 import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -112,7 +114,15 @@ export default class extends Generator {
             const namespace = generateValidNamespace(projectName, this.layer);
             this.targetFolder = this.destinationPath(projectName);
 
-            const config = await getConfig(provider, this.configAnswers, this.layer, { namespace }, this.toolsLogger);
+            const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
+            const config = await getConfig({
+                provider,
+                configAnswers: this.configAnswers,
+                layer: this.layer,
+                defaults: { namespace },
+                packageJson,
+                logger: this.toolsLogger
+            });
 
             await generate(this.targetFolder, config, this.fs);
         } catch (e) {

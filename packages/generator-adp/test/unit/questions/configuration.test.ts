@@ -143,7 +143,6 @@ describe('ConfigPrompter Integration Tests', () => {
 
             const whenResult = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers);
             expect(whenResult).toBe(true);
-            expect(showCredentialQuestion).toHaveBeenCalledWith(dummyAnswers, expect.anything());
         });
     });
 

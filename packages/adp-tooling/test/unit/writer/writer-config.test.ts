@@ -2,7 +2,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer, getAbapTarget, getConfig } from '../../../src';
-import type { ConfigAnswers, TargetApplication } from '../../../src';
+import type { ConfigAnswers, PackageJson, TargetApplication } from '../../../src';
 
 jest.mock('../../../src/client/abap-provider.ts', () => ({
     getAbapTarget: jest.fn()
@@ -37,13 +37,14 @@ describe('getConfig', () => {
     });
 
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
-        const config = await getConfig(
-            mockAbapProvider,
+        const config = await getConfig({
+            provider: mockAbapProvider,
             configAnswers,
-            FlexLayer.CUSTOMER_BASE,
+            layer: FlexLayer.CUSTOMER_BASE,
             defaults,
-            {} as ToolsLogger
-        );
+            packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as PackageJson,
+            logger: {} as ToolsLogger
+        });
 
         expect(config).toEqual({
             app: {
@@ -57,9 +58,9 @@ describe('getConfig', () => {
                 adp: {
                     environment: 'P',
                     support: {
-                        id: '@sap-ux/adp-tooling',
+                        id: '@sap-ux/generator-adp',
                         toolsId: expect.any(String),
-                        version: expect.any(String)
+                        version: '0.0.1'
                     }
                 }
             },
