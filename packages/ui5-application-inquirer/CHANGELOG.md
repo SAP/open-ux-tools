@@ -1,5 +1,16 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.11.0
+
+### Minor Changes
+
+-   ab81490: Rename validateTargetFolderForFioriApp to validateFioriAppTargetFolder for clarity and improve ts docs
+
+### Patch Changes
+
+-   Updated dependencies [ab81490]
+    -   @sap-ux/project-input-validator@0.5.0
+
 ## 0.10.0
 
 ### Minor Changes
