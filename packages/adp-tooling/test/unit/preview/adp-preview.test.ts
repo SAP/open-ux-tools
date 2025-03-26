@@ -521,6 +521,7 @@ describe('AdaptationProject', () => {
                 middlewareUtil,
                 logger
             );
+            await adp.init(JSON.parse(descriptorVariant));
             jest.spyOn(helper, 'getVariant').mockResolvedValue({
                 content: [],
                 id: 'adp/project',

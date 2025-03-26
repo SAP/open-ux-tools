@@ -10,12 +10,12 @@ import type { ReaderCollection, Resource } from '@ui5/fs';
 import type { NextFunction, Request, Response } from 'express';
 
 import { TemplateFileName, HttpStatusCodes } from '../types';
-import { DirName, FileName } from '@sap-ux/project-access';
+import { DirName } from '@sap-ux/project-access';
 import { type CodeExtChange } from '../types';
 import { ManifestService } from '../base/abap/manifest-service';
 import type { DataSources } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
+import { getVariant, isTypescriptSupported } from '../base/helper';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 interface WriteControllerBody {
     controllerName: string;
@@ -50,11 +50,13 @@ export default class RoutesHandler {
      *
      * @param project Reference to the root of the project
      * @param util middleware utilities provided by the UI5 CLI
+     * @param provider AbapServiceProvider instance
      * @param logger Logger instance
      */
     constructor(
         private readonly project: ReaderCollection,
         private readonly util: MiddlewareUtils,
+        private readonly provider: AbapServiceProvider,
         private readonly logger: ToolsLogger
     ) {}
 
@@ -375,12 +377,8 @@ export default class RoutesHandler {
         const project = this.util.getProject();
         const basePath = project.getRootPath();
         const variant = await getVariant(basePath);
-        const { target, ignoreCertErrors = false } = await getAdpConfig(
-            basePath,
-            path.join(basePath, FileName.Ui5Yaml)
-        );
-        const provider = await createAbapServiceProvider(target, { ignoreCertErrors }, true, this.logger);
-        return await ManifestService.initMergedManifest(provider, basePath, variant, this.logger);
+
+        return await ManifestService.initMergedManifest(this.provider, basePath, variant, this.logger);
     }
 }
 
