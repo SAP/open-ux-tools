@@ -62,7 +62,9 @@
         "@types/yeoman-generator": "5.2.11",
         "@types/yeoman-environment": "2.10.11",
         "@types/yeoman-test": "4.0.6",
+        "@sap-ux/axios-extension": "workspace:*",        
         "@sap-ux/nodejs-utils": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "@vscode-logging/logger": "2.0.0",
         "@types/adm-zip": "0.5.5",
         "memfs": "3.4.13",
@@ -72,7 +74,8 @@
         "rimraf": "5.0.5",
         "typescript": "5.3.3",
         "unionfs": "4.4.0",
-        "yeoman-test": "6.3.0"
+        "yeoman-test": "6.3.0",
+        "yo": "4"
     },
     "engines": {
         "node": ">=18.x"
