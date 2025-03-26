@@ -1,5 +1,18 @@
 # @sap-ux/adp-tooling
 
+## 0.13.20
+
+### Patch Changes
+
+-   Updated dependencies [ab81490]
+    -   @sap-ux/project-input-validator@0.5.0
+
+## 0.13.19
+
+### Patch Changes
+
+-   93f07bc: fix: Adaptation Editor opens multiple re-entrance ticket tabs for Cloud systems
+
 ## 0.13.18
 
 ### Patch Changes
