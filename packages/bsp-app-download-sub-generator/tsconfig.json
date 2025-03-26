@@ -13,6 +13,9 @@
       "path": "../abap-deploy-config-writer"
     },
     {
+      "path": "../axios-extension"
+    },
+    {
       "path": "../btp-utils"
     },
     {
@@ -50,6 +53,9 @@
     },
     {
       "path": "../project-input-validator"
+    },
+    {
+      "path": "../store"
     },
     {
       "path": "../ui5-application-inquirer"
