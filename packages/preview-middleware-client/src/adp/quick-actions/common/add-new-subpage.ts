@@ -17,6 +17,7 @@ import { getV4ApplicationPages } from '../../../utils/fe-v4';
 import { EnablementValidatorResult } from '../enablement-validator';
 import { getTextBundle } from '../../../i18n';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-subpage';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -50,7 +51,8 @@ export class AddNewSubpage extends SimpleQuickActionDefinitionBase implements Si
                     }
                     return undefined;
                 }
-            }
+            },
+            DIALOG_ENABLEMENT_VALIDATOR
         ]);
     }
 

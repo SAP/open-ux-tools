@@ -57,7 +57,7 @@
         <Button
             id="createDialogBtn"
             text="{i18n>CREATE_BUTTON_LABEL}"
-            press="onCreateBtnPressHandler"
+            press="onCreateBtnPress"
             enabled="true"
             type="Emphasized"
         />

@@ -142,6 +142,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
+        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
 

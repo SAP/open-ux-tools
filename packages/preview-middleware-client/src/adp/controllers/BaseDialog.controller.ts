@@ -64,13 +64,12 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
     constructor(name: string, private readonly telemetryData?: QuickActionTelemetryData | undefined) {
         super(name);
     }
-    protected async onCreateBtnPressHandler(event: Event): Promise<void> {
+    public async onCreateBtnPressHandler(): Promise<void> {
         try {
             await reportTelemetry({ category: 'Dialog', dialogName: this.dialog.getId(), ...this.telemetryData });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);
         }
-        await this.onCreateBtnPress(event);
     }
 
     /**
