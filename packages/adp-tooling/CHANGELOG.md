@@ -1,5 +1,28 @@
 # @sap-ux/adp-tooling
 
+## 0.13.21
+
+### Patch Changes
+
+-   ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/axios-extension@1.19.2
+    -   @sap-ux/inquirer-common@0.6.32
+    -   @sap-ux/system-access@0.5.34
+
+## 0.13.20
+
+### Patch Changes
+
+-   Updated dependencies [ab81490]
+    -   @sap-ux/project-input-validator@0.5.0
+
+## 0.13.19
+
+### Patch Changes
+
+-   93f07bc: fix: Adaptation Editor opens multiple re-entrance ticket tabs for Cloud systems
+
 ## 0.13.18
 
 ### Patch Changes
