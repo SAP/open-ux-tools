@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.19
+
+### Patch Changes
+
+-   93f07bc: fix: Adaptation Editor opens multiple re-entrance ticket tabs for Cloud systems
+
 ## 0.13.18
 
 ### Patch Changes
