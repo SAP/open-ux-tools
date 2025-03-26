@@ -2,7 +2,6 @@ import { createReadStream, existsSync } from 'fs';
 import { createHash } from 'crypto';
 import type { Content, ContentIntegrity, FileIntegrity } from '../types';
 
-
 /**
  * Sanitizes the input text by normalizing line endings, removing empty lines,
  * and trimming unnecessary spaces. This ensures consistent formatting.
@@ -14,12 +13,10 @@ function sanitizeText(input: Buffer | string): string {
     const inputString = Buffer.isBuffer(input) ? input.toString() : input;
     const normalizedString = inputString.replace(/\r\n|\r/g, '\n'); // Normalize all line endings to '\n'
     const sanitizedString = normalizedString
-        .split(' ')
-        .filter((i) => !!i)
-        .join('')
         .split('\n')
         .filter((i) => !!i)
-        .join('\n');
+        .map((line) => line.trim()) // Remove leading/trailing spaces
+        .join('\n'); // Join lines with \n
     return sanitizedString;
 }
 
