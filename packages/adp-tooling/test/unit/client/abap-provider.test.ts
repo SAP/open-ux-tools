@@ -1,11 +1,10 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AbapTarget } from '@sap-ux/ui5-config';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { AbapProvider } from '../../../src';
-import type { Endpoint, TargetSystems } from '../../../src';
+import type { RequestOptions } from '../../../src';
+import { TargetSystems, getAbapTarget, getConfiguredProvider } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -17,11 +16,13 @@ jest.mock('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn()
 }));
 
-const getSystemByNameMock = jest.fn();
-
-const targetSystems = {
-    getSystemByName: getSystemByNameMock
-} as unknown as TargetSystems;
+const dummyDetails = {
+    Name: 'SYS_010',
+    Client: '010',
+    Url: 'http://sys010.com',
+    Authentication: 'Basic',
+    Credentials: { username: 'storedUser', password: 'storedPass' }
+};
 
 const logger = {
     error: jest.fn(),
@@ -33,87 +34,89 @@ const logger = {
 const dummyProvider = {} as unknown as AbapServiceProvider;
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const createAbapServiceProviderMock = createAbapServiceProvider as jest.Mock;
+const createProviderMock = createAbapServiceProvider as jest.Mock;
 
-describe('AbapProvider', () => {
-    let abapProvider: AbapProvider;
+const system = dummyDetails.Name;
+const client = dummyDetails.Client;
 
-    describe('getProvider', () => {
-        beforeEach(() => {
-            jest.clearAllMocks();
-            abapProvider = new AbapProvider(targetSystems, logger);
+describe('getAbapTarget', () => {
+    let getSystemByNameSpy: jest.SpyInstance;
+
+    beforeEach(() => {
+        jest.clearAllMocks();
+        getSystemByNameSpy = jest.spyOn(TargetSystems.prototype, 'getSystemByName');
+    });
+
+    it('should return a destination target when in AppStudio', async () => {
+        mockIsAppStudio.mockReturnValue(true);
+        getSystemByNameSpy.mockResolvedValue(dummyDetails);
+
+        const target = await getAbapTarget(system, logger);
+
+        expect(target).toEqual({ destination: system });
+    });
+
+    it('should return an AbapTarget with auth when not in AppStudio', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        getSystemByNameSpy.mockResolvedValue(dummyDetails);
+        const requestOptions: RequestOptions = {};
+
+        const target = await getAbapTarget(system, logger, requestOptions, client);
+
+        expect(target).toEqual({
+            client,
+            url: 'http://sys010.com',
+            authenticationType: 'Basic'
         });
-
-        test('should throw error if provider is not set', () => {
-            expect(() => abapProvider.getProvider()).toThrow('Provider was not set!');
+        expect(requestOptions.auth).toEqual({
+            username: 'storedUser',
+            password: 'storedPass'
         });
     });
 
-    describe('setProvider', () => {
-        beforeEach(() => {
-            jest.clearAllMocks();
-            abapProvider = new AbapProvider(targetSystems, logger);
-        });
+    it('should throw an error if system details are not found in non-AppStudio', async () => {
+        const system = 'NonExisting';
+        mockIsAppStudio.mockReturnValue(false);
+        getSystemByNameSpy.mockResolvedValue(undefined);
 
-        test('should use destination property in BAS', async () => {
-            mockIsAppStudio.mockReturnValue(true);
-            createAbapServiceProviderMock.mockResolvedValue(dummyProvider);
+        await expect(getAbapTarget(system, logger)).rejects.toThrow(`No system details found for system: ${system}`);
+    });
+});
 
-            const system = 'SYS010';
-            const client = '001';
-            const username = 'user';
-            const password = 'pass';
+describe('getConfiguredProvider', () => {
+    const username = 'user1';
+    const password = 'pass1';
 
-            await abapProvider.setProvider(system, client, username, password);
+    beforeEach(() => {
+        mockIsAppStudio.mockReturnValue(false);
+        createProviderMock.mockResolvedValue(dummyProvider);
+        jest.spyOn(TargetSystems.prototype, 'getSystemByName').mockResolvedValue(dummyDetails);
+    });
 
-            const callArgs = createAbapServiceProviderMock.mock.calls[0];
-            const target = callArgs[0] as any;
-            expect(target.destination).toBe(system);
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
 
-            expect(abapProvider.getProvider()).toBe(dummyProvider);
-            expect(abapProvider.getSystem()).toBe(system);
-        });
+    it('should return a configured provider when called with credentials', async () => {
+        const provider = await getConfiguredProvider({ system, client, username, password }, logger);
 
-        test('should call for system details and set provider in VS Code', async () => {
-            const system = 'http://example.com';
-            const details = {
-                Client: '010',
-                Url: system,
-                Authentication: 'Basic',
-                Credentials: { username: 'user1', password: 'pass1' }
-            } as Endpoint;
+        expect(createProviderMock).toHaveBeenCalled();
+        expect(provider).toBe(dummyProvider);
+    });
 
-            mockIsAppStudio.mockReturnValue(false);
-            getSystemByNameMock.mockResolvedValue(details);
-            createAbapServiceProviderMock.mockResolvedValue(dummyProvider);
+    it('should return a configured provider when called without credentials', async () => {
+        const provider = await getConfiguredProvider({ system, client }, logger);
+        expect(createProviderMock).toHaveBeenCalled();
+        expect(provider).toBe(dummyProvider);
+    });
 
-            await abapProvider.setProvider(system, undefined, 'user', 'pass');
+    it('should log an error and throw if provider creation fails', async () => {
+        const error = new Error('Provider creation failed');
+        createProviderMock.mockRejectedValueOnce(error);
 
-            expect(getSystemByNameMock).toHaveBeenCalledWith(system);
-            const callArgs = createAbapServiceProviderMock.mock.calls[0];
-            const target = callArgs[0] as AbapTarget;
-
-            expect(target.url).toBe(details.Url);
-            expect(target.client).toBe(details.Client);
-
-            expect(abapProvider.getProvider()).toBe(dummyProvider);
-            expect(abapProvider.getSystem()).toBe(system);
-        });
-
-        test('should log error and throw when createAbapServiceProvider fails', async () => {
-            const error = new Error('Test error');
-            const system = 'SYS010';
-
-            mockIsAppStudio.mockReturnValue(true);
-            createAbapServiceProviderMock.mockRejectedValue(error);
-
-            await expect(abapProvider.setProvider(system)).rejects.toThrow(error.message);
-
-            expect(logger.error).toHaveBeenCalledWith(
-                expect.stringContaining(
-                    `Failed to instantiate provider for system: ${system}. Reason: ${error.message}`
-                )
-            );
-        });
+        await expect(getConfiguredProvider({ system, client }, logger)).rejects.toThrow('Provider creation failed');
+        expect(logger.error).toHaveBeenCalledWith(
+            expect.stringContaining(`Failed to instantiate provider for system: ${system}`)
+        );
     });
 });

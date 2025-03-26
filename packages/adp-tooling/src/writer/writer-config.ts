@@ -1,55 +1,50 @@
-import type { AbapProvider } from '../client';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+
+import { getAbapTarget } from '../client';
 import { getCustomConfig } from './project-utils';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
 import type { AdpWriterConfig, ConfigAnswers, FlexLayer } from '../types';
 
 /**
- * A class that handles the construction of the ADP writer configuration needed from generating an Adaptation Project.
+ * Generates the configuration object for the Adaptation Project.
+ *
+ * @param {AbapServiceProvider} provider - The ABAP service provider instance used for retrieving system-specific information.
+ * @param {ConfigAnswers} configAnswers - The configuration answers provided by the user, including system and application details.
+ * @param {FlexLayer} layer - The FlexLayer indicating the deployment layer (e.g., CUSTOMER_BASE or VENDOR).
+ * @param {object} defaults - The default project parameters.
+ * @param {string} defaults.namespace - The default namespace to be used for the project.
+ * @param {ToolsLogger} logger - The logger instance for logging debug and error messages.
+ * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
-export class WriterConfig {
-    /**
-     * Constructs an instance of WriterConfig class.
-     *
-     * @param {AbapProvider} abapProvider - The instance of AbapProvider class.
-     * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
-     */
-    constructor(private readonly abapProvider: AbapProvider, private readonly layer: FlexLayer) {}
+export async function getConfig(
+    provider: AbapServiceProvider,
+    configAnswers: ConfigAnswers,
+    layer: FlexLayer,
+    defaults: {
+        namespace: string;
+    },
+    logger: ToolsLogger
+): Promise<AdpWriterConfig> {
+    const ato = await provider.getAtoInfo();
+    const operationsType = ato.operationsType ?? 'P';
 
-    /**
-     * Generates the configuration object for the Adaptation Project.
-     *
-     * @param {ConfigAnswers} configAnswers - The configuration answers (i.e system, application).
-     * @param {object} defaults - Default project parameters.
-     * @param {string} defaults.namespace - The namespace for the project.
-     * @returns {Promise<AdpWriterConfig>} The generated project configuration.
-     */
-    public async getConfig(
-        configAnswers: ConfigAnswers,
-        defaults: {
-            namespace: string;
+    const target = await getAbapTarget(configAnswers.system, logger);
+    const customConfig = getCustomConfig(operationsType);
+
+    return {
+        app: {
+            id: defaults.namespace,
+            reference: configAnswers.application.id,
+            layer,
+            title: '',
+            content: [getNewModelEnhanceWithChange()]
+        },
+        customConfig,
+        target,
+        options: {
+            fioriTools: true,
+            enableTypeScript: false
         }
-    ): Promise<AdpWriterConfig> {
-        const provider = this.abapProvider.getProvider();
-        const ato = await provider.getAtoInfo();
-        const operationsType = ato.operationsType ?? 'P';
-
-        const target = await this.abapProvider.determineTarget(configAnswers.system, {});
-        const customConfig = getCustomConfig(operationsType);
-
-        return {
-            app: {
-                id: defaults.namespace,
-                reference: configAnswers.application.id,
-                layer: this.layer,
-                title: '',
-                content: [getNewModelEnhanceWithChange()]
-            },
-            customConfig,
-            target,
-            options: {
-                fioriTools: true,
-                enableTypeScript: false
-            }
-        };
-    }
+    };
 }

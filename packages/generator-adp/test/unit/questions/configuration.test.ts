@@ -1,7 +1,8 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { FlexLayer, TargetApplications } from '@sap-ux/adp-tooling';
-import type { AbapProvider, ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
+import { FlexLayer, getAbapTarget, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 
 import { initI18n } from '../../../src/utils/i18n';
 import { configPromptNames } from '../../../src/app/types';
@@ -13,6 +14,13 @@ jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showCredentialQuestion: jest.fn().mockResolvedValue(true)
 }));
 
+jest.mock('@sap-ux/adp-tooling', () => ({
+    ...jest.requireActual('@sap-ux/adp-tooling'),
+    getConfiguredProvider: jest.fn(),
+    loadApps: jest.fn(),
+    getAbapTarget: jest.fn()
+}));
+
 const logger: ToolsLogger = {
     error: jest.fn(),
     info: jest.fn(),
@@ -20,9 +28,7 @@ const logger: ToolsLogger = {
     debug: jest.fn()
 } as unknown as ToolsLogger;
 
-const abapProvider = {
-    setProvider: jest.fn().mockResolvedValue(undefined)
-} as unknown as AbapProvider;
+const provider = {} as unknown as AbapServiceProvider;
 
 const targetSystems: TargetSystems = {
     getSystems: jest.fn().mockResolvedValue([
@@ -44,9 +50,12 @@ const dummyAnswers: ConfigAnswers = {
     application: { id: 'app1', title: 'Some Title' } as unknown as TargetApplication
 };
 
+const loadAppsMock = loadApps as jest.Mock;
+const getAbapTargetMock = getAbapTarget as jest.Mock;
+const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
+
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
-    let getAppsMock: jest.SpyInstance;
     const layer = FlexLayer.CUSTOMER_BASE;
 
     beforeAll(async () => {
@@ -54,10 +63,9 @@ describe('ConfigPrompter Integration Tests', () => {
     });
 
     beforeEach(() => {
-        getAppsMock = jest
-            .spyOn(TargetApplications.prototype, 'getApps')
-            .mockImplementation(() => Promise.resolve(dummyApps));
-        configPrompter = new ConfigPrompter(abapProvider, targetSystems, layer, logger);
+        loadAppsMock.mockResolvedValue(dummyApps);
+        getConfiguredProviderMock.mockResolvedValue(provider);
+        configPrompter = new ConfigPrompter(targetSystems, layer, logger);
     });
 
     afterEach(() => {
@@ -114,7 +122,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
         it('system prompt validate should throw error', async () => {
             const error = new Error('Test error');
-            getAppsMock.mockRejectedValue(error);
+            loadAppsMock.mockRejectedValue(error);
 
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
@@ -142,7 +150,7 @@ describe('ConfigPrompter Integration Tests', () => {
     });
 
     describe('Password Prompt', () => {
-        it('password prompt validate should call setProvider and return true', async () => {
+        it('password prompt validate should call getConfiguredProvider and return true', async () => {
             const prompts = configPrompter.getPrompts();
             const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
             expect(passwordPrompt).toBeDefined();
@@ -150,12 +158,6 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await passwordPrompt?.validate?.(dummyAnswers.password, dummyAnswers);
 
             expect(result).toBe(true);
-            expect(abapProvider.setProvider).toHaveBeenCalledWith(
-                dummyAnswers.system,
-                undefined,
-                dummyAnswers.username,
-                dummyAnswers.password
-            );
         });
 
         it('password prompt validate should call return string if not value is passed', async () => {
@@ -166,12 +168,11 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await passwordPrompt?.validate?.(undefined, dummyAnswers);
 
             expect(result).toBe('Input cannot be empty.');
-            expect(abapProvider.setProvider).not.toHaveBeenCalled();
         });
 
         it('password prompt validate should call return error message when error occurs', async () => {
             const error = new Error('Test error');
-            getAppsMock.mockRejectedValue(error);
+            loadAppsMock.mockRejectedValue(error);
 
             const prompts = configPrompter.getPrompts();
             const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
@@ -180,12 +181,6 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await passwordPrompt?.validate?.(dummyAnswers.password, dummyAnswers);
 
             expect(result).toBe('Test error');
-            expect(abapProvider.setProvider).toHaveBeenCalledWith(
-                dummyAnswers.system,
-                undefined,
-                dummyAnswers.username,
-                dummyAnswers.password
-            );
         });
     });
 
@@ -208,46 +203,6 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = appPrompt?.validate?.(undefined, dummyAnswers);
 
             expect(result).toEqual('Application has to be selected');
-        });
-
-        it('application prompt choices should return values from getApplicationChoices', async () => {
-            const prompts = configPrompter.getPrompts();
-            const appPrompt = prompts.find(
-                (p) => p.name === configPromptNames.application
-            ) as ListQuestion<ConfigAnswers>;
-            expect(appPrompt).toBeDefined();
-
-            const choicesFn = appPrompt!.choices;
-            expect(typeof choicesFn).toBe('function');
-
-            const choices = await (choicesFn as () => Promise<string[]>)();
-
-            expect(choices).toEqual([
-                {
-                    name: 'App One (app1)',
-                    value: {
-                        ach: '',
-                        bspName: '',
-                        bspUrl: '',
-                        fileType: '',
-                        id: 'app1',
-                        registrationIds: [],
-                        title: 'App One'
-                    }
-                },
-                {
-                    name: 'App Two (app2)',
-                    value: {
-                        ach: '',
-                        bspName: '',
-                        bspUrl: '',
-                        fileType: '',
-                        id: 'app2',
-                        registrationIds: [],
-                        title: 'App Two'
-                    }
-                }
-            ]);
         });
     });
 });

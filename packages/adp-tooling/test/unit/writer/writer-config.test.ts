@@ -1,26 +1,24 @@
-import { isAppStudio } from '@sap-ux/btp-utils';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { WriterConfig, FlexLayer } from '../../../src';
-import type { AbapProvider, ConfigAnswers, TargetApplication } from '../../../src';
+import { FlexLayer, getAbapTarget, getConfig } from '../../../src';
+import type { ConfigAnswers, TargetApplication } from '../../../src';
 
-jest.mock('@sap-ux/btp-utils', () => ({
-    ...jest.requireActual('@sap-ux/btp-utils'),
-    isAppStudio: jest.fn()
+jest.mock('../../../src/client/abap-provider.ts', () => ({
+    getAbapTarget: jest.fn()
 }));
-
-const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
 
 const systemDetails = {
     client: '010',
     url: 'https://SYS010'
 };
 
+const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
 const mockAbapProvider = {
-    getProvider: jest.fn().mockReturnValue({
-        getAtoInfo: getAtoInfoMock
-    }),
-    determineTarget: jest.fn().mockResolvedValue(systemDetails)
-} as unknown as AbapProvider;
+    getAtoInfo: getAtoInfoMock
+} as unknown as AbapServiceProvider;
+
+const getAbapTargetMock = getAbapTarget as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
     application: { id: '1' } as TargetApplication,
@@ -33,75 +31,43 @@ const defaults = {
     namespace: 'customer.app.variant1'
 };
 
-const mockIsAppStudio = isAppStudio as jest.Mock;
-
-describe('Writer Config', () => {
-    let writerConfig: WriterConfig;
-
+describe('getConfig', () => {
     beforeEach(() => {
-        writerConfig = new WriterConfig(mockAbapProvider, FlexLayer.CUSTOMER_BASE);
+        getAbapTargetMock.mockResolvedValue(systemDetails);
     });
 
-    describe('getConfig', () => {
-        it('returns the correct config with provided parameters when system is cloud ready', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            getAtoInfoMock.mockResolvedValue({ operationsType: 'C' });
+    it('returns the correct config with provided parameters when system is cloud ready', async () => {
+        const config = await getConfig(
+            mockAbapProvider,
+            configAnswers,
+            FlexLayer.CUSTOMER_BASE,
+            defaults,
+            {} as ToolsLogger
+        );
 
-            const config = await writerConfig.getConfig(configAnswers, defaults);
-
-            expect(config).toEqual({
-                app: {
-                    id: 'customer.app.variant1',
-                    reference: '1',
-                    layer: 'CUSTOMER_BASE',
-                    title: '',
-                    content: [expect.any(Object)]
-                },
-                customConfig: {
-                    adp: {
-                        environment: 'C',
-                        support: {
-                            id: '@sap-ux/adp-tooling',
-                            toolsId: expect.any(String),
-                            version: expect.any(String)
-                        }
+        expect(config).toEqual({
+            app: {
+                id: 'customer.app.variant1',
+                reference: '1',
+                layer: 'CUSTOMER_BASE',
+                title: '',
+                content: [expect.any(Object)]
+            },
+            customConfig: {
+                adp: {
+                    environment: 'P',
+                    support: {
+                        id: '@sap-ux/adp-tooling',
+                        toolsId: expect.any(String),
+                        version: expect.any(String)
                     }
-                },
-                target: {
-                    client: '010',
-                    url: 'https://SYS010'
-                },
-                options: { fioriTools: true, enableTypeScript: false }
-            });
-        });
-
-        it('returns the correct config with provided parameters when system type is undefined', async () => {
-            mockIsAppStudio.mockReturnValue(false);
-            getAtoInfoMock.mockResolvedValue({ operationsType: undefined });
-
-            const config = await writerConfig.getConfig(configAnswers, defaults);
-
-            expect(config).toEqual({
-                app: {
-                    id: 'customer.app.variant1',
-                    reference: '1',
-                    layer: 'CUSTOMER_BASE',
-                    title: '',
-                    content: [expect.any(Object)]
-                },
-                customConfig: {
-                    adp: {
-                        environment: 'P',
-                        support: {
-                            id: '@sap-ux/adp-tooling',
-                            toolsId: expect.any(String),
-                            version: expect.any(String)
-                        }
-                    }
-                },
-                target: { client: '010', url: 'https://SYS010' },
-                options: { fioriTools: true, enableTypeScript: false }
-            });
+                }
+            },
+            target: {
+                client: '010',
+                url: 'https://SYS010'
+            },
+            options: { fioriTools: true, enableTypeScript: false }
         });
     });
 });

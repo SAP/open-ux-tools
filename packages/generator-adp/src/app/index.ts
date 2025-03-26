@@ -4,8 +4,8 @@ import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import { TargetSystems, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
 import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
-import { AbapProvider, TargetSystems, WriterConfig, generate } from '@sap-ux/adp-tooling';
 
 import { getFlexLayer } from './layer';
 import { t, initI18n } from '../utils/i18n';
@@ -55,10 +55,6 @@ export default class extends Generator {
      * EndpointsManager instance for managing system endpoints.
      */
     private targetSystems: TargetSystems;
-    /**
-     * AbapProvider instance for ABAP system connection.
-     */
-    private abapProvider: AbapProvider;
 
     /**
      * Creates an instance of the generator.
@@ -87,7 +83,6 @@ export default class extends Generator {
         this.layer = await getFlexLayer();
 
         this.targetSystems = new TargetSystems(this.toolsLogger);
-        this.abapProvider = new AbapProvider(this.targetSystems, this.toolsLogger);
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -100,7 +95,7 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const prompter = new ConfigPrompter(this.abapProvider, this.targetSystems, this.layer, this.toolsLogger);
+        const prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
 
         const configQuestions = prompter.getPrompts();
 
@@ -112,12 +107,12 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
+            const provider = await getConfiguredProvider(this.configAnswers, this.toolsLogger);
             const projectName = getDefaultProjectName(this.destinationPath());
             const namespace = generateValidNamespace(projectName, this.layer);
             this.targetFolder = this.destinationPath(projectName);
 
-            const writerConfig = new WriterConfig(this.abapProvider, this.layer);
-            const config = await writerConfig.getConfig(this.configAnswers, { namespace });
+            const config = await getConfig(provider, this.configAnswers, this.layer, { namespace }, this.toolsLogger);
 
             await generate(this.targetFolder, config, this.fs);
         } catch (e) {

@@ -1,8 +1,9 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { FlexLayer, TargetApplications, getEndpointNames } from '@sap-ux/adp-tooling';
-import type { AbapProvider, ConfigAnswers, TargetSystems } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
 import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import { FlexLayer, getConfiguredProvider, getEndpointNames, loadApps } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
@@ -24,29 +25,30 @@ import { showApplicationQuestion, showCredentialQuestion } from './helper/condit
  */
 export class ConfigPrompter {
     /**
-     * Instance of target applications class for loading applications.
-     */
-    private readonly targetApps: TargetApplications;
-    /**
      * Indicates if the current layer is based on a customer base.
      */
     private readonly isCustomerBase: boolean;
+    /**
+     * Instance of AbapServiceProvider.
+     */
+    private abapProvider: AbapServiceProvider;
+    /**
+     * Loaded target applications for a system.
+     */
+    private targetApps: TargetApplication[];
+    /**
+     * Flag indicating that system login is successful.
+     */
+    private isLoginSuccessful: boolean;
 
     /**
      * Creates an instance of ConfigPrompter.
      *
-     * @param {AbapProvider} abapProvider - The ABAP provider instance.
      * @param {TargetSystems} targetSystems - The target system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
-     * @param {ToolsLogger} logger - The logger instance for logging.
+     * @param {ToolsLogger} logger - Instance of the logger.
      */
-    constructor(
-        private readonly abapProvider: AbapProvider,
-        private readonly targetSystems: TargetSystems,
-        layer: FlexLayer,
-        private readonly logger: ToolsLogger
-    ) {
-        this.targetApps = new TargetApplications(this.abapProvider, this.isCustomerBase, this.logger);
+    constructor(private readonly targetSystems: TargetSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
@@ -168,15 +170,12 @@ export class ConfigPrompter {
                 hint: t('prompts.applicationListTooltip'),
                 applyDefaultWhenDirty: true
             },
-            choices: async () => {
-                const apps = await this.targetApps.getApps();
-                return getApplicationChoices(apps);
-            },
+            choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
-            validate: (value: TargetApplications) => this.validateApplicationSelection(value),
+            validate: (value: TargetApplication) => this.validateApplicationSelection(value),
             when: async (answers: ConfigAnswers) => {
                 const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
-                return showApplicationQuestion(answers, systemRequiresAuth);
+                return showApplicationQuestion(answers, systemRequiresAuth, this.isLoginSuccessful);
             }
         };
     }
@@ -187,7 +186,7 @@ export class ConfigPrompter {
      * @param {string} app - The selected application.
      * @returns An error message if validation fails, or true if the selection is valid.
      */
-    private validateApplicationSelection(app: TargetApplications): string | boolean {
+    private validateApplicationSelection(app: TargetApplication): string | boolean {
         if (!app) {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
@@ -208,13 +207,21 @@ export class ConfigPrompter {
             return validationResult;
         }
 
-        try {
-            await this.abapProvider.setProvider(answers.system, undefined, answers.username, password);
+        const options = {
+            system: answers.system,
+            client: undefined,
+            username: answers.username,
+            password
+        };
 
-            await this.targetApps.getApps();
+        try {
+            this.abapProvider = await getConfiguredProvider(options, this.logger);
+
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
 
             return true;
         } catch (e) {
+            this.isLoginSuccessful = false;
             return e.message;
         }
     }
@@ -233,16 +240,24 @@ export class ConfigPrompter {
             return validationResult;
         }
 
+        const options = {
+            system,
+            client: undefined,
+            username: answers.username,
+            password: answers.password
+        };
+
         try {
-            this.targetApps.resetApps();
-            await this.abapProvider.setProvider(system, undefined, answers.username, answers.password);
+            this.abapProvider = await getConfiguredProvider(options, this.logger);
 
             const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(system);
             if (!systemRequiresAuth) {
-                await this.targetApps.getApps();
+                this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+                this.isLoginSuccessful = true;
             }
             return true;
         } catch (e) {
+            this.isLoginSuccessful = false;
             return e.message;
         }
     }

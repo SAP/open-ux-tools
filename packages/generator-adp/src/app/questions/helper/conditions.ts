@@ -17,10 +17,15 @@ export function shouldAuthenticate<T extends ConfigAnswers>(answers: T, systemRe
  *
  * @param {ConfigAnswers} answers - The user-provided answers containing application details.
  * @param {boolean} systemRequiresAuth - A flag indicating if system requires authentication.
+ * @param {boolean} isLoginSuccessful - A flag indicating that system login was successful.
  * @returns {boolean | undefined} True if a application question will be shown, otherwise false.
  */
-export function showApplicationQuestion<T extends ConfigAnswers>(answers: T, systemRequiresAuth: boolean): boolean {
-    return !!answers.system && !shouldAuthenticate(answers, systemRequiresAuth);
+export function showApplicationQuestion<T extends ConfigAnswers>(
+    answers: T,
+    systemRequiresAuth: boolean,
+    isLoginSuccessful: boolean
+): boolean {
+    return !!answers.system && !shouldAuthenticate(answers, systemRequiresAuth) && isLoginSuccessful;
 }
 
 /**

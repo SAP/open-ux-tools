@@ -9,7 +9,7 @@ import type { TargetApplication } from '@sap-ux/adp-tooling';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { AbapProvider, TargetApplications, TargetSystems, WriterConfig } from '@sap-ux/adp-tooling';
+import { TargetSystems, getAbapTarget, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
@@ -27,6 +27,11 @@ jest.mock('../src/app/questions/helper/default-values.ts', () => ({
     getDefaultProjectName: jest.fn()
 }));
 
+jest.mock('../src/app/questions/helper/conditions', () => ({
+    ...jest.requireActual('../src/app/questions/helper/conditions'),
+    showApplicationQuestion: jest.fn().mockReturnValue(true)
+}));
+
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),
     getCredentialsFromStore: jest.fn()
@@ -35,6 +40,13 @@ jest.mock('@sap-ux/system-access', () => ({
 jest.mock('child_process', () => ({
     ...jest.requireActual('child_process'),
     exec: jest.fn()
+}));
+
+jest.mock('@sap-ux/adp-tooling', () => ({
+    ...jest.requireActual('@sap-ux/adp-tooling'),
+    getConfiguredProvider: jest.fn(),
+    loadApps: jest.fn(),
+    getAbapTarget: jest.fn()
 }));
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
@@ -61,7 +73,7 @@ const originalCwd = process.cwd();
 const testOutputDir = join(__dirname, 'test-output');
 const generatorPath = join(__dirname, '../src/app/index.ts');
 
-const endpoints = [{ Name: 'SystemA', Client: '010', Url: 'http://systema.com', Authentication: 'Basic' }];
+const endpoints = [{ Name: 'SystemA', Client: '010', Url: 'http://systema.com' }];
 const apps: TargetApplication[] = [
     {
         ach: '',
@@ -79,9 +91,12 @@ const dummyProvider = {
     getAtoInfo: getAtoInfoMock
 } as unknown as AbapServiceProvider;
 
+const loadAppsMock = loadApps as jest.Mock;
 const execMock = exec as unknown as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
+const getAbapTargetMock = getAbapTarget as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
+const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
 
 describe('Adaptation Project Generator Integration Test', () => {
@@ -92,16 +107,15 @@ describe('Adaptation Project Generator Integration Test', () => {
     beforeEach(() => {
         fs.mkdirSync(testOutputDir, { recursive: true });
 
+        loadAppsMock.mockResolvedValue(apps);
         jest.spyOn(TargetSystems.prototype, 'getSystems').mockResolvedValue(endpoints);
         jest.spyOn(TargetSystems.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
-        jest.spyOn(TargetApplications.prototype, 'getApps').mockResolvedValue(apps);
-        jest.spyOn(AbapProvider.prototype, 'setProvider').mockResolvedValue();
-        jest.spyOn(AbapProvider.prototype, 'getProvider').mockReturnValue(dummyProvider);
+        getConfiguredProviderMock.mockResolvedValue(dummyProvider);
         execMock.mockImplementation((_: string, callback: Function) => {
             callback(null, { stdout: 'ok', stderr: '' });
         });
         sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
-
+        getAbapTargetMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
         getDefaultProjectNameMock.mockReturnValue('app.variant1');
         getCredentialsFromStoreMock.mockResolvedValue(undefined);
@@ -123,7 +137,7 @@ describe('Adaptation Project Generator Integration Test', () => {
     it('should throw error when writing phase fails', async () => {
         const error = new Error('Test error');
         mockIsAppStudio.mockReturnValue(false);
-        jest.spyOn(WriterConfig.prototype, 'getConfig').mockRejectedValueOnce(error);
+        getConfiguredProviderMock.mockRejectedValueOnce(error);
 
         const answers = {
             system: 'http://systema.com',
@@ -138,7 +152,6 @@ describe('Adaptation Project Generator Integration Test', () => {
             .withPrompts(answers);
 
         await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
-        (WriterConfig.prototype.getConfig as jest.Mock).mockRestore();
     });
 
     it('should generate an adaptation project successfully', async () => {
