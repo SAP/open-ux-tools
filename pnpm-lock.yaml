@@ -909,6 +909,9 @@ importers:
       '@sap-ux/abap-deploy-config-writer':
         specifier: workspace:*
         version: link:../abap-deploy-config-writer
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -945,6 +948,9 @@ importers:
       '@sap-ux/project-input-validator':
         specifier: workspace:*
         version: link:../project-input-validator
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
       '@sap-ux/ui5-application-inquirer':
         specifier: workspace:*
         version: link:../ui5-application-inquirer

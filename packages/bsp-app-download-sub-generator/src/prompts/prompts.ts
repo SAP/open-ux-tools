@@ -1,7 +1,7 @@
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import { getSystemSelectionQuestions, promptNames } from '@sap-ux/odata-service-inquirer';
-import type { BspAppDownloadAnswers } from './types';
-import { PromptNames } from './types';
+import type { BspAppDownloadAnswers } from '../app/types';
+import { PromptNames } from '../app/types';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import { t } from '../utils/i18n';
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
@@ -9,7 +9,7 @@ import type { Logger } from '@sap-ux/logger';
 import type { Question } from 'inquirer';
 import { getAppList } from '../utils/utils';
 import { validateTargetFolderForFioriApp } from '@sap-ux/project-input-validator';
-import { PromptState } from '../utils/prompt-state';
+import { PromptState } from './prompt-state';
 
 /**
  * Gets the target folder prompt.
@@ -43,7 +43,7 @@ const getTargetFolderPrompt = (appRootPath?: string) => {
  */
 export async function getQuestions(appRootPath?: string, log?: Logger): Promise<Question<BspAppDownloadAnswers>[]> {
     PromptState.reset();
-    const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, true);
+    const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, false); // remove this isYUI value
     let appList: AppIndex = [];
     let result: Question<BspAppDownloadAnswers>[] = [];
 

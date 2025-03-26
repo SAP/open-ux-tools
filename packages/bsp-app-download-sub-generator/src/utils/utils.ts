@@ -13,7 +13,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { BspAppDownloadAnswers } from '../app/types';
 import { FileName, type Manifest } from '@sap-ux/project-access';
 import { t } from './i18n';
-import { PromptState } from './prompt-state';
+import { PromptState } from '../prompts/prompt-state';
 
 /**
  * Returns the details for the YUI prompt.

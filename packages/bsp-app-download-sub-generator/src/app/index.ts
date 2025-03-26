@@ -5,14 +5,14 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
 import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { generatorTitle, extractedFilePath, generatorName } from '../utils/constants';
-import { t } from '../utils';
+import { t } from '../utils/i18n';
 import { getYUIDetails, downloadApp } from '../utils/utils';
 import { EventName } from '../telemetryEvents';
 import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { BspAppDownloadOptions, BspAppDownloadAnswers } from './types';
 import { promptNames } from '@sap-ux/odata-service-inquirer';
-import { getQuestions } from './prompts';
+import { getQuestions } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { getAppConfig } from '../utils/app-config';
 import { join } from 'path';
@@ -26,18 +26,25 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
-import { PromptState } from '../utils/prompt-state';
+import { PromptState } from '../prompts/prompt-state';
 
-/**
- *
- */
 export default class extends Generator {
     private readonly appWizard: AppWizard;
     private readonly vscode?: VSCodeInstance;
     private readonly launchAppDownloaderAsSubGenerator: boolean;
     private readonly appRootPath: string;
     private readonly prompts: Prompts;
-    private answers: BspAppDownloadAnswers;
+    private answers: BspAppDownloadAnswers = {
+        selectedApp: {
+            appId: '',
+            title: '',
+            description: '',
+            repoName: '',
+            url: ''
+        },
+        targetFolder: '',
+        [promptNames.systemSelection]: {}
+    };
     public options: BspAppDownloadOptions;
     private fioriOptions: FioriOptions;
     // re visit this
@@ -100,11 +107,14 @@ export default class extends Generator {
         const questions = await getQuestions(this.appRootPath);
         const { selectedApp, targetFolder } = (await this.prompt(questions)) as BspAppDownloadAnswers;
         if (PromptState.systemSelection.connectedSystem?.serviceProvider && selectedApp?.appId && targetFolder) {
-            Object.assign(this.answers, {
-                selectedApp,
-                targetFolder,
-                serviceProvider: PromptState.systemSelection.connectedSystem?.serviceProvider
-            });
+            // Object.assign(this.answers, {
+            //     selectedApp,
+            //     targetFolder,
+            //     serviceProvider: PromptState.systemSelection.connectedSystem?.serviceProvider
+            // });
+            this.answers.selectedApp = selectedApp;
+            this.answers.targetFolder = targetFolder;
+            //this.answers.serviceProvider = PromptState.systemSelection.connectedSystem?.serviceProvider;
 
             this.projectPath = join(targetFolder, selectedApp.appId);
             this.extractedProjectPath = join(this.projectPath, extractedFilePath);
@@ -222,15 +232,15 @@ export default class extends Generator {
     }
 
     async end() {
-        sendTelemetry(
-            EventName.GENERATION_SUCCESS,
-            TelemetryHelper.createTelemetryData({
-                appType: 'bsp-app-download-sub-generator',
-                ...this.options.telemetryData
-            }) ?? {}
-        ).catch((error) => {
-            BspAppDownloadLogger.logger.error(t('error.telemetry', { error }));
-        });
+        // sendTelemetry(
+        //     EventName.GENERATION_SUCCESS,
+        //     TelemetryHelper.createTelemetryData({
+        //         appType: 'bsp-app-download-sub-generator',
+        //         ...this.options.telemetryData
+        //     }) ?? {}
+        // ).catch((error) => {
+        //     BspAppDownloadLogger.logger.error(t('error.telemetry', { error }));
+        // });
         debugger;
         await createLaunchConfig(
             this.projectPath,

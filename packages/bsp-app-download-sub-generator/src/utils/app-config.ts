@@ -4,13 +4,13 @@ import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import type { AbapServiceProvider, ServiceDocument } from '@sap-ux/axios-extension';
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
-import { t } from './i18n';
+import { t } from '../utils/i18n';
 import type { BspAppDownloadAnswers } from '../app/types';
 import { readManifest } from './utils';
 import { getLatestUI5Version } from '@sap-ux/ui5-info';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { adtSourceTemplateId } from './constants';
-import { PromptState } from '../utils/prompt-state';
+import { PromptState } from '../prompts/prompt-state';
 
 /**
  * Retrieves metadata for the provided service URL.
