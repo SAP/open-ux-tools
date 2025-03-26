@@ -2774,7 +2774,7 @@ describe('FE V2 quick actions', () => {
                 );
 
                 expect(notifySpy).toHaveBeenCalledWith(
-                    'At least one table row is required to create new custom column. Make sure the table data is loaded and try again.',
+                    'At least one table row is required to create a new custom column. Make sure the table data is loaded and try again.',
                     8000
                 );
             });

@@ -166,7 +166,7 @@ describe('Dialogs', () => {
             isReuseComponentMock.mockReturnValueOnce(true);
             const result = getExtendControllerItemText(overlay, isReuseComponentMock, false, resources);
 
-            expect(result).toBe('Extend With Controller');
+            expect(result).toBe('Extend with Controller');
             expect(isReuseComponentMock).not.toHaveBeenCalled();
         });
 
@@ -181,7 +181,7 @@ describe('Dialogs', () => {
             } as ElementOverlay;
             const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
 
-            expect(result).toBe('Extend With Controller');
+            expect(result).toBe('Extend with Controller');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
 
@@ -198,7 +198,7 @@ describe('Dialogs', () => {
 
             const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
 
-            expect(result).toBe('Extend With Controller (Unavailable due to control being a Reuse component)');
+            expect(result).toBe('Extend with Controller (Unavailable due to control being a Reuse component)');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
     });
