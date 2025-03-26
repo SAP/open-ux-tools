@@ -1,8 +1,8 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { FlexLayer, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
-import { FlexLayer, getAbapTarget, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 
 import { initI18n } from '../../../src/utils/i18n';
 import { configPromptNames } from '../../../src/app/types';
@@ -17,8 +17,7 @@ jest.mock('../../../src/app/questions/helper/conditions', () => ({
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
-    loadApps: jest.fn(),
-    getAbapTarget: jest.fn()
+    loadApps: jest.fn()
 }));
 
 const logger: ToolsLogger = {
@@ -51,7 +50,6 @@ const dummyAnswers: ConfigAnswers = {
 };
 
 const loadAppsMock = loadApps as jest.Mock;
-const getAbapTargetMock = getAbapTarget as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 
 describe('ConfigPrompter Integration Tests', () => {
