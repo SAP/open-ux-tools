@@ -139,7 +139,7 @@ describe('Dialogs', () => {
 
             const result = getAddFragmentItemText(overlay, isReuseComponentMock, true, resources);
 
-            expect(result).toBe('Add: Fragment (Unavailable due to control being a Reuse component)');
+            expect(result).toBe('Add: Fragment (This action is disabled because the control is a reuse component)');
             expect(hasStableId).toHaveBeenCalledWith({
                 getElement: expect.any(Function)
             });
@@ -198,7 +198,7 @@ describe('Dialogs', () => {
 
             const result = getExtendControllerItemText(overlay, isReuseComponentMock, true, resources);
 
-            expect(result).toBe('Extend with Controller (Unavailable due to control being a Reuse component)');
+            expect(result).toBe('Extend with Controller (This action is disabled because the control is a reuse component)');
             expect(isReuseComponentMock).toHaveBeenCalledWith('controlId1');
         });
     });
