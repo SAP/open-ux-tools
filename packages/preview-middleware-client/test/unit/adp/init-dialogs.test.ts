@@ -117,7 +117,7 @@ describe('Dialogs', () => {
 
             const result = getAddFragmentItemText(overlay, isReuseComponentMock, false, resources);
 
-            expect(result).toBe('Add: Fragment (Unavailable due to unstable ID of the control or its parent control)');
+            expect(result).toBe('Add: Fragment (This action is disabled because the control or parent control has an unstable ID)');
             expect(hasStableId).toHaveBeenCalledWith({
                 getElement: expect.any(Function)
             });
