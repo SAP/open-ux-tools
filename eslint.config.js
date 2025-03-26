@@ -1,7 +1,6 @@
 const { FlatCompat } = require('@eslint/eslintrc');
 const tsParser = require('@typescript-eslint/parser');
 const eslintPluginPrettierRecommended = require('eslint-plugin-prettier/recommended');
-const globals = require('globals');
 const pluginPromise = require('eslint-plugin-promise');
 const pluginJsdoc = require('eslint-plugin-jsdoc');
 const tseslint = require('typescript-eslint');
@@ -58,7 +57,7 @@ module.exports = [
     eslintPluginPrettierRecommended,
     pluginPromise.configs['flat/recommended'],
     pluginJsdoc.configs['flat/recommended'],
-    ...compat.extends('plugin:@typescript-eslint/recommended'),
+    ...tseslint.configs.recommended,
     importPlugin.flatConfigs.recommended,
     {
         files: ['**/*.ts', '**/*.tsx'],
@@ -255,6 +254,7 @@ module.exports = [
         }
     },
     {
+        name: 'typescript-eslint-1',
         languageOptions: {
             parser: tsParser
         },
@@ -318,6 +318,7 @@ module.exports = [
         }
     },
     {
+        name: 'typescript-eslint-2',
         languageOptions: {
             parser: tsParser
         },
