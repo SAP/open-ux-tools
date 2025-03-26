@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.19.2
+
+### Patch Changes
+
+-   ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
+
 ## 1.19.1
 
 ### Patch Changes

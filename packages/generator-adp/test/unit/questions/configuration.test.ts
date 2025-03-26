@@ -202,7 +202,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
             const result = appPrompt?.validate?.(undefined, dummyAnswers);
 
-            expect(result).toEqual('Application has to be selected');
+            expect(result).toEqual('Application has to be selected.');
         });
     });
 });
