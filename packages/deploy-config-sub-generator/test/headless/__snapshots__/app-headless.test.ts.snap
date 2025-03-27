@@ -1,155 +1,155 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap java project 1`] = `
-"_schema-version: "3.1"
+"_schema-version: '3.1'
 ID: managedAppCAPProjectJava
-description: managedAppCAPProjectJava application
 version: 1.0.0-SNAPSHOT
-modules:
-- name: managedAppCAPProjectJava-srv
-  type: java
-  path: srv
-  properties:
-    SPRING_PROFILES_ACTIVE: cloud
-  requires:
-  - name: managedAppCAPProjectJava-db
-  - name: managedAppCAPProjectJava-uaa
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: \${default-url}
-  parameters:
-    buildpack: java_buildpack
-  build-parameters:
-    build-result: target/*-exec.[wj]ar
-    builder: custom
-    commands:
-    - mvn clean package
-- name: managedAppCAPProjectJava-db-deployer
-  type: hdb
-  path: db
-  requires:
-  - name: managedAppCAPProjectJava-db
-  parameters:
-    buildpack: nodejs_buildpack
-- name: managedAppCAPProjectJava-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: managedAppCAPProjectJava-destination-service
-    parameters:
-      content-target: true
-  - name: managedAppCAPProjectJava-repo-host
-    parameters:
-      service-key:
-        name: managedAppCAPProjectJava-repo-host-key
-  - name: managedAppCAPProjectJava-uaa
-    parameters:
-      service-key:
-        name: managedAppCAPProjectJava-uaa-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: managedAppCAPProjectJava_html_repo_host
-          ServiceInstanceName: managedAppCAPProjectJava-html5-service
-          ServiceKeyName: managedAppCAPProjectJava-repo-host-key
-          sap.cloud.service: managedAppCAPProjectJava
-        - Authentication: OAuth2UserTokenExchange
-          Name: managedAppCAPProjectJava_uaa
-          ServiceInstanceName: managedAppCAPProjectJava-xsuaa-service
-          ServiceKeyName: managedAppCAPProjectJava-uaa-key
-          sap.cloud.service: managedAppCAPProjectJava
-        existing_destinations_policy: update
-  build-parameters:
-    no-source: true
-- name: managedAppCAPProjectJava-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: managedAppCAPProjectJava-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
-    requires:
-    - artifacts:
-      - headlesstestfeprojectui.zip
-      name: headlesstestfeprojectui
-      target-path: resources/
-- name: headlesstestfeprojectui
-  type: html5
-  path: app/feproject-ui
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-resources:
-- name: managedAppCAPProjectJava-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
-  properties:
-    hdi-service-name: \${service-name}
-- name: managedAppCAPProjectJava-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          - Authentication: NoAuthentication
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
-            Name: cappapp-srv-api
-            ProxyType: Internet
-            Type: HTTP
-            URL: ~{srv-api/srv-url}
-          - Authentication: NoAuthentication
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
-            Name: SOME_DEST_NAME
-            ProxyType: Internet
-            Type: HTTP
-            URL: ~{srv-api/srv-url}
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: managedAppCAPProjectJava-destination-service
-    service-plan: lite
-  requires:
-  - name: srv-api
-- name: managedAppCAPProjectJava-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: managedAppCAPProjectJava-xsuaa-service
-    service-plan: application
-- name: managedAppCAPProjectJava-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: managedAppCAPProjectJava-html5-service
-    service-plan: app-host
+description: managedAppCAPProjectJava application
 parameters:
-  deploy_mode: html5-repo
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm install --production
-    - npx -p @sap/cds-dk cds build --production
+    - builder: custom
+      commands:
+        - npm install --production
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: managedAppCAPProjectJava-srv
+    type: java
+    path: srv
+    parameters:
+      buildpack: java_buildpack
+    properties:
+      SPRING_PROFILES_ACTIVE: cloud
+    build-parameters:
+      builder: custom
+      commands:
+        - mvn clean package
+      build-result: target/*-exec.[wj]ar
+    requires:
+      - name: managedAppCAPProjectJava-db
+      - name: managedAppCAPProjectJava-uaa
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: \${default-url}
+  - name: managedAppCAPProjectJava-db-deployer
+    type: hdb
+    path: db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: managedAppCAPProjectJava-db
+  - name: managedAppCAPProjectJava-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: managedAppCAPProjectJava-destination-service
+        parameters:
+          content-target: true
+      - name: managedAppCAPProjectJava-repo-host
+        parameters:
+          service-key:
+            name: managedAppCAPProjectJava-repo-host-key
+      - name: managedAppCAPProjectJava-uaa
+        parameters:
+          service-key:
+            name: managedAppCAPProjectJava-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: managedAppCAPProjectJava_html_repo_host
+              ServiceInstanceName: managedAppCAPProjectJava-html5-service
+              ServiceKeyName: managedAppCAPProjectJava-repo-host-key
+              sap.cloud.service: managedAppCAPProjectJava
+            - Authentication: OAuth2UserTokenExchange
+              Name: managedAppCAPProjectJava_uaa
+              ServiceInstanceName: managedAppCAPProjectJava-xsuaa-service
+              ServiceKeyName: managedAppCAPProjectJava-uaa-key
+              sap.cloud.service: managedAppCAPProjectJava
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: managedAppCAPProjectJava-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: managedAppCAPProjectJava-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: headlesstestfeprojectui
+          artifacts:
+            - headlesstestfeprojectui.zip
+          target-path: resources/
+  - name: headlesstestfeprojectui
+    type: html5
+    path: app/feproject-ui
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: managedAppCAPProjectJava-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: \${service-name}
+  - name: managedAppCAPProjectJava-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: managedAppCAPProjectJava-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+              - Name: cappapp-srv-api
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+              - Name: SOME_DEST_NAME
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+    requires:
+      - name: srv-api
+  - name: managedAppCAPProjectJava-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: managedAppCAPProjectJava-xsuaa-service
+      service-plan: application
+  - name: managedAppCAPProjectJava-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: managedAppCAPProjectJava-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
 "
 `;
 
@@ -274,142 +274,142 @@ exports[`Test headless generator Test: Headless deploy-config - addMTADestinatio
 `;
 
 exports[`Test headless generator Test: Headless deploy-config - addMTADestination inside a cap project 1`] = `
-"_schema-version: "3.1"
+"_schema-version: '3.1'
 ID: cappapp
-description: A simple CAP project.
 version: 1.0.0
-modules:
-- name: cappapp-srv
-  type: nodejs
-  path: gen/srv
-  requires:
-  - name: cappapp-uaa
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: \${default-url}
-  parameters:
-    buildpack: nodejs_buildpack
-  build-parameters:
-    builder: npm-ci
-- name: cappapp-db-deployer
-  type: hdb
-  path: gen/db
-  requires:
-  - name: cappapp-db
-  parameters:
-    buildpack: nodejs_buildpack
-- name: cappapp-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: cappapp-destination-service
-    parameters:
-      content-target: true
-  - name: cappapp-repo-host
-    parameters:
-      service-key:
-        name: cappapp-repo-host-key
-  - name: cappapp-uaa
-    parameters:
-      service-key:
-        name: cappapp-uaa-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: cappapp_html_repo_host
-          ServiceInstanceName: cappapp-html5-service
-          ServiceKeyName: cappapp-repo-host-key
-          sap.cloud.service: cappapp
-        - Authentication: OAuth2UserTokenExchange
-          Name: cappapp_uaa
-          ServiceInstanceName: cappapp-xsuaa-service
-          ServiceKeyName: cappapp-uaa-key
-          sap.cloud.service: cappapp
-        existing_destinations_policy: update
-  build-parameters:
-    no-source: true
-- name: cappapp-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: cappapp-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
-    requires:
-    - artifacts:
-      - headlesstestfeprojectui.zip
-      name: headlesstestfeprojectui
-      target-path: resources/
-- name: headlesstestfeprojectui
-  type: html5
-  path: app/feproject-ui
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-resources:
-- name: cappapp-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
-  properties:
-    hdi-service-name: \${service-name}
-- name: cappapp-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          - Authentication: NoAuthentication
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
-            Name: cappapp-srv-api
-            ProxyType: Internet
-            Type: HTTP
-            URL: ~{srv-api/srv-url}
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: cappapp-destination-service
-    service-plan: lite
-  requires:
-  - name: srv-api
-- name: cappapp-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: cappapp-xsuaa-service
-    service-plan: application
-- name: cappapp-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: cappapp-html5-service
-    service-plan: app-host
+description: A simple CAP project.
 parameters:
-  deploy_mode: html5-repo
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm ci
-    - npx -p @sap/cds-dk cds build --production
+    - builder: custom
+      commands:
+        - npm ci
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: cappapp-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: \${default-url}
+    requires:
+      - name: cappapp-uaa
+  - name: cappapp-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: cappapp-db
+  - name: cappapp-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: cappapp-destination-service
+        parameters:
+          content-target: true
+      - name: cappapp-repo-host
+        parameters:
+          service-key:
+            name: cappapp-repo-host-key
+      - name: cappapp-uaa
+        parameters:
+          service-key:
+            name: cappapp-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: cappapp_html_repo_host
+              ServiceInstanceName: cappapp-html5-service
+              ServiceKeyName: cappapp-repo-host-key
+              sap.cloud.service: cappapp
+            - Authentication: OAuth2UserTokenExchange
+              Name: cappapp_uaa
+              ServiceInstanceName: cappapp-xsuaa-service
+              ServiceKeyName: cappapp-uaa-key
+              sap.cloud.service: cappapp
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: cappapp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cappapp-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: headlesstestfeprojectui
+          artifacts:
+            - headlesstestfeprojectui.zip
+          target-path: resources/
+  - name: headlesstestfeprojectui
+    type: html5
+    path: app/feproject-ui
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: cappapp-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: \${service-name}
+  - name: cappapp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: cappapp-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+              - Name: cappapp-srv-api
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+    requires:
+      - name: srv-api
+  - name: cappapp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: cappapp-xsuaa-service
+      service-plan: application
+  - name: cappapp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: cappapp-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
 "
 `;
 
@@ -577,97 +577,97 @@ exports[`Test headless generator Test: Headless deploy-config - addMTADestinatio
 `;
 
 exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter  1`] = `
-"_schema-version: "3.1"
+"_schema-version: '3.1'
 ID: existing-id-deploy
 description: Fiori elements app
 version: 0.0.1
 modules:
-- name: existing-id-deploy-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: existing-id-deploy-destination-service
-    parameters:
-      content-target: true
-  - name: existing-id-deploy-repo-host
-    parameters:
-      service-key:
-        name: existing-id-deploy-repo-host-key
-  - name: existing-id-deploy-uaa
-    parameters:
-      service-key:
-        name: existing-id-deploy-uaa-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: existing-id-deploy_html_repo_host
-          ServiceInstanceName: existing-id-deploy-html5-service
-          ServiceKeyName: existing-id-deploy-repo-host-key
-          sap.cloud.service: existing-id-deploy
-        - Authentication: OAuth2UserTokenExchange
-          Name: existing-id-deploy_uaa
-          ServiceInstanceName: existing-id-deploy-xsuaa-service
-          ServiceKeyName: existing-id-deploy-uaa-key
-          sap.cloud.service: existing-id-deploy
-        existing_destinations_policy: update
-  build-parameters:
-    no-source: true
-- name: existing-id-deploy-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: existing-id-deploy-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  - name: existing-id-deploy-destination-content
+    type: com.sap.application.content
     requires:
-    - artifacts:
-      - comfioritoolstravel.zip
-      name: comfioritoolstravel
-      target-path: resources/
-- name: comfioritoolstravel
-  type: html5
-  path: .
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-resources:
-- name: existing-id-deploy-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
+      - name: existing-id-deploy-destination-service
+        parameters:
+          content-target: true
+      - name: existing-id-deploy-repo-host
+        parameters:
+          service-key:
+            name: existing-id-deploy-repo-host-key
+      - name: existing-id-deploy-uaa
+        parameters:
+          service-key:
+            name: existing-id-deploy-uaa-key
+    parameters:
+      content:
         instance:
           destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
+            - Name: existing-id-deploy_html_repo_host
+              ServiceInstanceName: existing-id-deploy-html5-service
+              ServiceKeyName: existing-id-deploy-repo-host-key
+              sap.cloud.service: existing-id-deploy
+            - Authentication: OAuth2UserTokenExchange
+              Name: existing-id-deploy_uaa
+              ServiceInstanceName: existing-id-deploy-xsuaa-service
+              ServiceKeyName: existing-id-deploy-uaa-key
+              sap.cloud.service: existing-id-deploy
           existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: existing-id-deploy-destination-service
-    service-plan: lite
-- name: existing-id-deploy-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: existing-id-deploy-xsuaa-service
-    service-plan: application
-- name: existing-id-deploy-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: existing-id-deploy-html5-service
-    service-plan: app-host
+    build-parameters:
+      no-source: true
+  - name: existing-id-deploy-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: existing-id-deploy-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: comfioritoolstravel
+          artifacts:
+            - comfioritoolstravel.zip
+          target-path: resources/
+  - name: comfioritoolstravel
+    type: html5
+    path: .
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: existing-id-deploy-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: existing-id-deploy-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: existing-id-deploy-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: existing-id-deploy-xsuaa-service
+      service-plan: application
+  - name: existing-id-deploy-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: existing-id-deploy-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
@@ -783,133 +783,133 @@ exports[`Test headless generator Test: Headless deploy-config - addToManagedAppR
 `;
 
 exports[`Test headless generator Test: Headless deploy-config - addToManagedAppRouter inside a cap project 1`] = `
-"_schema-version: "3.1"
+"_schema-version: '3.1'
 ID: cappapp
-description: A simple CAP project.
 version: 1.0.0
-modules:
-- name: cappapp-srv
-  type: nodejs
-  path: gen/srv
-  requires:
-  - name: cappapp-db
-  provides:
-  - name: srv-api
-    properties:
-      srv-url: \${default-url}
-  parameters:
-    buildpack: nodejs_buildpack
-  build-parameters:
-    builder: npm-ci
-- name: cappapp-db-deployer
-  type: hdb
-  path: gen/db
-  requires:
-  - name: cappapp-db
-  parameters:
-    buildpack: nodejs_buildpack
-- name: cappapp-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: cappapp-destination-service
-    parameters:
-      content-target: true
-  - name: cappapp-repo-host
-    parameters:
-      service-key:
-        name: cappapp-repo-host-key
-  - name: cappapp-uaa
-    parameters:
-      service-key:
-        name: cappapp-uaa-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: cappapp_html_repo_host
-          ServiceInstanceName: cappapp-html5-service
-          ServiceKeyName: cappapp-repo-host-key
-          sap.cloud.service: cappapp
-        - Authentication: OAuth2UserTokenExchange
-          Name: cappapp_uaa
-          ServiceInstanceName: cappapp-xsuaa-service
-          ServiceKeyName: cappapp-uaa-key
-          sap.cloud.service: cappapp
-        existing_destinations_policy: update
-  build-parameters:
-    no-source: true
-- name: cappapp-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: cappapp-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
-    requires:
-    - artifacts:
-      - headlesstestfeprojectui.zip
-      name: headlesstestfeprojectui
-      target-path: resources/
-- name: headlesstestfeprojectui
-  type: html5
-  path: app/feproject-ui
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-resources:
-- name: cappapp-db
-  type: com.sap.xs.hdi-container
-  parameters:
-    service: hana
-    service-plan: hdi-shared
-  properties:
-    hdi-service-name: \${service-name}
-- name: cappapp-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: cappapp-destination-service
-    service-plan: lite
-- name: cappapp-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: cappapp-xsuaa-service
-    service-plan: application
-- name: cappapp-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: cappapp-html5-service
-    service-plan: app-host
+description: A simple CAP project.
 parameters:
-  deploy_mode: html5-repo
   enable-parallel-deployments: true
+  deploy_mode: html5-repo
 build-parameters:
   before-all:
-  - builder: custom
-    commands:
-    - npm ci
-    - npx -p @sap/cds-dk cds build --production
+    - builder: custom
+      commands:
+        - npm ci
+        - npx -p @sap/cds-dk cds build --production
+modules:
+  - name: cappapp-srv
+    type: nodejs
+    path: gen/srv
+    parameters:
+      buildpack: nodejs_buildpack
+    build-parameters:
+      builder: npm-ci
+    requires:
+      - name: cappapp-db
+    provides:
+      - name: srv-api
+        properties:
+          srv-url: \${default-url}
+  - name: cappapp-db-deployer
+    type: hdb
+    path: gen/db
+    parameters:
+      buildpack: nodejs_buildpack
+    requires:
+      - name: cappapp-db
+  - name: cappapp-destination-content
+    type: com.sap.application.content
+    requires:
+      - name: cappapp-destination-service
+        parameters:
+          content-target: true
+      - name: cappapp-repo-host
+        parameters:
+          service-key:
+            name: cappapp-repo-host-key
+      - name: cappapp-uaa
+        parameters:
+          service-key:
+            name: cappapp-uaa-key
+    parameters:
+      content:
+        instance:
+          destinations:
+            - Name: cappapp_html_repo_host
+              ServiceInstanceName: cappapp-html5-service
+              ServiceKeyName: cappapp-repo-host-key
+              sap.cloud.service: cappapp
+            - Authentication: OAuth2UserTokenExchange
+              Name: cappapp_uaa
+              ServiceInstanceName: cappapp-xsuaa-service
+              ServiceKeyName: cappapp-uaa-key
+              sap.cloud.service: cappapp
+          existing_destinations_policy: update
+    build-parameters:
+      no-source: true
+  - name: cappapp-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: cappapp-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: headlesstestfeprojectui
+          artifacts:
+            - headlesstestfeprojectui.zip
+          target-path: resources/
+  - name: headlesstestfeprojectui
+    type: html5
+    path: app/feproject-ui
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: cappapp-db
+    type: com.sap.xs.hdi-container
+    parameters:
+      service: hana
+      service-plan: hdi-shared
+    properties:
+      hdi-service-name: \${service-name}
+  - name: cappapp-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: cappapp-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+  - name: cappapp-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: cappapp-xsuaa-service
+      service-plan: application
+  - name: cappapp-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: cappapp-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
 "
 `;
 
@@ -1111,111 +1111,111 @@ exports[`Test headless generator Test: Headless deploy-config - addToManagedAppR
 `;
 
 exports[`Test headless generator Test: Headless deploy-config - localAppChanges flag is ignored if set to true when parent is non-CAP 1`] = `
-"_schema-version: "3.1"
+"_schema-version: '3.1'
 ID: existing-id-deploy
 description: Fiori elements app
 version: 0.0.1
 modules:
-- name: existing-id-deploy-destination-content
-  type: com.sap.application.content
-  requires:
-  - name: existing-id-deploy-destination-service
-    parameters:
-      content-target: true
-  - name: existing-id-deploy-repo-host
-    parameters:
-      service-key:
-        name: existing-id-deploy-repo-host-key
-  - name: existing-id-deploy-uaa
-    parameters:
-      service-key:
-        name: existing-id-deploy-uaa-key
-  parameters:
-    content:
-      instance:
-        destinations:
-        - Name: existing-id-deploy_html_repo_host
-          ServiceInstanceName: existing-id-deploy-html5-service
-          ServiceKeyName: existing-id-deploy-repo-host-key
-          sap.cloud.service: existing-id-deploy
-        - Authentication: OAuth2UserTokenExchange
-          Name: existing-id-deploy_uaa
-          ServiceInstanceName: existing-id-deploy-xsuaa-service
-          ServiceKeyName: existing-id-deploy-uaa-key
-          sap.cloud.service: existing-id-deploy
-        existing_destinations_policy: update
-  build-parameters:
-    no-source: true
-- name: existing-id-deploy-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: existing-id-deploy-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  - name: existing-id-deploy-destination-content
+    type: com.sap.application.content
     requires:
-    - artifacts:
-      - headlesstestfeprojectui.zip
-      name: headlesstestfeprojectui
-      target-path: resources/
-- name: headlesstestfeprojectui
-  type: html5
-  path: feproject-ui
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
-resources:
-- name: existing-id-deploy-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: true
-      init_data:
+      - name: existing-id-deploy-destination-service
+        parameters:
+          content-target: true
+      - name: existing-id-deploy-repo-host
+        parameters:
+          service-key:
+            name: existing-id-deploy-repo-host-key
+      - name: existing-id-deploy-uaa
+        parameters:
+          service-key:
+            name: existing-id-deploy-uaa-key
+    parameters:
+      content:
         instance:
           destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          - Authentication: NoAuthentication
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
-            Name: cappapp-srv-api
-            ProxyType: Internet
-            Type: HTTP
-            URL: ~{srv-api/srv-url}
-          - Authentication: NoAuthentication
-            HTML5.DynamicDestination: true
-            HTML5.ForwardAuthToken: true
-            Name: SOME_DEST_NAME
-            ProxyType: Internet
-            Type: HTTP
-            URL: ~{srv-api/srv-url}
+            - Name: existing-id-deploy_html_repo_host
+              ServiceInstanceName: existing-id-deploy-html5-service
+              ServiceKeyName: existing-id-deploy-repo-host-key
+              sap.cloud.service: existing-id-deploy
+            - Authentication: OAuth2UserTokenExchange
+              Name: existing-id-deploy_uaa
+              ServiceInstanceName: existing-id-deploy-xsuaa-service
+              ServiceKeyName: existing-id-deploy-uaa-key
+              sap.cloud.service: existing-id-deploy
           existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: existing-id-deploy-destination-service
-    service-plan: lite
-- name: existing-id-deploy-uaa
-  type: org.cloudfoundry.managed-service
-  parameters:
-    path: ./xs-security.json
-    service: xsuaa
-    service-name: existing-id-deploy-xsuaa-service
-    service-plan: application
-- name: existing-id-deploy-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: existing-id-deploy-html5-service
-    service-plan: app-host
+    build-parameters:
+      no-source: true
+  - name: existing-id-deploy-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: existing-id-deploy-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: headlesstestfeprojectui
+          artifacts:
+            - headlesstestfeprojectui.zip
+          target-path: resources/
+  - name: headlesstestfeprojectui
+    type: html5
+    path: feproject-ui
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
+resources:
+  - name: existing-id-deploy-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: existing-id-deploy-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: true
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
+              - Name: cappapp-srv-api
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+              - Name: SOME_DEST_NAME
+                Type: HTTP
+                URL: ~{srv-api/srv-url}
+                ProxyType: Internet
+                Authentication: NoAuthentication
+                HTML5.DynamicDestination: true
+                HTML5.ForwardAuthToken: true
+  - name: existing-id-deploy-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: existing-id-deploy-xsuaa-service
+      service-plan: application
+  - name: existing-id-deploy-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: existing-id-deploy-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
@@ -1474,60 +1474,60 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
 `;
 
 exports[`Test headless generator Test: Headless deploy-config 1`] = `
-"_schema-version: "3.1"
+"_schema-version: '3.1'
 ID: existing-id-deploy
 description: Fiori elements app
 version: 0.0.1
 modules:
-- name: existing-id-deploy-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: existing-id-deploy-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  - name: existing-id-deploy-app-content
+    type: com.sap.application.content
+    path: .
     requires:
-    - artifacts:
-      - comfioritoolstravel.zip
-      name: comfioritoolstravel
-      target-path: resources/
-- name: comfioritoolstravel
-  type: html5
-  path: .
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
+      - name: existing-id-deploy-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: comfioritoolstravel
+          artifacts:
+            - comfioritoolstravel.zip
+          target-path: resources/
+  - name: comfioritoolstravel
+    type: html5
+    path: .
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
 resources:
-- name: existing-id-deploy-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: existing-id-deploy-html5-service
-    service-plan: app-host
-- name: existing-id-deploy-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: false
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: existing-id-deploy-destination-service
-    service-plan: lite
+  - name: existing-id-deploy-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: existing-id-deploy-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+  - name: existing-id-deploy-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: existing-id-deploy-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: false
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
@@ -1816,60 +1816,60 @@ exports[`Test headless generator Test: Headless deploy-config 6`] = `
 `;
 
 exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 1`] = `
-"_schema-version: "3.1"
+"_schema-version: '3.1'
 ID: existing-id-deploy_ts
 description: Fiori elements app
 version: 0.0.1
 modules:
-- name: existing-id-deploy_ts-app-content
-  type: com.sap.application.content
-  path: .
-  requires:
-  - name: existing-id-deploy_ts-repo-host
-    parameters:
-      content-target: true
-  build-parameters:
-    build-result: resources
+  - name: existing-id-deploy_ts-app-content
+    type: com.sap.application.content
+    path: .
     requires:
-    - artifacts:
-      - comfioritoolstravelts.zip
-      name: comfioritoolstravelts
-      target-path: resources/
-- name: comfioritoolstravelts
-  type: html5
-  path: .
-  build-parameters:
-    build-result: dist
-    builder: custom
-    commands:
-    - npm install
-    - npm run build:cf
-    supported-platforms: []
+      - name: existing-id-deploy_ts-repo-host
+        parameters:
+          content-target: true
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: comfioritoolstravelts
+          artifacts:
+            - comfioritoolstravelts.zip
+          target-path: resources/
+  - name: comfioritoolstravelts
+    type: html5
+    path: .
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - npm run build:cf
+      supported-platforms: []
 resources:
-- name: existing-id-deploy_ts-repo-host
-  type: org.cloudfoundry.managed-service
-  parameters:
-    service: html5-apps-repo
-    service-name: existing-id-deploy_ts-html5-service
-    service-plan: app-host
-- name: existing-id-deploy_ts-destination-service
-  type: org.cloudfoundry.managed-service
-  parameters:
-    config:
-      HTML5Runtime_enabled: false
-      init_data:
-        instance:
-          destinations:
-          - Authentication: NoAuthentication
-            Name: ui5
-            ProxyType: Internet
-            Type: HTTP
-            URL: https://ui5.sap.com
-          existing_destinations_policy: update
-      version: 1.0.0
-    service: destination
-    service-name: existing-id-deploy_ts-destination-service
-    service-plan: lite
+  - name: existing-id-deploy_ts-repo-host
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service-name: existing-id-deploy_ts-html5-service
+      service-plan: app-host
+      service: html5-apps-repo
+  - name: existing-id-deploy_ts-destination-service
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: destination
+      service-name: existing-id-deploy_ts-destination-service
+      service-plan: lite
+      config:
+        HTML5Runtime_enabled: false
+        version: 1.0.0
+        init_data:
+          instance:
+            existing_destinations_policy: update
+            destinations:
+              - Name: ui5
+                Type: HTTP
+                URL: https://ui5.sap.com
+                ProxyType: Internet
+                Authentication: NoAuthentication
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true

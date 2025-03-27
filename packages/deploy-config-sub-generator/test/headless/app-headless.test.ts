@@ -1,11 +1,13 @@
 import 'jest-extended';
 import hasbin from 'hasbin';
+import * as childProcess from 'child_process';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
 import { readdirSync, writeFileSync } from 'fs';
 import { copy, existsSync } from 'fs-extra';
 import { readFile, rename } from 'fs/promises';
 import { rimraf } from 'rimraf';
 import { basename, join } from 'path';
+import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
 import { TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     INPUT_APP_DIR,
@@ -20,6 +22,8 @@ import {
     ignoreMatcherOpts
 } from './constants';
 import { runHeadlessGen } from './utils';
+import Generator from 'yeoman-generator';
+import { generatorNamespace, initI18n } from '../../src/utils';
 
 expect.extend({ toMatchFolder });
 
@@ -37,11 +41,21 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
     };
 });
 
+jest.mock('@sap/mta-lib', () => {
+    return {
+        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        Mta: require('./mockMta').MockMta
+    };
+});
+
+jest.mock('child_process');
+let spawnMock: jest.SpyInstance;
+
 export const OUTPUT_DIR = join(__dirname, '../test-output');
 export const ORIGINAL_CWD: string = process.cwd(); // Generators change the cwd, this breaks sonar report so we restore later
 
 /**
- * Basic sanity check that headless runs the CF gen - todo: investigate why these tests take 40s
+ * Headless tests for CF generator
  */
 describe('Test headless generator', () => {
     jest.setTimeout(1200000);
@@ -52,6 +66,10 @@ describe('Test headless generator', () => {
         await copy(INPUT_APP_DIR, OUTPUT_DIR);
         // This is a hack to ensure it only returns CLI in all situations
         process.stdin.isTTY = true;
+    });
+
+    beforeEach(() => {
+        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
     });
 
     afterEach(() => {
@@ -241,31 +259,32 @@ describe('Test headless generator', () => {
         rimraf.sync(join(OUTPUT_DIR, INPUT_LCAP_CHANGES));
     });
 
-    // it('Test: Headless deploy-config - telemetry is sent', async () => {
-    //     const testAppName = 'app5-telem';
+    it('Test: Headless deploy-config - telemetry is sent', async () => {
+        const testAppName = 'app5-telem';
 
-    //     let expectedTelemetryProperties = {
-    //         AppGenLaunchSource: 'Test Headless',
-    //         AppGenLaunchSourceVersion: '1.1.1'
-    //     };
+        let expectedTelemetryProperties = {
+            AppGenLaunchSource: 'Test Headless',
+            AppGenLaunchSourceVersion: '1.1.1'
+        };
 
-    //     // Dont run the expensive phases that are not under test, prompting is run but doesnt prompt since `launchDeployConfigAsSubGenerator` is true
-    //     jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn());
-    //     jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn());
-    //     const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+        // Dont run the expensive phases that are not under test, prompting is run but doesnt prompt since `launchDeployConfigAsSubGenerator` is true
+        jest.spyOn(CFGen.prototype, 'writing').mockImplementation(jest.fn());
+        jest.spyOn(CFGen.prototype, 'initializing').mockImplementation(jest.fn());
+        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
 
-    //     await runHeadlessGen(testAppName, OUTPUT_DIR);
+        await runHeadlessGen(testAppName, OUTPUT_DIR);
 
-    //     expect(composeWithSpy).toHaveBeenCalledWith(
-    //         expect.stringMatching(generatorNamespace('cf')),
-    //         expect.objectContaining({ telemetryData: expect.objectContaining(expectedTelemetryProperties) })
-    //     );
-    //     rimraf.sync(join(OUTPUT_DIR, testAppName));
-    // });
+        expect(composeWithSpy).toHaveBeenCalledWith(
+            expect.stringMatching(generatorNamespace('gen:test', 'CF')),
+            expect.objectContaining({ telemetryData: expect.objectContaining(expectedTelemetryProperties) })
+        );
+        rimraf.sync(join(OUTPUT_DIR, testAppName));
+    });
 
-    // it('Test: Headless deploy-config - should throw an exception if appConfig is missing', async () => {
-    //     const testAppName = 'app6-missingappconfig';
-    //     await expect(runHeadlessGen(testAppName, OUTPUT_DIR)).rejects.toThrow(/The first argument of the filepath/i);
-    //     rimraf.sync(join(OUTPUT_DIR, testAppName));
-    // });
+    it('Test: Headless deploy-config - should throw an exception if appConfig is missing', async () => {
+        await initI18n();
+        const testAppName = 'app6-missingappconfig';
+        await expect(runHeadlessGen(testAppName, OUTPUT_DIR)).rejects.toThrow(/The first argument of the filepath/i);
+        rimraf.sync(join(OUTPUT_DIR, testAppName));
+    });
 });

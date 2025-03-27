@@ -1,14 +1,9 @@
 import HeadlessGenerator from '../../src/headless';
 import yeomanTest from 'yeoman-test';
-import { existsSync, statSync, readFileSync } from 'fs';
-import { execSync } from 'child_process';
-import { rimraf } from 'rimraf';
-import os from 'os';
+import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { generatorNamespace } from '../../src/utils';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
-
-const mockSubGen = yeomanTest.createDummyGenerator();
 
 /**
  *
