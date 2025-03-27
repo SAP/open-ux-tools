@@ -11,7 +11,8 @@ import {
     QuickActionExecutionPayload,
     QuickActionGroup,
     updateQuickAction,
-    externalFileChange
+    externalFileChange,
+    reportTelemetry
 } from '@sap-ux-private/control-property-editor-common';
 
 import { ActionSenderFunction, ControlTreeIndex, Service, SubscribeFunction } from '../types';
@@ -149,7 +150,17 @@ export class QuickActionService implements Service {
         }
     }
 
-    private executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+    private async executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
+        try {
+            await reportTelemetry({
+                category: 'QuickAction',
+                actionName: actionInstance.type,
+                telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true),
+                quickActionSteps: actionInstance.quickActionSteps
+            });
+        } catch (error) {
+            Log.error('Error in reporting Telemetry:', error);
+        }
         if (payload.kind === SIMPLE_QUICK_ACTION_KIND && actionInstance.kind === SIMPLE_QUICK_ACTION_KIND) {
             return actionInstance.execute();
         }
