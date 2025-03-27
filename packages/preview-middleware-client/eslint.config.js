@@ -47,5 +47,12 @@ module.exports = [
             '@typescript-eslint/no-namespace': 'off',
             'jsdoc/require-jsdoc': 'off'
         }
-    }
+    },
+    {
+        files: ['test/**/*.test.ts'],
+        rules: {
+            '@typescript-eslint/no-unused-expressions': 'off',
+        }
+    },
+    
 ];
