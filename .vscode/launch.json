@@ -443,6 +443,6 @@
             "stopOnEntry": true,
             "console": "integratedTerminal",
             "internalConsoleOptions": "neverOpen"
-          },
+        }
     ]
 }

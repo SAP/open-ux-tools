@@ -106,7 +106,7 @@ async function handleExistingLaunchJson(
  *
  * @param {UpdateWorkspaceFolderOptions} updateWorkspaceFolders - The options for updating workspace folders.
  */
-function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders?: UpdateWorkspaceFolderOptions): void {
+export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders?: UpdateWorkspaceFolderOptions): void {
     if (updateWorkspaceFolders) {
         const { uri, vscode, projectName } = updateWorkspaceFolders;
         if (uri && vscode) {
@@ -136,6 +136,7 @@ async function handleDebugOptions(
     rootFolder: string,
     fs: Editor,
     debugOptions: DebugOptions,
+    skipVsCodeRefresh: boolean = false,
     logger?: Logger
 ): Promise<Editor> {
     const { launchJsonPath, workspaceFolderUri, cwd, appNotInWorkspace } = handleWorkspaceConfig(
@@ -171,7 +172,7 @@ async function handleDebugOptions(
           } as UpdateWorkspaceFolderOptions)
         : undefined;
 
-    updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
+    if (!skipVsCodeRefresh) updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
     return fs;
 }
 
@@ -198,5 +199,5 @@ export async function createLaunchConfig(
     if (!debugOptions.vscode) {
         return fs;
     }
-    return await handleDebugOptions(rootFolder, fs, debugOptions, logger);
+    return await handleDebugOptions(rootFolder, fs, debugOptions, fioriOptions.skipVsCodeRefresh, logger);
 }

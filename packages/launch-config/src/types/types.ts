@@ -21,6 +21,7 @@ export interface FioriOptions {
     urlParameters?: string;
     visible?: boolean;
     debugOptions?: DebugOptions;
+    skipVsCodeRefresh?: boolean;
 }
 
 export interface LaunchJSON {

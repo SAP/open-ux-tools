@@ -12,15 +12,15 @@ import { EventName } from '../telemetryEvents';
 import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { BspAppDownloadOptions, BspAppDownloadAnswers, BspAppDownloadQuestions, AppContentConfig } from './types';
-import { getQuestions } from '../prompts/questions';
+import { getPrompts } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
-import { join } from 'path';
+import { join, basename, dirname } from 'path';
 import { platform } from 'os';
 import { generateReadMe, type ReadMe } from '@sap-ux/fiori-generator-shared';
 import { runPostAppGenHook } from '../utils/event-hook';
 import { getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
-import { createLaunchConfig } from '@sap-ux/launch-config';
+import { createLaunchConfig, updateWorkspaceFoldersIfNeeded } from '@sap-ux/launch-config';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
@@ -29,6 +29,7 @@ import { PromptState } from '../prompts/prompt-state';
 import { PromptNames } from './types';
 import { getAbapDeployConfig, getAppConfig, replaceWebappFiles } from './config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
+import { sampleAppContentJson } from './example-app-content';
 
 /**
  * Generator class for downloading a basic app from BSP repository.
@@ -36,7 +37,7 @@ import type { AbapDeployConfig } from '@sap-ux/ui5-config';
  */
 export default class extends Generator {
     private readonly appWizard: AppWizard;
-    private readonly vscode?: VSCodeInstance;
+    private readonly vscode?: any;//VSCodeInstance; //confirm this
     private readonly launchAppDownloaderAsSubGenerator: boolean;
     private readonly appRootPath: string;
     private readonly prompts: Prompts;
@@ -109,7 +110,7 @@ export default class extends Generator {
      * Prompts the user for application details and downloads the app.
      */
     public async prompting(): Promise<void> {
-        const questions: BspAppDownloadQuestions[] = await getQuestions(this.appRootPath);
+        const questions: BspAppDownloadQuestions[] = await getPrompts(this.appRootPath);
         const { selectedApp, targetFolder } = (await this.prompt(questions)) as BspAppDownloadAnswers;
         if (PromptState.systemSelection.connectedSystem?.serviceProvider && selectedApp?.appId && targetFolder) {
             this.answers.selectedApp = selectedApp;
@@ -132,7 +133,14 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
-        const appContentJson = this.fs.readJSON(join(__dirname, 'example-app-content.json')) as unknown as AppContentConfig; //todo: extract from extracted path
+        // const appContentJsonTempPath = join(__dirname, 'example-app-content.json');
+        let appContentJson: AppContentConfig = sampleAppContentJson;
+        // todo: add back once json is available along with downloaded app 
+        // if(!this.fs.exists(appContentJsonTempPath)) {
+        //     appContentJson = this.fs.readJSON(appContentJsonTempPath) as unknown as AppContentConfig; //todo: extract from extracted path
+        // } else {
+        //     throw new Error(t('error.appContentJsonNotFound', { jsonFileName: 'example-app-content.json' }));
+        // }
         
         // Generate project files
         const config = await getAppConfig(
@@ -162,7 +170,14 @@ export default class extends Generator {
         writeApplicationInfoSettings(this.projectPath);
 
         // Replace webapp files with downloaded app files
-        replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+        //replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+        // Create launch configuration
+        await createLaunchConfig(
+            this.projectPath,
+            this.fioriOptions,
+            this.fs,
+            BspAppDownloadLogger.logger as unknown as Logger
+        );
     }
 
     /**
@@ -207,6 +222,7 @@ export default class extends Generator {
         const fioriOptions: FioriOptions = {
             name: config.app.id,
             projectRoot: this.projectPath,
+            skipVsCodeRefresh: true,
             debugOptions
         };
         return fioriOptions;
@@ -257,14 +273,13 @@ export default class extends Generator {
         ).catch((error) => {
             BspAppDownloadLogger.logger.error(t('error.telemetry', { error }));
         });
-
-        // Create launch configuration
-        await createLaunchConfig(
-            this.projectPath,
-            this.fioriOptions,
-            this.fs,
-            BspAppDownloadLogger.logger as unknown as Logger
-        );
+        const test = {
+            uri: this.vscode?.Uri?.file(join(dirname(this.projectPath))),
+            projectName: basename(this.projectPath),
+            vscode: this.vscode
+        }
+        debugger;
+        updateWorkspaceFoldersIfNeeded()
         // Clean up extracted project files
         // this.fs.delete(this.extractedProjectPath);
 

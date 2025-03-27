@@ -7,7 +7,14 @@
         "invalidServiceVersion": "Invalid or missing serviceVersion in serviceBindingDetails",
         "invalidMainEntityName": "Invalid or missing mainEntityName in serviceBindingDetails",
         "invalidModuleName": "Invalid or missing moduleName in serviceBindingDetails",
-        "invalidRepositoryName": "Invalid or missing repositoryName in serviceBindingDetails"
+        "invalidRepositoryName": "Invalid or missing repositoryName in serviceBindingDetails",
+        "appContentJsonNotFound": "{{- jsonFileName }} not found in the downloaded app",
+        "npmInstall": "Error in install phase: {{- error}}",
+        "skippedInstallation": "Option `--skipInstall` was specified. Installation of dependencies will be skipped.",
+        "replaceWebappFilesError": "Error replacing files in the downloaded app: {{- error}}"
+    },
+    "warn": {
+        "extractedFileNotFound": "Extracted file not found - {{- extractedFilePath}}"
     },
     "prompts": {
         "appSelection": {
