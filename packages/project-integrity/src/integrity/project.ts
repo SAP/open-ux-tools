@@ -84,7 +84,7 @@ New content keys: ${newContentKeys.join(', ')}`
     }
     const fileIntegrity = await getFileIntegrity(integrityData.fileIntegrity.map((file) => file.filePath));
     const contentIntegrity = getContentIntegrity(additionalStringContent);
-    const csnIntegrity = await getCsnIntegrity(dirname(integrityFilePath));
+    const csnIntegrity = await getCsnIntegrity(dirname(dirname(integrityFilePath)));
     await writeIntegrityData(integrityFilePath, { enabled: integrityData.enabled, fileIntegrity, contentIntegrity, csnIntegrity });
 }
 
