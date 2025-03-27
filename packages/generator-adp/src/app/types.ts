@@ -33,9 +33,11 @@ export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
  */
 export enum configPromptNames {
     system = 'system',
+    systemSelectionCli = 'systemSelectionCli',
     username = 'username',
     password = 'password',
-    application = 'application'
+    application = 'application',
+    appValidationCli = 'appValidationCli'
 }
 
 /**
@@ -48,6 +50,10 @@ export type ConfigQuestion = YUIQuestion<ConfigAnswers>;
  */
 export interface SystemPromptOptions {
     default?: string;
+    hide?: boolean;
+}
+
+export interface SystemCliValidationPromptOptions {
     hide?: boolean;
 }
 
@@ -64,12 +70,18 @@ export interface ApplicationPromptOptions {
     hide?: boolean;
 }
 
+export interface ApplicationCliValidationPromptOptions {
+    hide?: boolean;
+}
+
 /**
  * Options for the configuration inquirer & the prompts.
  */
 export type ConfigPromptOptions = Partial<{
     [configPromptNames.system]: SystemPromptOptions;
+    [configPromptNames.systemSelectionCli]: SystemCliValidationPromptOptions;
     [configPromptNames.username]: UsernamePromptOptions;
     [configPromptNames.password]: PasswordPromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
+    [configPromptNames.appValidationCli]: ApplicationCliValidationPromptOptions;
 }>;

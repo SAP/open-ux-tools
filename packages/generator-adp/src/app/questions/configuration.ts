@@ -1,8 +1,8 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
-import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { FlexLayer, getConfiguredProvider, getEndpointNames, loadApps } from '@sap-ux/adp-tooling';
 
 import type {
@@ -10,6 +10,7 @@ import type {
     ConfigPromptOptions,
     ConfigQuestion,
     PasswordPromptOptions,
+    SystemCliValidationPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
@@ -17,6 +18,7 @@ import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
 import { getApplicationChoices } from './helper/choices';
 import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -40,6 +42,10 @@ export class ConfigPrompter {
      * Flag indicating that system login is successful.
      */
     private isLoginSuccessful: boolean;
+    /**
+     * Flag indicating that system requires authentication in BAS or it does not exist in VS Code.
+     */
+    private isAuthRequired: boolean;
 
     /**
      * Creates an instance of ConfigPrompter.
@@ -60,13 +66,17 @@ export class ConfigPrompter {
      * @returns An array of configuration questions.
      */
     public getPrompts(promptOptions?: ConfigPromptOptions): ConfigQuestion[] {
+        const isCLI = getHostEnvironment() === hostEnvironment.cli;
+
         const keyedPrompts: Record<configPromptNames, ConfigQuestion> = {
             [configPromptNames.system]: this.getSystemListPrompt(promptOptions?.[configPromptNames.system]),
+            [configPromptNames.systemSelectionCli]: this.getSystemValidationPromptForCli({ hide: !isCLI }),
             [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
             [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
-            )
+            ),
+            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli({ hide: !isCLI })
         };
 
         const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
@@ -99,8 +109,34 @@ export class ConfigPrompter {
                 breadcrumb: true,
                 hint: t('prompts.systemTooltip')
             },
+            default: '',
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers)
         };
+    }
+
+    /**
+     * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the system list prompt.
+     *
+     * @returns Dummy prompt that runs in the CLI only.
+     */
+    private getSystemValidationPromptForCli(options: SystemCliValidationPromptOptions) {
+        return {
+            name: 'systemValidationCli',
+            when: async (answers: ConfigAnswers): Promise<boolean> => {
+                if (options.hide || !answers.system) {
+                    return false;
+                }
+
+                const result = await this.validateSystem(answers.system, answers);
+                if (typeof result === 'string') {
+                    if (!result.includes('401')) {
+                        throw new Error(result);
+                    }
+                }
+
+                return false;
+            }
+        } as YUIQuestion;
     }
 
     /**
@@ -121,7 +157,7 @@ export class ConfigPrompter {
             },
             filter: (val: string): string => val.trim(),
             validate: (val: string) => validateEmptyString(val),
-            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isLoginSuccessful)
+            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired)
         };
     }
 
@@ -143,7 +179,7 @@ export class ConfigPrompter {
                 hint: t('prompts.passwordTooltip')
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
-            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isLoginSuccessful)
+            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired)
         };
     }
 
@@ -167,8 +203,32 @@ export class ConfigPrompter {
             choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
             validate: (value: TargetApplication) => this.validateApplicationSelection(value),
-            when: (answers: ConfigAnswers) => showApplicationQuestion(answers, this.isLoginSuccessful)
+            when: (answers: ConfigAnswers) =>
+                showApplicationQuestion(answers, !!this.targetApps?.length, this.isAuthRequired, this.isLoginSuccessful)
         };
+    }
+
+    /**
+     * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the application list prompt.
+     *
+     * @returns Dummy prompt that runs in the CLI only.
+     */
+    private getApplicationValidationPromptForCli(options: SystemCliValidationPromptOptions) {
+        return {
+            name: 'appValidationCli',
+            when: async (answers: ConfigAnswers): Promise<boolean> => {
+                if (options.hide || !answers.system) {
+                    return false;
+                }
+
+                const result = this.validateApplicationSelection(answers.application);
+                if (typeof result === 'string') {
+                    throw new Error(result);
+                }
+
+                return false;
+            }
+        } as YUIQuestion;
     }
 
     /**
@@ -207,7 +267,7 @@ export class ConfigPrompter {
 
         try {
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-
+            await this.getSystemInfo();
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
             this.isLoginSuccessful = true;
             return true;
@@ -239,20 +299,45 @@ export class ConfigPrompter {
         };
 
         try {
+            this.targetApps = [];
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-
-            const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(system);
-            if (!systemRequiresAuth) {
+            this.isAuthRequired = await this.targetSystems.getSystemRequiresAuth(system);
+            if (!this.isAuthRequired) {
+                await this.getSystemInfo();
                 this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
-                this.isLoginSuccessful = true;
-            } else {
-                this.isLoginSuccessful = false;
             }
-
-            return true;
         } catch (e) {
-            this.isLoginSuccessful = false;
             return e.message;
+        }
+
+        return true;
+    }
+
+    /**
+     * Fetches system information from the provider's layered repository.
+     *
+     * @returns {SystemInfo} System into containing system supported adaptation project types and translations.
+     */
+    private async getSystemInfo(): Promise<void> {
+        try {
+            const lrep = this.abapProvider.getLayeredRepository();
+            await lrep.getSystemInfo();
+        } catch (e) {
+            this.handleSystemError(e);
+        }
+    }
+
+    /**
+     * Handles errors that occur while fetching system information, setting default values and rethrowing if necessary.
+     *
+     * @param {Error} error - The error encountered during the system info fetch.
+     */
+    private handleSystemError(error: Error): void {
+        this.logger.debug(`Failed to fetch system information. Reason: ${error.message}`);
+        if (isAxiosError(error)) {
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                throw new Error(`Authentication error: ${error.message}`);
+            }
         }
     }
 }
