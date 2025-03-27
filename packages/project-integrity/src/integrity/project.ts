@@ -1,8 +1,9 @@
 import { existsSync } from 'fs';
 import type { CheckIntegrityResult, Content, ProjectSettings } from '../types';
-import { getContentIntegrity, getFileIntegrity } from './hash';
+import { getContentIntegrity, getCsnIntegrity, getFileIntegrity } from './hash';
 import { readIntegrityData, writeIntegrityData } from './persistence';
 import { checkIntegrity } from './check';
+import { dirname } from 'path';
 
 /**
  * Function to ensure correct sorting of strings.
@@ -26,7 +27,8 @@ export async function initProject(settings: ProjectSettings): Promise<void> {
     const enabled = true;
     const fileIntegrity = await getFileIntegrity(settings.fileList);
     const contentIntegrity = await getContentIntegrity(settings.additionalStringContent);
-    await writeIntegrityData(settings.integrityFilePath, { enabled, fileIntegrity, contentIntegrity });
+    const csnIntegrity = await getCsnIntegrity(settings.projectRoot);
+    await writeIntegrityData(settings.integrityFilePath, { enabled, fileIntegrity, contentIntegrity, csnIntegrity });
 }
 
 /**
@@ -82,7 +84,8 @@ New content keys: ${newContentKeys.join(', ')}`
     }
     const fileIntegrity = await getFileIntegrity(integrityData.fileIntegrity.map((file) => file.filePath));
     const contentIntegrity = getContentIntegrity(additionalStringContent);
-    await writeIntegrityData(integrityFilePath, { enabled: integrityData.enabled, fileIntegrity, contentIntegrity });
+    const csnIntegrity = await getCsnIntegrity(dirname(integrityFilePath));
+    await writeIntegrityData(integrityFilePath, { enabled: integrityData.enabled, fileIntegrity, contentIntegrity, csnIntegrity });
 }
 
 /**

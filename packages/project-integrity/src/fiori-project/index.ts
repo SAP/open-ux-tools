@@ -59,7 +59,7 @@ export async function initFioriProject(projectRoot: string): Promise<void> {
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
     const fileList = await getFileList(projectRoot);
     const additionalStringContent = await getAdditionalStringContent(projectRoot);
-    await initProject({ integrityFilePath, fileList, additionalStringContent });
+    await initProject({projectRoot, integrityFilePath, fileList, additionalStringContent });
 }
 
 /**
