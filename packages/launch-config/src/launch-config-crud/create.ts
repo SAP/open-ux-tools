@@ -128,6 +128,7 @@ export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders?: UpdateWo
  * @param {Editor} fs - The file system editor to read and write the `launch.json` file.
  * @param {DebugOptions} debugOptions - Debug configuration options that dictate how the `launch.json`
  *     should be generated and what commands should be logged.
+ * @param {boolean} enableVSCodeReload - A flag indicating whether the workspace should be reloaded in VS Code.
  * @param {Logger} logger - Logger instance for logging information or warnings.
  * @returns {Promise<Editor>} - Returns the file system editor after potentially modifying the workspace
  *     and updating or creating the `launch.json` file.
@@ -136,7 +137,7 @@ async function handleDebugOptions(
     rootFolder: string,
     fs: Editor,
     debugOptions: DebugOptions,
-    skipVsCodeRefresh: boolean = false,
+    enableVSCodeReload: boolean = true,
     logger?: Logger
 ): Promise<Editor> {
     const { launchJsonPath, workspaceFolderUri, cwd, appNotInWorkspace } = handleWorkspaceConfig(
@@ -161,18 +162,20 @@ async function handleDebugOptions(
     }
     debugger;
 
-    // The `workspaceFolderUri` is a URI obtained from VS Code that specifies the path to the workspace folder.
-    // This URI is populated when a reload of the workspace is required. It allows us to identify and update
-    // the workspace folder correctly within VS Code.
-    const updateWorkspaceFolders = workspaceFolderUri
+    // Conditionally update workspace folders based on the enableVSCodeReload flag
+    if (enableVSCodeReload) {
+        // The `workspaceFolderUri` is a URI obtained from VS Code that specifies the path to the workspace folder.
+        // This URI is populated when a reload of the workspace is required. It allows us to identify and update
+        // the workspace folder correctly within VS Code.
+        const updateWorkspaceFolders = workspaceFolderUri
         ? ({
-              uri: workspaceFolderUri,
-              projectName: basename(rootFolder),
-              vscode: debugOptions.vscode
-          } as UpdateWorkspaceFolderOptions)
+            uri: workspaceFolderUri,
+            projectName: basename(rootFolder),
+            vscode: debugOptions.vscode
+        } as UpdateWorkspaceFolderOptions)
         : undefined;
-
-    if (!skipVsCodeRefresh) updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
+        updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
+    }
     return fs;
 }
 
@@ -199,5 +202,5 @@ export async function createLaunchConfig(
     if (!debugOptions.vscode) {
         return fs;
     }
-    return await handleDebugOptions(rootFolder, fs, debugOptions, fioriOptions.skipVsCodeRefresh, logger);
+    return await handleDebugOptions(rootFolder, fs, debugOptions, fioriOptions.enableVSCodeReload, logger);
 }
