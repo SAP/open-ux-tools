@@ -132,6 +132,9 @@
       "path": "packages/flp-config-sub-generator"
     },
     {
+      "path": "packages/generator-adp"
+    },
+    {
       "path": "packages/guided-answers-helper"
     },
     {

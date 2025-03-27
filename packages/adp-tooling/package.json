@@ -9,7 +9,7 @@
     "bugs": {
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Aadp-tooling"
     },
-    "version": "0.13.18",
+    "version": "0.13.21",
     "license": "Apache-2.0",
     "author": "@SAP/ux-tools-team",
     "main": "dist/index.js",
@@ -46,6 +46,7 @@
         "@sap-ux/odata-service-writer": "workspace:*",
         "@sap-ux/nodejs-utils": "workspace:*",
         "@sap-ux/i18n": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "adm-zip": "0.5.10",
         "ejs": "3.1.10",
         "i18next": "23.11.2",
