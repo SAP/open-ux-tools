@@ -297,7 +297,14 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
                 );
 
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'ControllerExtension',
+                    undefined,
+                    {},
+                    expect.objectContaining({ actionName: 'add-controller-to-page' })
+                );
             });
         });
 
@@ -796,7 +803,8 @@ describe('FE V2 quick actions', () => {
                             aggregation: 'content',
                             defaultAggregationArrayIndex: 1,
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                        }
+                        },
+                        expect.objectContaining({ actionName: 'create-table-action' })
                     );
                 }
             });
@@ -804,6 +812,7 @@ describe('FE V2 quick actions', () => {
 
         describe('add page action', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:42:00.353Z');
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -928,7 +937,8 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'actions',
                         'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
-                    }
+                    },
+                    { actionName: 'add-page-action', telemetryEventIdentifier: '2025-03-17T20:42:00.353Z' }
                 );
             });
         });
@@ -949,6 +959,7 @@ describe('FE V2 quick actions', () => {
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:37:11.940Z');
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -1086,7 +1097,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T20:37:11.940Z' }
                 );
             });
         });
@@ -2025,6 +2037,7 @@ describe('FE V2 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:24:49.347Z');
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -2161,12 +2174,14 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'items',
                         title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-                    }
+                    },
+                    { actionName: 'op-add-header-field', telemetryEventIdentifier: '2025-03-17T20:24:49.347Z' }
                 );
             });
         });
         describe('add custom section', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:22:57.404Z');
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -2305,12 +2320,14 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'sections',
                         title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
-                    }
+                    },
+                    { actionName: 'op-add-custom-section', telemetryEventIdentifier: '2025-03-17T20:22:57.404Z' }
                 );
             });
         });
         describe('create table action', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:01:19.650Z');
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -2470,7 +2487,8 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'content',
                         defaultAggregationArrayIndex: 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                    }
+                    },
+                    { actionName: 'create-table-action', telemetryEventIdentifier: '2025-03-17T20:01:19.650Z' }
                 );
             });
         });
@@ -2491,6 +2509,7 @@ describe('FE V2 quick actions', () => {
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T15:14:25.947Z');
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -2658,7 +2677,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T15:14:25.947Z' }
                 );
             });
             test('displays warning when no rows loaded', async () => {
@@ -3348,6 +3368,7 @@ describe('FE V2 quick actions', () => {
     describe('AnalyticalListPage', () => {
         describe('create table custom column', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:01:19.766Z');
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -3481,7 +3502,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T20:01:19.766Z' }
                 );
             });
         });
@@ -3584,6 +3606,7 @@ describe('FE V2 quick actions', () => {
             jest.restoreAllMocks();
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+            jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-20T12:39:43.719Z');
             jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                 testCase.ui5version ?? { major: 1, minor: 131 }
             );
@@ -3854,30 +3877,37 @@ describe('FE V2 quick actions', () => {
             if (!testCase.expect.toBeAvailable) {
                 expect(DialogFactory.createDialog).toHaveBeenCalledTimes(0);
             } else {
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddSubpage', undefined, {
-                    appReference: 'dummyProjectId',
-                    appType: 'fe-v2',
-                    pageDescriptor: {
-                        entitySet: 'Travels',
-                        navProperties: testCase.isNewPageUnavailable
-                            ? []
-                            : [
-                                  testCase.isListReport
-                                      ? {
-                                            entitySet: 'Travels',
-                                            navProperty: 'Travels'
-                                        }
-                                      : {
-                                            entitySet: 'Bookings',
-                                            navProperty: 'to_Booking'
-                                        }
-                              ],
-                        pageType: testCase.isListReport
-                            ? 'sap.suite.ui.generic.template.ListReport'
-                            : 'sap.suite.ui.generic.template.ObjectPage'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddSubpage',
+                    undefined,
+                    {
+                        appReference: 'dummyProjectId',
+                        appType: 'fe-v2',
+                        pageDescriptor: {
+                            entitySet: 'Travels',
+                            navProperties: testCase.isNewPageUnavailable
+                                ? []
+                                : [
+                                      testCase.isListReport
+                                          ? {
+                                                entitySet: 'Travels',
+                                                navProperty: 'Travels'
+                                            }
+                                          : {
+                                                entitySet: 'Bookings',
+                                                navProperty: 'to_Booking'
+                                            }
+                                  ],
+                            pageType: testCase.isListReport
+                                ? 'sap.suite.ui.generic.template.ListReport'
+                                : 'sap.suite.ui.generic.template.ObjectPage'
+                        },
+                        title: 'ADD_SUB_PAGE_DIALOG_TITLE'
                     },
-                    title: 'ADD_SUB_PAGE_DIALOG_TITLE'
-                });
+                    { 'actionName': 'add-new-subpage', 'telemetryEventIdentifier': '2025-03-20T12:39:43.719Z' }
+                );
             }
         });
     });

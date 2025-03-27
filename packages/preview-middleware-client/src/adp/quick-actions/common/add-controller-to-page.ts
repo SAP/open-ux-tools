@@ -56,7 +56,14 @@ export class AddControllerToPageQuickAction
     async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.CONTROLLER_EXTENSION);
+            await DialogFactory.createDialog(
+                overlay,
+                this.context.rta,
+                DialogNames.CONTROLLER_EXTENSION,
+                undefined,
+                {},
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+            );
         }
         return [];
     }

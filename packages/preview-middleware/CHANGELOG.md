@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.5
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
 ## 0.19.4
 
 ### Patch Changes

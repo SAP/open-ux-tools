@@ -391,6 +391,7 @@ describe('FE V4 quick actions', () => {
         describe('add controller to the page', () => {
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
+                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-14T16:20:26.100Z');
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
                         getId: () => 'MyView',
@@ -503,7 +504,14 @@ describe('FE V4 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
                 );
 
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'ControllerExtension',
+                    undefined,
+                    {},
+                    { actionName: 'add-controller-to-page', telemetryEventIdentifier: '2025-03-14T16:20:26.100Z' }
+                );
             });
         });
 
@@ -912,7 +920,8 @@ describe('FE V4 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    expect.objectContaining({ actionName: 'create-table-custom-column' })
                 );
             });
         });
@@ -1549,6 +1558,7 @@ describe('FE V4 quick actions', () => {
                     }
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T15:06:27.121Z');
                     const pageView = new XMLView();
                     FlexUtils.getViewForControl.mockImplementation(() => {
                         return {
@@ -1684,7 +1694,8 @@ describe('FE V4 quick actions', () => {
                         {
                             aggregation: 'items',
                             title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-                        }
+                        },
+                        { actionName: 'op-add-header-field', telemetryEventIdentifier: '2025-03-17T15:06:27.121Z' }
                     );
                 });
             });
@@ -1716,7 +1727,9 @@ describe('FE V4 quick actions', () => {
                         enable: true
                     }
                 ];
+
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T14:59:00.942Z');
                     const pageView = new XMLView();
                     const scrollIntoView = jest.fn();
                     jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTable').mockImplementation(
@@ -1908,7 +1921,8 @@ describe('FE V4 quick actions', () => {
                         {
                             aggregation: 'columns',
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                        }
+                        },
+                        { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T14:59:00.942Z' }
                     );
                 });
             });
