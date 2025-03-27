@@ -18,6 +18,9 @@ export enum LaunchSource {
     ServiceCenterAdaptor = 'ServiceCenterAdaptor'
 }
 
+/**
+ *
+ */
 export default class extends DeploymentGenerator {
     readonly genNamespace: string;
     absAppConfigPath: string;
