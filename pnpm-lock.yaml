@@ -15611,6 +15611,13 @@ packages:
     resolution: {integrity: sha512-epNL4mnl3HUYrwVQtZ8s0nxkE4ogAoSqO1V1fa670Ww1fXp8Yr74zNS9Aib/vLNf0rq0AF/4mboo7ev5XkikXQ==}
     dev: true
 
+  /find-versions@3.2.0:
+    resolution: {integrity: sha512-P8WRou2S+oe222TOCHitLy8zj+SIsVJh52VP4lvXkaFVnOFFdoWv1H1Jjvel1aI6NCFOAaeAVm8qrI0odiLcww==}
+    engines: {node: '>=6'}
+    dependencies:
+      semver-regex: 2.0.0
+    dev: true
+
   /find-yarn-workspace-root2@1.2.16:
     resolution: {integrity: sha512-hr6hb1w8ePMpPVUK39S4RlwJzi+xPLuVuG8XlwXU3KD5Yn3qgBWVfy3AzNlDhWvE1EORCE65/Qm26rFQt3VLVA==}
     dependencies:
@@ -17344,6 +17351,11 @@ packages:
     engines: {node: '>=0.10.0'}
     dev: true
 
+  /is-redirect@1.0.0:
+    resolution: {integrity: sha512-cr/SlUEe5zOGmzvj9bUyC4LVvkNVAXu4GytXLNMr1pny+a65MpQ9IJzFHD5vi7FyJgb4qt27+eS3TuQnqB+RQw==}
+    engines: {node: '>=0.10.0'}
+    dev: true
+
   /is-reference@1.2.1:
     resolution: {integrity: sha512-U82MsXXiFIrjCK4otLT+o2NA2Cd2g5MLoOVXUZjIOhLurrRxpEXzI8O0KZHr3IjLvlAH1kTPYSuqer5T9ZVBKQ==}
     dependencies:
@@ -17601,6 +17613,14 @@ packages:
     dependencies:
       html-escaper: 2.0.2
       istanbul-lib-report: 3.0.1
+    dev: true
+
+  /isurl@1.0.0:
+    resolution: {integrity: sha512-1P/yWsxPlDtn7QeRD+ULKQPaIaN6yF368GZ2vDfv0AL0NwpStafjWCDDdn0k8wgFMWpVAqG7oJhxHnlud42i9w==}
+    engines: {node: '>= 4'}
+    dependencies:
+      has-to-string-tag-x: 1.4.1
+      is-object: 1.0.2
     dev: true
 
   /iterate-object@1.3.5:
@@ -23429,6 +23449,27 @@ packages:
       slice-ansi: 4.0.0
       string-width: 4.2.3
       strip-ansi: 6.0.1
+    dev: true
+
+  /tabtab@1.3.2:
+    resolution: {integrity: sha512-qHWOJ5g7lrpftZMyPv3ZaYZs7PuUTKWEP/TakZHfpq66bSwH25SQXn5616CCh6Hf/1iPcgQJQHGcJkzQuATabQ==}
+    hasBin: true
+    dependencies:
+      debug: 2.6.9
+      inquirer: 1.2.3
+      minimist: 1.2.8
+      mkdirp: 0.5.6
+      npmlog: 2.0.4
+      object-assign: 4.1.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: true
+
+  /taketalk@1.0.0:
+    resolution: {integrity: sha512-kS7E53It6HA8S1FVFBWP7HDwgTiJtkmYk7TsowGlizzVrivR1Mf9mgjXHY1k7rOfozRVMZSfwjB3bevO4QEqpg==}
+    dependencies:
+      get-stdin: 4.0.1
+      minimist: 1.2.8
     dev: true
 
   /tapable@2.2.1:

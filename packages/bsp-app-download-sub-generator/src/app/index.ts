@@ -167,8 +167,7 @@ export default class extends Generator {
 
         // Generate Fiori launch config
         this.fioriOptions = this._getLaunchConfig(config);
-        writeApplicationInfoSettings(this.projectPath);
-
+        debugger;
         // Replace webapp files with downloaded app files
         //replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
         // Create launch configuration
@@ -178,6 +177,7 @@ export default class extends Generator {
             this.fs,
             BspAppDownloadLogger.logger as unknown as Logger
         );
+        writeApplicationInfoSettings(this.projectPath, this.fs);
     }
 
     /**
@@ -222,7 +222,7 @@ export default class extends Generator {
         const fioriOptions: FioriOptions = {
             name: config.app.id,
             projectRoot: this.projectPath,
-            skipVsCodeRefresh: true,
+            enableVSCodeReload: false,
             debugOptions
         };
         return fioriOptions;
@@ -273,13 +273,13 @@ export default class extends Generator {
         ).catch((error) => {
             BspAppDownloadLogger.logger.error(t('error.telemetry', { error }));
         });
-        const test = {
-            uri: this.vscode?.Uri?.file(join(dirname(this.projectPath))),
+        const updateWorkspaceFolders = {
+            uri: this.vscode?.Uri?.file(join(this.projectPath)),
             projectName: basename(this.projectPath),
             vscode: this.vscode
         }
         debugger;
-        updateWorkspaceFoldersIfNeeded()
+        updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders)
         // Clean up extracted project files
         // this.fs.delete(this.extractedProjectPath);
 
