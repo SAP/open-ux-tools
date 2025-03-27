@@ -1,11 +1,11 @@
 import { sep, join } from 'path';
-import DeployGenerator from '../src/app';
+import DeployGenerator from '../../src/app';
 import yeomanTest from 'yeoman-test';
 import * as memfs from 'memfs';
 import hasbin from 'hasbin';
 import { TestFixture } from './fixtures';
 import fs from 'fs';
-import { generatorNamespace, initI18n } from '../src/utils';
+import { generatorNamespace, initI18n } from '../../src/utils';
 import { TargetName } from '@sap-ux/deploy-config-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
@@ -78,6 +78,7 @@ describe('Deployment Generator', () => {
 
     afterAll(() => {
         jest.resetAllMocks();
+        // Remove the test folder if the folder is empty (i.e. no failed tests)
     });
 
     it('Validate deployment generator exists if the incorrect target is set', async () => {
