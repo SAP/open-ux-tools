@@ -359,47 +359,7 @@ describe('AddSubpage controller', () => {
     });
 
     describe('onCreateBtnPress', () => {
-        const getTestModel = () =>
-            ({
-                setProperty: jest.fn(),
-                getProperty: jest.fn()
-            } as unknown as JSONModel);
-
         let addSubpage: AddSubpage;
-        let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
-
-        const createDialog = (content: Control[], rtaMock: RuntimeAuthoring = {} as unknown as RuntimeAuthoring) => {
-            addSubpage = new AddSubpage(
-                'adp.extension.controllers.AddSubpage',
-                {
-                    getId: jest.fn().mockReturnValue('some-id')
-                } as unknown as UI5Element,
-                rtaMock,
-                {
-                    title: 'QUICK_ACTION_ADD_SUBPAGE',
-                    appReference: 'dummyApp',
-                    appType: 'fe-v2',
-                    pageDescriptor: {
-                        entitySet: 'Travels',
-                        navProperties: [
-                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                        ],
-                        pageType: 'sap.suite.ui.generic.template.ObjectPage'
-                    }
-                }
-            );
-            addSubpage.model = getTestModel();
-            beginBtnSetEnabledMock = jest.fn().mockReturnValue({ rerender: jest.fn() });
-            addSubpage.dialog = {
-                getBeginButton: jest.fn().mockReturnValue({ setEnabled: beginBtnSetEnabledMock }),
-                getContent: jest.fn().mockReturnValue([
-                    {
-                        getContent: jest.fn().mockReturnValue(content)
-                    } as unknown as SimpleForm<Control[]>
-                ])
-            } as unknown as Dialog;
-        };
 
         beforeEach(() => {
             mocks.setValueStateTextMock = jest.fn();
@@ -412,26 +372,98 @@ describe('AddSubpage controller', () => {
             jest.restoreAllMocks();
         });
 
-        const testModel = {
-            getProperty: jest.fn().mockImplementation((name: string) => {
-                const props: Record<string, any> = {
-                    '/navigationData': [
-                        { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                        { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                    ],
-                    '/selectedNavigation/key': 'to_Booking',
-                    '/appType': 'fe-v2',
-                    '/pageType': 'ObjectPageType',
-                    '/appReference': 'app',
-                    '/currentEntitySet': 'Travel'
-                };
-                return props[name];
-            }),
-            setProperty: jest.fn()
-        } as unknown as JSONModel;
-        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        const testCases: {
+            appType: 'v2' | 'v4';
+            routePattern?: string;
+            expectedPattern?: string;
+        }[] = [
+            {
+                appType: 'v2'
+            },
+            {
+                appType: 'v4',
+                routePattern: ':?query:',
+                expectedPattern: 'Bookings({BookingsKey}):?query:'
+            },
+            {
+                appType: 'v4',
+                routePattern: 'Travel({key}):?query:',
+                expectedPattern: 'Travel({key})/to_Booking({BookingsKey}):?query:'
+            }
+        ];
 
-        test('calls rta command to add new subpage', async () => {
+        test.each(testCases)('calls rta command to add new subpage (%s)', async (testCase) => {
+            CommandFactory.getCommandFor.mockClear();
+            const getTestModel = () =>
+                ({
+                    setProperty: jest.fn(),
+                    getProperty: jest.fn()
+                } as unknown as JSONModel);
+
+            let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+            const testModel = {
+                getProperty: jest.fn().mockImplementation((name: string) => {
+                    const props: Record<string, any> = {
+                        '/navigationData': [
+                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                        ],
+                        '/selectedNavigation/key': 'to_Booking',
+                        '/appType': testCase.appType === 'v2' ? 'fe-v2' : 'fe-v4',
+                        '/pageType': 'ObjectPageType',
+                        '/pageId': 'ObjectPageId',
+                        '/appReference': 'dummyApp',
+                        '/currentEntitySet': 'Travels',
+                        '/routePattern': testCase.routePattern
+                    };
+                    return props[name];
+                }),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+
+            const createDialog = (
+                content: Control[],
+                rtaMock: RuntimeAuthoring = {} as unknown as RuntimeAuthoring
+            ) => {
+                addSubpage = new AddSubpage(
+                    'adp.extension.controllers.AddSubpage',
+                    {
+                        getId: jest.fn().mockReturnValue('some-id')
+                    } as unknown as UI5Element,
+                    rtaMock,
+                    {
+                        title: 'QUICK_ACTION_ADD_SUBPAGE',
+                        appReference: 'dummyApp',
+                        appType: testCase.appType === 'v2' ? 'fe-v2' : 'fe-v4',
+                        pageDescriptor: {
+                            entitySet: 'Travels',
+                            navProperties: [
+                                { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                                { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                            ],
+                            pageType: 'sap.suite.ui.generic.template.ObjectPage',
+                            ...(testCase.appType === 'v2'
+                                ? {}
+                                : {
+                                      pageId: 'BookingObjectPage',
+                                      routePattern: testCase.routePattern
+                                  })
+                        }
+                    }
+                );
+                addSubpage.model = getTestModel();
+                beginBtnSetEnabledMock = jest.fn().mockReturnValue({ rerender: jest.fn() });
+                addSubpage.dialog = {
+                    getBeginButton: jest.fn().mockReturnValue({ setEnabled: beginBtnSetEnabledMock }),
+                    getContent: jest.fn().mockReturnValue([
+                        {
+                            getContent: jest.fn().mockReturnValue(content)
+                        } as unknown as SimpleForm<Control[]>
+                    ])
+                } as unknown as Dialog;
+            };
+
             const executeSpy = jest.fn();
             rtaMock.getCommandStack.mockReturnValue({
                 pushAndExecute: executeSpy
@@ -482,25 +514,52 @@ describe('AddSubpage controller', () => {
             expect(sendActionSpy).toHaveBeenCalledWith(setApplicationRequiresReload(true));
 
             const commandCall = CommandFactory.getCommandFor.mock.calls[0];
-            expect(commandCall[0]).toBe(runtimeControlMock);
+
+            expect(commandCall[0]).toEqual(runtimeControlMock);
             expect(commandCall[1]).toBe('appDescriptor');
-            expect(commandCall[2]).toStrictEqual({
-                'changeType': 'appdescr_ui_generic_app_addNewObjectPage',
-                'parameters': {
-                    'childPage': {
-                        'definition': {
-                            'entitySet': 'Bookings',
-                            'navigationProperty': 'to_Booking'
-                        },
-                        'id': 'ObjectPage|to_Booking'
-                    },
-                    'parentPage': {
-                        'component': 'ObjectPageType',
-                        'entitySet': 'Travel'
-                    }
-                },
-                'reference': 'app'
-            });
+            expect(commandCall[2]).toStrictEqual(
+                testCase.appType === 'v2'
+                    ? {
+                          'changeType': 'appdescr_ui_generic_app_addNewObjectPage',
+                          'parameters': {
+                              'childPage': {
+                                  'definition': {
+                                      'entitySet': 'Bookings',
+                                      'navigationProperty': 'to_Booking'
+                                  },
+                                  'id': 'ObjectPage|to_Booking'
+                              },
+                              'parentPage': {
+                                  'component': 'ObjectPageType',
+                                  'entitySet': 'Travels'
+                              }
+                          },
+                          'reference': 'dummyApp'
+                      }
+                    : {
+                          'changeType': 'appdescr_fe_addNewPage',
+                          'reference': 'dummyApp',
+                          'parameters': {
+                              'sourcePage': {
+                                  'id': 'ObjectPageId',
+                                  'navigationSource': 'to_Booking'
+                              },
+                              'targetPage': {
+                                  'type': 'Component',
+                                  'id': 'BookingsObjectPage',
+                                  'name': 'sap.fe.templates.ObjectPage',
+                                  'routePattern': testCase.expectedPattern,
+                                  'settings': {
+                                      'contextPath': '/Bookings',
+                                      'controlConfiguration': {},
+                                      'editableHeaderContent': false,
+                                      'entitySet': 'Bookings',
+                                      'pageLayout': ''
+                                  }
+                              }
+                          }
+                      }
+            );
         });
     });
 });

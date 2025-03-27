@@ -25,16 +25,19 @@ import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { ApplicationType } from '../../utils/application';
 import { CommunicationService } from '../../cpe/communication-service';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { generateRoutePattern } from '../quick-actions/fe-v4/utils';
 
 type SubpageType = 'ObjectPage' | 'CustomPage';
 
 export type AddSubpageModel = JSONModel & {
     getProperty(sPath: '/appType'): ApplicationType;
+    getProperty(sPath: '/pageId'): string;
     getProperty(sPath: '/pageType'): string;
     getProperty(sPath: '/appReference'): string;
     getProperty(sPath: '/currentEntitySet'): string;
     getProperty(sPath: '/title'): string;
     getProperty(sPath: '/navigationData'): { navProperty: string; entitySet: string }[];
+    getProperty(sPath: '/routePattern'): string;
     getProperty(sPath: '/selectedPageType/key'): SubpageType;
     getProperty(sPath: '/selectedNavigation/key'): string;
 };
@@ -44,10 +47,12 @@ export interface AddSubpageOptions {
     appReference: string;
     title: string;
     pageDescriptor: {
-        pageType: string;
         entitySet: string;
-        navProperties: { navProperty: string; entitySet: string }[]; 
-    } 
+        pageId?: string;
+        pageType: string;
+        navProperties: { navProperty: string; entitySet: string }[];
+        routePattern?: string;
+    };
 }
 
 /**
@@ -62,9 +67,11 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
             appType: options.appType,
             appReference: options.appReference,
             pageType: options.pageDescriptor.pageType,
+            pageId: options.pageDescriptor.pageId,
             title: options.title,
             navigationData: options.pageDescriptor.navProperties,
-            currentEntitySet: options.pageDescriptor.entitySet
+            currentEntitySet: options.pageDescriptor.entitySet,
+            routePattern: options.pageDescriptor.routePattern
         });
         this.commandExecutor = new CommandExecutor(this.rta);
     }
@@ -112,46 +119,60 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         const navigation = this.model.getProperty('/navigationData').find((item) => (item.navProperty = navProperty));
         const targetEntitySet = navigation?.entitySet ?? '';
         const appType = this.model.getProperty('/appType');
+        const reference = this.model.getProperty('/appReference');
+        const pageId = this.model.getProperty('/pageId');
         const pageType = this.model.getProperty('/pageType');
+        const entitySet = this.model.getProperty('/currentEntitySet');
 
-        const modifiedValue =
-            appType === 'fe-v2'
-                ? {
-                      changeType: 'appdescr_ui_generic_app_addNewObjectPage',
-                      reference: this.model.getProperty('/appReference'),
-                      parameters: {
-                          parentPage: {
-                              component: pageType,
-                              entitySet: this.model.getProperty('/currentEntitySet')
-                          },
-                          childPage: {
-                              id: `ObjectPage|${navProperty}`,
-                              definition: {
-                                  entitySet: targetEntitySet,
-                                  navigationProperty: navProperty
-                              }
-                          }
-                      }
-                  }
-                : {
-                      changeType: 'appdescr_fe_addNewPage',
-                      parameters: {
-                          sourcePage: {
-                              id: this.runtimeControl.getId(),
-                              navigationSource: targetEntitySet
-                          },
-                          targetPage: {
-                              type: 'Component',
-                              id: `${targetEntitySet}ObjectPage`,
-                              name: 'sap.fe.templates.ObjectPage',
-                              routePattern: `${targetEntitySet}({key}):?query:`,
-                              settings: {
-                                  contextPath: `/${targetEntitySet}`,
-                                  editableHeaderContent: false
-                              }
-                          }
-                      }
-                  };
+        let modifiedValue;
+        if (appType === 'fe-v2') {
+            modifiedValue = {
+                changeType: 'appdescr_ui_generic_app_addNewObjectPage',
+                reference,
+                parameters: {
+                    parentPage: {
+                        component: pageType,
+                        entitySet
+                    },
+                    childPage: {
+                        id: `ObjectPage|${navProperty}`,
+                        definition: {
+                            entitySet: targetEntitySet,
+                            navigationProperty: navProperty
+                        }
+                    }
+                }
+            };
+        } else {
+            const routePattern = generateRoutePattern(
+                this.model.getProperty('/routePattern'),
+                navProperty,
+                targetEntitySet
+            );
+            modifiedValue = {
+                changeType: 'appdescr_fe_addNewPage',
+                reference,
+                parameters: {
+                    sourcePage: {
+                        id: pageId,
+                        navigationSource: navProperty
+                    },
+                    targetPage: {
+                        type: 'Component',
+                        id: `${targetEntitySet}ObjectPage`,
+                        name: 'sap.fe.templates.ObjectPage',
+                        routePattern,
+                        settings: {
+                            contextPath: `/${targetEntitySet}`,
+                            editableHeaderContent: false,
+                            entitySet: targetEntitySet,
+                            pageLayout: '',
+                            controlConfiguration: {}
+                        }
+                    }
+                }
+            };
+        }
 
         const command = await CommandFactory.getCommandFor(
             this.runtimeControl,
