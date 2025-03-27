@@ -12,7 +12,7 @@ export class PromptState {
     /**
      * Returns the current state of the service config.
      *
-     * @returns {ServiceConfig} service config
+     * @returns {SystemSelectionAnswers} service config
      */
     public static get systemSelection(): SystemSelectionAnswers {
         return this._systemSelection;

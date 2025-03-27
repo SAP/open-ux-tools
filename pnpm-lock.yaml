@@ -969,6 +969,9 @@ importers:
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -976,21 +979,18 @@ importers:
       '@jest/types':
         specifier: 29.6.3
         version: 29.6.3
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
       '@sap-ux/nodejs-utils':
         specifier: workspace:*
         version: link:../nodejs-utils
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@types/adm-zip':
         specifier: 0.5.5
         version: 0.5.5
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
       '@types/lodash':
         specifier: 4.14.202
         version: 4.14.202

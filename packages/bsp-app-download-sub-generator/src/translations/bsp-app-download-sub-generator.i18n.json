@@ -1,7 +1,13 @@
 {
     "error": {
         "telemetry": "Failed to send telemetry data after downloading app from BSP. {{- error}}",
-        "noAppsDeployed": "No basic applications deployed to this system can be downloaded. Please see <GA link> for more details" 
+        "noAppsDeployed": "No basic applications deployed to this system can be downloaded. Please see <GA link> for more details",
+        "invalidMetadataPackage": "Invalid or missing package in metadata",
+        "invalidServiceName": "Invalid or missing serviceName in serviceBindingDetails",
+        "invalidServiceVersion": "Invalid or missing serviceVersion in serviceBindingDetails",
+        "invalidMainEntityName": "Invalid or missing mainEntityName in serviceBindingDetails",
+        "invalidModuleName": "Invalid or missing moduleName in serviceBindingDetails",
+        "invalidRepositoryName": "Invalid or missing repositoryName in serviceBindingDetails"
     },
     "prompts": {
         "appSelection": {
