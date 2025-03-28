@@ -1,7 +1,7 @@
 {
     "sap.ovp": {
         "globalFilterModel": "<%- defaultModel %>",
-        "globalFilterEntityType": "<%- filterEntityType %>",
+        "globalFilterEntitySet": "<%- filterEntityType %>",
         "containerLayout": "resizable",
         "enableLiveFilter": true,
         "considerAnalyticalParameters": false,

@@ -79,14 +79,10 @@ export function getEntityChoices(
 
         entitySets.forEach((entitySet, index) => {
             // Determine whether to use the entity set type name or the entity set name as the choice name.
-            // Note that in the case of the entity type name, the namespace will be removed.
-            const entitySetChoiceName = useEntityTypeAsName
-                ? entitySet.entityTypeName.substring(entitySet.entityTypeName.lastIndexOf('.') + 1)
-                : entitySet.name;
             const choice: ListChoiceOptions<EntityAnswer> = {
-                name: entitySetChoiceName,
+                name: entitySet.name,
                 value: {
-                    entitySetName: entitySetChoiceName,
+                    entitySetName: entitySet.name,
                     entitySetType: entitySet.entityTypeName // Fully qualified entity type name
                 }
             };
