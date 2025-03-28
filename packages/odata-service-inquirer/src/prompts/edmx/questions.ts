@@ -86,7 +86,6 @@ export function getEntitySelectionQuestions(
     }
 
     const entityChoices = getEntityChoices(metadata, {
-        useEntityTypeAsName: templateType === 'ovp',
         defaultMainEntityName: promptOptions?.defaultMainEntityName,
         entitySetFilter
     });

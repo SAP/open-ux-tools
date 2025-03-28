@@ -90,13 +90,11 @@ describe('Test entity helper functions', () => {
             ];
 
             const filteredEntities = getEntityChoices(metadataV4WithAggregateTransforms, {
-                useEntityTypeAsName: false,
                 entitySetFilter: 'filterAggregateTransformationsOnly'
             });
             expect(filteredEntities.choices).toEqual(fitleredChoices);
 
             const filteredEntitiesAggregationAlias = getEntityChoices(metadataV4WithAliasAggregateTransforms, {
-                useEntityTypeAsName: false,
                 entitySetFilter: 'filterAggregateTransformationsOnly'
             });
             expect(filteredEntitiesAggregationAlias.choices).toEqual(filteredChoicesWithAggregationAlias);
@@ -141,7 +139,6 @@ describe('Test entity helper functions', () => {
 
         test('should return draft enabled entity sets only', async () => {
             const entityOptions = getEntityChoices(metadataV4WithDraftEntities, {
-                useEntityTypeAsName: false,
                 entitySetFilter: 'filterDraftEnabled'
             });
             expect(entityOptions.choices[4].name).toEqual('Travel');
@@ -187,9 +184,7 @@ describe('Test entity helper functions', () => {
         });
 
         test('should use entity type name as choice name', async () => {
-            const entityOptions = getEntityChoices(metadataV2, {
-                useEntityTypeAsName: false
-            });
+            const entityOptions = getEntityChoices(metadataV2, {});
             const typeNameChoices = entityOptions.choices;
             expect(typeNameChoices).toMatchSnapshot();
             expect(typeNameChoices[0].name).toEqual('I_Currency');
