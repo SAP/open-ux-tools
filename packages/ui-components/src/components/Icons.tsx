@@ -1899,15 +1899,16 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.SwitchOff]: (
-                <svg width="8" height="2" viewBox="0 0 8 2" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M1 1L7 1" stroke={COLORS.thumbOff} strokeLinecap="round" />
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 8H12" transform="translate(0 -2)" stroke={COLORS.thumbOff} strokeLinecap="round" />
                 </svg>
             ),
             [UiIcons.SwitchOn]: (
-                <svg width="8" height="6" viewBox="0 0 8 6" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        d="M0.5 3.5L2.5 5.5L7.5 0.5"
-                        stroke={COLORS.thumbOn}
+                        d="M2 8.5L6 12.5L14 4.5"
+                        transform="translate(0 -2)"
+                        stroke={COLORS.thumbOff}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                     />

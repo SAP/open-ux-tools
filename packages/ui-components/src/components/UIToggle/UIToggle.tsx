@@ -51,24 +51,9 @@ const TOGGLE_SIZE = {
     }
 };
 
-const ICON_STYLE = new Map<boolean, React.CSSProperties>([
-    [
-        true,
-        {
-            position: 'relative',
-            top: -9,
-            left: 0
-        }
-    ],
-    [
-        false,
-        {
-            position: 'relative',
-            top: -11,
-            left: 0
-        }
-    ]
-]);
+const ICON_STYLE = {
+    display: 'flex'
+};
 
 const DISABLED_OPACITY = 0.4;
 
@@ -183,9 +168,8 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
             const thumbElement = (this.toggleRootRef.current as HTMLElement)?.querySelector('.ms-Toggle-thumb');
 
             if (thumbElement) {
-                const style = ICON_STYLE.get(checked);
                 ReactDOM.render(
-                    <UIIcon iconName={checked ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={style} />,
+                    <UIIcon iconName={checked ? UiIcons.SwitchOn : UiIcons.SwitchOff} style={ICON_STYLE} />,
                     thumbElement
                 );
             }
