@@ -43,7 +43,6 @@ export default class extends Generator {
     private readonly prompts: Prompts;
     private answers: BspAppDownloadAnswers = defaultAnswers;
     public options: BspAppDownloadOptions;
-    private fioriOptions: FioriOptions;
     // re visit this
     private projectPath: string;
     private extractedProjectPath: string;
@@ -165,19 +164,22 @@ export default class extends Generator {
         const readMeConfig = this._getReadMeConfig(config);
         generateReadMe(this.projectPath, readMeConfig, this.fs);
 
-        // Generate Fiori launch config
-        this.fioriOptions = this._getLaunchConfig(config);
-        debugger;
+        if(this.vscode) {
+            // Generate Fiori launch config
+            const fioriOptions = this._getLaunchConfig(config);
+            // Create launch configuration
+            await createLaunchConfig(
+                this.projectPath,
+                fioriOptions,
+                this.fs,
+                BspAppDownloadLogger.logger as unknown as Logger
+            );
+            writeApplicationInfoSettings(this.projectPath, this.fs);
+        }
         // Replace webapp files with downloaded app files
         //replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
-        // Create launch configuration
-        await createLaunchConfig(
-            this.projectPath,
-            this.fioriOptions,
-            this.fs,
-            BspAppDownloadLogger.logger as unknown as Logger
-        );
-        writeApplicationInfoSettings(this.projectPath, this.fs);
+        // Clean up extracted project files
+        // this.fs.delete(this.extractedProjectPath);
     }
 
     /**
@@ -222,6 +224,11 @@ export default class extends Generator {
         const fioriOptions: FioriOptions = {
             name: config.app.id,
             projectRoot: this.projectPath,
+            /**
+             * The `enableVSCodeReload` property is set to `false` to prevent automatic reloading of the VS Code workspace 
+             * after the app generation process. This is necessary to ensure that the `.vscode/launch-config.json` file is
+             * written to disk before the workspace reload occurs. See {@link _handlePostAppGeneration} for details.
+             */
             enableVSCodeReload: false,
             debugOptions
         };
@@ -261,7 +268,46 @@ export default class extends Generator {
     }
 
     /**
-     * Finalizes the generator process by creating launch configurations and running post-generation hooks.
+     * This includes updating workspace folders and running post-generation commands if defined.
+     */
+    private async _handlePostAppGeneration(): Promise<void> {
+        /**
+         * `enableVSCodeReload` is set to false when generating launch config.
+         * This prevents issues where the `.vscode/launch-config.json` file may not be written to disk due to the timing of mem-fs commits.
+         * 
+         * In Yeoman, a commit occurs between the writing phase and the end phase. If no workspace is open in VS Code and the generated
+         * app is added to the workspace, VS Code automatically reloads the window. However, by this point in the end phase, the in-memory file system 
+         * (mem-fs) has written all files except for `.vscode/launch-config.json`, because the commit happens before the end phase
+         * causing it to be missed when the workspace reload occurs.
+         *
+         * Workflow:
+         * 1. **Workspace URI**: The `updateWorkspaceFolders` object is created with the project folder's path, the project name, 
+         *    and the VS Code instance to handle workspace folder updates.
+         * 2. **Update Workspace Folders**: The `updateWorkspaceFoldersIfNeeded` function is called to update the workspace folders, 
+         *    if necessary, using the data in `updateWorkspaceFolders` . See {@link updateWorkspaceFoldersIfNeeded} for details.
+         * 3. **Run Post-Generation Commands**: If defined, post-generation commands from `options.data?.postGenCommands` are executed 
+         *    using the `runPostAppGenHook` function. This allows for additional setup or configuration tasks to be performed after 
+         *    the app generation process.
+         */
+        if (this.vscode) {
+            const updateWorkspaceFolders = {
+                uri: this.vscode?.Uri?.file(join(this.projectPath)),
+                projectName: basename(this.projectPath),
+                vscode: this.vscode
+            };
+            updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
+        }
+        if (this.options.data?.postGenCommands) {
+            await runPostAppGenHook({
+                path: this.projectPath,
+                vscodeInstance: this.vscode,
+                postGenCommand: this.options.data?.postGenCommands
+            });
+        }
+    }
+
+    /**
+     * Finalises the generator process by creating launch configurations and running post-generation hooks.
      */
     async end() {
         sendTelemetry(
@@ -273,24 +319,7 @@ export default class extends Generator {
         ).catch((error) => {
             BspAppDownloadLogger.logger.error(t('error.telemetry', { error }));
         });
-        const updateWorkspaceFolders = {
-            uri: this.vscode?.Uri?.file(join(this.projectPath)),
-            projectName: basename(this.projectPath),
-            vscode: this.vscode
-        }
-        debugger;
-        updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders)
-        // Clean up extracted project files
-        // this.fs.delete(this.extractedProjectPath);
-
-        // Run post-generation command hook if available
-        if (this.options.data?.postGenCommands) {
-            await runPostAppGenHook({
-                path: this.projectPath,
-                vscodeInstance: this.vscode,
-                postGenCommand: this.options.data?.postGenCommands
-            });
-        }
+        this._handlePostAppGeneration();
     }
 }
 

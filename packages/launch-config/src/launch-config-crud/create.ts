@@ -166,7 +166,6 @@ async function handleDebugOptions(
     } else {
         writeLaunchJsonFile(fs, launchJsonWritePath, configurations);
     }
-    debugger;
 
     // Conditionally update workspace folders based on the enableVSCodeReload flag
     if (enableVSCodeReload) {
