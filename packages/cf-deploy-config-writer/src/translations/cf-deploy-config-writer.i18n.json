@@ -2,7 +2,7 @@
     "debug": {
         "logError": "{{method}} error found {{ error }}",
         "mtaLoaded": "MTA {{ type }} loaded. The size is: {{ size }}.",
-        "ui5YamlDoesNotExist": "File ui5.yaml does not exist in the project",
+        "ui5YamlDoesNotExist": "The ui5.yaml file does not exist in the project. Please create one.",
         "capMtaCreated": "CAP MTA Configuration created",
         "capMtaUpdated": "CAP MTA Configuration updated",
         "capGenerationCompleted": "CAP generation completed",
