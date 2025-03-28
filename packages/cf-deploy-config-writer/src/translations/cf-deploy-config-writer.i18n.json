@@ -4,7 +4,7 @@
         "mtaLoaded": "MTA {{ type }} loaded. The size is: {{ size }}.",
         "ui5YamlDoesNotExist": "The ui5.yaml file does not exist in the project. Please create one.",
         "capMtaCreated": "CAP MTA configuration created.",
-        "capMtaUpdated": "CAP MTA Configuration updated",
+        "capMtaUpdated": "CAP MTA configuration updated.",
         "capGenerationCompleted": "CAP generation completed.",
         "mtaCreated": "MTA configuration created: {{mtaPath}}.",
         "mtaSaved": "MTA configuration has been saved.",
