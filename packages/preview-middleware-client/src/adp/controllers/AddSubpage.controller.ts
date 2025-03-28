@@ -26,6 +26,7 @@ import { ApplicationType } from '../../utils/application';
 import { CommunicationService } from '../../cpe/communication-service';
 import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
 import { generateRoutePattern } from '../quick-actions/fe-v4/utils';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 type SubpageType = 'ObjectPage' | 'CustomPage';
 
@@ -59,8 +60,14 @@ export interface AddSubpageOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddSubpage extends BaseDialog<AddSubpageModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddSubpageOptions) {
-        super(name);
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddSubpageOptions,
+        telemetryData?: QuickActionTelemetryData
+    ) {
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel({
@@ -111,6 +118,7 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
+        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
