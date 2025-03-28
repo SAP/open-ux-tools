@@ -104,7 +104,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
             $Type: string;
             $NavigationPropertyBinding: { [key: string]: string };
         }; // NO SONAR;
-        var entityTypePath = entitySet.$Type;
+        const entityTypePath = entitySet.$Type;
         const entitySetNavigationKeys = Object.keys(entitySet.$NavigationPropertyBinding);
 
         for (const navigationProperty of entitySetNavigationKeys) {
