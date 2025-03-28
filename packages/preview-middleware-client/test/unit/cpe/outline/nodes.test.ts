@@ -7,7 +7,6 @@ import type { ControlTreeIndex } from 'open/ux/preview/client/cpe/types';
 import { transformNodes as tn } from '../../../../src/cpe/outline/nodes';
 
 import { sapCoreMock } from 'mock/window';
-import ComponentMock from 'mock/sap/ui/core/Component';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { mockOverlay } from 'mock/sap/ui/dt/OverlayRegistry';
 import * as v4Utils from '../../../../src/utils/fe-v4';
@@ -30,9 +29,8 @@ describe('outline nodes', () => {
     const transformNodes = (
         nodes: OutlineViewNode[],
         scenario: Scenario,
-        reuseComponentsIds: Set<string> = new Set<string>(),
         controlIndex: ControlTreeIndex = {}
-    ): Promise<OutlineNode[]> => tn(nodes, scenario, reuseComponentsIds, controlIndex, {} as any, new Map());
+    ): Promise<OutlineNode[]> => tn(nodes, scenario, controlIndex, {} as any, new Map());
     sapCoreMock.byId.mockReturnValue({
         getMetadata: jest.fn().mockReturnValue({
             getProperty: jest
@@ -310,49 +308,6 @@ describe('outline nodes', () => {
                     ]
                 }
             ]);
-        });
-
-        test('fill reuse components', async () => {
-            ComponentMock.getComponentById = jest.fn().mockReturnValue({
-                getManifest: () => {
-                    return {
-                        ['sap.app']: {
-                            type: 'component'
-                        }
-                    };
-                }
-            });
-            const nodes: OutlineViewNode[] = [
-                {
-                    id: 'application-preview-app-component',
-                    technicalName: 'v2flex.Component',
-                    editable: false,
-                    type: 'element',
-                    visible: true,
-                    component: true,
-                    elements: [
-                        {
-                            id: 'application-preview-app-component',
-                            technicalName: 'rootControl',
-                            editable: false,
-                            type: 'aggregation',
-                            elements: [
-                                {
-                                    id: '__layout0',
-                                    technicalName: 'sap.f.FlexibleColumnLayout',
-                                    editable: false,
-                                    type: 'element',
-                                    visible: true
-                                }
-                            ]
-                        }
-                    ]
-                }
-            ];
-            const reuseComponentsIds = new Set<string>();
-
-            await transformNodes(nodes, 'ADAPTATION_PROJECT', reuseComponentsIds);
-            expect(reuseComponentsIds.size).toBe(1);
         });
     });
 });

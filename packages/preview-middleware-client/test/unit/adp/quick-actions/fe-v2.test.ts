@@ -2794,7 +2794,7 @@ describe('FE V2 quick actions', () => {
                 );
 
                 expect(notifySpy).toHaveBeenCalledWith(
-                    'At least one table row is required to create new custom column. Make sure the table data is loaded and try again.',
+                    'At least one table row is required to create a new custom column. Make sure the table data is loaded and try again.',
                     8000
                 );
             });
@@ -3383,7 +3383,6 @@ describe('FE V2 quick actions', () => {
                             getDomRef: () => ({
                                 scrollIntoView
                             }),
-
                             getAggregation: () => {
                                 return [
                                     {
@@ -3431,7 +3430,6 @@ describe('FE V2 quick actions', () => {
                         return container;
                     }
                 });
-
                 const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV2QuickActionRegistry();
                 const service = new QuickActionService(
@@ -3440,7 +3438,6 @@ describe('FE V2 quick actions', () => {
                     [registry],
                     { onStackChange: jest.fn() } as any
                 );
-
                 await service.init(sendActionMock, subscribeMock);
                 await service.reloadQuickActions({
                     'sap.ui.comp.smarttable.SmartTable': [
@@ -3454,7 +3451,6 @@ describe('FE V2 quick actions', () => {
                         } as any
                     ]
                 });
-
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -3484,7 +3480,6 @@ describe('FE V2 quick actions', () => {
                                     'enabled': true,
                                     'id': 'analyticalListPage0-create-table-custom-column',
                                     'kind': 'nested',
-
                                     'title': 'Add Custom Table Column'
                                 }
                             ],
@@ -3492,7 +3487,6 @@ describe('FE V2 quick actions', () => {
                         }
                     ])
                 );
-
                 await subscribeMock.mock.calls[0][0](
                     executeQuickAction({
                         id: 'analyticalListPage0-create-table-custom-column',
@@ -3500,7 +3494,6 @@ describe('FE V2 quick actions', () => {
                         path: '0'
                     })
                 );
-
                 expect(DialogFactory.createDialog).toHaveBeenCalledWith(
                     mockOverlay,
                     rtaMock,
