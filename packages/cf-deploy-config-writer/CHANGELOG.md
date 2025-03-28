@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.25
+
+### Patch Changes
+
+-   15222c2: add spawn options for windows
+
 ## 0.1.24
 
 ### Patch Changes
