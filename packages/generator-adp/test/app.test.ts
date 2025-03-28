@@ -4,11 +4,13 @@ import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import { exec } from 'child_process';
 
+import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { TargetApplication } from '@sap-ux/adp-tooling';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
-import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import { TargetSystems, getAbapTarget, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 
 import adpGenerator from '../src/app';
@@ -87,22 +89,35 @@ const apps: TargetApplication[] = [
 ];
 
 const getAtoInfoMock = jest.fn();
+const getSystemInfoMock = jest.fn();
 const dummyProvider = {
-    getAtoInfo: getAtoInfoMock
+    getAtoInfo: getAtoInfoMock,
+    getLayeredRepository: jest.fn().mockReturnValue({
+        getSystemInfo: getSystemInfoMock
+    })
 } as unknown as AbapServiceProvider;
+
+const toolsLoggerErrorSpy = jest.fn();
+const loggerMock: ToolsLogger = {
+    debug: jest.fn(),
+    info: jest.fn(),
+    warn: jest.fn(),
+    error: toolsLoggerErrorSpy
+} as Partial<ToolsLogger> as ToolsLogger;
+jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 
 const loadAppsMock = loadApps as jest.Mock;
 const execMock = exec as unknown as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const getAbapTargetMock = getAbapTarget as jest.Mock;
+const sendTelemetryMock = sendTelemetry as jest.Mock;
+const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
-
-    let sendTelemetrySpy: jest.SpyInstance;
 
     beforeEach(() => {
         fs.mkdirSync(testOutputDir, { recursive: true });
@@ -114,7 +129,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         execMock.mockImplementation((_: string, callback: Function) => {
             callback(null, { stdout: 'ok', stderr: '' });
         });
-        sendTelemetrySpy = jest.spyOn(fioriGenShared, 'sendTelemetry');
+        getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
         getAbapTargetMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
         getDefaultProjectNameMock.mockReturnValue('app.variant1');
@@ -186,7 +201,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         expect(manifestContent).toMatchSnapshot();
         expect(i18nContent).toMatchSnapshot();
 
-        expect(sendTelemetrySpy).toHaveBeenCalledWith(
+        expect(sendTelemetryMock).toHaveBeenCalledWith(
             EventName.ADAPTATION_PROJECT_CREATED,
             expect.objectContaining({
                 OperatingSystem: 'testOS',

@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isAxiosError, type AbapServiceProvider, AxiosError } from '@sap-ux/axios-extension';
 import { FlexLayer, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
@@ -25,6 +25,11 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     loadApps: jest.fn()
 }));
 
+jest.mock('@sap-ux/axios-extension', () => ({
+    ...jest.requireActual('@sap-ux/axios-extension'),
+    isAxiosError: jest.fn()
+}));
+
 const logger: ToolsLogger = {
     error: jest.fn(),
     info: jest.fn(),
@@ -32,7 +37,12 @@ const logger: ToolsLogger = {
     debug: jest.fn()
 } as unknown as ToolsLogger;
 
-const provider = {} as unknown as AbapServiceProvider;
+const getSystemInfoMock = jest.fn();
+const provider = {
+    getLayeredRepository: jest.fn().mockReturnValue({
+        getSystemInfo: getSystemInfoMock
+    })
+} as unknown as AbapServiceProvider;
 
 const targetSystems: TargetSystems = {
     getSystems: jest.fn().mockResolvedValue([
@@ -55,6 +65,7 @@ const dummyAnswers: ConfigAnswers = {
 };
 
 const loadAppsMock = loadApps as jest.Mock;
+const isAxiosErrorMock = isAxiosError as unknown as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 
@@ -136,6 +147,28 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
             expect(result).toEqual(error.message);
+        });
+
+        it('system prompt validate should throw error when system info call fails', async () => {
+            const axiosError = {
+                isAxiosError: true,
+                message: 'Unauthorized',
+                name: 'AxiosError',
+                response: {
+                    status: 401,
+                    statusText: 'Unauthorized'
+                }
+            } as AxiosError;
+            getSystemInfoMock.mockRejectedValueOnce(axiosError);
+            isAxiosErrorMock.mockReturnValueOnce(true);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(`Authentication error: ${axiosError.message}`);
         });
     });
 
