@@ -177,8 +177,22 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
             routing?: {
                 targets?: Record<
                     string,
-                    { name?: string; id: string; options?: { settings?: { entitySet?: string } } }
+                    {
+                        name?: string;
+                        id: string;
+                        options?: {
+                            settings?: {
+                                contextPath?: string;
+                                entitySet?: string;
+                            };
+                        };
+                    }
                 >;
+                routes: {
+                    name: string;
+                    pattern: string;
+                    target: string;
+                }[];
             };
             flexEnabled?: boolean;
         };
