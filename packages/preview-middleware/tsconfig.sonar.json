@@ -8,8 +8,7 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist",
-    "erasableSyntaxOnly": true
+    "outDir": "dist"
   },
   "references": [
     {

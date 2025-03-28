@@ -10,6 +10,7 @@
         "preserveConstEnums": true,
         "target": "ES2020",
         "types": ["node", "jest"],
-        "importsNotUsedAsValues": "remove"
+        "importsNotUsedAsValues": "remove",
+        "strictNullChecks": false
     }
 }
