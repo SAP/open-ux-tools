@@ -49,6 +49,12 @@ import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
 
+let telemetryEventIdentifier: string;
+const mockTelemetryEventIdentifier = () => {
+    telemetryEventIdentifier = new Date().toISOString();
+    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue(telemetryEventIdentifier);
+};
+
 describe('FE V4 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -388,7 +394,7 @@ describe('FE V4 quick actions', () => {
         describe('add controller to the page', () => {
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-14T16:20:26.100Z');
+                mockTelemetryEventIdentifier();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
                         getId: () => 'MyView',
@@ -507,7 +513,7 @@ describe('FE V4 quick actions', () => {
                     'ControllerExtension',
                     undefined,
                     {},
-                    { actionName: 'add-controller-to-page', telemetryEventIdentifier: '2025-03-14T16:20:26.100Z' }
+                    { actionName: 'add-controller-to-page', telemetryEventIdentifier }
                 );
             });
         });
@@ -1550,7 +1556,7 @@ describe('FE V4 quick actions', () => {
                     }
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T15:06:27.121Z');
+                    mockTelemetryEventIdentifier();
                     const pageView = new XMLView();
                     FlexUtils.getViewForControl.mockImplementation(() => {
                         return {
@@ -1687,7 +1693,7 @@ describe('FE V4 quick actions', () => {
                             aggregation: 'items',
                             title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
                         },
-                        { actionName: 'op-add-header-field', telemetryEventIdentifier: '2025-03-17T15:06:27.121Z' }
+                        { actionName: 'op-add-header-field', telemetryEventIdentifier }
                     );
                 });
             });
@@ -1721,7 +1727,7 @@ describe('FE V4 quick actions', () => {
                 ];
 
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T14:59:00.942Z');
+                    mockTelemetryEventIdentifier();
                     const pageView = new XMLView();
                     const scrollIntoView = jest.fn();
                     jest.spyOn(TableQuickActionDefinitionBase.prototype as any, 'getInternalTable').mockImplementation(
@@ -1914,7 +1920,10 @@ describe('FE V4 quick actions', () => {
                             aggregation: 'columns',
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                         },
-                        { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T14:59:00.942Z' }
+                        {
+                            actionName: 'create-table-custom-column',
+                            telemetryEventIdentifier
+                        }
                     );
                 });
             });
@@ -2547,6 +2556,7 @@ describe('FE V4 quick actions', () => {
             jest.restoreAllMocks();
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+            mockTelemetryEventIdentifier();
             jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                 testCase.ui5version ?? { major: 1, minor: 135 }
             );
@@ -2836,32 +2846,42 @@ describe('FE V4 quick actions', () => {
             if (!testCase.expect.toBeAvailable) {
                 expect(DialogFactory.createDialog).toHaveBeenCalledTimes(0);
             } else {
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddSubpage', undefined, {
-                    appReference: 'dummyProjectId',
-                    appType: 'fe-v4',
-                    pageDescriptor: {
-                        entitySet: testCase.isListReport ? 'Travel' : 'Booking',
-                        navProperties: testCase.isNewPageUnavailable
-                            ? []
-                            : [
-                                  testCase.isListReport
-                                      ? {
-                                            entitySet: 'Travel',
-                                            navProperty: 'Travel'
-                                        }
-                                      : {
-                                            entitySet: 'BookingSupplement',
-                                            navProperty: '_BookSupplement'
-                                        }
-                              ],
-                        pageType: testCase.isListReport
-                            ? 'sap.fe.templates.ListReport.ListReport'
-                            : 'sap.fe.templates.ObjectPage.ObjectPage',
-                        pageId: testCase.isListReport ? 'TravelList' : 'BookingObjectPage',
-                        routePattern: testCase.isListReport ? ':?query:' : '/Travel({key})/_Booking({key1}):?query:'
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddSubpage',
+                    undefined,
+                    {
+                        appReference: 'dummyProjectId',
+                        appType: 'fe-v4',
+                        pageDescriptor: {
+                            entitySet: testCase.isListReport ? 'Travel' : 'Booking',
+                            navProperties: testCase.isNewPageUnavailable
+                                ? []
+                                : [
+                                      testCase.isListReport
+                                          ? {
+                                                entitySet: 'Travel',
+                                                navProperty: 'Travel'
+                                            }
+                                          : {
+                                                entitySet: 'BookingSupplement',
+                                                navProperty: '_BookSupplement'
+                                            }
+                                  ],
+                            pageType: testCase.isListReport
+                                ? 'sap.fe.templates.ListReport.ListReport'
+                                : 'sap.fe.templates.ObjectPage.ObjectPage',
+                            pageId: testCase.isListReport ? 'TravelList' : 'BookingObjectPage',
+                            routePattern: testCase.isListReport ? ':?query:' : '/Travel({key})/_Booking({key1}):?query:'
+                        },
+                        title: 'ADD_SUB_PAGE_DIALOG_TITLE'
                     },
-                    title: 'ADD_SUB_PAGE_DIALOG_TITLE'
-                });
+                    {
+                        actionName: 'add-new-subpage',
+                        telemetryEventIdentifier
+                    }
+                );
             }
         });
     });

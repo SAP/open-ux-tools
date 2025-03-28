@@ -44,6 +44,12 @@ import UIComponent from 'sap/ui/core/UIComponent';
 import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
 
+let telemetryEventIdentifier: string;
+const mockTelemetryEventIdentifier = () => {
+    telemetryEventIdentifier = new Date().toISOString();
+    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue(telemetryEventIdentifier);
+};
+
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
@@ -812,7 +818,7 @@ describe('FE V2 quick actions', () => {
 
         describe('add page action', () => {
             test('initialize and execute action', async () => {
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:42:00.353Z');
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -938,7 +944,7 @@ describe('FE V2 quick actions', () => {
                         'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
                     },
-                    { actionName: 'add-page-action', telemetryEventIdentifier: '2025-03-17T20:42:00.353Z' }
+                    { actionName: 'add-page-action', telemetryEventIdentifier }
                 );
             });
         });
@@ -959,7 +965,7 @@ describe('FE V2 quick actions', () => {
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:37:11.940Z');
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -1098,7 +1104,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                     },
-                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T20:37:11.940Z' }
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier }
                 );
             });
         });
@@ -2037,7 +2043,7 @@ describe('FE V2 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:24:49.347Z');
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -2175,13 +2181,13 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'items',
                         title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
                     },
-                    { actionName: 'op-add-header-field', telemetryEventIdentifier: '2025-03-17T20:24:49.347Z' }
+                    { actionName: 'op-add-header-field', telemetryEventIdentifier }
                 );
             });
         });
         describe('add custom section', () => {
             test('initialize and execute action', async () => {
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:22:57.404Z');
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -2321,13 +2327,13 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'sections',
                         title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
                     },
-                    { actionName: 'op-add-custom-section', telemetryEventIdentifier: '2025-03-17T20:22:57.404Z' }
+                    { actionName: 'op-add-custom-section', telemetryEventIdentifier }
                 );
             });
         });
         describe('create table action', () => {
             test('initialize and execute action', async () => {
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:01:19.650Z');
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -2488,7 +2494,7 @@ describe('FE V2 quick actions', () => {
                         defaultAggregationArrayIndex: 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
                     },
-                    { actionName: 'create-table-action', telemetryEventIdentifier: '2025-03-17T20:01:19.650Z' }
+                    { actionName: 'create-table-action', telemetryEventIdentifier }
                 );
             });
         });
@@ -2509,7 +2515,7 @@ describe('FE V2 quick actions', () => {
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T15:14:25.947Z');
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -2678,7 +2684,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                     },
-                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T15:14:25.947Z' }
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier }
                 );
             });
             test('displays warning when no rows loaded', async () => {
@@ -3368,7 +3374,7 @@ describe('FE V2 quick actions', () => {
     describe('AnalyticalListPage', () => {
         describe('create table custom column', () => {
             test('initialize and execute action', async () => {
-                jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-17T20:01:19.766Z');
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -3510,7 +3516,7 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
                     },
-                    { actionName: 'create-table-custom-column', telemetryEventIdentifier: '2025-03-17T20:01:19.766Z' }
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier }
                 );
             });
         });
@@ -3613,7 +3619,7 @@ describe('FE V2 quick actions', () => {
             jest.restoreAllMocks();
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-            jest.spyOn(Date.prototype, 'toISOString').mockReturnValue('2025-03-20T12:39:43.719Z');
+            mockTelemetryEventIdentifier();
             jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                 testCase.ui5version ?? { major: 1, minor: 131 }
             );
@@ -3913,7 +3919,7 @@ describe('FE V2 quick actions', () => {
                         },
                         title: 'ADD_SUB_PAGE_DIALOG_TITLE'
                     },
-                    { 'actionName': 'add-new-subpage', 'telemetryEventIdentifier': '2025-03-20T12:39:43.719Z' }
+                    { 'actionName': 'add-new-subpage', telemetryEventIdentifier }
                 );
             }
         });
