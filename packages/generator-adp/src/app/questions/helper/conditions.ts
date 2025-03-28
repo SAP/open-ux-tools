@@ -16,7 +16,8 @@ export function showCredentialQuestion(answers: ConfigAnswers, isAuthRequired: b
  * Determines if an application question should be shown.
  *
  * @param {ConfigAnswers} answers - The user-provided answers containing application details.
- * * @param {boolean} isAuthRequired - A flag indicating whether system authentication is needed.
+ * @param {boolean} appsLoaded - A flag indicating whether there are loaded apps.
+ * @param {boolean} isAuthRequired - A flag indicating whether system authentication is needed.
  * @param {boolean} isLoginSuccessful - A flag indicating that system login was successful.
  * @returns {boolean} True if the application question should be shown.
  */

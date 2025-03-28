@@ -7,10 +7,10 @@ import { FlexLayer, getConfiguredProvider, getEndpointNames, loadApps } from '@s
 
 import type {
     ApplicationPromptOptions,
+    CliValidationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
     PasswordPromptOptions,
-    SystemCliValidationPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
@@ -70,7 +70,7 @@ export class ConfigPrompter {
 
         const keyedPrompts: Record<configPromptNames, ConfigQuestion> = {
             [configPromptNames.system]: this.getSystemListPrompt(promptOptions?.[configPromptNames.system]),
-            [configPromptNames.systemSelectionCli]: this.getSystemValidationPromptForCli({ hide: !isCLI }),
+            [configPromptNames.systemValidationCli]: this.getSystemValidationPromptForCli({ hide: !isCLI }),
             [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
             [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
             [configPromptNames.application]: this.getApplicationListPrompt(
@@ -117,11 +117,12 @@ export class ConfigPrompter {
     /**
      * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the system list prompt.
      *
+     * @param {CliValidationPromptOptions} options - System validation CLI options (i.e "hide").
      * @returns Dummy prompt that runs in the CLI only.
      */
-    private getSystemValidationPromptForCli(options: SystemCliValidationPromptOptions) {
+    private getSystemValidationPromptForCli(options: CliValidationPromptOptions) {
         return {
-            name: 'systemValidationCli',
+            name: configPromptNames.systemValidationCli,
             when: async (answers: ConfigAnswers): Promise<boolean> => {
                 if (options.hide || !answers.system) {
                     return false;
@@ -129,9 +130,7 @@ export class ConfigPrompter {
 
                 const result = await this.validateSystem(answers.system, answers);
                 if (typeof result === 'string') {
-                    if (!result.includes('401')) {
-                        throw new Error(result);
-                    }
+                    throw new Error(result);
                 }
 
                 return false;
@@ -211,13 +210,14 @@ export class ConfigPrompter {
     /**
      * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the application list prompt.
      *
+     * @param {CliValidationPromptOptions} options - System validation CLI options (i.e "hide").
      * @returns Dummy prompt that runs in the CLI only.
      */
-    private getApplicationValidationPromptForCli(options: SystemCliValidationPromptOptions) {
+    private getApplicationValidationPromptForCli(options: CliValidationPromptOptions) {
         return {
-            name: 'appValidationCli',
+            name: configPromptNames.appValidationCli,
             when: async (answers: ConfigAnswers): Promise<boolean> => {
-                if (options.hide || !answers.system) {
+                if (options.hide || !answers.application) {
                     return false;
                 }
 

@@ -33,7 +33,7 @@ export interface AdpGeneratorOptions extends Generator.GeneratorOptions {
  */
 export enum configPromptNames {
     system = 'system',
-    systemSelectionCli = 'systemSelectionCli',
+    systemValidationCli = 'systemValidationCli',
     username = 'username',
     password = 'password',
     application = 'application',
@@ -53,7 +53,7 @@ export interface SystemPromptOptions {
     hide?: boolean;
 }
 
-export interface SystemCliValidationPromptOptions {
+export interface CliValidationPromptOptions {
     hide?: boolean;
 }
 
@@ -70,18 +70,14 @@ export interface ApplicationPromptOptions {
     hide?: boolean;
 }
 
-export interface ApplicationCliValidationPromptOptions {
-    hide?: boolean;
-}
-
 /**
  * Options for the configuration inquirer & the prompts.
  */
 export type ConfigPromptOptions = Partial<{
     [configPromptNames.system]: SystemPromptOptions;
-    [configPromptNames.systemSelectionCli]: SystemCliValidationPromptOptions;
+    [configPromptNames.systemValidationCli]: CliValidationPromptOptions;
     [configPromptNames.username]: UsernamePromptOptions;
     [configPromptNames.password]: PasswordPromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
-    [configPromptNames.appValidationCli]: ApplicationCliValidationPromptOptions;
+    [configPromptNames.appValidationCli]: CliValidationPromptOptions;
 }>;
