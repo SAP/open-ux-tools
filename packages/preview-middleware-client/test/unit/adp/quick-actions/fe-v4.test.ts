@@ -2532,342 +2532,323 @@ describe('FE V4 quick actions', () => {
         afterEach(() => {
             jest.restoreAllMocks();
         });
-        test.each(testCases)(
-            'initialize and execute action (%s)',
-            async (testCase) => {
-                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
-                    testCase.ui5version ?? { major: 1, minor: 135 }
-                );
-                jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
+        test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+            jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
+                testCase.ui5version ?? { major: 1, minor: 135 }
+            );
+            jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
 
-                const pageView = new XMLView();
-                pageView.getParent.mockReturnValue({
-                    getProperty: (propName: string) => {
-                        if (propName === 'entitySet') {
-                            return 'DummyEntitySet';
-                        } else {
-                            return undefined;
-                        }
-                    }
-                });
-
-                const actionId = testCase.isListReport ? 'listReport0-add-new-subpage' : 'objectPage0-add-new-subpage';
-
-                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
-                    return {
-                        isA: (type: string) =>
-                            type ===
-                            (testCase.isUnexpectedOwnerComponent
-                                ? 'wrongType'
-                                : 'sap.fe.templates.ListReport.Component'),
-                        getEntitySet: jest
-                            .fn()
-                            .mockReturnValue(
-                                testCase.componentHasNoEntitySet
-                                    ? undefined
-                                    : testCase.isListReport
-                                    ? 'Travel'
-                                    : 'Booking'
-                            )
-                    } as unknown as UIComponent;
-                });
-
-                sapCoreMock.byId.mockImplementation((id) => {
-                    if (id == 'ObjectPage') {
-                        return {
-                            isA: (type: string) => type === 'sap.fe.templates.ObjectPage.Component',
-                            getId: () => id,
-                            getDomRef: () => ({ ref: 'OP' }),
-                            getParent: () => pageView
-                        };
-                    }
-                    if (id == 'ListReport') {
-                        return {
-                            isA: (type: string) => type === 'sap.fe.templates.ListReport.Component',
-                            getId: () => id,
-                            getDomRef: () => ({ ref: 'LR' }),
-                            getParent: () => pageView
-                        };
-                    }
-                    if (id == 'NavContainer') {
-                        const container = new NavContainer();
-                        const component = new ComponentMock();
-                        const view = new XMLView();
-                        pageView.getDomRef.mockImplementation(() => {
-                            return {
-                                contains: (domRef: { ref: string }) =>
-                                    domRef.ref === (testCase.isListReport ? 'LR' : 'OP')
-                            };
-                        });
-                        pageView.getViewName.mockImplementation(
-                            () =>
-                                `sap.fe.templates.${
-                                    testCase.isListReport ? 'ListReport.ListReport' : 'ObjectPage.ObjectPage'
-                                }`
-                        );
-                        pageView.getViewData.mockImplementation(() => ({
-                            stableId: testCase.isListReport ? 'appId::TravelList' : 'appId::BookingObjectPage'
-                        }));
-
-                        jest.spyOn(view, 'getComponent').mockReturnValue('component-id');
-
-                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
-                            if (id === 'component-id') {
-                                return component;
-                            }
-                        });
-                        container.getCurrentPage.mockImplementation(() => {
-                            return view;
-                        });
-                        jest.spyOn(component, 'getRootControl').mockImplementation(() => {
-                            return pageView;
-                        });
-                        return container;
-                    }
-                });
-
-                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
-                const targets = {
-                    TravelList: {
-                        'id': 'TravelList',
-                        'name': 'sap.fe.templates.ListReport',
-                        'options': {
-                            'settings': {
-                                'entitySet': 'Travel'
-                            }
-                        }
-                    },
-                    ...(testCase.isListReport && testCase.isNewPageUnavailable
-                        ? {
-                              TravelObjectPage: {
-                                  'id': 'TravelObjectPage',
-                                  'name': 'sap.fe.templates.ObjectPage',
-                                  'options': {
-                                      'settings': testCase.isContextPathDefined
-                                          ? {
-                                                'contextPath': '/Travel'
-                                            }
-                                          : {
-                                                'entitySet': 'Travel'
-                                            }
-                                  }
-                              }
-                          }
-                        : {}),
-                    BookingObjectPage: {
-                        'id': 'BookingObjectPage',
-                        'name': 'sap.fe.templates.ObjectPage',
-                        'options': {
-                            'settings': {
-                                'entitySet': 'Booking'
-                            }
-                        }
-                    },
-                    ...(!testCase.isListReport && testCase.isNewPageUnavailable
-                        ? {
-                              BookSupplementObjectPage: {
-                                  'id': 'BookSupplementObjectPage',
-                                  'name': 'sap.fe.templates.ObjectPage',
-                                  'options': {
-                                      'settings': testCase.isContextPathDefined
-                                          ? {
-                                                'contextPath': '/Travel/_Booking/_BookSupplement'
-                                            }
-                                          : {
-                                                'entitySet': 'BookingSupplement'
-                                            }
-                                  }
-                              }
-                          }
-                        : {})
-                };
-
-                const routes = [
-                    {
-                        'pattern': ':?query:',
-                        'name': 'TravelList',
-                        'target': 'TravelList'
-                    },
-                    ...(testCase.isListReport || testCase.isNewPageUnavailable
-                        ? [
-                              {
-                                  'pattern': '/Travel({key}):?query:',
-                                  'name': 'TravelObjectPage',
-                                  'target': 'TravelObjectPage'
-                              }
-                          ]
-                        : []),
-                    {
-                        'pattern': '/Travel({key})/_Booking({key1}):?query:',
-                        'name': testCase.isNoRouteFound ? 'unknown' : 'BookingObjectPage',
-                        'target': 'BookingObjectPage'
-                    }
-                ];
-                jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
-                    'sap.ui5': {
-                        routing: { routes, targets }
-                    }
-                });
-                jest.spyOn(rtaMock, 'getFlexSettings').mockImplementation(() => {
-                    return {
-                        projectId: 'dummyProjectId'
-                    } as FlexSettings;
-                });
-
-                const metaModelMock = {
-                    requestObject: jest.fn().mockImplementation((path: string) => {
-                        if (path.split('/').length > 2) {
-                            switch (path) {
-                                case '/TravelType/_Booking':
-                                    return {
-                                        $isCollection: true
-                                    };
-                                case '/BookingType/_BookSupplement':
-                                    return {
-                                        $isCollection: true
-                                    };
-                                default:
-                                    return {
-                                        $isCollection: false
-                                    };
-                            }
-                        } else {
-                            switch (path) {
-                                case '/Travel':
-                                    return {
-                                        $Type: 'TravelType',
-                                        $NavigationPropertyBinding: {
-                                            _Booking: 'Booking',
-                                            _Agency: 'Agency'
-                                        }
-                                    };
-                                case '/Booking':
-                                    return {
-                                        $Type: 'BookingType',
-                                        $NavigationPropertyBinding: {
-                                            _BookSupplement: 'BookingSupplement',
-                                            _Travel: 'Travel'
-                                        }
-                                    };
-                                case '/BookingSupplement':
-                                    return {
-                                        $Type: 'BookingSupplementType',
-                                        $NavigationPropertyBinding: {}
-                                    };
-                            }
-                        }
-                    })
-                };
-                jest.spyOn(rtaMock.getRootControlInstance(), 'getModel').mockReturnValue({
-                    getMetaModel: () => metaModelMock
-                } as unknown as ODataModelV4);
-
-                const registry = new FEV4QuickActionRegistry();
-                const service = new QuickActionService(
-                    rtaMock,
-                    new OutlineService(rtaMock, mockChangeService),
-                    [registry],
-                    { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
-                );
-
-                CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
-                    return { type, value, settings };
-                });
-
-                await service.init(sendActionMock, subscribeMock);
-
-                await service.reloadQuickActions({
-                    'sap.uxap.ObjectPageLayout': [
-                        {
-                            controlId: 'ObjectPage'
-                        } as any
-                    ],
-                    'sap.f.DynamicPage': [
-                        {
-                            controlId: 'ListReport'
-                        } as any
-                    ],
-                    'sap.m.NavContainer': [
-                        {
-                            controlId: 'NavContainer'
-                        } as any
-                    ]
-                });
-
-                // filter out irrelevant actions
-                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
-                for (let i = actions.length - 1; i >= 0; i--) {
-                    if (actions[i].title !== 'Add Subpage') {
-                        actions.splice(i, 1);
+            const pageView = new XMLView();
+            pageView.getParent.mockReturnValue({
+                getProperty: (propName: string) => {
+                    if (propName === 'entitySet') {
+                        return 'DummyEntitySet';
+                    } else {
+                        return undefined;
                     }
                 }
-                await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({
-                        id: actionId,
-                        kind: 'simple'
-                    })
-                );
+            });
 
-                expect(sendActionMock).toHaveBeenNthCalledWith(
-                    1,
-                    quickActionListChanged([
-                        {
-                            title: testCase.isListReport ? 'LIST REPORT' : 'OBJECT PAGE',
-                            actions: !testCase.expect.toBeAvailable
-                                ? []
-                                : [
-                                      {
-                                          kind: 'simple',
-                                          id: actionId,
-                                          enabled: !!testCase.expect.toBeEnabled,
-                                          tooltip: testCase.expect.tooltip,
-                                          title: 'Add Subpage'
-                                      }
-                                  ]
-                        }
-                    ])
-                );
+            const actionId = testCase.isListReport ? 'listReport0-add-new-subpage' : 'objectPage0-add-new-subpage';
 
-                if (!testCase.expect.toBeAvailable) {
-                    expect(DialogFactory.createDialog).toHaveBeenCalledTimes(0);
-                } else {
-                    expect(DialogFactory.createDialog).toHaveBeenCalledWith(
-                        mockOverlay,
-                        rtaMock,
-                        'AddSubpage',
-                        undefined,
-                        {
-                            appReference: 'dummyProjectId',
-                            appType: 'fe-v4',
-                            pageDescriptor: {
-                                entitySet: testCase.isListReport ? 'Travel' : 'Booking',
-                                navProperties: testCase.isNewPageUnavailable
-                                    ? []
-                                    : [
-                                          testCase.isListReport
-                                              ? {
-                                                    entitySet: 'Travel',
-                                                    navProperty: 'Travel'
-                                                }
-                                              : {
-                                                    entitySet: 'BookingSupplement',
-                                                    navProperty: '_BookSupplement'
-                                                }
-                                      ],
-                                pageType: testCase.isListReport
-                                    ? 'sap.fe.templates.ListReport.ListReport'
-                                    : 'sap.fe.templates.ObjectPage.ObjectPage',
-                                pageId: testCase.isListReport ? 'TravelList' : 'BookingObjectPage',
-                                routePattern: testCase.isListReport
-                                    ? ':?query:'
-                                    : '/Travel({key})/_Booking({key1}):?query:'
-                            },
-                            title: 'ADD_SUB_PAGE_DIALOG_TITLE'
-                        }
+            jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                return {
+                    isA: (type: string) =>
+                        type ===
+                        (testCase.isUnexpectedOwnerComponent ? 'wrongType' : 'sap.fe.templates.ListReport.Component'),
+                    getEntitySet: jest
+                        .fn()
+                        .mockReturnValue(
+                            testCase.componentHasNoEntitySet ? undefined : testCase.isListReport ? 'Travel' : 'Booking'
+                        )
+                } as unknown as UIComponent;
+            });
+
+            sapCoreMock.byId.mockImplementation((id) => {
+                if (id == 'ObjectPage') {
+                    return {
+                        isA: (type: string) => type === 'sap.fe.templates.ObjectPage.Component',
+                        getId: () => id,
+                        getDomRef: () => ({ ref: 'OP' }),
+                        getParent: () => pageView
+                    };
+                }
+                if (id == 'ListReport') {
+                    return {
+                        isA: (type: string) => type === 'sap.fe.templates.ListReport.Component',
+                        getId: () => id,
+                        getDomRef: () => ({ ref: 'LR' }),
+                        getParent: () => pageView
+                    };
+                }
+                if (id == 'NavContainer') {
+                    const container = new NavContainer();
+                    const component = new ComponentMock();
+                    const view = new XMLView();
+                    pageView.getDomRef.mockImplementation(() => {
+                        return {
+                            contains: (domRef: { ref: string }) => domRef.ref === (testCase.isListReport ? 'LR' : 'OP')
+                        };
+                    });
+                    pageView.getViewName.mockImplementation(
+                        () =>
+                            `sap.fe.templates.${
+                                testCase.isListReport ? 'ListReport.ListReport' : 'ObjectPage.ObjectPage'
+                            }`
                     );
+                    pageView.getViewData.mockImplementation(() => ({
+                        stableId: testCase.isListReport ? 'appId::TravelList' : 'appId::BookingObjectPage'
+                    }));
+
+                    jest.spyOn(view, 'getComponent').mockReturnValue('component-id');
+
+                    jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        if (id === 'component-id') {
+                            return component;
+                        }
+                    });
+                    container.getCurrentPage.mockImplementation(() => {
+                        return view;
+                    });
+                    jest.spyOn(component, 'getRootControl').mockImplementation(() => {
+                        return pageView;
+                    });
+                    return container;
                 }
-            },
-            200000
-        );
+            });
+
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+            const targets = {
+                TravelList: {
+                    'id': 'TravelList',
+                    'name': 'sap.fe.templates.ListReport',
+                    'options': {
+                        'settings': {
+                            'entitySet': 'Travel'
+                        }
+                    }
+                },
+                ...(testCase.isListReport && testCase.isNewPageUnavailable
+                    ? {
+                          TravelObjectPage: {
+                              'id': 'TravelObjectPage',
+                              'name': 'sap.fe.templates.ObjectPage',
+                              'options': {
+                                  'settings': testCase.isContextPathDefined
+                                      ? {
+                                            'contextPath': '/Travel'
+                                        }
+                                      : {
+                                            'entitySet': 'Travel'
+                                        }
+                              }
+                          }
+                      }
+                    : {}),
+                BookingObjectPage: {
+                    'id': 'BookingObjectPage',
+                    'name': 'sap.fe.templates.ObjectPage',
+                    'options': {
+                        'settings': {
+                            'entitySet': 'Booking'
+                        }
+                    }
+                },
+                ...(!testCase.isListReport && testCase.isNewPageUnavailable
+                    ? {
+                          BookSupplementObjectPage: {
+                              'id': 'BookSupplementObjectPage',
+                              'name': 'sap.fe.templates.ObjectPage',
+                              'options': {
+                                  'settings': testCase.isContextPathDefined
+                                      ? {
+                                            'contextPath': '/Travel/_Booking/_BookSupplement'
+                                        }
+                                      : {
+                                            'entitySet': 'BookingSupplement'
+                                        }
+                              }
+                          }
+                      }
+                    : {})
+            };
+
+            const routes = [
+                {
+                    'pattern': ':?query:',
+                    'name': 'TravelList',
+                    'target': 'TravelList'
+                },
+                ...(testCase.isListReport || testCase.isNewPageUnavailable
+                    ? [
+                          {
+                              'pattern': '/Travel({key}):?query:',
+                              'name': 'TravelObjectPage',
+                              'target': 'TravelObjectPage'
+                          }
+                      ]
+                    : []),
+                {
+                    'pattern': '/Travel({key})/_Booking({key1}):?query:',
+                    'name': testCase.isNoRouteFound ? 'unknown' : 'BookingObjectPage',
+                    'target': 'BookingObjectPage'
+                }
+            ];
+            jest.spyOn(rtaMock.getRootControlInstance(), 'getManifest').mockReturnValue({
+                'sap.ui5': {
+                    routing: { routes, targets }
+                }
+            });
+            jest.spyOn(rtaMock, 'getFlexSettings').mockImplementation(() => {
+                return {
+                    projectId: 'dummyProjectId'
+                } as FlexSettings;
+            });
+
+            const metaModelMock = {
+                requestObject: jest.fn().mockImplementation((path: string) => {
+                    if (path.split('/').length > 2) {
+                        switch (path) {
+                            case '/TravelType/_Booking':
+                                return {
+                                    $isCollection: true
+                                };
+                            case '/BookingType/_BookSupplement':
+                                return {
+                                    $isCollection: true
+                                };
+                            default:
+                                return {
+                                    $isCollection: false
+                                };
+                        }
+                    } else {
+                        switch (path) {
+                            case '/Travel':
+                                return {
+                                    $Type: 'TravelType',
+                                    $NavigationPropertyBinding: {
+                                        _Booking: 'Booking',
+                                        _Agency: 'Agency'
+                                    }
+                                };
+                            case '/Booking':
+                                return {
+                                    $Type: 'BookingType',
+                                    $NavigationPropertyBinding: {
+                                        _BookSupplement: 'BookingSupplement',
+                                        _Travel: 'Travel'
+                                    }
+                                };
+                            case '/BookingSupplement':
+                                return {
+                                    $Type: 'BookingSupplementType',
+                                    $NavigationPropertyBinding: {}
+                                };
+                        }
+                    }
+                })
+            };
+            jest.spyOn(rtaMock.getRootControlInstance(), 'getModel').mockReturnValue({
+                getMetaModel: () => metaModelMock
+            } as unknown as ODataModelV4);
+
+            const registry = new FEV4QuickActionRegistry();
+            const service = new QuickActionService(
+                rtaMock,
+                new OutlineService(rtaMock, mockChangeService),
+                [registry],
+                { onStackChange: jest.fn(), getConfigurationPropertyValue: jest.fn() } as any
+            );
+
+            CommandFactory.getCommandFor.mockImplementation((control, type, value, _, settings) => {
+                return { type, value, settings };
+            });
+
+            await service.init(sendActionMock, subscribeMock);
+
+            await service.reloadQuickActions({
+                'sap.uxap.ObjectPageLayout': [
+                    {
+                        controlId: 'ObjectPage'
+                    } as any
+                ],
+                'sap.f.DynamicPage': [
+                    {
+                        controlId: 'ListReport'
+                    } as any
+                ],
+                'sap.m.NavContainer': [
+                    {
+                        controlId: 'NavContainer'
+                    } as any
+                ]
+            });
+
+            // filter out irrelevant actions
+            const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+            for (let i = actions.length - 1; i >= 0; i--) {
+                if (actions[i].title !== 'Add Subpage') {
+                    actions.splice(i, 1);
+                }
+            }
+            await subscribeMock.mock.calls[0][0](
+                executeQuickAction({
+                    id: actionId,
+                    kind: 'simple'
+                })
+            );
+
+            expect(sendActionMock).toHaveBeenNthCalledWith(
+                1,
+                quickActionListChanged([
+                    {
+                        title: testCase.isListReport ? 'LIST REPORT' : 'OBJECT PAGE',
+                        actions: !testCase.expect.toBeAvailable
+                            ? []
+                            : [
+                                  {
+                                      kind: 'simple',
+                                      id: actionId,
+                                      enabled: !!testCase.expect.toBeEnabled,
+                                      tooltip: testCase.expect.tooltip,
+                                      title: 'Add Subpage'
+                                  }
+                              ]
+                    }
+                ])
+            );
+
+            if (!testCase.expect.toBeAvailable) {
+                expect(DialogFactory.createDialog).toHaveBeenCalledTimes(0);
+            } else {
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddSubpage', undefined, {
+                    appReference: 'dummyProjectId',
+                    appType: 'fe-v4',
+                    pageDescriptor: {
+                        entitySet: testCase.isListReport ? 'Travel' : 'Booking',
+                        navProperties: testCase.isNewPageUnavailable
+                            ? []
+                            : [
+                                  testCase.isListReport
+                                      ? {
+                                            entitySet: 'Travel',
+                                            navProperty: 'Travel'
+                                        }
+                                      : {
+                                            entitySet: 'BookingSupplement',
+                                            navProperty: '_BookSupplement'
+                                        }
+                              ],
+                        pageType: testCase.isListReport
+                            ? 'sap.fe.templates.ListReport.ListReport'
+                            : 'sap.fe.templates.ObjectPage.ObjectPage',
+                        pageId: testCase.isListReport ? 'TravelList' : 'BookingObjectPage',
+                        routePattern: testCase.isListReport ? ':?query:' : '/Travel({key})/_Booking({key1}):?query:'
+                    },
+                    title: 'ADD_SUB_PAGE_DIALOG_TITLE'
+                });
+            }
+        });
     });
 });

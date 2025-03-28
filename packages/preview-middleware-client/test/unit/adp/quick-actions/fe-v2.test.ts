@@ -108,7 +108,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -238,7 +238,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -399,7 +399,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -684,7 +684,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -860,7 +860,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -996,7 +996,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1209,7 +1209,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1426,7 +1426,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1617,7 +1617,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1778,7 +1778,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1896,7 +1896,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
 
@@ -2084,7 +2084,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2226,7 +2226,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2382,7 +2382,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2565,7 +2565,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2724,7 +2724,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2938,7 +2938,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -3202,7 +3202,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -3395,7 +3395,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                 return component as unknown as ComponentMock;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -3659,7 +3659,7 @@ describe('FE V2 quick actions', () => {
                     });
                     jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                         if (id === 'component-id') {
-                             return component as unknown as ComponentMock;
+                            return component as unknown as ComponentMock;
                         }
                     });
                     view.getContent.mockImplementation(() => {
