@@ -110,14 +110,14 @@ describe('AddSubpage controller', () => {
                 {} as unknown as RuntimeAuthoring,
                 {
                     title: 'QUICK_ACTION_ADD_SUBPAGE',
+                    navProperties: [
+                        { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                        { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                    ],
                     appReference: 'dummyApp',
-                    appType: 'fe-v2',
                     pageDescriptor: {
+                        appType: 'fe-v2',
                         entitySet: 'Travels',
-                        navProperties: [
-                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                        ],
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
                 }
@@ -209,13 +209,13 @@ describe('AddSubpage controller', () => {
                 {
                     title: 'QUICK_ACTION_ADD_SUBPAGE',
                     appReference: 'dummyApp',
-                    appType: 'fe-v2',
+                    navProperties: [
+                        { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                        { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                    ],
                     pageDescriptor: {
+                        appType: 'fe-v2',
                         entitySet: 'Travels',
-                        navProperties: [
-                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                        ],
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
                 }
@@ -254,13 +254,13 @@ describe('AddSubpage controller', () => {
                 {
                     title: 'QUICK_ACTION_ADD_SUBPAGE',
                     appReference: 'dummyApp',
-                    appType: 'fe-v2',
+                    navProperties: [
+                        { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                        { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                    ],
                     pageDescriptor: {
+                        appType: 'fe-v2',
                         entitySet: 'Travels',
-                        navProperties: [
-                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                        ],
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
                 }
@@ -410,12 +410,7 @@ describe('AddSubpage controller', () => {
                             { entitySet: 'Airlines', navProperty: 'to_Airline' }
                         ],
                         '/selectedNavigation/key': 'to_Booking',
-                        '/appType': testCase.appType === 'v2' ? 'fe-v2' : 'fe-v4',
-                        '/pageType': 'ObjectPageType',
-                        '/pageId': 'ObjectPageId',
-                        '/appReference': 'dummyApp',
-                        '/currentEntitySet': 'Travels',
-                        '/routePattern': testCase.routePattern
+                        '/currentEntitySet': 'Travels'
                     };
                     return props[name];
                 }),
@@ -435,21 +430,22 @@ describe('AddSubpage controller', () => {
                     {
                         title: 'QUICK_ACTION_ADD_SUBPAGE',
                         appReference: 'dummyApp',
-                        appType: testCase.appType === 'v2' ? 'fe-v2' : 'fe-v4',
-                        pageDescriptor: {
-                            entitySet: 'Travels',
-                            navProperties: [
-                                { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                                { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                            ],
-                            pageType: 'sap.suite.ui.generic.template.ObjectPage',
-                            ...(testCase.appType === 'v2'
-                                ? {}
+                        navProperties: [
+                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                        ],
+                        pageDescriptor:
+                            testCase.appType === 'v2'
+                                ? {
+                                      appType: 'fe-v2',
+                                      entitySet: 'Travels',
+                                      pageType: 'sap.suite.ui.generic.template.ObjectPage'
+                                  }
                                 : {
-                                      pageId: 'BookingObjectPage',
-                                      routePattern: testCase.routePattern
-                                  })
-                        }
+                                      appType: 'fe-v4',
+                                      pageId: 'CurrentPageId',
+                                      routePattern: testCase.routePattern ?? ''
+                                  }
                     }
                 );
                 addSubpage.model = getTestModel();
@@ -530,7 +526,7 @@ describe('AddSubpage controller', () => {
                                   'id': 'ObjectPage|to_Booking'
                               },
                               'parentPage': {
-                                  'component': 'ObjectPageType',
+                                  'component': 'sap.suite.ui.generic.template.ObjectPage',
                                   'entitySet': 'Travels'
                               }
                           },
@@ -541,7 +537,7 @@ describe('AddSubpage controller', () => {
                           'reference': 'dummyApp',
                           'parameters': {
                               'sourcePage': {
-                                  'id': 'ObjectPageId',
+                                  'id': 'CurrentPageId',
                                   'navigationSource': 'to_Booking'
                               },
                               'targetPage': {

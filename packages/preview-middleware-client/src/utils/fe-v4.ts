@@ -141,8 +141,7 @@ export async function createManifestPropertyChange(
 export function getV4ApplicationPages(manifest: Manifest): { id: string; entitySet?: string; contextPath?: string }[] {
     const result: { id: string; entitySet?: string; contextPath?: string }[] = [];
     const targets = manifest['sap.ui5'].routing?.targets ?? {};
-    for (const key of Object.keys(targets)) {
-        const target = targets[key];
+    for (const target of Object.values(targets)) {
         if (target.name === 'sap.fe.templates.ObjectPage') {
             result.push({
                 id: target.id,

@@ -8,13 +8,35 @@ import { isA } from '../../../utils/core';
 import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
 import FEListReportComponent from 'sap/fe/templates/ListReport/Component';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../../utils/version';
+import { PageDescriptorV4 } from '../../controllers/AddSubpage.controller';
 
 export const OBJECT_PAGE_COMPONENT_NAME_V4 = 'sap.fe.templates.ObjectPage.ObjectPage';
+
+interface ViewDataType {
+    stableId: string;
+}
 
 /**
  * Quick Action for adding a custom page action.
  */
 export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
+    protected pageId: string | undefined;
+    protected routePattern: string | undefined;
+
+    protected get currentPageDescriptor(): PageDescriptorV4 {
+        if (!this.pageId) {
+            throw new Error('pageId is not defined');
+        }
+        if (!this.routePattern) {
+            throw new Error('routePattern is not defined');
+        }
+        return {
+            appType: 'fe-v4',
+            pageId: this.pageId,
+            routePattern: this.routePattern
+        };
+    }
+
     protected getApplicationPages(): ApplicationPageData[] {
         return getV4ApplicationPages(this.context.manifest);
     }
@@ -82,7 +104,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
     }
 
     protected isCurrentObjectPage(): boolean {
-        return this.currentPageDescriptor.pageType === OBJECT_PAGE_COMPONENT_NAME_V4;
+        return this.pageType === OBJECT_PAGE_COMPONENT_NAME_V4;
     }
 
     protected getODataMetaModel(): ODataMetaModelV4 | undefined {
@@ -126,13 +148,15 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
             return;
         }
         await super.initialize();
+
+        this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
         // remember current page route pattern (used in dialog controller for new page change)
         const currentPageRoute = (this.context.manifest['sap.ui5'].routing?.routes ?? []).find(
-            (r) => r.name === this.currentPageDescriptor.pageId
+            (r) => r.name === this.pageId
         );
         if (!currentPageRoute) {
             throw new Error('Current page navigation route not found in manifest');
         }
-        this.currentPageDescriptor.routePattern = currentPageRoute.pattern;
+        this.routePattern = currentPageRoute.pattern;
     }
 }

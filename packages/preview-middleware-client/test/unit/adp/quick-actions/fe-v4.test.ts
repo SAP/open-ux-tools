@@ -2853,25 +2853,21 @@ describe('FE V4 quick actions', () => {
                     undefined,
                     {
                         appReference: 'dummyProjectId',
-                        appType: 'fe-v4',
+                        navProperties: testCase.isNewPageUnavailable
+                        ? []
+                        : [
+                            testCase.isListReport
+                            ? {
+                                entitySet: 'Travel',
+                                navProperty: 'Travel'
+                            }
+                            : {
+                                entitySet: 'BookingSupplement',
+                                navProperty: '_BookSupplement'
+                            }
+                        ],
                         pageDescriptor: {
-                            entitySet: testCase.isListReport ? 'Travel' : 'Booking',
-                            navProperties: testCase.isNewPageUnavailable
-                                ? []
-                                : [
-                                      testCase.isListReport
-                                          ? {
-                                                entitySet: 'Travel',
-                                                navProperty: 'Travel'
-                                            }
-                                          : {
-                                                entitySet: 'BookingSupplement',
-                                                navProperty: '_BookSupplement'
-                                            }
-                                  ],
-                            pageType: testCase.isListReport
-                                ? 'sap.fe.templates.ListReport.ListReport'
-                                : 'sap.fe.templates.ObjectPage.ObjectPage',
+                            appType: 'fe-v4',
                             pageId: testCase.isListReport ? 'TravelList' : 'BookingObjectPage',
                             routePattern: testCase.isListReport ? ':?query:' : '/Travel({key})/_Booking({key1}):?query:'
                         },

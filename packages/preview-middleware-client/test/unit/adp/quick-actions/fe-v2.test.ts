@@ -3625,6 +3625,21 @@ describe('FE V2 quick actions', () => {
             );
             jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
 
+            FlexUtils.getViewForControl.mockImplementation(() => {
+                return {
+                    getId: () => 'MyView',
+                    getController: () => {
+                        return {
+                            getMetadata: () => {
+                                return {
+                                    getName: () => 'MyController'
+                                };
+                            }
+                        };
+                    }
+                };
+            });
+
             const pageView = new XMLView();
             pageView.getParent.mockReturnValue({
                 getProperty: (propName: string) => {
@@ -3897,22 +3912,22 @@ describe('FE V2 quick actions', () => {
                     undefined,
                     {
                         appReference: 'dummyProjectId',
-                        appType: 'fe-v2',
+                        navProperties: testCase.isNewPageUnavailable
+                        ? []
+                        : [
+                            testCase.isListReport
+                            ? {
+                                entitySet: 'Travels',
+                                navProperty: 'Travels'
+                            }
+                            : {
+                                entitySet: 'Bookings',
+                                navProperty: 'to_Booking'
+                            }
+                        ],
                         pageDescriptor: {
+                            appType: 'fe-v2',
                             entitySet: 'Travels',
-                            navProperties: testCase.isNewPageUnavailable
-                                ? []
-                                : [
-                                      testCase.isListReport
-                                          ? {
-                                                entitySet: 'Travels',
-                                                navProperty: 'Travels'
-                                            }
-                                          : {
-                                                entitySet: 'Bookings',
-                                                navProperty: 'to_Booking'
-                                            }
-                                  ],
                             pageType: testCase.isListReport
                                 ? 'sap.suite.ui.generic.template.ListReport'
                                 : 'sap.suite.ui.generic.template.ObjectPage'

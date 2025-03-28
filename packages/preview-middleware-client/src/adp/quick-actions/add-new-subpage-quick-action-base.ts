@@ -6,19 +6,15 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import { QuickActionContext, SimpleQuickActionDefinition } from '../../cpe/quick-actions/quick-action-definition';
 import { pageHasControlId } from '../../cpe/quick-actions/utils';
 import { getControlById } from '../../utils/core';
-import { getApplicationType } from '../../utils/application';
 import { DialogFactory, DialogNames } from '../dialog-factory';
 import { EnablementValidatorResult } from './enablement-validator';
 import { getTextBundle } from '../../i18n';
 import { SimpleQuickActionDefinitionBase } from './simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator';
+import { PageDescriptorV2, PageDescriptorV4 } from '../controllers/AddSubpage.controller';
 
 export const ADD_NEW_OBJECT_PAGE_ACTION = 'add-new-subpage';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
-
-interface ViewDataType {
-    stableId: string;
-}
 
 export interface ApplicationPageData {
     id: string;
@@ -33,30 +29,28 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
     extends SimpleQuickActionDefinitionBase
     implements SimpleQuickActionDefinition
 {
-    protected readonly currentPageDescriptor: {
-        entitySet: string;
-        pageId: string;
-        pageType: string;
-        navProperties: { navProperty: string; entitySet: string }[]; // only navProperty with 1:n relationship and the entitySet
-        routePattern?: string;
-    } = {
-        entitySet: '',
-        pageId: '',
-        pageType: '',
-        navProperties: []
-    };
-
+    protected appReference: string;
+    protected abstract readonly currentPageDescriptor: PageDescriptorV2 | PageDescriptorV4;
+    protected entitySet: string | undefined;
+    protected navProperties: { navProperty: string; entitySet: string }[];
     protected existingPages: ApplicationPageData[];
+    protected pageType: string | undefined;
 
     constructor(context: QuickActionContext) {
         super(ADD_NEW_OBJECT_PAGE_ACTION, [], 'QUICK_ACTION_ADD_NEW_SUB_PAGE', context, [
             {
                 run: async (): Promise<EnablementValidatorResult> => {
                     const i18n = await getTextBundle();
-                    if (this.currentPageDescriptor.navProperties.length === 0) {
+                    if (this.navProperties.length === 0) {
                         return {
                             type: 'error',
                             message: i18n.getText('NO_SUB_PAGES_TO_ADD')
+                        };
+                    }
+                    if (!this.appReference) {
+                        return {
+                            type: 'error',
+                            message: i18n.getText('APP_REF_NOT_FOUND')
                         };
                     }
                     return undefined;
@@ -64,6 +58,8 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
             },
             DIALOG_ENABLEMENT_VALIDATOR
         ]);
+
+        this.appReference = context.flexSettings.projectId ?? '';
         this.existingPages = this.getApplicationPages();
     }
 
@@ -84,7 +80,7 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
         }
         const pageExists = await this.isPageExists(targetEntitySet, metaModel);
         if (!pageExists) {
-            this.currentPageDescriptor.navProperties.push({
+            this.navProperties.push({
                 entitySet: targetEntitySet,
                 navProperty: navProperty ?? targetEntitySet
             });
@@ -95,11 +91,7 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
         const allControls = CONTROL_TYPES.flatMap((item) => this.context.controlIndex[item] ?? []);
         const control = allControls.find((c) => pageHasControlId(this.context.view, c.controlId));
 
-        const pageType = this.context.view.getViewName().split('.view.')[0];
-        this.currentPageDescriptor.pageType = pageType;
-        this.currentPageDescriptor.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId
-            .split('::')
-            .pop() as string;
+        this.pageType = this.context.view.getViewName().split('.view.')[0];
 
         const metaModel = this.getODataMetaModel();
         if (!metaModel || !control) {
@@ -116,10 +108,11 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
         if (!entitySetName) {
             return Promise.resolve();
         }
-        this.currentPageDescriptor.entitySet = entitySetName;
+        this.entitySet = entitySetName;
 
+        this.navProperties = [];
         if (!this.isCurrentObjectPage()) {
-            await this.addNavigationOptionIfAvailable(metaModel, this.currentPageDescriptor.entitySet);
+            await this.addNavigationOptionIfAvailable(metaModel, this.entitySet);
         } else {
             await this.prepareNavigationData(entitySetName, metaModel);
         }
@@ -130,17 +123,14 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
 
     async execute(): Promise<FlexCommand[]> {
         const overlay = OverlayRegistry.getOverlay(this.control!);
-        const appType = getApplicationType(this.context.manifest);
-        const appReference = this.context.flexSettings.projectId;
-
         await DialogFactory.createDialog(
             overlay,
             this.context.rta,
             DialogNames.ADD_SUBPAGE,
             undefined,
             {
-                appType,
-                appReference,
+                appReference: this.appReference,
+                navProperties: this.navProperties,
                 title: 'ADD_SUB_PAGE_DIALOG_TITLE',
                 pageDescriptor: this.currentPageDescriptor
             },

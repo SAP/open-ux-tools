@@ -7,6 +7,7 @@ import { AddNewSubpageBase, ApplicationPageData } from '../add-new-subpage-quick
 import Component from 'sap/ui/core/Component';
 import { isA } from '../../../utils/core';
 import { areManifestChangesSupported } from './utils';
+import { PageDescriptorV2 } from '../../controllers/AddSubpage.controller';
 
 const OBJECT_PAGE_COMPONENT_NAME_V2 = 'sap.suite.ui.generic.template.ObjectPage';
 
@@ -14,6 +15,20 @@ const OBJECT_PAGE_COMPONENT_NAME_V2 = 'sap.suite.ui.generic.template.ObjectPage'
  * Quick Action for adding a custom page action.
  */
 export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
+    protected get currentPageDescriptor(): PageDescriptorV2 {
+        if (!this.entitySet) {
+            throw new Error('entitySet is not defined');
+        }
+        if (!this.pageType) {
+            throw new Error('pageType is not defined');
+        }
+        return {
+            appType: 'fe-v2',
+            entitySet: this.entitySet,
+            pageType: this.pageType
+        };
+    }
+
     protected getApplicationPages(): ApplicationPageData[] {
         return getV2ApplicationPages(this.context.manifest);
     }
@@ -23,7 +38,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
     }
 
     protected isCurrentObjectPage(): boolean {
-        return this.currentPageDescriptor.pageType === OBJECT_PAGE_COMPONENT_NAME_V2;
+        return this.pageType === OBJECT_PAGE_COMPONENT_NAME_V2;
     }
 
     protected getODataMetaModel(): ODataMetaModelV2 | undefined {
@@ -61,7 +76,6 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         if (!(await areManifestChangesSupported(this.context.manifest))) {
             return Promise.resolve();
         }
-
         return await super.initialize();
     }
 }
