@@ -1,39 +1,31 @@
 import type { ConfigAnswers } from '@sap-ux/adp-tooling';
 
 /**
- * Determines if authentication is necessary based on the provided configuration answers.
- * It checks if the system requires authentication and if the necessary credentials are provided.
+ * Determines if a credential question should be shown.
+ * In this simplified approach, we show credentials if a system is provided and the login was not successful.
  *
  * @param {ConfigAnswers} answers - User provided configuration details.
- * @param {boolean} systemRequiresAuth - A flag indicating if system requires authentication.
- * @returns {boolean | string} True if authentication should proceed, false if there are issues with credentials.
+ * @param {boolean} isAuthRequired - A flag indicating whether system authentication is needed.
+ * @returns {boolean} True if credentials should be requested.
  */
-export function shouldAuthenticate<T extends ConfigAnswers>(answers: T, systemRequiresAuth: boolean): boolean {
-    return !!answers.system && systemRequiresAuth && (answers.username === '' || answers.password === '');
+export function showCredentialQuestion(answers: ConfigAnswers, isAuthRequired: boolean): boolean {
+    return !!answers.system && isAuthRequired;
 }
 
 /**
- * Determines if an application question will be shown based on the answers and specific conditions.
+ * Determines if an application question should be shown.
  *
  * @param {ConfigAnswers} answers - The user-provided answers containing application details.
- * @param {boolean} systemRequiresAuth - A flag indicating if system requires authentication.
- * @returns {boolean | undefined} True if a application question will be shown, otherwise false.
+ * @param {boolean} appsLoaded - A flag indicating whether there are loaded apps.
+ * @param {boolean} isAuthRequired - A flag indicating whether system authentication is needed.
+ * @param {boolean} isLoginSuccessful - A flag indicating that system login was successful.
+ * @returns {boolean} True if the application question should be shown.
  */
-export function showApplicationQuestion<T extends ConfigAnswers>(answers: T, systemRequiresAuth: boolean): boolean {
-    return !!answers.system && !shouldAuthenticate(answers, systemRequiresAuth);
-}
-
-/**
- * Determines if a credential question will be shown based on the answers and specific conditions.
- *
- * @param {ConfigAnswers} answers - The user-provided answers containing application details.
- * @param {boolean} systemRequiresAuth - A flag indicating if system requires authentication.
- * @returns {boolean | undefined} True if a credential question will be shown, otherwise false or undefined.
- */
-export function showCredentialQuestion(answers: ConfigAnswers, systemRequiresAuth: boolean): boolean {
-    if (answers.system) {
-        return systemRequiresAuth;
-    } else {
-        return false;
-    }
+export function showApplicationQuestion(
+    answers: ConfigAnswers,
+    appsLoaded: boolean,
+    isAuthRequired: boolean,
+    isLoginSuccessful: boolean
+): boolean {
+    return !!answers.system && appsLoaded && (isAuthRequired ? isLoginSuccessful : true);
 }

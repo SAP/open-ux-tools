@@ -1,8 +1,6 @@
-import type { ToolsLogger } from '@sap-ux/logger';
-import type { App, AppIndex } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider, App, AppIndex } from '@sap-ux/axios-extension';
 
 import type { TargetApplication } from '../types';
-import type { AbapProvider } from './abap-provider';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../base/constants';
 
 /**
@@ -50,69 +48,31 @@ export const mapApps = (app: Partial<App>): TargetApplication => ({
 });
 
 /**
- * Provides services related to managing and loading applications from an ABAP provider.
+ * Loads and processes application data from the ABAP service provider.
+ *
+ * This function retrieves the application index from the provider and then searches for applications based on system type.
+ * If the system is not a cloud system and the base is customer-specific, additional variant applications are fetched and merged.
+ *
+ * @param {AbapServiceProvider} provider - The ABAP service provider used to retrieve application data.
+ * @param {boolean} isCustomerBase - Flag indicating whether the system is customer-based. Affects application selection.
+ * @returns {Promise<TargetApplication[]>} A promise that resolves to a sorted list of applications.
  */
-export class TargetApplications {
-    private applications: TargetApplication[] | undefined;
+export async function loadApps(provider: AbapServiceProvider, isCustomerBase: boolean): Promise<TargetApplication[]> {
+    let result: AppIndex = [];
 
-    /**
-     * Constructs an instance of ApplicationManager.
-     *
-     * @param {AbapProvider} abapProvider - The instance of AbapProvider class.
-     * @param {boolean} isCustomerBase - Indicates if the current base is a customer base, which affects how applications are loaded.
-     * @param {ToolsLogger} [logger] - The logger.
-     */
-    constructor(
-        private readonly abapProvider: AbapProvider,
-        private readonly isCustomerBase: boolean,
-        private readonly logger?: ToolsLogger
-    ) {}
+    try {
+        const isCloudSystem = await provider.isAbapCloud();
+        const appIndex = provider.getAppIndex();
 
-    /**
-     * Resets the current applications from the state.
-     */
-    public resetApps(): void {
-        this.applications = undefined;
-    }
+        result = await appIndex.search(isCloudSystem ? S4HANA_APPS_PARAMS : ABAP_APPS_PARAMS);
 
-    /**
-     * Retrieves the currently loaded list of applications.
-     *
-     * @returns {TargetApplication[]} An array of applications.
-     */
-    public async getApps(): Promise<TargetApplication[]> {
-        if (!this.applications) {
-            this.applications = await this.loadApps();
+        if (!isCloudSystem && isCustomerBase) {
+            const extraApps = await appIndex.search(ABAP_VARIANT_APPS_PARAMS);
+            result = result.concat(extraApps);
         }
-        return this.applications;
-    }
 
-    /**
-     * Loads applications based on system type and user parameters, merging results from different app sources as needed.
-     *
-     * @returns {TargetApplication[]} list of applications.
-     * @throws {Error} Throws an error if the app data cannot be loaded.
-     */
-    private async loadApps(): Promise<TargetApplication[]> {
-        let result: AppIndex = [];
-
-        try {
-            const provider = this.abapProvider.getProvider();
-            const isCloudSystem = await provider.isAbapCloud();
-            const appIndex = provider.getAppIndex();
-
-            result = await appIndex.search(isCloudSystem ? S4HANA_APPS_PARAMS : ABAP_APPS_PARAMS);
-
-            if (!isCloudSystem && this.isCustomerBase) {
-                const extraApps = await appIndex.search(ABAP_VARIANT_APPS_PARAMS);
-                result = result.concat(extraApps);
-            }
-
-            return result.map(mapApps).sort(filterApps);
-        } catch (e) {
-            const errorMsg = `Could not load applications: ${e.message}`;
-            this.logger?.error(errorMsg);
-            throw new Error(errorMsg);
-        }
+        return result.map(mapApps).sort(filterApps);
+    } catch (e) {
+        throw new Error(`Could not load applications: ${e.message}`);
     }
 }

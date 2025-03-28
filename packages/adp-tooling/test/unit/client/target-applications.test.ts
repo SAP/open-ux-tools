@@ -1,41 +1,23 @@
-import type { ToolsLogger } from '@sap-ux/logger';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import type { TargetApplication, AbapProvider } from '../../../src';
-import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, TargetApplications, filterApps } from '../../../src';
-
-jest.mock('i18next', () => ({
-    t: jest.fn((key) => key)
-}));
+import type { TargetApplication } from '../../../src';
+import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, filterApps, loadApps } from '../../../src';
 
 const searchMock = jest.fn();
 const isAbapCloudMock = jest.fn().mockResolvedValue(false);
 
 const mockAbapProvider = {
-    getProvider: jest.fn().mockReturnValue({
-        getAppIndex: jest.fn().mockReturnValue({
-            search: searchMock
-        }),
-        isAbapCloud: isAbapCloudMock
-    })
-};
+    getAppIndex: jest.fn().mockReturnValue({
+        search: searchMock
+    }),
+    isAbapCloud: isAbapCloudMock
+} as unknown as AbapServiceProvider;
 
 describe('Target Applications', () => {
-    let service: TargetApplications;
-
-    const loggerMock = {
-        error: jest.fn(),
-        warn: jest.fn(),
-        info: jest.fn()
-    } as Partial<ToolsLogger> as ToolsLogger;
-
     const mockApps = [
         { 'sap.app/id': '1', 'sap.app/title': 'App One' },
         { 'sap.app/id': '2', 'sap.app/title': 'App Two' }
     ];
-
-    beforeEach(() => {
-        service = new TargetApplications(mockAbapProvider as unknown as AbapProvider, true, loggerMock);
-    });
 
     afterEach(() => {
         jest.clearAllMocks();
@@ -46,8 +28,7 @@ describe('Target Applications', () => {
             searchMock.mockResolvedValue(mockApps);
             isAbapCloudMock.mockResolvedValue(true);
 
-            service.resetApps();
-            const apps = await service.getApps();
+            const apps = await loadApps(mockAbapProvider, true);
             expect(apps.length).toBe(2);
             expect(apps[0].title).toEqual('App One');
         });
@@ -59,7 +40,7 @@ describe('Target Applications', () => {
             isAbapCloudMock.mockResolvedValue(false);
             searchMock.mockResolvedValueOnce(mockCloudApps).mockResolvedValueOnce(mockVariantApps);
 
-            const apps = await service.getApps();
+            const apps = await loadApps(mockAbapProvider, true);
 
             expect(apps.length).toBe(2);
             expect(apps).toEqual(
@@ -93,8 +74,7 @@ describe('Target Applications', () => {
             const errorMsg = 'Could not load applications: Failed to fetch';
             searchMock.mockRejectedValue(new Error('Failed to fetch'));
 
-            await expect(service.getApps()).rejects.toThrow(errorMsg);
-            expect(loggerMock.error).toHaveBeenCalledWith(errorMsg);
+            await expect(loadApps(mockAbapProvider, true)).rejects.toThrow(errorMsg);
         });
     });
 
