@@ -1,7 +1,5 @@
 # Supported UI5 Versions for Quick Actions in Adaptation Projects Based on Fiori Elements Applications with OData V2 and OData V4
 
-Here’s the updated table with the additional column titled "SAPUI5 >=1.132.0":
-
 |Quick Action|OData Version|Page Type**|SAPUI5 1.71|SAPUI5 1.84|SAPUI5 1.96|SAPUI5 1.108|SAPUI5 1.120|SAPUI5 1.24|SAPUI5 1.27|SAPUI5 1.130|SAPUI5 1.131|SAPUI5 >=1.132.0|SAPUI5 >=1.135.0|
 |-|-|-|-|-|-|-|-|-|-|-|-|-|-|
 |Add Controller to Page|V2|LR, ALP, OP|X|X|X|X|X|X|X|X|X|X|X|
