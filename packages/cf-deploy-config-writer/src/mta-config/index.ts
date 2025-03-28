@@ -47,7 +47,7 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
                 break;
             }
         } catch (error) {
-            await new Promise((resolve) => setTimeout(resolve, 300));
+            await new Promise((resolve) => setTimeout(resolve, 500));
         }
     }
     LoggerHelper.logger?.info(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
