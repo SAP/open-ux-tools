@@ -5,7 +5,7 @@
         "ui5YamlDoesNotExist": "The ui5.yaml file does not exist in the project. Please create one.",
         "capMtaCreated": "CAP MTA configuration created.",
         "capMtaUpdated": "CAP MTA Configuration updated",
-        "capGenerationCompleted": "CAP generation completed",
+        "capGenerationCompleted": "CAP generation completed.",
         "mtaCreated": "MTA configuration created: {{mtaPath}}.",
         "mtaSaved": "MTA Configuration has been saved.",
         "mtaSavedFailed": "Saving the MTA configuration failed with the error: {{- error }}."
