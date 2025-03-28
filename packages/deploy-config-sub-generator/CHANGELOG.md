@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.0.17
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-sub-generator@0.1.33
+
+## 0.0.16
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-sub-generator@0.1.32
+
 ## 0.0.15
 
 ### Patch Changes
