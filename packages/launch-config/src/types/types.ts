@@ -23,13 +23,13 @@ export interface FioriOptions {
     debugOptions?: DebugOptions;
     /**
      * Controls whether VS Code should reload when updating workspace folders.
-     * 
+     *
      * VS Code automatically reloads when workspace folders change and no files are open.
      * This flag allows you to override that behavior.
-     * 
+     *
      * - true (default) - Triggers a VS Code reload when updating workspace folders and no files are open.
      * - false - Prevents automatic reloads.
-     * 
+     *
      * Use this flag to dynamically manage workspace modifications.
      */
     enableVSCodeReload?: boolean;

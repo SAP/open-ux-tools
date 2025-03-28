@@ -102,9 +102,15 @@ async function handleExistingLaunchJson(
 }
 
 /**
- * Updates the workspace folders in VSCode if the update options are provided.
+ * Updates the workspace folders in VS Code if update options are provided.
  *
- * @param {UpdateWorkspaceFolderOptions} updateWorkspaceFolders - The options for updating workspace folders.
+ * This function checks if updateWorkspaceFolders is defined and contains valid data.
+ * If a valid uri and vscode instance are provided, it adds the specified workspace folder to VS Code.
+ *
+ * @param {UpdateWorkspaceFolderOptions} [updateWorkspaceFolders] - The options for updating workspace folders.
+ * @param {Uri} updateWorkspaceFolders.uri - The URI of the workspace folder to be added.
+ * @param {typeof vscode} updateWorkspaceFolders.vscode - The VS Code instance used for updating the workspace.
+ * @param {string} updateWorkspaceFolders.projectName - The name of the workspace folder to be added.
  */
 export function updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders?: UpdateWorkspaceFolderOptions): void {
     if (updateWorkspaceFolders) {
@@ -167,12 +173,12 @@ async function handleDebugOptions(
         // This URI is populated when a reload of the workspace is required. It allows us to identify and update
         // the workspace folder correctly within VS Code.
         const updateWorkspaceFolders = workspaceFolderUri
-        ? ({
-            uri: workspaceFolderUri,
-            projectName: basename(rootFolder),
-            vscode: debugOptions.vscode
-        } as UpdateWorkspaceFolderOptions)
-        : undefined;
+            ? ({
+                  uri: workspaceFolderUri,
+                  projectName: basename(rootFolder),
+                  vscode: debugOptions.vscode
+              } as UpdateWorkspaceFolderOptions)
+            : undefined;
         updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
     }
     return fs;
