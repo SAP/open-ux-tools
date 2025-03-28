@@ -37,6 +37,7 @@ import {
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from '../quick-actions/control-types';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 interface CreateFragmentProps {
     fragmentName: string;
@@ -64,8 +65,14 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions) {
-        super(name);
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddFragmentOptions,
+        telemetryData?: QuickActionTelemetryData
+    ) {
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel({
@@ -135,6 +142,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
+        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
 

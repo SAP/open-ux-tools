@@ -1,5 +1,37 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.0.15
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/axios-extension@1.19.2
+    -   @sap-ux/inquirer-common@0.6.32
+    -   @sap-ux/deploy-config-generator-shared@0.0.39
+    -   @sap-ux/odata-service-inquirer@2.2.26
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.31
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.55
+
+## 0.0.14
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.2.25
+
+## 0.0.13
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.2.24
+
+## 0.0.12
+
+### Patch Changes
+
+-   1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
+-   Updated dependencies [1bca2d8]
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.54
+
 ## 0.0.11
 
 ### Patch Changes

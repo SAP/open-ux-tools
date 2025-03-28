@@ -1,5 +1,18 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.9
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
+## 0.13.8
+
+### Patch Changes
+
+-   6e32009: feat: introduce enhanced flp homepage
+    -   controlled via boolean property `flp.enhancedHomePage`, which is false by default
+
 ## 0.13.7
 
 ### Patch Changes
