@@ -60,7 +60,8 @@ export default class ExtensionPoint extends BaseDialog<ExtensionPointModel> {
      *
      * @param event Event
      */
-    onCreateBtnPress(event: Event): void {
+    async onCreateBtnPress(event: Event) {
+        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
 
