@@ -133,12 +133,19 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
         const appType = getApplicationType(this.context.manifest);
         const appReference = this.context.flexSettings.projectId;
 
-        await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_SUBPAGE, undefined, {
-            appType,
-            appReference,
-            title: 'ADD_SUB_PAGE_DIALOG_TITLE',
-            pageDescriptor: this.currentPageDescriptor
-        });
+        await DialogFactory.createDialog(
+            overlay,
+            this.context.rta,
+            DialogNames.ADD_SUBPAGE,
+            undefined,
+            {
+                appType,
+                appReference,
+                title: 'ADD_SUB_PAGE_DIALOG_TITLE',
+                pageDescriptor: this.currentPageDescriptor
+            },
+            { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+        );
         return [];
     }
 }
