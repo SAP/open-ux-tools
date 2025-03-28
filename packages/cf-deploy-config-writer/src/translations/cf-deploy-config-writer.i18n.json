@@ -7,7 +7,7 @@
         "capMtaUpdated": "CAP MTA Configuration updated",
         "capGenerationCompleted": "CAP generation completed.",
         "mtaCreated": "MTA configuration created: {{mtaPath}}.",
-        "mtaSaved": "MTA Configuration has been saved.",
+        "mtaSaved": "MTA configuration has been saved.",
         "mtaSavedFailed": "Saving the MTA configuration failed with the error: {{- error }}."
     },
     "error": {
