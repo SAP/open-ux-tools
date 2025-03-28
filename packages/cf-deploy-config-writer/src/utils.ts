@@ -30,7 +30,7 @@ import {
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
 import { type MTABaseConfig, type CFConfig, type CFBaseConfig, RouterModuleType } from './types';
-import { getMtaId, MtaConfig, addMtaDeployParameters } from './mta-config';
+import { getMtaId, type MtaConfig, addMtaDeployParameters, getMtaConfig } from './mta-config';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import LoggerHelper from './logger-helper';
 import { t } from './i18n';
@@ -259,14 +259,17 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
  * @param fs reference to a mem-fs editor
  */
 export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
-    const mtaConfigInstance = await MtaConfig.newInstance(config.mtaPath);
-    if (config.routerType === RouterModuleType.Standard) {
-        await addStandaloneRouter(config, mtaConfigInstance, fs);
-    } else {
-        await mtaConfigInstance.addRoutingModules({ isManagedApp: true, addMissingModules: false });
+    const mtaConfigInstance = await getMtaConfig(config.mtaPath);
+    if (mtaConfigInstance) {
+        if (config.routerType === RouterModuleType.Standard) {
+            await addStandaloneRouter(config, mtaConfigInstance, fs);
+        } else {
+            await mtaConfigInstance.addRoutingModules({ isManagedApp: true, addMissingModules: false });
+        }
+        await addMtaDeployParameters(mtaConfigInstance);
+        await mtaConfigInstance.save();
+        LoggerHelper.logger?.debug(t('debug.capMtaUpdated'));
     }
-    await addMtaDeployParameters(mtaConfigInstance);
-    await mtaConfigInstance.save();
 }
 
 /**
