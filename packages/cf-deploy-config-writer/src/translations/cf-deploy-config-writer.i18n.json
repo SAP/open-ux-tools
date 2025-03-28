@@ -8,7 +8,7 @@
         "capGenerationCompleted": "CAP generation completed",
         "mtaCreated": "MTA configuration created: {{mtaPath}}.",
         "mtaSaved": "MTA Configuration has been saved.",
-        "mtaSavedFailed": "MTA saved failed with error {{- error }}"
+        "mtaSavedFailed": "Saving the MTA configuration failed with the error: {{- error }}."
     },
     "error": {
         "unableToLoadMTA": "Unable to load mta.yaml configuration {{- mtaDir }}, error thrown {{- error }}.",
