@@ -107,7 +107,7 @@ export function UIFlexibleTable<T>(props: Readonly<UIFlexibleTableProps<T>>): Re
         if (props.addRowButton?.onClick) {
             const result = props.addRowButton.onClick();
             if (result instanceof Promise) {
-                result.then((data) => setRowToNavigate(data?.scrollToRow)).catch(() => undefined);
+                result.then((data) => setRowToNavigate(data?.scrollToRow)).catch((): void => undefined);
             } else {
                 setRowToNavigate(result?.scrollToRow);
             }

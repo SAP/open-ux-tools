@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.6
+
+### Patch Changes
+
+-   eebf808: feat: enable TypeScript compiler option `erasableSyntaxOnly`
+
 ## 0.19.5
 
 ### Patch Changes
