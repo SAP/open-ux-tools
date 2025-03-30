@@ -28,9 +28,11 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     await validateConfig(config);
     // Run `cds` add against the project, it will append whatever it needs
     createCAPMTA(config.mtaPath, [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService]);
+    // Delay, known issues with loading mta yaml after generation!
+    await new Promise((resolve) => setTimeout(resolve, 1000));
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
-    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
+    LoggerHelper.logger?.debug(t('debug.capGenerationCompleted'));
     return fs;
 }
 
