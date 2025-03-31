@@ -1,17 +1,22 @@
-import { type ConfirmQuestion, type InputQuestion, searchChoices } from '@sap-ux/inquirer-common';
+import { type ConfirmQuestion, type InputQuestion, type ListQuestion, searchChoices } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
-import type {
-    CfDeployConfigPromptOptions,
-    CfDeployConfigQuestions,
-    CfDeployConfigAnswers,
-    DestinationNamePromptOptions,
-    CfSystemChoice
+import {
+    type CfDeployConfigPromptOptions,
+    type CfDeployConfigQuestions,
+    type CfDeployConfigAnswers,
+    type DestinationNamePromptOptions,
+    type CfSystemChoice,
+    type CfDeployConfigRouterAnswers,
+    type CfDeployConfigRouterQuestions,
+    type CfDeployConfigRouterPromptOptions,
+    RouterModuleType,
+    promptNames
 } from '../types';
-import { promptNames } from '../types';
 import * as validators from './validators';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
 import type { Logger } from '@sap-ux/logger';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Retrieves the prompt configuration for selecting a Cloud Foundry destination name.
@@ -114,6 +119,39 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
 }
 
 /**
+ *
+ * @returns A list question object with the available router options, defaulting to `None`.
+ */
+function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
+    return {
+        type: 'list',
+        name: promptNames.routerType,
+        guiOptions: {
+            mandatory: true,
+            breadcrumb: t('prompts.generateDeploymentRouterOptionsMessage')
+        },
+        default: () => 'None', // Should always be the preferred choice
+        message: () => t('prompts.generateDeploymentRouterOptionsMessage'),
+        additionalMessages: (selectedRouter: RouterModuleType) => {
+            let additionalMessage;
+            if (selectedRouter && selectedRouter === RouterModuleType.AppFront) {
+                additionalMessage = {
+                    message: t('warnings.appFrontendServiceRouterChoice'),
+                    severity: Severity.warning
+                };
+            }
+            return additionalMessage;
+        },
+
+        choices: [
+            { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
+            { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront },
+            { name: t('prompts.routerType.none'), value: 'None' }
+        ]
+    } as ListQuestion<CfDeployConfigRouterAnswers>;
+}
+
+/**
  * Retrieves a list of deployment questions based on the application root and prompt options.
  *
  * @param {CfDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
@@ -136,6 +174,32 @@ export async function getQuestions(
         log?.info(t('info.addManagedAppRouter'));
         questions.push(getAddManagedAppRouterPrompt());
     }
+
+    if (addOverwriteQuestion) {
+        log?.info(t('info.overwriteDestination'));
+        questions.push(getOverwritePrompt());
+    }
+
+    return questions;
+}
+
+/**
+ * Retrieves a list of deployment questions based on the application root and destination name prompt option.
+ *
+ * @param {CfDeployConfigRouterPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
+ * @param {Logger} [log] - The logger instance to use for logging.
+ * @returns {CfDeployConfigRouterQuestions[]} Returns an array of questions related to cf deployment configuration.
+ */
+export async function getQuestionsWithRouterOptions(
+    promptOptions: CfDeployConfigRouterPromptOptions,
+    log?: Logger
+): Promise<CfDeployConfigRouterQuestions[]> {
+    const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
+    const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
+
+    const questions: CfDeployConfigQuestions[] = [];
+    questions.push(await getDestinationNamePrompt(destinationOptions));
+    questions.push(getRouterOptionsPrompt());
 
     if (addOverwriteQuestion) {
         log?.info(t('info.overwriteDestination'));

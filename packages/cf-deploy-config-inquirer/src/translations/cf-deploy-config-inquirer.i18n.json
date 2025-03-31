@@ -3,6 +3,7 @@
         "destinationNameMessage": "Destination name",
         "addApplicationRouterBreadcrumbMessage": "Add to Router",
         "generateManagedApplicationToRouterMessage": "Add application to managed application router?",
+        "generateDeploymentRouterOptionsMessage": "Deployment Options",
         "directBindingDestinationHint": "Destination name - The app router is configured to use direct service binding",
         "overwriteMessage": "Editing the deployment configuration will overwrite existing configuration, are you sure you want to continue?",
         "overwriteHintMessage": "Deployment configuration will abort if you choose no. Click Finish to abort.",
@@ -15,11 +16,17 @@
         "serviceAdvancedOptionMessage": "Configure advanced options",
         "abapEnvBindingBreadcrumbMessage": "ABAP Env. Binding",
         "selectServiceMessage": "ABAP Environment for direct service binding",
-        "routerTypeMessage": "Add router module"
+        "routerTypeMessage": "Add router module",
+        "routerType": {
+            "managedAppRouter": "Add application to managed application router",
+            "appFrontAppService": "Add application to Application Frontend service",
+            "none": "None"
+        }
     },
     "routerType": {
         "standaloneAppRouter": "Standalone Approuter",
-        "managedAppRouter": "Managed Approuter"
+        "managedAppRouter": "Managed Approuter",
+        "appFrontAppService": "Application Frontend Service"
     },
     "errors": {
         "emptyDestinationNameError": "You must provide a destination name in order to continue.",
@@ -33,7 +40,8 @@
         "errorScpAbapSourceDiscoveryCheckLog": "Check the Application Wizard console output view for details."
     },
     "warning": {
-        "btpDestinationListWarning": "BTP destinations are only retrieved on BAS"
+        "btpDestinationListWarning": "BTP destinations are only retrieved on BAS",
+        "appFrontendServiceRouterChoice": "You need to have the Application FrontEnd service enabled for your subaccount."
     },
     "info": {
         "addManagedAppRouter": "Add managed application router is enabled",

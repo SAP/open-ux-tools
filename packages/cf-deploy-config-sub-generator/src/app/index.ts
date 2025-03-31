@@ -298,7 +298,7 @@ export default class extends DeploymentGenerator {
             await generateAppConfig(this._getAppConfig(), this.fs, DeploymentGenerator.logger as unknown as Logger);
         } catch (error) {
             this.abort = true;
-            handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.writing', { error }) });
+            handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.writing', { error: error.message }) });
         }
     }
 
@@ -366,7 +366,8 @@ export default class extends DeploymentGenerator {
     public async end(): Promise<void> {
         try {
             if (
-                this.options.launchStandaloneFromYui &&
+                (this.options.launchStandaloneFromYui || !this.launchDeployConfigAsSubGenerator) &&
+                !this.abort &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('cfGen.info.filesGenerated'), MessageType.notification);

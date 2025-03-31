@@ -100,6 +100,7 @@ function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
         message: t('prompts.routerTypeMessage'),
         choices: [
             { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
+            { name: t('routerType.appFrontAppService'), value: RouterModuleType.AppFront },
             { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard }
         ]
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;

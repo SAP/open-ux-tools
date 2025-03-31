@@ -1,4 +1,4 @@
-import { getQuestions, getAppRouterQuestions } from './prompts';
+import { getQuestions, getAppRouterQuestions, getQuestionsWithRouterOptions } from './prompts';
 import type {
     CfDeployConfigPromptOptions,
     CfDeployConfigQuestions,
@@ -6,7 +6,10 @@ import type {
     CfDeployConfigAnswers,
     CfAppRouterDeployConfigPromptOptions,
     CfAppRouterDeployConfigQuestions,
-    CfAppRouterDeployConfigAnswers
+    CfAppRouterDeployConfigAnswers,
+    CfDeployConfigRouterPromptOptions,
+    CfDeployConfigRouterAnswers,
+    CfDeployConfigRouterQuestions
 } from './types';
 import { promptNames, appRouterPromptNames, RouterModuleType } from './types';
 import { initI18nCfDeployConfigInquirer } from './i18n';
@@ -33,6 +36,26 @@ async function getPrompts(
     }
     await initI18nCfDeployConfigInquirer();
     return getQuestions(promptOptions, LoggerHelper.logger);
+}
+
+/**
+ * Retrieves Cloud Foundry deployment configuration prompts.
+ *
+ * This function returns a list of cf deployment questions based on the provided application root and prompt options.
+ *
+ * @param {CfDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
+ * @param logger - The logger instance to use for logging.
+ * @returns {Promise<CfDeployConfigQuestions[]>} A promise that resolves to an array of questions for cf target prompting.
+ */
+async function getPromptsWithRouterOptions(
+    promptOptions: CfDeployConfigRouterPromptOptions,
+    logger?: Logger
+): Promise<CfDeployConfigQuestions[]> {
+    if (logger) {
+        LoggerHelper.logger = logger;
+    }
+    await initI18nCfDeployConfigInquirer();
+    return getQuestionsWithRouterOptions(promptOptions, LoggerHelper.logger);
 }
 
 /**
@@ -78,6 +101,7 @@ async function prompt(
 
 export {
     getPrompts,
+    getPromptsWithRouterOptions,
     type CfDeployConfigPromptOptions,
     type CfSystemChoice,
     promptNames,
@@ -89,5 +113,8 @@ export {
     type CfDeployConfigQuestions,
     type CfDeployConfigAnswers,
     type CfAppRouterDeployConfigAnswers,
-    type CfAppRouterDeployConfigQuestions
+    type CfAppRouterDeployConfigQuestions,
+    type CfDeployConfigRouterPromptOptions,
+    type CfDeployConfigRouterAnswers,
+    type CfDeployConfigRouterQuestions
 };
