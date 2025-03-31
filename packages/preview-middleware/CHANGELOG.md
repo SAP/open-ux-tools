@@ -1,5 +1,18 @@
 # @sap-ux/preview-middleware
 
+## 0.19.8
+
+### Patch Changes
+
+-   59ab22b: feat: Add Subpage CPE quick action added for ADP projects with OData V4.
+
+## 0.19.7
+
+### Patch Changes
+
+-   Updated dependencies [fbdf2d0]
+    -   @sap-ux/adp-tooling@0.13.22
+
 ## 0.19.6
 
 ### Patch Changes

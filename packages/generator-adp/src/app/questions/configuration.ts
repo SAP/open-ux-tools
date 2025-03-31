@@ -1,11 +1,13 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import { FlexLayer, TargetApplications, getEndpointNames } from '@sap-ux/adp-tooling';
-import type { AbapProvider, ConfigAnswers, TargetSystems } from '@sap-ux/adp-tooling';
-import type { InputQuestion, ListQuestion, PasswordQuestion } from '@sap-ux/inquirer-common';
+import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
+import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import { FlexLayer, getConfiguredProvider, getEndpointNames, loadApps } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
+    CliValidationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
     PasswordPromptOptions,
@@ -16,6 +18,7 @@ import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
 import { getApplicationChoices } from './helper/choices';
 import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -24,29 +27,34 @@ import { showApplicationQuestion, showCredentialQuestion } from './helper/condit
  */
 export class ConfigPrompter {
     /**
-     * Instance of target applications class for loading applications.
-     */
-    private readonly targetApps: TargetApplications;
-    /**
      * Indicates if the current layer is based on a customer base.
      */
     private readonly isCustomerBase: boolean;
+    /**
+     * Instance of AbapServiceProvider.
+     */
+    private abapProvider: AbapServiceProvider;
+    /**
+     * Loaded target applications for a system.
+     */
+    private targetApps: TargetApplication[];
+    /**
+     * Flag indicating that system login is successful.
+     */
+    private isLoginSuccessful: boolean;
+    /**
+     * Flag indicating that system requires authentication in BAS or it does not exist in VS Code.
+     */
+    private isAuthRequired: boolean;
 
     /**
      * Creates an instance of ConfigPrompter.
      *
-     * @param {AbapProvider} abapProvider - The ABAP provider instance.
      * @param {TargetSystems} targetSystems - The target system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
-     * @param {ToolsLogger} logger - The logger instance for logging.
+     * @param {ToolsLogger} logger - Instance of the logger.
      */
-    constructor(
-        private readonly abapProvider: AbapProvider,
-        private readonly targetSystems: TargetSystems,
-        layer: FlexLayer,
-        private readonly logger: ToolsLogger
-    ) {
-        this.targetApps = new TargetApplications(this.abapProvider, this.isCustomerBase, this.logger);
+    constructor(private readonly targetSystems: TargetSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
@@ -58,13 +66,17 @@ export class ConfigPrompter {
      * @returns An array of configuration questions.
      */
     public getPrompts(promptOptions?: ConfigPromptOptions): ConfigQuestion[] {
+        const isCLI = getHostEnvironment() === hostEnvironment.cli;
+
         const keyedPrompts: Record<configPromptNames, ConfigQuestion> = {
             [configPromptNames.system]: this.getSystemListPrompt(promptOptions?.[configPromptNames.system]),
+            [configPromptNames.systemValidationCli]: this.getSystemValidationPromptForCli({ hide: !isCLI }),
             [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
             [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
-            )
+            ),
+            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli({ hide: !isCLI })
         };
 
         const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
@@ -97,8 +109,33 @@ export class ConfigPrompter {
                 breadcrumb: true,
                 hint: t('prompts.systemTooltip')
             },
+            default: '',
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers)
         };
+    }
+
+    /**
+     * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the system list prompt.
+     *
+     * @param {CliValidationPromptOptions} options - System validation CLI options (i.e "hide").
+     * @returns Dummy prompt that runs in the CLI only.
+     */
+    private getSystemValidationPromptForCli(options: CliValidationPromptOptions) {
+        return {
+            name: configPromptNames.systemValidationCli,
+            when: async (answers: ConfigAnswers): Promise<boolean> => {
+                if (options.hide || !answers.system) {
+                    return false;
+                }
+
+                const result = await this.validateSystem(answers.system, answers);
+                if (typeof result === 'string') {
+                    throw new Error(result);
+                }
+
+                return false;
+            }
+        } as YUIQuestion;
     }
 
     /**
@@ -119,10 +156,7 @@ export class ConfigPrompter {
             },
             filter: (val: string): string => val.trim(),
             validate: (val: string) => validateEmptyString(val),
-            when: async (answers: ConfigAnswers) => {
-                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
-                return showCredentialQuestion(answers, systemRequiresAuth);
-            }
+            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired)
         };
     }
 
@@ -144,10 +178,7 @@ export class ConfigPrompter {
                 hint: t('prompts.passwordTooltip')
             },
             validate: async (value: string, answers: ConfigAnswers) => await this.validatePassword(value, answers),
-            when: async (answers: ConfigAnswers) => {
-                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
-                return showCredentialQuestion(answers, systemRequiresAuth);
-            }
+            when: (answers: ConfigAnswers) => showCredentialQuestion(answers, this.isAuthRequired)
         };
     }
 
@@ -168,17 +199,36 @@ export class ConfigPrompter {
                 hint: t('prompts.applicationListTooltip'),
                 applyDefaultWhenDirty: true
             },
-            choices: async () => {
-                const apps = await this.targetApps.getApps();
-                return getApplicationChoices(apps);
-            },
+            choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
-            validate: (value: TargetApplications) => this.validateApplicationSelection(value),
-            when: async (answers: ConfigAnswers) => {
-                const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(answers.system);
-                return showApplicationQuestion(answers, systemRequiresAuth);
-            }
+            validate: (value: TargetApplication) => this.validateApplicationSelection(value),
+            when: (answers: ConfigAnswers) =>
+                showApplicationQuestion(answers, !!this.targetApps?.length, this.isAuthRequired, this.isLoginSuccessful)
         };
+    }
+
+    /**
+     * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the application list prompt.
+     *
+     * @param {CliValidationPromptOptions} options - System validation CLI options (i.e "hide").
+     * @returns Dummy prompt that runs in the CLI only.
+     */
+    private getApplicationValidationPromptForCli(options: CliValidationPromptOptions) {
+        return {
+            name: configPromptNames.appValidationCli,
+            when: async (answers: ConfigAnswers): Promise<boolean> => {
+                if (options.hide || !answers.application) {
+                    return false;
+                }
+
+                const result = this.validateApplicationSelection(answers.application);
+                if (typeof result === 'string') {
+                    throw new Error(result);
+                }
+
+                return false;
+            }
+        } as YUIQuestion;
     }
 
     /**
@@ -187,7 +237,7 @@ export class ConfigPrompter {
      * @param {string} app - The selected application.
      * @returns An error message if validation fails, or true if the selection is valid.
      */
-    private validateApplicationSelection(app: TargetApplications): string | boolean {
+    private validateApplicationSelection(app: TargetApplication): string | boolean {
         if (!app) {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
@@ -208,13 +258,21 @@ export class ConfigPrompter {
             return validationResult;
         }
 
+        const options = {
+            system: answers.system,
+            client: undefined,
+            username: answers.username,
+            password
+        };
+
         try {
-            await this.abapProvider.setProvider(answers.system, undefined, answers.username, password);
-
-            await this.targetApps.getApps();
-
+            this.abapProvider = await getConfiguredProvider(options, this.logger);
+            await this.getSystemInfo();
+            this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+            this.isLoginSuccessful = true;
             return true;
         } catch (e) {
+            this.isLoginSuccessful = false;
             return e.message;
         }
     }
@@ -233,17 +291,53 @@ export class ConfigPrompter {
             return validationResult;
         }
 
-        try {
-            this.targetApps.resetApps();
-            await this.abapProvider.setProvider(system, undefined, answers.username, answers.password);
+        const options = {
+            system,
+            client: undefined,
+            username: answers.username,
+            password: answers.password
+        };
 
-            const systemRequiresAuth = await this.targetSystems.getSystemRequiresAuth(system);
-            if (!systemRequiresAuth) {
-                await this.targetApps.getApps();
+        try {
+            this.targetApps = [];
+            this.abapProvider = await getConfiguredProvider(options, this.logger);
+            this.isAuthRequired = await this.targetSystems.getSystemRequiresAuth(system);
+            if (!this.isAuthRequired) {
+                await this.getSystemInfo();
+                this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
             }
-            return true;
         } catch (e) {
             return e.message;
+        }
+
+        return true;
+    }
+
+    /**
+     * Fetches system information from the provider's layered repository.
+     *
+     * @returns {SystemInfo} System into containing system supported adaptation project types and translations.
+     */
+    private async getSystemInfo(): Promise<void> {
+        try {
+            const lrep = this.abapProvider.getLayeredRepository();
+            await lrep.getSystemInfo();
+        } catch (e) {
+            this.handleSystemError(e);
+        }
+    }
+
+    /**
+     * Handles errors that occur while fetching system information, setting default values and rethrowing if necessary.
+     *
+     * @param {Error} error - The error encountered during the system info fetch.
+     */
+    private handleSystemError(error: Error): void {
+        this.logger.debug(`Failed to fetch system information. Reason: ${error.message}`);
+        if (isAxiosError(error)) {
+            if (error.response?.status === 401 || error.response?.status === 403) {
+                throw new Error(`Authentication error: ${error.message}`);
+            }
         }
     }
 }
