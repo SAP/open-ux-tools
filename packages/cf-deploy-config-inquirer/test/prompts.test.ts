@@ -261,9 +261,9 @@ describe('Prompt Generation Tests', () => {
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
             expect((routerTypePrompt?.default as Function)()).toBe('None');
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
+                { name: t('prompts.routerType.none'), value: 'None' },
                 { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
-                { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront },
-                { name: t('prompts.routerType.none'), value: 'None' }
+                { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront }
             ]);
             expect(
                 ((routerTypePrompt as YUIQuestion)?.additionalMessages as Function)(RouterModuleType.AppFront)

@@ -144,9 +144,9 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
         },
 
         choices: [
+            { name: t('prompts.routerType.none'), value: 'None' },
             { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
-            { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront },
-            { name: t('prompts.routerType.none'), value: 'None' }
+            { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront }
         ]
     } as ListQuestion<CfDeployConfigRouterAnswers>;
 }
