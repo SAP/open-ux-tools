@@ -9,7 +9,7 @@ export function initTheme(): void {
         defaultFontStyle: {
             WebkitFontSmoothing: '',
             fontFamily: 'var(--vscode-font-family)'
-        },
+        }
     });
 
     loadTheme(appTheme);
