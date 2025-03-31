@@ -47,12 +47,6 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
                             message: i18n.getText('NO_SUB_PAGES_TO_ADD')
                         };
                     }
-                    if (!this.appReference) {
-                        return {
-                            type: 'error',
-                            message: i18n.getText('APP_REF_NOT_FOUND')
-                        };
-                    }
                     return undefined;
                 }
             },
@@ -88,6 +82,9 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
     }
 
     async initialize(): Promise<void> {
+        if (!this.appReference) {
+            throw new Error('App reference not defined');
+        }
         const allControls = CONTROL_TYPES.flatMap((item) => this.context.controlIndex[item] ?? []);
         const control = allControls.find((c) => pageHasControlId(this.context.view, c.controlId));
 
