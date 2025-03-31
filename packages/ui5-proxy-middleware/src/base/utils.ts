@@ -38,15 +38,8 @@ export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): v
  * @param proxyReq - proxy request object
  * @param res - server response object
  * @param etag - Etag of the cached UI5 sources, normally the UI5 version
- * @param logger - Logger for loging the requests
  */
-export const proxyRequestHandler = (
-    proxyReq: ClientRequest,
-    res: ServerResponse,
-    etag: string,
-    logger: ToolsLogger
-): void => {
-    logger.debug(proxyReq.path);
+export const proxyRequestHandler = (proxyReq: ClientRequest, res: ServerResponse, etag: string): void => {
     if (proxyReq.getHeader('if-none-match') === etag) {
         res.statusCode = 304;
         res.end();

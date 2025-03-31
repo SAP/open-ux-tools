@@ -9,7 +9,7 @@ import {
     proxyErrorHandler,
     updateProxyEnv
 } from './utils';
-import { ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
+import { LogLevel, ToolsLogger, UI5ToolingTransport } from '@sap-ux/logger';
 import type { Url } from 'url';
 import { getProxyForUrl } from 'proxy-from-env';
 import { HttpsProxyAgent } from 'https-proxy-agent';
@@ -41,7 +41,7 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
     const proxyConfig: Options = {
         on: {
             proxyReq: (proxyReq: ClientRequest, _req: IncomingMessage, res: ServerResponse): void => {
-                proxyRequestHandler(proxyReq, res, etag, logger);
+                proxyRequestHandler(proxyReq, res, etag);
             },
             proxyRes: (proxyRes: IncomingMessage): void => {
                 proxyResponseHandler(proxyRes, etag);
@@ -60,7 +60,7 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         pathRewrite: { [config.path]: ui5Ver + config.path },
         pathFilter: proxyFilter,
         ...options,
-        logger
+        logger: config.logLevel === LogLevel.Debug ? logger : undefined
     };
 
     // update proxy config with values coming from args or ui5.yaml
