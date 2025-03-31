@@ -23,7 +23,6 @@ export interface ChoiceGroupProps extends IChoiceGroupProps {
 // Reusable styles
 const UI_CHOICE_GROUP_LABEL_STYLE = {
     fontSize: 13,
-    family: 'var(--vscode-font-family)',
     disableOpacity: 0.4
 };
 const UI_CHOICE_GROUP_STYLES = {
