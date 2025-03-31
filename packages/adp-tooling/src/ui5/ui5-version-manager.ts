@@ -14,7 +14,8 @@ import {
     getOfficialBaseUI5VersionUrl,
     getFormattedVersion
 } from './utils';
-import { FlexLayer, UI5Version } from '../types';
+import type { UI5Version } from '../types';
+import { FlexLayer } from '../types';
 
 /**
  * Service class for handling SAP UI5 version information.

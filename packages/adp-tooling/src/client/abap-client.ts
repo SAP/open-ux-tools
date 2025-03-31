@@ -1,9 +1,11 @@
 import { type AbapServiceProvider, AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
-import { FlexUISupportedSystem } from '../types';
+import type { FlexUISupportedSystem } from '../types';
 
 /**
  * Fetches system supports Flex UI features.
  *
+ * @param provider
+ * @param isCustomerBase
  * @returns {Promise<FlexUISupportedSystem | undefined>} settings indicating support for onPremise and UI Flex capabilities.
  */
 export async function getFlexUISupportedSystem(
@@ -33,6 +35,7 @@ export async function getFlexUISupportedSystem(
 /**
  * Fetches system UI5 Version from UI5RtVersionService.
  *
+ * @param provider
  * @returns {string | undefined} system UI5 version
  */
 export async function getSystemUI5Version(provider: AbapServiceProvider): Promise<string | undefined> {

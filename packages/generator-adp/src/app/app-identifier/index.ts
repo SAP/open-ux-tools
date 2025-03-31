@@ -1,4 +1,5 @@
-import { FlexLayer, TargetApplication } from '@sap-ux/adp-tooling';
+import type { TargetApplication } from '@sap-ux/adp-tooling';
+import { FlexLayer } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { t } from '../../utils/i18n';
