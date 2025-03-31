@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.25.0
+
+### Minor Changes
+
+-   1c276ac: Remove font-family definitions from individual components and apply it globally.
+
 ## 1.24.12
 
 ### Patch Changes
