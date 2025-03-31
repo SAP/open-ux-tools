@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.10
+
+### Patch Changes
+
+-   59ab22b: feat: Add Subpage CPE quick action added for ADP projects with OData V4.
+
+## 0.13.9
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
 ## 0.13.8
 
 ### Patch Changes

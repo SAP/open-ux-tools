@@ -97,7 +97,6 @@ export function getUIContextualMenuItemStyles(
             marginRight: 6
         },
         label: {
-            fontFamily: 'var(--vscode-font-family)',
             lineHeight: 18,
             height: 18,
             paddingLeft: padding.label

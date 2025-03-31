@@ -1,6 +1,9 @@
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
-import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
+import {
+    QuickActionContext,
+    NestedQuickActionDefinition
+} from '../../../cpe/quick-actions/quick-action-definition';
 import type { AnnotationDataSourceResponse } from '../../api-handler';
 import { getDataSourceAnnotationFileMap } from '../../api-handler';
 import {
@@ -29,6 +32,9 @@ export class AddNewAnnotationFile
     implements NestedQuickActionDefinition
 {
     public children: NestedQuickActionChild[] = [];
+    public get quickActionSteps(): number {
+        return 1;
+    }
     readonly kind = NESTED_QUICK_ACTION_KIND;
     readonly type = ADD_NEW_ANNOTATION_FILE;
     readonly forceRefreshAfterExecution = true;

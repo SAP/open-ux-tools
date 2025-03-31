@@ -22,12 +22,27 @@ async function validateFioriAppProjectFolder(targetDir: string): Promise<string 
 }
 
 /**
- * @param targetPath the target directory path.
- * @param appName the application directory name.
- * @param validateFioriAppFolder if true, validates the target path as a Fiori App project.
- * @returns true if validated for Fiori App Project and Project Folder. Otherwise appropriate validation message.
+ * Validates whether the specified target path is suitable for creating a Fiori App project.
+ * The function performs the following checks:
+ *
+ * 1. **CAP Project Check:** If `validateFioriAppFolder` is true, it checks if the target path is part of an existing CAP project.
+ *    - Uses `findCapProjectRoot()` and `getCapProjectType()` to verify the presence of a CAP project.
+ *    - Returns an error message if a CAP project is detected.
+ *
+ * 2. **Fiori App Project Check:** If `validateFioriAppFolder` is true, it checks if the target path contains a Fiori project.
+ *    - Uses `findRootsForPath()` to determine if a Fiori application root exists.
+ *    - Returns a success message if a valid Fiori app root is found, otherwise returns true.
+ *
+ * 3. **General Project Folder Check:**
+ *    - Uses `validateProjectFolder()` to verify if the provided target path exists.
+ *    - Ensures the target folder does not already contain a subfolder with the intended project name.
+ *
+ * @param targetPath - The target directory path where the Fiori app is to be created.
+ * @param appName - The application directory name.
+ * @param validateFioriAppFolder - If true, validates the target path as a Fiori App project folder.
+ * @returns A boolean value `true` if all validations pass; otherwise, an error message.
  */
-export async function validateTargetFolderForFioriApp(
+export async function validateFioriAppTargetFolder(
     targetPath: string,
     appName: string,
     validateFioriAppFolder?: boolean

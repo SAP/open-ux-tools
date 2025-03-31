@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.8.0
+
+### Minor Changes
+
+-   913e924: Add enableVSCodeReload flag to control VS Code reload on workspace update
+
 ## 0.7.37
 
 ### Patch Changes
