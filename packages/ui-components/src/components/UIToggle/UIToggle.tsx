@@ -284,7 +284,10 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     }),
                     'svg': {
                         width: '100%',
-                        height: '100%'
+                        height: '100%',
+                        path: {
+                            stroke: 'var(--vscode-button-secondaryForeground)'
+                        }
                     }
                 }
             };

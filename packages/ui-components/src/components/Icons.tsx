@@ -1900,14 +1900,14 @@ export function initIcons(): void {
             ),
             [UiIcons.SwitchOff]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 8H12" stroke={COLORS.thumbOff} strokeLinecap="round" />
+                    <path d="M4 8H12" stroke={COLORS.default} strokeLinecap="round" />
                 </svg>
             ),
             [UiIcons.SwitchOn]: (
                 <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
                         d="M2 8.5L6 12.5L14 4.5"
-                        stroke={COLORS.thumbOff}
+                        stroke={COLORS.default}
                         strokeLinecap="round"
                         strokeLinejoin="round"
                     />
