@@ -85,8 +85,7 @@ export class UITextInput extends React.Component<UITextInputProps> {
         return {
             ...{
                 root: {
-                    height: 'auto',
-                    fontFamily: 'var(--vscode-font-family)'
+                    height: 'auto'
                 },
                 fieldGroup: [
                     // Common styles
@@ -154,11 +153,9 @@ export class UITextInput extends React.Component<UITextInputProps> {
                         fontWeight: 'normal',
                         boxSizing: 'border-box',
                         borderRadius: COMMON_INPUT_STYLES.borderRadius,
-                        fontFamily: 'var(--vscode-font-family)',
                         selectors: {
                             '::placeholder': {
                                 fontSize: 13,
-                                fontFamily: 'var(--vscode-font-family)',
                                 color: 'var(--vscode-input-placeholderForeground)'
                             }
                         }
