@@ -29,8 +29,8 @@ import {
     MTABuildScript
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
-import { type MTABaseConfig, type CFConfig, type CFBaseConfig, RouterModuleType, type CFAppConfig } from './types';
-import { getMtaId, MtaConfig, addMtaDeployParameters } from './mta-config';
+import { type MTABaseConfig, type CFConfig, type CFBaseConfig, RouterModuleType } from './types';
+import { getMtaId, type MtaConfig, addMtaDeployParameters, getMtaConfig } from './mta-config';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import LoggerHelper from './logger-helper';
 import { t } from './i18n';
@@ -189,10 +189,7 @@ export async function generateSupportingConfig(config: CFConfig, fs: Editor): Pr
     if (mtaId && !fs.exists(join(config.rootPath, 'package.json'))) {
         addRootPackage(mtaConfig, fs);
     }
-    if (
-        (config.addManagedAppRouter || config.addAppFrontendRouter) &&
-        !fs.exists(join(config.rootPath, XSSecurityFile))
-    ) {
+    if (config.addManagedAppRouter && !fs.exists(join(config.rootPath, XSSecurityFile))) {
         addXSSecurityConfig(mtaConfig, fs);
     }
     // Be a good developer and add a .gitignore if missing from the existing project root
@@ -256,20 +253,23 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
 }
 
 /**
- * Add standalone | managed | appfront approuter to the target folder.
+ * Add standalone or managed approuter to the target folder.
  *
  * @param config writer configuration
  * @param fs reference to a mem-fs editor
  */
 export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
-    const mtaConfigInstance = await MtaConfig.newInstance(config.mtaPath, LoggerHelper?.logger);
-    if (config.routerType === RouterModuleType.Standard) {
-        await addStandaloneRouter(config, mtaConfigInstance, fs);
-    } else {
-        await mtaConfigInstance.addRouterType({ routerType: config.routerType, addMissingModules: false });
+    const mtaConfigInstance = await getMtaConfig(config.mtaPath);
+    if (mtaConfigInstance) {
+        if (config.routerType === RouterModuleType.Standard) {
+            await addStandaloneRouter(config, mtaConfigInstance, fs);
+        } else {
+            await mtaConfigInstance.addRoutingModules({ isManagedApp: true, addMissingModules: false });
+        }
+        await addMtaDeployParameters(mtaConfigInstance);
+        await mtaConfigInstance.save();
+        LoggerHelper.logger?.debug(t('debug.capMtaUpdated'));
     }
-    await addMtaDeployParameters(mtaConfigInstance);
-    await mtaConfigInstance.save();
 }
 
 /**
@@ -311,24 +311,5 @@ export async function updateRootPackage(
         ]) {
             await updatePackageScript(rootPath, script.name, script.run, fs);
         }
-    }
-}
-
-/**
- * Enforces valid router configuration by toggling routers as needed.
- *
- * @param config The current router configuration
- */
-export function enforceValidRouterConfig(config: CFAppConfig): void {
-    const { addManagedAppRouter, addAppFrontendRouter } = config;
-
-    if (addManagedAppRouter) {
-        config.addAppFrontendRouter = false;
-    } else if (addAppFrontendRouter) {
-        config.addManagedAppRouter = false;
-    } else {
-        // Set default values
-        config.addManagedAppRouter ??= true;
-        config.addAppFrontendRouter ??= false;
     }
 }

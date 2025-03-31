@@ -59,7 +59,7 @@ describe('CF Writer CAP', () => {
         });
     });
 
-    it.each([[RouterModuleType.Managed], [RouterModuleType.Standard], [RouterModuleType.AppFront]])(
+    it.each([[RouterModuleType.Managed], [RouterModuleType.Standard]])(
         'Validate generation of CAP mta configurations %s',
         async (routerType: RouterModuleType) => {
             const mtaId = 'captestproject';
@@ -70,15 +70,7 @@ describe('CF Writer CAP', () => {
             // For testing purposes, an existing mta.yaml is copied to reflect the spawn command;
             // `cds add mta xsuaa connectivity destination html5-repo`
             spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => {
-                fsExtra.copySync(
-                    join(
-                        __dirname,
-                        routerType === RouterModuleType.AppFront
-                            ? `fixtures/mta-types/appfront`
-                            : `fixtures/mta-types/cdsmta`
-                    ),
-                    mtaPath
-                );
+                fsExtra.copySync(join(__dirname, `fixtures/mta-types/cdsmta`), mtaPath);
                 return { status: 0 } as any;
             });
             const localFs = await generateCAPConfig(
@@ -94,26 +86,17 @@ describe('CF Writer CAP', () => {
             expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot(); // Ensure it hasn't changed!
             expect(getCapProjectTypeMock).toHaveBeenCalled();
             expect(spawnMock.mock.calls).toHaveLength(2);
+            expect(spawnMock).toHaveBeenCalledWith(
+                'cds',
+                ['add', 'mta', 'xsuaa', 'destination', 'html5-repo'],
+                expect.objectContaining({ cwd: expect.stringContaining(mtaId) })
+            );
             expect(spawnMock.mock.calls[1][0]).toStrictEqual('npm.cmd'); // Just always test for windows!
             expect(spawnMock.mock.calls[1][1]).toStrictEqual(['install', '--ignore-engines']);
-            // Specific changes for Standalone
+            expect(spawnMock.mock.calls[1][2]).toHaveProperty('shell');
             if (RouterModuleType.Standard === routerType) {
                 expect(localFs.read(join(mtaPath, `router`, 'package.json'))).toMatchSnapshot();
                 expect(localFs.read(join(mtaPath, `router`, 'xs-app.json'))).toMatchSnapshot();
-            }
-            // Appfront route crates a different mta
-            if (RouterModuleType.AppFront === routerType) {
-                expect(spawnMock).toHaveBeenCalledWith(
-                    'cds',
-                    ['add', 'mta', 'xsuaa'],
-                    expect.objectContaining({ cwd: expect.stringContaining(mtaId) })
-                );
-            } else {
-                expect(spawnMock).toHaveBeenCalledWith(
-                    'cds',
-                    ['add', 'mta', 'xsuaa', 'destination', 'html5-repo'],
-                    expect.objectContaining({ cwd: expect.stringContaining(mtaId) })
-                );
             }
         }
     );
