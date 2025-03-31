@@ -15,6 +15,12 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
+/** sap.fe.core */
+import type AppComponentV4 from 'sap/fe/core/AppComponent';
+
+/** sap.suite.ui.generic */
+import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
+
 import { getResourceModel } from '../../i18n';
 
 import CommandExecutor from '../command-executor';
@@ -31,12 +37,14 @@ type SubpageType = 'ObjectPage' | 'CustomPage';
 
 export interface PageDescriptorV2 {
     appType: 'fe-v2';
+    appComponent: AppComponentV2;
     entitySet: string;
     pageType: string;
 }
 
 export interface PageDescriptorV4 {
     appType: 'fe-v4';
+    appComponent: AppComponentV4;
     pageId: string;
     routePattern: string;
 }
@@ -120,15 +128,18 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
         const navigation = this.model.getProperty('/navigationData').find((item) => (item.navProperty = navProperty));
         const targetEntitySet = navigation?.entitySet ?? '';
 
+        const pageDescriptor = this.options.pageDescriptor;
+
         let modifiedValue;
-        if (this.options.pageDescriptor.appType === 'fe-v2') {
+        if (pageDescriptor.appType === 'fe-v2') {
             modifiedValue = {
+                appComponent: pageDescriptor.appComponent,
                 changeType: 'appdescr_ui_generic_app_addNewObjectPage',
                 reference: this.options.appReference,
                 parameters: {
                     parentPage: {
-                        component: this.options.pageDescriptor.pageType,
-                        entitySet: this.options.pageDescriptor.entitySet
+                        component: pageDescriptor.pageType,
+                        entitySet: pageDescriptor.entitySet
                     },
                     childPage: {
                         id: `ObjectPage|${navProperty}`,
@@ -140,17 +151,14 @@ export default class AddSubpage extends BaseDialog<AddSubpageModel> {
                 }
             };
         } else {
-            const routePattern = generateRoutePattern(
-                this.options.pageDescriptor.routePattern ?? '',
-                navProperty,
-                targetEntitySet
-            );
+            const routePattern = generateRoutePattern(pageDescriptor.routePattern, navProperty, targetEntitySet);
             modifiedValue = {
+                appComponent: pageDescriptor.appComponent,
                 changeType: 'appdescr_fe_addNewPage',
                 reference: this.options.appReference,
                 parameters: {
                     sourcePage: {
-                        id: this.options.pageDescriptor.pageId,
+                        id: pageDescriptor.pageId,
                         navigationSource: navProperty
                     },
                     targetPage: {

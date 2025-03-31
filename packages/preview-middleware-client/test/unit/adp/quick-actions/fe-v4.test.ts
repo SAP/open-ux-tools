@@ -3,6 +3,7 @@ import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
+import type AppComponentV4 from 'sap/fe/core/AppComponent';
 
 import type { ChangeService } from '../../../../src/cpe/changes/service';
 const mockChangeService = {
@@ -48,6 +49,7 @@ import { TableQuickActionDefinitionBase } from '../../../../src/adp/quick-action
 import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
+import * as utils from 'open/ux/preview/client/utils/fe-v4';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -2729,6 +2731,9 @@ describe('FE V4 quick actions', () => {
                 } as FlexSettings;
             });
 
+            const dummyAppComponent = {} as unknown as AppComponentV4;
+            jest.spyOn(utils, 'getV4AppComponent').mockReturnValue(dummyAppComponent);
+
             const metaModelMock = {
                 requestObject: jest.fn().mockImplementation((path: string) => {
                     if (path.split('/').length > 2) {
@@ -2854,20 +2859,21 @@ describe('FE V4 quick actions', () => {
                     {
                         appReference: 'dummyProjectId',
                         navProperties: testCase.isNewPageUnavailable
-                        ? []
-                        : [
-                            testCase.isListReport
-                            ? {
-                                entitySet: 'Travel',
-                                navProperty: 'Travel'
-                            }
-                            : {
-                                entitySet: 'BookingSupplement',
-                                navProperty: '_BookSupplement'
-                            }
-                        ],
+                            ? []
+                            : [
+                                  testCase.isListReport
+                                      ? {
+                                            entitySet: 'Travel',
+                                            navProperty: 'Travel'
+                                        }
+                                      : {
+                                            entitySet: 'BookingSupplement',
+                                            navProperty: '_BookSupplement'
+                                        }
+                              ],
                         pageDescriptor: {
                             appType: 'fe-v4',
+                            appComponent: dummyAppComponent,
                             pageId: testCase.isListReport ? 'TravelList' : 'BookingObjectPage',
                             routePattern: testCase.isListReport ? ':?query:' : '/Travel({key})/_Booking({key1}):?query:'
                         },

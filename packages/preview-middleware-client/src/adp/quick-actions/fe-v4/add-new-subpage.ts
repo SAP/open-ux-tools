@@ -1,8 +1,9 @@
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import ODataMetaModelV4 from 'sap/ui/model/odata/v4/ODataMetaModel';
 import Component from 'sap/ui/core/Component';
+import AppComponent from 'sap/fe/core/AppComponent';
 
-import { getV4ApplicationPages } from '../../../utils/fe-v4';
+import { getV4AppComponent, getV4ApplicationPages } from '../../../utils/fe-v4';
 import { AddNewSubpageBase, ApplicationPageData } from '../add-new-subpage-quick-action-base';
 import { isA } from '../../../utils/core';
 import FEObjectPageComponent from 'sap/fe/templates/ObjectPage/Component';
@@ -22,6 +23,7 @@ interface ViewDataType {
 export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
     protected pageId: string | undefined;
     protected routePattern: string | undefined;
+    protected appComponent: AppComponent | undefined;
 
     protected get currentPageDescriptor(): PageDescriptorV4 {
         if (!this.pageId) {
@@ -30,8 +32,12 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
         if (!this.routePattern) {
             throw new Error('routePattern is not defined');
         }
+        if (!this.appComponent) {
+            throw new Error('appComponent is not defined');
+        }
         return {
             appType: 'fe-v4',
+            appComponent: this.appComponent,
             pageId: this.pageId,
             routePattern: this.routePattern
         };
@@ -148,6 +154,8 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
             return;
         }
         await super.initialize();
+
+        this.appComponent = getV4AppComponent(this.context.view);
 
         this.pageId = (this.context.view.getViewData() as ViewDataType)?.stableId.split('::').pop() as string;
         // remember current page route pattern (used in dialog controller for new page change)

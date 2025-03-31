@@ -2,6 +2,7 @@ import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoring, { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
+import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
 
 import {
     quickActionListChanged,
@@ -43,6 +44,7 @@ import ComponentMock from 'mock/sap/ui/core/Component';
 import UIComponent from 'sap/ui/core/UIComponent';
 import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
+import * as utils from 'open/ux/preview/client/adp/quick-actions/fe-v2/utils';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -3836,6 +3838,9 @@ describe('FE V2 quick actions', () => {
                 getMetaModel: () => metaModelMock
             } as unknown as Model);
 
+            const dummyAppComponent = {} as unknown as AppComponentV2;
+            jest.spyOn(utils, 'getV2AppComponent').mockReturnValue(dummyAppComponent);
+
             const registry = new FEV2QuickActionRegistry();
             const service = new QuickActionService(
                 rtaMock,
@@ -3913,20 +3918,21 @@ describe('FE V2 quick actions', () => {
                     {
                         appReference: 'dummyProjectId',
                         navProperties: testCase.isNewPageUnavailable
-                        ? []
-                        : [
-                            testCase.isListReport
-                            ? {
-                                entitySet: 'Travels',
-                                navProperty: 'Travels'
-                            }
-                            : {
-                                entitySet: 'Bookings',
-                                navProperty: 'to_Booking'
-                            }
-                        ],
+                            ? []
+                            : [
+                                  testCase.isListReport
+                                      ? {
+                                            entitySet: 'Travels',
+                                            navProperty: 'Travels'
+                                        }
+                                      : {
+                                            entitySet: 'Bookings',
+                                            navProperty: 'to_Booking'
+                                        }
+                              ],
                         pageDescriptor: {
                             appType: 'fe-v2',
+                            appComponent: dummyAppComponent,
                             entitySet: 'Travels',
                             pageType: testCase.isListReport
                                 ? 'sap.suite.ui.generic.template.ListReport'

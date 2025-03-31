@@ -4,6 +4,8 @@ import type UI5Element from 'sap/ui/core/Element';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type AppComponentV4 from 'sap/fe/core/AppComponent';
+import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
 
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import { fetchMock, sapCoreMock } from 'mock/window';
@@ -117,6 +119,7 @@ describe('AddSubpage controller', () => {
                     appReference: 'dummyApp',
                     pageDescriptor: {
                         appType: 'fe-v2',
+                        appComponent: {} as unknown as AppComponentV2,
                         entitySet: 'Travels',
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
@@ -215,6 +218,7 @@ describe('AddSubpage controller', () => {
                     ],
                     pageDescriptor: {
                         appType: 'fe-v2',
+                        appComponent: {} as unknown as AppComponentV2,
                         entitySet: 'Travels',
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
@@ -260,6 +264,7 @@ describe('AddSubpage controller', () => {
                     ],
                     pageDescriptor: {
                         appType: 'fe-v2',
+                        appComponent: {} as unknown as AppComponentV2,
                         entitySet: 'Travels',
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
@@ -438,11 +443,13 @@ describe('AddSubpage controller', () => {
                             testCase.appType === 'v2'
                                 ? {
                                       appType: 'fe-v2',
+                                      appComponent: { appComponentType: testCase.appType } as unknown as AppComponentV2,
                                       entitySet: 'Travels',
                                       pageType: 'sap.suite.ui.generic.template.ObjectPage'
                                   }
                                 : {
                                       appType: 'fe-v4',
+                                      appComponent: { appComponentType: testCase.appType } as unknown as AppComponentV4,
                                       pageId: 'CurrentPageId',
                                       routePattern: testCase.routePattern ?? ''
                                   }
@@ -516,6 +523,7 @@ describe('AddSubpage controller', () => {
             expect(commandCall[2]).toStrictEqual(
                 testCase.appType === 'v2'
                     ? {
+                          'appComponent': { appComponentType: testCase.appType },
                           'changeType': 'appdescr_ui_generic_app_addNewObjectPage',
                           'parameters': {
                               'childPage': {
@@ -533,6 +541,7 @@ describe('AddSubpage controller', () => {
                           'reference': 'dummyApp'
                       }
                     : {
+                          'appComponent': { appComponentType: testCase.appType },
                           'changeType': 'appdescr_fe_addNewPage',
                           'reference': 'dummyApp',
                           'parameters': {

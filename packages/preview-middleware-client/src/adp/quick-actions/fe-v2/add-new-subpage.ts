@@ -1,12 +1,13 @@
 import ODataModelV2 from 'sap/ui/model/odata/v2/ODataModel';
 import ODataMetaModelV2, { EntityContainer, EntitySet, EntityType } from 'sap/ui/model/odata/ODataMetaModel';
 import TemplateComponent from 'sap/suite/ui/generic/template/lib/TemplateComponent';
+import type AppComponent from 'sap/suite/ui/generic/template/lib/AppComponent';
 
 import { getV2ApplicationPages } from '../../../utils/fe-v2';
 import { AddNewSubpageBase, ApplicationPageData } from '../add-new-subpage-quick-action-base';
 import Component from 'sap/ui/core/Component';
 import { isA } from '../../../utils/core';
-import { areManifestChangesSupported } from './utils';
+import { areManifestChangesSupported, getV2AppComponent } from './utils';
 import { PageDescriptorV2 } from '../../controllers/AddSubpage.controller';
 
 const OBJECT_PAGE_COMPONENT_NAME_V2 = 'sap.suite.ui.generic.template.ObjectPage';
@@ -15,6 +16,8 @@ const OBJECT_PAGE_COMPONENT_NAME_V2 = 'sap.suite.ui.generic.template.ObjectPage'
  * Quick Action for adding a custom page action.
  */
 export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
+    protected appComponent: AppComponent | undefined;
+
     protected get currentPageDescriptor(): PageDescriptorV2 {
         if (!this.entitySet) {
             throw new Error('entitySet is not defined');
@@ -22,8 +25,12 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         if (!this.pageType) {
             throw new Error('pageType is not defined');
         }
+        if (!this.appComponent) {
+            throw new Error('appComponent is not defined');
+        }
         return {
             appType: 'fe-v2',
+            appComponent: this.appComponent,
             entitySet: this.entitySet,
             pageType: this.pageType
         };
@@ -49,7 +56,6 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         if (!isA<TemplateComponent>('sap.suite.ui.generic.template.lib.TemplateComponent', component)) {
             throw new Error('Unexpected type of page owner component');
         }
-
         return component.getEntitySet();
     }
 
@@ -76,6 +82,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         if (!(await areManifestChangesSupported(this.context.manifest))) {
             return Promise.resolve();
         }
-        return await super.initialize();
+        this.appComponent = getV2AppComponent(this.context.view);
+        return super.initialize();
     }
 }
