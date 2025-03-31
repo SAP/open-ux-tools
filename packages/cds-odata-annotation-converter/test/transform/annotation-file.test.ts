@@ -1,5 +1,4 @@
 import { join } from 'path';
-import type { Position } from '@sap-ux/text-document-utils';
 
 import { VocabularyService } from '@sap-ux/odata-vocabularies';
 
@@ -29,7 +28,6 @@ const serializeForSnapshot = (metadataElementMap: MetadataElementMap): string[] 
 
 describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
     let vocabularyService: VocabularyService;
-    let position: Position;
     beforeAll(async (): Promise<void> => {
         cdsCompilerFacade = await getCDSCompilerFacade(projectRoot);
     });
@@ -51,7 +49,7 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
         let result;
         if (fileIndex) {
             const cdsAnnotationFile = toTargetMap(fileIndex, absoluteUriString, vocabularyService, cdsCompilerFacade);
-            result = toAnnotationFile(fileUri, vocabularyService, cdsAnnotationFile, metadataCollector, position);
+            result = toAnnotationFile(fileUri, vocabularyService, cdsAnnotationFile, metadataCollector);
             result.file.references[0].uri = result?.file?.references[0]?.uri?.split('packages')[1].replace(/\\/g, '/'); // remove user dependent data
             result.file.uri = result.file.uri.replace(/\\/g, '/'); // remove OS dependent data
         }
@@ -103,7 +101,7 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
             const cdsAnnotationFile = toTargetMap(blitzIndex, absoluteUriString, vocabularyService, cdsCompilerFacade);
 
             // Act
-            result = toAnnotationFile(fileUri, vocabularyService, cdsAnnotationFile, metadataCollector, position);
+            result = toAnnotationFile(fileUri, vocabularyService, cdsAnnotationFile, metadataCollector);
             result.file.references.forEach((namespace) => (namespace.uri = '')); // user dependent & anyway not relevant
             result.file.uri = result.file.uri.replace(/\\/g, '/'); // remove OS dependent data
         }
@@ -152,7 +150,7 @@ describe('lib/cds-annotation-adapter/transforms/annotationFile', () => {
                     );
 
                     // Act - metadata required for file should be collected in metadataCollector
-                    toAnnotationFile(fileUri, vocabularyService, cdsAnnotationFile, metadataCollector, position);
+                    toAnnotationFile(fileUri, vocabularyService, cdsAnnotationFile, metadataCollector);
                     if (metadataElementMap.has(actionBindingParamKey)) {
                         actionBindingParameterMdElement = metadataElementMap.get(actionBindingParamKey).node;
                     }
