@@ -4,7 +4,7 @@ import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { TargetSystems, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import { TargetSystems, UI5VersionManager, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
 import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 
 import { getFlexLayer } from './layer';
@@ -97,7 +97,8 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
+        const ui5Manager = new UI5VersionManager(this.layer);
+        const prompter = new ConfigPrompter(this.targetSystems, ui5Manager, this.layer, this.toolsLogger);
 
         const configQuestions = prompter.getPrompts();
 

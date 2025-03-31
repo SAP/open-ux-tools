@@ -9,6 +9,7 @@ export * from './base/helper';
 export * from './client';
 export * from './preview/adp-preview';
 export * from './writer/writer-config';
+export * from './ui5';
 export { getCustomConfig } from './writer/project-utils';
 export { generate, migrate } from './writer';
 export { generateChange } from './writer/editors';

@@ -115,6 +115,29 @@ export interface TargetApplication {
     bspName: string;
 }
 
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
+}
+
+export enum ApplicationType {
+    FIORI_ELEMENTS = 'FioriElements',
+    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
+    FREE_STYLE = 'FreeStyle',
+    NONE = ''
+}
+
 export interface Endpoint extends Partial<Destination> {
     Name: string;
     Url?: string;

@@ -1,9 +1,27 @@
+import {
+    ConfigAnswers,
+    FlexUISupportedSystem,
+    TargetApplication,
+    TargetSystems,
+    UI5VersionManager
+} from '@sap-ux/adp-tooling';
+import {
+    FlexLayer,
+    ManifestManager,
+    getConfiguredProvider,
+    getEndpointNames,
+    getFlexUISupportedSystem,
+    getSystemUI5Version,
+    isFeatureSupportedVersion,
+    loadApps
+} from '@sap-ux/adp-tooling';
+import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
-import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
+import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import { FlexLayer, getConfiguredProvider, getEndpointNames, loadApps } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
@@ -16,9 +34,10 @@ import type {
 } from '../types';
 import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
+import { AppIdentifier } from '../app-identifier';
 import { getApplicationChoices } from './helper/choices';
 import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { appAdditionalMessages, systemAdditionalMessages } from './helper/additional-messages';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -46,15 +65,43 @@ export class ConfigPrompter {
      * Flag indicating that system requires authentication in BAS or it does not exist in VS Code.
      */
     private isAuthRequired: boolean;
+    /**
+     * Cached UI flexibility information from the system.
+     */
+    private flexUISystem: FlexUISupportedSystem | undefined;
+    /**
+     * Flag indicating if the project is a cloud project.
+     */
+    private isCloudProject: boolean | undefined;
+    /**
+     * Flag indicating whether the selected application is supported.
+     */
+    private isApplicationSupported: boolean;
+    /**
+     * Instance of AppIdentifier to validate application support.
+     */
+    private appIdentifier: AppIdentifier;
+    /**
+     * UI5 version manager for handling version-related validations.
+     */
+    private ui5Manager: UI5VersionManager;
 
     /**
      * Creates an instance of ConfigPrompter.
      *
      * @param {TargetSystems} targetSystems - The target system class to retrieve system endpoints.
+     * @param {UI5VersionManager} ui5Manager - Service for handling UI5 version information.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
      */
-    constructor(private readonly targetSystems: TargetSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
+    constructor(
+        private readonly targetSystems: TargetSystems,
+        ui5Manager: UI5VersionManager,
+        layer: FlexLayer,
+        private readonly logger: ToolsLogger
+    ) {
+        this.ui5Manager = ui5Manager;
+        this.appIdentifier = new AppIdentifier(layer);
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
@@ -110,7 +157,8 @@ export class ConfigPrompter {
                 hint: t('prompts.systemTooltip')
             },
             default: '',
-            validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers)
+            validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
+            additionalMessages: () => systemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
         };
     }
 
@@ -203,7 +251,14 @@ export class ConfigPrompter {
             default: options?.default,
             validate: (value: TargetApplication) => this.validateApplicationSelection(value),
             when: (answers: ConfigAnswers) =>
-                showApplicationQuestion(answers, !!this.targetApps?.length, this.isAuthRequired, this.isLoginSuccessful)
+                showApplicationQuestion(
+                    answers,
+                    !!this.targetApps?.length,
+                    this.isAuthRequired,
+                    this.isLoginSuccessful
+                ),
+            additionalMessages: (app) =>
+                appAdditionalMessages(app as TargetApplication, this.appIdentifier, this.isApplicationSupported)
         };
     }
 
@@ -234,14 +289,31 @@ export class ConfigPrompter {
     /**
      * Validates the selected application.
      *
-     * @param {string} app - The selected application.
-     * @returns An error message if validation fails, or true if the selection is valid.
+     * Checks if the application is provided and then evaluates support based on its manifest.
+     *
+     * @param {TargetApplication} app - The selected application.
+     * @returns A promise that resolves to true if valid, or an error message string if validation fails.
      */
-    private validateApplicationSelection(app: TargetApplication): string | boolean {
+    private async validateApplicationSelection(app: TargetApplication): Promise<string | boolean> {
         if (!app) {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
-        return true;
+
+        const validationResult = await this.handleAppValidation(app);
+
+        if (!isAppStudio()) {
+            return validationResult;
+        }
+
+        if (
+            validationResult === t('validators.appDoesNotSupportManifest') ||
+            validationResult === t('validators.appDoesNotSupportAdaptation')
+        ) {
+            this.isApplicationSupported = false;
+            return true;
+        }
+
+        return validationResult;
     }
 
     /**
@@ -267,7 +339,7 @@ export class ConfigPrompter {
 
         try {
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            await this.getSystemInfo();
+            await this.getSystemData();
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
             this.isLoginSuccessful = true;
             return true;
@@ -303,8 +375,15 @@ export class ConfigPrompter {
             this.abapProvider = await getConfiguredProvider(options, this.logger);
             this.isAuthRequired = await this.targetSystems.getSystemRequiresAuth(system);
             if (!this.isAuthRequired) {
-                await this.getSystemInfo();
+                const validationResult = await this.handleSystemDataValidation(system);
+
+                if (typeof validationResult === 'string') {
+                    return validationResult;
+                }
+
                 this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
+
+                return true;
             }
         } catch (e) {
             return e.message;
@@ -314,16 +393,100 @@ export class ConfigPrompter {
     }
 
     /**
-     * Fetches system information from the provider's layered repository.
+     * Validates the selected application to ensure it is supported.
      *
-     * @returns {SystemInfo} System into containing system supported adaptation project types and translations.
+     * @param {Application} value - The application to validate.
+     * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
      */
-    private async getSystemInfo(): Promise<void> {
+    private async handleAppValidation(value: TargetApplication): Promise<boolean | string> {
+        if (value) {
+            try {
+                const manifestManager = new ManifestManager(this.abapProvider, this.logger);
+                const isSupported = await manifestManager.isAppSupported(value.id);
+
+                if (isSupported) {
+                    const manifest = await manifestManager.getManifest(value.id);
+                    this.evaluateApplicationSupport(manifest, value);
+                }
+                this.isApplicationSupported = true;
+            } catch (e) {
+                this.logger.debug(`Application failed validation. Reason: ${e.message}`);
+                return e.message;
+            }
+        } else {
+            return t('validators.selectCannotBeEmptyError', { value: 'Application' });
+        }
+        return true;
+    }
+
+    /**
+     * Evaluate if the application version supports certain features.
+     *
+     * @param {Manifest} manifest - The application manifest.
+     * @param {Application} application - The application data.
+     */
+    private evaluateApplicationSupport(manifest: Manifest | undefined, application: TargetApplication): void {
+        const systemVersion = this.ui5Manager.systemVersion;
+        const isFullSupport = this.ui5Manager.isVersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
+        const isPartialSupport =
+            this.ui5Manager.isVersionDetected && isFullSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
+
+        this.appIdentifier.validateSelectedApplication(application, manifest, isFullSupport, isPartialSupport);
+    }
+
+    /**
+     * Fetches system data including cloud project and UI flexibility information.
+     *
+     * @returns A promise that resolves when system data is fetched.
+     */
+    private async getSystemData(): Promise<void> {
         try {
-            const lrep = this.abapProvider.getLayeredRepository();
-            await lrep.getSystemInfo();
+            this.isCloudProject = await this.abapProvider.isAbapCloud();
+            this.flexUISystem = await getFlexUISupportedSystem(this.abapProvider, this.isCustomerBase);
         } catch (e) {
             this.handleSystemError(e);
+        }
+    }
+
+    /**
+     * Handles the fetching and validation of system data.
+     *
+     * @param {string} value - The system.
+     * @returns {Promise<boolean | string>} True if successful, or an error message if an error occurs.
+     */
+    private async handleSystemDataValidation(value: string): Promise<boolean | string> {
+        try {
+            await this.getSystemData();
+            await this.validateSystemVersion(value);
+
+            if (!this.isCustomerBase && this.isCloudProject) {
+                return t('error.cloudSystemsForInternalUsers');
+            }
+
+            return true;
+        } catch (e) {
+            this.logger.debug(`Validating system failed. Reason: ${e.message}`);
+            return e.message;
+        }
+    }
+
+    /**
+     * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
+     * Updates the internal state with the fetched versions and the detection status.
+     *
+     * @param {string} value - The system version to validate.
+     */
+    private async validateSystemVersion(value: string): Promise<void> {
+        try {
+            if (value) {
+                const version = await getSystemUI5Version(this.abapProvider);
+                await this.ui5Manager.getSystemRelevantVersions(version);
+            } else {
+                await this.ui5Manager.getRelevantVersions();
+            }
+        } catch (e) {
+            this.logger.debug(`Could not fetch system version: ${e.message}`);
+            await this.ui5Manager.getRelevantVersions();
         }
     }
 
@@ -337,6 +500,12 @@ export class ConfigPrompter {
         if (isAxiosError(error)) {
             if (error.response?.status === 401 || error.response?.status === 403) {
                 throw new Error(`Authentication error: ${error.message}`);
+            }
+
+            if (error.response?.status === 405 || error.response?.status === 404) {
+                // Handle the case where the API is not available and continue to standard onPremise flow
+                this.isCloudProject = false;
+                return;
             }
         }
     }
