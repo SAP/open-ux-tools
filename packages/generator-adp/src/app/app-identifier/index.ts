@@ -3,7 +3,7 @@ import { FlexLayer } from '@sap-ux/adp-tooling';
 import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
 
 import { t } from '../../utils/i18n';
-import { isV4Application } from './utils';
+import { isSyncLoadedView, isV4Application } from './utils';
 
 /**
  * Manages and validates application identifiers and compatibility for adaptation projects,
@@ -107,28 +107,8 @@ export class AppIdentifier {
                 throw new Error(t('error.appDoesNotSupportAdaptation'));
             }
 
-            this.checkForSyncLoadedViews(manifest['sap.ui5']);
+            this.isAppSync = isSyncLoadedView(manifest['sap.ui5']);
         }
-    }
-
-    /**
-     * Checks if views are loaded synchronously or asynchronously in the UI5 settings of the manifest.
-     * Sets the isAppSync property based on the loading method.
-     *
-     * @param {Manifest['sap.ui5']} ui5Settings - The UI5 settings part of the manifest.
-     */
-    private checkForSyncLoadedViews(ui5Settings: Manifest['sap.ui5']): void {
-        if (ui5Settings?.rootView) {
-            const rootView = ui5Settings?.rootView as ManifestNamespace.RootViewDefFlexEnabled;
-            this.isAppSync = !rootView.async;
-            return;
-        }
-        if (ui5Settings?.routing && ui5Settings['routing']['config']) {
-            this.isAppSync = !ui5Settings['routing']['config']['async'];
-            return;
-        }
-
-        this.isAppSync = false;
     }
 
     /**
