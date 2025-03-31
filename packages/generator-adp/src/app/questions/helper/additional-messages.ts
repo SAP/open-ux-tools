@@ -1,7 +1,7 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import { FlexUISupportedSystem, TargetApplication } from '@sap-ux/adp-tooling';
+import type { FlexUISupportedSystem, TargetApplication } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../utils/i18n';
 import type { AppIdentifier } from '../../app-identifier';
@@ -11,6 +11,7 @@ import type { AppIdentifier } from '../../app-identifier';
  *
  * @param {FlexUISupportedSystem | undefined} flexUISystem - An optional object containing flags indicating if the system
  *                                                           is on-premise and whether UI Flex is enabled.
+ * @param isCloudProject
  * @returns {{message: string, severity: Severity} | undefined} An object containing a message and its severity level.
  */
 export const systemAdditionalMessages = (
@@ -58,6 +59,8 @@ export const systemAdditionalMessages = (
  * Provides additional messages related to the application based on its support and sync status.
  *
  * @param {Application} app - The application object.
+ * @param appIdentifier
+ * @param isApplicationSupported
  * @returns {object | undefined} An object containing a message and its severity level, or undefined if no message is necessary.
  */
 export const appAdditionalMessages = (
