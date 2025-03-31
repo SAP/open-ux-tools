@@ -51,9 +51,7 @@ const TOGGLE_SIZE = {
     }
 };
 
-const ICON_STYLE = {
-    display: 'flex'
-};
+const ICON_STYLE = { display: 'flex' };
 
 const DISABLED_OPACITY = 0.4;
 
@@ -283,7 +281,11 @@ export class UIToggle extends React.Component<UIToggleProps, {}> {
                     ...(!styleProps.checked && {
                         borderColor: COLORS.thumb.unchecked.borderColor,
                         backgroundColor: COLORS.thumb.unchecked.background
-                    })
+                    }),
+                    'svg': {
+                        width: '100%',
+                        height: '100%'
+                    }
                 }
             };
         };
