@@ -10,8 +10,6 @@ import {
 import { addPackageDevDependency, FileName, type Manifest, updatePackageScript } from '@sap-ux/project-access';
 import {
     MTAVersion,
-    UI5BuilderWebIdePackage,
-    UI5BuilderWebIdePackageVersion,
     UI5Package,
     UI5PackageVersion,
     UI5TaskZipperPackage,
@@ -171,7 +169,6 @@ export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): v
  * @param fs reference to a mem-fs editor
  */
 export async function addCommonPackageDependencies(targetPath: string, fs: Editor): Promise<void> {
-    await addPackageDevDependency(targetPath, UI5BuilderWebIdePackage, UI5BuilderWebIdePackageVersion, fs);
     await addPackageDevDependency(targetPath, UI5TaskZipperPackage, UI5TaskZipperPackageVersion, fs);
     await addPackageDevDependency(targetPath, UI5Package, UI5PackageVersion, fs);
 }
