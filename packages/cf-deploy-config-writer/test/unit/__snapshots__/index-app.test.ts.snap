@@ -74,6 +74,7 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: basicapp
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 ",
@@ -413,6 +414,7 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: comfioritoolslrop
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 ",
@@ -804,6 +806,7 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: comfioritoolslrop
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 ",
@@ -1195,6 +1198,7 @@ builder:
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: basicapp
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 ",
