@@ -1,13 +1,15 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { ListQuestion } from '@sap-ux/inquirer-common';
+import type { Manifest } from '@sap-ux/project-access';
 import type { AxiosError } from '@sap-ux/axios-extension';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import { FlexLayer, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
+import { FlexLayer, TargetManifest, UI5VersionManager, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 
-import { initI18n } from '../../../src/utils/i18n';
+import { initI18n, t } from '../../../src/utils/i18n';
 import { configPromptNames } from '../../../src/app/types';
+import { AppIdentifier } from '../../../src/app/app-identifier';
 import { ConfigPrompter } from '../../../src/app/questions/configuration';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
@@ -23,7 +25,8 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
 jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
-    loadApps: jest.fn()
+    loadApps: jest.fn(),
+    getSystemUI5Version: jest.fn().mockResolvedValue('1.135.0')
 }));
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -38,11 +41,9 @@ const logger: ToolsLogger = {
     debug: jest.fn()
 } as unknown as ToolsLogger;
 
-const getSystemInfoMock = jest.fn();
+const isAbapCloudMock = jest.fn();
 const provider = {
-    getLayeredRepository: jest.fn().mockReturnValue({
-        getSystemInfo: getSystemInfoMock
-    })
+    isAbapCloud: isAbapCloudMock
 } as unknown as AbapServiceProvider;
 
 const targetSystems: TargetSystems = {
@@ -160,7 +161,7 @@ describe('ConfigPrompter Integration Tests', () => {
                     statusText: 'Unauthorized'
                 }
             } as AxiosError;
-            getSystemInfoMock.mockRejectedValueOnce(axiosError);
+            isAbapCloudMock.mockRejectedValueOnce(axiosError);
             isAxiosErrorMock.mockReturnValueOnce(true);
 
             const prompts = configPrompter.getPrompts();
@@ -171,9 +172,36 @@ describe('ConfigPrompter Integration Tests', () => {
 
             expect(result).toEqual(`Authentication error: ${axiosError.message}`);
         });
+
+        it('system prompt validate should throw error when system info call fails with 405 and return true', async () => {
+            const axiosError = {
+                isAxiosError: true,
+                message: 'Method Not Allowed',
+                name: 'AxiosError',
+                response: {
+                    status: 405,
+                    statusText: 'Method Not Allowed'
+                }
+            } as AxiosError;
+            isAbapCloudMock.mockRejectedValueOnce(axiosError);
+            isAxiosErrorMock.mockReturnValueOnce(true);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(true);
+        });
     });
 
     describe('System CLI Validation Prompt', () => {
+        jest.spyOn(UI5VersionManager, 'getInstance').mockReturnValue({
+            getSystemRelevantVersions: jest.fn(),
+            getRelevantVersions: jest.fn()
+        } as unknown as UI5VersionManager);
+
         beforeEach(() => {
             getHostEnvironmentMock.mockReturnValue(hostEnvironment.cli);
         });
@@ -258,14 +286,41 @@ describe('ConfigPrompter Integration Tests', () => {
     });
 
     describe('Application Prompt', () => {
+        let getManifestSpy: jest.SpyInstance;
+
+        beforeEach(() => {
+            jest.spyOn(TargetManifest.prototype, 'isAppSupported').mockResolvedValue(true);
+            getManifestSpy = jest
+                .spyOn(TargetManifest.prototype, 'getManifest')
+                .mockResolvedValue({ 'sap.app': {} } as Manifest);
+            jest.spyOn(UI5VersionManager, 'getInstance').mockReturnValue({
+                systemVersion: '1.135.0',
+                isVersionDetected: true
+            } as unknown as UI5VersionManager);
+            jest.spyOn(AppIdentifier.prototype, 'validateSelectedApplication');
+        });
+
         it('application prompt validate should return true if value is passed', async () => {
             const prompts = configPrompter.getPrompts();
             const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
             expect(appPrompt).toBeDefined();
 
-            const result = appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
 
             expect(result).toEqual(true);
+        });
+
+        it('application prompt validate should return string when manifest fetching fails', async () => {
+            const error = new Error('Test error');
+            getManifestSpy.mockRejectedValue(error);
+
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            expect(result).toEqual(error.message);
         });
 
         it('application prompt validate should return string if value is not passed', async () => {
@@ -273,9 +328,8 @@ describe('ConfigPrompter Integration Tests', () => {
             const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
             expect(appPrompt).toBeDefined();
 
-            const result = appPrompt?.validate?.(undefined, dummyAnswers);
-
-            expect(result).toEqual('Application has to be selected.');
+            const result = await appPrompt?.validate?.(undefined, dummyAnswers);
+            expect(result).toEqual(t('error.selectCannotBeEmptyError', { value: 'Application' }));
         });
     });
 

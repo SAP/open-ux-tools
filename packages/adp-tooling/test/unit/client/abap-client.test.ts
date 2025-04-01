@@ -1,4 +1,5 @@
-import { AbapServiceProvider, AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
 
 import { getFlexUISupportedSystem, getSystemUI5Version } from '../../../src';
 

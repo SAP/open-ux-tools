@@ -11,7 +11,7 @@ import type { TargetApplication } from '@sap-ux/adp-tooling';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { TargetSystems, getAbapTarget, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
+import { TargetSystems, UI5VersionManager, getAbapTarget, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
@@ -71,6 +71,10 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
+jest.mock('uuid', () => ({
+    v4: jest.fn().mockReturnValue('mocked-uuid')
+}));
+
 const originalCwd = process.cwd();
 const testOutputDir = join(__dirname, 'test-output');
 const generatorPath = join(__dirname, '../src/app/index.ts');
@@ -88,9 +92,11 @@ const apps: TargetApplication[] = [
     }
 ];
 
+const isAbapCloudMock = jest.fn();
 const getAtoInfoMock = jest.fn();
 const getSystemInfoMock = jest.fn();
 const dummyProvider = {
+    isAbapCloud: isAbapCloudMock,
     getAtoInfo: getAtoInfoMock,
     getLayeredRepository: jest.fn().mockReturnValue({
         getSystemInfo: getSystemInfoMock
@@ -129,9 +135,15 @@ describe('Adaptation Project Generator Integration Test', () => {
         execMock.mockImplementation((_: string, callback: Function) => {
             callback(null, { stdout: 'ok', stderr: '' });
         });
+        jest.spyOn(UI5VersionManager, 'getInstance').mockReturnValue({
+            latestVersion: '1.135.0',
+            getVersionToBeUsed: jest.fn().mockReturnValue('1.135.0')
+        } as unknown as UI5VersionManager);
         getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
         getAbapTargetMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
+        isAbapCloudMock.mockResolvedValue(false);
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
+
         getDefaultProjectNameMock.mockReturnValue('app.variant1');
         getCredentialsFromStoreMock.mockResolvedValue(undefined);
     });
@@ -169,7 +181,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
     });
 
-    it('should generate an adaptation project successfully', async () => {
+    it('should generate an onPremise adaptation project successfully', async () => {
         mockIsAppStudio.mockReturnValue(false);
 
         const answers = {
@@ -192,14 +204,18 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
         const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
+        const ui5Yaml = join(projectFolder, 'ui5.yaml');
 
         expect(fs.existsSync(manifestPath)).toBe(true);
         expect(fs.existsSync(i18nPath)).toBe(true);
+        expect(fs.existsSync(ui5Yaml)).toBe(true);
 
         const manifestContent = fs.readFileSync(manifestPath, 'utf8');
         const i18nContent = fs.readFileSync(i18nPath, 'utf8');
+        const ui5Content = fs.readFileSync(ui5Yaml, 'utf8');
         expect(manifestContent).toMatchSnapshot();
         expect(i18nContent).toMatchSnapshot();
+        expect(ui5Content).toMatchSnapshot();
 
         expect(sendTelemetryMock).toHaveBeenCalledWith(
             EventName.ADAPTATION_PROJECT_CREATED,
