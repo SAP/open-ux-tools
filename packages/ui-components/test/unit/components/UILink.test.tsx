@@ -29,7 +29,6 @@ describe('<UILink />', () => {
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-textLink-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "opacity": undefined,
               "selectors": Object {
                 "&:active, &:focus": Object {
@@ -60,7 +59,6 @@ describe('<UILink />', () => {
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "opacity": undefined,
               "selectors": Object {
                 "&:active, &:focus": Object {
@@ -91,7 +89,6 @@ describe('<UILink />', () => {
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-textLink-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "opacity": undefined,
               "selectors": Object {
                 "&:active, &:focus": Object {
@@ -122,7 +119,6 @@ describe('<UILink />', () => {
         expect(styles.root).toMatchInlineSnapshot(`
             Object {
               "color": "var(--vscode-textLink-foreground)",
-              "fontFamily": "var(--vscode-font-family)",
               "opacity": 0.4,
               "selectors": undefined,
               "textDecoration": "underline",
