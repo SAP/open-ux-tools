@@ -1,14 +1,15 @@
-import * as childProcess from 'child_process';
 import * as projectAccess from '@sap-ux/project-access';
 import { join } from 'path';
 import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { generateAppConfig } from '../../src';
+import { generateAppConfig, generateCAPConfig, RouterModuleType } from '../../src';
 import type { Editor } from 'mem-fs-editor';
-import { DefaultMTADestination, MTABinNotFound } from '../../src/constants';
+import { DefaultMTADestination } from '../../src/constants';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { NullTransport, ToolsLogger } from '@sap-ux/logger';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('@sap/mta-lib', () => {
     return {
@@ -23,20 +24,21 @@ jest.mock('@sap-ux/btp-utils', () => ({
 }));
 const isAppStudioMock = isAppStudio as jest.Mock;
 
-jest.mock('child_process');
-
 let hasSyncMock: jest.SpyInstance;
-let spawnMock: jest.SpyInstance;
+let commandRunnerMock: jest.SpyInstance;
 let unitTestFs: Editor;
 
 describe('CF Writer with CAP App Frontend', () => {
     const outputDir = join(__dirname, '../test-output', 'capwithappfrontend');
+    const logger = new ToolsLogger({
+        transports: [new NullTransport()]
+    });
 
     beforeEach(() => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
         unitTestFs = create(createStorage());
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
+        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 } as any));
         isAppStudioMock.mockReturnValue(false);
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });
@@ -76,9 +78,32 @@ describe('CF Writer with CAP App Frontend', () => {
             expect(getMtaPathMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
             expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
-            expect(spawnMock).not.toHaveBeenCalled();
+            expect(commandRunnerMock).not.toHaveBeenCalled();
             expect(unitTestFs.dump(capPath)).toMatchSnapshot();
             expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
+        });
+
+        test('Generate CAP project with App Frontend Service', async () => {
+            const mtaId = 'base';
+            const mtaPath = join(outputDir, mtaId);
+            fsExtra.mkdirSync(mtaPath, { recursive: true });
+            fsExtra.copySync(join(__dirname, `../sample/capcds`), mtaPath);
+            const getCapProjectTypeMock = jest.spyOn(projectAccess, 'getCapProjectType').mockResolvedValue('CAPNodejs');
+            const localFs = await generateCAPConfig(
+                {
+                    mtaPath,
+                    mtaId,
+                    routerType: RouterModuleType.AppFront
+                },
+                undefined,
+                logger
+            );
+            expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot(); // Ensure it hasn't changed!
+            expect(getCapProjectTypeMock).toHaveBeenCalled();
+            expect(commandRunnerMock).toHaveBeenCalled();
+            expect(commandRunnerMock.mock.calls[0][0]).toStrictEqual('npm');
+            expect(commandRunnerMock.mock.calls[0][1]).toStrictEqual(['install', '--ignore-engines']);
         });
     });
 });

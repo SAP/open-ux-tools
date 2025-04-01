@@ -13,14 +13,17 @@ import {
     CDSBinNotFound,
     CDSExecutable,
     MTABinNotFound,
-    MTAExecutable
+    MTAExecutable,
+    CDSXSUAAService,
+    CDSDestinationService,
+    CDSHTML5RepoService
 } from '../constants';
 import type { mta } from '@sap/mta-lib';
-import { type MTABaseConfig, type CFBaseConfig } from '../types';
+import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
-import { spawnSync } from 'child_process';
 import { t } from '../i18n';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 /**
  * Get the MTA ID, read from the root path specified.
@@ -131,25 +134,27 @@ export function doesCDSBinaryExist(): void {
 }
 
 /**
- * Create MTA using `cds` binary to add mta and any optional services.
+ * Generate an MTA using `cds` binary, appending any optional services passed in. Specific services are added if the router type is defined.
  *
  * @param cwd
  * @param options
+ * @param routerType
  */
-export function createCAPMTA(cwd: string, options?: string[]): void {
-    const spawnOpts = process.platform.startsWith('win')
-        ? { windowsVerbatimArguments: true, shell: true, cwd }
-        : { cwd };
-    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], spawnOpts);
-    if (result?.error) {
-        throw new Error(`Something went wrong creating mta.yaml! ${result.error}`);
+export async function createCAPMTA(
+    cwd: string,
+    options?: CDSServiceType[],
+    routerType?: RouterModuleType
+): Promise<void> {
+    let defaultOptions: CDSServiceType[] = [];
+    if (routerType) {
+        defaultOptions = [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService] as CDSServiceType[];
     }
+    const cdsParams = [...CDSAddMtaParams, ...(options ?? []), ...defaultOptions];
+    LoggerHelper.logger?.debug(t('debug.creatingMta', { cdsParams: cdsParams.toString() }));
+    await runCommand(cwd, CDSExecutable, cdsParams, t('error.errorGeneratingMtaYaml'));
     // Ensure the package-lock is created otherwise mta build will fail
     const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    result = spawnSync(cmd, ['install', '--ignore-engines'], spawnOpts);
-    if (result?.error) {
-        throw new Error(`Something went wrong installing node modules! ${result.error}`);
-    }
+    await runCommand(cwd, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
     LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
 }
 
@@ -182,6 +187,44 @@ export function validateMtaConfig(config: CFBaseConfig): void {
     }
 
     setMtaDefaults(config);
+}
+
+/**
+ * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
+ *
+ * @param config writer configuration
+ * @param isCap whether MTA should support CAP
+ */
+export async function createAppfrontendMta(config: MTABaseConfig, isCap = false): Promise<void> {
+    const mtaTemplate = readFileSync(getTemplatePath(`frontend/${isCap ? 'mta-cap.yaml' : MTAYamlFile}`), 'utf-8');
+    const mtaContents = render(mtaTemplate, {
+        id: `${config.mtaId.slice(0, 128)}`,
+        mtaDescription: config.mtaDescription ?? MTADescription,
+        mtaVersion: config.mtaVersion ?? MTAVersion
+    });
+    // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
+    writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
+    // Ensure the package-lock is created otherwise mta build will fail
+    const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
+    await runCommand(config.mtaPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
+    LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
+}
+
+/**
+ * Executes a command in the specified project directory.
+ *
+ * @param {string} cwd - working directory
+ * @param {string} cmd - command to execute
+ * @param args  - arguments to pass to the command
+ * @param errorMsg - error message to display if the command fails
+ */
+export async function runCommand(cwd: string, cmd: string, args: string[] = [], errorMsg: string): Promise<void> {
+    const commandRunner = new CommandRunner();
+    try {
+        await commandRunner.run(cmd, args, { cwd });
+    } catch (e) {
+        throw new Error(`${errorMsg} ${e.message}`);
+    }
 }
 
 export * from './mta';

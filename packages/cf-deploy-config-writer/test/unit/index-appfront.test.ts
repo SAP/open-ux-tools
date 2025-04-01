@@ -53,14 +53,13 @@ describe('CF Writer App - Application Frontend', () => {
         jest.resetAllMocks();
     });
 
-    test('Generate deployment configs - HTML5 App with app frontend approuter attached with no destination available', async () => {
+    test('Generate deployment configs - HTML5 App with app frontend service attached with no destination available', async () => {
         const appName = 'lrop';
         const appPath = join(outputDir, appName);
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, `../sample/lrop`), appPath);
         await generateAppConfig({ appPath, addAppFrontendRouter: true }, unitTestFs);
-        // Since mta.yaml is not in memfs, read from disk
         expect(unitTestFs.read(join(appPath, 'mta.yaml'))).toMatchSnapshot();
         expect(unitTestFs.read(join(appPath, 'xs-app.json'))).toMatchSnapshot();
         expect(unitTestFs.read(join(appPath, 'xs-security.json'))).toMatchSnapshot();
@@ -74,7 +73,7 @@ describe('CF Writer App - Application Frontend', () => {
         fsExtra.mkdirSync(rootPath);
         fsExtra.copySync(join(__dirname, `../sample/rootmta`), rootPath); // Base mta
         fsExtra.copySync(join(__dirname, `../sample/basicapp`), appPath); // Base -> App
-        await generateAppConfig({ appPath: appPath, addAppFrontendRouter: true }, unitTestFs);
+        await generateAppConfig({ appPath, addAppFrontendRouter: true }, unitTestFs);
         expect(unitTestFs.read(join(rootPath, 'mta.yaml'))).toMatchSnapshot();
         expect(unitTestFs.read(join(appPath, 'xs-app.json'))).toMatchSnapshot();
         expect(unitTestFs.read(join(rootPath, 'xs-security.json'))).toMatchSnapshot();

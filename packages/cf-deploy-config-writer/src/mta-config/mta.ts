@@ -41,6 +41,7 @@ import {
     type SupportedResources,
     RouterModuleType
 } from '../types';
+import LoggerHelper from '../logger-helper';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.
@@ -569,6 +570,7 @@ export class MtaConfig {
             await this.mta.addModule(app);
             this.apps.set(appModule, app);
             this.dirty = true;
+            this.log?.debug(t('debug.html5AppAdded', { appName: appModule.slice(0, 128) }));
         }
     }
 
@@ -956,7 +958,6 @@ export class MtaConfig {
     }
 
     public async addAppFrontAppRouter(): Promise<void> {
-        this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.AppFront }));
         if (!this.resources.has(ManagedXSUAA)) {
             await this.addManagedUAAWithSecurity();
         }
@@ -968,6 +969,7 @@ export class MtaConfig {
         }
 
         if (!this.modules.has('com.sap.application.content:appfront')) {
+            this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.AppFront }));
             const appHostName = this.resources.get(ManagedAppFront)?.name;
             if (appHostName) {
                 const appContentModule: mta.Module = {
@@ -1011,7 +1013,6 @@ export class MtaConfig {
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     public async addManagedAppRouter(): Promise<void> {
-        this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Managed }));
         if (!this.resources.has('destination')) {
             await this.addDestinationResource(true);
         }
@@ -1028,6 +1029,7 @@ export class MtaConfig {
 
         // We only want to append a new one, if missing from the existing mta config
         if (!this.modules.has('com.sap.application.content:destination')) {
+            this.log?.debug(t('debug.addingRouter', { routerType: RouterModuleType.Managed }));
             const destinationName = this.resources.get('destination')?.name;
             const appHostName = this.resources.get(HTML5RepoHost)?.name;
             const appHostServiceName = this.resources.get(HTML5RepoHost)?.parameters?.['service-name'];

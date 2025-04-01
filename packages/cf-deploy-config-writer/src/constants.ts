@@ -1,6 +1,5 @@
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
 import { t } from './i18n';
-
 export const WelcomeFile = 'welcomeFile';
 export const XSAppFile = 'xs-app.json';
 export const XSSecurityFile = 'xs-security.json';

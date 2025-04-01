@@ -220,13 +220,14 @@ async function processManifest(
  * @param fs reference to a mem-fs editor
  */
 async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<void> {
-    const config = await getUpdatedConfig(cfAppConfig, fs);
+    LoggerHelper?.logger?.debug(`Generate HTML5 app deployment configuration with: \n ${JSON.stringify(cfAppConfig)}`);
 
-    LoggerHelper?.logger?.debug(`Generate app configuration using: \n ${JSON.stringify(config)}`);
+    const config = await getUpdatedConfig(cfAppConfig, fs);
+    LoggerHelper?.logger?.debug(`Deployment configuration updated: \n ${JSON.stringify(config)}`);
 
     // Generate MTA Config, LCAP will generate the mta.yaml on the fly so we don't care about it!
     if (!config.lcapMode) {
-        generateMTAFile(config);
+        await generateMTAFile(config);
         await generateSupportingConfig(config, fs);
         await updateMtaConfig(config, fs);
     }
@@ -244,10 +245,10 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
  *
  * @param cfConfig writer configuration
  */
-export function generateMTAFile(cfConfig: CFConfig): void {
+export async function generateMTAFile(cfConfig: CFConfig): Promise<void> {
     if (!cfConfig.mtaId) {
         if (cfConfig.isCap) {
-            createCAPMTA(cfConfig.rootPath);
+            await createCAPMTA(cfConfig.rootPath);
         } else {
             createMTA({ mtaId: cfConfig.appId, mtaPath: cfConfig.mtaPath ?? cfConfig.rootPath } as MTABaseConfig);
         }

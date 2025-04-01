@@ -6,9 +6,14 @@
         "capMtaCreated": "CAP MTA configuration created.",
         "capMtaUpdated": "CAP MTA configuration updated.",
         "capGenerationCompleted": "CAP generation completed.",
-        "mtaCreated": "MTA configuration created: {{mtaPath}}.",
+        "mtaCreated": "MTA configuration created: {{- mtaPath}}.",
         "mtaSaved": "MTA configuration has been saved.",
-        "mtaSavedFailed": "Saving the MTA configuration failed with the error: {{- error }}."
+        "mtaSavedFailed": "Saving the MTA configuration failed with the error: {{- error }}.",
+        "addingRouter": "Adding {{routerType}} Approuter",
+        "addMissingModules": "Adding missing modules to mta configuration",
+        "cleanupModules": "Cleanup modules",
+        "creatingMta": "Creating MTA using {{- cdsParams }}",
+        "html5AppAdded": "HTML5 Application added to MTA configuration {{- appName}}"
     },
     "error": {
         "unableToLoadMTA": "Unable to load mta.yaml configuration {{- mtaDir }}, error thrown {{- error }}.",
@@ -24,7 +29,9 @@
         "mtaAlreadyExists": "An mta.yaml already exists in the target directory.",
         "cannotUpdateRouterXSApp": "Unable to update router xs-app.json welcome location.",
         "targetFolderDoesNotExist": "Target folder does not exist, {{targetFolder}}.",
-        "doesNotContainACapApp": "Target folder does not contain a Node.js CAP project."
+        "doesNotContainACapApp": "Target folder does not contain a Node.js CAP project.",
+        "errorInstallingNodeModules": "Something went wrong installing node modules!",
+        "errorGeneratingMtaYaml": "Something went wrong creating mta.yaml!"
     },
     "info":{
         "existingMTAExtensionNotFound": "Cannot find a valid existing mta extension file, a new one will be created.",
