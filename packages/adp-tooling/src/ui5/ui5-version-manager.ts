@@ -4,6 +4,12 @@ import { fetchInternalVersions, fetchPublicVersions } from './fetchers';
 import { isFeatureSupportedVersion, removeTimestampFromVersion, addSnapshot, buildSystemVersionLabel } from './utils';
 import { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../base/constants';
 
+interface VersionLabels {
+    formattedVersion: string;
+    systemSnapshotLabel: string;
+    systemLatestLabel: string;
+}
+
 /**
  * Service class for handling SAP UI5 version information.
  * This class provides methods to fetch and validate UI5 versions, retrieve public and internal versions,
@@ -107,37 +113,12 @@ export class UI5VersionManager {
     }
 
     /**
-     * Retrieves the system relevant versions based on the provided version, if available.
-     * Determines if the provided version follows the standard version format.
+     * Computes version labels based on the provided version.
      *
-     * @param {string | undefined} version - The version string to be checked.
-     * @returns {Promise<string[]>} An array of relevant version strings.
+     * @param {string} version - The original version string.
+     * @returns {VersionLabels} An object with the formatted version, snapshot label, and latest label.
      */
-    public async getSystemRelevantVersions(version: string | undefined): Promise<string[]> {
-        const pattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
-
-        if (version) {
-            this.isVersionDetected = pattern.test(version);
-        }
-
-        this.systemVersion = this.isVersionDetected ? version : undefined;
-
-        return this.getRelevantVersions(this.systemVersion);
-    }
-
-    /**
-     * Gets versions relevant based on the system or user type.
-     * For internal users, all available versions are returned.
-     * For external users, only versions higher than the current system version are shown.
-     *
-     * @param {string} [version] - The current system version.
-     * @returns {Promise<string[]>} An array of relevant version strings.
-     * If the version is not detected, returns the latest released version.
-     */
-    public async getRelevantVersions(version?: string): Promise<string[]> {
-        const publicVersions = await this.getPublicVersions();
-
-        let versions: string[];
+    private getVersionLabels(version?: string): VersionLabels {
         let formattedVersion: string = '';
         let systemSnapshotLabel: string = '';
         let systemLatestLabel: string = '';
@@ -146,8 +127,44 @@ export class UI5VersionManager {
             formattedVersion = removeTimestampFromVersion(version);
             this.systemVersion = formattedVersion;
             systemSnapshotLabel = addSnapshot(version, this.latestVersion);
-            systemLatestLabel = formattedVersion === publicVersions?.latest?.version ? LATEST_VERSION : '';
+            systemLatestLabel = formattedVersion === this.publicVersions?.latest?.version ? LATEST_VERSION : '';
         }
+
+        return { formattedVersion, systemSnapshotLabel, systemLatestLabel };
+    }
+
+    /**
+     * Determines if the provided version follows the standard version format.
+     *
+     * @param {string | undefined} version - The version string to be checked.
+     * @returns {string | undefined} A system version or undefined.
+     */
+    private checkSystemVersionPattern(version: string | undefined): string | undefined {
+        const pattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
+        if (version) {
+            this.isVersionDetected = pattern.test(version);
+        }
+        this.systemVersion = this.isVersionDetected ? version : undefined;
+
+        return this.systemVersion;
+    }
+
+    /**
+     * Gets versions relevant based on the system or user type.
+     * For internal users, all available versions are returned.
+     * For external users, only versions higher than the current system version are shown.
+     *
+     * @param {string} [systemVersion] - The current system version.
+     * @returns {Promise<string[]>} An array of relevant version strings.
+     * If the version is not detected, returns the latest released version.
+     */
+    public async getRelevantVersions(systemVersion?: string): Promise<string[]> {
+        const version = this.checkSystemVersionPattern(systemVersion);
+        const publicVersions = await this.getPublicVersions();
+
+        let versions: string[];
+
+        const { formattedVersion, systemSnapshotLabel, systemLatestLabel } = this.getVersionLabels(version);
 
         if (!this.isCustomerBase) {
             versions = await this.getInternalVersions();

@@ -7,7 +7,13 @@ import { ToolsLogger } from '@sap-ux/logger';
 import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { TargetSystems, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
-import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import {
+    TelemetryHelper,
+    sendTelemetry,
+    type ILogWrapper,
+    getHostEnvironment,
+    hostEnvironment
+} from '@sap-ux/fiori-generator-shared';
 
 import { getFlexLayer } from './layer';
 import { t, initI18n } from '../utils/i18n';
@@ -98,8 +104,12 @@ export default class extends Generator {
 
     async prompting(): Promise<void> {
         const prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
+        const isCLI = getHostEnvironment() === hostEnvironment.cli;
 
-        const configQuestions = prompter.getPrompts();
+        const configQuestions = prompter.getPrompts({
+            appValidationCli: { hide: !isCLI },
+            systemValidationCli: { hide: !isCLI }
+        });
 
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
 

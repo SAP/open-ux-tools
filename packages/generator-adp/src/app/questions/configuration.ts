@@ -14,13 +14,11 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { ConfigAnswers, FlexUISupportedSystem, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
-    CliValidationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
     PasswordPromptOptions,
@@ -91,7 +89,7 @@ export class ConfigPrompter {
     constructor(private readonly targetSystems: TargetSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.appIdentifier = new AppIdentifier(layer);
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-        this.ui5Manager = UI5VersionManager.getInstance(FlexLayer.CUSTOMER_BASE);
+        this.ui5Manager = UI5VersionManager.getInstance(layer);
     }
 
     /**
@@ -102,17 +100,15 @@ export class ConfigPrompter {
      * @returns An array of configuration questions.
      */
     public getPrompts(promptOptions?: ConfigPromptOptions): ConfigQuestion[] {
-        const isCLI = getHostEnvironment() === hostEnvironment.cli;
-
         const keyedPrompts: Record<configPromptNames, ConfigQuestion> = {
             [configPromptNames.system]: this.getSystemListPrompt(promptOptions?.[configPromptNames.system]),
-            [configPromptNames.systemValidationCli]: this.getSystemValidationPromptForCli({ hide: !isCLI }),
+            [configPromptNames.systemValidationCli]: this.getSystemValidationPromptForCli(),
             [configPromptNames.username]: this.getUsernamePrompt(promptOptions?.[configPromptNames.username]),
             [configPromptNames.password]: this.getPasswordPrompt(promptOptions?.[configPromptNames.password]),
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
-            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli({ hide: !isCLI })
+            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli()
         };
 
         const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
@@ -154,14 +150,13 @@ export class ConfigPrompter {
     /**
      * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the system list prompt.
      *
-     * @param {CliValidationPromptOptions} options - System validation CLI options (i.e "hide").
      * @returns Dummy prompt that runs in the CLI only.
      */
-    private getSystemValidationPromptForCli(options: CliValidationPromptOptions) {
+    private getSystemValidationPromptForCli() {
         return {
             name: configPromptNames.systemValidationCli,
             when: async (answers: ConfigAnswers): Promise<boolean> => {
-                if (options.hide || !answers.system) {
+                if (!answers.system) {
                     return false;
                 }
 
@@ -254,14 +249,13 @@ export class ConfigPrompter {
     /**
      * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the application list prompt.
      *
-     * @param {CliValidationPromptOptions} options - System validation CLI options (i.e "hide").
      * @returns Dummy prompt that runs in the CLI only.
      */
-    private getApplicationValidationPromptForCli(options: CliValidationPromptOptions) {
+    private getApplicationValidationPromptForCli() {
         return {
             name: configPromptNames.appValidationCli,
             when: async (answers: ConfigAnswers): Promise<boolean> => {
-                if (options.hide || !answers.application) {
+                if (!answers.application) {
                     return false;
                 }
 
@@ -364,21 +358,19 @@ export class ConfigPrompter {
             this.abapProvider = await getConfiguredProvider(options, this.logger);
             this.isAuthRequired = await this.targetSystems.getSystemRequiresAuth(system);
             if (!this.isAuthRequired) {
-                const validationResult = await this.handleSystemDataValidation(system);
+                const validationResult = await this.handleSystemDataValidation();
 
                 if (typeof validationResult === 'string') {
                     return validationResult;
                 }
 
                 this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
-
-                return true;
             }
+
+            return true;
         } catch (e) {
             return e.message;
         }
-
-        return true;
     }
 
     /**
@@ -388,23 +380,20 @@ export class ConfigPrompter {
      * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
      */
     private async handleAppValidation(value: TargetApplication): Promise<boolean | string> {
-        if (value) {
-            try {
-                const targetManifest = new TargetManifest(this.abapProvider, this.logger);
-                const isSupported = await targetManifest.isAppSupported(value.id);
+        try {
+            const targetManifest = new TargetManifest(this.abapProvider, this.logger);
+            const isSupported = await targetManifest.isAppSupported(value.id);
 
-                if (isSupported) {
-                    const manifest = await targetManifest.getManifest(value.id);
-                    this.evaluateApplicationSupport(manifest, value);
-                }
-                this.isApplicationSupported = true;
-            } catch (e) {
-                this.logger.debug(`Application failed validation. Reason: ${e.message}`);
-                return e.message;
+            if (isSupported) {
+                const manifest = await targetManifest.getManifest(value.id);
+                this.evaluateApplicationSupport(manifest, value);
             }
-        } else {
-            return t('validators.selectCannotBeEmptyError', { value: 'Application' });
+            this.isApplicationSupported = true;
+        } catch (e) {
+            this.logger.debug(`Application failed validation. Reason: ${e.message}`);
+            return e.message;
         }
+
         return true;
     }
 
@@ -440,13 +429,12 @@ export class ConfigPrompter {
     /**
      * Handles the fetching and validation of system data.
      *
-     * @param {string} value - The system.
      * @returns {Promise<boolean | string>} True if successful, or an error message if an error occurs.
      */
-    private async handleSystemDataValidation(value: string): Promise<boolean | string> {
+    private async handleSystemDataValidation(): Promise<boolean | string> {
         try {
             await this.getSystemData();
-            await this.validateSystemVersion(value);
+            await this.validateSystemVersion();
 
             if (!this.isCustomerBase && this.isCloudProject) {
                 return t('error.cloudSystemsForInternalUsers');
@@ -463,16 +451,12 @@ export class ConfigPrompter {
      * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
      * Updates the internal state with the fetched versions and the detection status.
      *
-     * @param {string} value - The system version to validate.
+     * @returns {Promise<void>} Resolves after checking system ui5 version.
      */
-    private async validateSystemVersion(value: string): Promise<void> {
+    private async validateSystemVersion(): Promise<void> {
         try {
-            if (value) {
-                const version = await getSystemUI5Version(this.abapProvider);
-                await this.ui5Manager.getSystemRelevantVersions(version);
-            } else {
-                await this.ui5Manager.getRelevantVersions();
-            }
+            const version = await getSystemUI5Version(this.abapProvider);
+            await this.ui5Manager.getRelevantVersions(version);
         } catch (e) {
             this.logger.debug(`Could not fetch system version: ${e.message}`);
             await this.ui5Manager.getRelevantVersions();
