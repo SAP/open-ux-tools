@@ -1,7 +1,7 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { FlexLayer, getAbapTarget, getConfig } from '../../../src';
+import { FlexLayer, UI5VersionManager, getAbapTarget, getConfig } from '../../../src';
 import type { ConfigAnswers, PackageJson, TargetApplication } from '../../../src';
 
 jest.mock('../../../src/client/abap-provider.ts', () => ({
@@ -14,8 +14,10 @@ const systemDetails = {
 };
 
 const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
+const isAbapCloudMock = jest.fn();
 const mockAbapProvider = {
-    getAtoInfo: getAtoInfoMock
+    getAtoInfo: getAtoInfoMock,
+    isAbapCloud: isAbapCloudMock
 } as unknown as AbapServiceProvider;
 
 const getAbapTargetMock = getAbapTarget as jest.Mock;
@@ -37,6 +39,8 @@ describe('getConfig', () => {
     });
 
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
+        jest.spyOn(UI5VersionManager, 'getInstance').mockReturnValue({ latestVersion: '1.135.0' } as UI5VersionManager);
+        isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig({
             provider: mockAbapProvider,
             configAnswers,
@@ -67,6 +71,11 @@ describe('getConfig', () => {
             target: {
                 client: '010',
                 url: 'https://SYS010'
+            },
+            ui5: {
+                frameworkUrl: 'https://ui5.sap.com',
+                minVersion: '1.135.0',
+                version: '1.135.0'
             },
             options: { fioriTools: true, enableTypeScript: false }
         });

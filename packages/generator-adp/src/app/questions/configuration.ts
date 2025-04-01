@@ -1,7 +1,7 @@
 import {
     UI5VersionManager,
     FlexLayer,
-    ManifestManager,
+    TargetManifest,
     getConfiguredProvider,
     getEndpointNames,
     getFlexUISupportedSystem,
@@ -390,11 +390,11 @@ export class ConfigPrompter {
     private async handleAppValidation(value: TargetApplication): Promise<boolean | string> {
         if (value) {
             try {
-                const manifestManager = new ManifestManager(this.abapProvider, this.logger);
-                const isSupported = await manifestManager.isAppSupported(value.id);
+                const targetManifest = new TargetManifest(this.abapProvider, this.logger);
+                const isSupported = await targetManifest.isAppSupported(value.id);
 
                 if (isSupported) {
-                    const manifest = await manifestManager.getManifest(value.id);
+                    const manifest = await targetManifest.getManifest(value.id);
                     this.evaluateApplicationSupport(manifest, value);
                 }
                 this.isApplicationSupported = true;

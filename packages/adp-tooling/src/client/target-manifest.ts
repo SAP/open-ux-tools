@@ -4,15 +4,24 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { t } from '../i18n';
 
+/**
+ * Interface representing cached manifest data.
+ */
 export interface ManifestCache {
+    /**
+     * The URL from which the manifest was fetched.
+     */
     url: string;
+    /**
+     * The parsed manifest data.
+     */
     manifest: Manifest | undefined;
 }
 
 /**
  * Service class for handling operations related to application manifests.
  */
-export class ManifestManager {
+export class TargetManifest {
     private manifestCache = new Map<string, ManifestCache>();
 
     /**
