@@ -1,5 +1,5 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { TargetManifest } from '../../../src';
 import { initI18n, t } from '../../../src/i18n';
