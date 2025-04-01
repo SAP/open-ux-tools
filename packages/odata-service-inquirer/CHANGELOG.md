@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.27
+
+### Patch Changes
+
+-   07b9160: prevent converting service path to lower case
+
 ## 2.2.26
 
 ### Patch Changes
