@@ -29,8 +29,8 @@ describe('getFlexUISupportedSystem', () => {
             headers: { Accept: 'application/*' }
         });
         expect(result).toEqual({
-            isOnPremise: fakeData.includes('dta_folder'),
-            isUIFlex: fakeData.includes('http://www.sap.com/adt/categories/ui_flex')
+            isOnPremise: true,
+            isUIFlex: true
         });
     });
 });
