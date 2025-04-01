@@ -1,6 +1,6 @@
-import { getYUIDetails, parseTarget, registerNamespaces } from '../src/app/utils';
-import { isMTAInstalled, getEnvApiHubConfig } from '../src/utils';
-import type { DeployConfigOptions } from '../src/types';
+import { getYUIDetails, parseTarget, registerNamespaces } from '../../src/app/utils';
+import { isMTAInstalled, getEnvApiHubConfig } from '../../src/utils';
+import type { DeployConfigOptions } from '../../src/types';
 import hasbin from 'hasbin';
 import mockFs from 'fs';
 

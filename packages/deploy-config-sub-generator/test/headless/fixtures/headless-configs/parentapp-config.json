@@ -1,0 +1,14 @@
+{
+  "version": "0.2",
+  "project": {
+    "name": "feproject-ui",
+    "targetFolder": "./test-output"
+  },
+  "deployConfig": {
+    "deployTarget": "CF",
+    "destinationName": "SOME_DEST_NAME",
+    "addToManagedAppRouter": true,
+    "lcapModeOnly": true,
+    "cloudServiceName": "SHOULD_BE_IGNORED"
+  }
+}
