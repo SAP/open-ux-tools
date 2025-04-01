@@ -2,7 +2,8 @@ import { initI18n, t } from '../../../../src/i18n';
 import { getAppConfigPrompts } from '../../../../src/prompts/questions';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
-import { promptNames, TransportConfig } from '../../../../src/types';
+import type { TransportConfig } from '../../../../src/types';
+import { promptNames } from '../../../../src/types';
 import { PromptState } from '../../../../src/prompts/prompt-state';
 
 describe('getConfirmPrompts', () => {
