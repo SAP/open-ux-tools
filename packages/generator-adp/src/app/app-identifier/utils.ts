@@ -15,6 +15,7 @@ export function isV4Application(manifest: Manifest | null): boolean {
  * Sets the isAppSync property based on the loading method.
  *
  * @param {Manifest['sap.ui5']} ui5Settings - The UI5 settings part of the manifest.
+ * @returns {boolean} Boolean if views are loaded synchronously or asynchronously.
  */
 export function isSyncLoadedView(ui5Settings: Manifest['sap.ui5']): boolean {
     if (ui5Settings?.rootView) {

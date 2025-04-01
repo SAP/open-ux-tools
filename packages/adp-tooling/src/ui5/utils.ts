@@ -1,4 +1,4 @@
-import { SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../base/constants';
+import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../base/constants';
 
 /**
  * Gets the official base URL for SAP UI5 resources based on the version information.
@@ -24,6 +24,18 @@ export function getOfficialBaseUI5VersionUrl(version: string): string {
 export function getFormattedVersion(version: string): string {
     version = removeBracketsFromVersion(version);
     return version.toLowerCase().includes('-snapshot') ? `snapshot-${removeMicroPart(version)}` : version;
+}
+
+/**
+ * Constructs a string representing the current system version with appropriate labels.
+ *
+ * @param {string} formattedVersion - The version string with timestamps removed.
+ * @param {string} snapshotLabel - The snapshot label computed for the version.
+ * @param {string} latestLabel - The label for the latest version if applicable.
+ * @returns {string} The constructed version string.
+ */
+export function buildSystemVersionLabel(formattedVersion: string, snapshotLabel: string, latestLabel: string): string {
+    return `${formattedVersion}${snapshotLabel} ${CURRENT_SYSTEM_VERSION}${latestLabel}`;
 }
 
 /**
@@ -76,39 +88,6 @@ export function removeTimestampFromVersion(version: string): string {
 export function addSnapshot(version: string, latestVersion: string): string {
     const versionParts = version.split('.');
     return versionParts[3] && removeTimestampFromVersion(version) != latestVersion ? '-snapshot' : '';
-}
-
-/**
- * Extracts a specific version pattern (major.minor.patch) from a given string.
- * This function is useful for normalizing version strings that may include additional text such as labels or descriptions.
- *
- * @param {string} version - The version string that potentially contains additional text alongside the version number.
- * @returns {string} A trimmed version string containing only the first matched major.minor.patch pattern if present;
- *                   otherwise, returns the original version string.
- * @example
- * // returns '1.84.6'
- * getTrimmedUI5Version('UI5 version 1.84.6 (system version)');
- * @example
- * // returns '1.99.2'
- * getTrimmedUI5Version('latest 1.99.2');
- * @example
- * // returns '2.10.3'
- * getTrimmedUI5Version('2.10.3');
- */
-export function getTrimmedUI5Version(version: string): string {
-    const regex = /\b\d+\.\d+\.\d+\b/g;
-    const includesText = version.includes('(system version)') || version.includes('latest');
-
-    let trimmedVersion: string | undefined;
-    try {
-        if (includesText) {
-            trimmedVersion = version.match(regex)?.[0];
-        }
-    } catch (e) {
-        return version;
-    }
-
-    return trimmedVersion ?? version;
 }
 
 /**

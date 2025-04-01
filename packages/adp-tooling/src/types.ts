@@ -131,13 +131,6 @@ export interface VersionDetail {
     lts: boolean;
 }
 
-export enum ApplicationType {
-    FIORI_ELEMENTS = 'FioriElements',
-    FIORI_ELEMENTS_OVP = 'FioriElementsOVP',
-    FREE_STYLE = 'FreeStyle',
-    NONE = ''
-}
-
 export interface Endpoint extends Partial<Destination> {
     Name: string;
     Url?: string;

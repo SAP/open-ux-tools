@@ -1,10 +1,12 @@
+import { join } from 'path';
+import { readFileSync } from 'fs';
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import { ToolsLogger } from '@sap-ux/logger';
 import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { TargetSystems, UI5VersionManager, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import { TargetSystems, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
 import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 
 import { getFlexLayer } from './layer';
@@ -15,8 +17,6 @@ import type { AdpGeneratorOptions } from './types';
 import { installDependencies } from '../utils/deps';
 import { ConfigPrompter } from './questions/configuration';
 import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -97,8 +97,7 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const ui5Manager = new UI5VersionManager(this.layer);
-        const prompter = new ConfigPrompter(this.targetSystems, ui5Manager, this.layer, this.toolsLogger);
+        const prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
 
         const configQuestions = prompter.getPrompts();
 

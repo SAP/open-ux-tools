@@ -1,6 +1,6 @@
-import type { TargetApplication } from '@sap-ux/adp-tooling';
 import { FlexLayer } from '@sap-ux/adp-tooling';
-import type { Manifest, ManifestNamespace } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
+import type { TargetApplication } from '@sap-ux/adp-tooling';
 
 import { t } from '../../utils/i18n';
 import { isSyncLoadedView, isV4Application } from './utils';

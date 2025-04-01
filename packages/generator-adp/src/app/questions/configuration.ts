@@ -1,11 +1,5 @@
-import type {
-    ConfigAnswers,
-    FlexUISupportedSystem,
-    TargetApplication,
-    TargetSystems,
-    UI5VersionManager
-} from '@sap-ux/adp-tooling';
 import {
+    UI5VersionManager,
     FlexLayer,
     ManifestManager,
     getConfiguredProvider,
@@ -22,6 +16,7 @@ import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type { ConfigAnswers, FlexUISupportedSystem, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
@@ -84,25 +79,19 @@ export class ConfigPrompter {
     /**
      * UI5 version manager for handling version-related validations.
      */
-    private ui5Manager: UI5VersionManager;
+    private readonly ui5Manager: UI5VersionManager;
 
     /**
      * Creates an instance of ConfigPrompter.
      *
      * @param {TargetSystems} targetSystems - The target system class to retrieve system endpoints.
-     * @param {UI5VersionManager} ui5Manager - Service for handling UI5 version information.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
      */
-    constructor(
-        private readonly targetSystems: TargetSystems,
-        ui5Manager: UI5VersionManager,
-        layer: FlexLayer,
-        private readonly logger: ToolsLogger
-    ) {
-        this.ui5Manager = ui5Manager;
+    constructor(private readonly targetSystems: TargetSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.appIdentifier = new AppIdentifier(layer);
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+        this.ui5Manager = UI5VersionManager.getInstance(FlexLayer.CUSTOMER_BASE);
     }
 
     /**

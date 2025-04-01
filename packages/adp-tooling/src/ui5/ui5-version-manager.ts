@@ -1,21 +1,8 @@
-import {
-    CURRENT_SYSTEM_VERSION,
-    LATEST_VERSION,
-    SNAPSHOT_UNTESTED_VERSION,
-    SNAPSHOT_VERSION,
-    UI5_VERSIONS_CDN_URL,
-    UI5_VERSIONS_NEO_CDN_URL
-} from '../base/constants';
-import { t } from '../i18n';
-import {
-    isFeatureSupportedVersion,
-    removeTimestampFromVersion,
-    addSnapshot,
-    getOfficialBaseUI5VersionUrl,
-    getFormattedVersion
-} from './utils';
-import type { UI5Version } from '../types';
 import { FlexLayer } from '../types';
+import type { UI5Version } from '../types';
+import { fetchInternalVersions, fetchPublicVersions } from './fetchers';
+import { isFeatureSupportedVersion, removeTimestampFromVersion, addSnapshot, buildSystemVersionLabel } from './utils';
+import { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../base/constants';
 
 /**
  * Service class for handling SAP UI5 version information.
@@ -25,14 +12,17 @@ import { FlexLayer } from '../types';
  * @class UI5VersionManager
  */
 export class UI5VersionManager {
+    /** Singleton instance */
+    private static instance: UI5VersionManager;
+
     /** Latest public UI5 version */
     public latestVersion: string;
 
     /** Public UI5 version data fetched from CDN */
-    public publicVersions: UI5Version;
+    private publicVersions: UI5Version;
 
     /** All available internal UI5 versions (fetched once and cached) */
-    public releasedVersions: string[];
+    private releasedVersions: string[];
 
     /** Indicates if a valid UI5 version was detected on the system */
     public isVersionDetected: boolean;
@@ -44,31 +34,53 @@ export class UI5VersionManager {
     private isCustomerBase: boolean;
 
     /**
-     * Initializes a new instance of the UI5VersionManager class.
+     * Private constructor to enforce singleton pattern.
      *
-     * @param {FlexLayer} layer UI5 Flex layer.
+     * @param {FlexLayer} layer - Flex layer (used once to configure instance).
      */
-    constructor(layer: FlexLayer) {
+    private constructor(layer: FlexLayer) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     }
 
     /**
-     * Retrieves the system relevant versions based on the provided version, if available.
-     * Determines if the provided version follows the standard version format.
+     * Returns the singleton instance of UI5VersionManager.
      *
-     * @param {string | undefined} version - The version string to be checked.
-     * @returns {Promise<string[]>} An array of relevant version strings.
+     * @param {FlexLayer} layer - Used only during first initialization.
+     * @returns {UI5VersionManager} Instance.
      */
-    public async getSystemRelevantVersions(version: string | undefined): Promise<string[]> {
-        const pattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
-
-        if (version) {
-            this.isVersionDetected = pattern.test(version);
+    public static getInstance(layer: FlexLayer): UI5VersionManager {
+        if (!UI5VersionManager.instance) {
+            UI5VersionManager.instance = new UI5VersionManager(layer);
         }
+        return UI5VersionManager.instance;
+    }
 
-        this.systemVersion = this.isVersionDetected ? version : undefined;
+    /**
+     * Fetches public versions from the UI5 CDN.
+     *
+     * @returns {Promise<UI5Version>} An object containing version details fetched from the UI5 CDN.
+     */
+    public async getPublicVersions(): Promise<UI5Version> {
+        if (!this.publicVersions) {
+            this.publicVersions = await fetchPublicVersions();
+            this.latestVersion = this.publicVersions?.['latest']['version'];
+        }
+        return this.publicVersions;
+    }
 
-        return this.getRelevantVersions(this.systemVersion);
+    /**
+     * Retrieves and filters internal UI5 versions.
+     *
+     * If the versions have not been cached, it calls fetchInternalVersions() to retrieve and cache them.
+     * It then filters the versions based on the minimum supported version.
+     *
+     * @returns {Promise<string[]>} A promise that resolves to an array of supported internal UI5 version strings.
+     */
+    private async getInternalVersions(): Promise<string[]> {
+        if (!this.releasedVersions) {
+            this.releasedVersions = await fetchInternalVersions(this.latestVersion);
+        }
+        return this.releasedVersions.filter(isFeatureSupportedVersion.bind(this, '1.71.0'));
     }
 
     /**
@@ -95,70 +107,22 @@ export class UI5VersionManager {
     }
 
     /**
-     * Fetches public versions from the UI5 CDN.
+     * Retrieves the system relevant versions based on the provided version, if available.
+     * Determines if the provided version follows the standard version format.
      *
-     * @returns {Promise<UI5Version>} An object containing version details fetched from the UI5 CDN.
+     * @param {string | undefined} version - The version string to be checked.
+     * @returns {Promise<string[]>} An array of relevant version strings.
      */
-    public async getPublicVersions(): Promise<UI5Version> {
-        if (this.publicVersions) {
-            return this.publicVersions;
+    public async getSystemRelevantVersions(version: string | undefined): Promise<string[]> {
+        const pattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
+
+        if (version) {
+            this.isVersionDetected = pattern.test(version);
         }
 
-        const response = await fetch(UI5_VERSIONS_CDN_URL);
-        const data = await response.json();
+        this.systemVersion = this.isVersionDetected ? version : undefined;
 
-        this.publicVersions = data;
-        this.latestVersion = data['latest']['version'];
-
-        return this.publicVersions;
-    }
-
-    /**
-     * Determines whether the minimum SAP UI5 version should be set for the application manifest.
-     *
-     * @returns {boolean} True if the minimum UI5 version should be set (i.e., the detected version is
-     *         available and the minor version is 90 or higher); otherwise, false.
-     */
-    public shouldSetMinUI5Version(): boolean {
-        if (!this.isVersionDetected) {
-            return false;
-        }
-
-        const versionParts = this.systemVersion?.split('.') ?? [];
-        return parseInt(versionParts[1], 10) >= 90;
-    }
-
-    /**
-     * Retrieves the minimum SAP UI5 version to be specified in the application manifest.
-     * If the system version does not contain 'snapshot', the system version itself is used;
-     * otherwise, the latest stable version is used as the minimum version.
-     *
-     * @returns {string} The SAP UI5 version string to be set in the manifest, which can be either
-     *         the current system version or the latest stable version, depending on the presence of 'snapshot'.
-     */
-    public getMinUI5VersionForManifest(): string {
-        return this.systemVersion?.indexOf('snapshot') === -1 ? this.systemVersion : this.latestVersion;
-    }
-
-    /**
-     * Retrieves versions available to internal users, filtered by certain criteria.
-     *
-     * @returns {Promise<string[]>} An array of version strings available to internal users.
-     */
-    private async getInternalVersions(): Promise<string[]> {
-        if (!this.releasedVersions) {
-            const response = await fetch(UI5_VERSIONS_NEO_CDN_URL);
-            const data = await response.json();
-
-            this.releasedVersions = data.routes.map((route: { target: { version: string } }) => {
-                const version =
-                    route.target.version === this.latestVersion
-                        ? `${route.target.version} ${LATEST_VERSION}`
-                        : route.target.version;
-                return version;
-            });
-        }
-        return this.releasedVersions.filter(isFeatureSupportedVersion.bind(this, '1.71.0'));
+        return this.getRelevantVersions(this.systemVersion);
     }
 
     /**
@@ -171,45 +135,37 @@ export class UI5VersionManager {
      * If the version is not detected, returns the latest released version.
      */
     public async getRelevantVersions(version?: string): Promise<string[]> {
-        const allPublicVersions = await this.getPublicVersions();
+        const publicVersions = await this.getPublicVersions();
 
-        let relevantVersions: string[];
+        let versions: string[];
         let formattedVersion: string = '';
-        let systemSnapshotVersion: string = '';
-        let systemLatestVersion: string = '';
+        let systemSnapshotLabel: string = '';
+        let systemLatestLabel: string = '';
 
         if (version) {
             formattedVersion = removeTimestampFromVersion(version);
             this.systemVersion = formattedVersion;
-            systemSnapshotVersion = addSnapshot(version, this.latestVersion);
-            systemLatestVersion = formattedVersion === allPublicVersions['latest']['version'] ? LATEST_VERSION : '';
+            systemSnapshotLabel = addSnapshot(version, this.latestVersion);
+            systemLatestLabel = formattedVersion === publicVersions?.latest?.version ? LATEST_VERSION : '';
         }
 
         if (!this.isCustomerBase) {
-            relevantVersions = await this.getInternalVersions();
+            versions = await this.getInternalVersions();
             if (version) {
-                let relevantVersionsAsString = relevantVersions.join();
-                const formattedVersionRegex = new RegExp(formattedVersion + ' ', 'g');
-                relevantVersionsAsString = relevantVersionsAsString.replace(
-                    formattedVersionRegex,
-                    `${formattedVersion}${systemSnapshotVersion} ${CURRENT_SYSTEM_VERSION}`
+                const regex = new RegExp(`${formattedVersion} `, 'g');
+                versions = versions.map((v) =>
+                    v.replace(regex, `${formattedVersion}${systemSnapshotLabel} ${CURRENT_SYSTEM_VERSION}`)
                 );
-                relevantVersions = relevantVersionsAsString.split(',');
-                relevantVersions.unshift(
-                    `${formattedVersion}${systemSnapshotVersion} ${CURRENT_SYSTEM_VERSION + systemLatestVersion}`
-                );
+                versions.unshift(buildSystemVersionLabel(formattedVersion, systemSnapshotLabel, systemLatestLabel));
             }
-            relevantVersions.unshift(SNAPSHOT_VERSION);
-            relevantVersions.unshift(SNAPSHOT_UNTESTED_VERSION);
-        } else if (version && systemSnapshotVersion === '') {
-            relevantVersions = await this.getHigherVersions(formattedVersion);
-            relevantVersions.unshift(
-                `${formattedVersion}${systemSnapshotVersion} ${CURRENT_SYSTEM_VERSION + systemLatestVersion}`
-            );
+            versions.unshift(SNAPSHOT_VERSION, SNAPSHOT_UNTESTED_VERSION);
+        } else if (version && systemSnapshotLabel === '') {
+            versions = await this.getHigherVersions(formattedVersion);
+            versions.unshift(buildSystemVersionLabel(formattedVersion, systemSnapshotLabel, systemLatestLabel));
         } else {
-            relevantVersions = [`${allPublicVersions['latest']['version']} ${LATEST_VERSION}`];
+            versions = [`${publicVersions.latest.version} ${LATEST_VERSION}`];
         }
-        return [...new Set(relevantVersions)];
+        return [...new Set(versions)];
     }
 
     /**
@@ -219,61 +175,23 @@ export class UI5VersionManager {
      * @returns {Promise<string[]>} An array of versions higher than the specified version.
      */
     private async getHigherVersions(version: string): Promise<string[]> {
-        const allPublicVersions = await this.getPublicVersions();
+        const publicVersions = await this.getPublicVersions();
         const radix = 10;
 
-        const versionParts = version.split('.');
-        const minorVersion = parseInt(versionParts[1], radix);
-        const microVersion = parseInt(versionParts[2], radix);
+        const [_, baselineMinor, baselineMicro] = version.split('.').map((part) => parseInt(part, radix));
 
-        let versions = '';
+        const higherVersions = Object.keys(publicVersions)
+            .filter((key) => key !== 'latest') // Exclude 'latest' key from the iteration
+            .map((key) => publicVersions[key]['version'])
+            .filter((ver: string) => {
+                const [, minor, micro] = ver.split('.').map((part) => parseInt(part, radix));
+                return minor > baselineMinor || (minor === baselineMinor && micro > baselineMicro);
+            });
 
-        Object.keys(allPublicVersions).forEach((publicVersionKey) => {
-            const versionArr = allPublicVersions[publicVersionKey]['version'].split('.');
-            if (
-                parseInt(versionArr[1], radix) > minorVersion ||
-                (parseInt(versionArr[1], radix) == minorVersion && parseInt(versionArr[2], radix) > microVersion)
-            ) {
-                versions += allPublicVersions[publicVersionKey]['version'] + ',';
-            }
-        });
+        const result = higherVersions
+            .map((ver) => (ver === publicVersions.latest.version ? `${ver} ${LATEST_VERSION}` : ver))
+            .reverse();
 
-        const latestVersionRegex = new RegExp(allPublicVersions['latest']['version'], 'g');
-        const versionsLatest = versions.replace(
-            latestVersionRegex,
-            `${allPublicVersions['latest']['version']} ${LATEST_VERSION}`
-        );
-        const result = versionsLatest.split(',');
-        result.pop();
-
-        return result.reverse();
-    }
-
-    /**
-     * Validates a specified UI5 version by checking its availability on the SAP CDN.
-     *
-     * @param {string} [version] - The version to validate.
-     * @returns {Promise<string | boolean>} True if the version is valid, a string message if not, or if an error occurs.
-     */
-    public async validateUI5Version(version?: string): Promise<string | boolean> {
-        if (version) {
-            const selectedVersionURL = getOfficialBaseUI5VersionUrl(version);
-            const resource = version.includes('snapshot') ? 'neo-app.json' : getFormattedVersion(version);
-
-            try {
-                await fetch(`${selectedVersionURL}/${resource}`);
-                return true;
-            } catch (e) {
-                if (version.includes('snapshot')) {
-                    const message = t('validators.ui5VersionNotReachableError');
-                    return `${message.replace('<URL>', selectedVersionURL)}`;
-                }
-                if (e.response.status === 400 || e.response.status === 404) {
-                    return t('validators.ui5VersionOutdatedError');
-                }
-                return `Error on validating UI5 Version: ${e.message}`;
-            }
-        }
-        return t('validators.ui5VersionCannotBeEmpty');
+        return result;
     }
 }
