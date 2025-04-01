@@ -73,7 +73,7 @@ export class ConfigPrompter {
     /**
      * Instance of AppIdentifier to validate application support.
      */
-    private appIdentifier: AppIdentifier;
+    private readonly appIdentifier: AppIdentifier;
     /**
      * UI5 version manager for handling version-related validations.
      */

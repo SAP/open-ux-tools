@@ -30,7 +30,7 @@ export class TargetManifest {
      * @param {AbapProvider} provider - The ABAP provider service.
      * @param {ToolsLogger} [logger] - The logger.
      */
-    constructor(private provider: AbapServiceProvider, private logger?: ToolsLogger) {}
+    constructor(private readonly provider: AbapServiceProvider, private readonly logger?: ToolsLogger) {}
 
     /**
      * Resets the manifest cache.

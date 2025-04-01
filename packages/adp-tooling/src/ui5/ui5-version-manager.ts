@@ -37,7 +37,7 @@ export class UI5VersionManager {
     public systemVersion?: string;
 
     /** Whether the project is CUSTOMER_BASE layer */
-    private isCustomerBase: boolean;
+    private readonly isCustomerBase: boolean;
 
     /**
      * Private constructor to enforce singleton pattern.
