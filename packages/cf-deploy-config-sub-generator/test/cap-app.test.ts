@@ -166,7 +166,7 @@ describe('Cloud foundry generator tests', () => {
         mockFindCapProjectRoot.mockReturnValue(join('/output/', '/capmissingmta'));
         const mockGenerateCAPConfig = jest.spyOn(cfDeployWriter, 'generateCAPConfig').mockResolvedValue(fsMock);
         const mockGenerateAppConfig = jest.spyOn(cfDeployWriter, 'generateAppConfig').mockResolvedValue(fsMock);
-        jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
+        const mockisExtensionInstalled = jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
             return true;
         });
 
@@ -227,5 +227,6 @@ describe('Cloud foundry generator tests', () => {
         expect(mockGenerateAppConfig).toHaveBeenCalled();
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
         expect(mockSendTelemetry).toHaveBeenCalled();
+        expect(mockisExtensionInstalled).toHaveBeenCalled();
     });
 });
