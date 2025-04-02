@@ -3,12 +3,11 @@ import type { OutlineViewNode } from 'sap/ui/rta/command/OutlineService';
 import type { Scenario } from 'sap/ui/fl/Scenario';
 import Log from 'sap/base/Log';
 
-import { getUi5Version, Ui5VersionInfo } from '../../utils/version';
 import { getControlById } from '../../utils/core';
 import { getError } from '../../utils/error';
 
 import type { ControlTreeIndex } from '../types';
-import { getOverlay, isReuseComponent } from '../utils';
+import { getOverlay } from '../utils';
 
 import { isEditable } from './editable';
 import { ChangeService } from '../changes';
@@ -127,7 +126,6 @@ function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string
  *
  * @param input outline view node
  * @param scenario type of project
- * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
  * @param propertyIdMap ChangeService for change stack event handling.
@@ -136,14 +134,12 @@ function addToPropertyIdMap(node: OutlineNode, propertyIdMap: Map<string, string
 export async function transformNodes(
     input: OutlineViewNode[],
     scenario: Scenario,
-    reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
     changeService: ChangeService,
     propertyIdMap: Map<string, string[]>
 ): Promise<OutlineNode[]> {
     const stack = [...input];
     const items: OutlineNode[] = [];
-    const ui5VersionInfo = await getUi5Version();
     while (stack.length) {
         try {
             const current = stack.shift();
@@ -160,7 +156,6 @@ export async function transformNodes(
                     ? await handleDuplicateNodes(
                           children,
                           scenario,
-                          reuseComponentsIds,
                           controlIndex,
                           changeService,
                           propertyIdMap
@@ -168,7 +163,6 @@ export async function transformNodes(
                     : await transformNodes(
                           children,
                           scenario,
-                          reuseComponentsIds,
                           controlIndex,
                           changeService,
                           propertyIdMap
@@ -184,7 +178,6 @@ export async function transformNodes(
 
                 indexNode(controlIndex, node);
                 addToPropertyIdMap(node, propertyIdMap);
-                fillReuseComponents(reuseComponentsIds, current, scenario, ui5VersionInfo);
 
                 items.push(node);
             }
@@ -218,30 +211,11 @@ export async function transformNodes(
 }
 
 /**
- * Fill reuse components ids.
- *
- * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
- * @param node view node
- * @param scenario type of project
- * @param ui5VersionInfo UI5 version information
- */
-function fillReuseComponents(
-    reuseComponentsIds: Set<string>,
-    node: OutlineViewNode,
-    scenario: Scenario,
-    ui5VersionInfo: Ui5VersionInfo
-): void {
-    if (scenario === 'ADAPTATION_PROJECT' && node?.component && isReuseComponent(node.id, ui5VersionInfo)) {
-        reuseComponentsIds.add(node.id);
-    }
-}
-/**
  * Handles duplicate nodes that are retrieved from extension point default content and created controls,
  * if they exist under an extension point these controls are removed from the children array
  *
  * @param children outline view node children
  * @param scenario type of project
- * @param reuseComponentsIds ids of reuse components that are filled when outline nodes are transformed
  * @param controlIndex Control tree index
  * @param changeService ChangeService for change stack event handling.
  * @param propertyIdMap  Map<string, string[]>.
@@ -250,7 +224,6 @@ function fillReuseComponents(
 export async function handleDuplicateNodes(
     children: OutlineViewNode[],
     scenario: Scenario,
-    reuseComponentsIds: Set<string>,
     controlIndex: ControlTreeIndex,
     changeService: ChangeService,
     propertyIdMap: Map<string, string[]>
@@ -266,5 +239,5 @@ export async function handleDuplicateNodes(
 
     const uniqueChildren = children.filter((child) => !extPointIDs.has(child.id));
 
-    return transformNodes(uniqueChildren, scenario, reuseComponentsIds, controlIndex, changeService, propertyIdMap);
+    return transformNodes(uniqueChildren, scenario, controlIndex, changeService, propertyIdMap);
 }

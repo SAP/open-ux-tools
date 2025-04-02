@@ -4,5 +4,6 @@ export default {
     getViewForControl: jest.fn().mockReturnValue({
         getId: jest.fn()
     }),
+    getComponentForControl: jest.fn(),
     getAppComponentForControl: jest.fn()
 };
