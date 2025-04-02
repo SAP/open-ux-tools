@@ -1,4 +1,5 @@
-import { AtoSettings, TenantType } from '@sap-ux/axios-extension';
+import type { AtoSettings } from '@sap-ux/axios-extension';
+import { TenantType } from '@sap-ux/axios-extension';
 import { t } from '../../src/i18n';
 import { getTransportConfigInstance } from '../../src/service-provider-utils';
 import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
