@@ -5,7 +5,7 @@ import {
     appAdditionalMessages,
     systemAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
-import { AppIdentifier } from '../../../../src/app/app-identifier';
+import type { AppIdentifier } from '../../../../src/app/app-identifier';
 import { t } from '../../../../src/utils/i18n';
 
 describe('additional-messages', () => {
