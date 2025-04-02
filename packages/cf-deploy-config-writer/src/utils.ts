@@ -133,10 +133,12 @@ export function validateVersion(mtaVersion?: string): boolean {
  * @param root0.mtaPath Path to the MTA project
  * @param root0.mtaId MTA ID
  * @param fs reference to a mem-fs editor
+ * @param addTenant If true, append tenant to the xs-security.json file
  */
-export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
+export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor, addTenant: boolean = true): void {
     fs.copyTpl(getTemplatePath(`common/${XSSecurityFile}`), join(mtaPath, XSSecurityFile), {
-        id: mtaId.slice(0, 100)
+        id: mtaId.slice(0, 100),
+        addTenant
     });
 }
 
@@ -193,7 +195,7 @@ export async function generateSupportingConfig(config: CFConfig, fs: Editor): Pr
         (config.addManagedAppRouter || config.addAppFrontendRouter) &&
         !fs.exists(join(config.rootPath, XSSecurityFile))
     ) {
-        addXSSecurityConfig(mtaConfig, fs);
+        addXSSecurityConfig(mtaConfig, fs, config.addManagedAppRouter);
     }
     // Be a good developer and add a .gitignore if missing from the existing project root
     if (!fs.exists(join(config.rootPath, '.gitignore'))) {

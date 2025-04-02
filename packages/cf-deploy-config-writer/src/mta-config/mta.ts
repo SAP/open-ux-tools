@@ -357,7 +357,14 @@ export class MtaConfig {
         }
     }
 
-    private async addManagedUAAWithSecurity(): Promise<void> {
+    /**
+     * Add a managed XSUAA service to the MTA.
+     *
+     * @param addTenant - If true, tenant mode is added to the service instead of xs-security.json
+     * @private
+     */
+    private async addManagedUAAWithSecurity(addTenant: boolean = false): Promise<void> {
+        this.log?.debug(t('debug.addXsuaaService'));
         const resource: mta.Resource = {
             name: `${this.prefix.slice(0, 100)}-uaa`,
             type: 'org.cloudfoundry.managed-service',
@@ -365,7 +372,15 @@ export class MtaConfig {
                 path: './xs-security.json',
                 service: 'xsuaa',
                 'service-name': `${this.prefix.slice(0, 100)}-xsuaa-service`,
-                'service-plan': 'application'
+                'service-plan': 'application',
+                ...(addTenant
+                    ? {
+                          config: {
+                              xsappname: `${this.prefix.slice(0, 100)}-\${org}-\${space}`,
+                              'tenant-mode': 'dedicated'
+                          }
+                      }
+                    : {})
             }
         };
         await this.mta.addResource(resource);
@@ -962,7 +977,7 @@ export class MtaConfig {
 
     public async addAppFrontAppRouter(): Promise<void> {
         if (!this.resources.has(ManagedXSUAA)) {
-            await this.addManagedUAAWithSecurity();
+            await this.addManagedUAAWithSecurity(true);
         }
 
         await this.updateServiceName('xsuaa', ManagedXSUAA);

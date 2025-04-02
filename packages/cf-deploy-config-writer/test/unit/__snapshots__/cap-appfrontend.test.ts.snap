@@ -135,8 +135,6 @@ builder:
   },
   "xs-security.json": Object {
     "contents": "{
-  \\"xsappname\\": \\"cappapp\\",
-  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
   \\"role-templates\\": []
@@ -300,6 +298,9 @@ resources:
       service: xsuaa
       service-name: base-xsuaa-service
       service-plan: application
+      config:
+        xsappname: 'base-\${org}-\${space}'
+        tenant-mode: dedicated
 "
 `;
 

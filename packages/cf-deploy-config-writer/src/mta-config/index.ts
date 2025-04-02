@@ -53,7 +53,7 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
             await new Promise((resolve) => setTimeout(resolve, 500));
         }
     }
-    LoggerHelper.logger?.info(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
+    LoggerHelper.logger?.debug(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
     return mtaConfig;
 }
 
@@ -209,7 +209,7 @@ export async function createAppfrontendMta(config: MTABaseConfig, isCap = false)
     writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
     // Ensure the package-lock is created otherwise mta build will fail
     const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    await runCommand(config.mtaPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
+    await runCommand(config.mtaPath, cmd, ['update', '--package-lock-only'], t('error.errorInstallingNodeModules'));
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 

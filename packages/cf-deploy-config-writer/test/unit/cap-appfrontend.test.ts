@@ -103,7 +103,7 @@ describe('CF Writer with CAP App Frontend', () => {
             expect(getCapProjectTypeMock).toHaveBeenCalled();
             expect(commandRunnerMock).toHaveBeenCalled();
             expect(commandRunnerMock.mock.calls[0][0]).toStrictEqual('npm');
-            expect(commandRunnerMock.mock.calls[0][1]).toStrictEqual(['install', '--ignore-engines']);
+            expect(commandRunnerMock.mock.calls[0][1]).toStrictEqual(['update', '--package-lock-only']);
         });
     });
 });

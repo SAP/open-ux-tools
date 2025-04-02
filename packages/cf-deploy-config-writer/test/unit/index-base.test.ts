@@ -104,7 +104,7 @@ describe('CF Writer Base', () => {
                 undefined,
                 logger
             );
-            expect(debugSpy).toBeCalledTimes(7);
+            expect(debugSpy).toBeCalledTimes(8);
             expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
@@ -128,7 +128,7 @@ describe('CF Writer Base', () => {
                 undefined,
                 logger
             );
-            expect(debugSpy).toBeCalledTimes(8);
+            expect(debugSpy).toBeCalledTimes(10);
             expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
