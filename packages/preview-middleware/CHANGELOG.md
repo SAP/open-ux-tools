@@ -1,5 +1,64 @@
 # @sap-ux/preview-middleware
 
+## 0.19.8
+
+### Patch Changes
+
+-   59ab22b: feat: Add Subpage CPE quick action added for ADP projects with OData V4.
+
+## 0.19.7
+
+### Patch Changes
+
+-   Updated dependencies [fbdf2d0]
+    -   @sap-ux/adp-tooling@0.13.22
+
+## 0.19.6
+
+### Patch Changes
+
+-   eebf808: feat: enable TypeScript compiler option `erasableSyntaxOnly`
+
+## 0.19.5
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
+## 0.19.4
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/adp-tooling@0.13.21
+    -   @sap-ux/system-access@0.5.34
+
+## 0.19.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.20
+
+## 0.19.2
+
+### Patch Changes
+
+-   Updated dependencies [93f07bc]
+    -   @sap-ux/adp-tooling@0.13.19
+
+## 0.19.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.18
+
+## 0.19.0
+
+### Minor Changes
+
+-   6e32009: feat: introduce enhanced flp homepage
+    -   controlled via boolean property `flp.enhancedHomePage`, which is false by default
+
 ## 0.18.23
 
 ### Patch Changes

@@ -35,6 +35,7 @@ import {
     getAppName,
     sanitizeRtaConfig
 } from './config';
+import { generateCdm } from './cdm';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -77,6 +78,9 @@ export class FlpSandbox {
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
     private fs: MemFsEditor | undefined;
+    private readonly logger: Logger;
+    private readonly utils: MiddlewareUtils;
+    private readonly project: ReaderCollection;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -86,12 +90,10 @@ export class FlpSandbox {
      * @param utils middleware utilities provided by the UI5 CLI
      * @param logger logger instance
      */
-    constructor(
-        config: Partial<MiddlewareConfig>,
-        private readonly project: ReaderCollection,
-        private readonly utils: MiddlewareUtils,
-        private readonly logger: Logger
-    ) {
+    constructor(config: Partial<MiddlewareConfig>, project: ReaderCollection, utils: MiddlewareUtils, logger: Logger) {
+        this.logger = logger;
+        this.project = project;
+        this.utils = utils;
         this.flpConfig = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
         this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
@@ -155,6 +157,9 @@ export class FlpSandbox {
             this.createTestSuite(this.test);
         }
 
+        if (this.flpConfig.enhancedHomePage) {
+            this.addCDMRoute();
+        }
         await this.addRoutesForAdditionalApps();
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
@@ -454,11 +459,17 @@ export class FlpSandbox {
             }
         }
         if (!version) {
-            this.logger.error('Could not get UI5 version of application. Using 1.121.0 as fallback.');
-            version = '1.121.0';
+            this.logger.error('Could not get UI5 version of application. Using 1.130.0 as fallback.');
+            version = '1.130.0';
         }
         const [major, minor, patch] = version.split('.').map((versionPart) => parseInt(versionPart, 10));
         const label = version.split(/-(.*)/s)?.[1];
+
+        if ((major < 2 && minor < 123) || major >= 2 || label?.includes('legacy-free')) {
+            this.flpConfig.enhancedHomePage = this.templateConfig.enhancedHomePage = false;
+            this.logger.warn(`Feature enhancedHomePage disabled: UI5 version ${version} not supported.`);
+        }
+
         return {
             major,
             minor,
@@ -480,7 +491,8 @@ export class FlpSandbox {
             }.`
         );
         const filePrefix = ui5Version.major > 1 || ui5Version.label?.includes('legacy-free') ? '2' : '';
-        return readFileSync(join(__dirname, `../../templates/flp/sandbox${filePrefix}.html`), 'utf-8');
+        const template = this.flpConfig.enhancedHomePage ? 'cdm' : 'sandbox';
+        return readFileSync(join(__dirname, `../../templates/flp/${template}${filePrefix}.html`), 'utf-8');
     }
 
     /**
@@ -536,6 +548,20 @@ export class FlpSandbox {
                 );
             }
         }
+    }
+
+    /**
+     * Add routes for cdm.json required by FLP during bootstrapping via cdm.
+     *
+     */
+    private addCDMRoute(): void {
+        this.router.get(
+            '/cdm.json',
+            async (_req: EnhancedRequest | connect.IncomingMessage, res: Response | http.ServerResponse) => {
+                const json = generateCdm(this.templateConfig.apps);
+                this.sendResponse(res, 'application/json', 200, JSON.stringify(json));
+            }
+        );
     }
 
     /**

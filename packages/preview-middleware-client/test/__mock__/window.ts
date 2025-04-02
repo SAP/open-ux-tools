@@ -28,7 +28,8 @@ export const sapMock = {
             createRenderer: jest.fn().mockReturnValue({ placeAt: jest.fn() }),
             createRendererInternal: jest.fn().mockReturnValue({ placeAt: jest.fn() }),
             attachRendererCreatedEvent: jest.fn(),
-            getServiceAsync: jest.fn()
+            getServiceAsync: jest.fn(),
+            init: jest.fn()
         }
     }
 };

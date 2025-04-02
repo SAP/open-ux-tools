@@ -35,9 +35,6 @@
         "minimatch": "3.0.5",
         "mkdirp": "1.0.4"
     },
-    "devDependencies": {
-        "typescript": "5.6.2"
-    },
     "eslint-formatter-multiple": {
         "formatters": [
             {

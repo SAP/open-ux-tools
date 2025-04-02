@@ -1,5 +1,28 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.0.56
+
+### Patch Changes
+
+-   Updated dependencies [5629071]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.36
+
+## 0.0.55
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.2.35
+-   @sap-ux/deploy-config-generator-shared@0.0.39
+-   @sap-ux/abap-deploy-config-writer@0.0.101
+
+## 0.0.54
+
+### Patch Changes
+
+-   1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
+-   Updated dependencies [1bca2d8]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.34
+
 ## 0.0.53
 
 ### Patch Changes

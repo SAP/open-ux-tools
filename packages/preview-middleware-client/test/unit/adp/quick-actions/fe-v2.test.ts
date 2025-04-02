@@ -2,6 +2,7 @@ import FlexBox from 'sap/m/FlexBox';
 import RuntimeAuthoring, { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
+import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
 
 import {
     quickActionListChanged,
@@ -43,7 +44,13 @@ import ComponentMock from 'mock/sap/ui/core/Component';
 import UIComponent from 'sap/ui/core/UIComponent';
 import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
+import * as utils from 'open/ux/preview/client/adp/quick-actions/fe-v2/utils';
 
+let telemetryEventIdentifier: string;
+const mockTelemetryEventIdentifier = () => {
+    telemetryEventIdentifier = new Date().toISOString();
+    jest.spyOn(Date.prototype, 'toISOString').mockReturnValue(telemetryEventIdentifier);
+};
 
 describe('FE V2 quick actions', () => {
     let sendActionMock: jest.Mock;
@@ -109,7 +116,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -239,7 +246,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -298,7 +305,14 @@ describe('FE V2 quick actions', () => {
                     executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
                 );
 
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'ControllerExtension');
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'ControllerExtension',
+                    undefined,
+                    {},
+                    expect.objectContaining({ actionName: 'add-controller-to-page' })
+                );
             });
         });
 
@@ -400,7 +414,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -685,7 +699,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -797,7 +811,8 @@ describe('FE V2 quick actions', () => {
                             aggregation: 'content',
                             defaultAggregationArrayIndex: 1,
                             title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                        }
+                        },
+                        expect.objectContaining({ actionName: 'create-table-action' })
                     );
                 }
             });
@@ -805,6 +820,7 @@ describe('FE V2 quick actions', () => {
 
         describe('add page action', () => {
             test('initialize and execute action', async () => {
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -861,7 +877,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -929,7 +945,8 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'actions',
                         'defaultAggregationArrayIndex': 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION'
-                    }
+                    },
+                    { actionName: 'add-page-action', telemetryEventIdentifier }
                 );
             });
         });
@@ -950,6 +967,7 @@ describe('FE V2 quick actions', () => {
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -997,7 +1015,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1087,7 +1105,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier }
                 );
             });
         });
@@ -1210,7 +1229,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1427,7 +1446,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1618,7 +1637,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1779,7 +1798,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -1897,7 +1916,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
 
@@ -2026,6 +2045,7 @@ describe('FE V2 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -2085,7 +2105,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2162,12 +2182,14 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'items',
                         title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-                    }
+                    },
+                    { actionName: 'op-add-header-field', telemetryEventIdentifier }
                 );
             });
         });
         describe('add custom section', () => {
             test('initialize and execute action', async () => {
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
                     return {
@@ -2227,7 +2249,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2306,12 +2328,14 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'sections',
                         title: 'QUICK_ACTION_OP_ADD_CUSTOM_SECTION'
-                    }
+                    },
+                    { actionName: 'op-add-custom-section', telemetryEventIdentifier }
                 );
             });
         });
         describe('create table action', () => {
             test('initialize and execute action', async () => {
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -2383,7 +2407,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2471,7 +2495,8 @@ describe('FE V2 quick actions', () => {
                         aggregation: 'content',
                         defaultAggregationArrayIndex: 1,
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION'
-                    }
+                    },
+                    { actionName: 'create-table-action', telemetryEventIdentifier }
                 );
             });
         });
@@ -2492,6 +2517,7 @@ describe('FE V2 quick actions', () => {
                 { tableType: GRID_TABLE_TYPE, dialog: DialogNames.ADD_FRAGMENT, toString: () => GRID_TABLE_TYPE }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation((control: any, type: string) => {
@@ -2566,7 +2592,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2659,7 +2685,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier }
                 );
             });
             test('displays warning when no rows loaded', async () => {
@@ -2725,7 +2752,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -2939,7 +2966,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -3203,7 +3230,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -3349,6 +3376,7 @@ describe('FE V2 quick actions', () => {
     describe('AnalyticalListPage', () => {
         describe('create table custom column', () => {
             test('initialize and execute action', async () => {
+                mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 const scrollIntoView = jest.fn();
                 jest.spyOn(QCUtils, 'getParentContainer').mockImplementation(() => {
@@ -3396,7 +3424,7 @@ describe('FE V2 quick actions', () => {
                         });
                         jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                             if (id === 'component-id') {
-                                return component;
+                                return component as unknown as ComponentMock;
                             }
                         });
                         view.getContent.mockImplementation(() => {
@@ -3489,7 +3517,8 @@ describe('FE V2 quick actions', () => {
                     {
                         aggregation: 'columns',
                         title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-                    }
+                    },
+                    { actionName: 'create-table-custom-column', telemetryEventIdentifier }
                 );
             });
         });
@@ -3592,10 +3621,26 @@ describe('FE V2 quick actions', () => {
             jest.restoreAllMocks();
         });
         test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+            mockTelemetryEventIdentifier();
             jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                 testCase.ui5version ?? { major: 1, minor: 131 }
             );
             jest.spyOn(FeatureService, 'isFeatureEnabled').mockReturnValue(!testCase.isBetaFeatureDisabled);
+
+            FlexUtils.getViewForControl.mockImplementation(() => {
+                return {
+                    getId: () => 'MyView',
+                    getController: () => {
+                        return {
+                            getMetadata: () => {
+                                return {
+                                    getName: () => 'MyController'
+                                };
+                            }
+                        };
+                    }
+                };
+            });
 
             const pageView = new XMLView();
             pageView.getParent.mockReturnValue({
@@ -3660,7 +3705,7 @@ describe('FE V2 quick actions', () => {
                     });
                     jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
                         if (id === 'component-id') {
-                            return component;
+                            return component as unknown as ComponentMock;
                         }
                     });
                     view.getContent.mockImplementation(() => {
@@ -3793,6 +3838,9 @@ describe('FE V2 quick actions', () => {
                 getMetaModel: () => metaModelMock
             } as unknown as Model);
 
+            const dummyAppComponent = {} as unknown as AppComponentV2;
+            jest.spyOn(utils, 'getV2AppComponent').mockReturnValue(dummyAppComponent);
+
             const registry = new FEV2QuickActionRegistry();
             const service = new QuickActionService(
                 rtaMock,
@@ -3862,11 +3910,13 @@ describe('FE V2 quick actions', () => {
             if (!testCase.expect.toBeAvailable) {
                 expect(DialogFactory.createDialog).toHaveBeenCalledTimes(0);
             } else {
-                expect(DialogFactory.createDialog).toHaveBeenCalledWith(mockOverlay, rtaMock, 'AddSubpage', undefined, {
-                    appReference: 'dummyProjectId',
-                    appType: 'fe-v2',
-                    pageDescriptor: {
-                        entitySet: 'Travels',
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'AddSubpage',
+                    undefined,
+                    {
+                        appReference: 'dummyProjectId',
                         navProperties: testCase.isNewPageUnavailable
                             ? []
                             : [
@@ -3880,12 +3930,18 @@ describe('FE V2 quick actions', () => {
                                             navProperty: 'to_Booking'
                                         }
                               ],
-                        pageType: testCase.isListReport
-                            ? 'sap.suite.ui.generic.template.ListReport'
-                            : 'sap.suite.ui.generic.template.ObjectPage'
+                        pageDescriptor: {
+                            appType: 'fe-v2',
+                            appComponent: dummyAppComponent,
+                            entitySet: 'Travels',
+                            pageType: testCase.isListReport
+                                ? 'sap.suite.ui.generic.template.ListReport'
+                                : 'sap.suite.ui.generic.template.ObjectPage'
+                        },
+                        title: 'ADD_SUB_PAGE_DIALOG_TITLE'
                     },
-                    title: 'ADD_SUB_PAGE_DIALOG_TITLE'
-                });
+                    { 'actionName': 'add-new-subpage', telemetryEventIdentifier }
+                );
             }
         });
     });
