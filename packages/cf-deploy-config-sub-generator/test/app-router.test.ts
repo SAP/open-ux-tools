@@ -15,7 +15,9 @@ import * as cfConfigInquirer from '@sap-ux/cf-deploy-config-inquirer';
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -28,7 +30,9 @@ jest.mock('hasbin', () => ({
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        Mta: require('./utils/mock-mta').MockMta
+        get Mta() {
+            return jest.requireActual('./utils/mock-mta').MockMta;
+        }
     };
 });
 

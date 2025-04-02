@@ -17,12 +17,8 @@ import { getTransportConfigInstance } from '../src/service-provider-utils';
 import { listPackages } from '../src/validator-utils';
 import LoggerHelper from '../src/logger-helper';
 import { initI18n, t } from '../src/i18n';
-import {
-    AbapDeployConfigAnswers,
-    AbapDeployConfigAnswersInternal,
-    PackageInputChoices,
-    TransportChoices
-} from '../src/types';
+import type { AbapDeployConfigAnswers, AbapDeployConfigAnswersInternal } from '../src/types';
+import { PackageInputChoices, TransportChoices } from '../src/types';
 import { CREATE_TR_DURING_DEPLOY } from '../src/constants';
 import { PromptState } from '../src/prompts/prompt-state';
 
@@ -159,10 +155,12 @@ describe('Test utils', () => {
         );
     });
 
-    it('should query packages', () => {
+    it('should query packages', async () => {
         const packages = ['package1', 'package2'];
         mockListPackages.mockResolvedValueOnce(packages);
-        expect(queryPackages('pack', { url: 'https://target.url', client: '100' })).resolves.toStrictEqual(packages);
+        await expect(queryPackages('pack', { url: 'https://target.url', client: '100' })).resolves.toStrictEqual(
+            packages
+        );
     });
 
     it('should get package answer', () => {
