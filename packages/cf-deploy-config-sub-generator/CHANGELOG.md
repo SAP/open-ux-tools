@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.34
+
+### Patch Changes
+
+-   04ac8a9: Ensure the completion msg is shown to the user
+
 ## 0.1.33
 
 ### Patch Changes
