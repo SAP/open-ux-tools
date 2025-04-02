@@ -97,7 +97,7 @@ describe('Validate MtaConfig Instance', () => {
     const appDir = `${OUTPUT_DIR_PREFIX}/app1`;
 
     beforeEach(() => {
-        jest.resetModules();
+        jest.restoreAllMocks();
         memfs.vol.reset();
     });
 
@@ -200,7 +200,7 @@ describe('Validate common flows', () => {
     );
 
     beforeEach(() => {
-        jest.resetModules();
+        jest.restoreAllMocks();
         memfs.vol.reset();
     });
 
