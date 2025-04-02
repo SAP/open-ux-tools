@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.10
+
+### Patch Changes
+
+-   6095875: fix: Cannot create a Fragment and Controller Extension when clicking create button in the dialog
+
 ## 0.19.9
 
 ### Patch Changes
