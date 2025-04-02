@@ -23,6 +23,9 @@ export default async function (rta: RuntimeAuthoring) {
     const ui5VersionInfo = await getUi5Version();
     const syncViewsIds = await getAllSyncViewsIds(ui5VersionInfo);
 
+    const defaultPlugins = rta.getDefaultPlugins();
+    rta.setPlugins(defaultPlugins);
+
     await initDialogs(rta, syncViewsIds, ui5VersionInfo);
 
     if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 78 })) {

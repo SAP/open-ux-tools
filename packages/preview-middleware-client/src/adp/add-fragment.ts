@@ -23,7 +23,7 @@ export type DeferredXmlFragmentData = {
 };
 
 export default class AddFragmentService {
-    private readonly actionId = 'CTX_ADDXM';
+    private readonly actionId = 'CTX_ADDXML';
 
     /**
      * @param rta Runtime Authoring
@@ -63,7 +63,7 @@ export default class AddFragmentService {
             fragmentHandler: async (overlay: UI5Element) => await this.fragmentHandler(overlay)
         });
 
-        const defaultPlugins = this.rta.getDefaultPlugins();
+        const defaultPlugins = this.rta.getPlugins();
         defaultPlugins.addXMLPlugin = plugin;
         this.rta.setPlugins(defaultPlugins);
     }

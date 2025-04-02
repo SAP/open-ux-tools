@@ -84,7 +84,7 @@ export default class ExtensionPointService {
                 await this.fragmentHandler(overlay, info)
         });
 
-        const defaultPlugins = this.rta.getDefaultPlugins();
+        const defaultPlugins = this.rta.getPlugins();
         defaultPlugins.addXMLAtExtensionPoint = plugin;
         this.rta.setPlugins(defaultPlugins);
     }
