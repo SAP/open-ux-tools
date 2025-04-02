@@ -295,7 +295,6 @@ export async function validateCredentials(
         warning
     } = await initTransportConfig({
         backendTarget: backendTarget,
-        scp: PromptState.abapDeployConfig.scp,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
         credentials: {

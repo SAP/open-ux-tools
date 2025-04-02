@@ -7,7 +7,8 @@ describe('initTheme', () => {
         initTheme();
         expect(createThemeSpy).toBeCalledWith({
             defaultFontStyle: {
-                WebkitFontSmoothing: ''
+                WebkitFontSmoothing: '',
+                fontFamily: 'var(--vscode-font-family)'
             }
         });
     });
