@@ -338,7 +338,7 @@ export default class extends DeploymentGenerator {
                     await this._runNpmInstall(this.appPath);
                 }
             } catch (error) {
-                handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error }) });
+                handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error: error.message }) });
             }
         } else {
             DeploymentGenerator.logger?.info(t('cfGen.info.skippedInstallation'));
@@ -366,7 +366,8 @@ export default class extends DeploymentGenerator {
     public async end(): Promise<void> {
         try {
             if (
-                this.options.launchStandaloneFromYui &&
+                (this.options.launchStandaloneFromYui || !this.launchDeployConfigAsSubGenerator) &&
+                !this.abort &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('cfGen.info.filesGenerated'), MessageType.notification);
