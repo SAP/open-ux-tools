@@ -14,6 +14,7 @@ const overrides = [
             `${testCodePath}/**/Example.qunit.ts`,
             'backup/**',
             '*.d.ts',
+            
             '**/*.d.ts'
         ],
         'parser': '@typescript-eslint/parser',

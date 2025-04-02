@@ -2,7 +2,7 @@
     "extends": "../../tsconfig.json",
     "include": [
         "src"
-    ],
+, "config/flat", "config/legacy"    ],
     "compilerOptions": {
         "rootDir": "src",
         "outDir": "lib"

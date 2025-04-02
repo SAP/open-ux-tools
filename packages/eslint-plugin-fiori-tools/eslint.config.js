@@ -1,6 +1,10 @@
 const { rules } = require('eslint-plugin-fiori-custom');
 const base = require('../../eslint.config.js');
+
 module.exports = [
+    {
+        ignores: ['config/**/eslintrc*.js']
+    },
     ...base,
     {
         languageOptions: {
