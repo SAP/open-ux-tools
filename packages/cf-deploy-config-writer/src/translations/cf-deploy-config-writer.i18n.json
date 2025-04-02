@@ -32,7 +32,7 @@
         "targetFolderDoesNotExist": "Target folder does not exist, {{targetFolder}}.",
         "doesNotContainACapApp": "Target folder does not contain a Node.js CAP project. Please ensure the folder contains a Node.js CAP project.",
         "errorInstallingNodeModules": "Something went wrong installing node modules!",
-        "errorGeneratingMtaYaml": "Something went wrong creating mta.yaml!"
+        "errorGeneratingMtaYaml": "An error occurred when creating the mta.yaml file. Please view the logs."
     },
     "info":{
         "existingMTAExtensionNotFound": "Cannot find a valid existing mta extension file, a new one will be created.",
