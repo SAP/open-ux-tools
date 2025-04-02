@@ -216,12 +216,18 @@ export async function createAppfrontendMta(config: MTABaseConfig, isCap = false)
 /**
  * Executes a command in the specified project directory.
  *
- * @param {string} cwd - working directory
- * @param {string} cmd - command to execute
- * @param args  - arguments to pass to the command
- * @param errorMsg - error message to display if the command fails
+ * @async
+ * @param {string} cwd - Working directory where the command will be executed
+ * @param {string} cmd - Command to execute
+ * @param {string[]} args - Arguments to pass to the command
+ * @param {string} errorMsg - Error message prefix to display if the command fails
+ * @returns {Promise<void>} - A promise that resolves when the command completes successfully
+ * @throws {Error} Throws an error with the provided error message concatenated with the original error if execution fails
+ * @example
+ * // Execute npm install in the project directory
+ * await runCommand('/path/to/project', 'npm', ['install'], 'Failed to install dependencies:');
  */
-export async function runCommand(cwd: string, cmd: string, args: string[] = [], errorMsg: string): Promise<void> {
+export async function runCommand(cwd: string, cmd: string, args: string[], errorMsg: string): Promise<void> {
     const commandRunner = new CommandRunner();
     try {
         await commandRunner.run(cmd, args, { cwd });
