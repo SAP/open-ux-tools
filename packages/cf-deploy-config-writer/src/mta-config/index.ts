@@ -19,7 +19,7 @@ import {
     CDSHTML5RepoService
 } from '../constants';
 import type { mta } from '@sap/mta-lib';
-import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, RouterModuleType } from '../types';
+import type { MTABaseConfig, CFBaseConfig, CDSServiceType, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { t } from '../i18n';
@@ -136,20 +136,23 @@ export function doesCDSBinaryExist(): void {
 /**
  * Generate an MTA using `cds` binary, appending any optional services passed in. Specific services are added if the router type is defined.
  *
- * @param cwd
- * @param options
- * @param routerType
+ * @async
+ * @param {string} cwd - working directory
+ * @param {CDSServiceType[]} optionsList - optional list of services to add
+ * @param {RouterModuleType} routerType - router type
+ * @returns {Promise<void>} - A promise that resolves when the MTA creation is complete.
+ * @throws {Error} May throw an error if the MTA creation fails for any reason.
  */
 export async function createCAPMTA(
     cwd: string,
-    options?: CDSServiceType[],
+    optionsList?: CDSServiceType[],
     routerType?: RouterModuleType
 ): Promise<void> {
     let defaultOptions: CDSServiceType[] = [];
     if (routerType) {
         defaultOptions = [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService] as CDSServiceType[];
     }
-    const cdsParams = [...CDSAddMtaParams, ...(options ?? []), ...defaultOptions];
+    const cdsParams = [...CDSAddMtaParams, ...(optionsList ?? []), ...defaultOptions];
     LoggerHelper.logger?.debug(t('debug.creatingMta', { cdsParams: cdsParams.toString() }));
     await runCommand(cwd, CDSExecutable, cdsParams, t('error.errorGeneratingMtaYaml'));
     // Ensure the package-lock is updated otherwise mta build will fail

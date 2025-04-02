@@ -4,7 +4,7 @@ import { updateRootPackage, addRoutingConfig } from '../utils';
 import { createCAPMTA, validateMtaConfig, isMTAFound, createAppfrontendMta } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
-import { CAPConfig, CFBaseConfig, RouterModuleType } from '../types';
+import { type CAPConfig, type CFBaseConfig, RouterModuleType } from '../types';
 import { t } from '../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
 

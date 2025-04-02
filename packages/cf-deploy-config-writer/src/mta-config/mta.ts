@@ -41,7 +41,6 @@ import {
     type SupportedResources,
     RouterModuleType
 } from '../types';
-import LoggerHelper from '../logger-helper';
 
 /**
  * A class representing interactions with the MTA binary, found at https://sap.github.io/cloud-mta-build-tool/.
@@ -220,9 +219,10 @@ export class MtaConfig {
     }
 
     /**
+     *  Update the service name for the given resource.
      *
-     * @param serviceName
-     * @param resourceName
+     * @param {string} serviceName - application name
+     * @param {string} resourceName - resource name
      */
     private async updateServiceName(serviceName: string, resourceName: string): Promise<void> {
         const resource = this.resources.get(resourceName);
@@ -405,7 +405,7 @@ export class MtaConfig {
         }
     }
 
-    private async cleanupModules() {
+    private async cleanupModules(): Promise<void> {
         this.log?.debug(t('debug.cleanupModules'));
         // Handle standalone | managed
         for (const module of [
@@ -611,7 +611,8 @@ export class MtaConfig {
     /**
      * Append different routers to mta configuration.
      *
-     * @param {object} Options
+     * @async
+     * @param {object} Options - Configuration options for routing modules
      * @param Options.routerType Router type to be generated managed | standalone | appfront
      * @param Options.addMissingModules if true, will ensure any missing modules | resources are appended
      * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
@@ -648,11 +649,13 @@ export class MtaConfig {
     /**
      * Append different routers to mta configuration.
      *
-     * @param {object} Options
-     * @param {boolean} Options.isManagedApp - if true, append managed approuter configuration
-     * @param {boolean} Options.isAppFrontApp - if true, append app frontend approuter configuration
-     * @param {boolean} Options.addMissingModules - if true, will ensure any missing modules | resources are appended
-     * @returns {Promise<void>} - A promise that resolves when the change request has been processed.
+     * @async
+     * @param {object} options - Configuration options for routing modules
+     * @param {boolean} [options.isManagedApp] - Indicates if the application is managed
+     * @param {boolean} [options.isAppFrontApp] - Indicates if the application is an AppFront application
+     * @param {boolean} [options.addMissingModules] - Whether to add any missing modules automatically
+     * @returns {Promise<void>} - A promise that resolves when routing modules have been added
+     * @throws {Error} May throw an error if adding routing modules fails
      */
     public async addRoutingModules({
         isManagedApp = false,

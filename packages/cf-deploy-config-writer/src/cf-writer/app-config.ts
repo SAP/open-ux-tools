@@ -300,12 +300,14 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
 }
 
 /**
+ * Cleans up standalone routes in a Cloud Foundry application configuration.
  *
- * @param root0
- * @param root0.rootPath
- * @param root0.appId
- * @param mtaInstance
- * @param fs
+ * @param {object} cfConfig - The Cloud Foundry configuration object
+ * @param {string} cfConfig.rootPath - The root path of the application
+ * @param {string} cfConfig.appId - The application identifier
+ * @param {MtaConfig} mtaInstance - The MTA configuration instance
+ * @param {Editor} fs - The file system editor for performing cleanup operations
+ * @returns {void} - This function does not return a value
  */
 function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: MtaConfig, fs: Editor): void {
     // Cleanup standalone xs-app.json to reflect new application
