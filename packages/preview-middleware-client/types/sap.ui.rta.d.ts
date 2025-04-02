@@ -80,6 +80,20 @@ declare module 'sap/ui/rta/plugin/AddXMLAtExtensionPoint' {
     }
 }
 
+declare module 'sap/ui/rta/plugin/AddXMLPlugin' {
+    import type CommandFactory from 'sap/ui/rta/command/CommandFactory';
+
+    interface Arguments {
+        commandFactory: CommandFactory;
+        fragmentHandler: (overlay: UI5Element, extensionPointInfo: uknown) => Promise<void | object>;
+    }
+
+    export default class AddXMLAtExtensionPoint {
+        constructor(_: Arguments) {}
+    }
+}
+
+
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
     import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';

@@ -15,6 +15,7 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import { isReuseComponent } from '../cpe/utils';
 import { Ui5VersionInfo } from '../utils/version';
 import { DialogFactory, DialogNames } from './dialog-factory';
+import { isLowerThanMinimalUi5Version } from '../utils/version';
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -102,18 +103,23 @@ export const getAddFragmentItemText = (overlay: ElementOverlay) => {
  * @param syncViewsIds Ids of all application sync views
  * @param ui5VersionInfo UI5 version information
  */
-export const initDialogs = (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): void => {
+export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<void> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
-
-    contextMenu.addMenuItem({
-        id: 'ADD_FRAGMENT',
-        text: getAddFragmentItemText,
-        handler: async (overlays: UI5Element[]) =>
-            await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
-        icon: 'sap-icon://attachment-html',
-        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, ui5VersionInfo)
-    });
+    
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
+        contextMenu.addMenuItem({
+            id: 'ADD_FRAGMENT',
+            text: getAddFragmentItemText,
+            handler: async (overlays: UI5Element[]) =>
+                await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
+            icon: 'sap-icon://attachment-html',
+            enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, ui5VersionInfo)
+        });
+    } else {
+        const addFragmentService = (await import('open/ux/preview/client/adp/add-fragment')).default;
+        new addFragmentService(rta).init();
+    }  
 
     contextMenu.addMenuItem({
         id: 'EXTEND_CONTROLLER',

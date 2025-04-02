@@ -453,6 +453,7 @@ export const iconsLoaded = createExternalAction<IconDetails[]>('icons-loaded');
 export const controlSelected = createExternalAction<Control>('control-selected');
 export const selectControl = createExternalAction<string>('select-control');
 export const addExtensionPoint = createExternalAction<OutlineNode>('add-extension-point');
+export const addFragment = createExternalAction<OutlineNode>('add-fragment');
 export const deletePropertyChanges = createExternalAction<PropertyChangeDeletionDetails>('delete-property-changes');
 export const outlineChanged = createExternalAction<OutlineNode[]>('outline-changed');
 export const changeProperty = createExternalAction<PropertyChange>('change-property');
