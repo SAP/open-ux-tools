@@ -9,11 +9,11 @@ import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator'
 import { FloorplanFF, type State } from '../../../src/types';
 import { TestWritingGenerator, cleanTestDir, ignoreMatcherOpts } from '../test-utils';
 
-const GENERATION_TEST_DIR = './integration/test-output';
+const GENERATION_TEST_DIR = './test-output';
 const EXPECTED_OUT_PATH = './expected-output';
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 
-const testDir: string = join(__dirname, '..', GENERATION_TEST_DIR);
+const testDir: string = join(__dirname, '../../', GENERATION_TEST_DIR);
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
@@ -59,11 +59,9 @@ describe('Freestyle generation', () => {
             cleanTestDir(testDir);
             process.chdir(originalCwd);
         } catch {
-            //catch and release
+            // lint required
         }
     });
-
-    beforeEach(() => {});
 
     afterEach(() => {
         // remove specific generated app folder
@@ -402,5 +400,29 @@ describe('Freestyle generation', () => {
         await runGenerator(state, undefined, { generateIndexHtml: false });
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
         accessSpy.mockRestore();
+    });
+
+    it('Test Freestyle Simple Floorplan - No Datasource', async () => {
+        testProjectName = 'simple_no_datasource';
+        mockModulePath = setExpectedOutPath(testProjectName);
+        const state: State = {
+            project: {
+                name: testProjectName,
+                description: 'An SAP Fiori application.',
+                title: 'App Title',
+                ui5Theme: 'sap_fiori_3',
+                ui5Version: '1.82.2',
+                localUI5Version: '1.82.2',
+                namespace: 'sap.com',
+                targetFolder: testDir
+            },
+            service: {
+                source: DatasourceType.none
+            },
+            floorplan: FloorplanFF.FF_SIMPLE,
+            viewName: 'View1'
+        };
+        await runGenerator(state);
+        expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 });

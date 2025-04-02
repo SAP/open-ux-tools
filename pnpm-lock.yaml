@@ -938,8 +938,8 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       i18next:
-        specifier: 21.6.16
-        version: 21.6.16
+        specifier: 23.11.2
+        version: 23.11.2
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1995,8 +1995,8 @@ importers:
         specifier: 2.1.5
         version: 2.1.5
       i18next:
-        specifier: 21.6.16
-        version: 21.6.16
+        specifier: 23.11.2
+        version: 23.11.2
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
@@ -16328,16 +16328,10 @@ packages:
       '@babel/runtime': 7.23.2
     dev: false
 
-  /i18next@21.6.16:
-    resolution: {integrity: sha512-xJlzrVxG9CyAGsbMP1aKuiNr1Ed2m36KiTB7hjGMG2Zo4idfw3p9THUEu+GjBwIgEZ7F11ZbCzJcfv4uyfKNuw==}
-    dependencies:
-      '@babel/runtime': 7.25.0
-    dev: false
-
   /i18next@23.11.2:
     resolution: {integrity: sha512-qMBm7+qT8jdpmmDw/kQD16VpmkL9BdL+XNAK5MNbNFaf1iQQq35ZbPrSlqmnNPOSUY4m342+c0t0evinF5l7sA==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.25.0
 
   /i18next@23.5.1:
     resolution: {integrity: sha512-JelYzcaCoFDaa+Ysbfz2JsGAKkrHiMG6S61+HLBUEIPaF40WMwW9hCPymlQGrP+wWawKxKPuSuD71WZscCsWHg==}

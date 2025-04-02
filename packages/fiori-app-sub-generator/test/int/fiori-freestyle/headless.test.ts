@@ -9,7 +9,7 @@ import yeomanTest from 'yeoman-test';
 import HeadlessGenerator from '../../../src/app-headless';
 import { cleanTestDir, ignoreMatcherOpts } from '../test-utils';
 
-const GENERATION_TEST_DIR = './test-output/app-headless-test';
+const GENERATION_TEST_DIR = './test-output/headless';
 const MOCK_FILES_DIR_NAME = './expected-output';
 const testDir: string = join(__dirname, '..', GENERATION_TEST_DIR);
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later

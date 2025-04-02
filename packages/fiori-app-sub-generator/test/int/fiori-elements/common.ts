@@ -8,7 +8,7 @@ import { join } from 'path';
 import yeomanTest from 'yeoman-test';
 import { getTestData, TestWritingGenerator } from '../test-utils';
 
-const GENERATION_TEST_DIR = './test-output/writing-tests';
+const GENERATION_TEST_DIR = './test-output/';
 export const EXPECTED_OUTPUT_DIR_NAME = './expected-output';
 
 export const testNameSpace = 'testNameSpace';
@@ -24,7 +24,7 @@ export const testUI5Version = '1.98.0';
  * @returns the path to the test directory
  */
 export function getTestDir(testGroup = ''): string {
-    return join(__dirname, '..', GENERATION_TEST_DIR, testGroup);
+    return join(__dirname, '../../', GENERATION_TEST_DIR, testGroup);
 }
 
 export async function runWritingPhase(

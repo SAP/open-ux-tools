@@ -16,7 +16,12 @@ import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-too
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
-import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
+import {
+    getDefaultChoiceIndex,
+    getPromptHostEnvironment,
+    PromptState,
+    removeCircularFromServiceProvider
+} from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
