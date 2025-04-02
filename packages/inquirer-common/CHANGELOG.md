@@ -1,5 +1,11 @@
 # @sap-ux/inquirer-common
 
+## 0.6.32
+
+### Patch Changes
+
+-   ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
+
 ## 0.6.31
 
 ### Patch Changes

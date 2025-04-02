@@ -55,7 +55,6 @@ export class UITabs extends React.Component<UITabsProps, {}> {
             },
             linkContent: {},
             text: {
-                fontFamily: 'var(--vscode-font-family)',
                 fontSize: 13
             }
         };

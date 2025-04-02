@@ -14,11 +14,7 @@ import {
     extendWithOptions
 } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
-import {
-    validateModuleName,
-    validateNamespace,
-    validateTargetFolderForFioriApp
-} from '@sap-ux/project-input-validator';
+import { validateModuleName, validateNamespace, validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import {
     defaultVersion,
     getDefaultUI5Theme,
@@ -348,7 +344,7 @@ function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?: boole
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
         validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
             if (name.length > 2) {
-                return await validateTargetFolderForFioriApp(target, name, validateFioriAppFolder);
+                return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
             }
             return false;
         }

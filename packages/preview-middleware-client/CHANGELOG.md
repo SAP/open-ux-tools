@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.12
+
+### Patch Changes
+
+-   6095875: fix: Cannot create a Fragment and Controller Extension when clicking create button in the dialog
+
+## 0.13.11
+
+### Patch Changes
+
+-   ed6c364: Reuse component detection
+
+## 0.13.10
+
+### Patch Changes
+
+-   59ab22b: feat: Add Subpage CPE quick action added for ADP projects with OData V4.
+
+## 0.13.9
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
 ## 0.13.8
 
 ### Patch Changes

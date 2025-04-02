@@ -1,7 +1,25 @@
 import { configureLaunchJsonFile } from '../../src/debug-config/config';
-import type { DebugOptions, LaunchConfig, LaunchJSON } from '../../src/types';
+import type { DebugOptions, LaunchConfig, LaunchJSON, FioriOptions } from '../../src/types';
 import path from 'path';
 import { FIORI_TOOLS_LAUNCH_CONFIG_HANDLER_ID } from '../../src/types';
+import { join } from 'path';
+import { create as createStorage } from 'mem-fs';
+import { create } from 'mem-fs-editor';
+import { FileName } from '@sap-ux/project-access';
+import { TestPaths } from '../test-data/utils';
+import { handleWorkspaceConfig } from '../../src/debug-config/workspaceManager';
+import * as launchConfig from '../../src/launch-config-crud/create';
+
+// Mock workspaceManager
+jest.mock('../../src/debug-config/workspaceManager', () => ({
+    ...jest.requireActual('../../src/debug-config/workspaceManager'),
+    handleWorkspaceConfig: jest.fn()
+}));
+
+jest.mock('../../src/launch-config-crud/create', () => ({
+    ...jest.requireActual('../../src/launch-config-crud/create'),
+    updateWorkspaceFoldersIfNeeded: jest.fn()
+}));
 
 const projectName = 'project1';
 const cwd = `\${workspaceFolder}`;
@@ -182,5 +200,65 @@ describe('debug config tests', () => {
 
         const localConfigWithRunConfig = { ...localConfigurationObj, env: expectedEnv };
         expect(localConfigWithRunConfig).toEqual(findConfiguration(launchFile, `Start ${projectName} Local`));
+    });
+});
+
+describe('create', () => {
+    const memFs = create(createStorage());
+    const memFilePath = join(TestPaths.tmpDir, 'fe-projects', FileName.Package);
+    const memFileContent = '{}\n';
+    let mockVSCode: any;
+    let launchJSONPath: string;
+    let fioriOptions: FioriOptions;
+
+    afterEach(async () => {
+        memFs.delete(memFilePath);
+    });
+
+    beforeEach(() => {
+        memFs.writeJSON(memFilePath, memFileContent);
+        mockVSCode = {
+            workspace: {
+                workspaceFolders: [],
+                updateWorkspaceFolders: jest.fn()
+            }
+        };
+        launchJSONPath = join(TestPaths.tmpDir, '.vscode', 'launch.json');
+        (handleWorkspaceConfig as jest.Mock).mockReturnValue({
+            launchJsonPath: launchJSONPath,
+            workspaceFolderUri: launchJSONPath,
+            cwd: TestPaths.tmpDir,
+            appNotInWorkspace: true
+        });
+        fioriOptions = {
+            name: 'launch-config-test',
+            projectRoot: join(TestPaths.tmpDir, 'fe-projects'),
+            debugOptions: {
+                vscode: mockVSCode
+            } as DebugOptions
+        };
+    });
+
+    test('should call updateWorkspaceFolders if enableVSCodeReload is true', async () => {
+        await launchConfig.createLaunchConfig(
+            TestPaths.tmpDir,
+            { ...fioriOptions, enableVSCodeReload: true }, // reload enabled
+            memFs
+        );
+        expect(mockVSCode.workspace.updateWorkspaceFolders).toHaveBeenCalledTimes(1);
+    });
+
+    test('should not call updateWorkspaceFolders if enableVSCodeReload is false', async () => {
+        await launchConfig.createLaunchConfig(
+            TestPaths.tmpDir,
+            { ...fioriOptions, enableVSCodeReload: false }, // reload disabled,
+            memFs
+        );
+        expect(mockVSCode.workspace.updateWorkspaceFolders).not.toHaveBeenCalled();
+    });
+
+    test('should call updateWorkspaceFolders if enableVSCodeReload is not provided (defaults to true)', async () => {
+        await launchConfig.createLaunchConfig(TestPaths.tmpDir, fioriOptions, memFs);
+        expect(mockVSCode.workspace.updateWorkspaceFolders).toHaveBeenCalledTimes(1);
     });
 });

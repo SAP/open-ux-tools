@@ -1,7 +1,7 @@
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 
-import type {
+import {
     QuickActionContext,
     NestedQuickActionDefinition
 } from '../../../cpe/quick-actions/quick-action-definition';
@@ -47,10 +47,17 @@ export class AddTableCustomColumnQuickAction
         this.selectOverlay(table);
 
         const overlay = OverlayRegistry.getOverlay(table);
-        await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-            aggregation: 'columns',
-            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-        });
+        await DialogFactory.createDialog(
+            overlay,
+            this.context.rta,
+            DialogNames.ADD_FRAGMENT,
+            undefined,
+            {
+                aggregation: 'columns',
+                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+            },
+            { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+        );
         return [];
     }
 }

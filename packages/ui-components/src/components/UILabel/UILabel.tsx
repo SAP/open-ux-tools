@@ -10,7 +10,6 @@ export const labelGlobalStyle = {
     fontWeight: 'bold',
     fontSize: '13px',
     color: 'var(--vscode-input-foreground)',
-    fontFamily: 'var(--vscode-font-family)',
     padding: '4px 0'
 };
 

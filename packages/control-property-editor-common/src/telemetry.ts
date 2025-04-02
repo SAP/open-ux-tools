@@ -1,7 +1,11 @@
 interface TelemetryData {
     category: string;
+    actionName?: string;
     propertyName?: string;
     controlName?: string;
+    telemetryEventIdentifier?: string;
+    dialogName?: string;
+    quickActionSteps?: number;
 }
 
 let enabled = false;

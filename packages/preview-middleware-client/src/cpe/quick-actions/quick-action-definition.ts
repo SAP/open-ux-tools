@@ -21,6 +21,11 @@ export interface QuickActionActivationContext {
     manifest: Manifest;
 }
 
+export interface QuickActionTelemetryData {
+    actionName: string;
+    telemetryEventIdentifier: string;
+}
+
 export interface QuickActionContext {
     controlIndex: ControlTreeIndex;
     actionService: ActionService;
@@ -58,6 +63,11 @@ interface QuickActionDefinitionBase {
      */
     readonly forceRefreshAfterExecution?: boolean;
     /**
+     * Indicates the number of user steps involved in the Quick Action flow.
+     * This value helps distinguish between single-step and multi-step quick actions for telemetry 
+    */
+    quickActionSteps?: number;
+    /**
      * Indicates that the Quick Action is applicable to the given context and should be displayed.
      */
     isApplicable: boolean;
@@ -69,6 +79,12 @@ interface QuickActionDefinitionBase {
      * Runs enablement validators to check if the action should be enabled.
      */
     runEnablementValidators: () => void | Promise<void>;
+    /**
+     * This method returns an identifier for telemetry used for grouping multiple events and differentiating
+     * between quick actions and other triggering points for fragment creation.
+     * @params update - flag for updating timestamp
+     */
+    getTelemetryIdentifier: (update?: boolean) => string | undefined;
 }
 
 export interface SimpleQuickActionDefinition extends QuickActionDefinitionBase {

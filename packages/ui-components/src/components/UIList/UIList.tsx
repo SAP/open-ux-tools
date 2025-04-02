@@ -21,13 +21,13 @@ export {
     IGroupRenderProps as UIGroupRenderProps
 };
 
-export interface ListProps extends IGroupedListProps {
+export type ListProps = Omit<IGroupedListProps, 'onRenderCell'> & {
     groups: IGroup[];
     groupProps?: IGroupRenderProps;
     items: never[];
     onSelect: (value: IGroup) => void;
     onRenderCell: (nestingDepth?: number, item?: never, index?: number) => React.ReactNode;
-}
+};
 
 /**
  * UIList component
@@ -144,7 +144,7 @@ export class UIList extends React.Component<ListProps, {}> {
 
         return (
             <GroupedList
-                {...this.props}
+                {...(this.props as unknown as IGroupedListProps)}
                 className="uiList"
                 selectionMode={0}
                 compact={true}

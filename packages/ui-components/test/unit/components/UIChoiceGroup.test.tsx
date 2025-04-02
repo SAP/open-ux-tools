@@ -28,7 +28,6 @@ describe('<UIToggle />', () => {
             Object {
               "label": Object {
                 "color": "var(--vscode-input-foreground)",
-                "fontFamily": "var(--vscode-font-family)",
                 "fontSize": "13px",
                 "fontWeight": "bold",
                 "padding": "4px 0",
@@ -126,7 +125,6 @@ describe('<UIToggle />', () => {
             Object {
               "label": Object {
                 "color": "var(--vscode-input-foreground)",
-                "fontFamily": "var(--vscode-font-family)",
                 "fontSize": "13px",
                 "fontWeight": "bold",
                 "opacity": 0.4,
@@ -225,7 +223,6 @@ describe('<UIToggle />', () => {
             Object {
               "label": Object {
                 "color": "var(--vscode-input-foreground)",
-                "fontFamily": "var(--vscode-font-family)",
                 "fontSize": "13px",
                 "fontWeight": "bold",
                 "padding": "4px 0",

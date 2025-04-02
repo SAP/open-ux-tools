@@ -109,7 +109,6 @@ export async function showUsernameQuestion(backendTarget?: BackendTarget): Promi
         warning
     } = await initTransportConfig({
         backendTarget: backendTarget,
-        scp: PromptState.abapDeployConfig.scp,
         url: PromptState.abapDeployConfig.url,
         client: PromptState.abapDeployConfig.client,
         destination: PromptState.abapDeployConfig.destination,

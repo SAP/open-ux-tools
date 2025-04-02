@@ -217,7 +217,7 @@ describe('getQuestions', () => {
         await expect(targetFolderPrompt?.validate!(undefined, {})).resolves.toEqual(false);
 
         const validateTargetFolderSpy = jest
-            .spyOn(projectValidators, 'validateTargetFolderForFioriApp')
+            .spyOn(projectValidators, 'validateFioriAppTargetFolder')
             .mockResolvedValueOnce(true);
         const args = ['/some/target/path', { name: 'project1' }] as const;
         await expect(targetFolderPrompt?.validate!(...args)).resolves.toEqual(true);

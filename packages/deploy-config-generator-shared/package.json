@@ -41,8 +41,7 @@
         "@types/yeoman-generator": "5.2.11",
         "@sap-ux/axios-extension": "workspace:*",
         "@sap-ux/inquirer-common": "workspace:*",
-        "@sap-ux/store": "workspace:*",
-        "typescript": "5.3.3"
+        "@sap-ux/store": "workspace:*"
     },
     "engines": {
         "node": ">=18.x"

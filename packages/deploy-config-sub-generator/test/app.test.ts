@@ -20,9 +20,9 @@ jest.mock('fs', () => ({
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
-    // eslint-disable-next-line @typescript-eslint/no-require-imports
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;

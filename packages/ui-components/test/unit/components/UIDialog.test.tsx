@@ -312,7 +312,6 @@ describe('<UIDialog />', () => {
             expect(dialogContentStyles.subText).toMatchInlineSnapshot(`
                 Object {
                   "color": "var(--vscode-foreground)",
-                  "fontFamily": "var(--vscode-font-family)",
                   "fontSize": 13,
                   "lineHeight": 18,
                   "margin": "0",
@@ -323,7 +322,6 @@ describe('<UIDialog />', () => {
                   "color": "var(--vscode-foreground)",
                   "display": "flex",
                   "flexDirection": "column",
-                  "fontFamily": "var(--vscode-font-family)",
                   "fontSize": 13,
                   "height": "100%",
                   "maxHeight": 268,
@@ -373,7 +371,6 @@ describe('<UIDialog />', () => {
             expect(dialogContentStyles.subText).toMatchInlineSnapshot(`
                 Object {
                   "color": "var(--vscode-foreground)",
-                  "fontFamily": "var(--vscode-font-family)",
                   "fontSize": 13,
                   "lineHeight": 18,
                   "margin": "0",
@@ -384,7 +381,6 @@ describe('<UIDialog />', () => {
                 `
                 Object {
                   "color": "var(--vscode-foreground)",
-                  "fontFamily": "var(--vscode-font-family)",
                   "fontSize": 13,
                 }
             `

@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { Provider } from 'react-redux';
 
-import { initIcons } from '@sap-ux/ui-components';
+import { initIcons, initTheme } from '@sap-ux/ui-components';
 import type { Scenario } from '@sap-ux-private/control-property-editor-common';
 import { enableTelemetry } from '@sap-ux-private/control-property-editor-common';
 import { initI18n } from './i18n';
@@ -39,6 +39,7 @@ export function start(options: StartOptions): void {
     initI18n();
     registerAppIcons();
     initIcons();
+    initTheme();
 
     store.dispatch(setFeatureToggles(features));
     store.dispatch(setProjectScenario(scenario));

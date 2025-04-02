@@ -35,9 +35,10 @@ import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
 import { type AddFragmentModel, type AddFragmentOptions } from './AddFragment.controller';
 import { ValueState } from 'sap/ui/core/library';
-import type Input from 'sap/m/Input';
-import type Control from 'sap/ui/core/Control';
-import type ManagedObject from 'sap/ui/base/ManagedObject';
+import Input from 'sap/m/Input';
+import Control from 'sap/ui/core/Control';
+import ManagedObject from 'sap/ui/base/ManagedObject';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 const radix = 10;
 
@@ -65,20 +66,14 @@ interface CreateFragmentProps {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsFragmentsModel> {
-    /**
-     *
-     * @param name
-     * @param overlays
-     * @param rta
-     * @param options
-     */
     constructor(
         name: string,
         overlays: UI5Element,
         rta: RuntimeAuthoring,
-        readonly options: AddFragmentOptions
+        readonly options: AddFragmentOptions,
+        telemetryData?: QuickActionTelemetryData
     ) {
-        super(name);
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel({
@@ -112,6 +107,7 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
+        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
         source.setEnabled(false);
 

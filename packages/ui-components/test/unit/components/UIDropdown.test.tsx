@@ -67,7 +67,6 @@ describe('<UIDropdown />', () => {
               ],
               "label": Object {
                 "color": "var(--vscode-input-foreground)",
-                "fontFamily": "var(--vscode-font-family)",
                 "fontSize": "13px",
                 "fontWeight": "bold",
                 "padding": "4px 0",
@@ -100,7 +99,6 @@ describe('<UIDropdown />', () => {
               ],
               "label": Object {
                 "color": "var(--vscode-input-foreground)",
-                "fontFamily": "var(--vscode-font-family)",
                 "fontSize": "13px",
                 "fontWeight": "bold",
                 "padding": "4px 0",

@@ -12,7 +12,7 @@ import type IconTabBar from 'sap/m/IconTabBar';
 
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 
-import type {
+import {
     QuickActionContext,
     NestedQuickActionDefinition
 } from '../../../cpe/quick-actions/quick-action-definition';
@@ -135,10 +135,17 @@ export class AddTableCustomColumnQuickAction
         )
             ? DialogNames.ADD_FRAGMENT
             : DialogNames.ADD_TABLE_COLUMN_FRAGMENTS;
-        await DialogFactory.createDialog(overlay, this.context.rta, dialog, undefined, {
-            aggregation: 'columns',
-            title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
-        });
+        await DialogFactory.createDialog(
+            overlay,
+            this.context.rta,
+            dialog,
+            undefined,
+            {
+                aggregation: 'columns',
+                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_COLUMN'
+            },
+            { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+        );
 
         return [];
     }

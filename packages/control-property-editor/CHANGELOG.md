@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.6.2
+
+### Patch Changes
+
+-   4a40857: Call 'initTheme' API method from 'ui-components'
+
 ## 0.6.1
 
 ### Patch Changes

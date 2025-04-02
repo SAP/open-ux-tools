@@ -53,8 +53,7 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
                 marginLeft: 0,
                 marginRight: 0,
                 fontSize: '13px',
-                fontWeight: 400,
-                fontFamily: 'var(--vscode-font-family)'
+                fontWeight: 400
             },
             rootDisabled: {
                 backgroundColor: 'transparent',

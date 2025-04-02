@@ -601,7 +601,7 @@ export class ConnectionValidator {
         this.resetConnectionState();
         this.resetValidity();
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest. This function lowercases the origin.
-        const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath).toLowerCase();
+        const destUrl = getDestinationUrlForAppStudio(destination.Name.toLowerCase(), servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
         // We remove trailing slashes (up to 10, infinite would allow DOS attack) from the host to avoid double slashes when appending the service path.
         this._destinationUrl = servicePath

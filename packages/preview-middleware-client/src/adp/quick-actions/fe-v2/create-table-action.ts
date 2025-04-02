@@ -5,7 +5,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type UI5Element from 'sap/ui/core/Element';
 
-import type {
+import {
     QuickActionContext,
     NestedQuickActionDefinition
 } from '../../../cpe/quick-actions/quick-action-definition';
@@ -85,11 +85,18 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         // open dialogBox to add, and content is selected ByDefault
         if (headerToolbar) {
             const overlay = OverlayRegistry.getOverlay(headerToolbar as UI5Element) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-                aggregation: 'content',
-                title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION',
-                defaultAggregationArrayIndex: 1
-            });
+            await DialogFactory.createDialog(
+                overlay,
+                this.context.rta,
+                DialogNames.ADD_FRAGMENT,
+                undefined,
+                {
+                    aggregation: 'content',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION',
+                    defaultAggregationArrayIndex: 1
+                },
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+            );
         }
         return [];
     }

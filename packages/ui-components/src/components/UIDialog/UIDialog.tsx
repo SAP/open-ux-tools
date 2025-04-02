@@ -47,8 +47,7 @@ export const DIALOG_STYLES = {
     },
     contentText: {
         fontSize: 13,
-        color: 'var(--vscode-foreground)',
-        fontFamily: 'var(--vscode-font-family)'
+        color: 'var(--vscode-foreground)'
     }
 };
 

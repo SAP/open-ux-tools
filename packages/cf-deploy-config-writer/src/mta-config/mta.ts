@@ -131,7 +131,7 @@ export class MtaConfig {
                 }
             }
         });
-        this.log?.debug(t('debug.mtaLoaded', { type: 'resources' }));
+        this.log?.debug(t('debug.mtaLoaded', { type: 'resources', size: this.resources.size }));
     }
 
     private async loadMTAModules(): Promise<void> {
@@ -149,7 +149,7 @@ export class MtaConfig {
                 }
             }
         });
-        this.log?.debug(t('debug.mtaLoaded', { type: 'modules' }));
+        this.log?.debug(t('debug.mtaLoaded', { type: 'modules', size: this.modules.size }));
     }
 
     private async addAppContent(): Promise<void> {
@@ -443,6 +443,7 @@ export class MtaConfig {
      */
     public async updateParameters(parameters: mta.Parameters): Promise<void> {
         await this.mta.updateParameters(parameters);
+        this.dirty = true;
     }
 
     /**
@@ -453,6 +454,7 @@ export class MtaConfig {
      */
     public async updateBuildParams(parameters: mta.ProjectBuildParameters): Promise<void> {
         await this.mta.updateBuildParameters(parameters);
+        this.dirty = true;
     }
 
     /**

@@ -28,7 +28,6 @@ describe('<UILabel />', () => {
             Array [
               Object {
                 "color": "var(--vscode-input-foreground)",
-                "fontFamily": "var(--vscode-font-family)",
                 "fontSize": "13px",
                 "fontWeight": "bold",
                 "marginTop": 25,

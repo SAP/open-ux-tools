@@ -160,7 +160,6 @@ export class UIDefaultButton extends React.Component<UIDefaultButtonProps, {}> {
                 height: 22,
                 fontSize: '13px',
                 fontWeight: 400,
-                fontFamily: 'var(--vscode-font-family)',
                 borderRadius: COMMON_INPUT_STYLES.borderRadius,
                 paddingLeft: 13,
                 paddingRight: 13,

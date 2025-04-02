@@ -216,22 +216,15 @@ class DefaultTransportConfig implements TransportConfig {
  *
  * @param transportConfigOptions - transport configuration options
  * @param transportConfigOptions.backendTarget - backend target from prompt options
- * @param transportConfigOptions.scp - scp
  * @param transportConfigOptions.credentials - user credentials
  * @returns transport configuration instance
  */
 export async function getTransportConfigInstance({
     backendTarget,
-    scp,
     credentials
 }: {
     backendTarget?: BackendTarget;
-    scp?: boolean;
     credentials?: Credentials;
 }): Promise<InitTransportConfigResult> {
-    if (scp) {
-        return { transportConfig: new DummyTransportConfig() };
-    }
-
     return new DefaultTransportConfig().init({ backendTarget, credentials });
 }
