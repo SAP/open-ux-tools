@@ -67,9 +67,8 @@
         "errorDuplicateNamesOData": "OData Service Name must be different from OData Annotation Data Source Name",
         "errorInputInvalidValuePrefix": "{{value}} should start with '{{prefix}}'",
         "errorCustomerEmptyValue": "{{value}} should contain at least one character in addition to '{{prefix}}'",
-        "errorInvalidDataSourceURI": "Invalid URI. Should start and end with '/' and contain no spaces",
-        "appDoesNotSupportManifest": "Select a different application. The selected application is not supported by Adaptation Project. Please refer to SAPUI5 Adaptation Project documentation for more information.",
-        "adpDoesNotSupportSelectedApp": "Select a different application. Adaptation project doesn't support the selected application."
+        "errorInvalidDataSourceURI": "Invalid URI. The URI must start and end with '/' and contain no spaces.",
+        "appDoesNotSupportManifest": "The selected application is not supported by the adaptation project. Select a different application. For more information, see SAPUI5 Adaptation Project documentation."
     },
     "choices": {
         "true": "true",

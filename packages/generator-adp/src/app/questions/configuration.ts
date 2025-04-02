@@ -290,7 +290,7 @@ export class ConfigPrompter {
 
         if (
             validationResult === t('validators.appDoesNotSupportManifest') ||
-            validationResult === t('validators.appDoesNotSupportAdaptation')
+            validationResult === t('error.appDoesNotSupportAdaptation')
         ) {
             this.isApplicationSupported = false;
             return true;
@@ -390,6 +390,7 @@ export class ConfigPrompter {
             }
             this.isApplicationSupported = true;
         } catch (e) {
+            this.isApplicationSupported = false;
             this.logger.debug(`Application failed validation. Reason: ${e.message}`);
             return e.message;
         }

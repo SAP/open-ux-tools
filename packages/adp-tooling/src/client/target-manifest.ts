@@ -141,7 +141,7 @@ export class TargetManifest {
 
         if (!url) {
             this.logger?.debug(`Manifest url for app '${id}' was not found!`);
-            throw new Error(t('validators.adpDoesNotSupportSelectedApp'));
+            throw new Error(t('validators.appDoesNotSupportManifest'));
         }
 
         return true;

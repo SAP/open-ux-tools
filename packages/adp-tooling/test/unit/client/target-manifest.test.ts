@@ -95,7 +95,7 @@ describe('ManifestManager', () => {
             jest.spyOn(manifestManager, 'getUrl').mockResolvedValue(undefined);
 
             await expect(manifestManager.isAppSupported(fakeId)).rejects.toThrow(
-                t('validators.adpDoesNotSupportSelectedApp')
+                t('validators.appDoesNotSupportManifest')
             );
         });
     });
