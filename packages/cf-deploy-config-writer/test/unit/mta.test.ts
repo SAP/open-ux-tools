@@ -2,7 +2,7 @@ import { join } from 'path';
 import fs from 'fs';
 import * as memfs from 'memfs';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
-import { isMTAFound, useAbapDirectServiceBinding, MtaConfig } from '../../src/';
+import { isMTAFound, useAbapDirectServiceBinding, MtaConfig, getMtaConfig } from '../../src/';
 import { deployMode, ResourceMTADestination } from '../../src/constants';
 import type { mta } from '@sap/mta-lib';
 
@@ -166,6 +166,21 @@ describe('Validate MtaConfig Instance', () => {
         const mtaConfig = await MtaConfig.newInstance(appDir);
         const formattedDestinationName = mtaConfig.getFormattedPrefix(destinationName);
         expect(formattedDestinationName).toEqual(correctDest);
+    });
+
+    it('Validate mta config is reloaded if it fails', async () => {
+        const mockMtaConfig = {
+            resources: {},
+            app: {},
+            prefix: 'test-prefix'
+        } as unknown as MtaConfig;
+        // Mocking the failure twice and then success
+        jest.spyOn(MtaConfig, 'newInstance')
+            .mockRejectedValueOnce(new Error('Error'))
+            .mockRejectedValueOnce(new Error('Error'))
+            .mockResolvedValueOnce(mockMtaConfig);
+        const mtaConfig = await getMtaConfig(appDir);
+        expect(mtaConfig?.prefix).toBe('test-prefix');
     });
 });
 

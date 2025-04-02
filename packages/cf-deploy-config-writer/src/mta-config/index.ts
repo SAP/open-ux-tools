@@ -152,9 +152,9 @@ export async function createCAPMTA(
     const cdsParams = [...CDSAddMtaParams, ...(options ?? []), ...defaultOptions];
     LoggerHelper.logger?.debug(t('debug.creatingMta', { cdsParams: cdsParams.toString() }));
     await runCommand(cwd, CDSExecutable, cdsParams, t('error.errorGeneratingMtaYaml'));
-    // Ensure the package-lock is created otherwise mta build will fail
+    // Ensure the package-lock is updated otherwise mta build will fail
     const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    await runCommand(cwd, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
+    await runCommand(cwd, cmd, ['update', '--package-lock-only'], t('error.errorInstallingNodeModules'));
     LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
 }
 
