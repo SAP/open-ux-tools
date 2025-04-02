@@ -229,7 +229,7 @@ describe('Test FioriAppGenerator', () => {
                 expect.objectContaining({ commit: expect.any(Function) })
             );
             expect(TelemetryHelper.createTelemetryData).toHaveBeenCalledWith({
-                Template: t(`LABEL_FLOORPLAN_${floorplan}`, {
+                Template: t(`floorplan.label.${floorplan}`, {
                     odataVersion: mockState.service.version
                 }),
                 DataSource: mockState.service.source,

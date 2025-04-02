@@ -11,7 +11,7 @@
         "url": "https://github.com/SAP/open-ux-tools/issues?q=is%3Aopen+is%3Aissue+label%3Abug+label%3Afiori-app-sub-generator"
     },
     "license": "Apache-2.0",
-    "main": "generators/app/index.js",
+    "main": "generators/index.js",
     "scripts": {
         "build": "tsc --build",
         "clean": "rimraf --glob generators test/test-output coverage *.tsbuildinfo",

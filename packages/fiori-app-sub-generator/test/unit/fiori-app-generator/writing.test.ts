@@ -106,7 +106,7 @@ describe('`writing` tests', () => {
                 ui5Version: '1.2.3',
                 showMockDataInfo: false,
                 generatorVersion: '123',
-                template: 'Basic',
+                template: 'Basic V4',
                 generatorName: '@sap/some-generator',
                 launchText: t('TEXT_LAUNCH_DEFAULT'),
                 enableCodeAssist: false,

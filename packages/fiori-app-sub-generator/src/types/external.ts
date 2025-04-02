@@ -3,6 +3,7 @@ import type { Annotations } from '@sap-ux/axios-extension';
 import { TemplateType as FETemplateType } from '@sap-ux/fiori-elements-writer';
 import { TemplateType as FFTemplateType } from '@sap-ux/fiori-freestyle-writer';
 import type { PromptSeverityMessage } from '@sap-ux/inquirer-common';
+import type { DeployConfig, FLPConfig } from '@sap-ux/fiori-generator-shared';
 import type { CapRuntime, EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
@@ -87,33 +88,6 @@ export const FloorplanAttributes: FloorplanAttributesType = {
         templateType: FFTemplateType.Basic
     }
 };
-
-export enum DeployTarget {
-    CF = 'CF',
-    ABAP = 'ABAP'
-}
-/**
- * Defines the additional external inputs required for deployment configuration file generation
- */
-export interface DeployConfig {
-    readonly deployTarget: DeployTarget;
-}
-
-export interface CFDeployConfig extends DeployConfig {
-    readonly deployTarget: DeployTarget.CF;
-    readonly destinationName: string; // Destination name to be used in mta file
-    readonly destinationAuthType?: string; // todo: doc values
-    readonly addToManagedAppRouter?: boolean; // Add to the managed app router yaml
-    readonly addMTADestination?: boolean; // Add CAP destination
-    readonly lcapModeOnly?: boolean; // Only make local Fiori app changes when parent project is a CAP project
-    readonly cloudServiceName?: string; // Add Cloud Service name
-}
-
-export interface FLPConfig {
-    readonly action?: string;
-    readonly title?: string;
-    readonly semanticObject?: string;
-}
 
 /**
  * Defines the external interface used to generate in headless mode (no prompts)
