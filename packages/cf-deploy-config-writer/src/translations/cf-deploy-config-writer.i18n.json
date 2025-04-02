@@ -31,7 +31,7 @@
         "cannotUpdateRouterXSApp": "Unable to update router xs-app.json welcome location.",
         "targetFolderDoesNotExist": "Target folder does not exist, {{targetFolder}}.",
         "doesNotContainACapApp": "Target folder does not contain a Node.js CAP project. Please ensure the folder contains a Node.js CAP project.",
-        "errorInstallingNodeModules": "Something went wrong installing node modules!",
+        "errorInstallingNodeModules": "An error occurred when installing node modules. Please check the logs.",
         "errorGeneratingMtaYaml": "An error occurred when creating the mta.yaml file. Please view the logs."
     },
     "info":{
