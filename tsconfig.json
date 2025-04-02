@@ -111,6 +111,9 @@
       "path": "packages/fiori-annotation-api"
     },
     {
+      "path": "packages/fiori-app-sub-generator"
+    },
+    {
       "path": "packages/fiori-elements-writer"
     },
     {

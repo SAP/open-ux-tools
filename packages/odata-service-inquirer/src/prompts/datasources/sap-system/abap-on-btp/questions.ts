@@ -16,7 +16,7 @@ import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-too
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
-import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
+import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
@@ -195,7 +195,7 @@ async function validateCFServiceInfo(
         // Connected system name is only used for VSCode as a default stored system name
         connectionValidator.connectedSystemName = await generateABAPCloudDestinationName(cfAbapServiceName);
         PromptState.odataService.connectedSystem = {
-            serviceProvider: connectionValidator.serviceProvider
+            serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider)
         };
     }
     return true;
@@ -301,7 +301,7 @@ function getServiceKeyPrompt(connectionValidator: ConnectionValidator): FileBrow
 
             if (connectValResult === true && connectionValidator.serviceProvider) {
                 PromptState.odataService.connectedSystem = {
-                    serviceProvider: connectionValidator.serviceProvider
+                    serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider)
                 };
             }
             return connectValResult;

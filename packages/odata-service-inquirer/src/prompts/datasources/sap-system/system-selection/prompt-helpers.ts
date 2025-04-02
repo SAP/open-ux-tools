@@ -15,7 +15,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
 import { type DestinationFilters } from '../../../../types';
-import { convertODataVersionType, PromptState } from '../../../../utils';
+import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { type SystemSelectionAnswerType } from './questions';
@@ -87,7 +87,7 @@ export async function connectWithBackendSystem(
         // If the connection is successful, we will return the connected system from the inquirer
         if (connectValResult === true && connectionValidator.serviceProvider) {
             PromptState.odataService.connectedSystem = {
-                serviceProvider: connectionValidator.serviceProvider,
+                serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider),
                 backendSystem
             };
         }
@@ -129,7 +129,7 @@ export async function connectWithDestination(
     // If the connection is successful, we will return the connected system from the inquirer
     if (connectValResult === true && connectionValidator.serviceProvider) {
         PromptState.odataService.connectedSystem = {
-            serviceProvider: connectionValidator.serviceProvider,
+            serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider),
             destination
         };
     }

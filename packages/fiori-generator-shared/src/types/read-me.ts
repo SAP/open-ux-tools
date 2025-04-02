@@ -28,7 +28,7 @@ export interface ReadMe {
     /** The version of the generator used. */
     generatorVersion: string;
     /** The ui5 version used in the application. */
-    ui5Version: string;
+    ui5Version?: string;
     /** The floorplan template name used to generate the application. */
     template: string;
     /** The date when the generator was run. */

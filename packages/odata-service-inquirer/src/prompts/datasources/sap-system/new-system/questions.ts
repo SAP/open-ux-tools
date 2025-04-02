@@ -8,7 +8,7 @@ import type { Answers, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import type { OdataServicePromptOptions, SapSystemType } from '../../../../types';
 import { promptNames } from '../../../../types';
-import { PromptState, convertODataVersionType } from '../../../../utils';
+import { PromptState, convertODataVersionType, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
 import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
 import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
@@ -112,7 +112,7 @@ export function getSystemUrlQuestion<T extends Answers>(
             if (valResult === true) {
                 if (!connectValidator.validity.authRequired && connectValidator.serviceProvider) {
                     PromptState.odataService.connectedSystem = {
-                        serviceProvider: connectValidator.serviceProvider
+                        serviceProvider: removeCircularFromServiceProvider(connectValidator.serviceProvider)
                     };
                 } else {
                     connectValidator.systemAuthType = 'basic';

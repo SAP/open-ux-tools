@@ -1,4 +1,4 @@
-import { ODataVersion } from '@sap-ux/axios-extension';
+import { ODataVersion, ServiceProvider } from '@sap-ux/axios-extension';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { hostEnvironment, type HostEnvironmentId } from '@sap-ux/fiori-generator-shared';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
@@ -127,6 +127,20 @@ export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undef
     }
 
     return undefined;
+}
+
+/**
+ * Temp fix for circular dependency issue within the service provider winston logger, causing issues with serialization in Yeoman generators.
+ * More investigation is needed to determine what properties are required from the service provider for subsequent flows.
+ *
+ * @param serviceProvider - instance of the service provider
+ */
+export function removeCircularFromServiceProvider(serviceProvider: ServiceProvider): ServiceProvider {
+    for (const service in (serviceProvider as any).services) {
+        delete (serviceProvider as any)[service].log;;
+    }
+    delete (serviceProvider as any).log;
+    return serviceProvider;
 }
 
 export { PromptState };
