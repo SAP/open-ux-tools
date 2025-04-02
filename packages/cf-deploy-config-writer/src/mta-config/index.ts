@@ -146,7 +146,7 @@ export function createCAPMTA(cwd: string, options?: string[]): void {
     }
     // Ensure the package-lock is created otherwise mta build will fail
     const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    result = spawnSync(cmd, ['install', '--ignore-engines'], spawnOpts);
+    result = spawnSync(cmd, ['update', '--package-lock-only'], spawnOpts);
     if (result?.error) {
         throw new Error(`Something went wrong installing node modules! ${result.error}`);
     }
