@@ -10,7 +10,7 @@
         "mtaSaved": "MTA configuration has been saved.",
         "mtaSavedFailed": "Saving the MTA configuration failed with the error: {{- error }}.",
         "addingRouter": "Adding {{routerType}} Approuter",
-        "addMissingModules": "Adding missing modules to mta configuration",
+        "addMissingModules": "Adding missing modules to MTA configuration...",
         "cleanupModules": "Cleanup modules",
         "creatingMta": "Creating MTA using {{- cdsParams }}",
         "html5AppAdded": "HTML5 Application added to MTA configuration {{- appName}}",
