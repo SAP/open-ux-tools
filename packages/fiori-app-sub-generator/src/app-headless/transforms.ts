@@ -19,7 +19,7 @@ const APP_CONFIG_CURRENT_VERSION = '0.2';
  */
 export function transformExtState(appConfig: FEAppConfig | FFAppConfig): State {
     if (appConfig.version !== APP_CONFIG_CURRENT_VERSION) {
-        throw Error(t('ERROR_APP_CONFIG_VERSION', { versions: APP_CONFIG_CURRENT_VERSION }));
+        throw Error(t('error.appConfigVersion', { versions: APP_CONFIG_CURRENT_VERSION }));
     }
     const { project: projectConfig, service: serviceConfig, floorplan } = appConfig;
 
@@ -104,11 +104,11 @@ function _setProjectDefaults(project: AppConfig['project']): Project {
     const ui5Version = project.ui5Version || supportedUi5VersionFallbacks[0].version;
 
     return {
-        name: project.name || t('DEFAULT_PROJECT_NAME'),
+        name: project.name || t('defaults.projectName'),
         targetFolder: project.targetFolder || process.cwd(),
         namespace: project.namespace || '',
-        title: project.title || t('DEFAULT_PROJECT_TITLE'),
-        description: project.description || t('DEFAULT_PROJECT_DESCRIPTION'),
+        title: project.title || t('defaults.projectTitle'),
+        description: project.description || t('default.projectDescription'),
         ui5Version: ui5Version,
         localUI5Version: project.localUI5Version || ui5Version,
         ui5Theme: project.ui5Theme || getDefaultUI5Theme(ui5Version),
@@ -134,7 +134,7 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
     if (service?.edmx) {
         version = getODataVersion(service.edmx);
     } else if (floorplan !== 'FF_SIMPLE' && !service?.capService?.projectPath) {
-        throw Error(t('ERROR_APP_CONFIG_MISSING_REQUIRED_PROPERTY', { propertyName: 'edmx' }));
+        throw Error(t('error.appConfigMissingRequiredProperty', { propertyName: 'edmx' }));
     } else if (floorplan === 'FF_SIMPLE') {
         // FF_SIMPLE with no datasource
         return {
@@ -176,7 +176,7 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
     else if (service?.capService?.projectPath) {
         if (!service.capService.serviceName) {
             throw Error(
-                t('ERROR_APP_CONFIG_MISSING_REQUIRED_PROPERTY', {
+                t('error.appConfigMissingRequiredProperty', {
                     propertyName: 'capService.serviceName'
                 })
             );

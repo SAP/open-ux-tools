@@ -123,7 +123,10 @@ describe('runPostGenerationTasks', () => {
 
         await runPostGenerationTasks({ service, project }, fs, logger, vscode, appWizard);
 
-        expect(appWizard.showInformation).toHaveBeenCalledWith(t('INFO_MSG_FILES_GENERATED'), MessageType.notification);
+        expect(appWizard.showInformation).toHaveBeenCalledWith(
+            t('wizardMessages.filesGenerated'),
+            MessageType.notification
+        );
     });
 
     it('should save API Hub API key if applicable', async () => {
@@ -165,7 +168,7 @@ describe('runPostGenerationTasks', () => {
 
         const projectPath = '/path/to/project/testProject';
         expect(logger.info).toHaveBeenCalledWith(
-            t('INFO_MESSAGE_APPLICATION_GENERATED', { targetFolder: projectPath })
+            t('logMessages.applicationGenerationSuccess', { targetFolder: projectPath })
         );
         expect(sendTelemetry).toHaveBeenCalledWith('GENERATION_SUCCESS', TelemetryHelper.telemetryData, projectPath);
         expect(runHooks).toHaveBeenCalledWith(

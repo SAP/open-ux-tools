@@ -26,7 +26,7 @@ export async function runHooks(event: Event, context: GeneratorContext, logger?:
     if (event === 'app-generated') {
         return postGenerationHook(context, logger);
     } else {
-        return Promise.reject(new Error(t('ERROR_UNRECOGNIZED_EVENT', { event })));
+        return Promise.reject(new Error(t('error.unsupportedPostGenerationEvent', { event })));
     }
 }
 
@@ -39,7 +39,7 @@ async function postGenerationHook(context: GeneratorContext, logger?: ILogWrappe
     if (context.vscodeInstance) {
         try {
             const command = context.options?.followUpCommand ?? DEFAULT_POST_APP_GEN_COMMAND;
-            logger?.info(t('INFO_TRYING_TO_EXECUTE_COMMAND', { command }));
+            logger?.info(t('logMessages.attemptingToExecutePostGenerationCommand', { command }));
             await context.vscodeInstance.commands?.executeCommand?.(command, context.hookParameters);
         } catch (e) {
             // Log if we can, can't handle exceptions here

@@ -593,15 +593,15 @@ describe('Test FioriAppGenerator', () => {
         options.floorplan = undefined; // Force an error
         const fioriAppGen = new FioriAppGenerator([], options);
         await fioriAppGen.initializing();
-        await expect(fioriAppGen.prompting()).rejects.toThrowError(t('FATAL_ERROR'));
+        await expect(fioriAppGen.prompting()).rejects.toThrowError(t('error.fatalError'));
 
-        expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('FATAL_ERROR')));
+        expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('error.fatalError')));
 
         // Dont throw in YUI as this crashes the Wizard
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
         await fioriAppGen.initializing();
         await expect(fioriAppGen.prompting()).resolves.not.toThrowError();
-        expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('FATAL_ERROR')));
+        expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('error.fatalError')));
     });
 
     test('Should skip prompt steps as expected', async () => {

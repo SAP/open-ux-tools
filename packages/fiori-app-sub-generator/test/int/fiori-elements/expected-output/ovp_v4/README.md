@@ -1,9 +1,9 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Mar 12 2025 19:15:22 GMT+0000 (Greenwich Mean Time)|
-|**App Generator**<br>@sap/generator-fiori-elements|
-|**App Generator Version**<br>1.17.0|
+|**Generation Date and Time**<br>Wed Apr 02 2025 20:06:36 GMT+0100 (Irish Standard Time)|
+|**App Generator**<br>SAP Fiori Application Generator|
+|**App Generator Version**<br>0.0.1|
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>Overview Page V4|
 |**Service Type**<br>OData Url|

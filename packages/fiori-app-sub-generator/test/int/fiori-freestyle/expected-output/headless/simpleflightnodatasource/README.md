@@ -1,9 +1,9 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Mar 05 2025 08:43:09 GMT+0000 (Greenwich Mean Time)|
-|**App Generator**<br>@sap/generator-fiori-freestyle|
-|**App Generator Version**<br>1.16.5|
+|**Generation Date and Time**<br>Wed Apr 02 2025 20:06:45 GMT+0100 (Irish Standard Time)|
+|**App Generator**<br>SAP Fiori Application Generator|
+|**App Generator Version**<br>0.0.1|
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>Basic|
 |**Service Type**<br>None|

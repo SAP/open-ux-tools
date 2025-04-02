@@ -5,9 +5,9 @@ export const LEGACY_CAP_TYPE_NODE = 'capNode';
 export const LEGACY_CAP_TYPE_JAVA = 'capJava';
 
 export const enum SapSystemSourceType {
-    SCP = 'SCP',
-    ON_PREM = 'ON_PREM',
-    S4HC = 'S4HC'
+    SCP = 'abapOnBtp',
+    ON_PREM = 'onPrem',
+    S4HC = 's4hc'
 }
 
 export const PLATFORMS = {
@@ -53,40 +53,40 @@ export const STEP_FLP_CONFIG = 'FLP_CONFIG';
 export const FIORI_STEPS: FioriStep[] = [
     {
         key: STEP_FLOORPLAN,
-        name: t('LABEL_FLOORPLAN_SELECTION'),
-        description: t('LABEL_CHOOSE_FLOORPLAN'),
+        name: t('steps.templateSelection.title'),
+        description: t('steps.templateSelection.description'),
         order: 0
     },
     {
         key: STEP_DATASOURCE_AND_SERVICE,
-        name: t('DATASOURCE_AND_SERVICE_SELECTION'),
-        description: t('CONFIGURE_DATASOURCE_AND_SERVICE'),
+        name: t('steps.datasourceAndServiceSelection.title'),
+        description: t('steps.datasourceAndServiceSelection.description'),
         order: 1
     },
     {
         key: STEP_ENTITY,
-        name: t('SERVICE_ENTITY_SELECTION'),
-        description: t('LABEL_CONFIGURE_FLOORPLAN_SERVICE'),
+        name: t('steps.entityOrViewConfig.title'),
+        description: t('steps.entityOrViewConfig.description'),
         order: 2
     },
     {
         key: STEP_PROJECT_ATTRIBUTES,
-        name: t('PROJECT_ATTRIBUTES'),
-        description: t('CONFIGURE_MAIN_PROJECT_ATTRIBUTES'),
+        name: t('steps.projectAttributesConfig.title'),
+        description: t('steps.projectAttributesConfig.description'),
         order: 3
     },
     {
         key: STEP_DEPLOY_CONFIG,
-        name: t('DEPLOYMENT_CONFIG'),
-        description: t('CONFIGURE_DEPLOYMENT'),
-        dependency: t('PROJECT_ATTRIBUTES'),
+        name: t('steps.deployConfig.title'),
+        description: t('steps.deployConfig.description'),
+        dependency: t('steps.projectAttributesConfig.title'),
         order: 4
     },
     {
         key: STEP_FLP_CONFIG,
-        name: t('FLP_CONFIG'),
-        description: t('DESCRIPTION_FLP_CONFIG_GENERATOR'),
-        dependency: t('PROJECT_ATTRIBUTES'),
+        name: t('steps.flpConfig.title'),
+        description: t('steps.flpConfig.decription'),
+        dependency: t('steps.projectAttributesConfig.title'),
         order: 5
     }
 ];
@@ -98,11 +98,8 @@ export const DEFAULT_SERVICE_PATH = '/sap/opu/odata';
 export const MAIN_DATASOURCE_NAME = 'mainService';
 export const MAIN_MODEL_NAME = 'mainModel';
 
-// todo: Create unified name
-export const enum GeneratorName {
-    FE = '@sap/generator-fiori-elements',
-    FF = '@sap/generator-fiori-freestyle'
-}
+// The generator name to appear in README.md, telemetry events and logs
+export const generatorName = 'SAP Fiori Application Generator';
 
 export const FPM_DEFAULT_PAGE_NAME = 'Main';
 export const GUIDED_ANSWERS_EXTENSION_ID = 'saposs.sap-guided-answers-extension';

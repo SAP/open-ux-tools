@@ -49,7 +49,7 @@ async function installProjectDependencies(
     runArgs.unshift('install');
 
     try {
-        log?.info(t('INSTALLING_DEPENDENCIES', { path: projectPath }));
+        log?.info(t('logMessages.installingDependencies', { path: projectPath }));
         const t0 = performance.now();
         await runner.run(npm, runArgs, { cwd: projectPath }, true);
         TelemetryHelper.createTelemetryData({ installFailure: false });
@@ -64,9 +64,9 @@ async function installProjectDependencies(
             );
         }
         const t1 = performance.now();
-        log?.debug(t('DEPENDENCIES_INSTALLED', { installTime: Math.round((t1 - t0) / 1000) }));
+        log?.debug(t('logMessages.dependenciesInstalled', { installTime: Math.round((t1 - t0) / 1000) }));
     } catch (error) {
-        log?.info(error ?? t('ERROR_INSTALLING_DEPENDENCIES'));
+        log?.info(error ?? t('logMessages.errorInstallingDependencies'));
         TelemetryHelper.createTelemetryData({ installFailure: true });
         /*eslint no-void: ["error", { "allowAsStatement": true }]*/
         void sendTelemetry('GENERATION_INSTALL_FAIL', TelemetryHelper.telemetryData);

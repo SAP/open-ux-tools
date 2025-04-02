@@ -36,7 +36,7 @@ export function getODataVersion(edmx: string): OdataVersion {
         const convertedMetadata = convert(parse(edmx));
         return convertedMetadata.version.startsWith('4') ? OdataVersion.v4 : OdataVersion.v2;
     } catch (error) {
-        throw Error(t('ERROR_APP_CONFIG_UNPARSEABLE_EDMX'));
+        throw Error(t('error.appConfigUnparseableEdmx'));
     }
 }
 
@@ -191,15 +191,15 @@ export function isBTPHosted(connectedSystem?: Service['connectedSystem']): boole
 export function getReadMeDataSourceLabel(source: DatasourceType, scp = false, apiHubType?: ApiHubType): string {
     let dataSourceLabel: string | undefined;
     if (source === DatasourceType.sapSystem) {
-        const labelDatasourceType = t(`README_LABEL_DATASOURCE_TYPE_${DatasourceType.sapSystem}`);
+        const labelDatasourceType = t(`readme.label.datasourceType.${DatasourceType.sapSystem}`);
         const labelSystemType = t(
-            `LABEL_SAP_SYSTEM_SOURCE_TYPE_${scp ? SapSystemSourceType.SCP : SapSystemSourceType.ON_PREM}`
+            `readme.label.sapSystemType.${scp ? SapSystemSourceType.SCP : SapSystemSourceType.ON_PREM}`
         );
         dataSourceLabel = `${labelDatasourceType} (${labelSystemType})`;
     } else if (source === DatasourceType.businessHub && apiHubType === ApiHubType.apiHubEnterprise) {
-        dataSourceLabel = t('LABEL_API_BUSINESS_HUB_ENTERPRISE');
+        dataSourceLabel = t('readme.label.datasourceType.apiBusinessHubEnterprise');
     }
-    return dataSourceLabel ?? t(`README_LABEL_DATASOURCE_TYPE_${source}`);
+    return dataSourceLabel ?? t(`readme.label.datasourceType.${source}`);
 }
 
 /**
@@ -226,7 +226,7 @@ export async function getLaunchText(
                 : undefined;
         return getAppLaunchText(capService.capType ?? 'Node.js', name, appId);
     }
-    return t('TEXT_LAUNCH_DEFAULT');
+    return t('readme.texts.runInstruction');
 }
 
 /**
@@ -277,7 +277,7 @@ export async function generateLaunchConfig(
             writeApplicationInfoSettings(projectPath);
         }
     } catch (err) {
-        log?.error(`${t('ERROR_WRITING_APPLICATION_FILES')} : ${err}`);
+        log?.error(`${t('error.errorWritingApplicationFiles')} : ${err}`);
     }
 }
 

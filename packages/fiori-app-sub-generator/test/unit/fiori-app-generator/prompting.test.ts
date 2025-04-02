@@ -62,11 +62,11 @@ describe('prompting.ts', () => {
         it('should validate view name correctly', () => {
             const validate = getViewQuestion().validate as (input: string) => boolean | string;
 
-            expect(validate('')).toBe(t('PROMPT_VALIDATION_MSG_VIEW_NAME_NOT_SPECIFIED'));
-            expect(validate('Invalid Name')).toBe(t('PROMPT_VALIDATION_MSG_INVALID_VIEW_NAME'));
-            expect(validate('a'.repeat(121))).toBe(t('PROMPT_VALIDATION_MSG_VIEW_NAME_TOO_LONG'));
+            expect(validate('')).toBe(t('prompts.viewName.validationMessages.viewNameRequired'));
+            expect(validate('Invalid Name')).toBe(t('prompts.viewName.validationMessages.viewNameInvalid'));
+            expect(validate('a'.repeat(121))).toBe(t('prompts.viewName.validationMessages.viewNameTooLong'));
             expect(validate('ValidName')).toBe(true);
-            expect(validate('123')).toBe(t('PROMPT_VALIDATION_MSG_INVALID_VIEW_NAME')); // Must start with a letter
+            expect(validate('123')).toBe(t('prompts.viewName.validationMessages.viewNameInvalid')); // Must start with a letter
         });
     });
 
@@ -299,11 +299,21 @@ describe('prompting.ts', () => {
             expect(promptOptions.addFlpConfig?.validatorCallback).toBeDefined();
 
             (promptOptions.addDeployConfig?.validatorCallback as Function)(true);
-            expect(validateNextStepSpy).toHaveBeenCalledWith(true, 'Project Attributes', [], t('DEPLOYMENT_CONFIG'));
+            expect(validateNextStepSpy).toHaveBeenCalledWith(
+                true,
+                'Project Attributes',
+                [],
+                t('steps.deployConfig.title')
+            );
             validateNextStepSpy.mockClear();
 
             (promptOptions.addFlpConfig?.validatorCallback as Function)(true);
-            expect(validateNextStepSpy).toHaveBeenCalledWith(true, t('PROJECT_ATTRIBUTES'), [], t('FLP_CONFIG'));
+            expect(validateNextStepSpy).toHaveBeenCalledWith(
+                true,
+                t('steps.projectAttributesConfig.title'),
+                [],
+                t('steps.flpConfig.title')
+            );
             validateNextStepSpy.mockRestore();
         });
 

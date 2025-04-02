@@ -75,6 +75,6 @@ export function deleteCache(appWizard: AppWizardCache | undefined, logger: ILogW
 function logIfCacheMissing(appWizard: AppWizardCache | undefined, logger: ILogWrapper): void {
     // YUI cache only available in vscode
     if (hostEnv === hostEnvironment.vscode && !appWizard?.[FIORI_CACHE]) {
-        logger.info(t('WARNING_CACHING_NOT_SUPPORTED'));
+        logger.info(t('logMessages.warningCachingNotSupported'));
     }
 }

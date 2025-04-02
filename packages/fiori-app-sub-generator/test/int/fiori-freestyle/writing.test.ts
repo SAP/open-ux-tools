@@ -3,7 +3,7 @@ import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
 import fs, { copyFileSync, promises as fsPromise, mkdirSync } from 'fs';
 import { join } from 'path';
-import rimraf from 'rimraf';
+import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { FloorplanFF, type State } from '../../../src/types';

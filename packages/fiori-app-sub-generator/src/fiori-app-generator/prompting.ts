@@ -46,17 +46,17 @@ import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-sha
 function validateViewName(name: string): boolean | string {
     // Validate input is not empty
     if (!name) {
-        return t('PROMPT_VALIDATION_MSG_VIEW_NAME_NOT_SPECIFIED');
+        return t('prompts.viewName.validationMessages.viewNameRequired');
     }
     // Validate view names matches the allowed pattern
     const regExp = /^[a-zA-Z]+[a-zA-Z0-9-_]{0,120}$/;
     const result = regExp.test(name);
 
     if (name.length > 120) {
-        return t('PROMPT_VALIDATION_MSG_VIEW_NAME_TOO_LONG');
+        return t('prompts.viewName.validationMessages.viewNameTooLong');
     }
     if (!result) {
-        return t('PROMPT_VALIDATION_MSG_INVALID_VIEW_NAME');
+        return t('prompts.viewName.validationMessages.viewNameInvalid');
     }
     return true;
 }
@@ -70,7 +70,7 @@ export const getViewQuestion = (): Question<ViewNameAnswer> => {
     return {
         type: 'input',
         name: viewNamePromptName,
-        message: t('PROMPT_MSG_VIEW_NAME'),
+        message: t('prompts.viewName.message'),
         guiOptions: {
             breadcrumb: true
         },
@@ -284,9 +284,9 @@ export async function createUI5ApplicationPromptOptions(
                 validatorCallback: (addDeployConfigAnswer: boolean) => {
                     validateNextStep(
                         addDeployConfigAnswer,
-                        t('PROJECT_ATTRIBUTES'),
+                        t('steps.projectAttributesConfig.title'),
                         appGenStepConfigList,
-                        t('DEPLOYMENT_CONFIG')
+                        t('steps.deployConfig.title')
                     );
                 }
             },
@@ -294,9 +294,9 @@ export async function createUI5ApplicationPromptOptions(
                 validatorCallback: (addFlpConfigAnswer: boolean) => {
                     validateNextStep(
                         addFlpConfigAnswer,
-                        t('PROJECT_ATTRIBUTES'),
+                        t('steps.projectAttributesConfig.title'),
                         appGenStepConfigList,
-                        t('FLP_CONFIG')
+                        t('steps.flpConfig.title')
                     );
                 }
             },

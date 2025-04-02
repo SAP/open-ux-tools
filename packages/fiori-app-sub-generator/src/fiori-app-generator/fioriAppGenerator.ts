@@ -31,7 +31,7 @@ import {
     defaultNavActionTile,
     FIORI_STEPS,
     FloorplanFF,
-    GeneratorName,
+    generatorName,
     STEP_DATASOURCE_AND_SERVICE,
     STEP_PROJECT_ATTRIBUTES
 } from '../types';
@@ -190,7 +190,7 @@ export class FioriAppGenerator extends Generator {
                             getFromCache(this.appWizard, 'service', FioriAppGenerator.logger) ?? serviceAnswers;
                     }
                     if (!(serviceAnswers.source === DatasourceType.none || serviceAnswers.edmx)) {
-                        FioriAppGenerator.logger?.error(t('FATAL_ERROR'));
+                        FioriAppGenerator.logger?.error(t('error.fatalError'));
                     }
                 }
                 /** END: Back button temp fix */
@@ -224,8 +224,8 @@ export class FioriAppGenerator extends Generator {
                 );
             } else {
                 // Not Freestyle and no entity related config is an error and we cannot proceed
-                FioriAppGenerator.logger.error(t('ERROR_NO_EDMX_FOUND_GENERATION_EXITING'));
-                this._exitOnError(t('ERROR_NO_EDMX_FOUND_GENERATION_EXITING'));
+                FioriAppGenerator.logger.error(t('error.edmxNotFound'));
+                this._exitOnError(t('error.edmxNotFound'));
             }
 
             // Pre-load the CAP project and get all relevant info in one call,
@@ -269,12 +269,12 @@ export class FioriAppGenerator extends Generator {
             if (this.state.project?.addDeployConfig) {
                 // Allows back nav where we have inter-dependant steps
                 // Re-add dependant steps on back nav
-                if (!hasActiveStep(t('DEPLOYMENT_CONFIG'), this.yeomanUiStepConfig.activeSteps)) {
+                if (!hasActiveStep(t('steps.deployConfig.title'), this.yeomanUiStepConfig.activeSteps)) {
                     updateDependentStep(
-                        t('PROJECT_ATTRIBUTES'),
+                        t('steps.projectAttributesConfig.title'),
                         [this.yeomanUiStepConfig],
                         true,
-                        t('DEPLOYMENT_CONFIG')
+                        t('steps.deployConfig.title')
                     );
                 }
                 addDeployGen(
@@ -293,8 +293,13 @@ export class FioriAppGenerator extends Generator {
             if (this.state.project?.addFlpConfig) {
                 // Allows back nav where we have inter-dependant steps
                 // Re-add dependant steps on back nav
-                if (!hasActiveStep(t('FLP_CONFIG'), this.yeomanUiStepConfig.activeSteps)) {
-                    updateDependentStep(t('PROJECT_ATTRIBUTES'), [this.yeomanUiStepConfig], true, t('FLP_CONFIG'));
+                if (!hasActiveStep(t('steps.flpConfig.title'), this.yeomanUiStepConfig.activeSteps)) {
+                    updateDependentStep(
+                        t('steps.projectAttributesConfig.title'),
+                        [this.yeomanUiStepConfig],
+                        true,
+                        t('steps.flpConfig.title')
+                    );
                 }
                 addFlpGen(
                     {
@@ -309,9 +314,9 @@ export class FioriAppGenerator extends Generator {
             }
         } catch (err) {
             // Fatal prompting error
-            FioriAppGenerator.logger.error(`${t('FATAL_ERROR')} : ${err}`);
+            FioriAppGenerator.logger.error(`${t('error.fatalError')} : ${err}`);
             if (getHostEnvironment() === hostEnvironment.cli) {
-                throw new Error(`${t('FATAL_ERROR')} : ${err}`);
+                throw new Error(`${t('error.fatalError')} : ${err}`);
             }
         }
     }
@@ -320,9 +325,10 @@ export class FioriAppGenerator extends Generator {
         try {
             this.generationTime0 = performance.now();
             TelemetryHelper.markAppGenStartTime();
-            FioriAppGenerator.logger.info(t('COPYING_TEMPLATE'));
-
             const { service, project, floorplan, entityRelatedConfig, readMe } = this.state;
+            FioriAppGenerator.logger.info(
+                t('logMessages.copyingTemplateFiles', { templateName: this.state.floorplan })
+            );
 
             // Set the template folder
             // this.sourceRoot(join(__dirname, '..', '..', 'templates')); // Path must match webpacked template paths
@@ -354,7 +360,7 @@ export class FioriAppGenerator extends Generator {
             );
 
             TelemetryHelper.createTelemetryData({
-                Template: t(`floorplan.label.${floorplan}`, {
+                Template: t(`floorplans.label.${floorplan}`, {
                     odataVersion: service.version
                 }),
                 DataSource: service.source, // Why are we setting the same value twice? todo: remove one
@@ -383,7 +389,7 @@ export class FioriAppGenerator extends Generator {
                 project,
                 service,
                 floorplan,
-                floorplan === FloorplanFF.FF_SIMPLE ? GeneratorName.FF : GeneratorName.FE, // Temporarily using the old module names until the open source module is created
+                generatorName,
                 this.generatorVersion,
                 destRoot,
                 this.fs,
@@ -391,7 +397,7 @@ export class FioriAppGenerator extends Generator {
                 readMeUpdated
             );
         } catch (error) {
-            FioriAppGenerator.logger.fatal(`${t('ERROR_WRITING_APPLICATION_FILES')} : ${error}`);
+            FioriAppGenerator.logger.fatal(`${t('error.errorWritingApplicationFiles')} : ${error}`);
             this._exitOnError(error);
         }
     }
@@ -414,7 +420,7 @@ export class FioriAppGenerator extends Generator {
                 FioriAppGenerator.logger
             );
         } else {
-            FioriAppGenerator.logger.info(t('INFO_INSTALL_SKIPPED_OPTION'));
+            FioriAppGenerator.logger.info(t('logMessages.installSkippedOptionSpecified'));
         }
     }
 

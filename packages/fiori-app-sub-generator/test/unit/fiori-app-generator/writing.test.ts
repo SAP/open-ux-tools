@@ -4,7 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { writeAPIHubKeyFiles, writeReadMe } from '../../../src/fiori-app-generator/writing';
 import type { ApiHubConfig, Project, Service } from '../../../src/types';
-import { ApiHubType, FloorplanFE, FloorplanFF } from '../../../src/types';
+import { ApiHubType, FloorplanFE, FloorplanFF, generatorName } from '../../../src/types';
 import { initI18nFioriAppSubGenerator, t } from '../../../src/utils';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
@@ -55,8 +55,8 @@ describe('`writing` tests', () => {
                 showMockDataInfo: false,
                 generatorVersion: '2.0.1',
                 template: 'List Report Page V4',
-                generatorName: '@sap/generator-fiori-elements',
-                launchText: t('TEXT_LAUNCH_DEFAULT'),
+                generatorName,
+                launchText: t('readme.texts.runInstruction'),
                 enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,
@@ -70,7 +70,7 @@ describe('`writing` tests', () => {
                 localEdmxFilePath: '/some/path/to/local/edmx/metadata1234.xml'
             };
             const readMe: Partial<ReadMe> = {
-                generatorName: '@sap/generator-fiori-elements',
+                generatorName,
                 generatorVersion: '2.0.1',
                 generationDate: 'Jan 01 1975',
                 generatorPlatform: 'CLI'
@@ -108,7 +108,7 @@ describe('`writing` tests', () => {
                 generatorVersion: '123',
                 template: 'Basic V4',
                 generatorName: '@sap/some-generator',
-                launchText: t('TEXT_LAUNCH_DEFAULT'),
+                launchText: t('readme.texts.runInstruction'),
                 enableCodeAssist: false,
                 enableEslint: false,
                 enableTypeScript: false,

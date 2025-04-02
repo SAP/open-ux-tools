@@ -15,14 +15,14 @@ describe('Test headless', () => {
     test('Test headless validation exceptions', () => {
         expect(() => {
             transformExtState(appConfigNotSupportedVersion as FFAppConfig);
-        }).toThrow(t('ERROR_APP_CONFIG_VERSION', { version: '0.2' }));
+        }).toThrow(t('error.appConfigVersion', { version: '0.2' }));
 
         expect(() => {
             transformExtState(appConfigInvalidEdmx as FFAppConfig);
-        }).toThrow(t('ERROR_APP_CONFIG_UNPARSEABLE_EDMX'));
+        }).toThrow(t('error.appConfigUnparseableEdmx'));
 
         expect(() => {
             transformExtState(appConfigInvalidCapServiceName as unknown as FFAppConfig);
-        }).toThrow(t('ERROR_APP_CONFIG_MISSING_REQUIRED_PROPERTY', { propertyName: 'capService.serviceName' }));
+        }).toThrow(t('error.appConfigMissingRequiredProperty', { propertyName: 'capService.serviceName' }));
     });
 });

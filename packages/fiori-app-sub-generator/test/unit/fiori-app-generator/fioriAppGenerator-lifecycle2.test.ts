@@ -21,7 +21,7 @@ import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/
 import { installDependencies } from '../../../src/fiori-app-generator/install';
 import { transformState } from '../../../src/fiori-app-generator/transforms';
 import type { Project, State } from '../../../src/types';
-import { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, GeneratorName, PLATFORMS } from '../../../src/types';
+import { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } from '../../../src/types';
 import { deleteCache, getYeomanUiStepConfig, t } from '../../../src/utils';
 
 /**
@@ -132,7 +132,6 @@ jest.mock('@sap-ux/ui5-info', () => {
 jest.mock('@sap-ux/telemetry', () => {
     return {
         ...jest.requireActual('@sap-ux/telemetry'),
-        //isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false),
         initTelemetrySettings: jest.fn().mockResolvedValue(() => Promise.resolve())
     };
 });
@@ -221,7 +220,7 @@ describe('Test FioriAppGenerator', () => {
             await fioriAppGen.writing();
             console.log('Floorplan wrote:', floorplan);
 
-            expect(DefaultLogger.info).toHaveBeenCalledWith(t('COPYING_TEMPLATE'));
+            expect(DefaultLogger.info).toHaveBeenCalledWith(`Copying '${floorplan}' template files...`);
             expect(transformState).toHaveBeenCalledWith(fioriAppGen['state'], true);
             expect(testFloorplan.generateMockFunc).toHaveBeenCalledWith(
                 appPath,
@@ -229,7 +228,7 @@ describe('Test FioriAppGenerator', () => {
                 expect.objectContaining({ commit: expect.any(Function) })
             );
             expect(TelemetryHelper.createTelemetryData).toHaveBeenCalledWith({
-                Template: t(`floorplan.label.${floorplan}`, {
+                Template: t(`floorplans.label.${floorplan}`, {
                     odataVersion: mockState.service.version
                 }),
                 DataSource: mockState.service.source,
@@ -248,7 +247,7 @@ describe('Test FioriAppGenerator', () => {
                 mockState.project,
                 mockState.service,
                 floorplan,
-                floorplan === FloorplanFF.FF_SIMPLE ? GeneratorName.FF : GeneratorName.FE,
+                generatorName,
                 mockGenVer,
                 appPath,
                 expect.objectContaining({ commit: expect.any(Function) }),
@@ -303,7 +302,9 @@ describe('Test FioriAppGenerator', () => {
         };
         fioriAppGen['state'] = { ...mockState, floorplan: FloorplanFE.FE_LROP } as State;
         await expect(fioriAppGen.writing()).rejects.toThrowError();
-        expect(DefaultLogger.fatal).toHaveBeenCalledWith(expect.stringContaining(t('ERROR_WRITING_APPLICATION_FILES')));
+        expect(DefaultLogger.fatal).toHaveBeenCalledWith(
+            expect.stringContaining(t('error.errorWritingApplicationFiles'))
+        );
         expect(sendTelemetry).toHaveBeenCalledWith('GENERATION_WRITING_FAIL', {
             data1: 'value1'
         });
@@ -355,7 +356,7 @@ describe('Test FioriAppGenerator', () => {
         fioriAppGen = new FioriAppGenerator([], { ...options, skipInstall: true });
         await fioriAppGen.install();
         expect(installDependencies).not.toHaveBeenCalled();
-        expect(DefaultLogger.info).toHaveBeenCalledWith(t('INFO_INSTALL_SKIPPED_OPTION'));
+        expect(DefaultLogger.info).toHaveBeenCalledWith(t('logMessages.installSkippedOptionSpecified'));
     });
 
     test('Should call `runPostGenerationTasks` during end phase', async () => {

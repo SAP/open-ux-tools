@@ -31,7 +31,7 @@ export async function writeReadMe(
     entityRelatedAnswers?: EntityRelatedAnswers,
     readMe?: Partial<ReadMe> // todo: Is this needed anymore?
 ): Promise<void> {
-    const templateLabel = t(`floorplan.label.${floorplan}`, {
+    const templateLabel = t(`floorplans.label.${floorplan}`, {
         odataVersion: service.version
     });
 
@@ -50,7 +50,7 @@ export async function writeReadMe(
             serviceType: datasourceLabel,
             serviceUrl:
                 `${service.capService ? DEFAULT_CAP_HOST : service.host ?? ''}${service.servicePath ?? ''}` ||
-                t('TEXT_NOT_APPLICABLE')
+                t('texts.notApplicable')
         } as Partial<ReadMe>,
         readMe
     );
@@ -61,19 +61,19 @@ export async function writeReadMe(
 
     if (entityRelatedAnswers?.mainEntity) {
         readMeCustom.additionalEntries.push({
-            label: t('LABEL_MAIN_ENTITY'),
+            label: t('readme.label.mainEntity'),
             value: entityRelatedAnswers.mainEntity.entitySetName
         });
     }
     if (entityRelatedAnswers?.navigationEntity) {
         readMeCustom.additionalEntries.push({
-            label: t('LABEL_NAVIGATION_ENTITY'),
+            label: t('readme.label.navigationEntity'),
             value: entityRelatedAnswers.navigationEntity.navigationPropertyName || 'None'
         });
     }
     if (entityRelatedAnswers?.filterEntityType) {
         readMeCustom.additionalEntries.push({
-            label: t('LABEL_README_FILTER_ENTITY_TYPE'),
+            label: t('readme.label.filterEntityType'),
             value: entityRelatedAnswers.filterEntityType.entitySetName
         });
     }

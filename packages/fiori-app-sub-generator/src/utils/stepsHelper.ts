@@ -5,7 +5,7 @@ import type { FioriStep, YeomanUiStepConfig } from '../types/yeomanUiStepConfig'
 
 /**
  *
- * @param stepName
+ * @param stepName The name (title) of the step to check. Not the step key.
  * @param prompts
  * @returns
  */
@@ -18,7 +18,7 @@ function getStepIndex(stepName: string, prompts: YeomanUiSteps): number {
 
 /**
  *
- * @param currentStepName
+ * @param currentStepName The name (title) of the step that is being toggled. Not the step key.
  * @param stepConfigList
  * @param action Add dependent step if true, remove if false.
  * @param dependentStepName
@@ -93,7 +93,7 @@ export function updateDependentStep(
 
 /**
  *
- * @param stepName
+ * @param stepName The name (title) of the step to check. Not the step key.
  * @param yuiSteps
  * @returns
  */
@@ -122,7 +122,7 @@ export function getYeomanUiStepConfig(stepsArr: YeomanUiStep[]): YeomanUiStepCon
     stepsArr.forEach((step: YeomanUiStep, index: number) => {
         if ((step as FioriStep)['dependency']) {
             if (index - 1 < 0) {
-                throw t('INVALID_YEOMAN_UI_STEP_CONFIG');
+                throw t('error.invalidYUIStepConfig');
             }
             const dependencyStepName = (step as FioriStep)['dependency'];
             if (dependencyStepName) {

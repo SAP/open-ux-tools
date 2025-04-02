@@ -1,12 +1,12 @@
 import '@sap-ux/jest-file-matchers';
-import { type FFAppConfig } from '../../../src/types';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import * as install from '../../../src/fiori-app-generator/install';
 import { existsSync, readFileSync } from 'fs';
 import 'jest-extended';
 import { join } from 'path';
 import yeomanTest from 'yeoman-test';
 import HeadlessGenerator from '../../../src/app-headless';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
+import * as install from '../../../src/fiori-app-generator/install';
+import { type FFAppConfig } from '../../../src/types';
 import { cleanTestDir, ignoreMatcherOpts } from '../test-utils';
 
 const GENERATION_TEST_DIR = './test-output/headless';
@@ -19,6 +19,15 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
     return {
         ...fioriGenShared,
         sendTelemetry: jest.fn()
+    };
+});
+
+jest.mock('@sap-ux/telemetry', () => {
+    const telemetry = jest.requireActual('@sap-ux/telemetry');
+    return {
+        ...telemetry,
+        setEnableTelemetry: jest.fn(),
+        initTelemetrySettings: jest.fn()
     };
 });
 

@@ -72,22 +72,26 @@ export class CommandRunner {
                 stack.push(data.toString());
             });
             spawnedCmd.on('error', (error) => {
-                reject(`${t('ERROR_COMMAND_FAILED')}: ${error.message}`);
+                reject(`${t('error.commandFailed')}: ${error.message}`);
             });
             spawnedCmd.on('close', (errorCode: number, signal: string) => {
                 if (signal) {
                     const signalCode = -1;
                     // @todo introduce a signal received specific error message
                     if (enableLog) {
-                        this.formatLog(t('COMMAND_FAILED_WITH_ERROR', { command, signalCode }));
+                        this.formatLog(t('logMessages.commandFailedWithError', { command, signalCode }));
                     }
-                    return reject(t('ERROR_CODE_RETURNED', { command, signalCode, stack: stack.join(', ') }));
+                    return reject(
+                        t('logMessages.commandErrorCodeWithStack', { command, signalCode, stack: stack.join(', ') })
+                    );
                 }
                 if (errorCode !== 0) {
                     if (enableLog) {
-                        this.formatLog(t('COMMAND_FAILED_WITH_ERROR', { command, errorCode }));
+                        this.formatLog(t('logMessages.commandFailedWithError', { command, errorCode }));
                     }
-                    return reject(t('ERROR_CODE_RETURNED', { command, errorCode, stack: stack.join(', ') }));
+                    return reject(
+                        t('logMessages.commandErrorCodeWithStack', { command, errorCode, stack: stack.join(', ') })
+                    );
                 }
                 resolve(response);
             });

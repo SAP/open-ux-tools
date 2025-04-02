@@ -1,5 +1,5 @@
 {
-    "floorplan": {
+    "floorplans": {
         "label": {
             "basic": "Basic{{odataVersion, odataVersionFormatter}}",
             "fpm": "Custom Page{{odataVersion, odataVersionFormatter}}",
@@ -9,7 +9,7 @@
             "ovp": "Overview Page{{odataVersion, odataVersionFormatter}}",
             "feop": "Form Entry Object Page{{odataVersion, odataVersionFormatter}}"
         },
-       "description": {
+        "description": {
             "basic": "Create a freestyle application, starting with an empty page.",
             "fpm": "Create an SAP Fiori elements application containing a custom page based on the flexible programming model.",
             "lrop": "Create an SAP Fiori elements application containing a list report and an object page.",
@@ -19,100 +19,101 @@
             "feop": "Create an SAP Fiori elements application containing an object page optimized for data entry."
         }
     },
-    "PROJECT_NAME_MESSAGE": "Module name",
-    "DEFAULT_PROJECT_NAME": "project{{defaultProjectNumber}}",
-    "PROJECT_TITLE_MESSAGE": "Application title",
-    "DEFAULT_PROJECT_TITLE": "App Title",
-    "PROJECT_NAMESPACE_MESSAGE": "Application namespace",
-    "PROJECT_DESCRIPTION_MESSAGE": "Description",
-    "DEFAULT_PROJECT_DESCRIPTION": "An SAP Fiori application.",
-    "CHOOSE_PROJECT_FOLDER_MESSAGE": "Project folder path",
-    "ADVANCED_CONFIGURE_MESSAGE": "Configure advanced options",
-    "LABEL_UI5_VERSION": "Minimum SAPUI5 version",
-    "LABEL_UI5_THEME": "UI5 theme",
-    "ENABLE_ESLINT": "Add Eslint configuration to the project",
-    "ENABLE_TYPESCRIPT": "Enable TypeScript",
-    "ENABLE_NPM_WORKSPACES": "Generation of this application can update the CAP project to use NPM workspaces and an associated CDS plugin library (cds-plugin-ui5). Do you want to enable this feature? (Note: this is requirement for generating with TypeScript)",
-    "ENABLE_CODE_ASSIST_MESSAGE": "Add code assist libraries to your project",
-    "LABEL_SYSTEM": "System",
-    "SYSTEM_NAME": "System name",
-    "LABEL_ODATA_MESSAGE": "OData service",
-    "LABEL_ODATA_SERVICE_URL": "OData{{odataVersion, odataVersionFormatter}} service URL",
-    "LABEL_SERVICE": "Service",
-    "LABEL_USERNAME": "Username",
-    "LABEL_MAIN_ENTITY": "Main Entity",
-    "LABEL_README_FILTER_ENTITY_TYPE": "Filter Entity Type",
-    "LABEL_NAVIGATION_ENTITY": "Navigation Entity",
-    "LABEL_ODATA": "Connect to an OData Service",
-    "LABEL_SAP": "Connect to a System",
-    "LABEL_CAP": "Use a Local CAP Project",
-    "LABEL_CHOOSE_FLOORPLAN": "Choose your application template.",
-    "LABEL_CONFIGURE_FLOORPLAN_SERVICE": "Configure the selected service.",
-    "CONFIGURE_MAIN_PROJECT_ATTRIBUTES": "Configure the main project attributes.",
-    "LABEL_FLOORPLAN_SELECTION": "Template Selection",
-    "SERVICE_ENTITY_SELECTION": "Entity Selection",
-    "PROJECT_ATTRIBUTES": "Project Attributes",
-    "DEPLOYMENT_CONFIG": "Deployment Configuration",
-    "CONFIGURE_DEPLOYMENT": "Configure deployment settings",
-    "FLP_CONFIG": "Fiori Launchpad Configuration",
-    "DESCRIPTION_FLP_CONFIG_GENERATOR": "Configure Fiori Launchpad settings{{appFolderName}}",
-    "INSTALLING_DEPENDENCIES": "Installing dependencies to package path: {{- path}}...",
-    "DEPENDENCIES_INSTALLED": "Project dependencies installed in {{installTime}} seconds",
-    "ERROR_INSTALLING_DEPENDENCIES": "Unknown error while installing project dependencies.",
-    "COMMAND_FAILED_WITH_ERROR": "{{command}} failed with error code {{errorCode}}.",
-    "ERROR_CODE_RETURNED": "Error code {{errorCode}} returned from {{command}}. {{stack}}",
-    "INFO_MESSAGE_APPLICATION_GENERATED": "Application generated successfully, available at {{- targetFolder}}",
-    "COPYING_TEMPLATE": "Copying template...",
-    "ERROR_AUTHENTICATION": "Authentication incorrect {{error}}",
-    "LABEL_SAP_SYSTEM_SOURCE_TYPE_SCP": "ABAP Environment on SAP Business Technology Platform",
-    "LABEL_SAP_SYSTEM_SOURCE_TYPE_S4HC": "SAP S/4HANA Cloud Environment",
-    "LABEL_SAP_SYSTEM_SOURCE_TYPE_ON_PREM": "ABAP On Premise",
-    "LABEL_API_BUSINESS_HUB_ENTERPRISE": "SAP API Business Hub Enterprise",
-    "MSG_CLIENT_CODE": "SAP client (leave empty for default)",
-    "DATASOURCE_AND_SERVICE_SELECTION": "Data Source and Service Selection",
-    "CONFIGURE_DATASOURCE_AND_SERVICE": "Configure the data source and select a service.",
-    "SELECT_SERVICE_MSG": "Select a service",
-    "FATAL_ERROR": "An error has occurred, please restart the generator",
-    "SKIP_ANNOTATIONS": "Skip generation of associated annotations.cds file",
-    "ADD_DEPLOYMENT_CONFIG_QUESTION": "Add deployment configuration",
-    "ADD_FLP_CONFIG_QUESTION": "Add FLP configuration",
-    "PROMPT_APIHUB_USERNAME": "$t(TEXT_API_BUSINESS_HUB_NAME) user",
-    "PROMPT_APIHUB_PASSWORD": "$t(TEXT_API_BUSINESS_HUB_NAME) password",
-    "ERROR_WRITING_APPLICATION_FILES": "An error occurred writing application files",
-    "TEXT_NOT_APPLICABLE": "N/A",
-    "ERROR_APP_CONFIG_VERSION": "Application config version must match a supported version: {{versions}}",
-    "ERROR_APP_CONFIG_UNPARSEABLE_EDMX": "Application config property edmx cannot be parsed",
-    "ERROR_APP_CONFIG_MISSING_REQUIRED_PROPERTY": "Application config is missing a required property: {{propertyName}}",
-    "ERROR_NO_EDMX_FOUND_GENERATION_EXITING": "Edmx (metadata) is required to continue with generation. Application generation exiting.",
-    "INFO_GENERATOR_NAME_VERSION": "Generating application with {{- generatorName}} {{generatorVersion}}",
-    "DESCRIPTION_FORM_ENTRY_OBJECT_PAGE": "Create an SAP Fiori elements application containing an object page optimized for data entry.",
-    "TEXT_LAUNCH_CAP": "In order to launch the generated app, simply start your CAP project{{mvnCommand}} and navigate to the following location in your browser:\n\n{{- capUrl}}",
-    "TEXT_LAUNCH_DEFAULT": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```",
-    "ERROR_UNSUPPORTED_FLOORPLAN": "The specified Template is not supported {{floorplan}}",
-    "WARNING_CACHING_NOT_SUPPORTED": "Warning: caching is not supported",
-    "ERROR_UNRECOGNIZED_EVENT": "Unrecognized event: {{- event}}",
-    "INFO_TRYING_TO_EXECUTE_COMMAND": "Trying to execute command after app generation: {{- command}}",
-    "INFO_MSG_CLI_ARGUMENT_LOG_LEVEL_DESCRIPTION": "Log level settings. Possible options: trace < debug < info < warn < error < fatal < off",
-    "DEBUG_LOG_INITIALISED": "LogWrapper initialized",
-    "INFO_MSG_FILES_GENERATED": "The files have been generated.",
-    "INFO_MSG_SUB_GENERATOR_FOUND": "The installed generator: {{-generatorInfo.name}}@{{-generatorInfo.version}} has been found at path: {{-generatorInfo.path}}.",
-    "INFO_MSG_SUB_GENERATOR_APPLIED": "The generator extension: {{-generatorInfo.name}}@{{-generatorInfo.version}} will be integrated to the Fiori generator. Steps added: {{-generatorInfo.additionalSteps}}. Extension points added: {{-generatorInfo.extensionsAdded}}.",
-    "INFO_OPTIONS_DISABLE_GENERATOR_EXTENSIONS": "Disables search and loading of generator extensions",
-    "INFO_OPTIONS_DISABLE_S4": "Disables search and loading of: {{-generatorName}}",
-    "ERROR_COMMAND_FAILED": "Command failed with error",
-    "LABEL_CAP_CHOOSE_PROJECT": "Choose your CAP project",
-    "INFO_INSTALL_SKIPPED_OPTION": "Option `--skipInstall` was specified. Installation of dependencies will be skipped.",
-    "README_LABEL_DATASOURCE_TYPE_sapSystem": "SAP System",
-    "README_LABEL_DATASOURCE_TYPE_buinessHub": "SAP Business Accelerator Hub",
-    "README_LABEL_DATASOURCE_TYPE_capProject": "Local Cap",
-    "README_LABEL_DATASOURCE_TYPE_odataServiceUrl": "OData Url",
-    "README_LABEL_DATASOURCE_TYPE_none": "None",
-    "README_LABEL_DATASOURCE_TYPE_metadataFile": "File",
-    "README_LABEL_DATASOURCE_TYPE_projectSpecificDestination": "MTA File",
-    "PROMPT_MSG_VIEW_NAME": "View name",
-    "PROMPT_VALIDATION_MSG_VIEW_NAME_NOT_SPECIFIED": "You must provide a view name in order to continue.",
-    "PROMPT_VALIDATION_MSG_VIEW_NAME_TOO_LONG": "View name cannot contain more than 120 characters",
-    "PROMPT_VALIDATION_MSG_INVALID_VIEW_NAME": "The view name must start with a letter and may contain letters, digits, dashes, and underscores.",
-    "ERROR_GENERATION_EXITING": "Application generation exiting due to error: {{error}}",
-    "INVALID_YEOMAN_UI_STEP_CONFIG": "Invalid Yeoman UI step config: First step cannot have dependency property"
+    "defaults": {
+        "projectName": "project{{defaultProjectNumber}}",
+        "projectTitle": "App Title",
+        "projectDescription": "An SAP Fiori application."
+    },
+    "readme": {
+        "label": {
+            "mainEntity": "Main Entity",
+            "filterEntityType": "Filter Entity Type",
+            "navigationEntity": "Navigation Entity",
+            "sapSystemType": {
+                "abapOnBtp": "ABAP Environment on SAP Business Technology Platform",
+                "s4hc": "SAP S/4HANA Cloud Environment",
+                "onPrem": "ABAP On Premise"
+            },
+            "datasourceType": {
+                "sapSystem": "SAP System",
+                "buinessHub": "SAP Business Accelerator Hub",
+                "apiBusinessHubEnterprise": "SAP API Business Hub Enterprise",
+                "capProject": "Local Cap",
+                "odataServiceUrl": "OData Url",
+                "none": "None",
+                "metadataFile": "File",
+                "projectSpecificDestination": "MTA File"
+            }
+        },
+        "texts": {
+            "runInstruction": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+        }
+    },
+    "texts": {
+        "notApplicable": "N/A"
+    },
+    "steps": {
+        "templateSelection": {
+            "description": "Choose your application template.",
+            "title": "Template Selection"
+        },
+        "datasourceAndServiceSelection": {
+            "description": "Configure the data source and select a service.",
+            "title": "Data Source and Service Selection"
+        },
+        "entityOrViewConfig": {
+            "description": "Configure the selected service.",
+            "title": "Entity Selection"
+        },
+        "projectAttributesConfig": {
+            "description": "Configure the main project attributes.",
+            "title": "Project Attributes"
+        },
+        "deployConfig": {
+            "description": "Configure deployment settings.",
+            "title": "Deployment Configuration"
+        },
+        "flpConfig": {
+            "description": "Configure Fiori Launchpad settings{{appFolderName}}.",
+            "title": "Fiori Launchpad Configuration"
+        }
+    },
+    "logMessages": {
+        "installingDependencies": "Installing dependencies to package path: {{- path}}...",
+        "dependenciesInstalled": "Project dependencies installed in {{installTime}} seconds",
+        "errorInstallingDependencies": "Unknown error while installing project dependencies.",
+        "commandFailedWithError": "{{command}} failed with error code {{errorCode}}.",
+        "commandErrorCodeWithStack": "Error code {{errorCode}} returned from {{command}}. {{stack}}",
+        "applicationGenerationSuccess": "Application generated successfully, available at {{- targetFolder}}",
+        "copyingTemplateFiles": "Copying '{{templateName}}' template files...",
+        "generatingAppWithVersion": "Generating application with {{- generatorName}} {{generatorVersion}}",
+        "warningCachingNotSupported": "Warning: caching is not supported",
+        "attemptingToExecutePostGenerationCommand": "Attempting to execute command after app generation: {{- command}}",
+        "installSkippedOptionSpecified": "Option `--skipInstall` was specified. Installation of dependencies will be skipped.",
+        "generatorExiting": "Application generation exiting due to error: {{error}}"
+    },
+    "error": {
+        "fatalError": "An error has occurred, please restart the generator",
+        "errorWritingApplicationFiles": "An error occurred writing application files",
+        "appConfigVersion": "Application config version must match a supported version: {{versions}}",
+        "appConfigUnparseableEdmx": "Application config property edmx cannot be parsed",
+        "appConfigMissingRequiredProperty": "Application config is missing a required property: {{propertyName}}",
+        "edmxNotFound": "Edmx (metadata) is required to continue with generation. Application generation exiting.",
+        "unsupportedPostGenerationEvent": "Unsupported post generation event: {{event}}",
+        "commandFailed": "Command failed with error",
+        "invalidYUIStepConfig": "Invalid Yeoman UI step config: First step cannot have dependency property"
+    },
+    "wizardMessages": {
+        "filesGenerated": "The files have been generated."
+    },
+    "prompts": {
+        "viewName": {
+            "message": "View name",
+            "validationMessages": {
+                "viewNameRequired": "You must provide a view name in order to continue.",
+                "viewNameTooLong": "View name cannot contain more than 120 characters",
+                "viewNameInvalid": "The view name must start with a letter and may contain letters, digits, dashes, and underscores."
+            }
+        }
+    }
 }

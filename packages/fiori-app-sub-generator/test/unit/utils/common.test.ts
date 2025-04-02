@@ -1,11 +1,10 @@
-import * as btpUtils from '@sap-ux/btp-utils';
+import type { Annotations } from '@sap-ux/axios-extension';
 import * as capConfigWriter from '@sap-ux/cap-config-writer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
 import type { CapService } from '@sap-ux/odata-service-inquirer';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import type { Annotations } from '@sap-ux/axios-extension';
 import memFs from 'mem-fs';
 import type { Editor } from 'mem-fs-editor';
 import memFsEditor from 'mem-fs-editor';
@@ -211,13 +210,13 @@ describe('Test utils', () => {
     test('should return the correct label for SAP System source type', () => {
         const source = DatasourceType.sapSystem;
         let result = getReadMeDataSourceLabel(source, true);
-        const labelDatasourceType = t(`README_LABEL_DATASOURCE_TYPE_${source}`);
+        const labelDatasourceType = t(`readme.label.datasourceType.${source}`);
 
-        expect(result).toBe(`${labelDatasourceType} (${t(`LABEL_SAP_SYSTEM_SOURCE_TYPE_${SapSystemSourceType.SCP}`)})`);
+        expect(result).toBe(`${labelDatasourceType} (${t(`readme.label.sapSystemType.${SapSystemSourceType.SCP}`)})`);
 
         result = getReadMeDataSourceLabel(source);
         expect(result).toBe(
-            `${labelDatasourceType} (${t(`LABEL_SAP_SYSTEM_SOURCE_TYPE_${SapSystemSourceType.ON_PREM}`)})`
+            `${labelDatasourceType} (${t(`readme.label.sapSystemType.${SapSystemSourceType.ON_PREM}`)})`
         );
     });
 
@@ -225,7 +224,7 @@ describe('Test utils', () => {
         const source = DatasourceType.businessHub;
         const apiHubType = ApiHubType.apiHubEnterprise;
         const result = getReadMeDataSourceLabel(source, false, apiHubType);
-        expect(result).toBe(t('LABEL_API_BUSINESS_HUB_ENTERPRISE'));
+        expect(result).toBe(t('readme.label.datasourceType.apiBusinessHubEnterprise'));
     });
 
     test('should return the correct datasource label', () => {

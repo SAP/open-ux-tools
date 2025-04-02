@@ -149,7 +149,7 @@ export async function runPostGenerationTasks(
     // Display info message if using a cap service as it is not otherwise shown when a top level dir is not created
     if (service.capService && appWizard) {
         // this info message needs to be shown for cap projects as it is not shown when a top level dir is not created
-        appWizard.showInformation(t('INFO_MSG_FILES_GENERATED'), MessageType.notification);
+        appWizard.showInformation(t('wizardMessages.filesGenerated'), MessageType.notification);
     }
 
     if (hostEnv !== hostEnvironment.bas && service.apiHubConfig?.apiHubType === ApiHubType.apiHub) {
@@ -158,7 +158,7 @@ export async function runPostGenerationTasks(
     // If we got here, the generation was successful and so targetFolder and name must be defined
     const projectPath = join(project.targetFolder, project.name);
     logger.info(
-        t(`INFO_MESSAGE_APPLICATION_GENERATED`, {
+        t('logMessages.applicationGenerationSuccess', {
             targetFolder: projectPath
         })
     );

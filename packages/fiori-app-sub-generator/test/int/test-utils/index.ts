@@ -10,7 +10,7 @@ import {
 import { readFileSync } from 'fs';
 import { execSync } from 'child_process';
 import { join } from 'path';
-import rimraf from 'rimraf';
+import { rimraf } from 'rimraf';
 import os from 'os';
 import { TestWritingGenerator } from './testGeneratorWriting';
 export { TestWritingGenerator };

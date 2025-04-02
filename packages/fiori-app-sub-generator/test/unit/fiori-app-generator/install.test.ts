@@ -52,7 +52,7 @@ describe('Test install queue functions', () => {
             DefaultLogger
         );
 
-        expect(infoLog).toHaveBeenCalledWith(t('INSTALLING_DEPENDENCIES', { path: '/package/path' }));
+        expect(infoLog).toHaveBeenCalledWith(t('logMessages.installingDependencies', { path: '/package/path' }));
 
         expect(infoLog).toHaveBeenCalledWith(
             os.platform() === 'win32' ? 'Running: `npm.cmd install`' : 'Running: `npm install`'
@@ -78,7 +78,7 @@ describe('Test install queue functions', () => {
             DefaultLogger
         );
 
-        expect(infoLog).toHaveBeenCalledWith(t('INSTALLING_DEPENDENCIES', { path: '/package/path' }));
+        expect(infoLog).toHaveBeenCalledWith(t('logMessages.installingDependencies', { path: '/package/path' }));
         expect(infoLog).toHaveBeenCalledWith(
             os.platform() === 'win32' ? 'Running: `npm.cmd install`' : 'Running: `npm install`'
         );
@@ -99,7 +99,7 @@ describe('Test install queue functions', () => {
             { appPackagePath: '/package/path', enableCodeAssist: false, ui5Version: '1.2.3', useNpmWorkspaces: false },
             DefaultLogger
         );
-        expect(infoLog).toHaveBeenCalledWith(t('INSTALLING_DEPENDENCIES', { path: '/package/path' }));
+        expect(infoLog).toHaveBeenCalledWith(t('logMessages.installingDependencies', { path: '/package/path' }));
         expect(infoLog).toHaveBeenCalledWith(
             os.platform() === 'win32' ? 'Running: `npm.cmd install`' : 'Running: `npm install`'
         );
@@ -145,7 +145,7 @@ describe('Test install queue functions', () => {
             { cwd: '/app/package/path' },
             true
         );
-        expect(infoLog).toHaveBeenCalledWith(t('INSTALLING_DEPENDENCIES', { path: '/app/package/path' }));
+        expect(infoLog).toHaveBeenCalledWith(t('logMessages.installingDependencies', { path: '/app/package/path' }));
     });
 
     it('Should install dependencies to CAP project root package if `useNpmWorkspaces` is true', async () => {

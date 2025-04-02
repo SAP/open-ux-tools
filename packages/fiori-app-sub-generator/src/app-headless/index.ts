@@ -17,8 +17,8 @@ export default class extends FioriAppGenerator {
     public constructor(args: string | string[], opts: FioriAppGeneratorOptions) {
         super(args, opts);
         this.log(
-            t('INFO_GENERATOR_NAME_VERSION', {
-                generatorName: 'Combined FE/FF generator', //todo: replace with the actual generator name
+            t('logMessages.generatingAppWithVersion', {
+                generatorName: '@sap-ux/fiori-app-sub-generator:headless',
                 generatorVersion: this.rootGeneratorVersion()
             })
         );
@@ -26,7 +26,7 @@ export default class extends FioriAppGenerator {
         try {
             this.state = transformExtState(this.options.appConfig);
         } catch (error) {
-            this.log(t('ERROR_GENERATION_EXITING'));
+            this.log(t('logMessages.generatorExiting'));
             this.env.error(error);
         }
     }
