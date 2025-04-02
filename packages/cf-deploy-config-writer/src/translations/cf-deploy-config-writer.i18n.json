@@ -30,7 +30,7 @@
         "mtaAlreadyExists": "An mta.yaml already exists in the target directory.",
         "cannotUpdateRouterXSApp": "Unable to update router xs-app.json welcome location.",
         "targetFolderDoesNotExist": "Target folder does not exist, {{targetFolder}}.",
-        "doesNotContainACapApp": "Target folder does not contain a Node.js CAP project.",
+        "doesNotContainACapApp": "Target folder does not contain a Node.js CAP project. Please ensure the folder contains a Node.js CAP project.",
         "errorInstallingNodeModules": "Something went wrong installing node modules!",
         "errorGeneratingMtaYaml": "Something went wrong creating mta.yaml!"
     },
