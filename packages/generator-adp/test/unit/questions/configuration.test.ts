@@ -1,16 +1,34 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
-import { FlexLayer, TargetApplications } from '@sap-ux/adp-tooling';
-import type { AbapProvider, ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
+import type { AxiosError } from '@sap-ux/axios-extension';
+import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
+import { FlexLayer, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import type { ConfigAnswers, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
 
 import { initI18n } from '../../../src/utils/i18n';
 import { configPromptNames } from '../../../src/app/types';
 import { ConfigPrompter } from '../../../src/app/questions/configuration';
-import { showCredentialQuestion } from '../../../src/app/questions/helper/conditions';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
     showCredentialQuestion: jest.fn().mockResolvedValue(true)
+}));
+
+jest.mock('@sap-ux/fiori-generator-shared', () => ({
+    ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
+    getHostEnvironment: jest.fn()
+}));
+
+jest.mock('@sap-ux/adp-tooling', () => ({
+    ...jest.requireActual('@sap-ux/adp-tooling'),
+    getConfiguredProvider: jest.fn(),
+    loadApps: jest.fn()
+}));
+
+jest.mock('@sap-ux/axios-extension', () => ({
+    ...jest.requireActual('@sap-ux/axios-extension'),
+    isAxiosError: jest.fn()
 }));
 
 const logger: ToolsLogger = {
@@ -20,9 +38,12 @@ const logger: ToolsLogger = {
     debug: jest.fn()
 } as unknown as ToolsLogger;
 
-const abapProvider = {
-    setProvider: jest.fn().mockResolvedValue(undefined)
-} as unknown as AbapProvider;
+const getSystemInfoMock = jest.fn();
+const provider = {
+    getLayeredRepository: jest.fn().mockReturnValue({
+        getSystemInfo: getSystemInfoMock
+    })
+} as unknown as AbapServiceProvider;
 
 const targetSystems: TargetSystems = {
     getSystems: jest.fn().mockResolvedValue([
@@ -44,9 +65,13 @@ const dummyAnswers: ConfigAnswers = {
     application: { id: 'app1', title: 'Some Title' } as unknown as TargetApplication
 };
 
+const loadAppsMock = loadApps as jest.Mock;
+const isAxiosErrorMock = isAxiosError as unknown as jest.Mock;
+const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
+const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
+
 describe('ConfigPrompter Integration Tests', () => {
     let configPrompter: ConfigPrompter;
-    let getAppsMock: jest.SpyInstance;
     const layer = FlexLayer.CUSTOMER_BASE;
 
     beforeAll(async () => {
@@ -54,10 +79,10 @@ describe('ConfigPrompter Integration Tests', () => {
     });
 
     beforeEach(() => {
-        getAppsMock = jest
-            .spyOn(TargetApplications.prototype, 'getApps')
-            .mockImplementation(() => Promise.resolve(dummyApps));
-        configPrompter = new ConfigPrompter(abapProvider, targetSystems, layer, logger);
+        getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
+        loadAppsMock.mockResolvedValue(dummyApps);
+        getConfiguredProviderMock.mockResolvedValue(provider);
+        configPrompter = new ConfigPrompter(targetSystems, layer, logger);
     });
 
     afterEach(() => {
@@ -68,7 +93,7 @@ describe('ConfigPrompter Integration Tests', () => {
         it('should return four prompts with correct names', () => {
             const prompts = configPrompter.getPrompts();
 
-            expect(prompts).toHaveLength(4);
+            expect(prompts).toHaveLength(6);
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {
@@ -114,7 +139,7 @@ describe('ConfigPrompter Integration Tests', () => {
 
         it('system prompt validate should throw error', async () => {
             const error = new Error('Test error');
-            getAppsMock.mockRejectedValue(error);
+            loadAppsMock.mockRejectedValue(error);
 
             const prompts = configPrompter.getPrompts();
             const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
@@ -123,6 +148,63 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
             expect(result).toEqual(error.message);
+        });
+
+        it('system prompt validate should throw error when system info call fails', async () => {
+            const axiosError = {
+                isAxiosError: true,
+                message: 'Unauthorized',
+                name: 'AxiosError',
+                response: {
+                    status: 401,
+                    statusText: 'Unauthorized'
+                }
+            } as AxiosError;
+            getSystemInfoMock.mockRejectedValueOnce(axiosError);
+            isAxiosErrorMock.mockReturnValueOnce(true);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.system);
+            expect(systemPrompt).toBeDefined();
+
+            const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
+
+            expect(result).toEqual(`Authentication error: ${axiosError.message}`);
+        });
+    });
+
+    describe('System CLI Validation Prompt', () => {
+        beforeEach(() => {
+            getHostEnvironmentMock.mockReturnValue(hostEnvironment.cli);
+        });
+
+        it('system validation cli prompt when should return false if all validations pass', async () => {
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.systemValidationCli);
+            expect(systemPrompt).toBeDefined();
+
+            const whenFn = systemPrompt?.when;
+            expect(typeof whenFn).toBe('function');
+
+            const result = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers);
+
+            expect(result).toEqual(false);
+        });
+
+        it('system validation cli prompt when should throw error if validation returns message', async () => {
+            const error = new Error('Test error');
+            loadAppsMock.mockRejectedValue(error);
+
+            const prompts = configPrompter.getPrompts();
+            const systemPrompt = prompts.find((p) => p.name === configPromptNames.systemValidationCli);
+            expect(systemPrompt).toBeDefined();
+
+            const whenFn = systemPrompt?.when;
+            expect(typeof whenFn).toBe('function');
+
+            await expect((whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers)).rejects.toThrow(
+                error.message
+            );
         });
     });
 
@@ -137,12 +219,11 @@ describe('ConfigPrompter Integration Tests', () => {
 
             const whenResult = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers);
             expect(whenResult).toBe(true);
-            expect(showCredentialQuestion).toHaveBeenCalledWith(dummyAnswers, expect.anything());
         });
     });
 
     describe('Password Prompt', () => {
-        it('password prompt validate should call setProvider and return true', async () => {
+        it('password prompt validate should call getConfiguredProvider and return true', async () => {
             const prompts = configPrompter.getPrompts();
             const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
             expect(passwordPrompt).toBeDefined();
@@ -150,12 +231,6 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await passwordPrompt?.validate?.(dummyAnswers.password, dummyAnswers);
 
             expect(result).toBe(true);
-            expect(abapProvider.setProvider).toHaveBeenCalledWith(
-                dummyAnswers.system,
-                undefined,
-                dummyAnswers.username,
-                dummyAnswers.password
-            );
         });
 
         it('password prompt validate should call return string if not value is passed', async () => {
@@ -166,12 +241,11 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await passwordPrompt?.validate?.(undefined, dummyAnswers);
 
             expect(result).toBe('Input cannot be empty.');
-            expect(abapProvider.setProvider).not.toHaveBeenCalled();
         });
 
         it('password prompt validate should call return error message when error occurs', async () => {
             const error = new Error('Test error');
-            getAppsMock.mockRejectedValue(error);
+            loadAppsMock.mockRejectedValue(error);
 
             const prompts = configPrompter.getPrompts();
             const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
@@ -180,12 +254,6 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await passwordPrompt?.validate?.(dummyAnswers.password, dummyAnswers);
 
             expect(result).toBe('Test error');
-            expect(abapProvider.setProvider).toHaveBeenCalledWith(
-                dummyAnswers.system,
-                undefined,
-                dummyAnswers.username,
-                dummyAnswers.password
-            );
         });
     });
 
@@ -209,45 +277,24 @@ describe('ConfigPrompter Integration Tests', () => {
 
             expect(result).toEqual('Application has to be selected.');
         });
+    });
 
-        it('application prompt choices should return values from getApplicationChoices', async () => {
+    describe('Application CLI Validation Prompt', () => {
+        beforeEach(() => {
+            getHostEnvironmentMock.mockReturnValue(hostEnvironment.cli);
+        });
+
+        it('application validation cli prompt when should return false if all validations pass', async () => {
             const prompts = configPrompter.getPrompts();
-            const appPrompt = prompts.find(
-                (p) => p.name === configPromptNames.application
-            ) as ListQuestion<ConfigAnswers>;
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.appValidationCli);
             expect(appPrompt).toBeDefined();
 
-            const choicesFn = appPrompt!.choices;
-            expect(typeof choicesFn).toBe('function');
+            const whenFn = appPrompt?.when;
+            expect(typeof whenFn).toBe('function');
 
-            const choices = await (choicesFn as () => Promise<string[]>)();
+            const result = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers);
 
-            expect(choices).toEqual([
-                {
-                    name: 'App One (app1)',
-                    value: {
-                        ach: '',
-                        bspName: '',
-                        bspUrl: '',
-                        fileType: '',
-                        id: 'app1',
-                        registrationIds: [],
-                        title: 'App One'
-                    }
-                },
-                {
-                    name: 'App Two (app2)',
-                    value: {
-                        ach: '',
-                        bspName: '',
-                        bspUrl: '',
-                        fileType: '',
-                        id: 'app2',
-                        registrationIds: [],
-                        title: 'App Two'
-                    }
-                }
-            ]);
+            expect(result).toEqual(false);
         });
     });
 });

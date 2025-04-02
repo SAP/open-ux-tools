@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.1.1
+
+### Patch Changes
+
+-   fbdf2d0: fix(generator-adp): Generator running in the CLI context
+-   Updated dependencies [fbdf2d0]
+    -   @sap-ux/adp-tooling@0.13.22
+
 ## 0.1.0
 
 ### Minor Changes

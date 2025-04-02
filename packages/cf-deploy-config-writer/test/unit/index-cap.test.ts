@@ -93,6 +93,7 @@ describe('CF Writer CAP', () => {
             );
             expect(spawnMock.mock.calls[1][0]).toStrictEqual('npm.cmd'); // Just always test for windows!
             expect(spawnMock.mock.calls[1][1]).toStrictEqual(['install', '--ignore-engines']);
+            expect(spawnMock.mock.calls[1][2]).toHaveProperty('shell');
             if (RouterModuleType.Standard === routerType) {
                 expect(localFs.read(join(mtaPath, `router`, 'package.json'))).toMatchSnapshot();
                 expect(localFs.read(join(mtaPath, `router`, 'xs-app.json'))).toMatchSnapshot();

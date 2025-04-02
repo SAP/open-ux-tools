@@ -148,6 +148,13 @@ describe('<UIToggle />', () => {
                   "borderColor": "var(--vscode-button-border, transparent)",
                   "borderWidth": 1,
                   "height": 14,
+                  "svg": Object {
+                    "height": "100%",
+                    "path": Object {
+                      "stroke": "var(--vscode-button-secondaryForeground)",
+                    },
+                    "width": "100%",
+                  },
                   "width": 14,
                 }
             `);
@@ -196,6 +203,13 @@ describe('<UIToggle />', () => {
                   "borderColor": "var(--vscode-contrastActiveBorder, var(--vscode-button-border, transparent))",
                   "borderWidth": 1,
                   "height": 14,
+                  "svg": Object {
+                    "height": "100%",
+                    "path": Object {
+                      "stroke": "var(--vscode-button-foreground)",
+                    },
+                    "width": "100%",
+                  },
                   "width": 14,
                 }
             `);
