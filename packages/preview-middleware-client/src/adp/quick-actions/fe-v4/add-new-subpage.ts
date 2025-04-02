@@ -129,7 +129,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
         }
         let entitySet: string | undefined = component.getEntitySet();
         let contextPath = component.getContextPath();
-        if (!entitySet && contextPath) {
+        if (contextPath) {
             entitySet = await this.resolveContextPathTargetName(contextPath, metaModel);
         }
         return entitySet;
