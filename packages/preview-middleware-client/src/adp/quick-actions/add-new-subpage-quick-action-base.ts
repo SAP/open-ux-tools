@@ -60,8 +60,11 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
     protected abstract getApplicationPages(): ApplicationPageData[];
     protected abstract isPageExists(targetEntitySet: string, metaModel: ODataMetaModelType): boolean | Promise<boolean>;
     protected abstract isCurrentObjectPage(): boolean;
-    protected abstract getEntitySetNameFromPageComponent(component: Component | undefined): string;
-    protected abstract prepareNavigationData(entitySetName: string, metaModel: ODataMetaModelType): Promise<void>;
+    protected abstract getEntitySetNameFromPageComponent(
+        component: Component | undefined,
+        metaModel: ODataMetaModelType
+    ): Promise<string | undefined>;
+    protected abstract prepareNavigationData(metaModel: ODataMetaModelType): Promise<void>;
     protected abstract getODataMetaModel(): ODataMetaModelType | undefined;
 
     protected async addNavigationOptionIfAvailable(
@@ -101,7 +104,7 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
         }
 
         const component = Component.getOwnerComponentFor(modifiedControl);
-        const entitySetName = this.getEntitySetNameFromPageComponent(component);
+        const entitySetName = await this.getEntitySetNameFromPageComponent(component, metaModel);
         if (!entitySetName) {
             return Promise.resolve();
         }
@@ -111,7 +114,7 @@ export abstract class AddNewSubpageBase<ODataMetaModelType>
         if (!this.isCurrentObjectPage()) {
             await this.addNavigationOptionIfAvailable(metaModel, this.entitySet);
         } else {
-            await this.prepareNavigationData(entitySetName, metaModel);
+            await this.prepareNavigationData(metaModel);
         }
         this.control = modifiedControl;
 

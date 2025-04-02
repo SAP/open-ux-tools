@@ -117,21 +117,32 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV4> {
         return (this.context.rta.getRootControlInstance().getModel() as ODataModelV4)?.getMetaModel();
     }
 
-    protected getEntitySetNameFromPageComponent(component: Component | undefined): string {
+    protected async getEntitySetNameFromPageComponent(
+        component: Component | undefined,
+        metaModel: ODataMetaModelV4
+    ): Promise<string | undefined> {
         if (
             !isA<FEObjectPageComponent>('sap.fe.templates.ListReport.Component', component) &&
             !isA<FEListReportComponent>('sap.fe.templates.ObjectPage.Component', component)
         ) {
             throw new Error('Unexpected type of page owner component');
         }
-        return component.getEntitySet();
+        let entitySet: string | undefined = component.getEntitySet();
+        let contextPath = component.getContextPath();
+        if (!entitySet && contextPath) {
+            entitySet = await this.resolveContextPathTargetName(contextPath, metaModel);
+        }
+        return entitySet;
     }
 
-    protected async prepareNavigationData(entitySetName: string, metaModel: ODataMetaModelV4) {
-        const entitySet = (await metaModel.requestObject(`/${entitySetName}`)) as {
+    protected async prepareNavigationData(metaModel: ODataMetaModelV4) {
+        const entitySet = (await metaModel.requestObject(`/${this.entitySet}`)) as {
             $Type: string;
             $NavigationPropertyBinding: { [key: string]: string };
         }; // NO SONAR;
+        if (!entitySet) {
+            return;
+        }
         const entityTypePath = entitySet.$Type;
         const entitySetNavigationKeys = Object.keys(entitySet.$NavigationPropertyBinding);
 
