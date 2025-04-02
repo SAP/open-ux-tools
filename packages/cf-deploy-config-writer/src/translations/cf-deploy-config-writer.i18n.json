@@ -12,7 +12,7 @@
         "addingRouter": "Adding {{routerType}} app router...",
         "addMissingModules": "Adding missing modules to MTA configuration...",
         "cleanupModules": "Cleanup modules",
-        "creatingMta": "Creating MTA using {{- cdsParams }}",
+        "creatingMta": "Creating MTA using {{- cdsParams }}...",
         "html5AppAdded": "HTML5 Application added to MTA configuration {{- appName}}",
         "addXsuaaService": "Adding XSUAA service to MTA configuration"
     },
