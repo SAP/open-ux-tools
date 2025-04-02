@@ -16,7 +16,7 @@ describe('Test command-runner', () => {
         await initI18nFioriAppSubGenerator();
         mockedSpawn.sequence.add(function (cb: Function) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-            // @ts-nocheck
+            // @ts-expect-error
             this.emit('error', new Error('spawn ENOENT'));
             setTimeout(function () {
                 return cb(1);

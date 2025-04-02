@@ -1,11 +1,11 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Mar 05 2025 09:02:00 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Wed Apr 02 2025 11:34:20 GMT+0100 (Irish Standard Time)|
 |**App Generator**<br>@sap/generator-fiori-freestyle|
-|**App Generator Version**<br>1.16.5|
+|**App Generator Version**<br>0.0.1|
 |**Generation Platform**<br>CLI|
-|**Template Used**<br>Basic|
+|**Template Used**<br>Basic V4|
 |**Service Type**<br>Local Cap|
 |**Service URL**<br>http://localhost:4004|
 |**Module Name**<br>simple_cap|

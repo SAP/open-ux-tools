@@ -1,17 +1,24 @@
 {
-    "LABEL_FLOORPLAN_LIST_REPORT_OBJECT_PAGE": "List Report Page{{odataVersion, odataVersionFormatter}}",
-    "LABEL_FLOORPLAN_WORKLIST": "Worklist Page{{odataVersion, odataVersionFormatter}}",
-    "LABEL_FLOORPLAN_ANALYTICAL_LIST_PAGE": "Analytical List Page{{odataVersion, odataVersionFormatter}}",
-    "LABEL_FLOORPLAN_OVERVIEW": "Overview Page{{odataVersion, odataVersionFormatter}}",
-    "LABEL_FLOORPLAN_FORM_ENTRY_OBJECT_PAGE": "Form Entry Object Page{{odataVersion, odataVersionFormatter}}",
-    "LABEL_FLOORPLAN_FLEXIBLE_PROGRAMMING_MODEL": "Custom Page{{odataVersion, odataVersionFormatter}}",
-    "LABEL_FLOORPLAN_simple": "Basic",
-    "DESCRIPTION_BASIC_FLOORPLAN": "Create a freestyle application, starting with an empty page.",
-    "DESCRIPTION_FLEXIBLE_PROGRAMMING_MODEL": "Create an SAP Fiori elements application containing a custom page based on the flexible programming model.",
-    "DESCRIPTION_LIST_REPORT_OBJECT_PAGE": "Create an SAP Fiori elements application containing a list report and an object page.",
-    "WORKLIST_DESCRIPTION": "Create an SAP Fiori elements application containing a worklist and an object page.",
-    "ANALYTICAL_LIST_PAGE_DESCRIPTION": "Create an SAP Fiori elements application containing an analytical list and an object page.",
-    "OVERVIEW_DESCRIPTION": "Create an SAP Fiori elements application containing an overview page.",
+    "floorplan": {
+        "label": {
+            "basic": "Basic{{odataVersion, odataVersionFormatter}}",
+            "fpm": "Custom Page{{odataVersion, odataVersionFormatter}}",
+            "lrop": "List Report Page{{odataVersion, odataVersionFormatter}}",
+            "worklist": "Worklist Page{{odataVersion, odataVersionFormatter}}",
+            "alp": "Analytical List Page{{odataVersion, odataVersionFormatter}}",
+            "ovp": "Overview Page{{odataVersion, odataVersionFormatter}}",
+            "feop": "Form Entry Object Page{{odataVersion, odataVersionFormatter}}"
+        },
+       "description": {
+            "basic": "Create a freestyle application, starting with an empty page.",
+            "fpm": "Create an SAP Fiori elements application containing a custom page based on the flexible programming model.",
+            "lrop": "Create an SAP Fiori elements application containing a list report and an object page.",
+            "worklist": "Create an SAP Fiori elements application containing a worklist and an object page.",
+            "alp": "Create an SAP Fiori elements application containing an analytical list and an object page.",
+            "ovp": "Create an SAP Fiori elements application containing an overview page.",
+            "feop": "Create an SAP Fiori elements application containing an object page optimized for data entry."
+        }
+    },
     "PROJECT_NAME_MESSAGE": "Module name",
     "DEFAULT_PROJECT_NAME": "project{{defaultProjectNumber}}",
     "PROJECT_TITLE_MESSAGE": "Application title",

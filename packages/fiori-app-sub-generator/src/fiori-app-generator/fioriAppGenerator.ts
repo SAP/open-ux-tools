@@ -354,7 +354,7 @@ export class FioriAppGenerator extends Generator {
             );
 
             TelemetryHelper.createTelemetryData({
-                Template: t(`LABEL_FLOORPLAN_${floorplan}`, {
+                Template: t(`floorplan.label.${floorplan}`, {
                     odataVersion: service.version
                 }),
                 DataSource: service.source, // Why are we setting the same value twice? todo: remove one

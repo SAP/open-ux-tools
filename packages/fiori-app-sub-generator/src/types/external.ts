@@ -14,45 +14,31 @@ import type { ALPOptions, Project, Service } from './state';
 // This provides a layer of abstraction to isolate internal changes from external headless API consumers
 // Since these keys are used as an external API definiton they need to be meaningful
 // Note that ordering here determines rendering order
-// Note assigning `as const` strings to enums is only supported from TS 5.7.0
-
-
 /**
- * Fiori Elements internal floorplan/template/project types
- *
- * @deprecated Use FloorplanFE instead, will be removed shortly
+ * Due to ts(18033) we cannot use the type values directly here:
+ * FF_SIMPLE = FFTemplateType.Basic // Once https://github.com/microsoft/TypeScript/pull/59475 is merged we can remove the hardcoded values and directly use the template values
  */
-export enum PROJECT_TYPE {
-    // todo: use open source FE template type
-    Worklist = 'WORKLIST',
-    OverviewPage = 'OVERVIEW',
-    ListReportObjectPage = 'LIST_REPORT_OBJECT_PAGE',
-    AnalyticalListPage = 'ANALYTICAL_LIST_PAGE',
-    FormEntryObjectPage = 'FORM_ENTRY_OBJECT_PAGE',
-    FlexibleProgrammingModel = 'FLEXIBLE_PROGRAMMING_MODEL'
-}
-
-/**
- * Fiori Freestyle internal floorplan/template/project types
- *
- * @deprecated Use FloorplanFF instead, will be removed shortly
- */
-export enum Template {
-    // todo: use open source FF template type
-    Simple = 'simple'
-}
 export enum FloorplanFF {
-    FF_SIMPLE = Template.Simple
+    FF_SIMPLE = 'basic'
 }
-
+/**
+ * Due to ts(18033) we cannot use the type values directly here:
+ * Once https://github.com/microsoft/TypeScript/pull/59475 is merged we can remove hardcoded values and directly use the template values
+ * FE_FPM = FETemplateType.FlexibleProgrammingModel,
+ * FE_LROP = FETemplateType.ListReportObjectPage,
+ * FE_OVP = FETemplateType.OverviewPage,
+ * FE_ALP = FETemplateType.AnalyticalListPage,
+ * FE_FEOP = FETemplateType.FormEntryObjectPage,
+ * FE_WORKLIST = FETemplateType.Worklist
+ */
 // Note that ordering here determines rendering order
 export enum FloorplanFE {
-    FE_FPM = PROJECT_TYPE.FlexibleProgrammingModel,
-    FE_LROP = PROJECT_TYPE.ListReportObjectPage,
-    FE_OVP = PROJECT_TYPE.OverviewPage,
-    FE_ALP = PROJECT_TYPE.AnalyticalListPage,
-    FE_FEOP = PROJECT_TYPE.FormEntryObjectPage,
-    FE_WORKLIST = PROJECT_TYPE.Worklist
+    FE_FPM = 'fpm',
+    FE_LROP = 'lrop',
+    FE_OVP = 'ovp',
+    FE_ALP = 'alp',
+    FE_FEOP = 'feop',
+    FE_WORKLIST = 'worklist'
 }
 
 // Used internally to join Floorplan types from multiple generators (until we have a merged type)
@@ -329,6 +315,31 @@ export interface FioriGeneratorExtensionAPI {
 export type RecursiveReadonly<T> = {
     readonly [P in keyof T]: RecursiveReadonly<T[P]>;
 };
+
+/**
+ * Fiori Elements internal floorplan/template/project types
+ *
+ * @deprecated Use FloorplanFE instead, will be removed shortly
+ */
+export enum PROJECT_TYPE {
+    // todo: use open source FE template type
+    Worklist = 'WORKLIST',
+    OverviewPage = 'OVERVIEW',
+    ListReportObjectPage = 'LIST_REPORT_OBJECT_PAGE',
+    AnalyticalListPage = 'ANALYTICAL_LIST_PAGE',
+    FormEntryObjectPage = 'FORM_ENTRY_OBJECT_PAGE',
+    FlexibleProgrammingModel = 'FLEXIBLE_PROGRAMMING_MODEL'
+}
+
+/**
+ * Fiori Freestyle internal floorplan/template/project types
+ *
+ * @deprecated Use FloorplanFF instead, will be removed shortly
+ */
+export enum Template {
+    // todo: use open source FF template type
+    Simple = 'simple'
+}
 
 /**
  * To support deprecation of the project properties `projectType` from `@sap/generator-fiori-elements`

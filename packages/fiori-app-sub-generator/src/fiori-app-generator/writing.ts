@@ -31,7 +31,7 @@ export async function writeReadMe(
     entityRelatedAnswers?: EntityRelatedAnswers,
     readMe?: Partial<ReadMe> // todo: Is this needed anymore?
 ): Promise<void> {
-    const templateLabel = t(`LABEL_FLOORPLAN_${floorplan}`, {
+    const templateLabel = t(`floorplan.label.${floorplan}`, {
         odataVersion: service.version
     });
 

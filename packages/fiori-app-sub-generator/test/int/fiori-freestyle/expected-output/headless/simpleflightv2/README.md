@@ -1,11 +1,11 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Mar 05 2025 07:53:26 GMT+0000 (Greenwich Mean Time)|
+|**Generation Date and Time**<br>Wed Apr 02 2025 11:34:22 GMT+0100 (Irish Standard Time)|
 |**App Generator**<br>@sap/generator-fiori-freestyle|
-|**App Generator Version**<br>1.16.5|
+|**App Generator Version**<br>0.0.1|
 |**Generation Platform**<br>CLI|
-|**Template Used**<br>Basic|
+|**Template Used**<br>Basic V2|
 |**Service Type**<br>OData Url|
 |**Service URL**<br>https://ldciuia.wdf.sap.corp:44300//sap/opu/odata/dmo/FLIGHT_C_TRA_V2_TU|
 |**Module Name**<br>simpleflightv2|
