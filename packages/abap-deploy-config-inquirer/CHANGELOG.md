@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.36
+
+### Patch Changes
+
+-   5629071: make backend call for scp systems when initialising transport config
+
 ## 1.2.35
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.11
+
+### Patch Changes
+
+-   ed6c364: Reuse component detection
+
 ## 0.13.10
 
 ### Patch Changes
