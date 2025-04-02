@@ -8,17 +8,24 @@ import {
 import { type Logger } from '@sap-ux/logger';
 import type { ConfirmQuestion, ExpandQuestion } from 'inquirer';
 import { t } from '../../i18n';
-import type { ServiceConfigQuestion, UiServiceAnswers } from '../../types';
-import { createAbapTarget, getServiceNameChoices, getValidationErrorLink } from '../prompt-helper';
+import { type ServiceConfigOptions, type ServiceConfigQuestion, type UiServiceAnswers } from '../../types';
+import {
+    createAbapTarget,
+    defaultOrShowAppGenLaunchQuestion,
+    defaultOrShowDraftQuestion,
+    getServiceNameChoices,
+    getValidationErrorLink
+} from '../prompt-helper';
 import { PromptState } from '../prompt-state';
 
 /**
  * Get the configuration questions.
  *
  * @param logger - logger instance to use for logging
+ * @param options - configuration options for prompts
  * @returns the configuration questions
  */
-export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
+export function getConfigQuestions(logger: Logger, options?: ServiceConfigOptions): ServiceConfigQuestion[] {
     PromptState.resetServiceConfig();
     let draftEnabled = true;
     const abapTarget = createAbapTarget(
@@ -67,7 +74,9 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
                             PromptState.serviceConfig.content =
                                 (await PromptState.systemSelection.objectGenerator?.getContent(packageValue)) ?? '';
                             const content = JSON.parse(PromptState.serviceConfig?.content);
-                            content.businessObject.projectionBehavior.withDraft = true;
+                            if (defaultOrShowDraftQuestion(options?.useDraftEnabled)) {
+                                content.businessObject.projectionBehavior.withDraft = true;
+                            }
                             PromptState.serviceConfig.content = JSON.stringify(content);
                             PromptState.serviceConfig.serviceName =
                                 content.businessService.serviceBinding.serviceBindingName;
@@ -102,6 +111,7 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
             }
         } as ExpandQuestion<UiServiceAnswers>,
         {
+            when: (): boolean => defaultOrShowDraftQuestion(options?.useDraftEnabled),
             name: 'draftEnabled',
             type: 'confirm',
             message: t('prompts.draftEnabled'),
@@ -132,6 +142,7 @@ export function getConfigQuestions(logger: Logger): ServiceConfigQuestion[] {
             }
         } as ConfirmQuestion<UiServiceAnswers>,
         {
+            when: (): boolean => defaultOrShowAppGenLaunchQuestion(options?.useLaunchGen),
             name: 'launchAppGen',
             type: 'confirm',
             message: t('prompts.launchAppGen'),
