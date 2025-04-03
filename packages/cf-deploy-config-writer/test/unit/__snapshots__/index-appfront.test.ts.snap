@@ -79,7 +79,7 @@ exports[`CF Writer App - Application Frontend Generate deployment configs - Add 
       \\"source\\": \\"^/sap/(.*)$\\",
       \\"target\\": \\"/sap/$1\\",
       \\"destination\\": \\"TestDestination\\",
-      \\"authenticationType\\": \\"xsuaa\\",
+      \\"authenticationType\\": \\"ias\\",
       \\"csrfProtection\\": false
     },
     {

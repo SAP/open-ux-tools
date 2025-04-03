@@ -648,12 +648,8 @@ export class MtaConfig {
 
         if (routerType === RouterModuleType.AppFront) {
             await this.addAppFrontAppRouter();
-            addMissingModules = false; // Use
         }
-
-        // Only Managed | Standalone should align missing resources | modules
         if (routerType !== RouterModuleType.AppFront) {
-            // Only update if managed | standalone
             if (addMissingModules) {
                 await this.cleanupMissingResources();
             }
@@ -979,9 +975,7 @@ export class MtaConfig {
         if (!this.resources.has(ManagedXSUAA)) {
             await this.addManagedUAAWithSecurity(true);
         }
-
         await this.updateServiceName('xsuaa', ManagedXSUAA);
-
         if (!this.resources.has(ManagedAppFront)) {
             await this.addAppFrontResource();
         }
@@ -1018,11 +1012,12 @@ export class MtaConfig {
                 }
                 await this.mta.addModule(appContentModule);
                 this.modules.set('com.sap.application.content:appfront', appContentModule);
+                this.dirty = true;
             }
         }
-        // Append XSUAA to module
+        // Append resources
         await this.updateServerModule('com.sap.application.content:appfront' as ModuleType, ManagedXSUAA, false);
-        this.dirty = true;
+        await this.updateServerModule('nodejs' as ModuleType, ManagedXSUAA, false);
     }
 
     /**

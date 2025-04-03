@@ -42,8 +42,6 @@ modules:
       - name: srv-api
         properties:
           srv-url: ${default-url}
-    requires:
-      - name: bookshop-auth
 resources:
   - name: <%- id %>-app-front
     type: org.cloudfoundry.managed-service

@@ -67,7 +67,7 @@ describe('CF Writer with CAP App Frontend', () => {
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(capPath);
             fsExtra.copySync(join(__dirname, '../sample/capwithfrontend'), capPath);
-            await generateAppConfig(
+            const localFs = await generateAppConfig(
                 {
                     appPath: join(capPath, 'app/lrop'),
                     destinationName: DefaultMTADestination,
@@ -79,8 +79,10 @@ describe('CF Writer with CAP App Frontend', () => {
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
             expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(commandRunnerMock).not.toHaveBeenCalled();
-            expect(unitTestFs.dump(capPath)).toMatchSnapshot();
-            expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
+            // expect(unitTestFs.dump(capPath)).toMatchSnapshot();
+            expect(localFs.read(join(capPath, 'app/lrop', 'xs-app.json'))).toMatchSnapshot();
+            expect(localFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(localFs.read(join(capPath, 'xs-security.json'))).toMatchSnapshot();
         });
 
         test('Generate CAP project with App Frontend Service', async () => {
@@ -99,7 +101,8 @@ describe('CF Writer with CAP App Frontend', () => {
                 logger
             );
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
-            expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot(); // Ensure it hasn't changed!
+            expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'xs-security.json'))).toMatchSnapshot();
             expect(getCapProjectTypeMock).toHaveBeenCalled();
             expect(commandRunnerMock).toHaveBeenCalled();
             expect(commandRunnerMock.mock.calls[0][0]).toStrictEqual('npm');

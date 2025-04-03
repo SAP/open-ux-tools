@@ -373,7 +373,10 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
             destination: cfConfig.destinationName,
             servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isDestinationFullUrl ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
             targetPath: `${cfConfig.isDestinationFullUrl ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
-            authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa'
+            authentication:
+                cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION
+                    ? 'none'
+                    : defaultProperties.authenticationType
         });
     } else {
         fs.copyTpl(

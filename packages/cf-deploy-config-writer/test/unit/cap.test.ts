@@ -100,7 +100,7 @@ describe('CF Writer', () => {
                     },
                     unitTestFs
                 )
-            ).rejects.toThrowError(/Something went wrong creating mta.yaml!/);
+            ).rejects.toThrowError(/An error occurred when creating the mta.yaml file/);
             expect(commandRunnerMock).toHaveBeenCalled();
         });
     });

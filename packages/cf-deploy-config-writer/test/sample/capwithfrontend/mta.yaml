@@ -12,9 +12,7 @@ build-parameters:
         - npm ci
         - npx -p @sap/cds-dk cds build --production
 modules:
-  # --------------------- SERVER MODULE ------------------------
   - name: cappapp-srv
-    # ------------------------------------------------------------
     type: nodejs
     path: gen/srv
     parameters:
@@ -22,11 +20,10 @@ modules:
     build-parameters:
       builder: npm-ci
     provides:
-      - name: srv-api      # required by consumers of CAP services (e.g. approuter)
+      - name: srv-api
         properties:
           srv-url: ${default-url}
-
-  - name: bookshop-app-content
+  - name: cappapp-app-content
     type: com.sap.application.content
     path: .
     requires:
@@ -39,7 +36,6 @@ modules:
         destinations:
           - name: ui5
             url: https://ui5.sap.com
-
 resources:
   - name: cappapp-auth
     type: org.cloudfoundry.managed-service
@@ -48,8 +44,11 @@ resources:
       service-plan: application
       path: ./xs-security.json
       config:
-        xsappname: bookshop-${org}-${space}
+        xsappname: cappapp-${org}-${space}
         tenant-mode: dedicated
-##########################################################################
-
-
+  - name: cappapp-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-name: cappapp-app-front-service
+      service-plan: developer
