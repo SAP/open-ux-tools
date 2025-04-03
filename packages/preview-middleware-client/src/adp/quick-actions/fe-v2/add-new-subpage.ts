@@ -63,7 +63,7 @@ export class AddNewSubpage extends AddNewSubpageBase<ODataMetaModelV2> {
         const entitySet = metaModel.getODataEntitySet(this.entitySet!) as EntitySet;
         const entityType = metaModel.getODataEntityType(entitySet.entityType) as EntityType;
 
-        for (const navProp of entityType?.navigationProperty || []) {
+        for (const navProp of entityType?.navigationProperty ?? []) {
             const associationEnd = metaModel.getODataAssociationEnd(entityType, navProp.name);
             if (associationEnd?.multiplicity !== '*') {
                 continue;
