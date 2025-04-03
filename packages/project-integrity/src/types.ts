@@ -2,6 +2,7 @@
  * Project settings when initializing project integrity.
  */
 export interface ProjectSettings {
+    projectRoot: string;
     /**
      * Path to the file where integrity data, like hash values, are stored
      */
@@ -24,6 +25,7 @@ export interface ProjectSettings {
 export interface Integrity {
     enabled: boolean;
     fileIntegrity: FileIntegrity[];
+    csnIntegrity: string;
     contentIntegrity: ContentIntegrity[];
 }
 
