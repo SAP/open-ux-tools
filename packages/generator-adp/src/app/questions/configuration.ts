@@ -273,7 +273,7 @@ export class ConfigPrompter {
             },
             choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
-            validate: (value: SourceApplication) => this.validateApplicationSelection(value),
+            validate: (value: SourceApplication) => this.validateAppPrompt(value),
             when: (answers: ConfigAnswers) =>
                 showApplicationQuestion(
                     answers,
@@ -308,7 +308,7 @@ export class ConfigPrompter {
                     return false;
                 }
 
-                const result = this.validateApplicationSelection(answers.application);
+                const result = this.validateAppPrompt(answers.application);
                 if (typeof result === 'string') {
                     throw new Error(result);
                 }
@@ -326,12 +326,12 @@ export class ConfigPrompter {
      * @param {SourceApplication} app - The selected application.
      * @returns A promise that resolves to true if valid, or an error message string if validation fails.
      */
-    private async validateApplicationSelection(app: SourceApplication): Promise<string | boolean> {
+    private async validateAppPrompt(app: SourceApplication): Promise<string | boolean> {
         if (!app) {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
 
-        const validationResult = await this.handleAppValidation(app);
+        const validationResult = await this.validateAppData(app);
 
         if (!isAppStudio()) {
             return validationResult;
@@ -428,14 +428,15 @@ export class ConfigPrompter {
      * @param {Application} app - The application to validate.
      * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
      */
-    private async handleAppValidation(app: SourceApplication): Promise<boolean | string> {
+    private async validateAppData(app: SourceApplication): Promise<boolean | string> {
         try {
             const sourceManifest = new SourceManifest(this.abapProvider, app.id, this.logger);
             const isSupported = await isAppSupported(this.abapProvider, app.id, this.logger);
 
             if (isSupported) {
                 this.appManifest = await sourceManifest.getManifest();
-                this.evaluateApplicationSupport(app);
+                this.validateManifest();
+                this.evaluateAppSupport(app);
             }
             this.isApplicationSupported = true;
         } catch (e) {
@@ -452,15 +453,13 @@ export class ConfigPrompter {
      *
      * @param {Application} application - The application data.
      */
-    private evaluateApplicationSupport(application: SourceApplication): void {
+    private evaluateAppSupport(application: SourceApplication): void {
         const systemVersion = this.ui5Info.systemVersion;
         const isFullSupport = this.ui5Info.isVersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
         const isPartialSupport =
             this.ui5Info.isVersionDetected && isFullSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
 
         this.setSupportFlags(application, isFullSupport, isPartialSupport);
-
-        this.validateSelectedApplication();
     }
 
     /**
@@ -540,7 +539,7 @@ export class ConfigPrompter {
      *
      * @returns {void} Returns when validation is complete.
      */
-    private validateSelectedApplication(): void {
+    private validateManifest(): void {
         if (!this.appManifest) {
             throw new Error(t('error.manifestCouldNotBeValidated'));
         }
