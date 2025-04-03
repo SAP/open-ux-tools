@@ -1155,18 +1155,14 @@ export class MtaConfig {
     }
 
     /**
-     * Retrieve the app-content module, found in all router types.
+     * Retrieve the app-content module, different types can be found.
      *
      * @returns {mta.Module} return the app-content module
      */
     private getAppContentModule(): undefined | mta.Module {
         // Default for managed and standalone
         let contentModule = this.modules.get('com.sap.application.content:resource');
-        if (!contentModule) {
-            // If none found, lets look for appfront module
-            contentModule = this.modules.get('com.sap.application.content:appfront');
-        }
-        return contentModule;
+        return (contentModule ??= this.modules.get('com.sap.application.content:appfront'));
     }
 }
 
