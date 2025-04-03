@@ -16,7 +16,8 @@ export interface ExtenControllerData {
 }
 
 export type DeferredExtendControllerData = {
-
+    codeRef: string;
+    viewId: string;
 };
 
 export default class ExtendControllerService {

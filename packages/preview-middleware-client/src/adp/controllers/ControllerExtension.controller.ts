@@ -42,11 +42,6 @@ type ControllerModel = JSONModel & {
     getProperty(sPath: '/controllerExtension'): string;
 };
 
-type ControllerRef = {
-    codeRef: string;
-    viewId: string;
-};
-
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
@@ -257,7 +252,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * @param controllerName Controller Name
      * @param controllerRef Controller reference
      */
-    private async createNewController(controllerName: string, controllerRef: ControllerRef): Promise<void> {
+    private async createNewController(controllerName: string, controllerRef: DeferredExtendControllerData): Promise<void> {
         try {
             await writeController({ controllerName });
 
@@ -279,9 +274,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
     /**
      * Resolves deferred value for plugin scenario
      *
-     * @param modifiedValue - modified value
+     * @param controllerRef Controller reference
      */
-    private resolveModifiedValue(controllerRef: ControllerRef): void {
+    private resolveModifiedValue(controllerRef: DeferredExtendControllerData): void {
         this.data.deferred.resolve(controllerRef);
     }
 }
