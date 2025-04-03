@@ -27,6 +27,7 @@ import type { CodeExtResponse, ControllersResponse } from '../api-handler';
 import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
+import type { ExtenControllerData, DeferredExtendControllerData } from '../extend-controller';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -41,15 +42,23 @@ type ControllerModel = JSONModel & {
     getProperty(sPath: '/controllerExtension'): string;
 };
 
+type ControllerRef = {
+    codeRef: string;
+    viewId: string;
+};
+
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
+    public readonly data: ExtenControllerData;
+
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, data: ExtenControllerData) {
         super(name);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel();
+        this.data = data;
     }
 
     /**
@@ -136,7 +145,16 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             const controllerName = this.model.getProperty('/newControllerName');
             const viewId = this.model.getProperty('/viewId');
 
-            await this.createNewController(controllerName, viewId);
+            const controllerRef = {
+                codeRef: `coding/${controllerName}.js`,
+                viewId
+            };
+
+            if(this.data) {
+                this.resolveModifiedValue(controllerRef);
+            } else {
+                await this.createNewController(controllerName, controllerRef);
+            }
         } else {
             const controllerPath = this.model.getProperty('/controllerPath');
             window.open(`vscode://file${controllerPath}`);
@@ -237,16 +255,11 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * Creates a new fragment for the specified control
      *
      * @param controllerName Controller Name
-     * @param viewId View Id
+     * @param controllerRef Controller reference
      */
-    private async createNewController(controllerName: string, viewId: string): Promise<void> {
+    private async createNewController(controllerName: string, controllerRef: ControllerRef): Promise<void> {
         try {
             await writeController({ controllerName });
-
-            const controllerRef = {
-                codeRef: `coding/${controllerName}.js`,
-                viewId
-            };
 
             const service = await this.rta.getService<ControllerExtensionService>('controllerExtension');
 
@@ -261,5 +274,14 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             await this.getControllers();
             this.handleError(e);
         }
+    }
+
+    /**
+     * Resolves deferred value for plugin scenario
+     *
+     * @param modifiedValue - modified value
+     */
+    private resolveModifiedValue(controllerRef: ControllerRef): void {
+        this.data.deferred.resolve(controllerRef);
     }
 }

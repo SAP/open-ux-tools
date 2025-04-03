@@ -12,6 +12,7 @@ import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
 import { ExtensionPointData } from './extension-point';
 import { AddFragmentData } from './add-fragment';
+import { ExtenControllerData } from './extend-controller';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
 
@@ -32,7 +33,7 @@ type Controller =
     | FileExistsDialog
     | AddSubpage;
 
-type DialogData = ExtensionPointData | AddFragmentData;
+type DialogData = ExtensionPointData | AddFragmentData | ExtenControllerData;
 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
@@ -100,7 +101,8 @@ export class DialogFactory {
                 controller = new ControllerExtension(
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
-                    rta
+                    rta,
+                    (data as ExtenControllerData)
                 );
                 break;
             case DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT:
