@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.12
+
+### Patch Changes
+
+-   6095875: fix: Cannot create a Fragment and Controller Extension when clicking create button in the dialog
+
+## 0.13.11
+
+### Patch Changes
+
+-   ed6c364: Reuse component detection
+
 ## 0.13.10
 
 ### Patch Changes

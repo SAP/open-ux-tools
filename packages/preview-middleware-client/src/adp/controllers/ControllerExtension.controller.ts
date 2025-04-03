@@ -128,8 +128,10 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * @param event Event
      */
     async onCreateBtnPress(event: Event) {
-        await super.onCreateBtnPressHandler();
         const source = event.getSource<Button>();
+
+        await super.onCreateBtnPressHandler();
+
         const controllerExists = this.model.getProperty('/controllerExists');
 
         if (!controllerExists) {
