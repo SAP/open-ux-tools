@@ -1,10 +1,9 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
-import type { FlexUISupportedSystem, TargetApplication } from '@sap-ux/adp-tooling';
+import type { FlexUISupportedSystem, SourceApplication } from '@sap-ux/adp-tooling';
 
 import { t } from '../../../utils/i18n';
-import type { AppIdentifier } from '../../app-identifier';
 
 /**
  * Evaluates a system's deployment and flexibility capabilities to generate relevant messages based on the system's characteristics.
@@ -55,6 +54,13 @@ export const systemAdditionalMessages = (
     };
 };
 
+interface SupportFlags {
+    appSync: boolean;
+    isV4AppInternalMode: boolean;
+    isSupported: boolean;
+    isPartiallySupported: boolean;
+}
+
 /**
  * Provides additional messages related to the application based on its support and sync status.
  *
@@ -64,23 +70,20 @@ export const systemAdditionalMessages = (
  * @returns {object | undefined} An object containing a message and its severity level, or undefined if no message is necessary.
  */
 export const appAdditionalMessages = (
-    app: TargetApplication,
-    appIdentifier: AppIdentifier,
+    app: SourceApplication,
+    { appSync, isSupported, isPartiallySupported, isV4AppInternalMode }: SupportFlags,
     isApplicationSupported: boolean
 ): { message: string; severity: Severity } | undefined => {
     if (!app) {
         return undefined;
     }
 
-    if (appIdentifier.appSync && isApplicationSupported) {
+    if (appSync && isApplicationSupported) {
         return {
             message: t('prompts.appInfoLabel'),
             severity: Severity.information
         };
     }
-
-    const isSupported = appIdentifier.getIsSupported();
-    const isPartiallySupported = appIdentifier.getIsPartiallySupported();
 
     if (!isSupported && !isPartiallySupported && isApplicationSupported) {
         return {
@@ -96,7 +99,7 @@ export const appAdditionalMessages = (
         };
     }
 
-    if (appIdentifier.v4AppInternalMode) {
+    if (isV4AppInternalMode) {
         return {
             message: t('prompts.v4AppNotOfficialLabel'),
             severity: Severity.warning

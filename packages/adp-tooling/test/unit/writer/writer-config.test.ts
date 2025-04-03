@@ -2,7 +2,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer, UI5VersionManager, getAbapTarget, getConfig } from '../../../src';
-import type { ConfigAnswers, PackageJson, TargetApplication } from '../../../src';
+import type { ConfigAnswers, PackageJson, SourceApplication } from '../../../src';
 
 jest.mock('../../../src/client/abap-provider.ts', () => ({
     getAbapTarget: jest.fn()
@@ -23,7 +23,7 @@ const mockAbapProvider = {
 const getAbapTargetMock = getAbapTarget as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
-    application: { id: '1' } as TargetApplication,
+    application: { id: '1' } as SourceApplication,
     system: 'SYS010',
     password: '',
     username: ''

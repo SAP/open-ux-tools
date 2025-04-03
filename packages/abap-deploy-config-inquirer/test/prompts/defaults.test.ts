@@ -6,7 +6,7 @@ import {
     defaultTransportRequestChoice
 } from '../../src/prompts/defaults';
 import { getAbapSystemChoices } from '../../src/prompts/helpers';
-import { mockTargetSystems } from '../fixtures/targets';
+import { mockSourceSystems } from '../fixtures/targets';
 import { PromptState } from '../../src/prompts/prompt-state';
 import type { TransportConfig } from '../../src/types';
 import { PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
@@ -21,9 +21,9 @@ describe('defaults', () => {
             undefined,
             {
                 systemName: 'mockDefaultTarget',
-                abapTarget: mockTargetSystems[0]
+                abapTarget: mockSourceSystems[0]
             },
-            mockTargetSystems
+            mockSourceSystems
         );
 
         const defaultTarget = defaultTargetSystem(abapSystemChoices);

@@ -102,10 +102,10 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
-    application: TargetApplication;
+    application: SourceApplication;
 }
 
-export interface TargetApplication {
+export interface SourceApplication {
     id: string;
     title: string;
     ach: string;

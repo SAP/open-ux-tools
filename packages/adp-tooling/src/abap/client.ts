@@ -1,11 +1,17 @@
 import { type AbapServiceProvider, AdtCatalogService, UI5RtVersionService } from '@sap-ux/axios-extension';
+
 import type { FlexUISupportedSystem } from '../types';
+
+const FILTER = {
+    'scheme': 'http://www.sap.com/adt/categories/ui_flex',
+    'term': 'dta_folder'
+};
 
 /**
  * Fetches system supports Flex UI features.
  *
- * @param provider
- * @param isCustomerBase
+ * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
+ * @param {boolean} isCustomerBase - Indicates whether the adaptation layer is CUSTOMER_BASE.
  * @returns {Promise<FlexUISupportedSystem | undefined>} settings indicating support for onPremise and UI Flex capabilities.
  */
 export async function getFlexUISupportedSystem(
@@ -18,29 +24,26 @@ export async function getFlexUISupportedSystem(
             isUIFlex: true
         };
     }
-    const FILTER = {
-        'scheme': 'http://www.sap.com/adt/categories/ui_flex',
-        'term': 'dta_folder'
-    };
-    const acceptHeaders = {
+
+    const response = await provider.get(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, {
         headers: {
             Accept: 'application/*'
         }
-    };
-    const response = await provider.get(AdtCatalogService.ADT_DISCOVERY_SERVICE_PATH, acceptHeaders);
+    });
 
-    return { isOnPremise: response.data.includes(FILTER.term), isUIFlex: response.data.includes(FILTER.scheme) };
+    const isOnPremise = response.data.includes(FILTER.term);
+    const isUIFlex = response.data.includes(FILTER.scheme);
+
+    return { isOnPremise, isUIFlex };
 }
 
 /**
  * Fetches system UI5 Version from UI5RtVersionService.
  *
- * @param provider
- * @returns {string | undefined} system UI5 version
+ * @param {AbapServiceProvider} provider - Instance of the ABAP provider.
+ * @returns {string | undefined} System UI5 version.
  */
 export async function getSystemUI5Version(provider: AbapServiceProvider): Promise<string | undefined> {
     const service = await provider.getAdtService<UI5RtVersionService>(UI5RtVersionService);
-    const version = await service?.getUI5Version();
-
-    return version;
+    return service?.getUI5Version();
 }

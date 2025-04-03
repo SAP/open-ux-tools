@@ -6,7 +6,7 @@ import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { TargetSystems, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import { SourceSystems, generate, getConfig } from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
     sendTelemetry,
@@ -62,7 +62,11 @@ export default class extends Generator {
     /**
      * EndpointsManager instance for managing system endpoints.
      */
-    private targetSystems: TargetSystems;
+    private targetSystems: SourceSystems;
+    /**
+     * Instance of the configuration prompter class.
+     */
+    private prompter: ConfigPrompter;
 
     /**
      * Creates an instance of the generator.
@@ -90,7 +94,7 @@ export default class extends Generator {
 
         this.layer = await getFlexLayer();
 
-        this.targetSystems = new TargetSystems(this.toolsLogger);
+        this.targetSystems = new SourceSystems(this.toolsLogger);
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -103,10 +107,10 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
+        this.prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
         const isCLI = getHostEnvironment() === hostEnvironment.cli;
 
-        const configQuestions = prompter.getPrompts({
+        const configQuestions = this.prompter.getPrompts({
             appValidationCli: { hide: !isCLI },
             systemValidationCli: { hide: !isCLI }
         });
@@ -119,14 +123,13 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
-            const provider = await getConfiguredProvider(this.configAnswers, this.toolsLogger);
             const projectName = getDefaultProjectName(this.destinationPath());
             const namespace = generateValidNamespace(projectName, this.layer);
             this.targetFolder = this.destinationPath(projectName);
 
             const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
             const config = await getConfig({
-                provider,
+                provider: this.prompter.provider,
                 configAnswers: this.configAnswers,
                 layer: this.layer,
                 defaults: { namespace },

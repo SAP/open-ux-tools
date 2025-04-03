@@ -5,7 +5,7 @@ import {
     isFeatureSupportedVersion,
     removeTimestampFromVersion
 } from '../../../src';
-import { UI5VersionManager } from '../../../src/ui5/ui5-version-manager';
+import { UI5VersionManager } from '../../../src/ui5/ui5-version-info';
 import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetchers';
 import { SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../../../src/base/constants';
 

@@ -2,11 +2,11 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer } from '../types';
-import { getAbapTarget } from '../client';
+import { getAbapTarget } from '../abap';
 import { getCustomConfig } from './project-utils';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
 import type { AdpWriterConfig, ConfigAnswers, PackageJson } from '../types';
-import { UI5VersionManager, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
+import { UI5VersionInfo, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
 
 interface ConfigOptions {
     /**
@@ -64,7 +64,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     const isCloudProject = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
-    const ui5Manager = UI5VersionManager.getInstance(layer);
+    const ui5Manager = UI5VersionInfo.getInstance(layer);
     const ui5Version = isCloudProject ? ui5Manager.latestVersion : ui5Manager.getVersionToBeUsed('', isCustomerBase);
 
     return {

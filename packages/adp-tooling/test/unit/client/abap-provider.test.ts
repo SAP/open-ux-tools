@@ -4,7 +4,7 @@ import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import type { RequestOptions } from '../../../src';
-import { TargetSystems, getAbapTarget, getConfiguredProvider } from '../../../src';
+import { SourceSystems, getAbapTarget, getConfiguredProvider } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -44,7 +44,7 @@ describe('getAbapTarget', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        getSystemByNameSpy = jest.spyOn(TargetSystems.prototype, 'getSystemByName');
+        getSystemByNameSpy = jest.spyOn(SourceSystems.prototype, 'getSystemByName');
     });
 
     it('should return a destination target when in AppStudio', async () => {
@@ -90,7 +90,7 @@ describe('getConfiguredProvider', () => {
     beforeEach(() => {
         mockIsAppStudio.mockReturnValue(false);
         createProviderMock.mockResolvedValue(dummyProvider);
-        jest.spyOn(TargetSystems.prototype, 'getSystemByName').mockResolvedValue(dummyDetails);
+        jest.spyOn(SourceSystems.prototype, 'getSystemByName').mockResolvedValue(dummyDetails);
     });
 
     afterEach(() => {

@@ -1,13 +1,16 @@
 import {
-    UI5VersionManager,
+    UI5VersionInfo,
     FlexLayer,
-    TargetManifest,
     getConfiguredProvider,
     getEndpointNames,
     getFlexUISupportedSystem,
     getSystemUI5Version,
     isFeatureSupportedVersion,
-    loadApps
+    loadApps,
+    SourceManifest,
+    isAppSupported,
+    isSyncLoadedView,
+    isV4Application
 } from '@sap-ux/adp-tooling';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -15,7 +18,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { ConfigAnswers, FlexUISupportedSystem, TargetApplication, TargetSystems } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexUISupportedSystem, SourceApplication, SourceSystems } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
@@ -27,7 +30,6 @@ import type {
 } from '../types';
 import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
-import { AppIdentifier } from '../app-identifier';
 import { getApplicationChoices } from './helper/choices';
 import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
 import { appAdditionalMessages, systemAdditionalMessages } from './helper/additional-messages';
@@ -47,9 +49,13 @@ export class ConfigPrompter {
      */
     private abapProvider: AbapServiceProvider;
     /**
+     * Application manifest.
+     */
+    private appManifest: Manifest | undefined;
+    /**
      * Loaded target applications for a system.
      */
-    private targetApps: TargetApplication[];
+    private targetApps: SourceApplication[];
     /**
      * Flag indicating that system login is successful.
      */
@@ -71,25 +77,59 @@ export class ConfigPrompter {
      */
     private isApplicationSupported: boolean;
     /**
-     * Instance of AppIdentifier to validate application support.
+     * Indicates whether views are loaded synchronously.
      */
-    private readonly appIdentifier: AppIdentifier;
+    private containsSyncViews = false;
+    /**
+     * Flag indicating if the application is an internal V4 application.
+     */
+    private isV4AppInternalMode = false;
+    /**
+     * Flag indicating that full adaptation-over-adaptation is supported.
+     */
+    private isSupported = false;
+    /**
+     * Flag indicating that only partial adaptation-over-adaptation is supported.
+     */
+    private isPartiallySupported = false;
     /**
      * UI5 version manager for handling version-related validations.
      */
-    private readonly ui5Manager: UI5VersionManager;
+    private readonly ui5Info: UI5VersionInfo;
+
+    /**
+     * Returns the configured abap provider instance.
+     */
+    public get provider(): AbapServiceProvider {
+        return this.abapProvider;
+    }
+
+    /**
+     * Returns the loaded application manifest.
+     */
+    public get manifest(): Manifest {
+        return this.manifest;
+    }
+
+    /**
+     * Indicates whether the application loads views synchronously.
+     *
+     * @returns {boolean} True if views are sync-loaded.
+     */
+    public get hasSyncViews(): boolean {
+        return this.containsSyncViews;
+    }
 
     /**
      * Creates an instance of ConfigPrompter.
      *
-     * @param {TargetSystems} targetSystems - The target system class to retrieve system endpoints.
+     * @param {SourceSystems} targetSystems - The target system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
      */
-    constructor(private readonly targetSystems: TargetSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
-        this.appIdentifier = new AppIdentifier(layer);
+    constructor(private readonly targetSystems: SourceSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-        this.ui5Manager = UI5VersionManager.getInstance(layer);
+        this.ui5Info = UI5VersionInfo.getInstance(layer);
     }
 
     /**
@@ -233,7 +273,7 @@ export class ConfigPrompter {
             },
             choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
-            validate: (value: TargetApplication) => this.validateApplicationSelection(value),
+            validate: (value: SourceApplication) => this.validateApplicationSelection(value),
             when: (answers: ConfigAnswers) =>
                 showApplicationQuestion(
                     answers,
@@ -242,7 +282,16 @@ export class ConfigPrompter {
                     this.isLoginSuccessful
                 ),
             additionalMessages: (app) =>
-                appAdditionalMessages(app as TargetApplication, this.appIdentifier, this.isApplicationSupported)
+                appAdditionalMessages(
+                    app as SourceApplication,
+                    {
+                        appSync: this.containsSyncViews,
+                        isV4AppInternalMode: this.isV4AppInternalMode,
+                        isSupported: this.getIsSupported(),
+                        isPartiallySupported: this.getIsPartiallySupported()
+                    },
+                    this.isApplicationSupported
+                )
         };
     }
 
@@ -274,10 +323,10 @@ export class ConfigPrompter {
      *
      * Checks if the application is provided and then evaluates support based on its manifest.
      *
-     * @param {TargetApplication} app - The selected application.
+     * @param {SourceApplication} app - The selected application.
      * @returns A promise that resolves to true if valid, or an error message string if validation fails.
      */
-    private async validateApplicationSelection(app: TargetApplication): Promise<string | boolean> {
+    private async validateApplicationSelection(app: SourceApplication): Promise<string | boolean> {
         if (!app) {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
@@ -376,17 +425,17 @@ export class ConfigPrompter {
     /**
      * Validates the selected application to ensure it is supported.
      *
-     * @param {Application} value - The application to validate.
+     * @param {Application} app - The application to validate.
      * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
      */
-    private async handleAppValidation(value: TargetApplication): Promise<boolean | string> {
+    private async handleAppValidation(app: SourceApplication): Promise<boolean | string> {
         try {
-            const targetManifest = new TargetManifest(this.abapProvider, this.logger);
-            const isSupported = await targetManifest.isAppSupported(value.id);
+            const sourceManifest = new SourceManifest(this.abapProvider, app.id, this.logger);
+            const isSupported = await isAppSupported(this.abapProvider, app.id, this.logger);
 
             if (isSupported) {
-                const manifest = await targetManifest.getManifest(value.id);
-                this.evaluateApplicationSupport(manifest, value);
+                this.appManifest = await sourceManifest.getManifest();
+                this.evaluateApplicationSupport(app);
             }
             this.isApplicationSupported = true;
         } catch (e) {
@@ -401,16 +450,17 @@ export class ConfigPrompter {
     /**
      * Evaluate if the application version supports certain features.
      *
-     * @param {Manifest} manifest - The application manifest.
      * @param {Application} application - The application data.
      */
-    private evaluateApplicationSupport(manifest: Manifest | undefined, application: TargetApplication): void {
-        const systemVersion = this.ui5Manager.systemVersion;
-        const isFullSupport = this.ui5Manager.isVersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
+    private evaluateApplicationSupport(application: SourceApplication): void {
+        const systemVersion = this.ui5Info.systemVersion;
+        const isFullSupport = this.ui5Info.isVersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
         const isPartialSupport =
-            this.ui5Manager.isVersionDetected && isFullSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
+            this.ui5Info.isVersionDetected && isFullSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
 
-        this.appIdentifier.validateSelectedApplication(application, manifest, isFullSupport, isPartialSupport);
+        this.setSupportFlags(application, isFullSupport, isPartialSupport);
+
+        this.validateSelectedApplication();
     }
 
     /**
@@ -457,10 +507,10 @@ export class ConfigPrompter {
     private async validateSystemVersion(): Promise<void> {
         try {
             const version = await getSystemUI5Version(this.abapProvider);
-            await this.ui5Manager.getRelevantVersions(version);
+            await this.ui5Info.getRelevantVersions(version);
         } catch (e) {
             this.logger.debug(`Could not fetch system version: ${e.message}`);
-            await this.ui5Manager.getRelevantVersions();
+            await this.ui5Info.getRelevantVersions();
         }
     }
 
@@ -482,5 +532,65 @@ export class ConfigPrompter {
                 return;
             }
         }
+    }
+
+    /**
+     * Validates the selected application for adaptation projects, checking for specific support flags
+     * and validating the application manifest.
+     *
+     * @returns {void} Returns when validation is complete.
+     */
+    private validateSelectedApplication(): void {
+        if (!this.appManifest) {
+            throw new Error(t('error.manifestCouldNotBeValidated'));
+        }
+
+        if (this.appManifest['sap.ui5']) {
+            if (this.appManifest['sap.ui5']?.flexEnabled === false) {
+                throw new Error(t('error.appDoesNotSupportAdaptation'));
+            }
+        }
+    }
+
+    /**
+     * Sets the support flags for given application.
+     *
+     * @param {SourceApplication} application - The application to validate.
+     * @param {boolean} isFullSupport - Flag to check for full AdpOverAdp support.
+     * @param {boolean} isPartialSupport - Flag to check for partial AdpOverAdp support.
+     * @returns {void} Returns when flags are set.
+     */
+    private setSupportFlags(application: SourceApplication, isFullSupport: boolean, isPartialSupport: boolean): void {
+        this.isSupported = !(isFullSupport && application.fileType === 'appdescr_variant');
+        this.isPartiallySupported = isPartialSupport && application.fileType === 'appdescr_variant';
+        this.isV4AppInternalMode = isV4Application(this.appManifest) && !this.isCustomerBase;
+        this.containsSyncViews = isSyncLoadedView(this.appManifest?.['sap.ui5']);
+    }
+
+    /**
+     * Determines if adaptation over adaptation (Adp over Adp) is fully supported.
+     *
+     * @returns {boolean} True if fully supported and not partially supported, otherwise false.
+     */
+    private getIsSupported(): boolean {
+        return this.isSupported && !this.isPartiallySupported;
+    }
+
+    /**
+     * Determines if there is partial support for adaptation over adaptation (Adp over Adp).
+     *
+     * @returns {boolean} True if partially supported, otherwise false.
+     */
+    private getIsPartiallySupported(): boolean {
+        return this.isPartiallySupported;
+    }
+
+    /**
+     * Indicates whether the app is a V4 application in internal mode (i.e., not customer base).
+     *
+     * @returns {boolean}
+     */
+    private getV4AppInternalMode(): boolean {
+        return this.isV4AppInternalMode;
     }
 }

@@ -15,11 +15,11 @@ interface VersionLabels {
  * This class provides methods to fetch and validate UI5 versions, retrieve public and internal versions,
  * and format or modify version strings as per specific requirements like snapshots.
  *
- * @class UI5VersionManager
+ * @class UI5VersionInfo
  */
-export class UI5VersionManager {
+export class UI5VersionInfo {
     /** Singleton instance */
-    private static instance: UI5VersionManager;
+    private static instance: UI5VersionInfo;
 
     /** Latest public UI5 version */
     public latestVersion: string;
@@ -54,11 +54,11 @@ export class UI5VersionManager {
      * @param {FlexLayer} layer - Used only during first initialization.
      * @returns {UI5VersionManager} Instance.
      */
-    public static getInstance(layer: FlexLayer): UI5VersionManager {
-        if (!UI5VersionManager.instance) {
-            UI5VersionManager.instance = new UI5VersionManager(layer);
+    public static getInstance(layer: FlexLayer): UI5VersionInfo {
+        if (!UI5VersionInfo.instance) {
+            UI5VersionInfo.instance = new UI5VersionInfo(layer);
         }
-        return UI5VersionManager.instance;
+        return UI5VersionInfo.instance;
     }
 
     /**
@@ -69,7 +69,7 @@ export class UI5VersionManager {
     public async getPublicVersions(): Promise<UI5Version> {
         if (!this.publicVersions) {
             this.publicVersions = await fetchPublicVersions();
-            this.latestVersion = this.publicVersions?.['latest']['version'];
+            // this.latestVersion = this.publicVersions?.['latest']['version'];
         }
         return this.publicVersions;
     }
@@ -82,9 +82,9 @@ export class UI5VersionManager {
      *
      * @returns {Promise<string[]>} A promise that resolves to an array of supported internal UI5 version strings.
      */
-    private async getInternalVersions(): Promise<string[]> {
+    private async getInternalVersions(latestVersion: string): Promise<string[]> {
         if (!this.releasedVersions) {
-            this.releasedVersions = await fetchInternalVersions(this.latestVersion);
+            this.releasedVersions = await fetchInternalVersions(latestVersion);
         }
         return this.releasedVersions.filter(isFeatureSupportedVersion.bind(this, '1.71.0'));
     }
@@ -161,13 +161,14 @@ export class UI5VersionManager {
     public async getRelevantVersions(systemVersion?: string): Promise<string[]> {
         const version = this.checkSystemVersionPattern(systemVersion);
         const publicVersions = await this.getPublicVersions();
+        const latestVersion = publicVersions?.latest?.version;
 
         let versions: string[];
 
         const { formattedVersion, systemSnapshotLabel, systemLatestLabel } = this.getVersionLabels(version);
 
         if (!this.isCustomerBase) {
-            versions = await this.getInternalVersions();
+            versions = await this.getInternalVersions(latestVersion);
             if (version) {
                 const regex = new RegExp(`${formattedVersion} `, 'g');
                 versions = versions.map((v) =>
@@ -180,7 +181,7 @@ export class UI5VersionManager {
             versions = await this.getHigherVersions(formattedVersion);
             versions.unshift(buildSystemVersionLabel(formattedVersion, systemSnapshotLabel, systemLatestLabel));
         } else {
-            versions = [`${publicVersions.latest.version} ${LATEST_VERSION}`];
+            versions = [`${latestVersion} ${LATEST_VERSION}`];
         }
         return [...new Set(versions)];
     }

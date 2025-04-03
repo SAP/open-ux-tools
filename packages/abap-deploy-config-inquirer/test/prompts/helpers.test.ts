@@ -3,7 +3,7 @@ import { getAbapSystemChoices, getPackageChoices, updatePromptStateUrl } from '.
 import { PromptState } from '../../src/prompts/prompt-state';
 import { queryPackages } from '../../src/utils';
 import { mockDestinations } from '../fixtures/destinations';
-import { mockTargetSystems } from '../fixtures/targets';
+import { mockSourceSystems } from '../fixtures/targets';
 
 jest.mock('../../src/utils', () => ({
     queryPackages: jest.fn()
@@ -23,9 +23,9 @@ describe('helpers', () => {
             } as any;
             const backendTarget = {
                 serviceProvider: mockServiceProvider,
-                abapTarget: mockTargetSystems[1]
+                abapTarget: mockSourceSystems[1]
             };
-            const systemChoices = await getAbapSystemChoices(undefined, backendTarget, mockTargetSystems);
+            const systemChoices = await getAbapSystemChoices(undefined, backendTarget, mockSourceSystems);
             expect(systemChoices).toMatchInlineSnapshot(`
                 Array [
                   Object {
@@ -67,7 +67,7 @@ describe('helpers', () => {
                 ]
             `);
             const defaultSystemChoice = systemChoices.find((choice) => choice.isDefault);
-            expect(defaultSystemChoice?.value).toBe(mockTargetSystems[1].url);
+            expect(defaultSystemChoice?.value).toBe(mockSourceSystems[1].url);
         });
 
         it('should return backend target choices with new target not saved in store at the top', async () => {
@@ -84,7 +84,7 @@ describe('helpers', () => {
                     userDisplayName: 'mockUser'
                 }
             };
-            const systemChoices = await getAbapSystemChoices(undefined, backendTarget, mockTargetSystems);
+            const systemChoices = await getAbapSystemChoices(undefined, backendTarget, mockSourceSystems);
             expect(systemChoices).toMatchInlineSnapshot(`
                 Array [
                   Object {
@@ -136,7 +136,7 @@ describe('helpers', () => {
         });
 
         it('should return backend target choices (no backend target / default)', async () => {
-            const systemChoices = await getAbapSystemChoices(undefined, undefined, mockTargetSystems);
+            const systemChoices = await getAbapSystemChoices(undefined, undefined, mockSourceSystems);
             expect(systemChoices).toMatchInlineSnapshot(`
                 Array [
                   Object {

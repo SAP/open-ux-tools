@@ -1,6 +1,6 @@
 import { AuthenticationType } from '@sap-ux/store';
 
-export const mockTargetSystems = [
+export const mockSourceSystems = [
     {
         name: 'target1',
         url: 'https://mock.url.target1.com',
