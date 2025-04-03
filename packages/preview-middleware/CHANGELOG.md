@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.11
+
+### Patch Changes
+
+-   9522deb: fix: Cannot create a Extension Point fragment when clicking create button in the dialog
+
 ## 0.19.10
 
 ### Patch Changes
