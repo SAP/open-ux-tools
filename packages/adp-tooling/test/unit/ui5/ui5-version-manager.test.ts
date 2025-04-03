@@ -5,7 +5,7 @@ import {
     isFeatureSupportedVersion,
     removeTimestampFromVersion
 } from '../../../src';
-import { UI5VersionManager } from '../../../src/ui5/ui5-version-info';
+import { UI5VersionInfo } from '../../../src/ui5/ui5-version-info';
 import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetchers';
 import { SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../../../src/base/constants';
 
@@ -38,8 +38,8 @@ const buildSystemVersionLabelMock = buildSystemVersionLabel as jest.Mock;
 const isFeatureSupportedVersionMock = isFeatureSupportedVersion as jest.Mock;
 const removeTimestampFromVersionMock = removeTimestampFromVersion as jest.Mock;
 
-describe('UI5VersionManager', () => {
-    const manager = UI5VersionManager.getInstance(FlexLayer.CUSTOMER_BASE);
+describe('UI5VersionInfo', () => {
+    const manager = UI5VersionInfo.getInstance(FlexLayer.CUSTOMER_BASE);
 
     beforeEach(() => {
         jest.resetModules();
@@ -77,7 +77,7 @@ describe('UI5VersionManager', () => {
 
     describe('getInternalVersions', () => {
         it('should return internal versions filtered by feature support', async () => {
-            const result = await (manager as any).getInternalVersions();
+            const result = await (manager as any).getInternalVersions('1.120.0');
             expect(result).toEqual(mockInternalVersions);
             expect(fetchInternalVersionsMock).toHaveBeenCalledWith('1.120.0');
         });
