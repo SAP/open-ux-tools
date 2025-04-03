@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.12
+
+### Patch Changes
+
+-   3727441: fix: CPE Add Subpage Quick Action not displayed for SAP Fiori Elements for OData V4 applications in Adaptation Projects, if current page has `contextPath` defined in manifest instead of `entitySet`.
+
 ## 0.19.11
 
 ### Patch Changes
