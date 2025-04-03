@@ -3,8 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import type { RequestOptions } from '../../../src';
-import { SourceSystems, getAbapTarget, getConfiguredProvider } from '../../../src';
+import { getAbapTarget, getConfiguredProvider } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -16,13 +15,9 @@ jest.mock('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn()
 }));
 
-const dummyDetails = {
-    Name: 'SYS_010',
-    Client: '010',
-    Url: 'http://sys010.com',
-    Authentication: 'Basic',
-    Credentials: { username: 'storedUser', password: 'storedPass' }
-};
+jest.mock('../../../src/abap/target.ts', () => ({
+    getAbapTarget: jest.fn()
+}));
 
 const logger = {
     error: jest.fn(),
@@ -34,63 +29,19 @@ const logger = {
 const dummyProvider = {} as unknown as AbapServiceProvider;
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
+const getAbapTargetMock = getAbapTarget as jest.Mock;
 const createProviderMock = createAbapServiceProvider as jest.Mock;
 
-const system = dummyDetails.Name;
-const client = dummyDetails.Client;
-
-describe('getAbapTarget', () => {
-    let getSystemByNameSpy: jest.SpyInstance;
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        getSystemByNameSpy = jest.spyOn(SourceSystems.prototype, 'getSystemByName');
-    });
-
-    it('should return a destination target when in AppStudio', async () => {
-        mockIsAppStudio.mockReturnValue(true);
-        getSystemByNameSpy.mockResolvedValue(dummyDetails);
-
-        const target = await getAbapTarget(system, logger);
-
-        expect(target).toEqual({ destination: system });
-    });
-
-    it('should return an AbapTarget with auth when not in AppStudio', async () => {
-        mockIsAppStudio.mockReturnValue(false);
-        getSystemByNameSpy.mockResolvedValue(dummyDetails);
-        const requestOptions: RequestOptions = {};
-
-        const target = await getAbapTarget(system, logger, requestOptions, client);
-
-        expect(target).toEqual({
-            client,
-            url: 'http://sys010.com',
-            authenticationType: 'Basic'
-        });
-        expect(requestOptions.auth).toEqual({
-            username: 'storedUser',
-            password: 'storedPass'
-        });
-    });
-
-    it('should throw an error if system details are not found in non-AppStudio', async () => {
-        const system = 'NonExisting';
-        mockIsAppStudio.mockReturnValue(false);
-        getSystemByNameSpy.mockResolvedValue(undefined);
-
-        await expect(getAbapTarget(system, logger)).rejects.toThrow(`No system details found for system: ${system}`);
-    });
-});
+const system = 'SYS_010';
+const client = '010';
+const username = 'user1';
+const password = 'pass1';
 
 describe('getConfiguredProvider', () => {
-    const username = 'user1';
-    const password = 'pass1';
-
     beforeEach(() => {
         mockIsAppStudio.mockReturnValue(false);
         createProviderMock.mockResolvedValue(dummyProvider);
-        jest.spyOn(SourceSystems.prototype, 'getSystemByName').mockResolvedValue(dummyDetails);
+        getAbapTargetMock.mockResolvedValue({ system, client });
     });
 
     afterEach(() => {
