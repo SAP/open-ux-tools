@@ -12,7 +12,7 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        // eslint-disable-next-line @typescript-eslint/no-var-requires
+        // eslint-disable-next-line @typescript-eslint/no-require-imports
         Mta: require('./mockMta').MockMta
     };
 });
@@ -36,7 +36,7 @@ describe('CF Writer', () => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
         unitTestFs = create(createStorage());
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
+        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 }) as any);
         isAppStudioMock.mockReturnValue(false);
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });
@@ -88,7 +88,7 @@ describe('CF Writer', () => {
         });
 
         test('Validate error is thrown if cds fails', async () => {
-            spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ error: 1 } as any));
+            spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ error: 1 }) as any);
             const capPath = join(outputDir, 'capcds');
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(capPath);

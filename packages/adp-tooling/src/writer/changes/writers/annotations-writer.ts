@@ -13,7 +13,10 @@ export class AnnotationsWriter implements IWriter<AnnotationsData> {
      * @param {Editor} fs - The filesystem editor instance.
      * @param {string} projectPath - The root path of the project.
      */
-    constructor(private fs: Editor, private projectPath: string) {}
+    constructor(
+        private fs: Editor,
+        private projectPath: string
+    ) {}
 
     /**
      * Constructs the content for an annotation change based on provided data.

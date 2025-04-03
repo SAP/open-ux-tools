@@ -69,7 +69,7 @@ export function ui5VersionsGrouped(
                           })})`
                         : mainV.version,
                     value: mainV.version
-                } as UI5VersionChoice)
+                }) as UI5VersionChoice
         );
     const notMaintChoices = versions
         .filter((v) => v.maintained === false)
@@ -83,7 +83,7 @@ export function ui5VersionsGrouped(
                           )})`
                         : mainV.version,
                     value: mainV.version
-                } as UI5VersionChoice)
+                }) as UI5VersionChoice
         );
 
     if (includeSeparators) {

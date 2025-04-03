@@ -118,7 +118,7 @@ export async function convertQuestion<T extends Answers>(
         name: question.name,
         message: await extractMessage(question, answers),
         validate: async (value: unknown) =>
-            isFunction(question.validate) ? await question.validate(value, answers) : question.validate ?? true,
+            isFunction(question.validate) ? await question.validate(value, answers) : (question.validate ?? true),
         initial: () => (isFunction(question.default) ? question.default(answers) : question.default)
     };
     if (question.choices || question.source) {

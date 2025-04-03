@@ -166,8 +166,8 @@ export function getPackageAnswer(previousAnswers?: AbapDeployConfigAnswersIntern
     return (
         statePackage ??
         (previousAnswers?.packageInputChoice === PackageInputChoices.ListExistingChoice
-            ? previousAnswers?.packageAutocomplete ?? ''
-            : previousAnswers?.packageManual ?? '')
+            ? (previousAnswers?.packageAutocomplete ?? '')
+            : (previousAnswers?.packageManual ?? ''))
     );
 }
 

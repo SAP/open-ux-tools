@@ -62,7 +62,8 @@ function loadZoweSecretSdk(log: Logger): typeof zoweKeyring | undefined {
                     log.info(`Attempting to load Zowe secrets SDK from: ${path}`);
                     return typeof __non_webpack_require__ === 'function'
                         ? __non_webpack_require__(path)
-                        : require(path);
+                        : // eslint-disable-next-line @typescript-eslint/no-require-imports
+                          require(path);
                 } catch (fallbackError) {
                     log.warn(`Failed to load Zowe secrets SDK from ${path}: ${errorString(fallbackError)}`);
                 }

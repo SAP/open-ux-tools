@@ -2,12 +2,11 @@ import supertest from 'supertest';
 import express from 'express';
 import type { Router } from 'express';
 import { promises } from 'fs';
-import { join } from 'path';
+import path, { join } from 'path';
 import { getWebappPath } from '@sap-ux/project-access';
 import type { SuperTest, Test } from 'supertest';
 import * as sapCardsGenerator from '../../src';
 import * as utils from '../../src/utilities';
-import path from 'path';
 import os from 'os';
 
 jest.mock('fs', () => ({

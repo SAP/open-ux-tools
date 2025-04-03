@@ -1,15 +1,15 @@
-import type { Control, ExternalAction } from '@sap-ux-private/control-property-editor-common';
+import type { Control, ExternalAction, Properties } from '@sap-ux-private/control-property-editor-common';
 import {
     controlSelected,
     propertyChanged,
     selectControl,
     reportTelemetry,
-    Properties,
     changeProperty,
     PropertyType
 } from '@sap-ux-private/control-property-editor-common';
 import { buildControlData } from './control-data';
-import { getOverlay, getRuntimeControl, ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
+import type { ManagedObjectMetadataProperties, PropertiesInfo } from './utils';
+import { getOverlay, getRuntimeControl } from './utils';
 import type { ActionSenderFunction, Service, SubscribeFunction } from './types';
 
 import type Event from 'sap/ui/base/Event';
@@ -23,7 +23,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import { getComponent, getControlById } from '../utils/core';
 import { getError } from '../utils/error';
-import { ChangeService } from './changes';
+import type { ChangeService } from './changes';
 
 export interface PropertyChangeParams {
     name: string;
@@ -67,6 +67,11 @@ function getPropertyDocument(
           } as PropertiesInfo);
 }
 
+/**
+ *
+ * @param control
+ * @param controlData
+ */
 async function addDocumentationForProperties(control: ManagedObject, controlData: Control): Promise<void> {
     try {
         const controlMetadata = control.getMetadata();
@@ -99,8 +104,12 @@ export class SelectionService implements Service {
      *
      * @param rta - rta object.
      * @param ui5 - facade for ui5 framework methods
+     * @param changeService
      */
-    constructor(private readonly rta: RuntimeAuthoring, private readonly changeService: ChangeService) {}
+    constructor(
+        private readonly rta: RuntimeAuthoring,
+        private readonly changeService: ChangeService
+    ) {}
 
     /**
      * Initialize selection service.
@@ -160,6 +169,12 @@ export class SelectionService implements Service {
         });
     }
 
+    /**
+     *
+     * @param control
+     * @param sendAction
+     * @param overlay
+     */
     private async buildProperties(
         control: ManagedObject,
         sendAction: ActionSenderFunction,

@@ -1,7 +1,10 @@
+// es
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { ReaderCollection } from '@ui5/fs';
 import type { TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
+// eslint-disable-next-line sonarjs/no-implicit-dependencies
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { ProjectAccess, I18nBundles, Manifest } from '@sap-ux/project-access';
@@ -28,8 +31,8 @@ jest.mock('@sap-ux/adp-tooling', () => {
 });
 
 class FlpSandbox extends FlpSandboxUnderTest {
-    public declare templateConfig: TemplateConfig;
-    public declare readonly flpConfig: FlpConfig;
+    declare public templateConfig: TemplateConfig;
+    declare public readonly flpConfig: FlpConfig;
 }
 
 describe('FlpSandbox', () => {

@@ -8,21 +8,39 @@ import type { DataAccess } from '.';
 import type { ServiceOptions } from '../types';
 import { inspect } from 'util';
 
+/**
+ *
+ * @param name
+ */
 function getFullyQualifiedServiceName(name: string): string {
     return 'fiori/v2/' + name;
 }
 
+/**
+ *
+ */
 class HybridStore<E extends object> implements DataAccess<E> {
     private readonly logger: Logger;
     private readonly filesystem: DataAccess<E>;
     private readonly secureStore: SecureStore;
 
+    /**
+     *
+     * @param logger
+     * @param options
+     */
     constructor(logger: Logger, options: ServiceOptions = {}) {
         this.logger = logger;
         this.filesystem = dataAccessFilesystem<E>(this.logger, options);
         this.secureStore = getSecureStore(this.logger);
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     * @param root0.id
+     */
     public async read({ entityName, id }: { entityName: string; id: string }): Promise<undefined | E> {
         const serialized = await this.filesystem.read({ entityName, id });
         if (!serialized) {
@@ -49,10 +67,20 @@ class HybridStore<E extends object> implements DataAccess<E> {
         }
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     */
     public async getAll({ entityName }: { entityName: string }): Promise<[] | E[]> {
         return Object.values(await this.readAll({ entityName })) as unknown as E[];
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     */
     async readAll({ entityName }: { entityName: string }): Promise<{ [key: string]: E }> {
         const result: { [key: string]: E } = {};
 
@@ -68,6 +96,13 @@ class HybridStore<E extends object> implements DataAccess<E> {
         return result;
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     * @param root0.id
+     * @param root0.entity
+     */
     public async write({
         entityName,
         id,
@@ -113,6 +148,12 @@ class HybridStore<E extends object> implements DataAccess<E> {
         return entity;
     }
 
+    /**
+     *
+     * @param root0
+     * @param root0.entityName
+     * @param root0.id
+     */
     public async del({ entityName, id }: { entityName: string; id: string }): Promise<boolean> {
         const deletedinFs = await this.filesystem.del({ entityName, id });
         this.logger.debug(`hybrid/del - delete result for id [${id}] on the filesystem: ${deletedinFs}`);
@@ -124,12 +165,16 @@ class HybridStore<E extends object> implements DataAccess<E> {
     }
 }
 
-/** A hybrid store
+/**
+ * A hybrid store
  * Stores serializable properties on the filesystem
  * The properties need to be decorated with `@serilizable` annotations
  *
  * Sensitive properties (decorated with `@sensitiveData`) will be stored
  * in the system's secure store
+ *
+ * @param logger
+ * @param options
  */
 export function getHybridStore<E extends object>(logger: Logger, options?: ServiceOptions): DataAccess<E> {
     return new HybridStore<E>(logger, options);

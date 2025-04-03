@@ -1,8 +1,8 @@
 import type Dialog from 'sap/m/Dialog';
-import Event from 'sap/ui/base/Event';
+import type Event from 'sap/ui/base/Event';
 import type UI5Element from 'sap/ui/core/Element';
-import JSONModel from 'sap/ui/model/json/JSONModel';
-import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type JSONModel from 'sap/ui/model/json/JSONModel';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
@@ -14,8 +14,8 @@ import { ValueState } from 'mock/sap/ui/core/library';
 import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
-import SimpleForm from 'sap/ui/layout/form';
-import Control from 'sap/ui/core/Control';
+import type SimpleForm from 'sap/ui/layout/form';
+import type Control from 'sap/ui/core/Control';
 
 const mocks = {
     setValueStateMock: jest.fn(),
@@ -25,6 +25,7 @@ const mocks = {
 /**
  * Simulates various values returns in sequential calls
  * the last value stays persistent and is returned in further calls
+ *
  * @param v - value or array of values
  * @returns jest mock function returning provided values, the last value stays persistent and is returned in further calls
  */
@@ -43,7 +44,7 @@ const nCallsMock = <T>(v: T | T[]) => {
 type StateType = ValueState | keyof typeof ValueState;
 const mockFormInput = (
     isInput: boolean,
-    values: String | String[] = '',
+    values: string | string[] = '',
     states?: StateType | StateType[],
     stateTexts?: string | string[]
 ) => ({
@@ -54,13 +55,13 @@ const mockFormInput = (
     setValueState: mocks.setValueStateMock
 });
 
-const mockInputEvent = (value: String | Object): Event =>
+const mockInputEvent = (value: string | object): Event =>
     ({
         getSource: jest.fn().mockReturnValue({
             getValue: jest.fn().mockReturnValue(value),
             setValueState: mocks.setValueStateMock
         })
-    } as unknown as Event);
+    }) as unknown as Event;
 
 describe('AddTableColumnsFragments controller', () => {
     beforeAll(() => {
@@ -169,7 +170,7 @@ describe('AddTableColumnsFragments controller', () => {
             ({
                 setProperty: jest.fn(),
                 getProperty: jest.fn().mockReturnValue([{ fragmentName: 'Delete.fragment.xml' }])
-            } as unknown as JSONModel);
+            }) as unknown as JSONModel;
 
         let addFragment: AddTableColumnFragments;
         let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
@@ -529,7 +530,7 @@ describe('AddTableColumnsFragments controller', () => {
             ({
                 setProperty: jest.fn(),
                 getProperty: jest.fn().mockReturnValue([{ fragmentName: 'Delete.fragment.xml' }])
-            } as unknown as JSONModel);
+            }) as unknown as JSONModel;
 
         let addFragment: AddTableColumnFragments;
         let beginBtnSetEnabledMock: jest.Mock<any, any, any>;

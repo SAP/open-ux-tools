@@ -1,6 +1,6 @@
 /** sap.m */
-import Input from 'sap/m/Input';
-import Button from 'sap/m/Button';
+import type Input from 'sap/m/Input';
+import type Button from 'sap/m/Button';
 import type Dialog from 'sap/m/Dialog';
 import MessageToast from 'sap/m/MessageToast';
 
@@ -34,11 +34,29 @@ interface ControllerExtensionService {
 }
 
 type ControllerModel = JSONModel & {
+    /**
+     *
+     */
     getProperty(sPath: '/controllersList'): { controllerName: string }[];
+    /**
+     *
+     */
     getProperty(sPath: '/controllerExists'): boolean;
+    /**
+     *
+     */
     getProperty(sPath: '/newControllerName'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/viewId'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/controllerPath'): string;
+    /**
+     *
+     */
     getProperty(sPath: '/controllerExtension'): string;
 };
 

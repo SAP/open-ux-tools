@@ -1,10 +1,11 @@
 import { ContextMenuService } from '../../../src/cpe/context-menu-service';
-import { ActionHandler } from '../../../src/cpe/types';
+import type { ActionHandler } from '../../../src/cpe/types';
 import { executeContextMenuAction, requestControlContextMenu } from '@sap-ux-private/control-property-editor-common';
 import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { fetchMock } from 'mock/window';
 import * as coreUtils from '../../../src/utils/core';
-import RuntimeAuthoring, { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
+import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import * as cpeUtils from '../../../src/cpe/utils';
 jest.mock('../../../src/i18n', () => {
     return {
@@ -66,7 +67,7 @@ describe('context-menu-service', () => {
                 contextMenuItems: [
                     {
                         enabled: true,
-                        id : 'DEFAULTACTION01',
+                        id: 'DEFAULTACTION01',
                         title: 'default action 01',
                         tooltip: undefined
                     },

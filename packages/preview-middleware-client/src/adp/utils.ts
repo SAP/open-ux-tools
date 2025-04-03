@@ -11,7 +11,8 @@ import { getControlById } from '../utils/core';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getError } from '../utils/error';
-import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import type { Ui5VersionInfo } from '../utils/version';
+import { isLowerThanMinimalUi5Version } from '../utils/version';
 
 export interface Deferred<T> {
     promise: Promise<T>;
@@ -40,7 +41,6 @@ export function resetReuseComponentChecker(): void {
  * Defers the resolution of the promise, stores resolve/reject functions so that they can be accessed at a later stage.
  *
  * @description A Deferred object contains an unresolved promise along with the functions to resolve or reject that promise.
- *
  * @returns {Deferred} Deferred object
  */
 export function createDeferred<T>(): Deferred<T> {
@@ -101,7 +101,6 @@ function isSyncView(element: DTElement): boolean {
  * Get Ids for all sync views
  *
  * @param ui5VersionInfo UI5 Version Information
- *
  * @returns array of Ids for application sync views
  */
 export async function getAllSyncViewsIds(ui5VersionInfo: Ui5VersionInfo): Promise<string[]> {
@@ -142,6 +141,10 @@ interface ControllerInfo {
  * @returns The controller name and view ID.
  */
 
+/**
+ *
+ * @param control
+ */
 export function getControllerInfoForControl(control: ManagedObject): ControllerInfo {
     const view = FlexUtils.getViewForControl(control);
     const controllerName = view.getController().getMetadata().getName();
@@ -156,6 +159,10 @@ export function getControllerInfoForControl(control: ManagedObject): ControllerI
  * @returns The controller name and view ID.
  */
 
+/**
+ *
+ * @param overlayControl
+ */
 export function getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
     const control = overlayControl.getElement();
     return getControllerInfoForControl(control);

@@ -2,7 +2,7 @@ import { getLibrary } from './utils';
 import type { SchemaForApiJsonFiles, Ui5Metadata, Ui5Property } from './api-json';
 import type { Properties } from './utils';
 import Log from 'sap/base/Log';
-import { PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
+import type { PropertiesInfo } from '@sap-ux-private/control-property-editor-common';
 
 export interface ControlMetadata {
     baseType: string | undefined;
@@ -161,7 +161,7 @@ export async function getDocumentation(controlName: string, contLibName: string)
     let doc: Properties | undefined;
     try {
         doc = await getControlPropertyDocumentation(controlName, contLibName);
-    } catch (err) {
+    } catch {
         Log.error(`Error in getting documentation for ${contLibName}`);
     }
     return doc;

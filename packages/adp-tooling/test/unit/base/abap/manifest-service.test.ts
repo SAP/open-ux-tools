@@ -67,7 +67,7 @@ describe('ManifestService', () => {
                 ({
                     addFile: jest.fn(),
                     toBuffer: jest.fn().mockReturnValue(Buffer.from('zip content'))
-                } as unknown as ZipFile)
+                }) as unknown as ZipFile
         );
     });
 

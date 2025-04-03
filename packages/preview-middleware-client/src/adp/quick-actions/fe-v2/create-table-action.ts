@@ -1,9 +1,9 @@
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import type Table from 'sap/m/Table';
 import type SmartTable from 'sap/ui/comp/smarttable/SmartTable';
 import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
-import ManagedObject from 'sap/ui/base/ManagedObject';
-import UI5Element from 'sap/ui/core/Element';
+import type ManagedObject from 'sap/ui/base/ManagedObject';
+import type UI5Element from 'sap/ui/core/Element';
 
 import {
     QuickActionContext,
@@ -14,7 +14,7 @@ import { DialogFactory, DialogNames } from '../../dialog-factory';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import type OverflowToolbar from 'sap/m/OverflowToolbar';
-import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
+import type { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 
 export const CREATE_TABLE_ACTION = 'create-table-action';
 const SMART_TABLE_TYPE = 'sap.ui.comp.smarttable.SmartTable';
@@ -23,7 +23,14 @@ const M_TABLE_TYPE = 'sap.m.Table';
 
 const CONTROL_TYPES = [SMART_TABLE_TYPE, M_TABLE_TYPE, 'sap.ui.table.TreeTable', 'sap.ui.table.Table'];
 
+/**
+ *
+ */
 export class AddTableActionQuickAction extends TableQuickActionDefinitionBase implements NestedQuickActionDefinition {
+    /**
+     *
+     * @param context
+     */
     constructor(context: QuickActionContext) {
         super(CREATE_TABLE_ACTION, CONTROL_TYPES, 'QUICK_ACTION_ADD_CUSTOM_TABLE_ACTION', context, undefined, [
             DIALOG_ENABLEMENT_VALIDATOR
@@ -49,6 +56,10 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         // disable nested actions based on conditions
         this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
     }
+    /**
+     *
+     * @param path
+     */
     async execute(path: string): Promise<FlexCommand[]> {
         const { table, iconTabBarFilterKey, sectionInfo } = this.tableMap[path];
         if (!table) {
@@ -90,6 +101,10 @@ export class AddTableActionQuickAction extends TableQuickActionDefinitionBase im
         return [];
     }
 
+    /**
+     *
+     * @param table
+     */
     getHeaderToolbar(table: UI5Element): ManagedObject | ManagedObject[] | OverflowToolbar | null | undefined {
         let headerToolbar;
         if (isA<SmartTable>(SMART_TABLE_TYPE, table)) {

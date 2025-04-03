@@ -4,7 +4,14 @@ import { WinstonLogger } from '../winston-logger';
 import { LogLevel } from '../types';
 import { toWinstonLogLevel } from '../winston-logger/adapter';
 
+/**
+ *
+ */
 export class ExtensionLogger extends WinstonLogger {
+    /**
+     *
+     * @param channelName
+     */
     constructor(channelName: string) {
         const vscodeTransport = new VSCodeTransport({ channelName });
         super({

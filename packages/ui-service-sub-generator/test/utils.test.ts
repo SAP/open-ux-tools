@@ -9,7 +9,6 @@ import type { Destination } from '@sap-ux/btp-utils';
 
 const mockIsAppStudio = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => ({
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-type-assertion
     ...(jest.requireActual('@sap-ux/btp-utils') as {}),
     isAppStudio: () => mockIsAppStudio()
 }));

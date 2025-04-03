@@ -5,12 +5,13 @@ import { SCENARIO, showMessage, type Scenario } from '@sap-ux-private/control-pr
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import AppState from 'sap/ushell/services/AppState';
+import type AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
 import initCdm from './initCdm';
 import initConnectors from './initConnectors';
-import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
+import type { Ui5VersionInfo } from '../utils/version';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
 import { CommunicationService } from '../cpe/communication-service';
 import { getTextBundle } from '../i18n';
 
@@ -273,8 +274,9 @@ export async function init({
     enhancedHomePage?: boolean | null;
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
-    const container = sap?.ushell?.Container ??
-        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
+    const container =
+        sap?.ushell?.Container ??
+        ((await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container);
     let scenario: string = '';
     const ui5VersionInfo = await getUi5Version();
     // Register RTA if configured
@@ -287,7 +289,7 @@ export async function init({
                 const view = event.getParameter('componentInstance');
                 const pluginScript = flexSettings.pluginScript ?? '';
 
-                let libs: string[] = [];
+                const libs: string[] = [];
 
                 if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 72 })) {
                     libs.push('open/ux/preview/client/flp/initRta');
@@ -308,7 +310,7 @@ export async function init({
 
                 sap.ui.require(
                     libs,
-                    // eslint-disable-next-line no-shadow
+
                     async function (startAdaptation: StartAdaptation | InitRtaScript, pluginScript: RTAPlugin) {
                         try {
                             await startAdaptation(options, pluginScript);
@@ -349,7 +351,7 @@ export async function init({
     }
 
     const renderer =
-        (ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free'))
+        ui5VersionInfo.major < 2 && !ui5VersionInfo.label?.includes('legacy-free')
             ? await container.createRenderer(undefined, true)
             : await container.createRendererInternal(undefined, true);
     renderer.placeAt('content');
