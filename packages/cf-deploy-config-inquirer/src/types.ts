@@ -12,7 +12,9 @@ export enum promptNames {
     /** The prompt for confirming destination overwrite. */
     overwrite = 'overwriteDestinationName',
     /** The prompt for confirming the router type. */
-    routerType = 'routerType'
+    routerType = 'routerType',
+    /** The prompt for confirming if the router options should be displayed */
+    showRouterOptions = 'showRouterOptions'
 }
 
 /**
@@ -105,7 +107,9 @@ export type CfDeployConfigPromptOptions = Partial<destinationNamePromptOptions &
 /**
  * Configuration options for CF deployment with router option prompts.
  */
-export type CfDeployConfigRouterPromptOptions = Partial<Omit<CfDeployConfigPromptOptions, 'addManagedAppRouter'>>;
+export type CfDeployConfigRouterPromptOptions = Partial<Omit<CfDeployConfigPromptOptions, 'addManagedAppRouter'>> & {
+    showRouterOptions?: boolean;
+};
 
 /**
  * Configuration options for CF App Router deployment prompts.
@@ -154,7 +158,8 @@ export interface CfDeployConfigRouterAnswers extends Omit<CfDeployConfigAnswers,
 export const RouterModuleType = {
     Standard: 'standard',
     Managed: 'managed',
-    AppFront: 'appFront'
+    AppFront: 'appFront',
+    None: 'none'
 } as const;
 
 export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];

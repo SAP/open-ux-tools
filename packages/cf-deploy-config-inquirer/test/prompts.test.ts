@@ -6,7 +6,8 @@ import {
     type CfSystemChoice,
     type CfDeployConfigQuestions,
     type DestinationNamePromptOptions,
-    RouterModuleType
+    RouterModuleType,
+    CfDeployConfigRouterPromptOptions
 } from '../src/types';
 import { promptNames } from '../src';
 import { fetchBTPDestinations } from '../src/prompts/prompt-helpers';
@@ -259,9 +260,10 @@ describe('Prompt Generation Tests', () => {
             const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
-            expect((routerTypePrompt?.default as Function)()).toBe('None');
+            expect((routerTypePrompt?.default as Function)()).toBe('none');
+            expect((routerTypePrompt?.message as Function)()).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
-                { name: t('prompts.routerType.none'), value: 'None' },
+                { name: t('prompts.routerType.none'), value: RouterModuleType.None },
                 { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
                 { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront }
             ]);
@@ -271,6 +273,15 @@ describe('Prompt Generation Tests', () => {
                 message: t('warnings.appFrontendServiceRouterChoice'),
                 severity: Severity.warning
             });
+        });
+        it('Displays CF prompt with App Router selection disabled', async () => {
+            let routerOptions: CfDeployConfigRouterPromptOptions = {
+                ...promptOptions,
+                [promptNames.showRouterOptions]: false
+            };
+            const questions: CfDeployConfigQuestions[] = await getQuestionsWithRouterOptions(routerOptions, mockLog);
+            const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
+            expect(routerTypePrompt).toBeUndefined();
         });
     });
 });

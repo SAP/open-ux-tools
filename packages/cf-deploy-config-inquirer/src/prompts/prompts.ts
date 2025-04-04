@@ -130,7 +130,7 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
             mandatory: true,
             breadcrumb: t('prompts.generateDeploymentRouterOptionsMessage')
         },
-        default: () => 'None', // Should always be the preferred choice
+        default: () => RouterModuleType.None, // Should always be the preferred choice
         message: () => t('prompts.generateDeploymentRouterOptionsMessage'),
         additionalMessages: (selectedRouter: RouterModuleType) => {
             let additionalMessage;
@@ -144,7 +144,7 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
         },
 
         choices: [
-            { name: t('prompts.routerType.none'), value: 'None' },
+            { name: t('prompts.routerType.none'), value: RouterModuleType.None },
             { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
             { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront }
         ]
@@ -196,10 +196,14 @@ export async function getQuestionsWithRouterOptions(
 ): Promise<CfDeployConfigRouterQuestions[]> {
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
     const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
+    const showRouterOptions = promptOptions[promptNames.showRouterOptions] ?? true;
 
     const questions: CfDeployConfigQuestions[] = [];
     questions.push(await getDestinationNamePrompt(destinationOptions));
-    questions.push(getRouterOptionsPrompt());
+    if (showRouterOptions) {
+        log?.info(t('info.overwriteDestination'));
+        questions.push(getRouterOptionsPrompt());
+    }
 
     if (addOverwriteQuestion) {
         log?.info(t('info.overwriteDestination'));
