@@ -12,7 +12,6 @@ import {
     isSyncLoadedView,
     isV4Application
 } from '@sap-ux/adp-tooling';
-import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
@@ -277,7 +276,7 @@ export class ConfigPrompter {
             },
             choices: () => getApplicationChoices(this.targetApps),
             default: options?.default,
-            validate: (value: SourceApplication) => this.validateAppPrompt(value),
+            validate: async (value: SourceApplication) => await this.validateAppPrompt(value),
             when: (answers: ConfigAnswers) =>
                 showApplicationQuestion(
                     answers,
@@ -312,7 +311,7 @@ export class ConfigPrompter {
                     return false;
                 }
 
-                const result = this.validateAppPrompt(answers.application);
+                const result = await this.validateAppPrompt(answers.application);
                 if (typeof result === 'string') {
                     throw new Error(result);
                 }
@@ -335,21 +334,7 @@ export class ConfigPrompter {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
 
-        const validationResult = await this.validateAppData(app);
-
-        if (!isAppStudio()) {
-            return validationResult;
-        }
-
-        if (
-            validationResult === t('validators.appDoesNotSupportManifest') ||
-            validationResult === t('error.appDoesNotSupportAdaptation')
-        ) {
-            this.isApplicationSupported = false;
-            return true;
-        }
-
-        return validationResult;
+        return this.validateAppData(app);
     }
 
     /**

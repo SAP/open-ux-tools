@@ -300,7 +300,7 @@ describe('ConfigPrompter Integration Tests', () => {
             isAppSupportedMock.mockResolvedValue(true);
             getManifestSpy = jest
                 .spyOn(SourceManifest.prototype, 'getManifest')
-                .mockResolvedValue({ 'sap.app': {} } as Manifest);
+                .mockResolvedValue({ 'sap.ui5': { flexEnabled: true } } as Manifest);
             jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
                 systemVersion: '1.135.0',
                 isVersionDetected: true
@@ -330,6 +330,28 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(result).toEqual(error.message);
         });
 
+        it('application prompt validate should return string when manifest is not found', async () => {
+            getManifestSpy.mockResolvedValue(undefined);
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            expect(result).toEqual(t('error.manifestCouldNotBeValidated'));
+        });
+
+        it('application prompt validate should return string when manifest flexEnabled is false', async () => {
+            getManifestSpy.mockResolvedValue({ 'sap.ui5': { flexEnabled: false } });
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            expect(result).toEqual(t('error.appDoesNotSupportAdaptation'));
+        });
+
         it('application prompt validate should return string if value is not passed', async () => {
             const prompts = configPrompter.getPrompts();
             const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
@@ -356,6 +378,39 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers);
 
             expect(result).toEqual(false);
+        });
+
+        it('application validation cli prompt when should return false if application is undefined', async () => {
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.appValidationCli);
+            expect(appPrompt).toBeDefined();
+
+            const whenFn = appPrompt?.when;
+            expect(typeof whenFn).toBe('function');
+
+            const result = await (whenFn as (answers: ConfigAnswers) => Promise<boolean>)({
+                ...dummyAnswers,
+                application: undefined as unknown as SourceApplication
+            });
+
+            expect(result).toEqual(false);
+        });
+
+        it('application validation cli prompt when should return false if manifest fetching fails', async () => {
+            isAppSupportedMock.mockResolvedValue(true);
+            const error = new Error('Test error');
+            jest.spyOn(SourceManifest.prototype, 'getManifest').mockRejectedValue(error);
+
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.appValidationCli);
+            expect(appPrompt).toBeDefined();
+
+            const whenFn = appPrompt?.when;
+            expect(typeof whenFn).toBe('function');
+
+            await expect((whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers)).rejects.toThrow(
+                error.message
+            );
         });
     });
 });
