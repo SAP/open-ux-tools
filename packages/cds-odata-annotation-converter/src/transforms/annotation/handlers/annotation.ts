@@ -1,20 +1,28 @@
 import type { Annotation, AnnotationNode, Identifier } from '@sap-ux/cds-annotation-parser';
-import { copyRange, ANNOTATION_TYPE, nodeRange, EMPTY_VALUE_TYPE } from '@sap-ux/cds-annotation-parser';
+import {
+    copyRange,
+    ANNOTATION_TYPE,
+    nodeRange,
+    EMPTY_VALUE_TYPE,
+    ReservedProperties,
+    STRING_LITERAL_TYPE
+} from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
-import { Range, createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
+import { Range, createElementNode, Edm, Position, createAttributeNode } from '@sap-ux/odata-annotation-core-types';
 import { convertFlattenedPath } from '../flattened';
 
 import type { ConvertResult, NodeHandler, Subtree } from '../handler';
 import { getTerm } from '../type-resolver';
 import type { VisitorState } from '../visitor-state';
 import { createQualifierAttribute, createTermAttribute } from '../creators';
+import { createRange } from '../range';
 
 export const annotationHandler: NodeHandler<Annotation> = {
     type: ANNOTATION_TYPE,
     convert,
     getChildren(state: VisitorState, annotation: Annotation): AnnotationNode[] {
-        if (annotation.value) {
+        if (annotation.value && !state.context.isFlattened$Type) {
             return [annotation.value];
         } else {
             return [];
@@ -161,8 +169,24 @@ function handleFlattenedStructure(state: VisitorState, annotation: Annotation, e
     // Build nested structures for CDS flattened syntax
     // e.g UI.Chart.AxisScaling.ScaleBehavior : #AutoScale, @Common.Text.@UI.TextArrangement : #TextFirst
     const flattenedSegments = getFlattenedSegments(state, annotation);
-
-    if (flattenedSegments.length) {
+    const { value } = annotation;
+    if (flattenedSegments?.[0]?.value === ReservedProperties.Type && value?.type === STRING_LITERAL_TYPE) {
+        const propertyRange = createRange(flattenedSegments[0].range?.start, value?.range?.end);
+        const recordWithType: Element = createElementNode({
+            name: Edm.Record,
+            range: propertyRange ?? undefined,
+            contentRange: propertyRange ?? undefined,
+            attributes: {
+                [Edm.Type]: createAttributeNode(Edm.Type, value.value, flattenedSegments[0].range, value.range)
+            }
+        });
+        element.content.push(recordWithType);
+        const currentState = state.popContext();
+        state.pushContext({
+            ...currentState,
+            isFlattened$Type: true
+        });
+    } else if (flattenedSegments.length) {
         const subtree = convertFlattenedPath(state, flattenedSegments, annotation.value);
         if (subtree) {
             const range = subtree.root.range ? copyRange(subtree.root.range) : undefined;
