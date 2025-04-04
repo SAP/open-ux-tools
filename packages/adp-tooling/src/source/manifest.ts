@@ -70,7 +70,7 @@ export class SourceManifest {
         if (!this.manifestUrl) {
             this.manifestUrl = await this.loadManifestUrl();
         }
-        return this.manifestUrl!;
+        return this.manifestUrl;
     }
 
     /**
@@ -82,7 +82,7 @@ export class SourceManifest {
         if (!this.manifest) {
             this.manifest = await this.loadManifest();
         }
-        return this.manifest!;
+        return this.manifest;
     }
 
     /**
