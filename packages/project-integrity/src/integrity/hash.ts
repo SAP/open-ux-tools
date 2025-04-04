@@ -57,3 +57,15 @@ export function getContentIntegrity(additionalStringContent?: Content): ContentI
     }
     return contentIntegrity;
 }
+
+/**
+ * Generates an MD5 hash for the provided CSN content.
+ *
+ * @param csnContent - The Core Schema Notation (CSN) content as a string.
+ * @returns The MD5 hash of the CSN content as a hexadecimal string.
+ */
+export function getCsnIntegrity(csnContent: string): string {
+    const hash = createHash('md5');
+    hash.update(csnContent);
+    return hash.digest('hex');
+}

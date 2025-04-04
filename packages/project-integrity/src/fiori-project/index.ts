@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { getCapCustomPaths } from '@sap-ux/project-access';
+import { getCapCustomPaths, getCapModelAndServices } from '@sap-ux/project-access';
 import {
     checkProjectIntegrity,
     disableProjectIntegrity,
@@ -51,6 +51,25 @@ async function getAdditionalStringContent(projectRoot: string): Promise<Content>
 }
 
 /**
+ * Retrieves the Core Schema Notation (CSN) content for a given project root.
+ *
+ * This function generates a JSON string containing the namespace and definitions
+ * from the CSN model of the specified project root.
+ *
+ * @param projectRoot - The root directory of the project.
+ * @returns A promise that resolves to a JSON string containing the CSN content,
+ *          including the namespace and structured clone of the definitions.
+ */
+async function getCsnContent(projectRoot: string): Promise<string> {
+    const modelFiles = { srv: join('srv', 'service.cds'), db: join('db', 'schema.cds') };
+    const pathSelection = new Set(Object.keys(modelFiles) as Array<'db' | 'srv'>);
+    const result = await getCapModelAndServices({ projectRoot, pathSelection });
+    const csn = result.model;
+    const data = { namespace: csn.namespace, definitions: structuredClone(csn.definitions) };
+    return JSON.stringify(data);
+}
+
+/**
  * Initialize a Fiori project for integrity protection.
  *
  * @param projectRoot - root folder of the project
@@ -59,7 +78,8 @@ export async function initFioriProject(projectRoot: string): Promise<void> {
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
     const fileList = await getFileList(projectRoot);
     const additionalStringContent = await getAdditionalStringContent(projectRoot);
-    await initProject({ integrityFilePath, fileList, additionalStringContent });
+    const csnContent = await getCsnContent(projectRoot);
+    await initProject({ integrityFilePath, fileList, additionalStringContent, csnContent });
 }
 
 /**
@@ -71,7 +91,8 @@ export async function initFioriProject(projectRoot: string): Promise<void> {
 export async function checkFioriProjectIntegrity(projectRoot: string): Promise<CheckIntegrityResult> {
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
     const additionalStringContent = await getAdditionalStringContent(projectRoot);
-    return checkProjectIntegrity(integrityFilePath, additionalStringContent);
+    const csnContent = await getCsnContent(projectRoot);
+    return checkProjectIntegrity(integrityFilePath, csnContent, additionalStringContent);
 }
 
 /**
@@ -82,7 +103,8 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
 export async function updateFioriProjectIntegrity(projectRoot: string): Promise<void> {
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
     const additionalStringContent = await getAdditionalStringContent(projectRoot);
-    await updateProjectIntegrity(integrityFilePath, additionalStringContent);
+    const csnContent = await getCsnContent(projectRoot);
+    await updateProjectIntegrity(integrityFilePath, csnContent, additionalStringContent);
 }
 
 /**

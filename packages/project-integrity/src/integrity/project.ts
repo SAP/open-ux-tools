@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import type { CheckIntegrityResult, Content, ProjectSettings } from '../types';
-import { getContentIntegrity, getFileIntegrity } from './hash';
+import { getContentIntegrity, getCsnIntegrity, getFileIntegrity } from './hash';
 import { readIntegrityData, writeIntegrityData } from './persistence';
 import { checkIntegrity } from './check';
 
@@ -26,7 +26,8 @@ export async function initProject(settings: ProjectSettings): Promise<void> {
     const enabled = true;
     const fileIntegrity = await getFileIntegrity(settings.fileList);
     const contentIntegrity = await getContentIntegrity(settings.additionalStringContent);
-    await writeIntegrityData(settings.integrityFilePath, { enabled, fileIntegrity, contentIntegrity });
+    const csnIntegrity = getCsnIntegrity(settings.csnContent);
+    await writeIntegrityData(settings.integrityFilePath, { enabled, fileIntegrity, contentIntegrity, csnIntegrity });
 }
 
 /**
@@ -35,18 +36,20 @@ export async function initProject(settings: ProjectSettings): Promise<void> {
  * which means no integrity data found at 'integrityFilePath'.
  *
  * @param integrityFilePath - path to file where integrity data is stored
+ * @param csnContent - Core Schema Notation (CSN) content
  * @param [additionalStringContent] - optional key/string map to add to integrity data
  * @returns - results of the check
  */
 export async function checkProjectIntegrity(
     integrityFilePath: string,
+    csnContent: string,
     additionalStringContent?: Content
 ): Promise<CheckIntegrityResult> {
     const integrityData = await readIntegrityData(integrityFilePath);
     if (!integrityData.enabled) {
         throw new Error(`Integrity is disabled for the project with integrity data ${integrityFilePath}`);
     }
-    const checkResult = checkIntegrity(integrityData, additionalStringContent);
+    const checkResult = checkIntegrity(integrityData, csnContent, additionalStringContent);
     return checkResult;
 }
 
@@ -55,10 +58,12 @@ export async function checkProjectIntegrity(
  * or new.
  *
  * @param integrityFilePath - path to file where integrity data is stored
+ * @param csnContent - Core Schema Notation (CSN) content
  * @param additionalStringContent - optional key/string map to add to integrity data
  */
 export async function updateProjectIntegrity(
     integrityFilePath: string,
+    csnContent: string,
     additionalStringContent?: Content
 ): Promise<void> {
     if (!existsSync(integrityFilePath)) {
@@ -82,7 +87,13 @@ New content keys: ${newContentKeys.join(', ')}`
     }
     const fileIntegrity = await getFileIntegrity(integrityData.fileIntegrity.map((file) => file.filePath));
     const contentIntegrity = getContentIntegrity(additionalStringContent);
-    await writeIntegrityData(integrityFilePath, { enabled: integrityData.enabled, fileIntegrity, contentIntegrity });
+    const csnIntegrity = getCsnIntegrity(csnContent);
+    await writeIntegrityData(integrityFilePath, {
+        enabled: integrityData.enabled,
+        fileIntegrity,
+        contentIntegrity,
+        csnIntegrity
+    });
 }
 
 /**

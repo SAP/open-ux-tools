@@ -11,6 +11,10 @@ export interface ProjectSettings {
      * List of files to create a hash value for
      */
     fileList: string[];
+    /**
+     * CSN content of CDS files
+     */
+    csnContent: string;
 
     /**
      * List of content (key->string) to create a hash value for
@@ -25,6 +29,7 @@ export interface Integrity {
     enabled: boolean;
     fileIntegrity: FileIntegrity[];
     contentIntegrity: ContentIntegrity[];
+    csnIntegrity: string;
 }
 
 /**
