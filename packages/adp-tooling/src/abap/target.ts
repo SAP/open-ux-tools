@@ -2,9 +2,9 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapTarget } from '@sap-ux/ui5-config';
 import type { AuthenticationType } from '@sap-ux/store';
+import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 
 import { SourceSystems } from '../source';
-import type { AxiosRequestConfig, ProviderConfiguration } from '@sap-ux/axios-extension';
 
 export type RequestOptions = AxiosRequestConfig & Partial<ProviderConfiguration>;
 
@@ -29,14 +29,13 @@ export async function getAbapTarget(
 ): Promise<AbapTarget> {
     let target: AbapTarget;
 
-    const targetSystems = new SourceSystems(logger);
-
     if (isAppStudio()) {
         target = {
             destination: system
         };
     } else {
-        const details = await targetSystems.getSystemByName(system);
+        const systemLookup = new SourceSystems(logger);
+        const details = await systemLookup.getSystemByName(system);
 
         if (!details) {
             throw new Error(`No system details found for system: ${system}`);
