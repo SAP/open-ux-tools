@@ -3,7 +3,7 @@ import { getTransportRequestPrompts } from '../../../../src/prompts/questions';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
 import { promptNames, TransportChoices } from '../../../../src/types';
-import { ListQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { PromptState } from '../../../../src/prompts/prompt-state';
 
 describe('getTransportRequestPrompts', () => {
@@ -104,6 +104,42 @@ describe('getTransportRequestPrompts', () => {
                   },
                 ]
             `);
+
+            expect((transportInputChoicePrompt.default as Function)({})).toBe(TransportChoices.EnterManualChoice);
+            expect(await (transportInputChoicePrompt.validate as Function)()).toBe(true);
+        }
+    });
+
+    test('should return expected values from transportInputChoice prompt methods', async () => {
+        jest.spyOn(conditions, 'showTransportInputChoice').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateTransportChoiceInput').mockResolvedValueOnce(true);
+
+        const transportPrompts = getTransportRequestPrompts({
+            transportInputChoice: { showCreateDuringDeploy: false }
+        });
+        const transportInputChoicePrompt = transportPrompts.find(
+            (prompt) => prompt.name === promptNames.transportInputChoice
+        );
+
+        if (transportInputChoicePrompt) {
+            expect((transportInputChoicePrompt.when as Function)()).toBe(true);
+            expect(transportInputChoicePrompt.message).toBe(t('prompts.config.transport.transportInputChoice.message'));
+            expect(((transportInputChoicePrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
+              Array [
+                Object {
+                  "name": "Enter manually",
+                  "value": "EnterManualChoice",
+                },
+                Object {
+                  "name": "Choose from existing",
+                  "value": "ListExistingChoice",
+                },
+                Object {
+                  "name": "Create new",
+                  "value": "CreateNewChoice",
+                },
+              ]
+          `);
 
             expect((transportInputChoicePrompt.default as Function)({})).toBe(TransportChoices.EnterManualChoice);
             expect(await (transportInputChoicePrompt.validate as Function)()).toBe(true);

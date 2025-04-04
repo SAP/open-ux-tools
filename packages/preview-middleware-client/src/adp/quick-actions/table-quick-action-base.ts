@@ -92,6 +92,23 @@ export abstract class TableQuickActionDefinitionBase<
     }
 
     /**
+     * Adds action id to the table map entry, if the service actions are needed.
+     * @param table - table element
+     * @param tableMapKey - map key
+     */
+    protected async addSettingsActionId(table: UI5Element, tableMapKey: string): Promise<void> {
+        if (this.options.includeServiceAction) {
+            const actions = await this.context.actionService.get(table.getId());
+            const actionsIds = await getActionId(table);
+
+            const changeColumnAction = actionsIds.find(
+                (actionId) => actions.findIndex((action) => action.id === actionId) > -1
+            );
+            this.tableMap[tableMapKey].changeColumnActionId = changeColumnAction;
+        }
+    }
+
+    /**
      * Initializes action object instance
      */
     async initialize(): Promise<void> {
@@ -110,32 +127,20 @@ export abstract class TableQuickActionDefinitionBase<
             const tabKey = Object.keys(iconTabBarfilterMap).find((key) => table.getId().endsWith(key));
             const section = getParentContainer<ObjectPageSection>(table, 'sap.uxap.ObjectPageSection');
             if (section) {
-                this.collectChildrenInSection(section, table);
+                await this.collectChildrenInSection(section, table);
             } else if (this.iconTabBar && tabKey) {
                 const label = `'${iconTabBarfilterMap[tabKey]}' table`;
                 const child = this.createChild(label, table);
                 this.children.push(child);
-                this.tableMap[`${this.children.length - 1}`] = {
+                const tableMapKey = `${this.children.length - 1}`;
+                this.tableMap[tableMapKey] = {
                     table,
                     iconTabBarFilterKey: tabKey,
                     tableUpdateEventAttachedOnce: false
                 };
+                await this.addSettingsActionId(table, tableMapKey);
             } else {
-                this.processTable(table);
-            }
-
-            // add action id to the table map, if the service actions are needed.
-            if (this.options.includeServiceAction) {
-                const actions = await this.context.actionService.get(table.getId());
-                const actionsIds = await getActionId(table);
-
-                const changeColumnAction = actionsIds.find(
-                    (actionId) => actions.findIndex((action) => action.id === actionId) > -1
-                );
-                Object.keys(this.tableMap).forEach((key) => {
-                    // Update the changeColumnActionId for each entry
-                    this.tableMap[key].changeColumnActionId = changeColumnAction;
-                });
+                await this.processTable(table);
             }
         }
         if (this.children.length > 0) {
@@ -219,13 +224,13 @@ export abstract class TableQuickActionDefinitionBase<
      * @param section - object page section
      * @param table - table element
      */
-    private collectChildrenInSection(section: ObjectPageSection, table: T): void {
+    private async collectChildrenInSection(section: ObjectPageSection, table: T): Promise<void> {
         const layout = getParentContainer<ObjectPageLayout>(table, 'sap.uxap.ObjectPageLayout');
         const subSections = section.getSubSections();
         const subSection = getParentContainer<ObjectPageSubSection>(table, 'sap.uxap.ObjectPageSubSection');
         if (subSection) {
             if (subSections?.length === 1) {
-                this.processTable(table, { section, subSection: subSections[0], layout });
+                await this.processTable(table, { section, subSection: subSections[0], layout });
             } else if (subSections.length > 1) {
                 const existingChildIdx = this.children.findIndex(
                     (val) => val.label === `'${section.getTitle()}' section`
@@ -253,6 +258,7 @@ export abstract class TableQuickActionDefinitionBase<
                     sectionInfo: { section, subSection, layout },
                     tableUpdateEventAttachedOnce: false
                 };
+                await this.addSettingsActionId(table, tableMapIndex);
             }
         }
     }
@@ -262,10 +268,10 @@ export abstract class TableQuickActionDefinitionBase<
      * @param table - table element
      * @param sectionInfo - section info object
      */
-    private processTable(
+    private async processTable(
         table: T,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
-    ): void {
+    ): Promise<void> {
         if (
             [
                 SMART_TABLE_TYPE,
@@ -281,11 +287,13 @@ export abstract class TableQuickActionDefinitionBase<
             this.children.push(child);
         }
 
-        this.tableMap[`${this.children.length - 1}`] = {
+        const tableMapKey = `${this.children.length - 1}`;
+        this.tableMap[tableMapKey] = {
             table,
             sectionInfo: sectionInfo,
             tableUpdateEventAttachedOnce: false
         };
+        await this.addSettingsActionId(table, tableMapKey);
     }
 
     /**

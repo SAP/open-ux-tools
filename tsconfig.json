@@ -17,6 +17,7 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "strictNullChecks": true,
     "target": "ES2022",
     "skipLibCheck": true,
     "resolveJsonModule": true,
@@ -31,6 +32,9 @@
     },
     {
       "path": "packages/abap-deploy-config-writer"
+    },
+    {
+      "path": "packages/adp-flp-config-sub-generator"
     },
     {
       "path": "packages/adp-tooling"
@@ -87,6 +91,9 @@
       "path": "packages/deploy-config-generator-shared"
     },
     {
+      "path": "packages/deploy-config-sub-generator"
+    },
+    {
       "path": "packages/deploy-tooling"
     },
     {
@@ -121,6 +128,9 @@
     },
     {
       "path": "packages/flp-config-sub-generator"
+    },
+    {
+      "path": "packages/generator-adp"
     },
     {
       "path": "packages/guided-answers-helper"
@@ -208,6 +218,12 @@
     },
     {
       "path": "packages/ui-prompting"
+    },
+    {
+      "path": "packages/ui-service-inquirer"
+    },
+    {
+      "path": "packages/ui-service-sub-generator"
     },
     {
       "path": "packages/ui5-application-inquirer"

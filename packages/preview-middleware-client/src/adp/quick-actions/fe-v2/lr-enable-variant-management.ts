@@ -52,7 +52,7 @@ export class EnableListReportVariantManagementQuickAction
         if (!manifestChangesSupported) {
             return;
         }
-        super.initialize();
+        await super.initialize();
         if (this.control) {
             const ownerComponent = Component.getOwnerComponentFor(this.control);
             if (

@@ -1,5 +1,181 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.27
+
+### Patch Changes
+
+-   145f4c9: Change post install script
+
+## 0.1.26
+
+### Patch Changes
+
+-   d148718: append timeout after mta writing, append extra logging
+
+## 0.1.25
+
+### Patch Changes
+
+-   15222c2: add spawn options for windows
+
+## 0.1.24
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+
+## 0.1.23
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/project-access@1.29.17
+
+## 0.1.22
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/project-access@1.29.16
+
+## 0.1.21
+
+### Patch Changes
+
+-   751865f: support mta configurations generated using cds which produce modules with a different naming conventions
+
+## 0.1.20
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+
+## 0.1.18
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/project-access@1.29.13
+
+## 0.1.17
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+
+## 0.1.16
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+
+## 0.1.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.10
+
+## 0.1.14
+
+### Patch Changes
+
+-   d0b656b: change where inti and writing are executing when cf-sub-gen is loaded as a sub-gen
+
+## 0.1.13
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+
+## 0.1.12
+
+### Patch Changes
+
+-   d6118c9: Changes to support adding CAP MTA prompt to allow user generate MTA
+
+## 0.1.11
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+
+## 0.1.10
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+
+## 0.1.9
+
+### Patch Changes
+
+-   f9a2d8f: Update app-router version to address security fix
+
+## 0.1.8
+
+### Patch Changes
+
+-   f2d7864: Add additional logging and a retry to save mta
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/project-access@1.29.6
+
+## 0.1.6
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+
+## 0.1.5
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+
+## 0.1.3
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+
 ## 0.1.1
 
 ### Patch Changes

@@ -47,7 +47,7 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
                 break;
             }
         } catch (error) {
-            await new Promise((resolve) => setTimeout(resolve, 200));
+            await new Promise((resolve) => setTimeout(resolve, 500));
         }
     }
     LoggerHelper.logger?.info(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
@@ -78,6 +78,7 @@ export function createMTA(config: MTABaseConfig): void {
     });
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
     writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
+    LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 
 /**
@@ -136,16 +137,20 @@ export function doesCDSBinaryExist(): void {
  * @param options
  */
 export function createCAPMTA(cwd: string, options?: string[]): void {
-    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], { cwd });
+    const spawnOpts = process.platform.startsWith('win')
+        ? { windowsVerbatimArguments: true, shell: true, cwd }
+        : { cwd };
+    let result = spawnSync(CDSExecutable, [...CDSAddMtaParams, ...(options ?? [])], spawnOpts);
     if (result?.error) {
         throw new Error(`Something went wrong creating mta.yaml! ${result.error}`);
     }
     // Ensure the package-lock is created otherwise mta build will fail
     const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    result = spawnSync(cmd, ['install', '--ignore-engines'], { cwd });
+    result = spawnSync(cmd, ['update', '--package-lock-only'], spawnOpts);
     if (result?.error) {
         throw new Error(`Something went wrong installing node modules! ${result.error}`);
     }
+    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
 }
 
 /**

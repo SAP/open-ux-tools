@@ -1,5 +1,25 @@
 # @sap-ux/cds-annotation-parser
 
+## 0.2.8
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/odata-vocabularies@0.4.7
+
+## 0.2.6
+
+### Patch Changes
+
+-   Updated dependencies [3f273c9]
+    -   @sap-ux/odata-vocabularies@0.4.6
+
 ## 0.2.5
 
 ### Patch Changes

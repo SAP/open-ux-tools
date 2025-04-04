@@ -106,7 +106,7 @@ export async function refreshSpecificationDistTags(options?: { logger?: Logger }
         const distTagsString = await execNpmCommand(['view', '@sap/ux-specification', 'dist-tags', '--json'], {
             logger
         });
-        const distTags = JSON.parse(distTagsString);
+        const distTags = JSON.parse(distTagsString) as Record<string, string>;
         await writeFile(specificationDistTagPath, JSON.stringify(distTags, null, 4));
         const uniqueVersions = new Set(Object.values(distTags));
 

@@ -663,6 +663,38 @@ describe('fiori annotation service', () => {
                 const metadata = service.getSchema();
                 expect(serialize(metadata.schema, PROJECTS.V4_CDS_START.root)).toMatchSnapshot();
             });
+
+            test('new file from memfs, no apps', async () => {
+                const project = PROJECTS.V4_CAP_NO_APPS;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const servicesFilePath = pathFromUri(project.files.services);
+                const newFileName = 'new-file';
+                const appName = 'incidents';
+                const testData = `using from './${appName}/${newFileName}';\n`;
+                const annotationFilePath = join(root, 'app', appName, `${newFileName}.cds`);
+                fsEditor.write(annotationFilePath, '');
+                fsEditor.write(servicesFilePath, testData);
+
+                const service = await testRead(project.root, [], 'IncidentService', fsEditor);
+                const annotations = service.getSchema().schema.annotations;
+
+                expect(annotations[pathToFileURL(servicesFilePath).toString()]).toHaveLength(0);
+                expect(annotations[pathToFileURL(annotationFilePath).toString()]).toHaveLength(0);
+            });
+            test('new file from memfs, existing service file', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.services);
+                const content = fsEditor.read(path);
+                const newFileName = 'new-file';
+                const testData = `using from './${newFileName}';\n${content}`;
+                fsEditor.write(join(root, 'app', `${newFileName}.cds`), '');
+                fsEditor.write(path, testData);
+                const service = await testRead(PROJECTS.V4_CDS_START.root, [], 'IncidentService', fsEditor);
+                expect(() => service.getSchema()).not.toThrowError();
+            });
         });
     });
     describe('insert', () => {
@@ -893,6 +925,99 @@ describe('fiori annotation service', () => {
                 projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
                 getInitialChanges: (files) => [createChart(files.annotations)],
                 getChanges: (files) => [createChart(files.annotations, 'second')]
+            });
+
+            test('for inline structure element', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.schema);
+                const content = fsEditor.read(path);
+                const updatedSchemaFile = content.replace(
+                    'on processingThreshold.incident = $self;',
+                    `on processingThreshold.incident = $self;
+    rating : {
+        key pos : Integer;
+        name : String;
+    };
+`
+                );
+                fsEditor.write(path, updatedSchemaFile);
+                const text = await testEdit(
+                    root,
+                    [],
+                    [
+                        {
+                            kind: ChangeType.InsertAnnotation,
+                            content: {
+                                type: 'annotation',
+                                target: `${TARGET_INCIDENTS}/rating_name`,
+                                value: {
+                                    term: `${COMMON}.Text`,
+                                    value: {
+                                        type: 'Path',
+                                        Path: 'title'
+                                    }
+                                }
+                            },
+                            uri: project.files.annotations
+                        }
+                    ],
+                    'IncidentService',
+                    fsEditor,
+                    false
+                );
+
+                expect(text).toMatchSnapshot();
+            });
+
+            test('for complex type element', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.schema);
+                const content = fsEditor.read(path);
+                let updatedSchemaFile = content.replace(
+                    'type Criticality : Integer @(',
+                    `type Rating {
+  name : String(20);
+};
+type Criticality : Integer @(
+`
+                );
+                updatedSchemaFile = updatedSchemaFile.replace(
+                    'on processingThreshold.incident = $self;',
+                    `on processingThreshold.incident = $self;
+rating : Rating;
+`
+                );
+                fsEditor.write(path, updatedSchemaFile);
+                const text = await testEdit(
+                    root,
+                    [],
+                    [
+                        {
+                            kind: ChangeType.InsertAnnotation,
+                            content: {
+                                type: 'annotation',
+                                target: `${TARGET_INCIDENTS}/rating_name`,
+                                value: {
+                                    term: `${COMMON}.Text`,
+                                    value: {
+                                        type: 'Path',
+                                        Path: 'title'
+                                    }
+                                }
+                            },
+                            uri: project.files.annotations
+                        }
+                    ],
+                    'IncidentService',
+                    fsEditor,
+                    false
+                );
+
+                expect(text).toMatchSnapshot();
             });
         });
         describe('reference', () => {
@@ -3167,6 +3292,70 @@ describe('fiori annotation service', () => {
                         }
                     }
                 ]
+            });
+        });
+        describe('annotation value', () => {
+            // failing as new cds-compiler facade fix required
+            test.failing('in complex type', async () => {
+                const project = PROJECTS.V4_CDS_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.schema);
+                const content = fsEditor.read(path);
+                let updatedSchemaFile = content.replace(
+                    'type Criticality : Integer @(',
+                    `type Rating {
+name : String(20);
+};
+type Criticality : Integer @(
+`
+                );
+                updatedSchemaFile = updatedSchemaFile.replace(
+                    'on processingThreshold.incident = $self;',
+                    `on processingThreshold.incident = $self;
+rating : Rating;
+`
+                );
+                fsEditor.write(path, updatedSchemaFile);
+                const text = await testEdit(
+                    root,
+                    [
+                        {
+                            kind: ChangeType.InsertAnnotation,
+                            uri: project.files.annotations,
+                            content: {
+                                target: 'IncidentService.Incidents/rating_name',
+                                type: 'annotation',
+                                value: {
+                                    term: 'com.sap.vocabularies.Common.v1.Text',
+                                    value: {
+                                        Path: 'description',
+                                        type: 'Path'
+                                    }
+                                }
+                            }
+                        }
+                    ],
+                    [
+                        {
+                            kind: ChangeType.Update,
+                            uri: project.files.annotations,
+                            reference: {
+                                target: 'IncidentService.Incidents/rating_name',
+                                term: 'com.sap.vocabularies.Common.v1.Text'
+                            },
+                            content: {
+                                type: 'primitive',
+                                expressionType: 'Path',
+                                value: 'title'
+                            },
+                            pointer: '/value/Path'
+                        }
+                    ],
+                    'IncidentService',
+                    fsEditor
+                );
+                expect(text).toMatchSnapshot();
             });
         });
     });

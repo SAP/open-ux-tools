@@ -137,6 +137,24 @@ export interface FilterBar extends BuildingBlock {
      * This event is fired when the Go button is pressed or after a condition change.
      */
     search?: string;
+    /**
+     * If true, the search is triggered automatically when a filter value is changed.
+     *
+     * @default false
+     */
+    liveMode?: boolean;
+    /**
+     * Handles the visibility of the 'Clear' button on the FilterBar.
+     *
+     * @default false
+     */
+    showClearButton?: boolean;
+    /**
+     * Displays possible errors during the search in a message box.
+     *
+     * @default true
+     */
+    showMessages?: boolean;
 }
 
 /**

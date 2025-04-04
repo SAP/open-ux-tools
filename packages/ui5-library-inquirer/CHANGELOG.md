@@ -1,5 +1,162 @@
 # @sap-ux/ui5-library-inquirer
 
+## 0.3.63
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/inquirer-common@0.6.32
+
+## 0.3.62
+
+### Patch Changes
+
+-   Updated dependencies [ab81490]
+    -   @sap-ux/project-input-validator@0.5.0
+
+## 0.3.61
+
+### Patch Changes
+
+-   Updated dependencies [c69752b]
+    -   @sap-ux/project-input-validator@0.4.0
+
+## 0.3.60
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.31
+
+## 0.3.59
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.30
+
+## 0.3.58
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/inquirer-common@0.6.29
+    -   @sap-ux/ui5-info@0.9.1
+
+## 0.3.57
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.28
+
+## 0.3.56
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.27
+
+## 0.3.55
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.26
+
+## 0.3.54
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.25
+
+## 0.3.53
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.24
+
+## 0.3.52
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.23
+
+## 0.3.51
+
+### Patch Changes
+
+-   Updated dependencies [88520b4]
+    -   @sap-ux/ui5-info@0.9.0
+    -   @sap-ux/inquirer-common@0.6.22
+
+## 0.3.50
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.21
+
+## 0.3.49
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.20
+
+## 0.3.48
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.19
+
+## 0.3.47
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.18
+
+## 0.3.46
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.17
+
+## 0.3.45
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.16
+
+## 0.3.44
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.15
+
+## 0.3.43
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.14
+
+## 0.3.42
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.13
+
+## 0.3.41
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.12
+
+## 0.3.40
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.11
+
+## 0.3.39
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.10
+
 ## 0.3.38
 
 ### Patch Changes

@@ -97,7 +97,7 @@ async function getBackendTargetChoices(
             let isDefault = false;
             if (!targetExistsInStore && target?.url) {
                 isDefault = targetExistsInStore =
-                    system.url.replace(/\/$/, '') === target.url.replace(/\/$/, '') &&
+                    system.url.trim().replace(/\/$/, '') === target.url.trim().replace(/\/$/, '') &&
                     (system.client ?? '') === (target?.client ?? '');
             }
             return {
@@ -199,9 +199,10 @@ export function getPackageInputChoices(): ListChoiceOptions[] {
 /**
  * Returns a list of transport choices.
  *
+ * @param showCreateDuringDeploy - show createDuringDeploy choice, defaults to true
  * @returns list of transport choices
  */
-export function getTransportChoices(): ListChoiceOptions[] {
+export function getTransportChoices(showCreateDuringDeploy = true): ListChoiceOptions[] {
     const manualChoice = {
         name: t('choices.transport.enterManually'),
         value: TransportChoices.EnterManualChoice
@@ -216,7 +217,12 @@ export function getTransportChoices(): ListChoiceOptions[] {
     };
     const createNewChoice = { name: t('choices.transport.createNew'), value: TransportChoices.CreateNewChoice };
 
-    return [manualChoice, listExistingChoice, createDuringDeployChoice, createNewChoice];
+    return [
+        manualChoice,
+        listExistingChoice,
+        ...(showCreateDuringDeploy ? [createDuringDeployChoice] : []),
+        createNewChoice
+    ];
 }
 
 /**

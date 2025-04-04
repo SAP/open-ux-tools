@@ -1,5 +1,23 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.6.1
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
+## 0.6.0
+
+### Minor Changes
+
+-   8568e6b: feat: Info Center for different type of messages
+
+## 0.5.11
+
+### Patch Changes
+
+-   9ddf98f: Feature to add context menu on outline
+
 ## 0.5.10
 
 ### Patch Changes

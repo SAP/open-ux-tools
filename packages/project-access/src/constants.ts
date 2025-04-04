@@ -18,7 +18,8 @@ export const FileName = {
     Ui5Yaml: 'ui5.yaml',
     Ui5LocalYaml: 'ui5-local.yaml',
     Ui5MockYaml: 'ui5-mock.yaml',
-    UI5DeployYaml: 'ui5-deploy.yaml'
+    UI5DeployYaml: 'ui5-deploy.yaml',
+    PackageLock: 'package-lock.json'
 } as const;
 
 export const DirName = {
@@ -64,3 +65,5 @@ export const fioriToolsDirectory = join(homedir(), FioriToolsSettings.dir);
  * Directory where modules are cached
  */
 export const moduleCacheRoot = join(fioriToolsDirectory, DirName.ModuleCache);
+
+export const MinCdsVersionUi5Plugin = '6.8.2';

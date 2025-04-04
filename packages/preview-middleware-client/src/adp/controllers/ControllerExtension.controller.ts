@@ -24,15 +24,10 @@ import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import type { CodeExtResponse, ControllersResponse } from '../api-handler';
-import {
-    getExistingController,
-    getManifestAppdescr,
-    readControllers,
-    writeChange,
-    writeController
-} from '../api-handler';
+import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -44,14 +39,15 @@ type ControllerModel = JSONModel & {
     getProperty(sPath: '/newControllerName'): string;
     getProperty(sPath: '/viewId'): string;
     getProperty(sPath: '/controllerPath'): string;
+    getProperty(sPath: '/controllerExtension'): string;
 };
 
 /**
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring) {
-        super(name);
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, telemetryData?: QuickActionTelemetryData) {
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel();
@@ -133,6 +129,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      */
     async onCreateBtnPress(event: Event) {
         const source = event.getSource<Button>();
+
+        await super.onCreateBtnPressHandler();
+
         const controllerExists = this.model.getProperty('/controllerExists');
 
         if (!controllerExists) {
@@ -158,20 +157,13 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const overlayControl = sap.ui.getCore().byId(selectorId) as unknown as ElementOverlay;
 
         const { controllerName, viewId } = getControllerInfo(overlayControl);
-        const existingController = await this.getExistingController(controllerName);
+        const data = await this.getExistingController(controllerName);
 
-        if (existingController) {
-            const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } = existingController;
-
-            if (controllerExists) {
-                this.updateModelForExistingController(
-                    controllerExists,
-                    controllerPath,
-                    controllerPathFromRoot,
-                    isRunningInBAS
-                );
+        if (data) {
+            if (data?.controllerExists) {
+                this.updateModelForExistingController(data);
             } else {
-                this.updateModelForNewController(viewId);
+                this.updateModelForNewController(viewId, data.isTsSupported);
 
                 await this.getControllers();
             }
@@ -180,17 +172,11 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
     /**
      * Updates the model properties for an existing controller.
      *
-     * @param {boolean} controllerExists - Whether the controller exists.
-     * @param {string} controllerPath - The controller path.
-     * @param {string} controllerPathFromRoot - The controller path from the project root.
-     * @param {boolean} isRunningInBAS - Whether the environment is BAS or VS Code.
+     * @param {CodeExtResponse} data - Existing controller data from the server.
      */
-    private updateModelForExistingController(
-        controllerExists: boolean,
-        controllerPath: string,
-        controllerPathFromRoot: string,
-        isRunningInBAS: boolean
-    ): void {
+    private updateModelForExistingController(data: CodeExtResponse): void {
+        const { controllerExists, controllerPath, controllerPathFromRoot, isRunningInBAS } = data;
+
         this.model.setProperty('/controllerExists', controllerExists);
         this.model.setProperty('/controllerPath', controllerPath);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
@@ -214,17 +200,19 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
     /**
      * Updates the model property for a new controller.
      *
-     * @param viewId The view ID
+     * @param {string} viewId - The view ID.
+     * @param {boolean} isTsSupported - Whether TypeScript supported for the current project.
      */
-    private updateModelForNewController(viewId: string): void {
+    private updateModelForNewController(viewId: string, isTsSupported: boolean): void {
         this.model.setProperty('/viewId', viewId);
+        this.model.setProperty('/controllerExtension', isTsSupported ? '.ts' : '.js');
     }
 
     /**
      * Retrieves existing controller data if found in the project's workspace.
      *
-     * @param controllerName Controller name that exists in the view
-     * @returns Returnsexisting controller data
+     * @param controllerName Controller name that exists in the view.
+     * @returns Returns existing controller data.
      */
     private async getExistingController(controllerName: string): Promise<CodeExtResponse | undefined> {
         let data: CodeExtResponse | undefined;
@@ -257,8 +245,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      */
     private async createNewController(controllerName: string, viewId: string): Promise<void> {
         try {
-            const manifest = await getManifestAppdescr();
-            await writeController({ controllerName, projectId: manifest.id });
+            await writeController({ controllerName });
 
             const controllerRef = {
                 codeRef: `coding/${controllerName}.js`,

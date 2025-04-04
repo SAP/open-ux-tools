@@ -38,9 +38,10 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
                 borderRadius: 0,
                 whiteSpace: 'nowrap',
                 backgroundColor: 'transparent',
+                textDecoration: 'underline',
                 selectors: {
                     '&:active': {
-                        textDecoration: 'underline'
+                        textDecoration: 'none'
                     },
                     // Focus through tab navigation
                     '.ms-Fabric--isFocusVisible &:focus:after': {
@@ -52,8 +53,7 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
                 marginLeft: 0,
                 marginRight: 0,
                 fontSize: '13px',
-                fontWeight: 400,
-                fontFamily: 'var(--vscode-font-family)'
+                fontWeight: 400
             },
             rootDisabled: {
                 backgroundColor: 'transparent',
@@ -63,9 +63,10 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
             },
             rootHovered: {
                 color: 'var(--vscode-foreground)',
-                textDecoration: 'underline',
-                backgroundColor: 'transparent',
-
+                backgroundColor: 'var(--vscode-menubar-selectionBackground)',
+                outline: '1px solid var(--vscode-contrastActiveBorder)',
+                borderRadius: 3,
+                textDecoration: 'none',
                 selectors: {
                     color: 'var(--vscode-foreground)'
                 }
@@ -73,7 +74,7 @@ export class UIActionButton extends React.Component<UIButtonProps, {}> {
             icon: {
                 height: 16,
                 lineHeight: 16,
-                marginLeft: -3,
+                marginLeft: 0,
                 position: 'relative',
                 top: 1
             },

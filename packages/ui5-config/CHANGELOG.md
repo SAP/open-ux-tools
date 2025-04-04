@@ -1,5 +1,29 @@
 # @sap-ux/ui5-config
 
+## 0.26.5
+
+### Patch Changes
+
+-   224494c: Improved add, delete and get methods for service backends.
+
+## 0.26.4
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+
+## 0.26.3
+
+### Patch Changes
+
+-   5817923: Adds `webappPath` and `basePath` parameters to resolve service paths during mockserver generation/update.
+
+## 0.26.2
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+
 ## 0.26.1
 
 ### Patch Changes

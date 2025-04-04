@@ -5,6 +5,7 @@ import type { Package } from '@sap-ux/project-access';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions, FioriToolsDeprecatedPreviewConfig } from '../types';
 import type { Editor } from 'mem-fs-editor';
+import { satisfies } from 'semver';
 
 /**
  * Gets the preview middleware form the yamlConfig or provided path.
@@ -46,79 +47,31 @@ export function isFioriToolsDeprecatedPreviewConfig(
 }
 
 /**
- * Extracts sap client string from existing scripts in package.json.
- *
- * @param scripts - script section of the package.json
- * @returns sap client
- */
-export function getSapClientFromPackageJson(scripts: Package['scripts']): string | undefined {
-    for (const value of Object.values(scripts!)) {
-        const match = value?.match(/sap-client=(\d{3})/);
-        if (match) {
-            return match[1];
-        }
-    }
-    return undefined;
-}
-
-/**
- * Extracts the version of the given dependency from the given package.json file.
- *
- * @param packageJson - package.json file
- * @param dependencyName - name of the (dev-)dependency
- * @returns version of the dependency as an array of numbers
- */
-export function getDependencyVersion(packageJson: Package, dependencyName: string): number[] | undefined {
-    return (packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName])
-        ?.split('.')
-        .map((versionPart) => parseInt(versionPart, 10));
-}
-
-/**
- * Checks if the given version is less than the given major, minor and patch version.
- *
- * @param version - version to be checked
- * @param major - major version to be compared with
- * @param minor - minor version to be compared with
- * @param patch - patch version to be compared with
- * @returns true, if the given version is less than the given major, minor and patch version
- */
-function isVersionLessThan(
-    version: number[] | undefined,
-    major: number,
-    minor: number,
-    patch: number
-): boolean | undefined {
-    if (!version) {
-        return undefined;
-    }
-    const [vMajor, vMinor, vPatch] = version;
-    return vMajor < major || (vMajor === major && (vMinor < minor || (vMinor === minor && vPatch < patch)));
-}
-
-/**
- * Enhances the given url parameters with the ones needed for the UI5 run time adaptation.
+ * Get the url parameters needed for the UI5 run time adaptation.
  *
  @param packageJson - package.json file
- * @param existingParams - parameters to be enhanced
  * @returns enhanced url parameters
  */
-export function enhanceUrlParametersWithRta(packageJson: Package, existingParams: Record<string, string> = {}): string {
+export function getRtaUrlParameters(packageJson: Package): string {
+    const getDependencyVersion = (packageJson: Package, dependencyName: string): string | undefined => {
+        return packageJson?.devDependencies?.[dependencyName] ?? packageJson?.dependencies?.[dependencyName];
+    };
+
     const parameters: Record<string, string> = {};
 
     const previewMiddlewareVersion = getDependencyVersion(packageJson, '@sap-ux/preview-middleware');
     const uxUi5ToolingVersion = getDependencyVersion(packageJson, '@sap/ux-ui5-tooling');
     if (
-        isVersionLessThan(previewMiddlewareVersion, 0, 16, 89) ??
-        isVersionLessThan(uxUi5ToolingVersion, 1, 15, 4) ??
-        true
+        (previewMiddlewareVersion && satisfies(previewMiddlewareVersion, '<0.16.89')) ??
+        (uxUi5ToolingVersion && satisfies(uxUi5ToolingVersion, '<1.15.4')) ??
+        (!previewMiddlewareVersion && !uxUi5ToolingVersion)
     ) {
         parameters['fiori-tools-rta-mode'] = 'true';
         parameters['sap-ui-rta-skip-flex-validation'] = 'true';
         parameters['sap-ui-xx-condense-changes'] = 'true';
         parameters['sap-ui-xx-viewCache'] = 'false';
     }
-    return stringify(Object.assign(parameters, existingParams));
+    return stringify(parameters);
 }
 
 /**

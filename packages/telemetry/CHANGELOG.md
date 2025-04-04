@@ -1,5 +1,135 @@
 # @sap-ux/telemetry
 
+## 0.5.72
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+
+## 0.5.71
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/project-access@1.29.17
+
+## 0.5.70
+
+### Patch Changes
+
+-   011c8c5: fix(deps): update dependency axios to v1.8.2 [security]
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/btp-utils@1.0.2
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/project-access@1.29.16
+
+## 0.5.69
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+
+## 0.5.68
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+
+## 0.5.67
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/project-access@1.29.13
+
+## 0.5.66
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+
+## 0.5.65
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+
+## 0.5.64
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+    -   @sap-ux/project-access@1.29.10
+
+## 0.5.63
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+
+## 0.5.62
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+
+## 0.5.61
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+
+## 0.5.60
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/project-access@1.29.6
+
+## 0.5.59
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+
+## 0.5.58
+
+### Patch Changes
+
+-   Updated dependencies [65f15d9]
+    -   @sap-ux/btp-utils@1.0.1
+
+## 0.5.57
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+
+## 0.5.56
+
+### Patch Changes
+
+-   Updated dependencies [9980073]
+    -   @sap-ux/btp-utils@1.0.0
+
+## 0.5.55
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+
 ## 0.5.54
 
 ### Patch Changes

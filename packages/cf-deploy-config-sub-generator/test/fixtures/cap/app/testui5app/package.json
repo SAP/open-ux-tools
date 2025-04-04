@@ -1,0 +1,19 @@
+{
+  "name": "project1",
+  "version": "0.0.1",
+  "description": "An SAP Fiori application.",
+  "keywords": [
+    "ui5",
+    "openui5",
+    "sapui5"
+  ],
+  "main": "webapp/index.html",
+  "dependencies": {},
+  "devDependencies": {
+    "@ui5/cli": "^3.0.0",
+    "@sap/ux-ui5-tooling": "1"
+  },
+  "scripts": {
+    "deploy-config": "npx -p @sap/ux-ui5-tooling fiori add deploy-config cf"
+  }
+}

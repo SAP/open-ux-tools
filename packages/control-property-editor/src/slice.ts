@@ -1,9 +1,12 @@
 import type { PayloadAction, SliceCaseReducers } from '@reduxjs/toolkit';
 import { createSlice, createAction } from '@reduxjs/toolkit';
+import { v4 as uuidv4 } from 'uuid';
 
 import type {
     Control,
+    ContextMenu,
     IconDetails,
+    InfoCenterMessage,
     OutlineNode,
     PendingChange,
     PendingConfigurationChange,
@@ -37,11 +40,14 @@ import {
     updateQuickAction,
     quickActionListChanged,
     applicationModeChanged,
+    MessageBarType,
     UNKNOWN_CHANGE_KIND,
     SAVED_CHANGE_TYPE,
     PENDING_CHANGE_TYPE,
     PROPERTY_CHANGE_KIND,
-    CONFIGURATION_CHANGE_KIND
+    CONFIGURATION_CHANGE_KIND,
+    requestControlContextMenu,
+    showInfoCenterMessage
 } from '@sap-ux-private/control-property-editor-common';
 import { DeviceType } from './devices';
 
@@ -73,6 +79,8 @@ export interface SliceState {
     applicationRequiresReload: boolean;
     isAppLoading: boolean;
     quickActions: QuickActionGroup[];
+    infoCenterMessages: InfoCenterItem[];
+    contextMenu: ContextMenu | undefined;
 }
 
 export interface ChangesSlice {
@@ -121,6 +129,12 @@ const filterInitOptions: FilterOptions[] = [
     { name: FilterName.showEditableProperties, value: true }
 ];
 
+export interface InfoCenterItem {
+    message: InfoCenterMessage;
+    id: string;
+    expandable?: boolean;
+}
+
 export const changeProperty = createAction<PropertyChange, 'app/change-property'>('app/change-property');
 export const changePreviewScale = createAction<number>('app/change-preview-scale');
 export const changePreviewScaleMode = createAction<'fit' | 'fixed'>('app/change-preview-scale-mode');
@@ -137,6 +151,9 @@ interface LivereloadOptions {
     url?: string;
 }
 export const initializeLivereload = createAction<LivereloadOptions>('app/initialize-livereload');
+export const clearInfoCenterMessage = createAction<string>('clear-info-center-message');
+export const clearAllInfoCenterMessages = createAction<void>('clear-all-info-center-message');
+export const expandableMessage = createAction<string>('expandable-message');
 export const initialState: SliceState = {
     deviceType: DeviceType.Desktop,
     scale: 1.0,
@@ -162,7 +179,9 @@ export const initialState: SliceState = {
     canSave: false,
     applicationRequiresReload: false,
     isAppLoading: true,
-    quickActions: []
+    quickActions: [],
+    infoCenterMessages: [],
+    contextMenu: undefined
 };
 
 /**
@@ -439,6 +458,47 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                             }
                         }
                     }
+                }
+            )
+            .addMatcher(
+                showInfoCenterMessage.match,
+                (state: SliceState, action: ReturnType<typeof showInfoCenterMessage>): void => {
+                    state.infoCenterMessages.unshift({
+                        id: uuidv4(),
+                        message: action.payload
+                    });
+                }
+            )
+            .addMatcher(
+                clearInfoCenterMessage.match,
+                (state: SliceState, action: ReturnType<typeof clearInfoCenterMessage>): void => {
+                    state.infoCenterMessages = state.infoCenterMessages.filter(
+                        (message) => message.id !== action.payload
+                    );
+                }
+            )
+            .addMatcher(clearAllInfoCenterMessages.match, (state: SliceState): void => {
+                state.infoCenterMessages = state.infoCenterMessages.filter(
+                    (info) => info.message.type === MessageBarType.error
+                );
+            })
+            .addMatcher(
+                expandableMessage.match,
+                (state: SliceState, action: ReturnType<typeof expandableMessage>): void => {
+                    const id = action.payload;
+                    state.infoCenterMessages = state.infoCenterMessages.map((message) =>
+                        message.id === id ? { ...message, expandable: true } : message
+                    );
+                }
+            )
+            .addMatcher(
+                requestControlContextMenu.fulfilled.match,
+                (state: SliceState, action: ReturnType<typeof requestControlContextMenu.fulfilled>): void => {
+                    const { contextMenuItems, controlId } = action.payload;
+                    state.contextMenu = {
+                        contextMenuItems,
+                        controlId
+                    };
                 }
             )
 });

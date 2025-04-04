@@ -1,5 +1,41 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.5.3
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+-   Updated dependencies [d873cbd]
+    -   @sap-ux/cds-annotation-parser@0.2.8
+
+## 0.5.2
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/odata-vocabularies@0.4.7
+    -   @sap-ux/cds-annotation-parser@0.2.7
+
+## 0.5.1
+
+### Patch Changes
+
+-   282dd9a: Fix: creation of complex type annotation target
+
+## 0.5.0
+
+### Minor Changes
+
+-   4373718: Updated UI texts.
+
+## 0.4.1
+
+### Patch Changes
+
+-   Updated dependencies [3f273c9]
+    -   @sap-ux/odata-vocabularies@0.4.6
+    -   @sap-ux/cds-annotation-parser@0.2.6
+
 ## 0.4.0
 
 ### Minor Changes

@@ -1,0 +1,72 @@
+_schema-version: "3.1"
+ID: my-prefix-deploy-to-cf
+description: Fiori elements app
+version: 0.0.1
+modules:
+- name: comfioritoolstravel
+  type: html5
+  path: catalog
+  build-parameters:
+    build-result: dist
+    builder: custom
+    commands:
+    - npm run deploy
+    supported-platforms: []
+- name: my-prefix-deployer
+  type: com.sap.application.content
+  path: .
+  requires:
+  - name: my-prefix-repo-host
+  parameters:
+    content-target: true
+  build-parameters:
+    build-result: mta_archives/resources
+    requires:
+    - artifacts:
+      - ./*
+      name: comfioritoolstravel
+      target-path: resources/catalog
+- name: my-prefix-router
+  type: approuter.nodejs
+  path: cf/router
+  requires:
+  - name: my-prefix-html5-repo-runtime
+  - name: my-prefix-uaa
+  - name: my-prefix-destination
+    group: destinations
+    properties:
+      forwardAuthToken: false
+      name: ui5
+      url: https://ui5.sap.com
+  parameters:
+    disk-quota: 256M
+    memory: 128M
+    routes:
+    - route: https://my-prefix-${org}-${space}.${default-domain}
+resources:
+- name: my-prefix-html5-repo-runtime
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-runtime
+- name: my-prefix-repo-host
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: html5-apps-repo
+    service-plan: app-host
+- name: my-prefix-destination
+  type: org.cloudfoundry.managed-service
+  parameters:
+    service: destination
+    service-plan: lite
+- name: my-prefix-uaa
+  type: org.cloudfoundry.managed-service
+  parameters:
+    config:
+      tenant-mode: dedicated
+      xsappname: my-prefix-demo-${org}
+    service: xsuaa
+    service-plan: application
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true

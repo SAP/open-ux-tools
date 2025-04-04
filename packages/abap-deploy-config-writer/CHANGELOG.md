@@ -1,5 +1,164 @@
 # @sap-ux/abap-deploy-config-writer
 
+## 0.0.101
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.34
+
+## 0.0.100
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/system-access@0.5.33
+
+## 0.0.99
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/project-access@1.29.17
+    -   @sap-ux/system-access@0.5.33
+
+## 0.0.98
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/project-access@1.29.16
+
+## 0.0.97
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/system-access@0.5.32
+
+## 0.0.96
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/system-access@0.5.32
+
+## 0.0.95
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/project-access@1.29.13
+    -   @sap-ux/system-access@0.5.32
+
+## 0.0.94
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/system-access@0.5.32
+
+## 0.0.93
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.32
+
+## 0.0.92
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/system-access@0.5.31
+
+## 0.0.91
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.10
+-   @sap-ux/system-access@0.5.31
+
+## 0.0.90
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/system-access@0.5.31
+
+## 0.0.89
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/system-access@0.5.31
+
+## 0.0.88
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.31
+
+## 0.0.87
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/system-access@0.5.30
+
+## 0.0.86
+
+### Patch Changes
+
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/project-access@1.29.6
+    -   @sap-ux/system-access@0.5.30
+
+## 0.0.85
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/system-access@0.5.30
+
+## 0.0.84
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.30
+
+## 0.0.83
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/system-access@0.5.29
+
+## 0.0.82
+
+### Patch Changes
+
+-   @sap-ux/system-access@0.5.29
+
+## 0.0.81
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/system-access@0.5.28
+
 ## 0.0.80
 
 ### Patch Changes

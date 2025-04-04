@@ -1,4 +1,3 @@
-import type { IValidationLink } from '@sap-devx/yeoman-ui-types';
 import type {
     AbapServiceProvider,
     AxiosError,
@@ -25,12 +24,13 @@ import {
     isFullUrlDestination,
     isPartialUrlDestination
 } from '@sap-ux/btp-utils';
-import https from 'https';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import https from 'https';
 import { t } from '../i18n';
 import { SAP_CLIENT_KEY } from '../types';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
+import type { ValidationResult } from './types';
 
 /**
  * Structure to store validity information about url to be validated.
@@ -47,8 +47,6 @@ interface Validity {
     // True if the url has a cert error that can be skipped
     canSkipCertError?: boolean;
 }
-
-export type ValidationResult = string | boolean | IValidationLink;
 
 // Cert errors that may be ignored by prompt user
 const ignorableCertErrors = [ERROR_TYPE.CERT_SELF_SIGNED, ERROR_TYPE.CERT_SELF_SIGNED_CERT_IN_CHAIN];
@@ -603,7 +601,7 @@ export class ConnectionValidator {
         this.resetConnectionState();
         this.resetValidity();
         // Get the destination URL in the BAS specific form <protocol>://<destinationName>.dest. This function lowercases the origin.
-        const destUrl = getDestinationUrlForAppStudio(destination.Name, servicePath).toLowerCase();
+        const destUrl = getDestinationUrlForAppStudio(destination.Name.toLowerCase(), servicePath);
         // Get the destination URL in the portable form <protocol>://<host>:<port>.
         // We remove trailing slashes (up to 10, infinite would allow DOS attack) from the host to avoid double slashes when appending the service path.
         this._destinationUrl = servicePath
@@ -733,7 +731,7 @@ export class ConnectionValidator {
      * @param status a http request status code used to determine the validation result
      * @returns true, if the status code indicates the url is reachable, false if not, or an error message string
      */
-    private getValidationResultFromStatusCode(status: string | number): boolean | string | IValidationLink {
+    private getValidationResultFromStatusCode(status: string | number): ValidationResult {
         if (status === 200) {
             this.validity.reachable = true;
             this.validity.authenticated = true;

@@ -7,8 +7,8 @@ import { SMART_TABLE_TYPE } from '../control-types';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { areManifestChangesSupported, prepareManifestChange } from './utils';
 import { preprocessActionExecution } from './create-table-custom-column';
-import UI5Element from 'sap/ui/core/Element';
-import type { SmartTable } from 'sap/ui/comp/smarttable/SmartTable';
+
+import SmartTableExtended from 'sap/ui/comp/smarttable';
 
 export const ENABLE_VARIANT_MANAGEMENT_IN_TABLES_CHARTS = 'enable-variant-management-in-tables-charts';
 
@@ -17,7 +17,7 @@ const CONTROL_TYPES = [SMART_TABLE_TYPE];
 const OBJECT_PAGE_COMPONENT_NAME = 'sap.suite.ui.generic.template.ObjectPage';
 
 export class EnableObjectPageVariantManagementQuickAction
-    extends TableQuickActionDefinitionBase<SmartTable>
+    extends TableQuickActionDefinitionBase<SmartTableExtended>
     implements NestedQuickActionDefinition
 {
     readonly forceRefreshAfterExecution = true;
@@ -44,6 +44,10 @@ export class EnableObjectPageVariantManagementQuickAction
                 'VARIANT_MANAGEMENT_FOR_TABLE_CONTROLS_IS_ALREADY_ENABLED',
                 [child.label]
             );
+            const vmSetupNotSupported = this.context.resourceBundle.getText(
+                'VARIANT_MANAGEMENT_FOR_CUSTOM_TABLES_NOT_SUPPORTED',
+                [child.label]
+            );
             const table = this.tableMap[mapKey]?.table;
 
             if (table) {
@@ -55,11 +59,18 @@ export class EnableObjectPageVariantManagementQuickAction
                 if (value === undefined) {
                     value = !!table.getVariantManagement();
                 }
-                const hasItems = !!table.getTable().getBindingInfo('items');
+                const sectionId = table.data('sectionId') as string | undefined | null;
 
-                if (value || !hasItems) {
+                let tooltip: string | undefined;
+                if (!sectionId) {
+                    tooltip = vmSetupNotSupported;
+                } else if (value) {
+                    tooltip = alreadyEnabledTooltip;
+                }
+
+                if (value || !sectionId) {
                     child.enabled = false;
-                    child.tooltip = hasItems ? alreadyEnabledTooltip : undefined;
+                    child.tooltip = tooltip;
                 }
             }
             child.children.forEach((nestedChild, idx) => processChild(nestedChild, `${mapKey}/${idx.toFixed(0)}`));
@@ -78,12 +89,17 @@ export class EnableObjectPageVariantManagementQuickAction
             throw Error('Internal error. Object Page entity set not found');
         }
 
+        const sectionId = table.data('sectionId') as string | undefined | null;
+        if (!sectionId) {
+            throw Error('Internal error. Table sectionId property not found');
+        }
+
         preprocessActionExecution(table, sectionInfo, this.iconTabBar, iconTabBarFilterKey);
         this.selectOverlay(table);
 
         const commands = await prepareManifestChange(
             this.context,
-            `component/settings/sections/${this.getSectionID(table)}/tableSettings`,
+            `component/settings/sections/${sectionId}/tableSettings`,
             table,
             OBJECT_PAGE_COMPONENT_NAME,
             entitySet,
@@ -93,14 +109,5 @@ export class EnableObjectPageVariantManagementQuickAction
         );
 
         return commands ?? [];
-    }
-
-    getSectionID(table: UI5Element): string {
-        let lineItem = 'com.sap.vocabularies.UI.v1.LineItem';
-        if (table.data().lineItemQualifier) {
-            lineItem = `${lineItem}#${table.data().lineItemQualifier}`;
-        }
-        const navSegment = (table as SmartTable).getTable().getBindingInfo('items').path ?? '';
-        return `${navSegment ? navSegment + '::' : ''}${lineItem}`;
     }
 }

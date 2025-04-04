@@ -13,11 +13,14 @@ export {
     isCapJavaProject,
     isCapNodeJsProject,
     readCapServiceMetadataEdmx,
-    toReferenceUri
+    toReferenceUri,
+    getWorkspaceInfo,
+    hasMinCdsVersion,
+    checkCdsUi5PluginEnabled
 } from './cap';
 export { filterDataSourcesByType } from './service';
-export { addPackageDevDependency, getNodeModulesPath } from './dependencies';
-export { getCapI18nFolderNames, getI18nPropertiesPaths } from './i18n';
+export { addPackageDevDependency, getNodeModulesPath, hasDependency } from './dependencies';
+export { getCapI18nFolderNames, getI18nPropertiesPaths, getI18nBundles } from './i18n';
 export {
     getAppProgrammingLanguage,
     getAppType,

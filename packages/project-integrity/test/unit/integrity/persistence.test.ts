@@ -1,4 +1,4 @@
-import { mkdir } from 'fs/promises';
+import { mkdir, writeFile, readFile } from 'fs/promises';
 import { join } from 'path';
 import { readIntegrityData, writeIntegrityData } from '../../../src/integrity/persistence';
 import type { Integrity } from '../../../src/types';
@@ -31,6 +31,10 @@ describe('Test readIntegrityData()', () => {
 });
 
 describe('Test writeIntegrityData()', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
+    });
+
     test('Write integrity data, path to integrity data does not exists', async () => {
         const mockedMkdir = mkdir as jest.Mock;
         const integrityFilePath = join(__dirname, '../../test-input/new-folder/integrity.json');
@@ -40,6 +44,15 @@ describe('Test writeIntegrityData()', () => {
         };
         await writeIntegrityData(integrityFilePath, content as Integrity);
         expect(mockedMkdir).toBeCalledWith(expect.stringContaining('new-folder'), { recursive: true });
+    });
+
+    test('Read and write integrity data, content should be same', async () => {
+        const mockedWriteFile = writeFile as jest.Mock;
+        const integrityFilePath = join(__dirname, '../../test-input/valid-fiori-project/.fiori-ai/ai-integrity.json');
+        const originalContent = await readFile(integrityFilePath, { encoding: 'utf-8' });
+        const content = await readIntegrityData(integrityFilePath);
+        await writeIntegrityData(integrityFilePath, content);
+        expect(mockedWriteFile).toBeCalledWith(integrityFilePath, originalContent, { encoding: 'utf-8' });
     });
 
     // Other, valid cases, are tested in project.test.ts

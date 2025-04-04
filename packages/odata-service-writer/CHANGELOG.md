@@ -1,5 +1,158 @@
 # @sap-ux/odata-service-writer
 
+## 0.26.13
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/mockserver-config-writer@0.8.11
+
+## 0.26.12
+
+### Patch Changes
+
+-   224494c: Improved add, delete and get methods for service backends.
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/mockserver-config-writer@0.8.10
+    -   @sap-ux/project-access@1.29.17
+
+## 0.26.11
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/ui5-config@0.26.4
+    -   @sap-ux/mockserver-config-writer@0.8.9
+    -   @sap-ux/project-access@1.29.16
+
+## 0.26.10
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/mockserver-config-writer@0.8.8
+
+## 0.26.9
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/mockserver-config-writer@0.8.7
+
+## 0.26.8
+
+### Patch Changes
+
+-   Updated dependencies [5817923]
+    -   @sap-ux/mockserver-config-writer@0.8.6
+    -   @sap-ux/ui5-config@0.26.3
+    -   @sap-ux/project-access@1.29.13
+
+## 0.26.7
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/mockserver-config-writer@0.8.5
+
+## 0.26.6
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/mockserver-config-writer@0.8.4
+
+## 0.26.5
+
+### Patch Changes
+
+-   4b8577f: fix: usage of static webapp path
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/mockserver-config-writer@0.8.3
+    -   @sap-ux/project-access@1.29.10
+
+## 0.26.4
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/mockserver-config-writer@0.8.2
+
+## 0.26.3
+
+### Patch Changes
+
+-   dbd725a: Write metadata.xml in update in odata-service-writer
+
+## 0.26.2
+
+### Patch Changes
+
+-   Updated dependencies [c244f60]
+    -   @sap-ux/mockserver-config-writer@0.8.1
+
+## 0.26.1
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
+## 0.26.0
+
+### Minor Changes
+
+-   f1f9cbe: Service update support.
+
+### Patch Changes
+
+-   Updated dependencies [f1f9cbe]
+    -   @sap-ux/mockserver-config-writer@0.8.0
+
+## 0.25.10
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/mockserver-config-writer@0.7.3
+
+## 0.25.9
+
+### Patch Changes
+
+-   ed8a9b9: Handling of `ignoreCertError` property from service in proxy middleware.
+-   Updated dependencies [ed8a9b9]
+    -   @sap-ux/ui5-config@0.26.2
+    -   @sap-ux/mockserver-config-writer@0.7.3
+    -   @sap-ux/project-access@1.29.6
+
+## 0.25.8
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/mockserver-config-writer@0.7.2
+
+## 0.25.7
+
+### Patch Changes
+
+-   4a90030: `@sap-ux/project-access` moved to dependencies.
+
+## 0.25.6
+
+### Patch Changes
+
+-   f349f56: Fixed default naming for model.
+
 ## 0.25.5
 
 ### Patch Changes

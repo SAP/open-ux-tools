@@ -1,5 +1,228 @@
 # @sap-ux/ui5-library-reference-sub-generator
 
+## 0.0.53
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-reference-inquirer@0.3.93
+
+## 0.0.52
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/fiori-generator-shared@0.9.11
+    -   @sap-ux/telemetry@0.5.72
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.92
+    -   @sap-ux/ui5-library-reference-writer@0.1.57
+
+## 0.0.51
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/telemetry@0.5.71
+-   @sap-ux/ui5-library-reference-writer@0.1.56
+-   @sap-ux/fiori-generator-shared@0.9.10
+-   @sap-ux/ui5-library-reference-inquirer@0.3.91
+
+## 0.0.50
+
+### Patch Changes
+
+-   Updated dependencies [011c8c5]
+    -   @sap-ux/telemetry@0.5.70
+    -   @sap-ux/fiori-generator-shared@0.9.9
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.90
+    -   @sap-ux/project-access@1.29.16
+    -   @sap-ux/ui5-library-reference-writer@0.1.55
+
+## 0.0.49
+
+### Patch Changes
+
+-   Updated dependencies [1ce7fe9]
+    -   @sap-ux/project-access@1.29.15
+    -   @sap-ux/fiori-generator-shared@0.9.8
+    -   @sap-ux/telemetry@0.5.69
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.89
+    -   @sap-ux/ui5-library-reference-writer@0.1.54
+
+## 0.0.48
+
+### Patch Changes
+
+-   Updated dependencies [3cc8f8a]
+    -   @sap-ux/project-access@1.29.14
+    -   @sap-ux/fiori-generator-shared@0.9.7
+    -   @sap-ux/telemetry@0.5.68
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.88
+    -   @sap-ux/ui5-library-reference-writer@0.1.53
+
+## 0.0.47
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.13
+-   @sap-ux/telemetry@0.5.67
+-   @sap-ux/ui5-library-reference-writer@0.1.52
+-   @sap-ux/fiori-generator-shared@0.9.6
+-   @sap-ux/ui5-library-reference-inquirer@0.3.87
+
+## 0.0.46
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.12
+-   @sap-ux/fiori-generator-shared@0.9.5
+-   @sap-ux/telemetry@0.5.66
+-   @sap-ux/ui5-library-reference-inquirer@0.3.86
+-   @sap-ux/ui5-library-reference-writer@0.1.51
+
+## 0.0.45
+
+### Patch Changes
+
+-   Updated dependencies [d47a1b1]
+    -   @sap-ux/fiori-generator-shared@0.9.4
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.85
+
+## 0.0.44
+
+### Patch Changes
+
+-   Updated dependencies [0f35b4b]
+    -   @sap-ux/project-access@1.29.11
+    -   @sap-ux/fiori-generator-shared@0.9.3
+    -   @sap-ux/telemetry@0.5.65
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.84
+    -   @sap-ux/ui5-library-reference-writer@0.1.50
+
+## 0.0.43
+
+### Patch Changes
+
+-   @sap-ux/ui5-library-reference-inquirer@0.3.83
+
+## 0.0.42
+
+### Patch Changes
+
+-   Updated dependencies [4b8577f]
+    -   @sap-ux/telemetry@0.5.64
+    -   @sap-ux/fiori-generator-shared@0.9.2
+    -   @sap-ux/project-access@1.29.10
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.82
+    -   @sap-ux/ui5-library-reference-writer@0.1.49
+
+## 0.0.41
+
+### Patch Changes
+
+-   Updated dependencies [c8c292c]
+    -   @sap-ux/project-access@1.29.9
+    -   @sap-ux/fiori-generator-shared@0.9.1
+    -   @sap-ux/telemetry@0.5.63
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.81
+    -   @sap-ux/ui5-library-reference-writer@0.1.48
+
+## 0.0.40
+
+### Patch Changes
+
+-   Updated dependencies [fffc3a7]
+    -   @sap-ux/fiori-generator-shared@0.9.0
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.80
+
+## 0.0.39
+
+### Patch Changes
+
+-   Updated dependencies [c50e09f]
+    -   @sap-ux/project-access@1.29.8
+    -   @sap-ux/fiori-generator-shared@0.8.1
+    -   @sap-ux/telemetry@0.5.62
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.79
+    -   @sap-ux/ui5-library-reference-writer@0.1.47
+
+## 0.0.38
+
+### Patch Changes
+
+-   Updated dependencies [fb4e328]
+    -   @sap-ux/fiori-generator-shared@0.8.0
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.78
+
+## 0.0.37
+
+### Patch Changes
+
+-   Updated dependencies [2c0d657]
+    -   @sap-ux/project-access@1.29.7
+    -   @sap-ux/fiori-generator-shared@0.7.29
+    -   @sap-ux/telemetry@0.5.61
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.77
+    -   @sap-ux/ui5-library-reference-writer@0.1.46
+
+## 0.0.36
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.6
+-   @sap-ux/telemetry@0.5.60
+-   @sap-ux/ui5-library-reference-writer@0.1.45
+-   @sap-ux/fiori-generator-shared@0.7.28
+-   @sap-ux/ui5-library-reference-inquirer@0.3.76
+
+## 0.0.35
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.5
+-   @sap-ux/fiori-generator-shared@0.7.27
+-   @sap-ux/telemetry@0.5.59
+-   @sap-ux/ui5-library-reference-inquirer@0.3.75
+-   @sap-ux/ui5-library-reference-writer@0.1.44
+
+## 0.0.34
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.26
+-   @sap-ux/telemetry@0.5.58
+-   @sap-ux/ui5-library-reference-inquirer@0.3.74
+
+## 0.0.33
+
+### Patch Changes
+
+-   Updated dependencies [29abc73]
+    -   @sap-ux/project-access@1.29.4
+    -   @sap-ux/fiori-generator-shared@0.7.25
+    -   @sap-ux/telemetry@0.5.57
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.73
+    -   @sap-ux/ui5-library-reference-writer@0.1.43
+
+## 0.0.32
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.7.24
+-   @sap-ux/telemetry@0.5.56
+-   @sap-ux/ui5-library-reference-inquirer@0.3.72
+
+## 0.0.31
+
+### Patch Changes
+
+-   Updated dependencies [096b021]
+    -   @sap-ux/project-access@1.29.3
+    -   @sap-ux/fiori-generator-shared@0.7.23
+    -   @sap-ux/telemetry@0.5.55
+    -   @sap-ux/ui5-library-reference-inquirer@0.3.71
+    -   @sap-ux/ui5-library-reference-writer@0.1.42
+
 ## 0.0.30
 
 ### Patch Changes

@@ -11,9 +11,11 @@ import { AuthenticationType, getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
 import { TestFixture } from './fixtures';
 import { PackageInputChoices, TargetSystemType, TransportChoices } from '@sap-ux/abap-deploy-config-inquirer';
-import { AbapDeployConfig, UI5Config } from '@sap-ux/ui5-config';
+import type { AbapDeployConfig } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
 import { ABAP_DEPLOY_TASK } from '../src/utils/constants';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import * as projectAccess from '@sap-ux/project-access';
 
 jest.mock('@sap-ux/store', () => ({
     ...jest.requireActual('@sap-ux/store'),
@@ -27,7 +29,9 @@ mockGetService.mockResolvedValueOnce({
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -146,8 +150,8 @@ describe('Test abap deploy configuration generator', () => {
 
         expect(deployTask).toStrictEqual({
             app: {
-                name: 'ZFETRAVEL',
                 description: 'Test Description',
+                name: 'ZFETRAVEL',
                 package: 'ZLOCAL',
                 transport: 'REPLACE_WITH_TRANSPORT'
             },
@@ -354,13 +358,29 @@ describe('Test abap deploy configuration generator', () => {
                     serviceProvider: undefined,
                     type: 'application'
                 },
-                ui5AbapRepo: { default: 'ZUI5_APP' },
+                ui5AbapRepo: { default: 'ZUI5_APP', hideIfOnPremise: false },
                 description: { default: 'Deployment description' },
-                packageManual: { default: 'Z123456' },
+                packageManual: {
+                    default: 'Z123456',
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
                 transportManual: { default: 'ZTESTK900000' },
                 index: { indexGenerationAllowed: false },
-                packageAutocomplete: { useAutocomplete: true },
-                overwrite: { hide: true }
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: false,
+                        shouldValidatePackageForStartingPrefix: false
+                    }
+                },
+                overwrite: { hide: true },
+                transportInputChoice: {
+                    hideIfOnPremise: false
+                },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: false } }
             },
             {},
             false // isYUI
@@ -383,6 +403,94 @@ describe('Test abap deploy configuration generator', () => {
             },
             exclude: ['/test/']
         });
+    });
+
+    it('should run the generator with correct prompt options for adp project', async () => {
+        mockGetHostEnvironment.mockReturnValue(hostEnvironment.cli);
+        const abapDeployConfigInquirerSpy = jest
+            .spyOn(abapInquirer, 'getPrompts')
+            .mockResolvedValue({ prompts: [], answers: {} as abapInquirer.AbapDeployConfigAnswersInternal });
+        jest.spyOn(projectAccess, 'getAppType').mockResolvedValueOnce('Fiori Adaptation');
+        cwd = join(`${OUTPUT_DIR_PREFIX}/app1`);
+        memfs.vol.fromNestedJSON(
+            {
+                [`.${OUTPUT_DIR_PREFIX}/app1/ui5.yaml`]: testFixture.getContents('/sample/ui5.yaml'),
+                [`.${OUTPUT_DIR_PREFIX}/app1/ui5-deploy.yaml`]: testFixture.getContents('/sample/ui5-deploy.yaml'),
+                [`.${OUTPUT_DIR_PREFIX}/app1/package.json`]: JSON.stringify({ scripts: {} }),
+                [`.${OUTPUT_DIR_PREFIX}/app1/webapp/index.html`]: '<html>mock index</html>'
+            },
+            '/'
+        );
+
+        const appDir = (cwd = `${OUTPUT_DIR_PREFIX}/app1`);
+
+        const runContext = yeomanTest
+            .create(
+                AbapDeployGenerator,
+                {
+                    resolved: abapDeployGenPath
+                },
+                {
+                    cwd: appDir
+                }
+            )
+            .withOptions({
+                skipInstall: true,
+                appRootPath: join(`${OUTPUT_DIR_PREFIX}/app1`),
+                index: true
+            })
+            .withPrompts({
+                targetSystem: 'https://mock.url.target2.com',
+                ui5AbapRepo: 'ZUI5_APP_UPDATED',
+                description: 'New Deployment description',
+                packageInputChoice: PackageInputChoices.EnterManualChoice,
+                packageManual: 'Z123456_UPDATED',
+                transportInputChoice: TransportChoices.EnterManualChoice,
+                transportManual: 'ZTESTK900001'
+            });
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(abapDeployConfigInquirerSpy).toHaveBeenCalledWith(
+            {
+                backendTarget: {
+                    abapTarget: {
+                        url: 'https://mock.url.target2.com',
+                        authenticationType: AuthenticationType.ReentranceTicket,
+                        client: '',
+                        destination: undefined,
+                        scp: undefined
+                    },
+                    systemName: undefined,
+                    serviceProvider: undefined,
+                    type: 'application'
+                },
+                ui5AbapRepo: { default: 'ZUI5_APP', hideIfOnPremise: true },
+                description: { default: 'Deployment description' },
+                packageManual: {
+                    default: 'Z123456',
+                    additionalValidation: {
+                        shouldValidatePackageType: true,
+                        shouldValidatePackageForStartingPrefix: true
+                    }
+                },
+                transportManual: { default: 'ZTESTK900000' },
+                index: { indexGenerationAllowed: false },
+                packageAutocomplete: {
+                    useAutocomplete: true,
+                    additionalValidation: {
+                        shouldValidatePackageType: true,
+                        shouldValidatePackageForStartingPrefix: true
+                    }
+                },
+                overwrite: { hide: true },
+                transportInputChoice: {
+                    hideIfOnPremise: true
+                },
+                targetSystem: { additionalValidation: { shouldRestrictDifferentSystemType: true } }
+            },
+            {},
+            false // isYUI
+        );
     });
 
     it('handleProjectDoesNotExist - ui5.yaml does not exist in the app folder (CLI)', async () => {

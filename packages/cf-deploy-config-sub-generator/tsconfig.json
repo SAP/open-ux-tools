@@ -10,6 +10,9 @@
   },
   "references": [
     {
+      "path": "../btp-utils"
+    },
+    {
       "path": "../cf-deploy-config-inquirer"
     },
     {
@@ -19,6 +22,12 @@
       "path": "../deploy-config-generator-shared"
     },
     {
+      "path": "../feature-toggle"
+    },
+    {
+      "path": "../fiori-generator-shared"
+    },
+    {
       "path": "../i18n"
     },
     {
@@ -26,6 +35,12 @@
     },
     {
       "path": "../logger"
+    },
+    {
+      "path": "../project-access"
+    },
+    {
+      "path": "../ui5-config"
     }
   ]
 }

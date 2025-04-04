@@ -1,4 +1,4 @@
-export { FileName, DirName, FioriToolsSettings } from './constants';
+export { FileName, DirName, FioriToolsSettings, MinCdsVersionUi5Plugin } from './constants';
 export { getFilePaths } from './file';
 export {
     addPackageDevDependency,
@@ -29,6 +29,7 @@ export {
     getSpecification,
     getSpecificationPath,
     getI18nPropertiesPaths,
+    getI18nBundles,
     getMinUI5VersionFromManifest,
     getMinUI5VersionAsArray,
     getMinimumUI5Version,
@@ -46,8 +47,12 @@ export {
     readUi5Yaml,
     refreshSpecificationDistTags,
     toReferenceUri,
-    updatePackageScript
+    updatePackageScript,
+    getWorkspaceInfo,
+    hasMinCdsVersion,
+    checkCdsUi5PluginEnabled
 } from './project';
 export { execNpmCommand } from './command/npm-command';
 export * from './types';
 export * from './library';
+export { hasDependency } from './project';
