@@ -1,17 +1,19 @@
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider, App, AppIndex } from '@sap-ux/axios-extension';
 
-import type { TargetApplication } from '../types';
+import { t } from '../i18n';
+import type { SourceApplication } from '../types';
 import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, S4HANA_APPS_PARAMS } from '../base/constants';
 
 /**
  * Compares two applications for sorting, using the title and falling back to the ID if titles are missing or equal.
  * This function ensures that applications are sorted alphabetically by their title or ID in a case-insensitive manner.
  *
- * @param {TargetApplication} appA - The first application to compare.
- * @param {TargetApplication} appB - The second application to compare.
+ * @param {SourceApplication} appA - The first application to compare.
+ * @param {SourceApplication} appB - The second application to compare.
  * @returns {number} A number indicating the sort order.
  */
-export const filterApps = (appA: TargetApplication, appB: TargetApplication): number => {
+export const filterApps = (appA: SourceApplication, appB: SourceApplication): number => {
     let titleA = appA.title.toUpperCase();
     let titleB = appB.title.toUpperCase();
 
@@ -35,9 +37,9 @@ export const filterApps = (appA: TargetApplication, appB: TargetApplication): nu
  * This function maps properties from a loosely typed app data structure to a strongly typed Application object.
  *
  * @param {Partial<App>} app - The raw application data, possibly incomplete.
- * @returns {TargetApplication} A structured application object with defined properties, even if some may be empty.
+ * @returns {SourceApplication} A structured application object with defined properties, even if some may be empty.
  */
-export const mapApps = (app: Partial<App>): TargetApplication => ({
+export const mapApps = (app: Partial<App>): SourceApplication => ({
     id: app['sap.app/id'] ?? '',
     title: app['sap.app/title'] ?? '',
     ach: app['sap.app/ach'] ?? '',
@@ -48,6 +50,26 @@ export const mapApps = (app: Partial<App>): TargetApplication => ({
 });
 
 /**
+ * Checks whether the application supports manifest-first approach.
+ *
+ * @param {AbapServiceProvider} provider - The ABAP service provider for communicating with the system.
+ * @param {string} id - The ID of the application whose manifest should be managed.
+ * @param {ToolsLogger} logger - Optional logger for debugging purposes.
+ * @returns {Promise<boolean>} True if supported, otherwise throws an error.
+ */
+export async function isAppSupported(provider: AbapServiceProvider, id: string, logger: ToolsLogger): Promise<boolean> {
+    const appIndex = provider.getAppIndex();
+    const isSupported = await appIndex.getIsManiFirstSupported(id);
+
+    if (!isSupported) {
+        logger?.debug(`Application '${id}' is not supported by Adaptation Project`);
+        throw new Error(t('validators.appDoesNotSupportManifest'));
+    }
+
+    return true;
+}
+
+/**
  * Loads and processes application data from the ABAP service provider.
  *
  * This function retrieves the application index from the provider and then searches for applications based on system type.
@@ -55,9 +77,9 @@ export const mapApps = (app: Partial<App>): TargetApplication => ({
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider used to retrieve application data.
  * @param {boolean} isCustomerBase - Flag indicating whether the system is customer-based. Affects application selection.
- * @returns {Promise<TargetApplication[]>} A promise that resolves to a sorted list of applications.
+ * @returns {Promise<SourceApplication[]>} A promise that resolves to a sorted list of applications.
  */
-export async function loadApps(provider: AbapServiceProvider, isCustomerBase: boolean): Promise<TargetApplication[]> {
+export async function loadApps(provider: AbapServiceProvider, isCustomerBase: boolean): Promise<SourceApplication[]> {
     let result: AppIndex = [];
 
     try {

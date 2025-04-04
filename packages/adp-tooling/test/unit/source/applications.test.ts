@@ -1,19 +1,21 @@
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import type { TargetApplication } from '../../../src';
-import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, filterApps, loadApps } from '../../../src';
-
-const searchMock = jest.fn();
-const isAbapCloudMock = jest.fn().mockResolvedValue(false);
-
-const mockAbapProvider = {
-    getAppIndex: jest.fn().mockReturnValue({
-        search: searchMock
-    }),
-    isAbapCloud: isAbapCloudMock
-} as unknown as AbapServiceProvider;
+import { initI18n, t } from '../../../src/i18n';
+import type { SourceApplication } from '../../../src';
+import { ABAP_APPS_PARAMS, ABAP_VARIANT_APPS_PARAMS, filterApps, isAppSupported, loadApps } from '../../../src';
 
 describe('Target Applications', () => {
+    const searchMock = jest.fn();
+    const isAbapCloudMock = jest.fn().mockResolvedValue(false);
+
+    const mockAbapProvider = {
+        getAppIndex: jest.fn().mockReturnValue({
+            search: searchMock
+        }),
+        isAbapCloud: isAbapCloudMock
+    } as unknown as AbapServiceProvider;
+
     const mockApps = [
         { 'sap.app/id': '1', 'sap.app/title': 'App One' },
         { 'sap.app/id': '2', 'sap.app/title': 'App Two' }
@@ -78,26 +80,68 @@ describe('Target Applications', () => {
         });
     });
 
+    describe('isAppSupported', () => {
+        const fakeAppId = 'my.app';
+        const logger: jest.Mocked<ToolsLogger> = { debug: jest.fn() } as any;
+
+        const getIsManiFirstSupportedMock = jest.fn();
+        const mockProvider = {
+            getAppIndex: jest.fn().mockReturnValue({
+                getIsManiFirstSupported: getIsManiFirstSupportedMock
+            })
+        } as unknown as AbapServiceProvider;
+
+        beforeAll(async () => {
+            await initI18n();
+        });
+
+        afterEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should return true when manifest-first is supported', async () => {
+            getIsManiFirstSupportedMock.mockResolvedValue(true);
+
+            const result = await isAppSupported(mockProvider, fakeAppId, logger);
+
+            expect(result).toBe(true);
+            expect(getIsManiFirstSupportedMock).toHaveBeenCalledWith(fakeAppId);
+            expect(logger.debug).not.toHaveBeenCalled();
+        });
+
+        it('should throw an error when manifest-first is not supported', async () => {
+            getIsManiFirstSupportedMock.mockResolvedValue(false);
+
+            await expect(isAppSupported(mockProvider, fakeAppId, logger)).rejects.toThrow(
+                t('validators.appDoesNotSupportManifest')
+            );
+
+            expect(logger.debug).toHaveBeenCalledWith(
+                `Application '${fakeAppId}' is not supported by Adaptation Project`
+            );
+        });
+    });
+
     describe('filterApps', () => {
         it('sorts applications alphabetically by title', () => {
-            const appA = { id: '1', title: 'Application B' } as TargetApplication;
-            const appB = { id: '2', title: 'Application A' } as TargetApplication;
+            const appA = { id: '1', title: 'Application B' } as SourceApplication;
+            const appB = { id: '2', title: 'Application A' } as SourceApplication;
 
             expect(filterApps(appA, appB)).toBe(1);
             expect(filterApps(appB, appA)).toBe(-1);
         });
 
         it('uses IDs if titles are empty', () => {
-            const appA = { id: '2', title: '' } as TargetApplication;
-            const appB = { id: '1', title: '' } as TargetApplication;
+            const appA = { id: '2', title: '' } as SourceApplication;
+            const appB = { id: '1', title: '' } as SourceApplication;
 
             expect(filterApps(appA, appB)).toBe(1);
             expect(filterApps(appB, appA)).toBe(-1);
         });
 
         it('returns 0 when both titles and IDs are identical', () => {
-            const appA = { id: '1', title: 'Application' } as TargetApplication;
-            const appB = { id: '1', title: 'Application' } as TargetApplication;
+            const appA = { id: '1', title: 'Application' } as SourceApplication;
+            const appB = { id: '1', title: 'Application' } as SourceApplication;
 
             expect(filterApps(appA, appB)).toBe(0);
         });

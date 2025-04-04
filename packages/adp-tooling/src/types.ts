@@ -102,10 +102,10 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
-    application: TargetApplication;
+    application: SourceApplication;
 }
 
-export interface TargetApplication {
+export interface SourceApplication {
     id: string;
     title: string;
     ach: string;
@@ -113,6 +113,22 @@ export interface TargetApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
+}
+
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
 }
 
 export interface Endpoint extends Partial<Destination> {

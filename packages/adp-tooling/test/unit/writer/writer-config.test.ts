@@ -1,27 +1,29 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { FlexLayer, getAbapTarget, getConfig } from '../../../src';
-import type { ConfigAnswers, PackageJson, TargetApplication } from '../../../src';
+import { FlexLayer, UI5VersionInfo, getAbapTarget, getConfig } from '../../../src';
+import type { ConfigAnswers, PackageJson, SourceApplication } from '../../../src';
 
-jest.mock('../../../src/client/abap-provider.ts', () => ({
+jest.mock('../../../src/abap/target.ts', () => ({
     getAbapTarget: jest.fn()
 }));
 
 const systemDetails = {
     client: '010',
-    url: 'https://SYS010'
+    url: 'some-url'
 };
 
 const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
+const isAbapCloudMock = jest.fn();
 const mockAbapProvider = {
-    getAtoInfo: getAtoInfoMock
+    getAtoInfo: getAtoInfoMock,
+    isAbapCloud: isAbapCloudMock
 } as unknown as AbapServiceProvider;
 
 const getAbapTargetMock = getAbapTarget as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
-    application: { id: '1' } as TargetApplication,
+    application: { id: '1' } as SourceApplication,
     system: 'SYS010',
     password: '',
     username: ''
@@ -37,6 +39,10 @@ describe('getConfig', () => {
     });
 
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
+        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
+            getLatestVersion: jest.fn().mockReturnValue('1.135.0')
+        } as unknown as UI5VersionInfo);
+        isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig({
             provider: mockAbapProvider,
             configAnswers,
@@ -66,7 +72,12 @@ describe('getConfig', () => {
             },
             target: {
                 client: '010',
-                url: 'https://SYS010'
+                url: 'some-url'
+            },
+            ui5: {
+                frameworkUrl: 'https://ui5.sap.com',
+                minVersion: '1.135.0',
+                version: '1.135.0'
             },
             options: { fioriTools: true, enableTypeScript: false }
         });
