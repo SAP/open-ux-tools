@@ -85,7 +85,7 @@ describe('CF Writer CAP', () => {
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
             expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot(); // Ensure it hasn't changed!
             expect(getCapProjectTypeMock).toHaveBeenCalled();
-            expect(spawnMock.mock.calls).toHaveLength(2);
+            expect(spawnMock.mock.calls).toHaveLength(3);
             expect(spawnMock).toHaveBeenCalledWith(
                 'cds',
                 ['add', 'mta', 'xsuaa', 'destination', 'html5-repo'],
@@ -94,6 +94,8 @@ describe('CF Writer CAP', () => {
             expect(spawnMock.mock.calls[1][0]).toStrictEqual('npm.cmd'); // Just always test for windows!
             expect(spawnMock.mock.calls[1][1]).toStrictEqual(['update', '--package-lock-only']);
             expect(spawnMock.mock.calls[1][2]).toHaveProperty('shell');
+            expect(spawnMock.mock.calls[2][0]).toStrictEqual('npm.cmd');
+            expect(spawnMock.mock.calls[2][1]).toStrictEqual(['install', '--ignore-engines']);
             if (RouterModuleType.Standard === routerType) {
                 expect(localFs.read(join(mtaPath, `router`, 'package.json'))).toMatchSnapshot();
                 expect(localFs.read(join(mtaPath, `router`, 'xs-app.json'))).toMatchSnapshot();
