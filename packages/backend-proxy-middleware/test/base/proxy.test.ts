@@ -101,39 +101,39 @@ describe('proxy', () => {
     });
 
     describe('ProxyEventHandlers', () => {
-        const { onProxyReq, onProxyRes } = ProxyEventHandlers;
+        const { proxyReq, proxyRes } = ProxyEventHandlers;
 
-        test('onProxyReq', () => {
+        test('proxyReq', () => {
             const mockSetHeader = jest.fn() as unknown;
 
-            onProxyReq({ setHeader: mockSetHeader } as ClientRequest);
+            proxyReq({ setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).not.toBeCalled();
 
-            onProxyReq({ path: 'hello/world', setHeader: mockSetHeader } as ClientRequest);
+            proxyReq({ path: 'hello/world', setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).not.toBeCalled();
 
-            onProxyReq({
+            proxyReq({
                 path: 'hello/Fiorilaunchpad.html',
                 headersSent: true,
                 setHeader: mockSetHeader
             } as ClientRequest);
             expect(mockSetHeader).not.toBeCalled();
 
-            onProxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
+            proxyReq({ path: 'hello/Fiorilaunchpad.html', setHeader: mockSetHeader } as ClientRequest);
             expect(mockSetHeader).toBeCalledWith('accept-encoding', '*');
         });
 
-        test('onProxyRes', () => {
+        test('proxyRes', () => {
             const response = {} as IncomingMessage;
 
             // no set-cookie header, nothing to do, nothing changes
-            onProxyRes(response);
+            proxyRes(response);
             expect(response).toEqual({});
             response.headers = {};
-            onProxyRes(response);
+            proxyRes(response);
             expect(response).toEqual({ headers: {} });
             response.headers['set-cookie'] = [];
-            onProxyRes(response);
+            proxyRes(response);
             expect(response).toEqual({ headers: { 'set-cookie': [] } });
 
             // cookies are modified i.e. SameSite, Domain, Secure, Partitioned are removed
@@ -144,7 +144,7 @@ describe('proxy', () => {
                 'SameSite=None; MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; Partitioned; secure; Domain=example.com',
                 'Domain=example.com MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly; Partitioned; SameSite=None; secure'
             ];
-            onProxyRes(response);
+            proxyRes(response);
             expect(response.headers['set-cookie']).toEqual([
                 'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;',
                 'MYCOOKIE=123456789qwertzuiop; path=/; HttpOnly;',
@@ -386,9 +386,9 @@ describe('proxy', () => {
 
             const options = await generateProxyMiddlewareOptions(backend, baseOptions, logger);
             expect(options).toBeDefined();
-            expect(options.onError).toBeDefined();
-            expect(options.onProxyReq).toBeDefined();
-            expect(options.onProxyRes).toBeDefined();
+            expect(options?.on?.error).toBeDefined();
+            expect(options?.on?.proxyReq).toBeDefined();
+            expect(options?.on?.proxyRes).toBeDefined();
             expect(options.target).toBe(backend.url);
             expect(options.changeOrigin).toBe(true);
             expect(options.agent).toBeDefined();
@@ -484,8 +484,8 @@ describe('proxy', () => {
             };
             const proxyOptions = await generateProxyMiddlewareOptions(backend, {}, logger);
             const debugSpy = jest.spyOn(logger, 'debug');
-            if (typeof proxyOptions?.onError === 'function') {
-                proxyOptions?.onError(undefined as any, {} as any, {} as any);
+            if (typeof proxyOptions?.on?.error === 'function') {
+                proxyOptions?.on?.error(undefined as any, {} as any, {} as any);
                 expect(debugSpy).toHaveBeenCalledTimes(1);
             }
         });

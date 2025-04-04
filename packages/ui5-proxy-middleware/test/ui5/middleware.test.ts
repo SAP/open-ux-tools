@@ -153,8 +153,8 @@ describe('middleware', () => {
         test('none', async () => {
             await getTestServer(config);
             expect(ui5ProxySpy).toBeCalledWith(
-                expect.objectContaining({}),
-                expect.objectContaining({ secure: true, logLevel: 'info' })
+                expect.objectContaining({ logLevel: 2 }),
+                expect.objectContaining({ secure: true })
             );
         });
 
@@ -175,8 +175,8 @@ describe('middleware', () => {
                 debug: true
             });
             expect(ui5ProxySpy).toBeCalledWith(
-                expect.objectContaining({}),
-                expect.objectContaining({ logLevel: 'debug' })
+                expect.objectContaining({ logLevel: 4 }),
+                expect.objectContaining({})
             );
         });
 
