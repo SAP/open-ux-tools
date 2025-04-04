@@ -1,13 +1,13 @@
 import { getQuestions, getQuestionsWithRouterOptions } from '../src/prompts';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { t } from '../src/i18n';
+import type { CfDeployConfigRouterPromptOptions } from '../src/types';
 import {
     type CfDeployConfigPromptOptions,
     type CfSystemChoice,
     type CfDeployConfigQuestions,
     type DestinationNamePromptOptions,
-    RouterModuleType,
-    CfDeployConfigRouterPromptOptions
+    RouterModuleType
 } from '../src/types';
 import { promptNames } from '../src';
 import { fetchBTPDestinations } from '../src/prompts/prompt-helpers';
@@ -275,7 +275,7 @@ describe('Prompt Generation Tests', () => {
             });
         });
         it('Displays CF prompt with App Router selection disabled', async () => {
-            let routerOptions: CfDeployConfigRouterPromptOptions = {
+            const routerOptions: CfDeployConfigRouterPromptOptions = {
                 ...promptOptions,
                 [promptNames.showRouterOptions]: false
             };
