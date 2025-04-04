@@ -1,4 +1,4 @@
-import { getPrompts, promptNames, type CfDeployConfigPromptOptions, prompt } from '../src';
+import { getPrompts, getPromptsWithRouterOptions, promptNames, type CfDeployConfigPromptOptions, prompt } from '../src';
 import * as cfPrompts from '../src/prompts/prompts';
 import type { CfDeployConfigAnswers } from '../src/types';
 import type { Logger } from '@sap-ux/logger';
@@ -45,5 +45,12 @@ describe('index', () => {
         expect(await prompt(mockInquirerAdapter, promptOptions)).toMatchObject(answers);
         // Ensure autocomplete plugin is registered
         expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
+    });
+
+    it('should return prompts from getPromptsWithRouterOptions', async () => {
+        const getQuestionsSpy = jest.spyOn(cfPrompts, 'getQuestionsWithRouterOptions');
+        const prompts = await getPromptsWithRouterOptions(promptOptions, mockLog);
+        expect(prompts.length).toBe(3);
+        expect(getQuestionsSpy).toHaveBeenCalledWith(promptOptions, mockLog);
     });
 });
