@@ -8,7 +8,7 @@ import * as abapWriter from '@sap-ux/abap-deploy-config-writer';
 import { t } from '../src/utils/i18n';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { AuthenticationType, getService } from '@sap-ux/store';
-import { mockSourceSystems } from './fixtures/targets';
+import { mockTargetSystems } from './fixtures/targets';
 import { TestFixture } from './fixtures';
 import { PackageInputChoices, TargetSystemType, TransportChoices } from '@sap-ux/abap-deploy-config-inquirer';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
@@ -24,7 +24,7 @@ jest.mock('@sap-ux/store', () => ({
 
 const mockGetService = getService as jest.Mock;
 mockGetService.mockResolvedValueOnce({
-    getAll: jest.fn().mockResolvedValueOnce(mockSourceSystems)
+    getAll: jest.fn().mockResolvedValueOnce(mockTargetSystems)
 });
 
 jest.mock('fs', () => {

@@ -39,7 +39,7 @@ const backendSystems: BackendSystem[] = [
         client: '010',
         name: 'SYS_010',
         password: 'some-pw',
-        url: 'https://sys010',
+        url: 'some-url',
         userDisplayName: 'some-name',
         username: 'some-user'
     }

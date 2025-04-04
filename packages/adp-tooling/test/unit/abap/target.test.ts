@@ -18,7 +18,7 @@ const logger = {
 const dummyDetails = {
     Name: 'SYS_010',
     Client: '010',
-    Url: 'http://sys010.com',
+    Url: 'some-url',
     Authentication: 'Basic',
     Credentials: { username: 'storedUser', password: 'storedPass' }
 };
@@ -54,7 +54,7 @@ describe('getAbapTarget', () => {
 
         expect(target).toEqual({
             client,
-            url: 'http://sys010.com',
+            url: 'some-url',
             authenticationType: 'Basic'
         });
         expect(requestOptions.auth).toEqual({

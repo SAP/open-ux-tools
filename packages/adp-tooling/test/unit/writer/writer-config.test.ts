@@ -10,7 +10,7 @@ jest.mock('../../../src/abap/target.ts', () => ({
 
 const systemDetails = {
     client: '010',
-    url: 'https://SYS010'
+    url: 'some-url'
 };
 
 const getAtoInfoMock = jest.fn().mockResolvedValue({ operationsType: 'P' });
@@ -72,7 +72,7 @@ describe('getConfig', () => {
             },
             target: {
                 client: '010',
-                url: 'https://SYS010'
+                url: 'some-url'
             },
             ui5: {
                 frameworkUrl: 'https://ui5.sap.com',

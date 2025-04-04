@@ -4,7 +4,7 @@ import { promptNames, ClientChoiceValue, TargetSystemType } from '../../../src/t
 import { getAbapTargetPrompts } from '../../../src/prompts/questions';
 import { getAbapSystems } from '../../../src/utils';
 import { mockDestinations } from '../../fixtures/destinations';
-import { mockSourceSystems } from '../../fixtures/targets';
+import { mockTargetSystems } from '../../fixtures/targets';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import * as validators from '../../../src/prompts/validators';
 import * as conditions from '../../../src/prompts/conditions';
@@ -209,7 +209,7 @@ describe('getAbapTargetPrompts', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockGetAbapSystems.mockResolvedValueOnce({
             destinations: undefined,
-            backendSystems: mockSourceSystems
+            backendSystems: mockTargetSystems
         });
         jest.spyOn(validators, 'validateTargetSystem').mockResolvedValueOnce(true);
 
@@ -271,7 +271,7 @@ describe('getAbapTargetPrompts', () => {
         mockIsAppStudio.mockReturnValue(false);
         mockGetAbapSystems.mockResolvedValueOnce({
             destinations: undefined,
-            backendSystems: mockSourceSystems
+            backendSystems: mockTargetSystems
         });
         const validateTargetSystemUrlCliSpy = jest.spyOn(validators, 'validateTargetSystemUrlCli');
         const abapTargetPrompts = await getAbapTargetPrompts({});

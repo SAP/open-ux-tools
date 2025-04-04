@@ -12,7 +12,7 @@ import {
     reconcileAnswers
 } from '../src/utils';
 import { getService } from '@sap-ux/store';
-import { mockSourceSystems } from './fixtures/targets';
+import { mockTargetSystems } from './fixtures/targets';
 import { getTransportConfigInstance } from '../src/service-provider-utils';
 import { listPackages } from '../src/validator-utils';
 import LoggerHelper from '../src/logger-helper';
@@ -67,9 +67,9 @@ describe('Test utils', () => {
     it('should return abap systems (VSCode)', async () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         mockGetService.mockResolvedValueOnce({
-            getAll: jest.fn().mockResolvedValueOnce(mockSourceSystems)
+            getAll: jest.fn().mockResolvedValueOnce(mockTargetSystems)
         });
-        expect(await getAbapSystems()).toStrictEqual({ destinations: undefined, backendSystems: mockSourceSystems });
+        expect(await getAbapSystems()).toStrictEqual({ destinations: undefined, backendSystems: mockTargetSystems });
     });
 
     it('should find destination', async () => {
@@ -84,11 +84,11 @@ describe('Test utils', () => {
     it('should backend system with url', async () => {
         mockIsAppStudio.mockReturnValueOnce(false);
         mockGetService.mockResolvedValueOnce({
-            getAll: jest.fn().mockResolvedValueOnce(mockSourceSystems)
+            getAll: jest.fn().mockResolvedValueOnce(mockTargetSystems)
         });
         await getAbapSystems();
-        const backendUrl = mockSourceSystems[0].url;
-        expect(findBackendSystemByUrl(backendUrl)).toStrictEqual(mockSourceSystems[0]);
+        const backendUrl = mockTargetSystems[0].url;
+        expect(findBackendSystemByUrl(backendUrl)).toStrictEqual(mockTargetSystems[0]);
     });
 
     it('should return true for is same system', () => {

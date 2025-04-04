@@ -1,6 +1,6 @@
 import { getPrompts, prompt } from '../src';
 import { getService } from '@sap-ux/store';
-import { mockSourceSystems } from './fixtures/targets';
+import { mockTargetSystems } from './fixtures/targets';
 import type { AbapDeployConfigAnswersInternal } from '../src/types';
 
 jest.mock('@sap-ux/store', () => ({
@@ -12,7 +12,7 @@ const mockGetService = getService as jest.Mock;
 describe('index', () => {
     it('should return prompts from getPrompts', async () => {
         mockGetService.mockResolvedValueOnce({
-            getAll: jest.fn().mockResolvedValueOnce([mockSourceSystems])
+            getAll: jest.fn().mockResolvedValueOnce([mockTargetSystems])
         });
         const prompts = await getPrompts({}, undefined, false);
         expect(prompts.answers).toBeDefined();
@@ -21,7 +21,7 @@ describe('index', () => {
 
     it('should prompt with inquirer adapter', async () => {
         mockGetService.mockResolvedValueOnce({
-            getAll: jest.fn().mockResolvedValueOnce([mockSourceSystems])
+            getAll: jest.fn().mockResolvedValueOnce([mockTargetSystems])
         });
 
         const answers: AbapDeployConfigAnswersInternal = {
