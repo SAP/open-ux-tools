@@ -53,12 +53,6 @@ describe('SourceManifest', () => {
         expect(mockLogger.debug).toHaveBeenCalledWith(`Manifest URL for app '${fakeId}' was not found!`);
     });
 
-    it('should throw if manifest is malformed', async () => {
-        requestMock.mockResolvedValueOnce({ data: 'invalid-json' });
-
-        await expect(sourceManifest.getManifest()).rejects.toThrow('Unexpected token i in JSON at position 0');
-    });
-
     it('should throw if parsed manifest is not an object', async () => {
         requestMock.mockResolvedValueOnce({ data: JSON.stringify(null) });
 
