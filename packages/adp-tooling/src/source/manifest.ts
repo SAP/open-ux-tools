@@ -68,7 +68,7 @@ export class SourceManifest {
      */
     public async getManifestUrl(): Promise<string> {
         if (!this.manifestUrl) {
-            await this.loadManifestUrl();
+            this.manifestUrl = await this.loadManifestUrl();
         }
         return this.manifestUrl!;
     }
@@ -80,7 +80,7 @@ export class SourceManifest {
      */
     public async getManifest(): Promise<Manifest> {
         if (!this.manifest) {
-            await this.loadManifest();
+            this.manifest = await this.loadManifest();
         }
         return this.manifest!;
     }
@@ -89,43 +89,41 @@ export class SourceManifest {
      * Loads the manifest URL from the system using the application ID.
      * The result is stored internally for future access.
      *
-     * @returns {Promise<void>} A promise that resolves once the URL has been fetched and set.
+     * @returns {Promise<string>} A promise that resolves once the URL has been fetched and set.
      */
-    public async loadManifestUrl(): Promise<void> {
+    private async loadManifestUrl(): Promise<string> {
         const appIndex = this.provider.getAppIndex();
         const data = await appIndex.getAppInfo(this.appId);
 
-        if (data) {
-            const appInfo = Object.values(data)[0];
-            this.manifestUrl = appInfo?.manifestUrl ?? appInfo?.manifest ?? '';
-        }
+        const appInfo = data ? Object.values(data)[0] : undefined;
+        const url = appInfo?.manifestUrl ?? appInfo?.manifest ?? '';
 
-        if (!this.manifestUrl) {
+        if (!url) {
             this.logger?.debug(`Manifest URL for app '${this.appId}' was not found!`);
             throw new Error(t('validators.appDoesNotSupportManifest'));
         }
+
+        return url;
     }
 
     /**
      * Loads the manifest from the system and stores it internally.
      * Requires a manifest URL to be available (loads it if necessary).
      *
-     * @returns {Promise<void>} A promise that resolves once the manifest has been fetched and parsed.
+     * @returns {Promise<Manifest>} A promise that resolves once the manifest has been fetched and parsed.
      */
-    public async loadManifest(): Promise<void> {
-        if (!this.manifestUrl) {
-            await this.loadManifestUrl();
-        }
+    private async loadManifest(): Promise<Manifest> {
+        const url = this.manifestUrl ?? (await this.loadManifestUrl());
 
         try {
-            const response = await this.provider.request({ url: this.manifestUrl! });
+            const response = await this.provider.request({ url });
             const manifest = JSON.parse(response.data) as Manifest;
 
             if (typeof manifest !== 'object' || manifest === null) {
                 throw new Error('Manifest parsing error. Manifest is not in expected format.');
             }
 
-            this.manifest = manifest;
+            return manifest;
         } catch (e) {
             this.logger?.debug(`Failed to load manifest for '${this.appId}', error: ${e.message}`);
             throw new Error(`Failed to load manifest from URL: ${e.message}`);
