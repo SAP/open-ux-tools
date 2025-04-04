@@ -1,0 +1,15 @@
+{
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {},
+  "sapux": [
+    "app/1",
+    "app/2",
+    "app/3",
+    "app/feop_v4_cap"
+  ],
+  "scripts": {
+    "watch-feop_v4_cap": "cds watch --open feop_v4_cap/webapp/index.html?sap-ui-xx-viewCache=false"
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test CAP Project",
+  "dependencies": {},
+  "scripts": {
+    "watch-simple_cap": "cds watch --open simple_cap/webapp/index.html?sap-ui-xx-viewCache=false"
+  }
+}

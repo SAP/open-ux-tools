@@ -1,0 +1,198 @@
+{
+  "entities": {
+    "draftRoot": {
+      "Annotation": {
+        "Record": {
+          "PropertyValue": [
+            {
+              "Property": "ActivationAction",
+              "String": "SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities/SEPMRA_C_PD_ProductActivation"
+            },
+            {
+              "Property": "EditAction",
+              "String": "SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities/SEPMRA_C_PD_ProductEdit"
+            },
+            {
+              "Property": "PreparationAction",
+              "String": "SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities/SEPMRA_C_PD_ProductPreparation"
+            },
+            {
+              "Property": "ValidationFunction",
+              "String": "SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities/SEPMRA_C_PD_ProductValidation"
+            }
+          ]
+        },
+        "Term": "Common.DraftRoot"
+      },
+      "Target": "SEPMRA_PROD_MAN.SEPMRA_PROD_MAN_Entities/SEPMRA_C_PD_Product"
+    },
+    "entities": [
+      "I_Currency",
+      "I_DraftAdministrativeData",
+      "I_Language",
+      "SEPMRA_C_CurrencyValueHelp",
+      "SEPMRA_C_PD_Product",
+      "SEPMRA_C_PD_ProductImage",
+      "SEPMRA_C_PD_ProductPriceRange",
+      "SEPMRA_C_PD_ProductSalesData",
+      "SEPMRA_C_PD_ProductStock",
+      "SEPMRA_C_PD_ProductText",
+      "SEPMRA_C_PD_Review",
+      "SEPMRA_C_PD_ReviewPost",
+      "SEPMRA_C_PD_Supplier",
+      "SEPMRA_I_Address",
+      "SEPMRA_I_ContactPerson",
+      "SEPMRA_I_DimensionUnit",
+      "SEPMRA_I_MonthName",
+      "SEPMRA_I_PriceClassification",
+      "SEPMRA_I_ProductCategory",
+      "SEPMRA_I_ProductMainCategory",
+      "SEPMRA_I_QuantityUnit",
+      "SEPMRA_I_StockAvailability",
+      "SEPMRA_I_WeightUnit"
+    ],
+    "version": 2
+  },
+  "navEntities": [
+    {
+      "name": "None",
+      "value": ""
+    },
+    {
+      "name": "DraftAdministrativeData",
+      "value": {
+        "EntitySet": "I_DraftAdministrativeData",
+        "Name": "DraftAdministrativeData",
+        "Role": "ToRole_assoc_702DB7528B27A21521DA3341CAAE7C2B"
+      }
+    },
+    {
+      "name": "SiblingEntity",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_Product",
+        "Name": "SiblingEntity",
+        "Role": "ToRole_assoc_0A4E50C949533A94AEC1923AC2CE207D"
+      }
+    },
+    {
+      "name": "to_CollaborativeReview",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_Review",
+        "Name": "to_CollaborativeReview",
+        "Role": "ToRole_assoc_B291785E50A8B441BF774835D115BA27"
+      }
+    },
+    {
+      "name": "to_CollaborativeReviewPost",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_ReviewPost",
+        "Name": "to_CollaborativeReviewPost",
+        "Role": "ToRole_assoc_68B28FBA651DAD53D66C875EEEA44717"
+      }
+    },
+    {
+      "name": "to_Currency",
+      "value": {
+        "EntitySet": "I_Currency",
+        "Name": "to_Currency",
+        "Role": "ToRole_assoc_71CF93ADB5FAD6DE0504CC11AA2E3956"
+      }
+    },
+    {
+      "name": "to_CurrencyValueHelp",
+      "value": {
+        "EntitySet": "SEPMRA_C_CurrencyValueHelp",
+        "Name": "to_CurrencyValueHelp",
+        "Role": "ToRole_assoc_2A9FACF16263D082BF26613DCA67540D"
+      }
+    },
+    {
+      "name": "to_DimensionUnit",
+      "value": {
+        "EntitySet": "SEPMRA_I_DimensionUnit",
+        "Name": "to_DimensionUnit",
+        "Role": "ToRole_assoc_8E7E1BDDAD047CAC2ACAF094037F9E12"
+      }
+    },
+    {
+      "name": "to_OriginalLanguage",
+      "value": {
+        "EntitySet": "I_Language",
+        "Name": "to_OriginalLanguage",
+        "Role": "ToRole_assoc_A6D6CD8FBC9ADABD715F8ACD48A53737"
+      }
+    },
+    {
+      "name": "to_PriceRange",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_ProductPriceRange",
+        "Name": "to_PriceRange",
+        "Role": "ToRole_assoc_3DF280F0F52B2AE7C0BEDE655793BB69"
+      }
+    },
+    {
+      "name": "to_ProductBaseUnit",
+      "value": {
+        "EntitySet": "SEPMRA_I_QuantityUnit",
+        "Name": "to_ProductBaseUnit",
+        "Role": "ToRole_assoc_D4E509C9A1E8216A01D2D0F076883303"
+      }
+    },
+    {
+      "name": "to_ProductCategory",
+      "value": {
+        "EntitySet": "SEPMRA_I_ProductCategory",
+        "Name": "to_ProductCategory",
+        "Role": "ToRole_assoc_978BCF89A2211723C1E892F5B9CDB6D3"
+      }
+    },
+    {
+      "name": "to_ProductImage",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_ProductImage",
+        "Name": "to_ProductImage",
+        "Role": "ToRole_assoc_518A699EDF635F296289027E4709DBD0"
+      }
+    },
+    {
+      "name": "to_ProductSalesData",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_ProductSalesData",
+        "Name": "to_ProductSalesData",
+        "Role": "ToRole_assoc_AAD4EC6B3B44FFE3BA9EBB560098173F"
+      }
+    },
+    {
+      "name": "to_ProductStock",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_ProductStock",
+        "Name": "to_ProductStock",
+        "Role": "ToRole_assoc_F680BD5483964D494C4369DB824D9762"
+      }
+    },
+    {
+      "name": "to_ProductTextInOriginalLang",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_ProductText",
+        "Name": "to_ProductTextInOriginalLang",
+        "Role": "ToRole_assoc_CF154B42F01DD8BEC0415968198AF5FD"
+      }
+    },
+    {
+      "name": "to_Supplier",
+      "value": {
+        "EntitySet": "SEPMRA_C_PD_Supplier",
+        "Name": "to_Supplier",
+        "Role": "ToRole_assoc_95FE9823068B0E61F76CA451CAD4118E"
+      }
+    },
+    {
+      "name": "to_WeightUnit",
+      "value": {
+        "EntitySet": "SEPMRA_I_WeightUnit",
+        "Name": "to_WeightUnit",
+        "Role": "ToRole_assoc_4DA8F7B0C80E2EB6C6A877E68CFCCAA1"
+      }
+    }
+  ]
+}

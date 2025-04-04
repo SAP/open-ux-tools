@@ -1,0 +1,162 @@
+{
+  "_version": "1.38.0",
+  "sap.app": {
+    "id": "testNameSpace.alpv2noopts",
+    "type": "application",
+    "i18n": "i18n/i18n.properties",
+    "applicationVersion": {
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap-ux/fiori-elements-writer:alp",
+      "version": "2.1.8",
+      "toolsId": "2bb40c9a-3c60-42cc-8d60-b2c398fe29c7"
+    },
+    "dataSources": {
+      "SEPMRA_ALP_SO_ANA_SRV": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='SEPMRA_ALP_SO_ANA_SRV',Version='0001')/$value/",
+        "type": "ODataAnnotation",
+        "settings": {
+          "localUri": "localService/mainService/SEPMRA_ALP_SO_ANA_SRV.xml"
+        }
+      },
+      "annotation": {
+        "type": "ODataAnnotation",
+        "uri": "annotations/annotation.xml",
+        "settings": {
+          "localUri": "annotations/annotation.xml"
+        }
+      },
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/SEPMRA_ALP_SO_ANA_SRV/",
+        "type": "OData",
+        "settings": {
+          "annotations": [
+            "SEPMRA_ALP_SO_ANA_SRV",
+            "annotation"
+          ],
+          "localUri": "localService/mainService/metadata.xml",
+          "odataVersion": "2.0"
+        }
+      }
+    }
+  },
+  "sap.ui": {
+    "technology": "UI5",
+    "icons": {
+      "icon": "",
+      "favIcon": "",
+      "phone": "",
+      "phone@2": "",
+      "tablet": "",
+      "tablet@2": ""
+    },
+    "deviceTypes": {
+      "desktop": true,
+      "tablet": true,
+      "phone": true
+    }
+  },
+  "sap.ui5": {
+    "flexEnabled": true,
+    "dependencies": {
+      "minUI5Version": "1.98.0",
+      "libs": {
+        "sap.m": {},
+        "sap.ui.core": {},
+        "sap.ushell": {},
+        "sap.f": {},
+        "sap.ui.comp": {},
+        "sap.ui.generic.app": {},
+        "sap.suite.ui.generic.template": {}
+      }
+    },
+    "contentDensities": {
+      "compact": true,
+      "cozy": true
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "testNameSpace.alpv2noopts.i18n.i18n"
+        }
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "defaultCountMode": "Inline",
+          "refreshAfterChange": false,
+          "metadataUrlParams": {
+            "sap-value-list": "none"
+          }
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      }
+    },
+    "resources": {
+      "css": []
+    },
+    "routing": {
+      "config": {},
+      "routes": [],
+      "targets": {}
+    }
+  },
+  "sap.ui.generic.app": {
+    "_version": "1.3.0",
+    "settings": {
+      "forceGlobalRefresh": false,
+      "objectPageHeaderType": "Dynamic",
+      "considerAnalyticalParameters": true,
+      "showDraftToggle": false
+    },
+    "pages": {
+      "AnalyticalListPage|SEPMRA_C_ALP_SlsOrdItemCubeALPResults": {
+        "entitySet": "SEPMRA_C_ALP_SlsOrdItemCubeALPResults",
+        "component": {
+          "name": "sap.suite.ui.generic.template.AnalyticalListPage",
+          "list": true,
+          "settings": {
+            "condensedTableLayout": true,
+            "showGoButtonOnFilterBar": true,
+            "tableType": "AnalyticalTable",
+            "tableSettings": {},
+            "keyPerformanceIndicators": {}
+          }
+        },
+        "pages": {
+          "ObjectPage|SEPMRA_C_ALP_SlsOrdItemCubeALPResults": {
+            "entitySet": "SEPMRA_C_ALP_SlsOrdItemCubeALPResults",
+            "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+            "component": {
+              "name": "sap.suite.ui.generic.template.ObjectPage"
+            },
+            "pages": {
+              "ObjectPage|to_SalesOrderItem": {
+                "navigationProperty": "to_SalesOrderItem",
+                "entitySet": "SEPMRA_C_ALP_SalesOrderItem",
+                "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+                "component": {
+                  "name": "sap.suite.ui.generic.template.ObjectPage"
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "sap.fiori": {
+    "registrationIds": [],
+    "archeType": "analytical"
+  }
+}

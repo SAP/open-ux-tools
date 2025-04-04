@@ -12,8 +12,8 @@
 |**Module Name**<br><%= appName %>|
 |**Application Title**<br><%= appTitle %>|
 |**Namespace**<br><%= appNamespace %>|
-|**UI5 Theme**<br><%= ui5Theme %>|
-|**UI5 Version**<br><%= ui5Version %>|
+|**UI5 Theme**<br><%= locals.ui5Theme ? locals.ui5Theme : '' %>|
+|**UI5 Version**<br><%= locals.ui5Version ? locals.ui5Version : '' %>|
 |**Enable Code Assist Libraries**<br><% if(locals.enableCodeAssist === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
 |**Enable TypeScript**<br><% if(locals.enableTypeScript === true) { %><%= "True" %><% } else { %><%= "False" %><% }%>|
 |**Add Eslint configuration**<br><% if(locals.enableEslint === true) { %><%= "True, see https://www.npmjs.com/package/eslint-plugin-fiori-custom for the eslint rules." %><% } else { %><%= "False" %><% }%>|<% if (locals.additionalEntries) locals.additionalEntries.forEach(entry => { %>

@@ -1,0 +1,15 @@
+{
+  "name": "test_cap",
+  "version": "0",
+  "description": "Test file",
+  "dependencies": {},
+  "sapux": [
+    "app/1",
+    "app/2",
+    "app/3",
+    "app/lrop_v4_version_not_specified"
+  ],
+  "scripts": {
+    "watch-lrop_v4_version_not_specified": "cds watch --open lrop_v4_version_not_specified/webapp/index.html?sap-ui-xx-viewCache=false"
+  }
+}
