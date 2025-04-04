@@ -145,8 +145,6 @@ export function createCAPMTA(cwd: string, options?: string[]): void {
         throw new Error(`Something went wrong creating mta.yaml! ${result.error}`);
     }
     const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    // Update the package-lock.json, to reflect any cds changes or dependency changes
-    result = spawnSync(cmd, ['update', '--package-lock-only'], spawnOpts);
     // Install latest dev dependencies, if any, added by the CF writer
     result = spawnSync(cmd, ['install', '--ignore-engines'], spawnOpts);
     if (result?.error) {
