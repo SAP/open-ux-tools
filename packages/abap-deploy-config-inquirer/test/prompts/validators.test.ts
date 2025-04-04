@@ -368,6 +368,7 @@ describe('Test validators', () => {
     describe('validatePackageExtended', () => {
         beforeEach(() => {
             PromptState.resetTransportAnswers();
+            jest.resetAllMocks();
         });
 
         it('should return true for onPremise system with default onPremise package', async () => {
@@ -486,6 +487,39 @@ describe('Test validators', () => {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(result).toBe(true);
+        });
+
+        it('should run getTransportListFromService when package prompts are ran standalone', async () => {
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {}, {}, undefined, true);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should run getTransportListFromService when the system is on-prem', async () => {
+            PromptState.abapDeployConfig.scp = false;
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should run getTransportListFromService when the cloud system is connected', async () => {
+            PromptState.abapDeployConfig.scp = true;
+            jest.spyOn(AbapServiceProviderManager, 'isConnected').mockReturnValue(true);
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should not run getTransportListFromService when the cloud system is not connected', async () => {
+            PromptState.abapDeployConfig.scp = true;
+            jest.spyOn(AbapServiceProviderManager, 'isConnected').mockReturnValue(false);
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).not.toHaveBeenCalled();
         });
     });
 
