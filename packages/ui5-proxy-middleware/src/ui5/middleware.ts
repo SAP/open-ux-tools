@@ -20,6 +20,7 @@ import type { ReaderCollection } from '@ui5/fs';
 function createProxyOptions(logger: ToolsLogger, config: UI5ProxyConfig): Options {
     return {
         secure: config.secure !== undefined ? !!config.secure : true
+        // ToDo: logger
         // logger
     };
 }
