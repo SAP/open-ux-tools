@@ -5,7 +5,7 @@ import { join } from 'path';
 import { TestFixture } from './fixtures';
 import { initI18n, t } from '../src/utils';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
-import * as fs from 'fs';
+import type * as fs from 'fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as cfDeployWriter from '@sap-ux/cf-deploy-config-writer';
@@ -30,7 +30,9 @@ jest.mock('@sap-ux/project-access', () => {
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -43,7 +45,9 @@ jest.mock('hasbin', () => ({
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        Mta: require('./utils/mock-mta').MockMta
+        get Mta() {
+            return jest.requireActual('./utils/mock-mta').MockMta;
+        }
     };
 });
 
@@ -162,7 +166,7 @@ describe('Cloud foundry generator tests', () => {
         mockFindCapProjectRoot.mockReturnValue(join('/output/', '/capmissingmta'));
         const mockGenerateCAPConfig = jest.spyOn(cfDeployWriter, 'generateCAPConfig').mockResolvedValue(fsMock);
         const mockGenerateAppConfig = jest.spyOn(cfDeployWriter, 'generateAppConfig').mockResolvedValue(fsMock);
-        jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
+        const mockisExtensionInstalled = jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
             return true;
         });
 
@@ -223,5 +227,6 @@ describe('Cloud foundry generator tests', () => {
         expect(mockGenerateAppConfig).toHaveBeenCalled();
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
         expect(mockSendTelemetry).toHaveBeenCalled();
+        expect(mockisExtensionInstalled).toHaveBeenCalled();
     });
 });

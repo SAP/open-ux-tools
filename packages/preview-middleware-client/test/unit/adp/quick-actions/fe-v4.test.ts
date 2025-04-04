@@ -295,14 +295,19 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
-                    onStackChange: jest.fn(),
-                    getConfigurationPropertyValue: jest
-                        .fn()
-                        .mockReturnValueOnce(false)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValue(undefined)
-                } as any);
+                service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(false)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValue(undefined)
+                    } as any
+                );
             });
 
             test('initialize and execute action', async () => {
@@ -1214,16 +1219,21 @@ describe('FE V4 quick actions', () => {
 
                 rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
                 const registry = new FEV4QuickActionRegistry();
-                service = new QuickActionService(rtaMock, new OutlineService(rtaMock, mockChangeService), [registry], {
-                    onStackChange: jest.fn(),
-                    getConfigurationPropertyValue: jest
-                        .fn()
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValueOnce(true)
-                        .mockReturnValueOnce(undefined)
-                        .mockReturnValue(undefined)
-                } as any);
+                service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    {
+                        onStackChange: jest.fn(),
+                        getConfigurationPropertyValue: jest
+                            .fn()
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValueOnce(true)
+                            .mockReturnValueOnce(undefined)
+                            .mockReturnValue(undefined)
+                    } as any
+                );
             });
 
             test('initialize and execute action', async () => {
@@ -2585,7 +2595,20 @@ describe('FE V4 quick actions', () => {
                     getEntitySet: jest
                         .fn()
                         .mockReturnValue(
-                            testCase.componentHasNoEntitySet ? undefined : testCase.isListReport ? 'Travel' : 'Booking'
+                            testCase.componentHasNoEntitySet || testCase.isContextPathDefined
+                                ? undefined
+                                : testCase.isListReport
+                                ? 'Travel'
+                                : 'Booking'
+                        ),
+                    getContextPath: jest
+                        .fn()
+                        .mockReturnValue(
+                            testCase.componentHasNoEntitySet || !testCase.isContextPathDefined
+                                ? undefined
+                                : testCase.isListReport
+                                ? '/Travel'
+                                : '/Booking'
                         )
                 } as unknown as UIComponent;
             });
@@ -2649,9 +2672,13 @@ describe('FE V4 quick actions', () => {
                     'id': 'TravelList',
                     'name': 'sap.fe.templates.ListReport',
                     'options': {
-                        'settings': {
-                            'entitySet': 'Travel'
-                        }
+                        'settings': testCase.isContextPathDefined
+                            ? {
+                                  'contextPath': '/Travel'
+                              }
+                            : {
+                                  'entitySet': 'Travel'
+                              }
                     }
                 },
                 ...(testCase.isListReport && testCase.isNewPageUnavailable

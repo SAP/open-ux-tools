@@ -1,5 +1,29 @@
 # @sap-ux/preview-middleware
 
+## 0.19.12
+
+### Patch Changes
+
+-   3727441: fix: CPE Add Subpage Quick Action not displayed for SAP Fiori Elements for OData V4 applications in Adaptation Projects, if current page has `contextPath` defined in manifest instead of `entitySet`.
+
+## 0.19.11
+
+### Patch Changes
+
+-   9522deb: fix: Cannot create a Extension Point fragment when clicking create button in the dialog
+
+## 0.19.10
+
+### Patch Changes
+
+-   6095875: fix: Cannot create a Fragment and Controller Extension when clicking create button in the dialog
+
+## 0.19.9
+
+### Patch Changes
+
+-   ed6c364: Reuse component detection
+
 ## 0.19.8
 
 ### Patch Changes
