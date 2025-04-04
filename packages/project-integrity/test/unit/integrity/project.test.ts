@@ -9,6 +9,17 @@ import {
 } from '../../../src';
 import * as persistence from '../../../src/integrity/persistence';
 
+const csnContent = `
+{
+  "namespace": "test",
+  "definitions": {
+    "test.SalesData": {
+      "kind": "entity",
+      "elements": {}
+    }
+  }
+}`;
+
 describe('Test initProject()', () => {
     beforeEach(() => {
         jest.clearAllMocks();
@@ -20,6 +31,7 @@ describe('Test initProject()', () => {
         await initProject({
             integrityFilePath,
             fileList: [join(__dirname, '../../test-input/valid-project/test.txt')],
+            csnContent,
             additionalStringContent: { 'key1': 'value1', 'key2': 'value2' }
         });
         const newIntegrityData = await persistence.readIntegrityData(integrityFilePath);
@@ -30,7 +42,10 @@ describe('Test initProject()', () => {
 describe('Test checkProjectIntegrity()', () => {
     test('Valid project, valid additional content', async () => {
         const integrityFilePath = join(__dirname, '../../test-input/valid-project/.integrity.json');
-        const result = await checkProjectIntegrity(integrityFilePath, { 'key1': 'value1', 'key2': 'value2' });
+        const result = await checkProjectIntegrity(integrityFilePath, csnContent, {
+            'key1': 'value1',
+            'key2': 'value2'
+        });
         expect(result.files.differentFiles.length).toBe(0);
         expect(result.files.equalFiles.find((ef) => ef.includes('test.txt'))).toBeDefined();
         expect(result.additionalStringContent.differentContent.length).toBe(0);
@@ -39,7 +54,7 @@ describe('Test checkProjectIntegrity()', () => {
 
     test('Invalid project', async () => {
         const integrityFilePath = join(__dirname, '../../test-input/invalid-project/integrity.json');
-        const result = await checkProjectIntegrity(integrityFilePath, {
+        const result = await checkProjectIntegrity(integrityFilePath, csnContent, {
             'one': 'value one',
             'two': 'not value two',
             'four': 'non existing'
@@ -62,7 +77,7 @@ describe('Test checkProjectIntegrity()', () => {
     test('Disabled project', async () => {
         const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
         try {
-            await checkProjectIntegrity(integrityFilePath);
+            await checkProjectIntegrity(integrityFilePath, csnContent);
             expect(false).toBe('checkProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect(error.message).toBe(
@@ -81,7 +96,7 @@ describe('Test updateProjectIntegrity()', () => {
         const writeSpy = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
 
         const integrityFilePath = join(__dirname, '../../test-input/update-project/integrity.json');
-        await updateProjectIntegrity(integrityFilePath, { 'key': 'new string' });
+        await updateProjectIntegrity(integrityFilePath, csnContent, { 'key': 'new string' });
         expect(writeSpy).toBeCalledWith(expect.stringContaining('integrity.json'), {
             'enabled': true,
             'fileIntegrity': [
@@ -93,14 +108,15 @@ describe('Test updateProjectIntegrity()', () => {
             ],
             'contentIntegrity': [
                 { 'contentKey': 'key', 'hash': 'b200a3adbe85fe848b920dc35d5a69b2', 'content': 'new string' }
-            ]
+            ],
+            'csnIntegrity': '0f9c3dac7d965cd9c5ad37d26fec632e'
         });
     });
 
     test('Update with non existing additional string content', async () => {
         const integrityFilePath = join(__dirname, '../../test-input/valid-project/.integrity.json');
         try {
-            await updateProjectIntegrity(integrityFilePath, { 'key1': 'value1', 'wrong': 'wrong content' });
+            await updateProjectIntegrity(integrityFilePath, csnContent, { 'key1': 'value1', 'wrong': 'wrong content' });
             expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect(error.message).toBe(
@@ -111,7 +127,7 @@ describe('Test updateProjectIntegrity()', () => {
 
     test('Update with non existing integrity file', async () => {
         try {
-            await updateProjectIntegrity('non-existing');
+            await updateProjectIntegrity('non-existing', csnContent);
             expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect(error.message).toBe('Integrity data not found at non-existing');
@@ -121,7 +137,7 @@ describe('Test updateProjectIntegrity()', () => {
     test('Update disabled project', async () => {
         const integrityFilePath = join(__dirname, '../../test-input/disabled-project/integrity.json');
         try {
-            await updateProjectIntegrity(integrityFilePath);
+            await updateProjectIntegrity(integrityFilePath, csnContent);
             expect(false).toBe('updateProjectIntegrity() should have thrown error but did not');
         } catch (error) {
             expect(error.message).toBe(

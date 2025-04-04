@@ -1,20 +1,22 @@
 import { existsSync } from 'fs';
 import type { CheckIntegrityResult, Content, ContentIntegrity, FileIntegrity, Integrity } from '../types';
-import { getContentIntegrity, getFileIntegrity } from './hash';
+import { getContentIntegrity, getCsnIntegrity, getFileIntegrity } from './hash';
 
 /**
  * Check existing integrity data.
  *
  * @param integrityData - integrity data
+ * @param csnContent - Core Schema Notation (CSN) content
  * @param [additionalStringContent] - optional additional new string content
  * @returns - results of the check
  */
 export async function checkIntegrity(
     integrityData: Integrity,
+    csnContent: string,
     additionalStringContent?: Content
 ): Promise<CheckIntegrityResult> {
     return {
-        files: await checkFileIntegrity(integrityData.fileIntegrity),
+        files: await checkFileIntegrity(integrityData, csnContent),
         additionalStringContent: checkContentIntegrity(integrityData.contentIntegrity, additionalStringContent)
     };
 }
@@ -22,13 +24,19 @@ export async function checkIntegrity(
 /**
  * Check an array of file hashes against the current state of the files.
  *
- * @param fileIntegrity - array of file integrity data
+ * @param integrityData - integrity data
+ * @param csnContent - Core Schema Notation (CSN) content
  * @returns - results of the check
  */
-async function checkFileIntegrity(fileIntegrity: FileIntegrity[]): Promise<CheckIntegrityResult['files']> {
+async function checkFileIntegrity(
+    integrityData: Integrity,
+    csnContent: string
+): Promise<CheckIntegrityResult['files']> {
     const differentFiles: CheckIntegrityResult['files']['differentFiles'] = [];
     const equalFiles: string[] = [];
     const checkFiles: FileIntegrity[] = [];
+    const fileIntegrity = integrityData.fileIntegrity;
+    const csnIntegrity = integrityData.csnIntegrity;
 
     for (const integrity of fileIntegrity) {
         if (!existsSync(integrity.filePath)) {
@@ -38,17 +46,25 @@ async function checkFileIntegrity(fileIntegrity: FileIntegrity[]): Promise<Check
         }
     }
     const newFileIntegrityArray = await getFileIntegrity(checkFiles.map((fileIntegrity) => fileIntegrity.filePath));
+    const newCsnIntegrity = await getCsnIntegrity(csnContent);
+    /**
+     * 1. if csn integrity is different and file integrity is different, then it is un-compatible changes. Add to difference files.
+     * 2. if csn integrity is the same, but file integrity is different, then is compatible changes (e.g empty spaces, new lines or comments). Add to equal files.
+     * 3. if csn integrity is different, but file integrity is same, then CDS compiler might have produced different CSN. Add to equal files.
+     */
     for (const newFileIntegrity of newFileIntegrityArray) {
         const oldFileIntegrity = checkFiles.find((fileHash) => fileHash.filePath === newFileIntegrity.filePath);
-        if (oldFileIntegrity && oldFileIntegrity.hash === newFileIntegrity.hash) {
-            equalFiles.push(oldFileIntegrity.filePath);
-        } else {
+        if (oldFileIntegrity && oldFileIntegrity.hash !== newFileIntegrity.hash && csnIntegrity !== newCsnIntegrity) {
+            // case 1.
             differentFiles.push({
                 filePath: newFileIntegrity.filePath,
                 oldContent: oldFileIntegrity?.content,
                 newContent: newFileIntegrity.content
             });
+            continue;
         }
+        // case 2 and 3.
+        equalFiles.push(newFileIntegrity.filePath);
     }
     return { differentFiles, equalFiles };
 }

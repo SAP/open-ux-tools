@@ -8,8 +8,22 @@ import {
     isFioriProjectIntegrityInitialized,
     updateFioriProjectIntegrity
 } from '../../../src';
+jest.mock('@sap-ux/project-access', () => ({
+    ...jest.requireActual('@sap-ux/project-access'),
+    getCapModelAndServices: jest.fn().mockResolvedValue({
+        model: {
+            namespace: 'mockNamespace',
+            definitions: { 'test.SalesData': { 'kind': 'entity', 'elements': {} } }
+        }
+    })
+}));
+
 import * as persistence from '../../../src/integrity/persistence';
 import * as updateMock from '../../../src/integrity';
+
+afterEach(() => {
+    jest.clearAllMocks();
+});
 
 describe('Test for initFioriProject()', () => {
     test('Init valid Fiori project', async () => {
@@ -44,6 +58,7 @@ describe('Test for initFioriProject()', () => {
 
 describe('Test for checkFioriProjectIntegrity()', () => {
     test('Check valid project', async () => {
+        const mockCheckProjectIntegrity = jest.spyOn(updateMock, 'checkProjectIntegrity');
         const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
         const results = await checkFioriProjectIntegrity(projectRoot);
         expect(results).toStrictEqual({
@@ -53,23 +68,30 @@ describe('Test for checkFioriProjectIntegrity()', () => {
             },
             'additionalStringContent': { 'differentContent': [], 'equalContent': ['capPaths'] }
         });
+        expect(mockCheckProjectIntegrity).toBeCalledWith(
+            expect.stringContaining('integrity.json'),
+            expect.stringContaining('definitions'),
+            {
+                capPaths: '{"app":"app/","db":"db/","srv":"srv/"}'
+            }
+        );
     });
 });
 
 describe('Test for updateFioriProjectIntegrity()', () => {
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
-
     test('Update additional string content', async () => {
         const mockUpdateFioriProjectIntegrity = jest
             .spyOn(updateMock, 'updateProjectIntegrity')
             .mockResolvedValueOnce();
         const projectRoot = join(__dirname, '../../test-input/valid-fiori-project');
         await updateFioriProjectIntegrity(projectRoot);
-        expect(mockUpdateFioriProjectIntegrity).toBeCalledWith(expect.stringContaining('integrity.json'), {
-            capPaths: '{"app":"app/","db":"db/","srv":"srv/"}'
-        });
+        expect(mockUpdateFioriProjectIntegrity).toBeCalledWith(
+            expect.stringContaining('integrity.json'),
+            expect.stringContaining('definitions'),
+            {
+                capPaths: '{"app":"app/","db":"db/","srv":"srv/"}'
+            }
+        );
     });
 });
 
@@ -88,10 +110,6 @@ describe('Test isFioriProjectIntegrityEnabled()', () => {
 });
 
 describe('Test enableFioriProjectIntegrity()', () => {
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
-
     test('Enable disabled Fiori project', async () => {
         const mockWriteIntegrityData = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
         const projectRoot = join(__dirname, '../../test-input/disabled-fiori-project');
@@ -106,10 +124,6 @@ describe('Test enableFioriProjectIntegrity()', () => {
 });
 
 describe('Test disableFioriProjectIntegrity()', () => {
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
-
     test('Disable enabled Fiori project', async () => {
         const mockWriteIntegrityData = jest.spyOn(persistence, 'writeIntegrityData').mockResolvedValueOnce();
         const projectRoot = join(__dirname, '../../test-input/enabled-fiori-project');
@@ -124,10 +138,6 @@ describe('Test disableFioriProjectIntegrity()', () => {
 });
 
 describe('Test isFioriProjectIntegrityInitialized()', () => {
-    afterEach(() => {
-        jest.resetAllMocks();
-    });
-
     test('Disabled but initialized Fiori project', () => {
         const projectRoot = join(__dirname, '../../test-input/disabled-fiori-project');
         expect(isFioriProjectIntegrityInitialized(projectRoot)).toBe(true);
