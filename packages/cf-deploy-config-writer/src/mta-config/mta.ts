@@ -1161,8 +1161,10 @@ export class MtaConfig {
      */
     private getAppContentModule(): undefined | mta.Module {
         // Default for managed and standalone
-        let contentModule = this.modules.get('com.sap.application.content:resource');
-        return (contentModule ??= this.modules.get('com.sap.application.content:appfront'));
+        return (
+            this.modules.get('com.sap.application.content:resource') ??
+            this.modules.get('com.sap.application.content:appfront')
+        );
     }
 }
 
