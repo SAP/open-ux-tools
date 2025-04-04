@@ -21,9 +21,6 @@ export class UI5VersionInfo {
     /** Singleton instance */
     private static instance: UI5VersionInfo;
 
-    /** Latest public UI5 version */
-    public latestVersion: string;
-
     /** Public UI5 version data fetched from CDN */
     private publicVersions: UI5Version;
 
@@ -62,6 +59,15 @@ export class UI5VersionInfo {
     }
 
     /**
+     * Retrieves the latest version from the available public versions.
+     *
+     * @returns The latest available version.
+     */
+    public getLatestVersion(): string {
+        return this.publicVersions?.latest?.version;
+    }
+
+    /**
      * Fetches public versions from the UI5 CDN.
      *
      * @returns {Promise<UI5Version>} An object containing version details fetched from the UI5 CDN.
@@ -69,7 +75,6 @@ export class UI5VersionInfo {
     public async getPublicVersions(): Promise<UI5Version> {
         if (!this.publicVersions) {
             this.publicVersions = await fetchPublicVersions();
-            // this.latestVersion = this.publicVersions?.['latest']['version'];
         }
         return this.publicVersions;
     }
@@ -80,6 +85,7 @@ export class UI5VersionInfo {
      * If the versions have not been cached, it calls fetchInternalVersions() to retrieve and cache them.
      * It then filters the versions based on the minimum supported version.
      *
+     * @param {string} latestVersion - The latest available version.
      * @returns {Promise<string[]>} A promise that resolves to an array of supported internal UI5 version strings.
      */
     private async getInternalVersions(latestVersion: string): Promise<string[]> {
@@ -106,7 +112,7 @@ export class UI5VersionInfo {
      */
     public getVersionToBeUsed(version: string, isCustomerBase: boolean): string {
         if (!version || (isCustomerBase && version.includes('snapshot'))) {
-            return this.latestVersion;
+            return this.getLatestVersion();
         }
 
         return version;
@@ -124,10 +130,11 @@ export class UI5VersionInfo {
         let systemLatestLabel: string = '';
 
         if (version) {
+            const latestVersion = this.getLatestVersion();
             formattedVersion = removeTimestampFromVersion(version);
             this.systemVersion = formattedVersion;
-            systemSnapshotLabel = addSnapshot(version, this.latestVersion);
-            systemLatestLabel = formattedVersion === this.publicVersions?.latest?.version ? LATEST_VERSION : '';
+            systemSnapshotLabel = addSnapshot(version, latestVersion);
+            systemLatestLabel = formattedVersion === latestVersion ? LATEST_VERSION : '';
         }
 
         return { formattedVersion, systemSnapshotLabel, systemLatestLabel };
@@ -194,6 +201,7 @@ export class UI5VersionInfo {
      */
     private async getHigherVersions(version: string): Promise<string[]> {
         const publicVersions = await this.getPublicVersions();
+        const latestVersion = publicVersions?.latest?.version;
         const radix = 10;
 
         const [_, baselineMinor, baselineMicro] = version.split('.').map((part) => parseInt(part, radix));
@@ -207,7 +215,7 @@ export class UI5VersionInfo {
             });
 
         const result = higherVersions
-            .map((ver) => (ver === publicVersions.latest.version ? `${ver} ${LATEST_VERSION}` : ver))
+            .map((ver) => (ver === latestVersion ? `${ver} ${LATEST_VERSION}` : ver))
             .reverse();
 
         return result;

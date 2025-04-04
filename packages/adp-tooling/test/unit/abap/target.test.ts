@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { SourceSystems, getAbapTarget, RequestOptions } from '../../../src';
+import { SourceSystems, getAbapTarget, type RequestOptions } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),

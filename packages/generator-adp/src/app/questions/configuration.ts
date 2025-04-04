@@ -99,6 +99,8 @@ export class ConfigPrompter {
 
     /**
      * Returns the configured abap provider instance.
+     *
+     * @returns Configured instance of AbapServiceProvider.
      */
     public get provider(): AbapServiceProvider {
         return this.abapProvider;
@@ -106,6 +108,8 @@ export class ConfigPrompter {
 
     /**
      * Returns the loaded application manifest.
+     *
+     * @returns Application manifest.
      */
     public get manifest(): Manifest {
         return this.manifest;
@@ -285,10 +289,10 @@ export class ConfigPrompter {
                 appAdditionalMessages(
                     app as SourceApplication,
                     {
-                        appSync: this.containsSyncViews,
+                        hasSyncViews: this.containsSyncViews,
                         isV4AppInternalMode: this.isV4AppInternalMode,
-                        isSupported: this.getIsSupported(),
-                        isPartiallySupported: this.getIsPartiallySupported()
+                        isSupported: this.isSupported && !this.isPartiallySupported,
+                        isPartiallySupported: this.isPartiallySupported
                     },
                     this.isApplicationSupported
                 )
@@ -564,32 +568,5 @@ export class ConfigPrompter {
         this.isPartiallySupported = isPartialSupport && application.fileType === 'appdescr_variant';
         this.isV4AppInternalMode = isV4Application(this.appManifest) && !this.isCustomerBase;
         this.containsSyncViews = isSyncLoadedView(this.appManifest?.['sap.ui5']);
-    }
-
-    /**
-     * Determines if adaptation over adaptation (Adp over Adp) is fully supported.
-     *
-     * @returns {boolean} True if fully supported and not partially supported, otherwise false.
-     */
-    private getIsSupported(): boolean {
-        return this.isSupported && !this.isPartiallySupported;
-    }
-
-    /**
-     * Determines if there is partial support for adaptation over adaptation (Adp over Adp).
-     *
-     * @returns {boolean} True if partially supported, otherwise false.
-     */
-    private getIsPartiallySupported(): boolean {
-        return this.isPartiallySupported;
-    }
-
-    /**
-     * Indicates whether the app is a V4 application in internal mode (i.e., not customer base).
-     *
-     * @returns {boolean}
-     */
-    private getV4AppInternalMode(): boolean {
-        return this.isV4AppInternalMode;
     }
 }

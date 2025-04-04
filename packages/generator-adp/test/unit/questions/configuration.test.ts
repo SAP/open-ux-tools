@@ -5,11 +5,17 @@ import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ConfigAnswers, SourceApplication, SourceSystems } from '@sap-ux/adp-tooling';
-import { FlexLayer, TargetManifest, UI5VersionManager, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
+import {
+    FlexLayer,
+    SourceManifest,
+    UI5VersionInfo,
+    getConfiguredProvider,
+    isAppSupported,
+    loadApps
+} from '@sap-ux/adp-tooling';
 
 import { initI18n, t } from '../../../src/utils/i18n';
 import { configPromptNames } from '../../../src/app/types';
-import { AppIdentifier } from '../../../src/app/app-identifier';
 import { ConfigPrompter } from '../../../src/app/questions/configuration';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
@@ -26,7 +32,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
     loadApps: jest.fn(),
-    getSystemUI5Version: jest.fn().mockResolvedValue('1.135.0')
+    getSystemUI5Version: jest.fn().mockResolvedValue('1.135.0'),
+    isAppSupported: jest.fn()
 }));
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -67,6 +74,7 @@ const dummyAnswers: ConfigAnswers = {
 };
 
 const loadAppsMock = loadApps as jest.Mock;
+const isAppSupportedMock = isAppSupported as jest.Mock;
 const isAxiosErrorMock = isAxiosError as unknown as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
@@ -197,10 +205,10 @@ describe('ConfigPrompter Integration Tests', () => {
     });
 
     describe('System CLI Validation Prompt', () => {
-        jest.spyOn(UI5VersionManager, 'getInstance').mockReturnValue({
+        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
             getSystemRelevantVersions: jest.fn(),
             getRelevantVersions: jest.fn()
-        } as unknown as UI5VersionManager);
+        } as unknown as UI5VersionInfo);
 
         beforeEach(() => {
             getHostEnvironmentMock.mockReturnValue(hostEnvironment.cli);
@@ -289,15 +297,14 @@ describe('ConfigPrompter Integration Tests', () => {
         let getManifestSpy: jest.SpyInstance;
 
         beforeEach(() => {
-            jest.spyOn(TargetManifest.prototype, 'isAppSupported').mockResolvedValue(true);
+            isAppSupportedMock.mockResolvedValue(true);
             getManifestSpy = jest
-                .spyOn(TargetManifest.prototype, 'getManifest')
+                .spyOn(SourceManifest.prototype, 'getManifest')
                 .mockResolvedValue({ 'sap.app': {} } as Manifest);
-            jest.spyOn(UI5VersionManager, 'getInstance').mockReturnValue({
+            jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
                 systemVersion: '1.135.0',
                 isVersionDetected: true
-            } as unknown as UI5VersionManager);
-            jest.spyOn(AppIdentifier.prototype, 'validateSelectedApplication');
+            } as unknown as UI5VersionInfo);
         });
 
         it('application prompt validate should return true if value is passed', async () => {

@@ -64,8 +64,8 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     const isCloudProject = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
-    const ui5Manager = UI5VersionInfo.getInstance(layer);
-    const ui5Version = isCloudProject ? ui5Manager.latestVersion : ui5Manager.getVersionToBeUsed('', isCustomerBase);
+    const ui5Info = UI5VersionInfo.getInstance(layer);
+    const ui5Version = isCloudProject ? ui5Info.getLatestVersion() : ui5Info.getVersionToBeUsed('', isCustomerBase);
 
     return {
         app: {

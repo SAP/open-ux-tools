@@ -5,6 +5,13 @@ import type { FlexUISupportedSystem, SourceApplication } from '@sap-ux/adp-tooli
 
 import { t } from '../../../utils/i18n';
 
+interface SupportFlags {
+    hasSyncViews: boolean;
+    isV4AppInternalMode: boolean;
+    isSupported: boolean;
+    isPartiallySupported: boolean;
+}
+
 /**
  * Evaluates a system's deployment and flexibility capabilities to generate relevant messages based on the system's characteristics.
  *
@@ -54,31 +61,25 @@ export const systemAdditionalMessages = (
     };
 };
 
-interface SupportFlags {
-    appSync: boolean;
-    isV4AppInternalMode: boolean;
-    isSupported: boolean;
-    isPartiallySupported: boolean;
-}
-
 /**
- * Provides additional messages related to the application based on its support and sync status.
+ * Provides an additional contextual message for the selected application, based on its compatibility,
+ * feature support, or sync-loading behavior.
  *
- * @param {Application} app - The application object.
- * @param appIdentifier
- * @param isApplicationSupported
- * @returns {object | undefined} An object containing a message and its severity level, or undefined if no message is necessary.
+ * @param {SourceApplication} app - The selected application object.
+ * @param {SupportFlags} flags - Flags indicating support for sync views, Adp-over-Adp, and V4 internal apps.
+ * @param {boolean} isApplicationSupported - Indicates whether the application is supported at all.
+ * @returns {{ message: string; severity: Severity } | undefined} Message object or undefined if no message is applicable.
  */
 export const appAdditionalMessages = (
     app: SourceApplication,
-    { appSync, isSupported, isPartiallySupported, isV4AppInternalMode }: SupportFlags,
+    { hasSyncViews, isSupported, isPartiallySupported, isV4AppInternalMode }: SupportFlags,
     isApplicationSupported: boolean
 ): { message: string; severity: Severity } | undefined => {
     if (!app) {
         return undefined;
     }
 
-    if (appSync && isApplicationSupported) {
+    if (hasSyncViews && isApplicationSupported) {
         return {
             message: t('prompts.appInfoLabel'),
             severity: Severity.information

@@ -1,11 +1,12 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
+
+import type { SourceApplication } from '@sap-ux/adp-tooling';
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import {
     appAdditionalMessages,
     systemAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
-import type { AppIdentifier } from '../../../../src/app/app-identifier';
 import { t } from '../../../../src/utils/i18n';
 
 describe('additional-messages', () => {
@@ -52,70 +53,72 @@ describe('additional-messages', () => {
     });
 
     describe('appAdditionalMessages', () => {
-        const mockApp = { id: 'some.app' } as any;
+        const mockApp = { id: 'app-id', title: 'Test App' } as SourceApplication;
 
-        it('should return undefined if no app is passed', () => {
-            expect(appAdditionalMessages(undefined as any, {} as any, true)).toBeUndefined();
+        it('returns undefined when app is not provided', () => {
+            const result = appAdditionalMessages(
+                undefined as any,
+                { hasSyncViews: false, isSupported: false, isPartiallySupported: false, isV4AppInternalMode: false },
+                true
+            );
+            expect(result).toBeUndefined();
         });
 
-        it('should return info if app is sync and supported', () => {
-            const appIdentifier = {
-                appSync: true,
-                getIsSupported: jest.fn().mockReturnValue(true),
-                getIsPartiallySupported: jest.fn().mockReturnValue(false),
-                v4AppInternalMode: false
-            };
-
-            const result = appAdditionalMessages(mockApp, appIdentifier as unknown as AppIdentifier, true);
+        it('returns info message when app is sync and supported', () => {
+            const result = appAdditionalMessages(
+                mockApp,
+                { hasSyncViews: true, isSupported: true, isPartiallySupported: false, isV4AppInternalMode: false },
+                true
+            );
             expect(result).toEqual({
                 message: t('prompts.appInfoLabel'),
                 severity: Severity.information
             });
         });
 
-        it('should return not supported warning for adp-over-adp when not supported and not partially supported', () => {
-            const appIdentifier = {
-                appSync: false,
-                getIsSupported: jest.fn().mockReturnValue(false),
-                getIsPartiallySupported: jest.fn().mockReturnValue(false),
-                v4AppInternalMode: false
-            };
-
-            const result = appAdditionalMessages(mockApp, appIdentifier as unknown as AppIdentifier, true);
+        it('returns warning when app is not supported and not partially supported', () => {
+            const result = appAdditionalMessages(
+                mockApp,
+                { hasSyncViews: false, isSupported: false, isPartiallySupported: false, isV4AppInternalMode: false },
+                true
+            );
             expect(result).toEqual({
                 message: t('prompts.notSupportedAdpOverAdpLabel'),
                 severity: Severity.warning
             });
         });
 
-        it('should return partially supported warning', () => {
-            const appIdentifier = {
-                appSync: false,
-                getIsSupported: jest.fn().mockReturnValue(true),
-                getIsPartiallySupported: jest.fn().mockReturnValue(true),
-                v4AppInternalMode: false
-            };
-
-            const result = appAdditionalMessages(mockApp, appIdentifier as unknown as AppIdentifier, true);
+        it('returns warning when app is partially supported', () => {
+            const result = appAdditionalMessages(
+                mockApp,
+                { hasSyncViews: false, isSupported: true, isPartiallySupported: true, isV4AppInternalMode: false },
+                true
+            );
             expect(result).toEqual({
                 message: t('prompts.isPartiallySupportedAdpOverAdpLabel'),
                 severity: Severity.warning
             });
         });
 
-        it('should return v4 not officially supported warning', () => {
-            const appIdentifier = {
-                appSync: false,
-                getIsSupported: jest.fn().mockReturnValue(true),
-                getIsPartiallySupported: jest.fn().mockReturnValue(false),
-                v4AppInternalMode: true
-            };
-
-            const result = appAdditionalMessages(mockApp, appIdentifier as unknown as AppIdentifier, false);
+        it('returns warning when app is a V4 internal mode app', () => {
+            const result = appAdditionalMessages(
+                mockApp,
+                { hasSyncViews: false, isSupported: true, isPartiallySupported: false, isV4AppInternalMode: true },
+                true
+            );
             expect(result).toEqual({
-                message: 'prompts.v4AppNotOfficialLabel',
+                message: t('prompts.v4AppNotOfficialLabel'),
                 severity: Severity.warning
             });
+        });
+
+        it('returns undefined when none of the conditions are met', () => {
+            const result = appAdditionalMessages(
+                mockApp,
+                { hasSyncViews: false, isSupported: true, isPartiallySupported: false, isV4AppInternalMode: false },
+                false
+            );
+            expect(result).toBeUndefined();
         });
     });
 });

@@ -55,13 +55,14 @@ describe('UI5VersionInfo', () => {
     });
 
     describe('getVersionToBeUsed', () => {
-        it('should return latest version when snapshot is in version and isCustomerBase is true', () => {
-            manager.latestVersion = '1.120.0';
+        it('should return latest version when snapshot is in version and isCustomerBase is true', async () => {
+            await manager.getPublicVersions();
             const version = manager.getVersionToBeUsed('1.119.0 snapshot', true);
             expect(version).toBe('1.120.0');
         });
 
-        it('should return the given version if not snapshot', () => {
+        it('should return the given version if not snapshot', async () => {
+            await manager.getPublicVersions();
             const version = manager.getVersionToBeUsed('1.118.5', false);
             expect(version).toBe('1.118.5');
         });
@@ -71,7 +72,7 @@ describe('UI5VersionInfo', () => {
         it('should return publicVersions and set latestVersion', async () => {
             const versions = await manager.getPublicVersions();
             expect(versions).toEqual(mockPublicVersions);
-            expect(manager.latestVersion).toBe('1.120.0');
+            expect(manager.getLatestVersion()).toBe('1.120.0');
         });
     });
 

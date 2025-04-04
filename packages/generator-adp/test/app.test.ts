@@ -18,6 +18,7 @@ import { initI18n, t } from '../src/utils/i18n';
 import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import { ConfigPrompter } from '../src/app/questions/configuration';
 
 jest.mock('@sap-devx/feature-toggle-node', () => ({
     // Is BAS this will mean that the layer is CUSTOMER_BASE
@@ -129,6 +130,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         fs.mkdirSync(testOutputDir, { recursive: true });
 
         loadAppsMock.mockResolvedValue(apps);
+        jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
         jest.spyOn(SourceSystems.prototype, 'getSystems').mockResolvedValue(endpoints);
         jest.spyOn(SourceSystems.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
         getConfiguredProviderMock.mockResolvedValue(dummyProvider);
@@ -164,7 +166,7 @@ describe('Adaptation Project Generator Integration Test', () => {
     it('should throw error when writing phase fails', async () => {
         const error = new Error('Test error');
         mockIsAppStudio.mockReturnValue(false);
-        getConfiguredProviderMock.mockRejectedValueOnce(error);
+        getAtoInfoMock.mockRejectedValueOnce(error);
 
         const answers = {
             system: 'http://systema.com',

@@ -39,7 +39,9 @@ describe('getConfig', () => {
     });
 
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
-        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({ latestVersion: '1.135.0' } as UI5VersionInfo);
+        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
+            getLatestVersion: jest.fn().mockReturnValue('1.135.0')
+        } as unknown as UI5VersionInfo);
         isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig({
             provider: mockAbapProvider,
