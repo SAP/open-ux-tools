@@ -48,16 +48,30 @@ export class AddHeaderFieldQuickAction
         // check if only flex box exist in the headerContent.
         if (headerContent.length === 1 && isA<FlexBox>('sap.m.FlexBox', headerContent[0])) {
             const overlay = OverlayRegistry.getOverlay(headerContent[0]) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-                aggregation: 'items',
-                title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-            });
+            await DialogFactory.createDialog(
+                overlay,
+                this.context.rta,
+                DialogNames.ADD_FRAGMENT,
+                undefined,
+                {
+                    aggregation: 'items',
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+                },
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+            );
         } else if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-                aggregation: 'headerContent',
-                title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
-            });
+            await DialogFactory.createDialog(
+                overlay,
+                this.context.rta,
+                DialogNames.ADD_FRAGMENT,
+                undefined,
+                {
+                    aggregation: 'headerContent',
+                    title: 'QUICK_ACTION_OP_ADD_HEADER_FIELD'
+                },
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+            );
         }
         return [];
     }

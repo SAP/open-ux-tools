@@ -11,7 +11,8 @@ import { AuthenticationType, getService } from '@sap-ux/store';
 import { mockTargetSystems } from './fixtures/targets';
 import { TestFixture } from './fixtures';
 import { PackageInputChoices, TargetSystemType, TransportChoices } from '@sap-ux/abap-deploy-config-inquirer';
-import { AbapDeployConfig, UI5Config } from '@sap-ux/ui5-config';
+import type { AbapDeployConfig } from '@sap-ux/ui5-config';
+import { UI5Config } from '@sap-ux/ui5-config';
 import { ABAP_DEPLOY_TASK } from '../src/utils/constants';
 import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import * as projectAccess from '@sap-ux/project-access';
@@ -28,7 +29,9 @@ mockGetService.mockResolvedValueOnce({
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;

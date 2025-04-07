@@ -46,7 +46,6 @@ export class UILink extends React.Component<UILinkProps, {}> {
             return {
                 root: {
                     color: styles.color,
-                    fontFamily: 'var(--vscode-font-family)',
                     textDecoration: underline === false ? undefined : 'underline',
                     selectors: !disabled
                         ? {

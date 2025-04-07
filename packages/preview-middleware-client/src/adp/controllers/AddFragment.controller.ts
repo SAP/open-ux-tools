@@ -37,6 +37,7 @@ import {
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from '../quick-actions/control-types';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
 
 const radix = 10;
@@ -61,8 +62,14 @@ export interface AddFragmentOptions {
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
     public readonly data: AddFragmentData;
 
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, readonly options: AddFragmentOptions, data: AddFragmentData) {
-        super(name);
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        readonly options: AddFragmentOptions, data: AddFragmentData,
+        telemetryData?: QuickActionTelemetryData
+    ) {
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel({
@@ -135,6 +142,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
     async onCreateBtnPress(event: Event) {
         const source = event.getSource<Button>();
         source.setEnabled(false);
+
+        await super.onCreateBtnPressHandler();
 
         const fragmentName = this.model.getProperty('/newFragmentName');
         const index = this.model.getProperty('/selectedIndex');

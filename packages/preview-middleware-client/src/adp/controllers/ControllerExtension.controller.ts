@@ -28,6 +28,7 @@ import { getExistingController, readControllers, writeChange, writeController } 
 import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
 import type { ExtenControllerData, DeferredExtendControllerData } from '../extend-controller';
+import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -48,8 +49,8 @@ type ControllerModel = JSONModel & {
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
     public readonly data: ExtenControllerData;
 
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, data: ExtenControllerData) {
-        super(name);
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, data: ExtenControllerData, telemetryData?: QuickActionTelemetryData) {
+        super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel();
@@ -132,6 +133,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      */
     async onCreateBtnPress(event: Event) {
         const source = event.getSource<Button>();
+
+        await super.onCreateBtnPressHandler();
+
         const controllerExists = this.model.getProperty('/controllerExists');
 
         if (!controllerExists) {

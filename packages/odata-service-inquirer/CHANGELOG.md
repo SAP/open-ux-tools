@@ -1,5 +1,19 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.27
+
+### Patch Changes
+
+-   07b9160: prevent converting service path to lower case
+
+## 2.2.26
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/axios-extension@1.19.2
+    -   @sap-ux/inquirer-common@0.6.32
+
 ## 2.2.25
 
 ### Patch Changes

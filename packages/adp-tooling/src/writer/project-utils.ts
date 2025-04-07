@@ -1,7 +1,8 @@
 import { join } from 'path';
 import { readFileSync } from 'fs';
+import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig } from '../types';
+import type { CloudApp, AdpWriterConfig, CustomConfig, PackageJson } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -12,15 +13,14 @@ import {
 } from './options';
 
 import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
-
-type PackageJSON = { name: string; version: string };
+import type { OperationsType } from '@sap-ux/axios-extension';
 
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
  *
- * @returns {PackageJSON} An object containing the `name` and `version` of the package.
+ * @returns {PackageJson} An object containing the `name` and `version` of the package.
  */
-export function getPackageJSONInfo(): PackageJSON {
+export function getPackageJSONInfo(): PackageJson {
     const defaultPackage = {
         name: '@sap-ux/adp-tooling',
         version: 'NO_VERSION_FOUND'
@@ -31,6 +31,28 @@ export function getPackageJSONInfo(): PackageJSON {
     } catch (e) {
         return defaultPackage;
     }
+}
+
+/**
+ * Constructs a custom configuration object for the Adaptation Project (ADP).
+ *
+ * @param {OperationsType} environment - The operations type ('P' for on-premise or 'C' for cloud ready).
+ * @param {object} pkg - The parsed contents of `package.json`.
+ * @param {string} pkg.name - The name of the tool or package generating the config.
+ * @param {string} pkg.version - The version of the tool generating the config.
+ * @returns {CustomConfig} The generated ADP custom configuration object.
+ */
+export function getCustomConfig(environment: OperationsType, { name: id, version }: PackageJson): CustomConfig {
+    return {
+        adp: {
+            environment,
+            support: {
+                id,
+                version,
+                toolsId: uuidv4()
+            }
+        }
+    };
 }
 
 /**

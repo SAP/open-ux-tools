@@ -15,6 +15,7 @@ import { AddFragmentData } from './add-fragment';
 import { ExtenControllerData } from './extend-controller';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
+import { QuickActionTelemetryData } from '../cpe/quick-actions/quick-action-definition';
 
 export const enum DialogNames {
     ADD_FRAGMENT = 'AddFragment',
@@ -56,13 +57,15 @@ export class DialogFactory {
      * @param dialogName - Dialog name.
      * @param data - Data to be passed to the dialog.
      * @param options - Dialog options.
+     * @param telemetryData - Telemetry data.
      */
     public static async createDialog(
         overlay: UI5Element,
         rta: RuntimeAuthoring,
         dialogName: DialogNames,
         data?: DialogData,
-        options: Partial<AddFragmentOptions> | Partial<FileExistsDialogOptions> | AddSubpageOptions = {}
+        options: Partial<AddFragmentOptions> | Partial<FileExistsDialogOptions> | AddSubpageOptions = {},
+        telemetryData?: QuickActionTelemetryData
     ): Promise<void> {
         if (this.isDialogOpen) {
             return;
@@ -83,7 +86,8 @@ export class DialogFactory {
                         }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                     },
-                    (data as AddFragmentData)!
+                    (data as AddFragmentData)!,
+                    telemetryData
                 );
                 break;
             case DialogNames.ADD_TABLE_COLUMN_FRAGMENTS:
@@ -94,7 +98,8 @@ export class DialogFactory {
                     {
                         ...('aggregation' in options && { aggregation: options.aggregation }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
-                    }
+                    },
+                    telemetryData
                 );
                 break;
             case DialogNames.CONTROLLER_EXTENSION:
@@ -102,7 +107,8 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
-                    (data as ExtenControllerData)
+                    (data as ExtenControllerData),
+                    telemetryData,
                 );
                 break;
             case DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT:
