@@ -62,7 +62,7 @@ export default class extends Generator {
     /**
      * EndpointsManager instance for managing system endpoints.
      */
-    private targetSystems: SourceSystems;
+    private sourceSystems: SourceSystems;
     /**
      * Instance of the configuration prompter class.
      */
@@ -94,7 +94,7 @@ export default class extends Generator {
 
         this.layer = await getFlexLayer();
 
-        this.targetSystems = new SourceSystems(this.toolsLogger);
+        this.sourceSystems = new SourceSystems(this.toolsLogger);
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -107,7 +107,7 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        this.prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
+        this.prompter = new ConfigPrompter(this.sourceSystems, this.layer, this.toolsLogger);
         const isCLI = getHostEnvironment() === hostEnvironment.cli;
 
         const configQuestions = this.prompter.getPrompts({

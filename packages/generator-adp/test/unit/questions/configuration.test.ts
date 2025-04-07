@@ -53,7 +53,7 @@ const provider = {
     isAbapCloud: isAbapCloudMock
 } as unknown as AbapServiceProvider;
 
-const targetSystems: SourceSystems = {
+const sourceSystems: SourceSystems = {
     getSystems: jest.fn().mockResolvedValue([
         { Name: 'SystemB', Client: '200', Url: 'http://systemb.com', Authentication: 'Basic' },
         { Name: 'systemA', Client: '010', Url: 'http://systema.com', Authentication: 'NoAuthentication' }
@@ -91,7 +91,7 @@ describe('ConfigPrompter Integration Tests', () => {
         getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
         loadAppsMock.mockResolvedValue(dummyApps);
         getConfiguredProviderMock.mockResolvedValue(provider);
-        configPrompter = new ConfigPrompter(targetSystems, layer, logger);
+        configPrompter = new ConfigPrompter(sourceSystems, layer, logger);
     });
 
     afterEach(() => {

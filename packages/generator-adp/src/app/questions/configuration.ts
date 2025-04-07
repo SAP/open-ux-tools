@@ -126,11 +126,11 @@ export class ConfigPrompter {
     /**
      * Creates an instance of ConfigPrompter.
      *
-     * @param {SourceSystems} targetSystems - The target system class to retrieve system endpoints.
+     * @param {SourceSystems} sourceSystems - The target system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
      */
-    constructor(private readonly targetSystems: SourceSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
+    constructor(private readonly sourceSystems: SourceSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.ui5Info = UI5VersionInfo.getInstance(layer);
     }
@@ -176,7 +176,7 @@ export class ConfigPrompter {
             name: configPromptNames.system,
             message: t('prompts.systemLabel'),
             choices: async () => {
-                const systems = await this.targetSystems.getSystems();
+                const systems = await this.sourceSystems.getSystems();
                 return getEndpointNames(systems);
             },
             guiOptions: {
@@ -394,7 +394,7 @@ export class ConfigPrompter {
         try {
             this.targetApps = [];
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            this.isAuthRequired = await this.targetSystems.getSystemRequiresAuth(system);
+            this.isAuthRequired = await this.sourceSystems.getSystemRequiresAuth(system);
             if (!this.isAuthRequired) {
                 const validationResult = await this.handleSystemDataValidation();
 
