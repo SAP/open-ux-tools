@@ -22,6 +22,7 @@ class RuntimeAuthoringMock {
         return newHandler;
     });
     public setPlugins = jest.fn();
+    public getPlugins = jest.fn();
     public canUndo = jest.fn();
     public canRedo = jest.fn();
     public canSave = jest.fn();
