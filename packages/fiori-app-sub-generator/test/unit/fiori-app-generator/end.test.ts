@@ -11,6 +11,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { Logger } from '@sap-ux/logger';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { join } from 'path';
 
 jest.mock('../../../src/utils', () => ({
     ...jest.requireActual('../../../src/utils'),
@@ -166,7 +167,7 @@ describe('runPostGenerationTasks', () => {
 
         await runPostGenerationTasks({ service, project }, fs, logger, vscode, appWizard);
 
-        const projectPath = '/path/to/project/testProject';
+        const projectPath = join(project.targetFolder, project.name);
         expect(logger.info).toHaveBeenCalledWith(
             t('logMessages.applicationGenerationSuccess', { targetFolder: projectPath })
         );
