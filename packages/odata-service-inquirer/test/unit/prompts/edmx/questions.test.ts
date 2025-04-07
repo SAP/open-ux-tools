@@ -90,10 +90,10 @@ describe('Test entity prompts', () => {
             entitySetFilter: undefined
         });
         expect(questions).toEqual(
-            expect.arrayContaining([expect.objectContaining({ name: EntityPromptNames.filterEntityType })])
+            expect.arrayContaining([expect.objectContaining({ name: EntityPromptNames.filterEntitySet })])
         );
         const filterEntityPrompt = questions.find(
-            (question) => question.name === EntityPromptNames.filterEntityType
+            (question) => question.name === EntityPromptNames.filterEntitySet
         ) as ListQuestion;
         // Specific entity choices should be tested by the entity helper tests
         expect((filterEntityPrompt.choices as []).length).toBe(25);
@@ -109,9 +109,9 @@ describe('Test entity prompts', () => {
         });
         questions = getEntitySelectionQuestions(metadataV2, 'ovp');
         validateResult = (
-            questions.find((question) => question.name === EntityPromptNames.filterEntityType)!.validate as Function
+            questions.find((question) => question.name === EntityPromptNames.filterEntitySet)!.validate as Function
         )();
-        expect(validateResult).toEqual(t('prompts.filterEntityType.noEntitiesError'));
+        expect(validateResult).toEqual(t('prompts.filterEntitySet.noEntitiesError'));
     });
 
     test('getEntityQuestions should return the correct questions: `lrop`', async () => {

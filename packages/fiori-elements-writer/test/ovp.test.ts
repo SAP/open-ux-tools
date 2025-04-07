@@ -48,7 +48,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     template: {
                         type: TemplateType.OverviewPage,
                         settings: {
-                            filterEntityType: 'GlobalFilters'
+                            filterEntitySet: 'GlobalFilters'
                         }
                     }
                 }),
@@ -62,7 +62,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     template: {
                         type: TemplateType.OverviewPage,
                         settings: {
-                            filterEntityType: 'GlobalFilters'
+                            filterEntitySet: 'GlobalFilters'
                         }
                     },
                     appOptions: {
@@ -79,7 +79,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     template: {
                         type: TemplateType.OverviewPage,
                         settings: {
-                            filterEntityType: 'SalesOrderItem'
+                            filterEntitySet: 'SalesOrderItem'
                         }
                     },
                     ui5: {
@@ -96,7 +96,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                     template: {
                         type: TemplateType.OverviewPage,
                         settings: {
-                            filterEntityType: 'SalesOrderItem'
+                            filterEntitySet: 'SalesOrderItem'
                         }
                     },
                     ui5: {

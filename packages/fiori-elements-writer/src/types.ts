@@ -76,7 +76,7 @@ export interface FEOPSettings {
 }
 
 export interface OVPSettings {
-    filterEntityType: string; // Filters the `globalFilterModel` data displayed in OVP cards
+    filterEntitySet: string; // Filters the `globalFilterModel` data displayed in OVP cards
 }
 
 export interface ALPSettings extends TableSettings {

@@ -139,7 +139,7 @@
             "message": "Navigation entity",
             "choiceNone": "$t(texts.choiceNameNone)"
         },
-        "filterEntityType": {
+        "filterEntitySet": {
             "message": "Filter entity",
             "noEntitiesError": "$t(errors.noRelevantEntities)"
         },
