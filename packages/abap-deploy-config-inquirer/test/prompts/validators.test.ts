@@ -148,7 +148,7 @@ describe('Test validators', () => {
                 serviceKeys: {},
                 authenticationType: AuthenticationType.ReentranceTicket
             });
-            let result = validateUrl('https://mock.url.target1.com');
+            const result = validateUrl('https://mock.url.target1.com');
             expect(result).toBe(true);
             expect(PromptState.abapDeployConfig).toStrictEqual({
                 url: 'https://mock.url.target1.com',
@@ -175,12 +175,12 @@ describe('Test validators', () => {
         });
 
         it('should return false empty URL', () => {
-            let result = validateUrl('');
+            const result = validateUrl('');
             expect(result).toBe(false);
         });
 
         it('should return error message for invalid URL', () => {
-            let result = validateUrl('/x/inval.z');
+            const result = validateUrl('/x/inval.z');
             expect(result).toBe(t('errors.invalidUrl', { url: '/x/inval.z' }));
         });
     });
@@ -239,13 +239,13 @@ describe('Test validators', () => {
 
     describe('validateClient', () => {
         it('should return true for valid client', () => {
-            let result = validateClient('123');
+            const result = validateClient('123');
             expect(PromptState.abapDeployConfig.client).toBe('123');
             expect(result).toBe(true);
         });
 
         it('should return error message for invalid client', () => {
-            let result = validateClient('00');
+            const result = validateClient('00');
             expect(PromptState.abapDeployConfig.client).toBe(undefined);
             expect(result).toBe(t('errors.invalidClient', { client: '00' }));
         });
@@ -368,6 +368,7 @@ describe('Test validators', () => {
     describe('validatePackageExtended', () => {
         beforeEach(() => {
             PromptState.resetTransportAnswers();
+            jest.resetAllMocks();
         });
 
         it('should return true for onPremise system with default onPremise package', async () => {
@@ -486,6 +487,39 @@ describe('Test validators', () => {
                 additionalValidation: { shouldValidatePackageType: true }
             });
             expect(result).toBe(true);
+        });
+
+        it('should run getTransportListFromService when package prompts are ran standalone', async () => {
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers, {}, {}, undefined, true);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should run getTransportListFromService when the system is on-prem', async () => {
+            PromptState.abapDeployConfig.scp = false;
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should run getTransportListFromService when the cloud system is connected', async () => {
+            PromptState.abapDeployConfig.scp = true;
+            jest.spyOn(AbapServiceProviderManager, 'isConnected').mockReturnValue(true);
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).toHaveBeenCalledTimes(1);
+        });
+
+        it('should not run getTransportListFromService when the cloud system is not connected', async () => {
+            PromptState.abapDeployConfig.scp = true;
+            jest.spyOn(AbapServiceProviderManager, 'isConnected').mockReturnValue(false);
+            const getTransportListFromServiceSpy = jest.spyOn(serviceProviderUtils, 'getTransportListFromService');
+            const result = await validatePackageExtended('ZPACKAGE', previousAnswers);
+            expect(result).toBe(true);
+            expect(getTransportListFromServiceSpy).not.toHaveBeenCalled();
         });
     });
 

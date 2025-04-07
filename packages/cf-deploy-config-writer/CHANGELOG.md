@@ -1,5 +1,17 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.1.28
+
+### Patch Changes
+
+-   a8cbdcf: append install script
+
+## 0.1.27
+
+### Patch Changes
+
+-   145f4c9: Change post install script
+
 ## 0.1.26
 
 ### Patch Changes

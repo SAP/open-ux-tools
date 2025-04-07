@@ -162,7 +162,6 @@ describe('<UIDropdown />', () => {
                 'marginRight': 6
             },
             'label': {
-                'fontFamily': 'var(--vscode-font-family)',
                 'height': 18,
                 'lineHeight': 18,
                 'paddingLeft': undefined
