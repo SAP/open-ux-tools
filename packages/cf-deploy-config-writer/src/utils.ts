@@ -298,8 +298,8 @@ export async function updateRootPackage(
     const packageExists = fs.exists(join(rootPath, FileName.Package));
     // Append mta scripts only if mta.yaml is at a different level to the HTML5 app
     if (packageExists) {
-        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, fs);
-        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, fs);
+        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion);
+        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion);
         let deployArgs: string[] = [];
         if (fs.exists(join(rootPath, MTAFileExtension))) {
             deployArgs = ['-e', MTAFileExtension];
@@ -309,7 +309,7 @@ export async function updateRootPackage(
             { name: 'build', run: `${MTABuildScript} --mtar archive` },
             { name: 'deploy', run: rootDeployMTAScript(deployArgs) }
         ]) {
-            await updatePackageScript(rootPath, script.name, script.run, fs);
+            await updatePackageScript(rootPath, script.name, script.run);
         }
     }
 }
