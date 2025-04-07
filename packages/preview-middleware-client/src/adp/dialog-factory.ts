@@ -85,7 +85,7 @@ export class DialogFactory {
                         }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                     },
-                    (data as AddFragmentData)!,
+                    (data as AddFragmentData),
                     telemetryData
                 );
                 break;
@@ -106,7 +106,7 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
-                    telemetryData,
+                    telemetryData
                 );
                 break;
             case DialogNames.ADD_FRAGMENT_AT_EXTENSION_POINT:
@@ -114,7 +114,7 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
-                    (data as ExtensionPointData)!
+                    (data as ExtensionPointData)
                 );
                 break;
             case DialogNames.FILE_EXISTS:
