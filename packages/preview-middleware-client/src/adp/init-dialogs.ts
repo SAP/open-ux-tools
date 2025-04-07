@@ -139,7 +139,7 @@ export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[],
     const resources = await getTextBundle();
     const isReuseComponentChecker = await getReuseComponentChecker(ui5VersionInfo);
 
-    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 136 })) {
         contextMenu.addMenuItem({
             id: 'ADD_FRAGMENT',
             text: (overlay: ElementOverlay) => getAddFragmentItemText(overlay, isReuseComponentChecker, isCloud, resources),
