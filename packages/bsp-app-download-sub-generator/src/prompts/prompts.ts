@@ -20,13 +20,13 @@ const getTargetFolderPrompt = (appRootPath?: string): FileBrowserQuestion<BspApp
     return {
         type: 'input',
         name: PromptNames.targetFolder,
-        message: t('prompts.targetPath.targetPathMessage'),
+        message: t('prompts.targetPath.message'),
         guiType: 'folder-browser',
         when: (answers: BspAppDownloadAnswers) => Boolean(answers?.selectedApp?.appId),
         guiOptions: {
             applyDefaultWhenDirty: true,
             mandatory: true,
-            breadcrumb: t('prompts.targetPath.targetPathBreadcrumb')
+            breadcrumb: t('prompts.targetPath.breadcrumb')
         },
         validate: async (target, answers: BspAppDownloadAnswers): Promise<boolean | string> => {
             return await validateFioriAppTargetFolder(target, answers.selectedApp.appId, true);
@@ -63,11 +63,11 @@ export async function getPrompts(appRootPath?: string, log?: Logger): Promise<Bs
             name: PromptNames.selectedApp,
             guiOptions: {
                 mandatory: !!appList.length,
-                breadcrumb: true
+                breadcrumb: t('prompts.appSelection.breadcrumb')
             },
             message: t('prompts.appSelection.message'),
             choices: () => (appList.length ? formatAppChoices(appList) : []),
-            validate: (): string | boolean => appList.length ? true : t('prompts.appSelection.noAppsDeployed')
+            validate: (): string | boolean => (appList.length ? true : t('prompts.appSelection.noAppsDeployed'))
         }
     ];
 

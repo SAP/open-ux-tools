@@ -11,7 +11,13 @@ export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
 
 // Default initial answers to use as a fallback.
 export const defaultAnswers: BspAppDownloadAnswers = {
-    [PromptNames.systemSelection]: {}, // Empty or default values for system selection
+    [PromptNames.systemSelection]: {
+        system: {
+            name: '',
+            url: ''
+        },
+        type: 'backendSystem'
+    },
     [PromptNames.selectedApp]: {
         appId: '',
         title: '',

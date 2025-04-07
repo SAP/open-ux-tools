@@ -1,6 +1,6 @@
 import Generator from 'yeoman-generator';
 import BspAppDownloadLogger from '../utils/logger';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
 import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
@@ -9,12 +9,12 @@ import { t } from '../utils/i18n';
 import { getYUIDetails } from '../prompts/prompt-helpers';
 import { downloadApp } from '../utils/download-utils';
 import { EventName } from '../telemetryEvents';
-import type { YeomanEnvironment, VSCodeInstance } from '@sap-ux/fiori-generator-shared';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type { BspAppDownloadOptions, BspAppDownloadAnswers, BspAppDownloadQuestions, AppContentConfig } from './types';
 import { getPrompts } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
-import { join, basename, dirname } from 'path';
+import { join, basename } from 'path';
 import { platform } from 'os';
 import { generateReadMe, type ReadMe } from '@sap-ux/fiori-generator-shared';
 import { runPostAppGenHook } from '../utils/event-hook';
@@ -27,9 +27,10 @@ import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { PromptState } from '../prompts/prompt-state';
 import { PromptNames } from './types';
-import { getAbapDeployConfig, getAppConfig, replaceWebappFiles } from './config';
+import { getAbapDeployConfig, getAppConfig } from './config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { sampleAppContentJson } from './example-app-content';
+import { replaceWebappFiles } from '../utils/file-helpers';
 
 /**
  * Generator class for downloading a basic app from BSP repository.
@@ -37,7 +38,7 @@ import { sampleAppContentJson } from './example-app-content';
  */
 export default class extends Generator {
     private readonly appWizard: AppWizard;
-    private readonly vscode?: any;//VSCodeInstance; //confirm this
+    private readonly vscode?: any;
     private readonly launchAppDownloaderAsSubGenerator: boolean;
     private readonly appRootPath: string;
     private readonly prompts: Prompts;
@@ -57,7 +58,7 @@ export default class extends Generator {
     constructor(args: string | string[], opts: BspAppDownloadOptions) {
         super(args, opts);
 
-        // Initialize properties from options
+        // Initialise properties from options
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.vscode = opts.vscode;
         this.launchAppDownloaderAsSubGenerator = opts.launchAppDownloaderAsSubGenerator ?? false;
@@ -74,6 +75,7 @@ export default class extends Generator {
             this.vscode
         );
 
+        this.prompts = new Prompts([]);
         // Initialize prompts and callbacks if not launched as a subgenerator
         if (!this.launchAppDownloaderAsSubGenerator) {
             this.appWizard.setHeaderTitle(generatorTitle);
@@ -110,21 +112,16 @@ export default class extends Generator {
      */
     public async prompting(): Promise<void> {
         const questions: BspAppDownloadQuestions[] = await getPrompts(this.appRootPath);
-        const { selectedApp, targetFolder } = (await this.prompt(questions)) as BspAppDownloadAnswers;
-        if (PromptState.systemSelection.connectedSystem?.serviceProvider && selectedApp?.appId && targetFolder) {
-            this.answers.selectedApp = selectedApp;
-            this.answers.targetFolder = targetFolder;
+        const answers: BspAppDownloadAnswers = await this.prompt(questions);
+        const { selectedApp, targetFolder } = answers;
 
+        if (PromptState.systemSelection.connectedSystem?.serviceProvider && selectedApp?.appId && targetFolder) {
+            Object.assign(this.answers, answers);
             this.projectPath = join(targetFolder, selectedApp.appId);
             this.extractedProjectPath = join(this.projectPath, extractedFilePath);
 
             // Trigger app download
-            await downloadApp(
-                this.answers.selectedApp.repoName,
-                this.extractedProjectPath,
-                this.fs,
-                BspAppDownloadLogger.logger as unknown as Logger
-            );
+            await downloadApp(this.answers.selectedApp.repoName, this.extractedProjectPath, this.fs);
         }
     }
 
@@ -133,38 +130,27 @@ export default class extends Generator {
      */
     public async writing(): Promise<void> {
         // const appContentJsonTempPath = join(__dirname, 'example-app-content.json');
-        let appContentJson: AppContentConfig = sampleAppContentJson;
-        // todo: add back once json is available along with downloaded app 
+        const appContentJson: AppContentConfig = sampleAppContentJson;
+        // todo: add back once json is available along with downloaded app
         // if(!this.fs.exists(appContentJsonTempPath)) {
         //     appContentJson = this.fs.readJSON(appContentJsonTempPath) as unknown as AppContentConfig; //todo: extract from extracted path
         // } else {
-        //     throw new Error(t('error.appContentJsonNotFound', { jsonFileName: 'example-app-content.json' }));
+        //    BspAppDownloadLogger.logger?.error(t('error.appContentJsonNotFound', { jsonFileName: 'example-app-content.json' }));
         // }
-        
+
         // Generate project files
-        const config = await getAppConfig(
-            this.answers.selectedApp,
-            this.extractedProjectPath,
-            appContentJson,
-            this.fs,
-            BspAppDownloadLogger.logger as unknown as Logger
-        );
+        const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, appContentJson, this.fs);
         await generate(this.projectPath, config, this.fs);
-        
+
         // Generate deploy config
         const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, appContentJson);
-        await generateDeployConfig(
-            this.projectPath,
-            deployConfig,
-            undefined,
-            this.fs
-        );
+        await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
 
         // Generate README
         const readMeConfig = this._getReadMeConfig(config);
         generateReadMe(this.projectPath, readMeConfig, this.fs);
 
-        if(this.vscode) {
+        if (this.vscode) {
             // Generate Fiori launch config
             const fioriOptions = this._getLaunchConfig(config);
             // Create launch configuration
@@ -177,7 +163,7 @@ export default class extends Generator {
             writeApplicationInfoSettings(this.projectPath, this.fs);
         }
         // Replace webapp files with downloaded app files
-        //replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+        // replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
         // Clean up extracted project files
         // this.fs.delete(this.extractedProjectPath);
     }
@@ -225,7 +211,7 @@ export default class extends Generator {
             name: config.app.id,
             projectRoot: this.projectPath,
             /**
-             * The `enableVSCodeReload` property is set to `false` to prevent automatic reloading of the VS Code workspace 
+             * The `enableVSCodeReload` property is set to `false` to prevent automatic reloading of the VS Code workspace
              * after the app generation process. This is necessary to ensure that the `.vscode/launch-config.json` file is
              * written to disk before the workspace reload occurs. See {@link _handlePostAppGeneration} for details.
              */
@@ -243,10 +229,10 @@ export default class extends Generator {
             try {
                 await this._runNpmInstall(this.projectPath);
             } catch (error) {
-                BspAppDownloadLogger.logger?.error(t('error.npmInstall', { error }));
+                BspAppDownloadLogger.logger?.error(t('error.installationErrors.npmInstall', { error }));
             }
         } else {
-            BspAppDownloadLogger.logger?.info(t('info.skippedInstallation'));
+            BspAppDownloadLogger.logger?.info(t('info.installationErrors.skippedInstallation'));
         }
     }
 
@@ -268,25 +254,25 @@ export default class extends Generator {
     }
 
     /**
-     * This includes updating workspace folders and running post-generation commands if defined.
+     * Responsible for updating workspace folders and running post-generation commands if defined.
      */
     private async _handlePostAppGeneration(): Promise<void> {
         /**
-         * `enableVSCodeReload` is set to false when generating launch config.
+         * `enableVSCodeReload` is set to false when generating launch config here {@link _getLaunchConfig}.
          * This prevents issues where the `.vscode/launch-config.json` file may not be written to disk due to the timing of mem-fs commits.
-         * 
+         *
          * In Yeoman, a commit occurs between the writing phase and the end phase. If no workspace is open in VS Code and the generated
-         * app is added to the workspace, VS Code automatically reloads the window. However, by this point in the end phase, the in-memory file system 
+         * app is added to the workspace, VS Code automatically reloads the window. However, by this point in the end phase, the in-memory file system
          * (mem-fs) has written all files except for `.vscode/launch-config.json`, because the commit happens before the end phase
          * causing it to be missed when the workspace reload occurs.
          *
          * Workflow:
-         * 1. **Workspace URI**: The `updateWorkspaceFolders` object is created with the project folder's path, the project name, 
+         * 1. **Workspace URI**: The `updateWorkspaceFolders` object is created with the project folder's path, the project name,
          *    and the VS Code instance to handle workspace folder updates.
-         * 2. **Update Workspace Folders**: The `updateWorkspaceFoldersIfNeeded` function is called to update the workspace folders, 
-         *    if necessary, using the data in `updateWorkspaceFolders` . See {@link updateWorkspaceFoldersIfNeeded} for details.
-         * 3. **Run Post-Generation Commands**: If defined, post-generation commands from `options.data?.postGenCommands` are executed 
-         *    using the `runPostAppGenHook` function. This allows for additional setup or configuration tasks to be performed after 
+         * 2. **Update Workspace Folders**: The `updateWorkspaceFoldersIfNeeded` function is called to update the workspace folders,
+         *    if necessary. See {@link updateWorkspaceFoldersIfNeeded} for details.
+         * 3. **Run Post-Generation Commands**: If defined, post-generation commands from `options.data?.postGenCommands` are executed
+         *    using the `runPostAppGenHook` function. This allows for additional setup or configuration tasks to be performed after
          *    the app generation process.
          */
         if (this.vscode) {
@@ -310,6 +296,7 @@ export default class extends Generator {
      * Finalises the generator process by creating launch configurations and running post-generation hooks.
      */
     async end() {
+        this.appWizard.showWarning(t('info.bspAppDownloadCompleteMsg'), MessageType.prompt);
         sendTelemetry(
             EventName.GENERATION_SUCCESS,
             TelemetryHelper.createTelemetryData({
@@ -319,7 +306,7 @@ export default class extends Generator {
         ).catch((error) => {
             BspAppDownloadLogger.logger.error(t('error.telemetry', { error }));
         });
-        this._handlePostAppGeneration();
+        await this._handlePostAppGeneration();
     }
 }
 

@@ -1,17 +1,16 @@
-import type { Logger } from '@sap-ux/logger';
 import { t } from '../utils/i18n';
 import type { AppContentConfig } from '../app/types';
+import BspAppDownloadLogger from '../utils/logger';
 
 /**
  * Validates the metadata section of the app configuration.
  *
  * @param {AppContentConfig['metadata']} metadata - The metadata object.
- * @param {Logger} log - The logger instance.
  * @returns {boolean} - Returns true if valid, false otherwise.
  */
-const validateMetadata = (metadata: AppContentConfig['metadata'], log?: Logger): boolean => {
+const validateMetadata = (metadata: AppContentConfig['metadata']): boolean => {
     if (!metadata.package || typeof metadata.package !== 'string') {
-        log?.error(t('error.invalidMetadataPackage'));
+        BspAppDownloadLogger.logger?.error(t('error.invalidMetadataPackage'));
         return false;
     }
     return true;
@@ -21,23 +20,19 @@ const validateMetadata = (metadata: AppContentConfig['metadata'], log?: Logger):
  * Validates the service binding details section of the app configuration.
  *
  * @param {AppContentConfig['serviceBindingDetails']} serviceBinding - The service binding details object.
- * @param {Logger} log - The logger instance.
  * @returns {boolean} - Returns true if valid, false otherwise.
  */
-const validateServiceBindingDetails = (
-    serviceBinding: AppContentConfig['serviceBindingDetails'],
-    log?: Logger
-): boolean => {
+const validateServiceBindingDetails = (serviceBinding: AppContentConfig['serviceBindingDetails']): boolean => {
     if (!serviceBinding.serviceName || typeof serviceBinding.serviceName !== 'string') {
-        log?.error(t('error.invalidServiceName'));
+        BspAppDownloadLogger.logger?.error(t('error.invalidServiceName'));
         return false;
     }
     if (!serviceBinding.serviceVersion || typeof serviceBinding.serviceVersion !== 'string') {
-        log?.error(t('error.invalidServiceVersion'));
+        BspAppDownloadLogger.logger?.error(t('error.invalidServiceVersion'));
         return false;
     }
     if (!serviceBinding.mainEntityName || typeof serviceBinding.mainEntityName !== 'string') {
-        log?.error(t('error.invalidMainEntityName'));
+        BspAppDownloadLogger.logger?.error(t('error.invalidMainEntityName'));
         return false;
     }
     return true;
@@ -47,12 +42,11 @@ const validateServiceBindingDetails = (
  * Validates the project attribute section of the app configuration.
  *
  * @param {AppContentConfig['projectAttribute']} projectAttribute - The project attribute object.
- * @param {Logger} log - The logger instance.
  * @returns {boolean} - Returns true if valid, false otherwise.
  */
-const validateProjectAttribute = (projectAttribute: AppContentConfig['projectAttribute'], log?: Logger): boolean => {
+const validateProjectAttribute = (projectAttribute: AppContentConfig['projectAttribute']): boolean => {
     if (!projectAttribute.moduleName || typeof projectAttribute.moduleName !== 'string') {
-        log?.error(t('error.invalidModuleName'));
+        BspAppDownloadLogger.logger?.error(t('error.invalidModuleName'));
         return false;
     }
     return true;
@@ -62,12 +56,11 @@ const validateProjectAttribute = (projectAttribute: AppContentConfig['projectAtt
  * Validates the deployment details section of the app configuration.
  *
  * @param {AppContentConfig['deploymentDetails']} deploymentDetails - The deployment details object.
- * @param {Logger} log - The logger instance.
  * @returns {boolean} - Returns true if valid, false otherwise.
  */
-const validateDeploymentDetails = (deploymentDetails: AppContentConfig['deploymentDetails'], log?: Logger): boolean => {
+const validateDeploymentDetails = (deploymentDetails: AppContentConfig['deploymentDetails']): boolean => {
     if (!deploymentDetails.repositoryName) {
-        log?.error(t('error.invalidRepositoryName'));
+        BspAppDownloadLogger.logger?.error(t('error.invalidRepositoryName'));
         return false;
     }
     return true;
@@ -77,14 +70,13 @@ const validateDeploymentDetails = (deploymentDetails: AppContentConfig['deployme
  * Validates the entire app configuration.
  *
  * @param {AppContentConfig} config - The app configuration object.
- * @param {Logger} log - The logger instance.
  * @returns {boolean} - Returns true if the configuration is valid, false otherwise.
  */
-export const validateAppContentJsonFile = (config: AppContentConfig, log?: Logger): boolean => {
+export const validateAppContentJsonFile = (config: AppContentConfig): boolean => {
     return (
-        validateMetadata(config.metadata, log) &&
-        validateServiceBindingDetails(config.serviceBindingDetails, log) &&
-        validateProjectAttribute(config.projectAttribute, log) &&
-        validateDeploymentDetails(config.deploymentDetails, log)
+        validateMetadata(config.metadata) &&
+        validateServiceBindingDetails(config.serviceBindingDetails) &&
+        validateProjectAttribute(config.projectAttribute) &&
+        validateDeploymentDetails(config.deploymentDetails)
     );
 };

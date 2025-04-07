@@ -6,6 +6,8 @@ import type { AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
 import { PromptState } from './prompt-state';
 import type { BspAppDownloadAnswers, AppItem } from '../app/types';
+import { t } from '../utils/i18n';
+import BspAppDownloadLogger from '../utils/logger';
 
 /**
  * Returns the details for the YUI prompt.
@@ -26,32 +28,36 @@ export function getYUIDetails(): { name: string; description: string }[] {
  *
  * @param {AppIndex} appList - List of applications retrieved from the system.
  * @returns {Array<{ name: string; value: AppInfo }>} The formatted choices for selection.
- * @throws Will throw an error if any required fields are missing.
  */
 export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value: AppInfo }> => {
-    return appList.map((app: AppItem) => {
-        // Check if any required fields are missing
-        if (
-            !app['sap.app/id'] ||
-            !app['sap.app/title'] ||
-            !app['sap.app/description'] ||
-            !app['repoName'] ||
-            !app['url']
-        ) {
-            throw new Error(`Required fields are missing for app: ${JSON.stringify(app)}`);
-        }
-
-        return {
-            name: app['sap.app/id'],
-            value: {
-                appId: app['sap.app/id'],
-                title: app['sap.app/title'],
-                description: app['sap.app/description'] as string,
-                repoName: app['repoName'] as string,
-                url: app['url']
+    return appList
+        .filter((app: AppItem) => {
+            const hasRequiredFields = app['sap.app/id'] && app['sap.app/title'] && app['repoName'] && app['url'];
+            if (!hasRequiredFields) {
+                BspAppDownloadLogger.logger?.error(t('error.requiredFieldsMissing', { app: JSON.stringify(app) }));
             }
-        };
-    });
+            return hasRequiredFields;
+        })
+        .map((app) => {
+            // cast to string because TypeScript doesn't automatically know at the point that these fields are defined
+            // after filtering out invalid apps.
+            const id = app['sap.app/id'] as string;
+            const title = app['sap.app/title'] as string;
+            const description = (app['sap.app/description'] ?? '') as string;
+            const repoName = app.repoName as string;
+            const url = app.url as string;
+
+            return {
+                name: id,
+                value: {
+                    appId: id,
+                    title,
+                    description,
+                    repoName,
+                    url
+                }
+            };
+        });
 };
 
 /**
@@ -65,7 +71,7 @@ async function getAppList(provider: AbapServiceProvider, log?: Logger): Promise<
     try {
         return await provider.getAppIndex().search(appListSearchParams, appListResultFields);
     } catch (error) {
-        log?.error(`Error fetching application list: ${error.message}`);
+        log?.error(t('error.applicationListFetchError', { error: error.message }));
         return [];
     }
 }

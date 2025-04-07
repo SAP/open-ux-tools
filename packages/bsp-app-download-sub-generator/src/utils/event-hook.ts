@@ -20,22 +20,21 @@ export interface BspAppGenContext {
  * Runs the specified command in the context of the generated project, typically for tasks like refreshing or reloading the project in the editor.
  *
  * @param {BspAppGenContext} context - The context containing the project path, post-generation command, and optional VSCode instance.
- * @throws {Error} If the VSCode instance or post-generation command is missing from the context.
  */
 export async function runPostAppGenHook(context: BspAppGenContext): Promise<void> {
     try {
         // Ensure that context has necessary values before proceeding
         if (!context.vscodeInstance) {
-            throw new Error('VSCode instance is missing.');
+            BspAppDownloadLogger.logger?.error(t('error.eventHookErrors.vscodeInstanceMissing'));
         }
-        if (!context.postGenCommand) {
-            throw new Error('Post generation command is missing.');
+        if (!context.postGenCommand || context.postGenCommand.trim() === '') {
+            BspAppDownloadLogger.logger?.error(t('error.eventHookErrors.postGenCommandMissing'));
         }
         // Execute the post-generation command
         await context.vscodeInstance?.commands?.executeCommand?.(context.postGenCommand, {
             fsPath: context.path
         });
     } catch (e) {
-        BspAppDownloadLogger.logger.error(t('error.postGenCommand', { error: e }));
+        BspAppDownloadLogger.logger?.error(t('error.eventHookErrors.commandExecutionFailed', e.message));
     }
 }

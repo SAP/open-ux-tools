@@ -6,6 +6,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
+import type { SystemSelectionAnswerType } from '@sap-ux/odata-service-inquirer';
 
 /**
  * Options for downloading a BSP application.
@@ -84,17 +85,16 @@ export enum PromptNames {
  */
 export interface BspAppDownloadAnswers {
     /** Selected backend system connection details. */
-    [PromptNames.systemSelection]: SystemSelectionAnswers;
+    [PromptNames.systemSelection]: SystemSelectionAnswerType;
     /** Information about the selected application for download. */
     [PromptNames.selectedApp]: AppInfo;
     /** Target folder where the BSP application will be generated. */
     [PromptNames.targetFolder]: string;
 }
 
-
 interface Metadata {
     package: string;
-    masterLanguage: string;
+    masterLanguage?: string;
 }
 
 export interface EntityConfig {
@@ -104,32 +104,32 @@ export interface EntityConfig {
         Name: string;
     };
 }
-  
-interface ServiceBindingDetails extends EntityConfig{
-    name: string;
+
+interface ServiceBindingDetails extends EntityConfig {
+    name?: string;
     serviceName: string;
     serviceVersion: string;
 }
-  
+
 interface ProjectAttribute {
     moduleName: string;
-    applicationTitle: string;
-    template: string;
-    minimumUi5Version: string;
+    applicationTitle?: string;
+    template?: string;
+    minimumUi5Version?: string;
 }
-  
+
 interface DeploymentDetails {
     repositoryName: string;
-    repositoryDescription: string;
+    repositoryDescription?: string;
 }
-  
+
 interface FioriLaunchpadConfiguration {
     semanticObject: string;
     action: string;
     title: string;
-    subtitle: string;
+    subtitle?: string;
 }
-  
+
 export interface AppContentConfig {
     metadata: Metadata;
     serviceBindingDetails: ServiceBindingDetails;
@@ -137,4 +137,3 @@ export interface AppContentConfig {
     deploymentDetails: DeploymentDetails;
     fioriLaunchpadConfiguration: FioriLaunchpadConfiguration;
 }
-  
