@@ -8,7 +8,8 @@ import 'jest-extended';
 import { join } from 'path';
 import yeomanTest from 'yeoman-test';
 import { cleanTestDir, getTestData, ignoreMatcherOpts } from '../test-utils';
-import { EXPECTED_OUTPUT_DIR_NAME, getTestDir, originalCwd, tmpFolder } from './common';
+import { EXPECTED_OUTPUT_DIR_NAME, originalCwd, tmpFolder } from './test-utils';
+import { getTestDir } from '../test-utils';
 
 const testDir: string = getTestDir('headless');
 const fixturesPath = join(__dirname, './fixtures');

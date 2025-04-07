@@ -8,13 +8,13 @@ import cloneDeep from 'lodash/cloneDeep';
 import {
     baseTestProject,
     getExpectedOutputPath,
-    getTestDir,
     originalCwd,
     runWritingPhase,
     tmpFolder,
     v2EntityConfig,
     v2Service
-} from './common';
+} from './test-utils';
+import { getTestDir } from '../test-utils';
 import * as btpUtils from '@sap-ux/btp-utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({

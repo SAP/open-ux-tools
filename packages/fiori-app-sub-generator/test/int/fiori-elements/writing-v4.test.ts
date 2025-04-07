@@ -11,13 +11,13 @@ import { cleanTestDir, getTestData, ignoreMatcherOpts } from '../test-utils';
 import {
     baseTestProject,
     getExpectedOutputPath,
-    getTestDir,
     originalCwd,
     runWritingPhase,
     tmpFolder,
     v4EntityConfig,
     v4Service
-} from './common';
+} from './test-utils';
+import { getTestDir } from '../test-utils';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');

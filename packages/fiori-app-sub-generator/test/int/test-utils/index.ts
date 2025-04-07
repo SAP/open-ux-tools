@@ -15,6 +15,8 @@ import os from 'os';
 import { TestWritingGenerator } from './testGeneratorWriting';
 export { TestWritingGenerator };
 
+const testOutputDir = './test-output/';
+
 export function cleanTestDir(path: string): void {
     console.log('Test path clean', path);
     if (os.platform() === 'win32') {
@@ -61,3 +63,14 @@ export const ignoreMatcherOpts: MatcherIgnore = {
         }
     ]
 };
+
+/**
+ * Sets the output test directory path appending the specified path if provided.
+ * If this function is not called the default test directoty will be used.
+ *
+ * @param testGroup - name of the folder that will be used for testing outputs
+ * @returns the path to the test directory
+ */
+export function getTestDir(testGroup = ''): string {
+    return join(__dirname, '../../', testOutputDir, testGroup);
+}

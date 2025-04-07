@@ -6,26 +6,14 @@ import type { Project, Service, State } from '../../../src/types';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { join } from 'path';
 import yeomanTest from 'yeoman-test';
-import { getTestData, TestWritingGenerator } from '../test-utils';
+import { getTestData, getTestDir, TestWritingGenerator } from '../test-utils';
 
-const GENERATION_TEST_DIR = './test-output/';
 export const EXPECTED_OUTPUT_DIR_NAME = './expected-output';
 
 export const testNameSpace = 'testNameSpace';
 export const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 export const tmpFolder = join(__dirname, '../test-tmp');
 export const testUI5Version = '1.98.0';
-
-/**
- * Sets the output test directory path appending the specified path if provided.
- * If this function is not called the default test directoty will be used.
- *
- * @param testGroup - name of the folder that will be used for testing outputs
- * @returns the path to the test directory
- */
-export function getTestDir(testGroup = ''): string {
-    return join(__dirname, '../../', GENERATION_TEST_DIR, testGroup);
-}
 
 export async function runWritingPhase(
     state: Partial<State>,
