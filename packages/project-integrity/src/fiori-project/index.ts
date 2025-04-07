@@ -1,6 +1,6 @@
 import { existsSync } from 'fs';
 import { join } from 'path';
-import { getCapCustomPaths } from '@sap-ux/project-access';
+import { getCapCustomPaths, getCapModelAndServices } from '@sap-ux/project-access';
 import {
     checkProjectIntegrity,
     disableProjectIntegrity,
@@ -39,6 +39,25 @@ async function getFileList(projectRoot: string): Promise<string[]> {
 }
 
 /**
+ * Retrieves the Core Schema Notation (CSN) content for a given project root.
+ *
+ * This function generates a JSON string containing the namespace and definitions
+ * from the CSN model of the specified project root.
+ *
+ * @param projectRoot - The root directory of the project.
+ * @returns A promise that resolves to a JSON string containing the CSN content,
+ *          including the namespace and structured clone of the definitions.
+ */
+async function getCsnContent(projectRoot: string): Promise<string> {
+    const modelFiles = { srv: join('srv', 'service.cds'), db: join('db', 'schema.cds') };
+    const pathSelection = new Set(Object.keys(modelFiles) as Array<'db' | 'srv'>);
+    const result = await getCapModelAndServices({ projectRoot, pathSelection });
+    const csn = result.model;
+    const data = { namespace: csn.namespace, definitions: structuredClone(csn.definitions) };
+    return JSON.stringify(data);
+}
+
+/**
  * Returns additional string content, like the CAP environment.
  * This content will be stored in the integrity data.
  *
@@ -47,7 +66,8 @@ async function getFileList(projectRoot: string): Promise<string[]> {
  */
 async function getAdditionalStringContent(projectRoot: string): Promise<Content> {
     const capCustomPaths = await getCapCustomPaths(projectRoot);
-    return { capPaths: JSON.stringify(capCustomPaths) };
+    const cnsContent = await getCsnContent(projectRoot);
+    return { capPaths: JSON.stringify(capCustomPaths), csnPath: cnsContent };
 }
 
 /**
@@ -71,7 +91,31 @@ export async function initFioriProject(projectRoot: string): Promise<void> {
 export async function checkFioriProjectIntegrity(projectRoot: string): Promise<CheckIntegrityResult> {
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
     const additionalStringContent = await getAdditionalStringContent(projectRoot);
-    return checkProjectIntegrity(integrityFilePath, additionalStringContent);
+    const checkResult = await checkProjectIntegrity(integrityFilePath, additionalStringContent);
+    /**
+     * 1. if csn integrity is the same, but file integrity is different, then is compatible changes (e.g empty spaces, new lines or comments). Empty different files, add them to equal files and update integrity.
+     * 2. if csn integrity is different, but file integrity is same, then CDS compiler might have produced different CSN. Remove csnPath from different content and add it to equal content. Update integrity.
+     * 3. if csn integrity is different and file integrity is different, then it is un-compatible changes. Report them.
+     */
+    const csnDiff = checkResult.additionalStringContent?.differentContent.find((content) => content.key === 'csnPath');
+    const fileDiff = checkResult.files.differentFiles.length > 0;
+    if (csnDiff === undefined && fileDiff === true) {
+        // case 1
+        checkResult.files.equalFiles.push(...checkResult.files.differentFiles.map((file) => file.filePath));
+        checkResult.files.differentFiles = [];
+        // also update integrity.json file
+    }
+    if (csnDiff !== undefined && fileDiff === false) {
+        // case 2
+        const csnIndex = checkResult.additionalStringContent.differentContent.findIndex(
+            (content) => content.key === 'csnPath'
+        );
+        const [csnContent] = checkResult.additionalStringContent.differentContent.splice(csnIndex, 1);
+        checkResult.additionalStringContent.equalContent.push(csnContent.key);
+        // update csn content
+    }
+    // case 3 or return checkResult of case 1 and 2
+    return checkResult;
 }
 
 /**
