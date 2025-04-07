@@ -85,6 +85,36 @@ describe('Test checkProjectIntegrity()', () => {
             );
         }
     });
+
+    test('Invalid project - file content different and csn difference', async () => {
+        const integrityFilePath = join(
+            __dirname,
+            '../../test-input/invalid-project-csn-and-file-different/integrity.json'
+        );
+        const csnContent = `
+{
+  "namespace": "test",
+  "definitions": {
+    "test.SalesDataChanged": {
+      "kind": "entity",
+      "elements": {}
+    }
+  }
+}`;
+        const result = await checkProjectIntegrity(integrityFilePath, csnContent, {
+            'one': 'value one',
+            'two': 'not value two'
+        });
+        expect(result.files.equalFiles.length).toBe(0);
+        expect(result.files.differentFiles.length).toBe(1);
+        expect(result.files.differentFiles[0].filePath).toContain('good.txt');
+        expect(result.files.differentFiles[0].oldContent).toBe('Just a test file.');
+        expect(result.files.differentFiles[0].newContent).toBe('Just a test file. Content changed.');
+        expect(result.additionalStringContent.equalContent).toContain('one');
+        expect(result.additionalStringContent.differentContent).toStrictEqual([
+            { 'key': 'two', 'newContent': 'not value two', 'oldContent': 'value two' }
+        ]);
+    });
 });
 
 describe('Test updateProjectIntegrity()', () => {
