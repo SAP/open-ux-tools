@@ -230,7 +230,7 @@ export async function enhanceConfigsForDestination(
                 backend.pathReplace = backend.pathReplace ?? '/';
             }
         } else {
-            throw new Error();
+            throw new Error('Destination not found. Please check your configuration or user role assignment.');
         }
     }
 }
