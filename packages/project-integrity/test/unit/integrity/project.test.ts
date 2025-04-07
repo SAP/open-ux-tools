@@ -86,7 +86,7 @@ describe('Test checkProjectIntegrity()', () => {
         }
     });
 
-    test('Invalid project - file content different and csn difference', async () => {
+    test('Invalid project - file content difference and csn difference', async () => {
         const integrityFilePath = join(
             __dirname,
             '../../test-input/invalid-project-csn-and-file-different/integrity.json'
