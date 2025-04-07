@@ -1,4 +1,5 @@
-import { AtoSettings, TenantType } from '@sap-ux/axios-extension';
+import type { AtoSettings } from '@sap-ux/axios-extension';
+import { TenantType } from '@sap-ux/axios-extension';
 import { t } from '../../src/i18n';
 import { getTransportConfigInstance } from '../../src/service-provider-utils';
 import { AbapServiceProviderManager } from '../../src/service-provider-utils/abap-service-provider';
@@ -14,7 +15,6 @@ describe('getTransportConfigInstance', () => {
     it('should return the dummy instance of TransportConfig', async () => {
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: true,
             credentials: {}
         });
         expect(transportConfigResult.transportConfig?.getPackage()).toBe(undefined);
@@ -41,7 +41,6 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
             credentials: {}
         });
 
@@ -69,7 +68,6 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
             credentials: {}
         });
 
@@ -87,7 +85,6 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult2 = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
             credentials: {}
         });
 
@@ -112,7 +109,6 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
             credentials: {}
         });
 
@@ -137,7 +133,6 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
             credentials: {}
         });
         expect(transportConfigResult.transportConfigNeedsCreds).toBe(true);
@@ -156,7 +151,6 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResultWithoutHeaders = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
             credentials: {}
         });
         expect(transportConfigResultWithoutHeaders.transportConfigNeedsCreds).toBe(false);
@@ -175,7 +169,6 @@ describe('getTransportConfigInstance', () => {
 
         const transportConfigResult2 = await getTransportConfigInstance({
             backendTarget: undefined,
-            scp: false,
             credentials: {}
         });
         expect(transportConfigResult2.transportConfigNeedsCreds).toBe(false);

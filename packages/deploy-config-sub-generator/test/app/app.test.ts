@@ -4,7 +4,6 @@ import yeomanTest from 'yeoman-test';
 import * as memfs from 'memfs';
 import hasbin from 'hasbin';
 import { TestFixture } from './fixtures';
-import fs from 'fs';
 import { generatorNamespace, initI18n } from '../../src/utils';
 import { TargetName } from '@sap-ux/deploy-config-generator-shared';
 import { isAppStudio } from '@sap-ux/btp-utils';
@@ -12,6 +11,7 @@ import * as cfInquirer from '@sap-ux/cf-deploy-config-inquirer';
 import * as abapDeploySubGen from '@sap-ux/abap-deploy-config-sub-generator';
 import * as projectAccess from '@sap-ux/project-access';
 import Generator from 'yeoman-generator';
+import type fs from 'fs';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -20,7 +20,9 @@ jest.mock('fs', () => ({
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
