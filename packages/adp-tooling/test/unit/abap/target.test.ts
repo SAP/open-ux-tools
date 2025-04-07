@@ -1,7 +1,7 @@
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 
-import { SourceSystems, getAbapTarget, type RequestOptions } from '../../../src';
+import { SystemLookup, getProviderConfig, type RequestOptions } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -33,14 +33,14 @@ describe('getAbapTarget', () => {
 
     beforeEach(() => {
         jest.clearAllMocks();
-        getSystemByNameSpy = jest.spyOn(SourceSystems.prototype, 'getSystemByName');
+        getSystemByNameSpy = jest.spyOn(SystemLookup.prototype, 'getSystemByName');
     });
 
     it('should return a destination target when in AppStudio', async () => {
         mockIsAppStudio.mockReturnValue(true);
         getSystemByNameSpy.mockResolvedValue(dummyDetails);
 
-        const target = await getAbapTarget(system, logger);
+        const target = await getProviderConfig(system, logger);
 
         expect(target).toEqual({ destination: system });
     });
@@ -50,7 +50,7 @@ describe('getAbapTarget', () => {
         getSystemByNameSpy.mockResolvedValue(dummyDetails);
         const requestOptions: RequestOptions = {};
 
-        const target = await getAbapTarget(system, logger, requestOptions, client);
+        const target = await getProviderConfig(system, logger, requestOptions, client);
 
         expect(target).toEqual({
             client,
@@ -68,6 +68,8 @@ describe('getAbapTarget', () => {
         mockIsAppStudio.mockReturnValue(false);
         getSystemByNameSpy.mockResolvedValue(undefined);
 
-        await expect(getAbapTarget(system, logger)).rejects.toThrow(`No system details found for system: ${system}`);
+        await expect(getProviderConfig(system, logger)).rejects.toThrow(
+            `No system details found for system: ${system}`
+        );
     });
 });

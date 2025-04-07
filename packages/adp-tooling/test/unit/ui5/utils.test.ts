@@ -8,7 +8,7 @@ import {
     addSnapshot,
     parseUI5Version,
     isFeatureSupportedVersion
-} from '../../../src/ui5/utils';
+} from '../../../src/ui5/format';
 
 import { CURRENT_SYSTEM_VERSION, SNAPSHOT_CDN_URL, UI5_CDN_URL } from '../../../src/base/constants';
 

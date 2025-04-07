@@ -93,7 +93,7 @@ export function addSnapshot(version: string, latestVersion: string): string {
 /**
  * Function that parse the UI5 version. Returns NaN for snapshot or snapshot-untested. eturns x.xx for snapshot-x.xx.xx.
  *
- * @param version the UI5 version to parse
+ * @param {string} version the UI5 version to parse
  * @returns The major, the minor and the patch version, e.g. 1.86.11
  */
 export function parseUI5Version(version: string): { major: number; minor: number; patch: number } {

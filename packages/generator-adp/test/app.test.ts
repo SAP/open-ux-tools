@@ -11,7 +11,7 @@ import type { SourceApplication } from '@sap-ux/adp-tooling';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { SourceSystems, UI5VersionInfo, getAbapTarget, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
+import { SystemLookup, UI5VersionInfo, getProviderConfig, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
@@ -49,7 +49,7 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
     loadApps: jest.fn(),
-    getAbapTarget: jest.fn()
+    getProviderConfig: jest.fn()
 }));
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
@@ -116,7 +116,7 @@ jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 const loadAppsMock = loadApps as jest.Mock;
 const execMock = exec as unknown as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const getAbapTargetMock = getAbapTarget as jest.Mock;
+const getProviderConfigMock = getProviderConfig as jest.Mock;
 const sendTelemetryMock = sendTelemetry as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
@@ -131,8 +131,8 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         loadAppsMock.mockResolvedValue(apps);
         jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
-        jest.spyOn(SourceSystems.prototype, 'getSystems').mockResolvedValue(endpoints);
-        jest.spyOn(SourceSystems.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
+        jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
+        jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
         getConfiguredProviderMock.mockResolvedValue(dummyProvider);
         execMock.mockImplementation((_: string, callback: Function) => {
             callback(null, { stdout: 'ok', stderr: '' });
@@ -142,7 +142,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             getVersionToBeUsed: jest.fn().mockReturnValue('1.135.0')
         } as unknown as UI5VersionInfo);
         getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
-        getAbapTargetMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
+        getProviderConfigMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
         isAbapCloudMock.mockResolvedValue(false);
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
 

@@ -4,7 +4,7 @@ import type { AxiosError } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { ConfigAnswers, SourceApplication, SourceSystems } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, SourceApplication, SystemLookup } from '@sap-ux/adp-tooling';
 import {
     FlexLayer,
     SourceManifest,
@@ -53,13 +53,13 @@ const provider = {
     isAbapCloud: isAbapCloudMock
 } as unknown as AbapServiceProvider;
 
-const sourceSystems: SourceSystems = {
+const sourceSystems: SystemLookup = {
     getSystems: jest.fn().mockResolvedValue([
         { Name: 'SystemB', Client: '200', Url: 'http://systemb.com', Authentication: 'Basic' },
         { Name: 'systemA', Client: '010', Url: 'http://systema.com', Authentication: 'NoAuthentication' }
     ]),
     getSystemRequiresAuth: jest.fn().mockResolvedValue(false)
-} as unknown as SourceSystems;
+} as unknown as SystemLookup;
 
 const dummyApps = [
     { id: 'app1', title: 'App One', ach: '', bspName: '', bspUrl: '', fileType: '', registrationIds: [] },

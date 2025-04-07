@@ -6,7 +6,7 @@ import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { SourceSystems, generate, getConfig } from '@sap-ux/adp-tooling';
+import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
     sendTelemetry,
@@ -60,9 +60,9 @@ export default class extends Generator {
      */
     private targetFolder: string;
     /**
-     * EndpointsManager instance for managing system endpoints.
+     * SystemLookup instance for managing system endpoints.
      */
-    private sourceSystems: SourceSystems;
+    private systemLookup: SystemLookup;
     /**
      * Instance of the configuration prompter class.
      */
@@ -94,7 +94,7 @@ export default class extends Generator {
 
         this.layer = await getFlexLayer();
 
-        this.sourceSystems = new SourceSystems(this.toolsLogger);
+        this.systemLookup = new SystemLookup(this.toolsLogger);
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -107,7 +107,7 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        this.prompter = new ConfigPrompter(this.sourceSystems, this.layer, this.toolsLogger);
+        this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
         const isCLI = getHostEnvironment() === hostEnvironment.cli;
 
         const configQuestions = this.prompter.getPrompts({

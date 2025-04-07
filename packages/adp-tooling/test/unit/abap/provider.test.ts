@@ -3,7 +3,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { getAbapTarget, getConfiguredProvider } from '../../../src';
+import { getProviderConfig, getConfiguredProvider } from '../../../src';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -15,8 +15,8 @@ jest.mock('@sap-ux/system-access', () => ({
     createAbapServiceProvider: jest.fn()
 }));
 
-jest.mock('../../../src/abap/target.ts', () => ({
-    getAbapTarget: jest.fn()
+jest.mock('../../../src/abap/config.ts', () => ({
+    getProviderConfig: jest.fn()
 }));
 
 const logger = {
@@ -29,7 +29,7 @@ const logger = {
 const dummyProvider = {} as unknown as AbapServiceProvider;
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const getAbapTargetMock = getAbapTarget as jest.Mock;
+const getProviderConfigMock = getProviderConfig as jest.Mock;
 const createProviderMock = createAbapServiceProvider as jest.Mock;
 
 const system = 'SYS_010';
@@ -41,7 +41,7 @@ describe('getConfiguredProvider', () => {
     beforeEach(() => {
         mockIsAppStudio.mockReturnValue(false);
         createProviderMock.mockResolvedValue(dummyProvider);
-        getAbapTargetMock.mockResolvedValue({ system, client });
+        getProviderConfigMock.mockResolvedValue({ system, client });
     });
 
     afterEach(() => {

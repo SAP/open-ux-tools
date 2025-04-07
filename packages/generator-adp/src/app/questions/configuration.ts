@@ -17,7 +17,7 @@ import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { ConfigAnswers, FlexUISupportedSystem, SourceApplication, SourceSystems } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexUISupportedSystem, SourceApplication, SystemLookup } from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
@@ -126,11 +126,11 @@ export class ConfigPrompter {
     /**
      * Creates an instance of ConfigPrompter.
      *
-     * @param {SourceSystems} sourceSystems - The target system class to retrieve system endpoints.
+     * @param {SystemLookup} systemLookup - The source system class to retrieve system endpoints.
      * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
      * @param {ToolsLogger} logger - Instance of the logger.
      */
-    constructor(private readonly sourceSystems: SourceSystems, layer: FlexLayer, private readonly logger: ToolsLogger) {
+    constructor(private readonly systemLookup: SystemLookup, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
         this.ui5Info = UI5VersionInfo.getInstance(layer);
     }
@@ -176,7 +176,7 @@ export class ConfigPrompter {
             name: configPromptNames.system,
             message: t('prompts.systemLabel'),
             choices: async () => {
-                const systems = await this.sourceSystems.getSystems();
+                const systems = await this.systemLookup.getSystems();
                 return getEndpointNames(systems);
             },
             guiOptions: {
@@ -394,7 +394,7 @@ export class ConfigPrompter {
         try {
             this.targetApps = [];
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            this.isAuthRequired = await this.sourceSystems.getSystemRequiresAuth(system);
+            this.isAuthRequired = await this.systemLookup.getSystemRequiresAuth(system);
             if (!this.isAuthRequired) {
                 const validationResult = await this.handleSystemDataValidation();
 

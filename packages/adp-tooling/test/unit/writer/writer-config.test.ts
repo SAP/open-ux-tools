@@ -1,11 +1,11 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { FlexLayer, UI5VersionInfo, getAbapTarget, getConfig } from '../../../src';
+import { FlexLayer, UI5VersionInfo, getProviderConfig, getConfig } from '../../../src';
 import type { ConfigAnswers, PackageJson, SourceApplication } from '../../../src';
 
-jest.mock('../../../src/abap/target.ts', () => ({
-    getAbapTarget: jest.fn()
+jest.mock('../../../src/abap/config.ts', () => ({
+    getProviderConfig: jest.fn()
 }));
 
 const systemDetails = {
@@ -20,7 +20,7 @@ const mockAbapProvider = {
     isAbapCloud: isAbapCloudMock
 } as unknown as AbapServiceProvider;
 
-const getAbapTargetMock = getAbapTarget as jest.Mock;
+const getProviderConfigMock = getProviderConfig as jest.Mock;
 
 const configAnswers: ConfigAnswers = {
     application: { id: '1' } as SourceApplication,
@@ -35,7 +35,7 @@ const defaults = {
 
 describe('getConfig', () => {
     beforeEach(() => {
-        getAbapTargetMock.mockResolvedValue(systemDetails);
+        getProviderConfigMock.mockResolvedValue(systemDetails);
     });
 
     it('returns the correct config with provided parameters when system is cloud ready', async () => {

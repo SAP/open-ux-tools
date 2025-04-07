@@ -40,7 +40,7 @@ export const transformBackendSystem = (system: BackendSystem): Endpoint => ({
  * Service class to manage and retrieve information about system systems,
  * including their names, authentication requirements, and specific details.
  */
-export class SourceSystems {
+export class SystemLookup {
     private systems: Endpoint[];
 
     /**

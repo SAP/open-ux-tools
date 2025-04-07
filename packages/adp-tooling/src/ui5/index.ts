@@ -1,3 +1,3 @@
-export * from './ui5-version-info';
-export * from './utils';
-export * from './fetchers';
+export * from './version-info';
+export * from './format';
+export * from './fetch';

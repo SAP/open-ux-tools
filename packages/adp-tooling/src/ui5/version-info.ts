@@ -1,7 +1,7 @@
 import { FlexLayer } from '../types';
 import type { UI5Version } from '../types';
-import { fetchInternalVersions, fetchPublicVersions } from './fetchers';
-import { isFeatureSupportedVersion, removeTimestampFromVersion, addSnapshot, buildSystemVersionLabel } from './utils';
+import { fetchInternalVersions, fetchPublicVersions } from './fetch';
+import { isFeatureSupportedVersion, removeTimestampFromVersion, addSnapshot, buildSystemVersionLabel } from './format';
 import { CURRENT_SYSTEM_VERSION, LATEST_VERSION, SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../base/constants';
 
 interface VersionLabels {

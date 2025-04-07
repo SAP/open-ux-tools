@@ -5,16 +5,16 @@ import {
     isFeatureSupportedVersion,
     removeTimestampFromVersion
 } from '../../../src';
-import { UI5VersionInfo } from '../../../src/ui5/ui5-version-info';
-import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetchers';
+import { UI5VersionInfo } from '../../../src/ui5/version-info';
+import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetch';
 import { SNAPSHOT_UNTESTED_VERSION, SNAPSHOT_VERSION } from '../../../src/base/constants';
 
-jest.mock('../../../src/ui5/fetchers', () => ({
+jest.mock('../../../src/ui5/fetch', () => ({
     fetchPublicVersions: jest.fn(),
     fetchInternalVersions: jest.fn()
 }));
 
-jest.mock('../../../src/ui5/utils', () => ({
+jest.mock('../../../src/ui5/format', () => ({
     removeTimestampFromVersion: jest.fn(),
     addSnapshot: jest.fn(),
     buildSystemVersionLabel: jest.fn(),

@@ -2,7 +2,7 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer } from '../types';
-import { getAbapTarget } from '../abap';
+import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
 import type { AdpWriterConfig, ConfigAnswers, PackageJson } from '../types';
@@ -58,7 +58,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
-    const target = await getAbapTarget(configAnswers.system, logger);
+    const target = await getProviderConfig(configAnswers.system, logger);
     const customConfig = getCustomConfig(operationsType, packageJson);
 
     const isCloudProject = await provider.isAbapCloud();

@@ -1,4 +1,4 @@
-import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetchers';
+import { fetchPublicVersions, fetchInternalVersions } from '../../../src/ui5/fetch';
 import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL } from '../../../src/base/constants';
 
 import { fetchMock } from '../../__mock__/global';

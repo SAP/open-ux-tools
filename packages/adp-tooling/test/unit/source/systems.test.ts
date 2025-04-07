@@ -4,7 +4,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import { type Destination, isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 
-import { type Endpoint, getEndpointNames, SourceSystems, transformBackendSystem } from '../../../src';
+import { type Endpoint, getEndpointNames, SystemLookup, transformBackendSystem } from '../../../src';
 
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),
@@ -78,12 +78,12 @@ describe('getEndpointNames', () => {
     });
 });
 
-describe('SourceSystems', () => {
-    let sourceSystems: SourceSystems;
+describe('SystemLookup', () => {
+    let sourceSystems: SystemLookup;
 
     beforeEach(() => {
         jest.clearAllMocks();
-        sourceSystems = new SourceSystems(logger);
+        sourceSystems = new SystemLookup(logger);
     });
 
     describe('getSystems', () => {
