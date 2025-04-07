@@ -136,7 +136,7 @@ export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComp
 export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<Promise<void>> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
-        const resources = await getTextBundle();
+    const resources = await getTextBundle();
     const isReuseComponentChecker = await getReuseComponentChecker(ui5VersionInfo);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
@@ -151,19 +151,14 @@ export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[],
     } else {
         const addFragmentService = (await import('open/ux/preview/client/adp/add-fragment')).default;
         new addFragmentService(rta).init();
-    }  
-
-    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 135 })) {
-        contextMenu.addMenuItem({
-            id: 'EXTEND_CONTROLLER',
-            text: (overlay: ElementOverlay) => getExtendControllerItemText(overlay, isReuseComponentChecker, isCloud, resources),
-            handler: async (overlays: UI5Element[]) =>
-                await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
-            icon: 'sap-icon://create-form',
-            enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentChecker, isCloud)
-        });
-    } else {
-        const extendControllerService = (await import('open/ux/preview/client/adp/extend-controller')).default;
-        new extendControllerService(rta).init();
     }
+
+    contextMenu.addMenuItem({
+        id: 'EXTEND_CONTROLLER',
+        text: (overlay: ElementOverlay) => getExtendControllerItemText(overlay, isReuseComponentChecker, isCloud, resources),
+        handler: async (overlays: UI5Element[]) =>
+            await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
+        icon: 'sap-icon://create-form',
+        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentChecker, isCloud)
+    });
 };
