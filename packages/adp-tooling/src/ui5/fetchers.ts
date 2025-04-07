@@ -12,7 +12,7 @@ export async function fetchPublicVersions(): Promise<UI5Version> {
     if (!response.ok) {
         throw new Error(`Failed to fetch public UI5 versions. Status: ${response.status}`);
     }
-    return await response.json();
+    return response.json();
 }
 
 /**
