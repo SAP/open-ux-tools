@@ -20,7 +20,8 @@ function formatProxyForLogging(proxy: string | undefined): string | undefined {
             proxy = proxy.replace(proxy.slice(forwardSlashIndex + 2, atIndex), '***:***');
         }
     }
-    return proxy ?? 'none';
+    // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
+    return proxy || 'none';
 }
 
 /**
