@@ -89,7 +89,7 @@ describe('CF Writer CAP', () => {
                 expect.objectContaining({ cwd: expect.stringContaining(mtaId) })
             );
             expect(commandRunnerMock.mock.calls[1][0]).toStrictEqual('npm.cmd'); // Just always test for windows!
-            expect(commandRunnerMock.mock.calls[1][1]).toStrictEqual(['update', '--package-lock-only']);
+            expect(commandRunnerMock.mock.calls[1][1]).toStrictEqual(['install', '--ignore-engines']);
             if (RouterModuleType.Standard === routerType) {
                 expect(localFs.read(join(mtaPath, `router`, 'package.json'))).toMatchSnapshot();
                 expect(localFs.read(join(mtaPath, `router`, 'xs-app.json'))).toMatchSnapshot();

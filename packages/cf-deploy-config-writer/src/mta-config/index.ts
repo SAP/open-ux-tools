@@ -157,7 +157,8 @@ export async function createCAPMTA(
     await runCommand(cwd, CDSExecutable, cdsParams, t('error.errorGeneratingMtaYaml'));
     // Ensure the package-lock is updated otherwise mta build will fail
     const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    await runCommand(cwd, cmd, ['update', '--package-lock-only'], t('error.errorInstallingNodeModules'));
+    // Install latest dev dependencies, if any, added by the CF writer
+    await runCommand(cwd, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
     LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
 }
 
