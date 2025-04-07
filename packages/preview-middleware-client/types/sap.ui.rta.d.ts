@@ -93,12 +93,12 @@ declare module 'sap/ui/rta/plugin/AddXMLPlugin' {
     }
 }
 
-declare module 'sap/ui/rta/plugin/ExtendControllerCommand' {
+declare module 'sap/ui/rta/plugin/ExtendControllerPlugin' {
     import type CommandFactory from 'sap/ui/rta/command/CommandFactory';
 
     interface Arguments {
         commandFactory: CommandFactory;
-        fragmentHandler: (overlay: UI5Element, extensionPointInfo: uknown) => Promise<void | object>;
+        handlerFunction: (overlay: UI5Element, extensionPointInfo: uknown) => Promise<void | object>;
     }
 
     export default class AddXMLAtExtensionPoint {

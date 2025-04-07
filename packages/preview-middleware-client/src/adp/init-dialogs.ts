@@ -121,12 +121,17 @@ export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[],
         new addFragmentService(rta).init();
     }  
 
-    contextMenu.addMenuItem({
-        id: 'EXTEND_CONTROLLER',
-        text: 'Extend With Controller',
-        handler: async (overlays: UI5Element[]) =>
-            await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
-        icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, ui5VersionInfo, isCloud)
-    });
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 135 })) {
+        contextMenu.addMenuItem({
+            id: 'EXTEND_CONTROLLER',
+            text: 'Extend With Controller',
+            handler: async (overlays: UI5Element[]) =>
+                await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
+            icon: 'sap-icon://create-form',
+            enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, ui5VersionInfo, isCloud)
+        });
+    } else {
+        const extendControllerService = (await import('open/ux/preview/client/adp/extend-controller')).default;
+        new extendControllerService(rta).init();
+    }
 };

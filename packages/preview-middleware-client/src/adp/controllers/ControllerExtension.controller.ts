@@ -147,9 +147,8 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
             if(this.data) {
                 this.resolveModifiedValue(controllerRef);
-            } else {
-                await this.createNewController(controllerName, controllerRef);
-            }
+            } 
+            await this.createNewController(controllerName, controllerRef);
         } else {
             const controllerPath = this.model.getProperty('/controllerPath');
             window.open(`vscode://file${controllerPath}`);
