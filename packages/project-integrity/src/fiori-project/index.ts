@@ -102,7 +102,7 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
      */
     const csnDiff = checkResult.additionalStringContent?.differentContent.some((content) => content.key === 'csn');
     const fileDiff = checkResult.files.differentFiles.some((file) => file.filePath.endsWith('.cds'));
-    if (csnDiff === undefined && fileDiff === true) {
+    if (csnDiff === false && fileDiff === true) {
         // case 1
         checkResult.files.equalFiles.push(...checkResult.files.differentFiles.map((file) => file.filePath));
         // also update integrity.json file
@@ -124,7 +124,7 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
         // remove cds files from different files
         checkResult.files.differentFiles = checkResult.files.differentFiles.filter((file) => !file.filePath.endsWith('.cds'));
     }
-    if (csnDiff !== undefined && fileDiff === false) {
+    if (csnDiff === true && fileDiff === false) {
         // case 2
         const csnIndex = checkResult.additionalStringContent.differentContent.findIndex(
             (content) => content.key === 'csn'
