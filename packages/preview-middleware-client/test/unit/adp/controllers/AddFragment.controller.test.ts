@@ -1697,7 +1697,8 @@ describe('AddFragment', () => {
                 fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
                 fragmentPath: `fragments/test.fragment.xml`,
                 index: 0,
-                targetAggregation: 'content'
+                targetAggregation: 'content',
+                templateName: ''
             });
         });
     });

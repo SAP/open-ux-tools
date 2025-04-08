@@ -148,16 +148,17 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
         const fragmentName = this.model.getProperty('/newFragmentName');
         const index = this.model.getProperty('/selectedIndex');
-        const targetAggregation = this.model.getProperty('/selectedAggregation/value');
+        const targetAggregation = this.model.getProperty('/selectedAggregation/value') ?? 'content';
+
+        const templateName = this.getFragmentTemplateName(targetAggregation);
 
         const modifiedValue = {
             fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
-            targetAggregation: targetAggregation ?? 'content'
+            targetAggregation: targetAggregation ?? 'content',
+            templateName
         };
-
-        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
 
         if(this.data){
             this.data.deferred.resolve(modifiedValue);
