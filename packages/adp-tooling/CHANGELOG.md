@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.23
+
+### Patch Changes
+
+-   4f0eaae: feat: Enhance system and app prompt validations
+
 ## 0.13.22
 
 ### Patch Changes
