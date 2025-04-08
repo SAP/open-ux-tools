@@ -60,13 +60,14 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    public readonly data: AddFragmentData;
+    public readonly data?: AddFragmentData;
 
     constructor(
         name: string,
         overlays: UI5Element,
         rta: RuntimeAuthoring,
-        readonly options: AddFragmentOptions, data: AddFragmentData,
+        readonly options: AddFragmentOptions,
+        data?: AddFragmentData,
         telemetryData?: QuickActionTelemetryData
     ) {
         super(name, telemetryData);
@@ -159,7 +160,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
         const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
 
         if(this.data){
-            this.resolveModifiedValue(modifiedValue);
+            this.data.deferred.resolve(modifiedValue);
         } else {
             await this.createFragmentChange(modifiedValue, templateName);
         }
@@ -329,16 +330,5 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             }
         }
         return false;
-    }
-
-    /**
-     * Resolves deferred value for plugin scenario
-     *
-     * @param modifiedValue - modified value
-     */
-    private resolveModifiedValue(
-        modifiedValue: DeferredXmlFragmentData
-    ): void {
-        this.data.deferred.resolve(modifiedValue);
     }
 }
