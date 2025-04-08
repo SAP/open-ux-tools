@@ -7,16 +7,21 @@ import type { BspAppDownloadQuestions } from '../src/app/types';
 import { PromptNames } from '../src/app/types';
 import { readManifest } from '../src/utils/file-helpers';
 import fs from 'fs';
+import { TestFixture } from './fixtures';
 import { getAppConfig } from '../src/app/config';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { adtSourceTemplateId } from '../src/utils/constants';
+import { removeSync } from 'fs-extra';
 
 jest.mock('../src/utils/file-helpers');
 jest.mock('../src/app/config');
 
 describe('BSP App Download', () => {
+	const testFixture = new TestFixture();
 	const bspAppDownloadGenPath = join(__dirname, '../src/app/index.ts');
+	const testOutputDir = join(__dirname, 'test-output');
+	const curTestOutPath = join(testOutputDir, 'app-1');
     afterEach(() => {
 		jest.clearAllMocks();
 		jest.restoreAllMocks();
@@ -54,6 +59,10 @@ describe('BSP App Download', () => {
 		);
 	});
 
+	beforeAll(() => {
+        removeSync(curTestOutPath); // even for in memory
+    });
+
     test('run bsp app download', async () => {
 
 		const metadata = fs.readFileSync(join(__dirname, 'fixtures', 'metadata.xml'), 'utf8');
@@ -63,6 +72,8 @@ describe('BSP App Download', () => {
 		// 	showError: jest.fn(),
 		// 	showInformation: jest.fn()
 		// };
+		// const testPath = join(curTestOutPath, name);
+        // const fs = await generate(testPath, config);
 		const appConfig: FioriElementsApp<LROPSettings> = {
             app: {
                 id: 'app-1',
@@ -140,5 +151,3 @@ describe('BSP App Download', () => {
 		})
     });
 });
-
-//index.ts                     |   58.02 |    32.25 |   33.33 |   58.02 | 120-125,155-320    

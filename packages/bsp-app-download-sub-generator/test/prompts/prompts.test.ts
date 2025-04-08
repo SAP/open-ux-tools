@@ -3,9 +3,9 @@ import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import { fetchAppListForSelectedSystem, formatAppChoices } from '../../src/prompts/prompt-helpers';
 import { PromptNames } from '../../src/app/types';
 import type { BspAppDownloadAnswers, BspAppDownloadQuestions } from '../../src/app/types';
-import type { Logger } from '@sap-ux/logger';
 import { join } from 'path';
 import { t } from '../../src/utils/i18n';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
@@ -22,25 +22,30 @@ jest.mock('../../src/prompts/prompt-helpers', () => ({
 }));
 
 describe('getPrompts', () => {
-    let mockLogger: Logger;
     const appRootPath = join('/mock/path');
+    const mockServiceProvider = {
+        getAppIndex: jest.fn().mockReturnValue({
+            search: jest.fn().mockResolvedValue([{ id: 'app1' }, { id: 'app2' }])
+        })
+    } as unknown as AbapServiceProvider;
     const mockAnswers = {
         selectedApp: { appId: 'app1' }
     } as unknown as BspAppDownloadAnswers;
     const mockAppList = [{ appId: 'app1', name: 'Test App' }];
 
     beforeEach(() => {
-        mockLogger = { error: jest.fn(), info: jest.fn(), warn: jest.fn() } as unknown as Logger;
         (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
             prompts: [{ type: 'input', name: 'system' }],
-            answers: { connectedSystem: { serviceProvider: {} } }
+            answers: {
+                connectedSystem: { serviceProvider: mockServiceProvider } 
+            }
         });
         (fetchAppListForSelectedSystem as jest.Mock).mockResolvedValue([{ appId: 'app1', name: 'Test App' }]);
         (formatAppChoices as jest.Mock).mockReturnValue(mockAppList);
     });
 
     it('should return system questions, app selection, and target folder prompts', async () => {
-        const prompts = await getPrompts(appRootPath, mockLogger);
+        const prompts = await getPrompts(appRootPath);
         expect(prompts.length).toBeGreaterThanOrEqual(2);
 
         // system prompts
@@ -53,7 +58,9 @@ describe('getPrompts', () => {
         const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp) as BspAppDownloadQuestions;
         expect(appSelectionPrompt).toBeDefined();
         if (typeof appSelectionPrompt?.when === 'function') {
-            await expect(appSelectionPrompt.when({ system: 'test' } as unknown as BspAppDownloadAnswers)).resolves.toBe(true);
+            await expect(appSelectionPrompt.when({ [PromptNames.systemSelection]: {
+                connectedSystem: { serviceProvider: mockServiceProvider } 
+            } } as unknown as BspAppDownloadAnswers)).resolves.toBe(true);
         };
         if (appSelectionPrompt?.type === 'list') {
             const listPrompt = appSelectionPrompt as unknown as { choices: () => { name: string; value: string }[] };
@@ -70,7 +77,7 @@ describe('getPrompts', () => {
     it('should handle no apps available scenario', async () => {
         (fetchAppListForSelectedSystem as jest.Mock).mockResolvedValue([]);
 
-        const prompts = await getPrompts(appRootPath, mockLogger);
+        const prompts = await getPrompts(appRootPath);
 
         const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
         expect(appSelectionPrompt).toBeDefined();

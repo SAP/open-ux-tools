@@ -2,7 +2,7 @@ import { PromptNames, type BspAppDownloadAnswers } from '../app/types';
 
 // Title and description for the generator
 export const generatorTitle = 'Basic App Download from BSP';
-export const generatorDescription = 'Download a basic LROP app from a BSP reapository';
+export const generatorDescription = 'Download a basic LROP app from a BSP repository';
 
 // Name of the generator used for Fiori app download
 export const generatorName = '@sap-ux/bsp-app-download-sub-generator';
@@ -11,13 +11,7 @@ export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
 
 // Default initial answers to use as a fallback.
 export const defaultAnswers: BspAppDownloadAnswers = {
-    [PromptNames.systemSelection]: {
-        system: {
-            name: '',
-            url: ''
-        },
-        type: 'backendSystem'
-    },
+    [PromptNames.systemSelection]: {},
     [PromptNames.selectedApp]: {
         appId: '',
         title: '',

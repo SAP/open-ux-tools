@@ -9,8 +9,6 @@ import { getLatestUI5Version } from '@sap-ux/ui5-info';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { adtSourceTemplateId } from '../utils/constants';
 import { PromptState } from '../prompts/prompt-state';
-import { join } from 'path';
-import { validateAppContentJsonFile } from '../utils/validate-app-content-json';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import BspAppDownloadLogger from '../utils/logger';
 
@@ -48,7 +46,7 @@ const fetchServiceMetadata = async (provider: AbapServiceProvider, serviceUrl: s
     try {
         return await provider.service(serviceUrl).metadata();
     } catch (err) {
-        BspAppDownloadLogger.logger?.error(t('error.metadatafetchError', { error: err.message }));
+        BspAppDownloadLogger.logger?.error(t('error.metadataFetchError', { error: err.message }));
     }
 };
 
@@ -84,7 +82,6 @@ function getEntityConfig(appContentJson: AppContentConfig): EntityConfig {
  * @param {string} extractedProjectPath - Path where the app files are extracted.
  * @param appContentJson
  * @param {Editor} fs - The file system editor to manipulate project files.
- * @param {Logger} [log] - An optional logger instance for error logging.
  * @returns {Promise<FioriElementsApp<LROPSettings>>} - A promise resolving to the generated app configuration.
  * @throws {Error} - Throws an error if there are issues generating the configuration.
  */
@@ -95,13 +92,10 @@ export async function getAppConfig(
     fs: Editor
 ): Promise<FioriElementsApp<LROPSettings>> {
     try {
-        validateAppContentJsonFile(appContentJson);
         const manifest = readManifest(extractedProjectPath, fs);
-
         const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
-
         if (!manifest?.['sap.app']?.dataSources) {
-            throw Error(t('error.dataSourcesNotFound'));
+            BspAppDownloadLogger.logger?.error(t('error.dataSourcesNotFound'));
         }
 
         const odataVersion =
@@ -112,9 +106,8 @@ export async function getAppConfig(
         // Fetch metadata for the service
         const metadata = await fetchServiceMetadata(
             serviceProvider,
-            manifest?.['sap.app']?.dataSources?.mainService.uri
+            manifest?.['sap.app']?.dataSources?.mainService.uri ?? ''
         );
-
         const appConfig: FioriElementsApp<LROPSettings> = {
             app: {
                 id: app.appId,
@@ -123,8 +116,7 @@ export async function getAppConfig(
                 sourceTemplate: {
                     id: adtSourceTemplateId
                 },
-                projectType: 'EDMXBackend',
-                flpAppId: `${app.appId.replace(/[-_.]/g, '')}-tile` // todo: check if flpAppId is correct
+                projectType: 'EDMXBackend'
             },
             package: {
                 name: app.appId,

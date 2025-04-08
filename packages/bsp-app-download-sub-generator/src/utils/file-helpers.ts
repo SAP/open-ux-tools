@@ -30,6 +30,7 @@ export function readManifest(extractedProjectPath: string, fs: Editor): Manifest
     return manifest;
 }
 
+
 /**
  * Replaces the specified files in the `webapp` directory with the corresponding files from the `extractedPath`.
  *
@@ -67,3 +68,6 @@ export async function replaceWebappFiles(
         BspAppDownloadLogger.logger?.error(t('error.replaceWebappFilesError', { error }));
     }
 }
+
+
+

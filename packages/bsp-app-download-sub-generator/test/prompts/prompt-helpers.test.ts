@@ -1,7 +1,6 @@
 import { fetchAppListForSelectedSystem, formatAppChoices, getYUIDetails } from '../../src/prompts/prompt-helpers';
 import { PromptNames, BspAppDownloadAnswers, AppItem } from '../../src/app/types';
 import { PromptState } from '../../src/prompts/prompt-state';
-import type { Logger } from '@sap-ux/logger';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import { generatorTitle, generatorDescription } from '../../src/utils/constants';
 import { t } from '../../src/utils/i18n';   
@@ -20,20 +19,11 @@ describe('fetchAppListForSelectedSystem', () => {
         })
     } as unknown as AbapServiceProvider;
 
-    const mockLogger = {
-        error: jest.fn()
-    } as unknown as Logger;
-
     const mockAnswers: BspAppDownloadAnswers = {
         [PromptNames.systemSelection]: {
-            system: {
-                name: 'mockSystemName',
-                url: 'mockUrl',
-                client: 'mockClient',
-                userDisplayName: 'mockUserDisplayName',
-                authenticationType: 'basic'
-            }, 
-            type: 'backendSystem'
+            connectedSystem: {
+                serviceProvider: mockServiceProvider
+            }
         },
         [PromptNames.selectedApp]: {
             appId: 'mockAppId',
@@ -46,7 +36,7 @@ describe('fetchAppListForSelectedSystem', () => {
     };
 
     it('should fetch the application list when systemSelection and serviceProvider are provided', async () => {
-        const result = await fetchAppListForSelectedSystem(mockAnswers, mockServiceProvider, mockLogger);
+        const result = await fetchAppListForSelectedSystem(mockServiceProvider, mockAnswers[PromptNames.selectedApp].appId);
 
         expect(mockServiceProvider.getAppIndex().search).toHaveBeenCalledWith(
             expect.anything(),
@@ -58,21 +48,16 @@ describe('fetchAppListForSelectedSystem', () => {
         });
     });
 
-    it('should return an empty array when systemSelection is not provided', async () => {
-        const result = await fetchAppListForSelectedSystem({} as BspAppDownloadAnswers, mockServiceProvider, mockLogger);
-        expect(result).toEqual([]);
-    });
-
     it('should return an empty array when serviceProvider is not provided', async () => {
-        const result = await fetchAppListForSelectedSystem(mockAnswers, undefined, mockLogger);
+        const result = await fetchAppListForSelectedSystem(undefined as unknown as AbapServiceProvider);
         expect(result).toEqual([]);
     });
 
     it('should log an error if getAppList throws an error', async () => {
         const error = new Error('Mock error');
         mockServiceProvider.getAppIndex().search = jest.fn().mockRejectedValue(error);
-        const result = await fetchAppListForSelectedSystem(mockAnswers, mockServiceProvider, mockLogger);
-        expect(mockLogger.error).toHaveBeenCalledWith(t('error.applicationListFetchError', { error: error.message }));
+        const result = await fetchAppListForSelectedSystem(mockServiceProvider, mockAnswers[PromptNames.selectedApp].appId);
+        expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.applicationListFetchError', { error: error.message }));
         expect(result).toEqual([]);
     });
 });

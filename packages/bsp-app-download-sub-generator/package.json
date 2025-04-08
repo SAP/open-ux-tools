@@ -65,6 +65,8 @@
         "@types/inquirer-autocomplete-prompt": "2.0.1",
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/nodejs-utils": "workspace:*",
+        "@types/fs-extra": "9.0.13",
+        "fs-extra": "10.0.0",
         "@sap-ux/store": "workspace:*",
         "@vscode-logging/logger": "2.0.0",
         "@types/adm-zip": "0.5.5",

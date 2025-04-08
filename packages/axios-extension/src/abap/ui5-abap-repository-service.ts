@@ -142,6 +142,21 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
+     * 
+     * @param str string to check
+     * @returns true if the string is base64 encoded, false otherwise
+     */
+    private isBase64Encoded(str: string): boolean {
+        try {
+            // Decode the string and re-encode it to verify integrity
+            return Buffer.from(str, 'base64').toString('base64') === str.trim();
+        } catch (e) {
+            // If decoding fails, it's not valid Base64
+            return false;
+        }
+    }
+
+    /**
      * Get the application files as zip archive. This will only work on ABAP systems 2308 or newer.
      *
      * @param app application id (BSP application name)
@@ -156,7 +171,9 @@ export class Ui5AbapRepositoryService extends ODataService {
                 }
             });
             const data = response.odata();
-            return data.ZipArchive ? Buffer.from(data.ZipArchive, 'base64') : undefined;
+            return this.isBase64Encoded(data.ZipArchive)
+                ? Buffer.from(data.ZipArchive, 'base64')
+                : Buffer.from(data.ZipArchive);
         } catch (error) {
             this.log.debug(`Retrieving application ${app}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {

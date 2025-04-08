@@ -1,7 +1,6 @@
 import { generatorTitle, generatorDescription } from '../utils/constants';
 import { appListSearchParams, appListResultFields } from '../utils/constants';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import type { Logger } from '@sap-ux/logger';
 import type { AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
 import { PromptState } from './prompt-state';
@@ -24,6 +23,33 @@ export function getYUIDetails(): { name: string; description: string }[] {
 }
 
 /**
+ * Returns the prompt details for the selected application.
+ *
+ * @param {AppItem} app - The application item to extract details from.
+ * @returns { name: string; value: AppInfo } The extracted details including name and value.
+ */
+export const extractAppData = (app: AppItem): { name: string; value: AppInfo } => {
+    // cast to string because TypeScript doesn't automatically know at the point that these fields are defined
+    // after filtering out invalid apps.
+    const id = app['sap.app/id'] as string;
+    const title = app['sap.app/title'] as string;
+    const description = (app['sap.app/description'] ?? '') as string;
+    const repoName = app.repoName as string;
+    const url = app.url as string;
+
+    return {
+        name: id,
+        value: {
+            appId: id,
+            title,
+            description,
+            repoName,
+            url
+        }
+    };
+};
+
+/**
  * Formats the application list into selectable choices.
  *
  * @param {AppIndex} appList - List of applications retrieved from the system.
@@ -38,40 +64,24 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
             }
             return hasRequiredFields;
         })
-        .map((app) => {
-            // cast to string because TypeScript doesn't automatically know at the point that these fields are defined
-            // after filtering out invalid apps.
-            const id = app['sap.app/id'] as string;
-            const title = app['sap.app/title'] as string;
-            const description = (app['sap.app/description'] ?? '') as string;
-            const repoName = app.repoName as string;
-            const url = app.url as string;
-
-            return {
-                name: id,
-                value: {
-                    appId: id,
-                    title,
-                    description,
-                    repoName,
-                    url
-                }
-            };
-        });
+        .map((app) => extractAppData(app));
 };
 
 /**
  * Fetches a list of deployed applications from the ABAP repository.
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
- * @param {Logger} [log] - The logger instance.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
-async function getAppList(provider: AbapServiceProvider, log?: Logger): Promise<AppIndex> {
+async function getAppList(provider: AbapServiceProvider, appId?: string): Promise<AppIndex> {
     try {
-        return await provider.getAppIndex().search(appListSearchParams, appListResultFields);
+        const searchParams = appId ? {
+            ...appListSearchParams, 
+            'sap.app/id': appId 
+        } : appListSearchParams
+        return await provider.getAppIndex().search(searchParams, appListResultFields);
     } catch (error) {
-        log?.error(t('error.applicationListFetchError', { error: error.message }));
+        BspAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
         return [];
     }
 }
@@ -79,21 +89,15 @@ async function getAppList(provider: AbapServiceProvider, log?: Logger): Promise<
 /**
  * Fetches the application list for the selected system.
  *
- * @param {BspAppDownloadAnswers} answers - The user's answers from the prompts.
- * @param {AbapServiceProvider | undefined} serviceProvider - The ABAP service provider.
- * @param {Logger} [log] - The logger instance.
+ * @param {AbapServiceProvider} serviceProvider - The ABAP service provider.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
-export async function fetchAppListForSelectedSystem(
-    answers: BspAppDownloadAnswers,
-    serviceProvider?: AbapServiceProvider,
-    log?: Logger
-): Promise<AppIndex> {
-    if (answers[PromptNames.systemSelection] && serviceProvider) {
+export async function fetchAppListForSelectedSystem(serviceProvider: AbapServiceProvider, appId?: string): Promise<AppIndex> {
+    if (serviceProvider) {
         PromptState.systemSelection = {
             connectedSystem: { serviceProvider }
         };
-        return await getAppList(serviceProvider, log);
+        return await getAppList(serviceProvider, appId);
     }
     return [];
 }

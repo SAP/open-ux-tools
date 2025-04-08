@@ -6,14 +6,28 @@ import type { BackendSystem } from '@sap-ux/store';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
-import type { SystemSelectionAnswerType } from '@sap-ux/odata-service-inquirer';
 
+/**
+ * Quick deploy app config are applicable only in scenarios where an application 
+ * deployed via ADT Quick Deploy is being downloaded from a BSP repository.
+ */
+export interface QuickDeployedAppConfig {
+    /**  application Id to be downloaded. */
+    appId: string;
+    /**  appUrl is the URL pointing to the application */
+    appUrl?: string;
+    /**  service provider is used to identify the system from which the app is downloaded from. */
+    serviceProvider: AbapServiceProvider;
+}
 /**
  * Options for downloading a BSP application.
  */
 export interface BspAppDownloadOptions extends Generator.GeneratorOptions {
     /** VSCode instance for interacting with the VSCode environment. */
     vscode?: VSCodeInstance;
+
+    /** The quick deploy config is provided only when an ADT quick deployed app is being downloaded */
+    quickDeployedAppConfig?: QuickDeployedAppConfig;
 
     /** AppWizard instance for managing the application download flow. */
     appWizard?: AppWizard;
@@ -85,7 +99,7 @@ export enum PromptNames {
  */
 export interface BspAppDownloadAnswers {
     /** Selected backend system connection details. */
-    [PromptNames.systemSelection]: SystemSelectionAnswerType;
+    [PromptNames.systemSelection]: SystemSelectionAnswers;
     /** Information about the selected application for download. */
     [PromptNames.selectedApp]: AppInfo;
     /** Target folder where the BSP application will be generated. */

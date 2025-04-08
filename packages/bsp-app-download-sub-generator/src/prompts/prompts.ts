@@ -1,10 +1,9 @@
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
-import type { BspAppDownloadAnswers, BspAppDownloadQuestions } from '../app/types';
+import type { BspAppDownloadAnswers, BspAppDownloadQuestions, QuickDeployedAppConfig } from '../app/types';
 import { PromptNames } from '../app/types';
 import { t } from '../utils/i18n';
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
-import type { Logger } from '@sap-ux/logger';
 import { formatAppChoices } from './prompt-helpers';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import { PromptState } from './prompt-state';
@@ -16,20 +15,30 @@ import { fetchAppListForSelectedSystem } from './prompt-helpers';
  * @param {string} [appRootPath] - The application root path.
  * @returns {FileBrowserQuestion<BspAppDownloadAnswers>} The target folder prompt configuration.
  */
-const getTargetFolderPrompt = (appRootPath?: string): FileBrowserQuestion<BspAppDownloadAnswers> => {
+const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowserQuestion<BspAppDownloadAnswers> => {
     return {
         type: 'input',
         name: PromptNames.targetFolder,
         message: t('prompts.targetPath.message'),
         guiType: 'folder-browser',
-        when: (answers: BspAppDownloadAnswers) => Boolean(answers?.selectedApp?.appId),
+        when: (answers: BspAppDownloadAnswers) => {
+            // Display the prompt if appId is provided. This occurs when the generator is invoked 
+            // as part of the quick deployment process from ADT.
+            if (appId) {
+                return true;
+            }
+            // If appId is not provided, check if the user has selected an app.
+            // If an app is selected, display the prompt accordingly.
+            return Boolean(answers?.selectedApp?.appId)
+        },
         guiOptions: {
             applyDefaultWhenDirty: true,
             mandatory: true,
             breadcrumb: t('prompts.targetPath.breadcrumb')
         },
         validate: async (target, answers: BspAppDownloadAnswers): Promise<boolean | string> => {
-            return await validateFioriAppTargetFolder(target, answers.selectedApp.appId, true);
+            const selectedAppId = answers.selectedApp?.appId ?? appId;
+            return await validateFioriAppTargetFolder(target, selectedAppId, true);
         },
         default: () => appRootPath
     } as FileBrowserQuestion<BspAppDownloadAnswers>;
@@ -39,23 +48,26 @@ const getTargetFolderPrompt = (appRootPath?: string): FileBrowserQuestion<BspApp
  * Retrieves questions for selecting system, app lists and target path where app will be generated.
  *
  * @param {string} [appRootPath] - The root path of the application.
- * @param {Logger} [log] - Logger instance for debugging.
+ * @param {QuickDeployConfig} [quickDeployedAppConfig] - quick deploy config.
  * @returns {Promise<BspAppDownloadQuestions[]>} A list of questions for user interaction.
  */
-export async function getPrompts(appRootPath?: string, log?: Logger): Promise<BspAppDownloadQuestions[]> {
+export async function getPrompts(appRootPath?: string, quickDeployedAppConfig?: QuickDeployedAppConfig): Promise<BspAppDownloadQuestions[]> {
     PromptState.reset();
+    // If quickDeployedAppConfig is provided, return only the target folder prompt
+    if (quickDeployedAppConfig?.appId) {
+        return [getTargetFolderPrompt(appRootPath, quickDeployedAppConfig.appId)] as BspAppDownloadQuestions[];
+    }
+
     const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, false); // todo: remove this isYUI value
     let appList: AppIndex = [];
-    let result: BspAppDownloadQuestions[] = [];
-
     const appSelectionPrompt = [
         {
             when: async (answers: BspAppDownloadAnswers): Promise<boolean> => {
-                appList = await fetchAppListForSelectedSystem(
-                    answers,
-                    systemQuestions.answers.connectedSystem?.serviceProvider as unknown as AbapServiceProvider,
-                    log
-                );
+                if(answers[PromptNames.systemSelection]) {
+                    appList = await fetchAppListForSelectedSystem(
+                        systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider
+                    );
+                }
                 // display app selection prompt only if user has selected a system
                 return !!systemQuestions.answers.connectedSystem?.serviceProvider;
             },
@@ -71,8 +83,6 @@ export async function getPrompts(appRootPath?: string, log?: Logger): Promise<Bs
         }
     ];
 
-    const targetFolderPrompts = getTargetFolderPrompt(appRootPath);
-    result = [...systemQuestions.prompts, ...appSelectionPrompt, targetFolderPrompts] as BspAppDownloadQuestions[];
-
-    return result;
+    const targetFolderPrompts = getTargetFolderPrompt(appRootPath, quickDeployedAppConfig?.appId);
+    return [...systemQuestions.prompts, ...appSelectionPrompt, targetFolderPrompts] as BspAppDownloadQuestions[];
 }

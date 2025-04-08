@@ -11,7 +11,7 @@ import { downloadApp } from '../utils/download-utils';
 import { EventName } from '../telemetryEvents';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
-import type { BspAppDownloadOptions, BspAppDownloadAnswers, BspAppDownloadQuestions, AppContentConfig } from './types';
+import type { BspAppDownloadOptions, BspAppDownloadAnswers, BspAppDownloadQuestions, AppContentConfig, QuickDeployedAppConfig } from './types';
 import { getPrompts } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'path';
@@ -31,6 +31,8 @@ import { getAbapDeployConfig, getAppConfig } from './config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { sampleAppContentJson } from './example-app-content';
 import { replaceWebappFiles } from '../utils/file-helpers';
+import { fetchAppListForSelectedSystem, extractAppData } from '../prompts/prompt-helpers';
+import { isValidPromptState, validateAppContentJsonFile } from '../utils/validators';
 
 /**
  * Generator class for downloading a basic app from BSP repository.
@@ -76,7 +78,7 @@ export default class extends Generator {
         );
 
         this.prompts = new Prompts([]);
-        // Initialize prompts and callbacks if not launched as a subgenerator
+        // Initialise prompts and callbacks if not launched as a subgenerator
         if (!this.launchAppDownloaderAsSubGenerator) {
             this.appWizard.setHeaderTitle(generatorTitle);
             this.prompts = new Prompts(getYUIDetails());
@@ -111,18 +113,38 @@ export default class extends Generator {
      * Prompts the user for application details and downloads the app.
      */
     public async prompting(): Promise<void> {
-        const questions: BspAppDownloadQuestions[] = await getPrompts(this.appRootPath);
+        const quickDeployedAppConfig = this.options?.data?.quickDeployedAppConfig;
+        const questions: BspAppDownloadQuestions[] = await getPrompts(this.appRootPath, quickDeployedAppConfig);
         const answers: BspAppDownloadAnswers = await this.prompt(questions);
-        const { selectedApp, targetFolder } = answers;
-
-        if (PromptState.systemSelection.connectedSystem?.serviceProvider && selectedApp?.appId && targetFolder) {
+        const { targetFolder } = answers;
+        if (quickDeployedAppConfig?.appId) {
+            // Handle quick deployed app download where prompts for system selection and app selection are not shown
+            // Only target folder ptompt is shown
+            await this._handleQuickDeployedAppDownload(quickDeployedAppConfig, targetFolder);
+        } else {
+            // Handle normal app download where prompts for system selection and app selection are shown
             Object.assign(this.answers, answers);
-            this.projectPath = join(targetFolder, selectedApp.appId);
+        }
+        if (isValidPromptState(targetFolder, this.answers.selectedApp.appId)) {
+            this.projectPath = join(targetFolder, this.answers.selectedApp.appId);
             this.extractedProjectPath = join(this.projectPath, extractedFilePath);
-
             // Trigger app download
             await downloadApp(this.answers.selectedApp.repoName, this.extractedProjectPath, this.fs);
         }
+    }
+
+    private async _handleQuickDeployedAppDownload (quickDeployedAppConfig: QuickDeployedAppConfig, targetFolder: string): Promise<void> {
+        debugger;
+        const appList = await fetchAppListForSelectedSystem(
+            quickDeployedAppConfig.serviceProvider,
+            quickDeployedAppConfig.appId
+        );
+        if(!appList.length) {
+            BspAppDownloadLogger.logger?.error(t('error.quickDeployedAppDownloadErrors.noAppsFound', { appId: quickDeployedAppConfig.appId }));
+        }
+        this.answers.selectedApp = extractAppData(appList[0]).value;
+        this.answers.targetFolder = targetFolder;
+        this.answers.systemSelection = PromptState.systemSelection; 
     }
 
     /**
@@ -139,6 +161,7 @@ export default class extends Generator {
         // }
 
         // Generate project files
+        validateAppContentJsonFile(appContentJson);
         const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, appContentJson, this.fs);
         await generate(this.projectPath, config, this.fs);
 
@@ -163,7 +186,7 @@ export default class extends Generator {
             writeApplicationInfoSettings(this.projectPath, this.fs);
         }
         // Replace webapp files with downloaded app files
-        // replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+        replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
         // Clean up extracted project files
         // this.fs.delete(this.extractedProjectPath);
     }

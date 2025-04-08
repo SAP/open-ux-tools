@@ -1,12 +1,11 @@
 {
     "error": {
         "telemetry": "Failed to send telemetry data after downloading app from BSP. {{- error}}",
-        "noAppsDeployed": "No basic applications deployed to this system can be downloaded. Please see <GA link> for more details",
         "appContentJsonNotFound": "{{- jsonFileName }} not found in the downloaded app",
         "replaceWebappFilesError": "Error replacing files in the downloaded app: {{- error}}", 
         "requiredFieldsMissing": "Required fields are missing for app: {{- app }}. Check if the app is deployed correctly",
         "applicationListFetchError": "Error fetching application list: {{- error}}",
-        "metadatafetchError": "Error fetching metadata: {{- error}}",
+        "metadataFetchError": "Error fetching metadata: {{- error}}",
         "appConfigGenError": "Error generating application configuration: {{- error}}",
         "validationErrors": {
             "invalidMetadataPackage": "Invalid or missing package in metadata",
@@ -35,6 +34,9 @@
             "readManifestFailed": "Error: Failed to read manifest file",
             "sapAppNotDefined": "Error: sap.app not defined in the manifest file",
             "sourceTemplateNotSupported": "Error: Source template not supported"
+        },
+        "quickDeployedAppDownloadErrors": {
+            "noAppsFound": "No application with if {{ appId }} found in the system. Please check if the application is deployed correctly"
         }
     },
     "warn": {
@@ -44,7 +46,8 @@
         "appSelection": {
             "message": "App",
             "hint": "Select the app to download",
-            "breadcrumb": "App"
+            "breadcrumb": "App",
+            "noAppsDeployed": "No basic applications deployed to this system can be downloaded. Please see <GA link> for more details"
         },
         "targetPath": {
             "message": "Project folder path",
