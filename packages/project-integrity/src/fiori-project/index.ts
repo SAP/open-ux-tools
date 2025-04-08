@@ -122,7 +122,9 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
             contentIntegrity: integrityData.contentIntegrity
         });
         // remove cds files from different files
-        checkResult.files.differentFiles = checkResult.files.differentFiles.filter((file) => !file.filePath.endsWith('.cds'));
+        checkResult.files.differentFiles = checkResult.files.differentFiles.filter(
+            (file) => !file.filePath.endsWith('.cds')
+        );
     }
     if (csnDiff === true && fileDiff === false) {
         // case 2
