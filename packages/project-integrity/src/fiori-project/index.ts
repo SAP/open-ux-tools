@@ -10,6 +10,8 @@ import {
     updateProjectIntegrity
 } from '../integrity';
 import type { CheckIntegrityResult, Content } from '../types';
+import { getContentIntegrity, getFileIntegrity } from '../integrity/hash';
+import { readIntegrityData, writeIntegrityData } from '../integrity/persistence';
 
 export const fioriIntegrityDataPath = join('.fiori-ai/ai-integrity.json');
 
@@ -92,8 +94,9 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
     const integrityFilePath = join(projectRoot, fioriIntegrityDataPath);
     const additionalStringContent = await getAdditionalStringContent(projectRoot);
     const checkResult = await checkProjectIntegrity(integrityFilePath, additionalStringContent);
+    const integrityData = await readIntegrityData(integrityFilePath);
     /**
-     * 1. if csn integrity is the same, but file integrity is different, then is compatible changes (e.g empty spaces, new lines or comments). Empty different files, add them to equal files and update integrity.
+     * 1. if csn integrity is the same, but file integrity is different, then is compatible changes (e.g empty spaces, new lines or comments). Add them to equal files, update integrity and empty different files,
      * 2. if csn integrity is different, but file integrity is same, then CDS compiler might have produced different CSN. Remove csnPath from different content and add it to equal content. Update integrity.
      * 3. if csn integrity is different and file integrity is different, then it is un-compatible changes. Report them.
      */
@@ -102,8 +105,23 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
     if (csnDiff === undefined && fileDiff === true) {
         // case 1
         checkResult.files.equalFiles.push(...checkResult.files.differentFiles.map((file) => file.filePath));
-        checkResult.files.differentFiles = [];
         // also update integrity.json file
+        const diffFileIntegrity = await getFileIntegrity(checkResult.files.differentFiles.map((file) => file.filePath));
+
+        const fileIntegrity = integrityData.fileIntegrity.map((file) => {
+            const diffFile = diffFileIntegrity.find((diff) => diff.filePath === file.filePath);
+            if (diffFile) {
+                return { ...file, hash: diffFile.hash, content: diffFile.content };
+            }
+            return file;
+        });
+        await writeIntegrityData(integrityFilePath, {
+            enabled: integrityData.enabled,
+            fileIntegrity,
+            contentIntegrity: integrityData.contentIntegrity
+        });
+        // empty different files
+        checkResult.files.differentFiles = [];
     }
     if (csnDiff !== undefined && fileDiff === false) {
         // case 2
@@ -113,8 +131,14 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
         const [csnContent] = checkResult.additionalStringContent.differentContent.splice(csnIndex, 1);
         checkResult.additionalStringContent.equalContent.push(csnContent.key);
         // update csn content
+        const contentIntegrity = getContentIntegrity(additionalStringContent);
+        await writeIntegrityData(integrityFilePath, {
+            enabled: integrityData.enabled,
+            fileIntegrity: integrityData.fileIntegrity,
+            contentIntegrity
+        });
     }
-    // case 3 or return checkResult of case 1 and 2
+    // case 3 or return checkResult of case 1 or 2
     return checkResult;
 }
 
