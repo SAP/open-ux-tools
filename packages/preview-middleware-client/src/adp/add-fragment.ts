@@ -1,16 +1,9 @@
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
-import { CommunicationService } from '../cpe/communication-service';
-import { ExternalAction, addFragment } from '@sap-ux-private/control-property-editor-common';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { Deferred, createDeferred } from './utils';
 import { DialogFactory, DialogNames } from './dialog-factory';
 import AddXMLPlugin from 'sap/ui/rta/plugin/AddXMLPlugin';
-
-type ActionService = {
-    execute: (controlId: string, actionId: string) => void;
-};
-
 export interface AddFragmentData {
     deferred: Deferred<DeferredXmlFragmentData>;
 }
