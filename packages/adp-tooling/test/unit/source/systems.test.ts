@@ -4,7 +4,7 @@ import type { BackendSystem } from '@sap-ux/store';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import { type Destination, isAppStudio, listDestinations } from '@sap-ux/btp-utils';
 
-import { type Endpoint, getEndpointNames, TargetSystems, transformBackendSystem } from '../../../src';
+import { type Endpoint, getEndpointNames, SystemLookup, transformBackendSystem } from '../../../src';
 
 jest.mock('@sap-ux/system-access', () => ({
     ...jest.requireActual('@sap-ux/system-access'),
@@ -39,7 +39,7 @@ const backendSystems: BackendSystem[] = [
         client: '010',
         name: 'SYS_010',
         password: 'some-pw',
-        url: 'https://sys010',
+        url: 'some-url',
         userDisplayName: 'some-name',
         username: 'some-user'
     }
@@ -78,23 +78,23 @@ describe('getEndpointNames', () => {
     });
 });
 
-describe('TargetSystems', () => {
-    let targetSystems: TargetSystems;
+describe('SystemLookup', () => {
+    let sourceSystems: SystemLookup;
 
     beforeEach(() => {
         jest.clearAllMocks();
-        targetSystems = new TargetSystems(logger);
+        sourceSystems = new SystemLookup(logger);
     });
 
     describe('getSystems', () => {
         test('should fetch systems via loadSystems and cache the result in BAS', async () => {
             mockIsAppStudio.mockReturnValue(true);
             listDestinationsMock.mockResolvedValue(destinations);
-            const systemsFirstCall = await targetSystems.getSystems();
+            const systemsFirstCall = await sourceSystems.getSystems();
             expect(systemsFirstCall).toEqual(endpoints);
 
             // A second call should return the cached endpoints (checkEndpoints called only once)
-            const systemsSecondCall = await targetSystems.getSystems();
+            const systemsSecondCall = await sourceSystems.getSystems();
             expect(listDestinationsMock).toHaveBeenCalledTimes(1);
             expect(systemsSecondCall).toEqual(endpoints);
         });
@@ -104,7 +104,7 @@ describe('TargetSystems', () => {
             getServiceMock.mockResolvedValue({
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
-            const systemsFirstCall = await targetSystems.getSystems();
+            const systemsFirstCall = await sourceSystems.getSystems();
             expect(systemsFirstCall).toEqual(mappedBackendSystems);
         });
 
@@ -113,7 +113,7 @@ describe('TargetSystems', () => {
             mockIsAppStudio.mockReturnValue(true);
             listDestinationsMock.mockRejectedValue(error);
 
-            await expect(targetSystems.getSystems()).rejects.toThrow('Fetch failed');
+            await expect(sourceSystems.getSystems()).rejects.toThrow('Fetch failed');
 
             expect(logger.error).toHaveBeenCalledWith(expect.stringContaining('Failed to fetch systems list. Reason:'));
         });
@@ -128,7 +128,7 @@ describe('TargetSystems', () => {
         test('should return undefined and warn if no matching system is found', async () => {
             const nonExistingSystem = 'NonExistingSystem';
 
-            const system = await targetSystems.getSystemByName(nonExistingSystem);
+            const system = await sourceSystems.getSystemByName(nonExistingSystem);
 
             expect(system).toBeUndefined();
             expect(logger.warn).toHaveBeenCalledWith(`No endpoint found for system: ${nonExistingSystem}`);
@@ -137,7 +137,7 @@ describe('TargetSystems', () => {
         test('should return system details', async () => {
             getCredentialsFromStoreMock.mockResolvedValue(null);
 
-            const system = await targetSystems.getSystemByName('SystemA');
+            const system = await sourceSystems.getSystemByName('SystemA');
 
             expect(system).toEqual({
                 Authentication: 'Basic',
@@ -154,7 +154,7 @@ describe('TargetSystems', () => {
             mockIsAppStudio.mockReturnValue(true);
             listDestinationsMock.mockResolvedValue(destinations);
 
-            const result = await targetSystems.getSystemRequiresAuth('SystemB');
+            const result = await sourceSystems.getSystemRequiresAuth('SystemB');
 
             expect(result).toBe(true);
         });
@@ -163,7 +163,7 @@ describe('TargetSystems', () => {
             mockIsAppStudio.mockReturnValue(true);
             listDestinationsMock.mockResolvedValue(destinations);
 
-            const result = await targetSystems.getSystemRequiresAuth('SystemA');
+            const result = await sourceSystems.getSystemRequiresAuth('SystemA');
 
             expect(result).toBe(false);
         });
@@ -174,7 +174,7 @@ describe('TargetSystems', () => {
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
 
-            const result = await targetSystems.getSystemRequiresAuth('SYS_010');
+            const result = await sourceSystems.getSystemRequiresAuth('SYS_010');
 
             expect(result).toBe(false);
         });
@@ -185,7 +185,7 @@ describe('TargetSystems', () => {
                 getAll: jest.fn().mockResolvedValue(backendSystems)
             });
 
-            const result = await targetSystems.getSystemRequiresAuth('NonExisting');
+            const result = await sourceSystems.getSystemRequiresAuth('NonExisting');
 
             expect(result).toBe(true);
         });
