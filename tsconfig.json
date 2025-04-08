@@ -6,6 +6,7 @@
     "esModuleInterop": true,
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true,
+    "verbatimModuleSyntax": true,
     "lib": [
       "ES2022",
       "dom",
