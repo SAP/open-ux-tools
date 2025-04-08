@@ -4,6 +4,7 @@ import hasbin from 'hasbin';
 import { generateAppConfig } from '../../src';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
+import fs from 'fs';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -74,8 +75,9 @@ describe('CF Writer App - Application Frontend', () => {
         fsExtra.copySync(join(__dirname, `../sample/rootmta`), rootPath); // Base mta
         fsExtra.copySync(join(__dirname, `../sample/basicapp`), appPath); // Base -> App
         await generateAppConfig({ appPath, addAppFrontendRouter: true }, unitTestFs);
-        expect(unitTestFs.read(join(rootPath, 'mta.yaml'))).toMatchSnapshot();
         expect(unitTestFs.read(join(appPath, 'xs-app.json'))).toMatchSnapshot();
         expect(unitTestFs.read(join(rootPath, 'xs-security.json'))).toMatchSnapshot();
+        expect(fs.readFileSync(join(rootPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
+        expect(fs.readFileSync(join(rootPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
     });
 });

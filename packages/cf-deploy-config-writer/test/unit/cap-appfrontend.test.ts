@@ -10,6 +10,7 @@ import { DefaultMTADestination } from '../../src/constants';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
+import fs from 'fs';
 
 jest.mock('@sap/mta-lib', () => {
     return {
@@ -79,10 +80,10 @@ describe('CF Writer with CAP App Frontend', () => {
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
             expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(commandRunnerMock).not.toHaveBeenCalled();
-            // expect(unitTestFs.dump(capPath)).toMatchSnapshot();
             expect(localFs.read(join(capPath, 'app/lrop', 'xs-app.json'))).toMatchSnapshot();
-            expect(localFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
             expect(localFs.read(join(capPath, 'xs-security.json'))).toMatchSnapshot();
+            expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
+            expect(fs.readFileSync(join(capPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
         });
 
         test('Generate CAP project with App Frontend Service', async () => {
@@ -100,8 +101,8 @@ describe('CF Writer with CAP App Frontend', () => {
                 undefined,
                 logger
             );
-            expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
-            expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot();
+            expect(fs.readFileSync(join(mtaPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
+            expect(fs.readFileSync(join(mtaPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
             expect(localFs.read(join(mtaPath, 'xs-security.json'))).toMatchSnapshot();
             expect(getCapProjectTypeMock).toHaveBeenCalled();
             expect(commandRunnerMock).toHaveBeenCalled();

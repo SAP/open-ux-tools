@@ -1,6 +1,85 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`CF Writer App - Application Frontend Generate deployment configs - Add 2nd HTML5 app to app frontend router 1`] = `
+"{
+  \\"welcomeFile\\": \\"/index.html\\",
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^/sap/(.*)$\\",
+      \\"target\\": \\"/sap/$1\\",
+      \\"destination\\": \\"TestDestination\\",
+      \\"authenticationType\\": \\"ias\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/logout-page.html$\\",
+      \\"service\\": \\"app-front\\",
+      \\"authenticationType\\": \\"none\\"
+    },
+    {
+      \\"source\\": \\"^/index.html$\\",
+      \\"service\\": \\"app-front\\",
+      \\"cacheControl\\": \\"no-cache, no-store, must-revalidate\\"
+    },
+    {
+      \\"source\\": \\"^(.*)$\\",
+      \\"target\\": \\"$1\\",
+      \\"service\\": \\"app-front\\",
+      \\"authenticationType\\": \\"ias\\"
+    }
+  ]
+}
+"
+`;
+
+exports[`CF Writer App - Application Frontend Generate deployment configs - Add 2nd HTML5 app to app frontend router 2`] = `
+"{
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+"
+`;
+
+exports[`CF Writer App - Application Frontend Generate deployment configs - Add 2nd HTML5 app to app frontend router 3`] = `
+"{
+  \\"name\\": \\"rootmta\\",
+  \\"version\\": \\"1.0.0\\",
+  \\"description\\": \\"\\",
+  \\"main\\": \\"index.js\\",
+  \\"scripts\\": {
+    \\"test\\": \\"echo \\\\\\"Error: no test specified\\\\\\" && exit 1\\",
+    \\"undeploy\\": \\"cf undeploy rootmta --delete-services --delete-service-keys --delete-service-brokers\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\"
+  },
+  \\"repository\\": {
+    \\"type\\": \\"git\\",
+    \\"url\\": \\"https://github.com/SAP/open-ux-tools.git\\"
+  },
+  \\"private\\": true,
+  \\"devDependencies\\": {
+    \\"rimraf\\": \\"^5.0.5\\",
+    \\"mbt\\": \\"^1.2.29\\"
+  }
+}
+"
+`;
+
+exports[`CF Writer App - Application Frontend Generate deployment configs - Add 2nd HTML5 app to app frontend router 4`] = `
 "_schema-version: '3.1'
 ID: rootmta
 description: Fiori elements app
@@ -67,60 +146,6 @@ resources:
 parameters:
   deploy_mode: html5-repo
   enable-parallel-deployments: true
-"
-`;
-
-exports[`CF Writer App - Application Frontend Generate deployment configs - Add 2nd HTML5 app to app frontend router 2`] = `
-"{
-  \\"welcomeFile\\": \\"/index.html\\",
-  \\"authenticationMethod\\": \\"route\\",
-  \\"routes\\": [
-    {
-      \\"source\\": \\"^/sap/(.*)$\\",
-      \\"target\\": \\"/sap/$1\\",
-      \\"destination\\": \\"TestDestination\\",
-      \\"authenticationType\\": \\"ias\\",
-      \\"csrfProtection\\": false
-    },
-    {
-      \\"source\\": \\"^/resources/(.*)$\\",
-      \\"target\\": \\"/resources/$1\\",
-      \\"authenticationType\\": \\"none\\",
-      \\"destination\\": \\"ui5\\"
-    },
-    {
-      \\"source\\": \\"^/test-resources/(.*)$\\",
-      \\"target\\": \\"/test-resources/$1\\",
-      \\"authenticationType\\": \\"none\\",
-      \\"destination\\": \\"ui5\\"
-    },
-    {
-      \\"source\\": \\"^/logout-page.html$\\",
-      \\"service\\": \\"app-front\\",
-      \\"authenticationType\\": \\"none\\"
-    },
-    {
-      \\"source\\": \\"^/index.html$\\",
-      \\"service\\": \\"app-front\\",
-      \\"cacheControl\\": \\"no-cache, no-store, must-revalidate\\"
-    },
-    {
-      \\"source\\": \\"^(.*)$\\",
-      \\"target\\": \\"$1\\",
-      \\"service\\": \\"app-front\\",
-      \\"authenticationType\\": \\"ias\\"
-    }
-  ]
-}
-"
-`;
-
-exports[`CF Writer App - Application Frontend Generate deployment configs - Add 2nd HTML5 app to app frontend router 3`] = `
-"{
-  \\"description\\": \\"Security profile of called application\\",
-  \\"scopes\\": [],
-  \\"role-templates\\": []
-}
 "
 `;
 
