@@ -69,7 +69,7 @@ async function getCsnContent(projectRoot: string): Promise<string> {
 async function getAdditionalStringContent(projectRoot: string): Promise<Content> {
     const capCustomPaths = await getCapCustomPaths(projectRoot);
     const cnsContent = await getCsnContent(projectRoot);
-    return { capPaths: JSON.stringify(capCustomPaths), csnPath: cnsContent };
+    return { capPaths: JSON.stringify(capCustomPaths), csn: cnsContent };
 }
 
 /**
@@ -96,17 +96,18 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
     const checkResult = await checkProjectIntegrity(integrityFilePath, additionalStringContent);
     const integrityData = await readIntegrityData(integrityFilePath);
     /**
-     * 1. if csn integrity is the same, but file integrity is different, then is compatible changes (e.g empty spaces, new lines or comments). Add them to equal files, update integrity and empty different files,
+     * 1. if csn integrity is the same, but file integrity is different, then is compatible changes (e.g empty spaces, new lines or comments). Add them to equal files, update integrity and remove cds files from different files,
      * 2. if csn integrity is different, but file integrity is same, then CDS compiler might have produced different CSN. Remove csnPath from different content and add it to equal content. Update integrity.
      * 3. if csn integrity is different and file integrity is different, then it is un-compatible changes. Report them.
      */
-    const csnDiff = checkResult.additionalStringContent?.differentContent.find((content) => content.key === 'csnPath');
-    const fileDiff = checkResult.files.differentFiles.length > 0;
+    const csnDiff = checkResult.additionalStringContent?.differentContent.some((content) => content.key === 'csn');
+    const fileDiff = checkResult.files.differentFiles.some((file) => file.filePath.endsWith('.cds'));
     if (csnDiff === undefined && fileDiff === true) {
         // case 1
         checkResult.files.equalFiles.push(...checkResult.files.differentFiles.map((file) => file.filePath));
         // also update integrity.json file
-        const diffFileIntegrity = await getFileIntegrity(checkResult.files.differentFiles.map((file) => file.filePath));
+        const cdsDiffFiles = checkResult.files.differentFiles.filter((file) => file.filePath.endsWith('.cds'));
+        const diffFileIntegrity = await getFileIntegrity(cdsDiffFiles.map((file) => file.filePath));
 
         const fileIntegrity = integrityData.fileIntegrity.map((file) => {
             const diffFile = diffFileIntegrity.find((diff) => diff.filePath === file.filePath);
@@ -120,13 +121,13 @@ export async function checkFioriProjectIntegrity(projectRoot: string): Promise<C
             fileIntegrity,
             contentIntegrity: integrityData.contentIntegrity
         });
-        // empty different files
-        checkResult.files.differentFiles = [];
+        // remove cds files from different files
+        checkResult.files.differentFiles = checkResult.files.differentFiles.filter((file) => !file.filePath.endsWith('.cds'));
     }
     if (csnDiff !== undefined && fileDiff === false) {
         // case 2
         const csnIndex = checkResult.additionalStringContent.differentContent.findIndex(
-            (content) => content.key === 'csnPath'
+            (content) => content.key === 'csn'
         );
         const [csnContent] = checkResult.additionalStringContent.differentContent.splice(csnIndex, 1);
         checkResult.additionalStringContent.equalContent.push(csnContent.key);
