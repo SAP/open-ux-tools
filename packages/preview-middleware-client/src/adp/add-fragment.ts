@@ -35,24 +35,6 @@ export default class AddFragmentService {
      *
      */
     public init() {
-        this.initPlugin();
-        CommunicationService.subscribe(async (action: ExternalAction): Promise<void> => {
-            if (addFragment.match(action)) {
-                try {
-                    const { controlId } = action.payload;
-                    const service = await this.rta.getService<ActionService>('action');
-                    service.execute(controlId, this.actionId);
-                } catch (e) {
-                    throw new Error(`Failed to execute service with actionId: ${this.actionId}`);
-                }
-            }
-        });
-    }
-
-    /**
-     * Initializes Add XML at Extension Point plugin and adds it to the default RTA plugins.
-     */
-    public initPlugin() {
         const flexSettings = this.rta.getFlexSettings();
         const commandFactory = new CommandFactory({
             flexSettings
