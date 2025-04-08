@@ -40,7 +40,7 @@
         "errorScpAbapSourceDiscoveryCheckLog": "Check the Application Wizard console output view for details."
     },
     "warning": {
-        "btpDestinationListWarning": "BTP destinations are only retrieved on BAS",
+        "btpDestinationListWarning": "BTP destinations are only retrieved on BAS.",
         "appFrontendServiceRouterChoice": "You need to have the Application Frontend service enabled for your subaccount."
     },
     "info": {
