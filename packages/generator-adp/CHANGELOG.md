@@ -1,5 +1,13 @@
 # @sap-ux/generator-adp
 
+## 0.1.2
+
+### Patch Changes
+
+-   4f0eaae: feat: Enhance system and app prompt validations
+-   Updated dependencies [4f0eaae]
+    -   @sap-ux/adp-tooling@0.13.23
+
 ## 0.1.1
 
 ### Patch Changes

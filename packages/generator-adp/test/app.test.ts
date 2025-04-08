@@ -7,17 +7,18 @@ import { exec } from 'child_process';
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { TargetApplication } from '@sap-ux/adp-tooling';
+import type { SourceApplication } from '@sap-ux/adp-tooling';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { TargetSystems, getAbapTarget, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
+import { SystemLookup, UI5VersionInfo, getProviderConfig, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
 
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
 import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import { ConfigPrompter } from '../src/app/questions/configuration';
 
 jest.mock('@sap-devx/feature-toggle-node', () => ({
     // Is BAS this will mean that the layer is CUSTOMER_BASE
@@ -48,7 +49,7 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
     loadApps: jest.fn(),
-    getAbapTarget: jest.fn()
+    getProviderConfig: jest.fn()
 }));
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
@@ -71,12 +72,16 @@ jest.mock('@sap-ux/btp-utils', () => ({
     isAppStudio: jest.fn()
 }));
 
+jest.mock('uuid', () => ({
+    v4: jest.fn().mockReturnValue('mocked-uuid')
+}));
+
 const originalCwd = process.cwd();
 const testOutputDir = join(__dirname, 'test-output');
 const generatorPath = join(__dirname, '../src/app/index.ts');
 
 const endpoints = [{ Name: 'SystemA', Client: '010', Url: 'http://systema.com' }];
-const apps: TargetApplication[] = [
+const apps: SourceApplication[] = [
     {
         ach: '',
         bspName: 'SOME_NAME',
@@ -88,9 +93,11 @@ const apps: TargetApplication[] = [
     }
 ];
 
+const isAbapCloudMock = jest.fn();
 const getAtoInfoMock = jest.fn();
 const getSystemInfoMock = jest.fn();
 const dummyProvider = {
+    isAbapCloud: isAbapCloudMock,
     getAtoInfo: getAtoInfoMock,
     getLayeredRepository: jest.fn().mockReturnValue({
         getSystemInfo: getSystemInfoMock
@@ -109,7 +116,7 @@ jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
 const loadAppsMock = loadApps as jest.Mock;
 const execMock = exec as unknown as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
-const getAbapTargetMock = getAbapTarget as jest.Mock;
+const getProviderConfigMock = getProviderConfig as jest.Mock;
 const sendTelemetryMock = sendTelemetry as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
@@ -123,15 +130,22 @@ describe('Adaptation Project Generator Integration Test', () => {
         fs.mkdirSync(testOutputDir, { recursive: true });
 
         loadAppsMock.mockResolvedValue(apps);
-        jest.spyOn(TargetSystems.prototype, 'getSystems').mockResolvedValue(endpoints);
-        jest.spyOn(TargetSystems.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
+        jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
+        jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
+        jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
         getConfiguredProviderMock.mockResolvedValue(dummyProvider);
         execMock.mockImplementation((_: string, callback: Function) => {
             callback(null, { stdout: 'ok', stderr: '' });
         });
+        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
+            latestVersion: '1.135.0',
+            getVersionToBeUsed: jest.fn().mockReturnValue('1.135.0')
+        } as unknown as UI5VersionInfo);
         getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
-        getAbapTargetMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
+        getProviderConfigMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
+        isAbapCloudMock.mockResolvedValue(false);
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
+
         getDefaultProjectNameMock.mockReturnValue('app.variant1');
         getCredentialsFromStoreMock.mockResolvedValue(undefined);
     });
@@ -152,7 +166,7 @@ describe('Adaptation Project Generator Integration Test', () => {
     it('should throw error when writing phase fails', async () => {
         const error = new Error('Test error');
         mockIsAppStudio.mockReturnValue(false);
-        getConfiguredProviderMock.mockRejectedValueOnce(error);
+        getAtoInfoMock.mockRejectedValueOnce(error);
 
         const answers = {
             system: 'http://systema.com',
@@ -169,7 +183,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
     });
 
-    it('should generate an adaptation project successfully', async () => {
+    it('should generate an onPremise adaptation project successfully', async () => {
         mockIsAppStudio.mockReturnValue(false);
 
         const answers = {
@@ -192,14 +206,18 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
         const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
+        const ui5Yaml = join(projectFolder, 'ui5.yaml');
 
         expect(fs.existsSync(manifestPath)).toBe(true);
         expect(fs.existsSync(i18nPath)).toBe(true);
+        expect(fs.existsSync(ui5Yaml)).toBe(true);
 
         const manifestContent = fs.readFileSync(manifestPath, 'utf8');
         const i18nContent = fs.readFileSync(i18nPath, 'utf8');
+        const ui5Content = fs.readFileSync(ui5Yaml, 'utf8');
         expect(manifestContent).toMatchSnapshot();
         expect(i18nContent).toMatchSnapshot();
+        expect(ui5Content).toMatchSnapshot();
 
         expect(sendTelemetryMock).toHaveBeenCalledWith(
             EventName.ADAPTATION_PROJECT_CREATED,

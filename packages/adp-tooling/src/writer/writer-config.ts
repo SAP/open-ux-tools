@@ -1,10 +1,12 @@
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { getAbapTarget } from '../client';
+import { FlexLayer } from '../types';
+import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
-import type { AdpWriterConfig, ConfigAnswers, FlexLayer, PackageJson } from '../types';
+import type { AdpWriterConfig, ConfigAnswers, PackageJson } from '../types';
+import { UI5VersionInfo, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
 
 interface ConfigOptions {
     /**
@@ -56,8 +58,14 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
-    const target = await getAbapTarget(configAnswers.system, logger);
+    const target = await getProviderConfig(configAnswers.system, logger);
     const customConfig = getCustomConfig(operationsType, packageJson);
+
+    const isCloudProject = await provider.isAbapCloud();
+    const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+
+    const ui5Info = UI5VersionInfo.getInstance(layer);
+    const ui5Version = isCloudProject ? ui5Info.getLatestVersion() : ui5Info.getVersionToBeUsed('', isCustomerBase);
 
     return {
         app: {
@@ -66,6 +74,11 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
             layer,
             title: '',
             content: [getNewModelEnhanceWithChange()]
+        },
+        ui5: {
+            minVersion: ui5Version?.split(' ')[0],
+            version: getFormattedVersion(ui5Version),
+            frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version)
         },
         customConfig,
         target,
