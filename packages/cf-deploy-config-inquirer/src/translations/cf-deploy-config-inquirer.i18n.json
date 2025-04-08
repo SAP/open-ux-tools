@@ -47,7 +47,7 @@
         "addManagedAppRouter": "Add managed application router is enabled",
         "overwriteDestination": "Overwriting destination is enabled",
         "routerOptions": "Router options is enabled",
-        "addConnectivityService": "Add connectivity service is enabled in cf application router",
+        "addConnectivityService": "Add connectivity service is enabled in CF application router",
         "addABAPServiceBinding": "Abap service binding is enabled in CF application router"
     }
 }
