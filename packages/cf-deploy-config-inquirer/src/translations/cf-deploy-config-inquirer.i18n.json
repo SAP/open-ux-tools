@@ -16,7 +16,7 @@
         "serviceAdvancedOptionMessage": "Configure advanced options",
         "abapEnvBindingBreadcrumbMessage": "ABAP Env. Binding",
         "selectServiceMessage": "ABAP Environment for direct service binding",
-        "routerTypeMessage": "Add router module",
+        "routerTypeMessage": "Add Router Module",
         "routerType": {
             "managedAppRouter": "Add application to managed application router",
             "appFrontAppService": "Add application to application front-end service",
