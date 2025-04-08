@@ -3,4 +3,4 @@
 "@sap-ux/preview-middleware": patch
 ---
 
-feat: Reuse addXMLPlugin
+refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
