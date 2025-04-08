@@ -166,6 +166,11 @@ modules:
         parameters:
           content-target: true
       - name: comfioritoolslrop-uaa
+    parameters:
+      config:
+        destinations:
+          - name: ui5
+            url: 'https://ui5.sap.com'
     build-parameters:
       build-result: resources
       requires:
@@ -173,11 +178,6 @@ modules:
           artifacts:
             - comfioritoolslrop.zip
           target-path: resources/
-    parameters:
-      config:
-        destinations:
-          - name: ui5
-            url: 'https://ui5.sap.com'
   - name: comfioritoolslrop
     type: html5
     path: .

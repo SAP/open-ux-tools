@@ -996,10 +996,6 @@ export class MtaConfig {
                             }
                         }
                     ],
-                    'build-parameters': {
-                        'build-result': 'resources',
-                        requires: []
-                    },
                     parameters: {
                         config: {
                             destinations: [UI5AppfrontDestinationParameter]
