@@ -150,7 +150,7 @@ export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[],
         });
     } else {
         const addFragmentService = (await import('open/ux/preview/client/adp/add-fragment')).default;
-        new addFragmentService(rta).init();
+        addFragmentService.init(rta);
     }
 
     contextMenu.addMenuItem({
