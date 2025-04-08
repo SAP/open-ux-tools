@@ -9,6 +9,7 @@ import type { Editor } from 'mem-fs-editor';
 import { DefaultMTADestination, MTABinNotFound } from '../../src/constants';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
+import fs from 'fs';
 
 jest.mock('@sap/mta-lib', () => {
     return {
@@ -76,7 +77,8 @@ describe('CF Writer', () => {
             expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(commandRunnerMock).not.toHaveBeenCalled();
             expect(unitTestFs.dump(capPath)).toMatchSnapshot();
-            expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(fs.readFileSync(join(capPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
+            expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
         });
 
         test('Validate dependency on MTA binary', async () => {
@@ -119,8 +121,8 @@ describe('CF Writer', () => {
             },
             unitTestFs
         );
-        expect(unitTestFs.dump(capPath)).toMatchSnapshot();
-        expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(fs.readFileSync(join(capPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
+        expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
     });
 
     test('Validate HTML5 is added without a managed approuter to a CAP project', async () => {
@@ -139,7 +141,8 @@ describe('CF Writer', () => {
             unitTestFs
         );
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
-        expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
+        expect(fs.readFileSync(join(capPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
+        expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
     });
 
     test('Validate a 2nd HTML5 app is added', async () => {
