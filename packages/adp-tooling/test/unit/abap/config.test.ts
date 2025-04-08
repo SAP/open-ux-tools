@@ -28,7 +28,7 @@ const client = dummyDetails.Client;
 
 const mockIsAppStudio = isAppStudio as jest.Mock;
 
-describe('getAbapTarget', () => {
+describe('getProviderConfig', () => {
     let getSystemByNameSpy: jest.SpyInstance;
 
     beforeEach(() => {
@@ -36,7 +36,7 @@ describe('getAbapTarget', () => {
         getSystemByNameSpy = jest.spyOn(SystemLookup.prototype, 'getSystemByName');
     });
 
-    it('should return a destination target when in AppStudio', async () => {
+    it('should return a destination config when in AppStudio', async () => {
         mockIsAppStudio.mockReturnValue(true);
         getSystemByNameSpy.mockResolvedValue(dummyDetails);
 
@@ -45,7 +45,7 @@ describe('getAbapTarget', () => {
         expect(target).toEqual({ destination: system });
     });
 
-    it('should return an AbapTarget with auth when not in AppStudio', async () => {
+    it('should return an config with auth when not in BAS', async () => {
         mockIsAppStudio.mockReturnValue(false);
         getSystemByNameSpy.mockResolvedValue(dummyDetails);
         const requestOptions: RequestOptions = {};
@@ -63,7 +63,7 @@ describe('getAbapTarget', () => {
         });
     });
 
-    it('should throw an error if system details are not found in non-AppStudio', async () => {
+    it('should throw an error if system details are not found in VS Code', async () => {
         const system = 'NonExisting';
         mockIsAppStudio.mockReturnValue(false);
         getSystemByNameSpy.mockResolvedValue(undefined);
