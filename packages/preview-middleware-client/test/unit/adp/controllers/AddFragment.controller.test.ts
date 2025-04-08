@@ -1678,11 +1678,7 @@ describe('AddFragment', () => {
             );
             addFragment.model = {
                 setProperty: jest.fn(),
-                getProperty: jest
-                    .fn()
-                    .mockReturnValueOnce('test')
-                    .mockReturnValueOnce(1)
-                    .mockReturnValueOnce('content')
+                getProperty: jest.fn().mockReturnValueOnce('test')
             } as unknown as JSONModel;
 
             addFragment.handleDialogClose = jest.fn();
@@ -1700,7 +1696,7 @@ describe('AddFragment', () => {
             expect(mockData.deferred.resolve).toHaveBeenCalledWith({
                 fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
                 fragmentPath: `fragments/test.fragment.xml`,
-                index: 1,
+                index: 0,
                 targetAggregation: 'content'
             });
         });
