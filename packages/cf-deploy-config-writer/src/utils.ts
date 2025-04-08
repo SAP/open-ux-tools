@@ -286,6 +286,8 @@ export function setMtaDefaults(config: CFBaseConfig): void {
 /**
  * Update the root package.json with scripts to deploy the MTA.
  *
+ * Note: The fs editor is not passed to `addPackageDevDependency` since the package.json could be updated by other third party tools.
+ *
  * @param {object} Options Input params
  * @param {string} Options.mtaId - MTA ID to be written to package.json
  * @param {string} Options.rootPath - MTA project path
