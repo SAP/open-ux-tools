@@ -133,7 +133,7 @@ export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComp
  * @param syncViewsIds Ids of all application sync views
  * @param ui5VersionInfo UI5 version information
  */
-export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<Promise<void>> => {
+export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<void> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
     const resources = await getTextBundle();
