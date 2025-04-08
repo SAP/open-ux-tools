@@ -117,7 +117,7 @@ function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
 function getConnectivityServicePrompt(): CfAppRouterDeployConfigQuestions {
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean =>
-            previousAnswers.routerType !== RouterModuleType.Managed,
+            previousAnswers.routerType === RouterModuleType.Standard,
         type: 'confirm',
         name: appRouterPromptNames.addConnectivityService,
         guiOptions: {
@@ -141,7 +141,7 @@ function getConnectivityServicePrompt(): CfAppRouterDeployConfigQuestions {
 function getDestinationService(): CfAppRouterDeployConfigQuestions {
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean =>
-            previousAnswers.routerType !== RouterModuleType.Managed,
+            previousAnswers.routerType === RouterModuleType.Standard,
         type: 'confirm',
         name: appRouterPromptNames.addABAPServiceBinding,
         message: t('prompts.serviceAdvancedOptionMessage'),
@@ -162,7 +162,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
     const errorHandler = new ErrorHandler();
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean => {
-            return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType !== RouterModuleType.Managed;
+            return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType === RouterModuleType.Standard;
         },
         type: 'list',
         name: appRouterPromptNames.abapServiceProvider,
