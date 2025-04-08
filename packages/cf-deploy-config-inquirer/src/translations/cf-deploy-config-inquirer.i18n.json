@@ -1,6 +1,6 @@
 {
     "prompts": {
-        "destinationNameMessage": "Destination name",
+        "destinationNameMessage": "Destination Name",
         "addApplicationRouterBreadcrumbMessage": "Add to Router",
         "generateManagedApplicationToRouterMessage": "Add application to managed application router?",
         "generateDeploymentRouterOptionsMessage": "Add router module",
