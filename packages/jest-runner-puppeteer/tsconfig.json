@@ -5,7 +5,8 @@
         "rootDir": "src",
         "outDir": "dist",
         "strict": false,
-        "strictNullChecks": false
+        "strictNullChecks": false,
+        "verbatimModuleSyntax": false
     },
     "references": []
 }

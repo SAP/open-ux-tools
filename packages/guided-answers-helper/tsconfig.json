@@ -5,9 +5,10 @@
   ],
   "compilerOptions": {
     "rootDir": "src",
-    "outDir": "dist"
+    "outDir": "dist",
+    "verbatimModuleSyntax": false
   },
   "references": [
-    
+
   ]
 }
