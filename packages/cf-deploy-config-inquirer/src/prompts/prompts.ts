@@ -157,6 +157,7 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
  * @param {CfDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
  * @param {Logger} [log] - The logger instance to use for logging.
  * @returns {CfDeployConfigQuestions[]} Returns an array of questions related to cf deployment configuration.
+ * @deprecated This function is deprecated and will be removed in future versions. Use `getQuestionsWithRouterOptions` instead.
  */
 export async function getQuestions(
     promptOptions: CfDeployConfigPromptOptions,
@@ -201,7 +202,7 @@ export async function getQuestionsWithRouterOptions(
     const questions: CfDeployConfigQuestions[] = [];
     questions.push(await getDestinationNamePrompt(destinationOptions));
     if (showRouterOptions) {
-        log?.info(t('info.overwriteDestination'));
+        log?.info(t('info.routerOptions'));
         questions.push(getRouterOptionsPrompt());
     }
 

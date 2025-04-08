@@ -83,8 +83,8 @@ function getMtaVersionPrompt(): CfAppRouterDeployConfigQuestions {
 /**
  * Generates a prompt for selecting the router type.
  *
- * This prompt allows users to choose between a standalone app router or a managed app router for deployment.
- * The prompt is mandatory, with a default selection of the "standard" router type.
+ * This prompt allows users to choose between a standalone | managed | app frontend router for deployment.
+ * The prompt is mandatory, with a default selection of the "managed" router type.
  *
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting the router type.
  */
