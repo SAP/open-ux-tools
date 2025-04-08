@@ -138,8 +138,8 @@ export function transformTemplateType(
     type templateSettingType = (typeof templateSettingsMap)[TemplateTypeFE];
 
     const fewTemplate: TemplateSettingsFE<templateSettingType> = {
-        type: templateType as TemplateTypeFE,
-        settings: templateSettingsMap[templateType as TemplateTypeFE]
+        type: templateType,
+        settings: templateSettingsMap[templateType]
     };
     return fewTemplate;
 }
@@ -172,7 +172,7 @@ function canGenerateTests(templateType: TemplateTypeFE | TemplateTypeFF): boolea
 function getUI5Uri(): string {
     // Remove any trailing '/' 2083 is the max length of a URL for some supported browsers
     const envSetUI5CdnUrl = process.env.UI5_CDN_URL?.replace(/\/{1,2083}$/, '');
-    return envSetUI5CdnUrl ? envSetUI5CdnUrl : UI5_VERSION_PROPS.OFFICIAL_URL;
+    return envSetUI5CdnUrl ?? UI5_VERSION_PROPS.OFFICIAL_URL;
 }
 
 /**
@@ -184,23 +184,22 @@ function getUI5Uri(): string {
  * @param param0.service
  * @param param0.floorplan
  * @param param0.entityRelatedConfig
- * @param param0.packageJson
  * @param param0.viewName
  * @param generateIndexHtml
  * @returns {FioriElementsApp<T>} - The app configuration
  */
 export async function transformState<T>(
-    { project, service, floorplan, entityRelatedConfig, packageJson, viewName }: State,
+    { project, service, floorplan, entityRelatedConfig, viewName }: State,
     generateIndexHtml = true
 ): Promise<T> {
     const appConfig = getBaseAppConfig(
-        { project, service, floorplan, entityRelatedConfig, packageJson, viewName },
+        { project, service, floorplan, entityRelatedConfig, viewName },
         generateIndexHtml
     );
 
     if (service.source !== DatasourceType.none) {
         appConfig.service = {
-            url: service.host || (service.edmx ? undefined : DEFAULT_HOST),
+            url: service.host ?? (service.edmx ? undefined : DEFAULT_HOST),
             path: service.servicePath || DEFAULT_SERVICE_PATH,
             type: service.capService ? ServiceType.CDS : ServiceType.EDMX,
             version: service.version ?? OdataVersion.v4, // Wont be set for FF no datasource template flow so default to v4 for now as the service wont be written
@@ -215,7 +214,7 @@ export async function transformState<T>(
                     : undefined
         };
 
-        const destinationName = service.destinationName || service.connectedSystem?.destination?.Name;
+        const destinationName = service.destinationName ?? service.connectedSystem?.destination?.Name;
         if (destinationName) {
             appConfig.service.destination = {
                 name: destinationName
@@ -287,18 +286,17 @@ function getUI5VersionDefault(
  * Which type of app is generated is determined by the template type derived from the floorplan specified.
  * This does not assign the service configuration.
  *
- * @param param0
- * @param param0.project
- * @param param0.service
- * @param param0.floorplan
- * @param param0.entityRelatedConfig
- * @param param0.packageJson
- * @param param0.viewName
+ * @param state
+ * @param state.project
+ * @param state.service
+ * @param state.floorplan
+ * @param state.entityRelatedConfig
+ * @param state.viewName
  * @param generateIndexHtml
  * @returns
  */
 function getBaseAppConfig(
-    { project, service, floorplan, entityRelatedConfig, packageJson, viewName }: State,
+    { project, service, floorplan, entityRelatedConfig, viewName }: State,
     generateIndexHtml: boolean
 ): Partial<FioriElementsApp<unknown>> | FreestyleApp<BasicAppSettings> {
     const appId = getAppId(project.name, project.namespace);
@@ -330,11 +328,7 @@ function getBaseAppConfig(
             name: project.name,
             description: project.description,
             version: '0.0.1',
-            sapuxLayer: assignSapUxLayerValue(false),
-            devDependencies: packageJson?.devDependencies,
-            scripts: packageJson?.runTasks?.reduce((scripts: Record<string, string>, { name, command }) => {
-                return Object.assign(scripts, { [name]: command });
-            }, {}) // Converts Record array -> single Object */
+            sapuxLayer: assignSapUxLayerValue(false)
         } as Package,
         ui5: {
             version: ui5Version,

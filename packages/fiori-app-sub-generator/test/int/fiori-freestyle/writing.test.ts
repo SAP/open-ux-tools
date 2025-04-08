@@ -7,13 +7,10 @@ import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { FloorplanFF, type State } from '../../../src/types';
-import { TestWritingGenerator, cleanTestDir, ignoreMatcherOpts } from '../test-utils';
+import { TestWritingGenerator, cleanTestDir, getTestDir, ignoreMatcherOpts, runWritingPhaseGen } from '../test-utils';
 
-const GENERATION_TEST_DIR = './test-output';
 const EXPECTED_OUT_PATH = './expected-output';
 const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
-
-const testDir: string = join(__dirname, '../../', GENERATION_TEST_DIR);
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
@@ -23,25 +20,6 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
     };
 });
 
-async function runGenerator(state: State, isInternal = false, options?: FioriAppGeneratorOptions): Promise<any> {
-    return yeomanTest
-        .run(TestWritingGenerator, {
-            tmpdir: true,
-            resolved: join(__dirname, '../test-utils/testGeneratorWriting') // Required to find root gen name
-        })
-        .withOptions({
-            state: {
-                ...state,
-                project: {
-                    ...state.project
-                }
-            },
-            skipInstall: true,
-            isInternal,
-            ...options
-        });
-}
-
 function setExpectedOutPath(projectName: string): string {
     return join(__dirname, EXPECTED_OUT_PATH, projectName);
 }
@@ -49,6 +27,7 @@ function setExpectedOutPath(projectName: string): string {
 describe('Freestyle generation', () => {
     let testProjectName: string;
     let mockModulePath: string;
+    const testDir = getTestDir('fiori-freestyle');
 
     beforeAll(() => {
         cleanTestDir(testDir);
@@ -90,7 +69,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'TestViewName123'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 
@@ -117,7 +96,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 
@@ -145,7 +124,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 
@@ -172,7 +151,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 
@@ -220,7 +199,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
         accessSpy.mockRestore();
     });
@@ -261,7 +240,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
         accessSpy.mockRestore();
     });
@@ -290,7 +269,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 
@@ -319,7 +298,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 
@@ -349,7 +328,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 
@@ -397,7 +376,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state, undefined, { generateIndexHtml: false });
+        await runWritingPhaseGen(state, { generateIndexHtml: false });
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
         accessSpy.mockRestore();
     });
@@ -422,7 +401,7 @@ describe('Freestyle generation', () => {
             floorplan: FloorplanFF.FF_SIMPLE,
             viewName: 'View1'
         };
-        await runGenerator(state);
+        await runWritingPhaseGen(state);
         expect(join(testDir, testProjectName)).toMatchFolder(mockModulePath, ignoreMatcherOpts);
     });
 });

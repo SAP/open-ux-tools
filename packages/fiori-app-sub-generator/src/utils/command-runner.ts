@@ -7,7 +7,7 @@ import type { SpawnOptionsWithoutStdio } from 'child_process';
  *
  */
 export class CommandRunner {
-    private log: ILogWrapper;
+    private readonly log: ILogWrapper;
 
     /**
      *
@@ -77,12 +77,13 @@ export class CommandRunner {
             spawnedCmd.on('close', (errorCode: number, signal: string) => {
                 if (signal) {
                     const signalCode = -1;
-                    // @todo introduce a signal received specific error message
                     if (enableLog) {
                         this.formatLog(t('logMessages.commandFailedWithError', { command, signalCode }));
                     }
                     return reject(
-                        t('logMessages.commandErrorCodeWithStack', { command, signalCode, stack: stack.join(', ') })
+                        new Error(
+                            t('logMessages.commandErrorCodeWithStack', { command, signalCode, stack: stack.join(', ') })
+                        )
                     );
                 }
                 if (errorCode !== 0) {
@@ -90,7 +91,9 @@ export class CommandRunner {
                         this.formatLog(t('logMessages.commandFailedWithError', { command, errorCode }));
                     }
                     return reject(
-                        t('logMessages.commandErrorCodeWithStack', { command, errorCode, stack: stack.join(', ') })
+                        new Error(
+                            t('logMessages.commandErrorCodeWithStack', { command, errorCode, stack: stack.join(', ') })
+                        )
                     );
                 }
                 resolve(response);

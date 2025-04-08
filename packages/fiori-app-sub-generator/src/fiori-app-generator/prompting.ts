@@ -1,4 +1,5 @@
 import { isFeatureEnabled } from '@sap-ux/feature-toggle';
+import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { InputQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 import {
@@ -23,16 +24,15 @@ import merge from 'lodash/merge';
 import { join } from 'path';
 import type { Adapter } from 'yeoman-environment';
 import type {
+    FioriAppGeneratorPromptSettings,
     Floorplan,
     Project,
     PromptExtension,
-    FioriAppGeneratorPromptSettings,
     Service,
     YeomanUiStepConfig
 } from '../types';
 import { Features, defaultPromptValues } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
-import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Validates the view name.
@@ -110,7 +110,7 @@ type PromptUI5AppAnswersOptions = {
  */
 export async function promptUI5ApplicationAnswers(
     {
-        service, //todo: remove this and pass only required properties, host, version, etc.
+        service,
         projectName,
         targetFolder,
         promptSettings,
@@ -131,15 +131,13 @@ export async function promptUI5ApplicationAnswers(
         inquirerAdapter = adapter;
     }
 
-    // Convert prompt related options to prompt settings. todo: remove this conversion and pass FioriGeneratorPromptSettings directly (needs S/4 update)
-    const pmptSettings = Object.assign(
-        { ...promptSettings },
-        {
-            [ui5AppInquirerPromptNames.ui5Version]: {
-                hide: hideUI5VersionPrompt ?? false
-            }
+    // Convert prompt related options to prompt settings
+    const pmptSettings = {
+        ...promptSettings,
+        [ui5AppInquirerPromptNames.ui5Version]: {
+            hide: hideUI5VersionPrompt ?? false
         }
-    );
+    };
 
     const promptOptions = await createUI5ApplicationPromptOptions(
         service,
@@ -414,17 +412,15 @@ function createOdataServicePromptOptions(options: OdataServiceInquirerOptions): 
             requiredOdataVersion: options.requiredOdataVersion,
             showCollaborativeDraftWarning: options.showCollabDraftWarning && isYUI
         },
-        [odataServiceInquirerPromptNames.systemSelection]: Object.assign(
-            {
-                destinationFilters: {
-                    odata_abap: true,
-                    full_service_url: true,
-                    partial_service_url: true
-                },
-                useAutoComplete: !isYUI,
-                includeCloudFoundryAbapEnvChoice: true
+        [odataServiceInquirerPromptNames.systemSelection]: {
+            destinationFilters: {
+                odata_abap: true,
+                full_service_url: true,
+                partial_service_url: true
             },
-            options.promptOptions?.systemSelection
-        )
+            useAutoComplete: !isYUI,
+            includeCloudFoundryAbapEnvChoice: true,
+            ...options.promptOptions?.systemSelection
+        }
     };
 }

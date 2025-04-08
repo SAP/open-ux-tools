@@ -2,31 +2,14 @@ import '@sap-ux/jest-file-matchers';
 
 import { DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
-import type { Project, Service, State } from '../../../src/types';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import { join } from 'path';
-import yeomanTest from 'yeoman-test';
-import { getTestData, getTestDir, TestWritingGenerator } from '../test-utils';
+import type { Project, Service, State } from '../../../src/types';
+import { getTestData, getTestDir } from '../test-utils';
 
 export const EXPECTED_OUTPUT_DIR_NAME = './expected-output';
 
 export const testNameSpace = 'testNameSpace';
-export const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
-export const tmpFolder = join(__dirname, '../test-tmp');
 export const testUI5Version = '1.98.0';
-
-export async function runWritingPhase(
-    state: Partial<State>,
-    testSpecificTmpFolder = tmpFolder,
-    options?: Partial<FioriAppGeneratorOptions>
-): Promise<any> {
-    const mergedOptions = {
-        state,
-        skipInstall: true,
-        ...options
-    };
-    return yeomanTest.create(TestWritingGenerator, {}, {}).cd(testSpecificTmpFolder).withOptions(mergedOptions).run();
-}
 
 /**
  * Get the expected output path where snapshots are found

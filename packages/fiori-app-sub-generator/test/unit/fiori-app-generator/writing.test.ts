@@ -76,14 +76,15 @@ describe('`writing` tests', () => {
                 generatorPlatform: 'CLI'
             };
             await writeReadMe(
-                project,
-                service,
-                FloorplanFE.FE_LROP,
+                {
+                    project,
+                    service,
+                    floorplan: FloorplanFE.FE_LROP
+                },
                 '@sap/generator-fiori-elements',
                 '2.0.1',
                 '/target/path',
                 {} as Editor,
-                undefined,
                 readMe
             );
             expect(generateReadMe).toHaveBeenCalledWith('/target/path', expectedReadMe, {});
@@ -121,9 +122,11 @@ describe('`writing` tests', () => {
             };
 
             await writeReadMe(
-                project,
-                service,
-                FloorplanFF.FF_SIMPLE,
+                {
+                    project,
+                    service,
+                    floorplan: FloorplanFF.FF_SIMPLE
+                },
                 '@sap/some-generator',
                 '123',
                 '/target/path',
@@ -172,14 +175,15 @@ describe('`writing` tests', () => {
             };
 
             await writeReadMe(
-                project,
-                service,
-                FloorplanFF.FF_SIMPLE,
+                {
+                    project,
+                    service,
+                    floorplan: FloorplanFF.FF_SIMPLE
+                },
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
                 {} as Editor,
-                undefined,
                 {
                     additionalEntries: [{ label: 'label1', value: 'value1' }]
                 }
@@ -232,27 +236,29 @@ describe('`writing` tests', () => {
             };
 
             await writeReadMe(
-                project,
-                service,
-                FloorplanFF.FF_SIMPLE,
+                {
+                    project,
+                    service,
+                    floorplan: FloorplanFF.FF_SIMPLE,
+                    entityRelatedConfig: {
+                        mainEntity: {
+                            entitySetName: 'mainEntitySetName1',
+                            entitySetType: 'mainEntityType1'
+                        },
+                        navigationEntity: {
+                            navigationPropertyName: 'navigationProperty1',
+                            entitySetName: 'navigationEntitySetName1'
+                        },
+                        filterEntityType: {
+                            entitySetName: 'filterEntitySetName1',
+                            entitySetType: 'FilterEntitySetType1'
+                        }
+                    }
+                },
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
                 {} as Editor,
-                {
-                    mainEntity: {
-                        entitySetName: 'mainEntitySetName1',
-                        entitySetType: 'mainEntityType1'
-                    },
-                    navigationEntity: {
-                        navigationPropertyName: 'navigationProperty1',
-                        entitySetName: 'navigationEntitySetName1'
-                    },
-                    filterEntityType: {
-                        entitySetName: 'filterEntitySetName1',
-                        entitySetType: 'FilterEntitySetType1'
-                    }
-                },
                 {
                     additionalEntries: [{ label: 'addLabel1', value: 'addValue1' }]
                 }
@@ -263,27 +269,29 @@ describe('`writing` tests', () => {
 
             // Nav entity should be 'None'
             await writeReadMe(
-                project,
-                service,
-                FloorplanFF.FF_SIMPLE,
+                {
+                    project,
+                    service,
+                    floorplan: FloorplanFF.FF_SIMPLE,
+                    entityRelatedConfig: {
+                        mainEntity: {
+                            entitySetName: 'mainEntitySetName1',
+                            entitySetType: 'mainEntityType1'
+                        },
+                        navigationEntity: {
+                            navigationPropertyName: '',
+                            entitySetName: 'navigationEntitySetName1'
+                        },
+                        filterEntityType: {
+                            entitySetName: 'filterEntitySetName1',
+                            entitySetType: 'FilterEntitySetType1'
+                        }
+                    }
+                },
                 '@sap/some-generator',
                 '1.0.0',
                 '/target/path',
                 {} as Editor,
-                {
-                    mainEntity: {
-                        entitySetName: 'mainEntitySetName1',
-                        entitySetType: 'mainEntityType1'
-                    },
-                    navigationEntity: {
-                        navigationPropertyName: '',
-                        entitySetName: 'navigationEntitySetName1'
-                    },
-                    filterEntityType: {
-                        entitySetName: 'filterEntitySetName1',
-                        entitySetType: 'FilterEntitySetType1'
-                    }
-                },
                 {
                     additionalEntries: [{ label: 'addLabel1', value: 'addValue1' }]
                 }

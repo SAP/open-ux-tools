@@ -1,35 +1,32 @@
-import { generateReadMe, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ReadMe } from '@sap-ux/fiori-generator-shared';
-import type { EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
+import { generateReadMe, getHostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Editor } from 'mem-fs-editor';
 import { basename, join } from 'path';
+import type { ApiHubConfig, State } from '../types';
 import { DEFAULT_CAP_HOST } from '../types';
-import type { ApiHubConfig, Floorplan, Project, Service } from '../types';
-import { getReadMeDataSourceLabel, getLaunchText, isBTPHosted, t } from '../utils';
+import { getLaunchText, getReadMeDataSourceLabel, isBTPHosted, t } from '../utils';
 
 /**
  * Writes a README.md file based on project, service, and additional readme properties.
  *
- * @param project
- * @param service
- * @param floorplan
+ * @param state
+ * @param state.project
+ * @param state.service
+ * @param state.floorplan
+ * @param state.entityRelatedConfig
  * @param generatorName
  * @param generatorVersion
  * @param targetPath
  * @param fs
- * @param entityRelatedAnswers
  * @param readMe
  */
 export async function writeReadMe(
-    project: Project,
-    service: Service,
-    floorplan: Floorplan,
+    { project, service, floorplan, entityRelatedConfig }: State,
     generatorName: string,
     generatorVersion: string,
     targetPath: string,
     fs: Editor,
-    entityRelatedAnswers?: EntityRelatedAnswers,
-    readMe?: Partial<ReadMe> // todo: Is this needed anymore?
+    readMe?: Partial<ReadMe>
 ): Promise<void> {
     const templateLabel = t(`floorplans.label.${floorplan}`, {
         odataVersion: service.version
@@ -41,7 +38,7 @@ export async function writeReadMe(
         service.apiHubConfig?.apiHubType
     );
 
-    // Assign any custom overridding properties that may be provided via headless, adaptors or
+    // Assign any custom overriding properties that may be provided via headless, adaptors
     const readMeCustom: Partial<ReadMe> = Object.assign(
         {
             generatorName,
@@ -59,22 +56,22 @@ export async function writeReadMe(
         readMeCustom.additionalEntries = [];
     }
 
-    if (entityRelatedAnswers?.mainEntity) {
+    if (entityRelatedConfig?.mainEntity) {
         readMeCustom.additionalEntries.push({
             label: t('readme.label.mainEntity'),
-            value: entityRelatedAnswers.mainEntity.entitySetName
+            value: entityRelatedConfig.mainEntity.entitySetName
         });
     }
-    if (entityRelatedAnswers?.navigationEntity) {
+    if (entityRelatedConfig?.navigationEntity) {
         readMeCustom.additionalEntries.push({
             label: t('readme.label.navigationEntity'),
-            value: entityRelatedAnswers.navigationEntity.navigationPropertyName || 'None'
+            value: entityRelatedConfig.navigationEntity.navigationPropertyName || 'None'
         });
     }
-    if (entityRelatedAnswers?.filterEntityType) {
+    if (entityRelatedConfig?.filterEntityType) {
         readMeCustom.additionalEntries.push({
             label: t('readme.label.filterEntityType'),
-            value: entityRelatedAnswers.filterEntityType.entitySetName
+            value: entityRelatedConfig.filterEntityType.entitySetName
         });
     }
 

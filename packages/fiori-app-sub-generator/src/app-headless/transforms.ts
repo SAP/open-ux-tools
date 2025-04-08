@@ -46,7 +46,7 @@ export function transformExtState(appConfig: FEAppConfig | FFAppConfig): State {
         // FF specific state properties
         state.viewName = (appConfig as FFAppConfig).project.viewName;
     }
-    return state as State;
+    return state;
 }
 
 /**
@@ -104,14 +104,14 @@ function _setProjectDefaults(project: AppConfig['project']): Project {
     const ui5Version = project.ui5Version || supportedUi5VersionFallbacks[0].version;
 
     return {
-        name: project.name || t('defaults.projectName'),
-        targetFolder: project.targetFolder || process.cwd(),
-        namespace: project.namespace || '',
-        title: project.title || t('defaults.projectTitle'),
-        description: project.description || t('default.projectDescription'),
+        name: project.name ?? t('defaults.projectName'),
+        targetFolder: project.targetFolder ?? process.cwd(),
+        namespace: project.namespace ?? '',
+        title: project.title ?? t('defaults.projectTitle'),
+        description: project.description ?? t('default.projectDescription'),
         ui5Version: ui5Version,
-        localUI5Version: project.localUI5Version || ui5Version,
-        ui5Theme: project.ui5Theme || getDefaultUI5Theme(ui5Version),
+        localUI5Version: project.localUI5Version ?? ui5Version,
+        ui5Theme: project.ui5Theme ?? getDefaultUI5Theme(ui5Version),
         skipAnnotations: project.skipAnnotations || defaultPromptValues[promptNames.skipAnnotations],
         enableCodeAssist: project.enableCodeAssist || defaultPromptValues[promptNames.enableCodeAssist],
         enableEslint: project.enableEslint || defaultPromptValues[promptNames.enableEslint],
@@ -172,7 +172,6 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
     // Setting of DatasourceType has only partial relevance for the writing phase.
     // Only FILE and CAP are checked during the writing phase, but these references should be (eventually) removed
     // and replaced with generic checks for servicePath + edmx and cap service name respectively - then there is no need to set here
-    // todo: can we removed the datasource type setting now?
     else if (service?.capService?.projectPath) {
         if (!service.capService.serviceName) {
             throw Error(

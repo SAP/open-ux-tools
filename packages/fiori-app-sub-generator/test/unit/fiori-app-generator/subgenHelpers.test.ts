@@ -12,7 +12,9 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
         addFlpGen(
             {
                 projectName: 'testAppName',
-                targetFolder: '/test/target/folder'
+                targetFolder: '/test/target/folder',
+                title: 'testAppName',
+                skipPrompt: false
             },
             composeWithMock,
             DefaultLogger,

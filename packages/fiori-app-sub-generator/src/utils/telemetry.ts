@@ -1,6 +1,5 @@
 import { isOnPremiseDestination } from '@sap-ux/btp-utils';
-import type { TelemetrySapSystemType, TelemetryBusinessHubType } from '../types';
-import { ApiHubType, type Service } from '../types';
+import { ApiHubType, type TelemetryBusinessHubType, type Service, type TelemetrySapSystemType } from '../types';
 import { isBTPHosted } from './common';
 
 /**

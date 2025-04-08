@@ -30,7 +30,6 @@ export function initAppWizardCache(logger: ILogWrapper, appWizard?: AppWizardCac
  */
 export function addToCache(appWizard: AppWizardCache | undefined, state: Partial<State>, logger: ILogWrapper): void {
     logIfCacheMissing(appWizard, logger);
-    // todo: Remove undefined check when moved to open-ux-tools as it will be handled by the type system (`strct` or `strictNullChecks`).
     if (appWizard?.[FIORI_CACHE]) {
         Object.assign(appWizard[FIORI_CACHE], state);
     }

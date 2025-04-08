@@ -12,7 +12,6 @@ import type {
 import type { ApiHubType, SapSystemSourceType } from '../types/constants';
 import type { Script } from './common';
 import type { Floorplan } from './external';
-import type { ReadMe } from '@sap-ux/fiori-generator-shared/dist/types';
 
 export interface Project {
     targetFolder: string;
@@ -61,8 +60,8 @@ export interface Service {
      */
     capService?: Omit<CapServiceCdsInfo, 'cdsUi5PluginInfo'> & { cdsUi5PluginInfo?: CdsUi5PluginInfo };
     source: DatasourceType;
-    sapSystemSource?: SapSystemSourceType; // Only used by README, todo: move to readme state
-    localEdmxFilePath?: string; // Only used by README, todo: move to readme state
+    sapSystemSource?: SapSystemSourceType;
+    localEdmxFilePath?: string;
     /**
      * Connected system information, used for preview settings and deploy configurations
      */
@@ -111,35 +110,9 @@ export interface PackageJson {
     sapuxLayer?: UI5FlexLayer;
 }
 
-// Note that only ui5 properties supported by middleware proxy should go here
-// For example, ui5Theme must not
-interface Ui5YamlProps {
-    ui5Version: string;
-    ui5Url: string;
-}
-export interface Ui5Yaml extends Ui5YamlProps {
-    name: string;
-    proxyPath: string;
-    proxyHost: string;
-    scp?: boolean;
-    destination?: string;
-    destinationInstance?: string;
-    ui5Theme: string;
-    localUI5Version: string;
-    sapUiLibs: string[]; // Determined by specific generators
-    apiHubApiKey?: string;
-    client?: string;
-    appId?: string;
-}
-
 export interface State {
     project: Project;
     service: Service;
-    readMe?: ReadMe; // Customisation point for readme.txt
-    ui5Yaml?: Partial<Ui5Yaml>; // Customisation point for ui5Yaml todo: Can this be removed?
-    packageJson?: Partial<PackageJson>; // Customisation point for package.json todo: Can this be removed?
-    // todo: consider a template settings property that encapsulates entityRelatedConfig, viewName,
-    //  floorplan (maybe rename and reuse open source template type)
     /**
      * Entity configuration for templates that require it
      */

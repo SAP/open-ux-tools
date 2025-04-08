@@ -1,15 +1,14 @@
 import '@sap-ux/jest-file-matchers';
-import type { FEAppConfig } from '../../../src/types';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
-import * as install from '../../../src/fiori-app-generator/install';
-import HeadlessGenerator from '../../../src/app-headless';
 import { copyFileSync, existsSync, promises as fs, mkdirSync, readdirSync, readFileSync } from 'fs';
 import 'jest-extended';
 import { join } from 'path';
 import yeomanTest from 'yeoman-test';
-import { cleanTestDir, getTestData, ignoreMatcherOpts } from '../test-utils';
-import { EXPECTED_OUTPUT_DIR_NAME, originalCwd, tmpFolder } from './test-utils';
-import { getTestDir } from '../test-utils';
+import HeadlessGenerator from '../../../src/app-headless';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
+import * as install from '../../../src/fiori-app-generator/install';
+import type { FEAppConfig } from '../../../src/types';
+import { cleanTestDir, getTestData, getTestDir, ignoreMatcherOpts, originalCwd } from '../test-utils';
+import { EXPECTED_OUTPUT_DIR_NAME } from './test-utils';
 
 const testDir: string = getTestDir('headless');
 const fixturesPath = join(__dirname, './fixtures');
@@ -88,7 +87,6 @@ async function runHeadlessGen(
 
     return yeomanTest
         .create(HeadlessGenerator, {}, {})
-        .cd(tmpTestDir)
         .withOptions(
             Object.assign(
                 {
@@ -104,19 +102,11 @@ async function runHeadlessGen(
 describe('Headless generation', () => {
     let testProjectName: string;
     let expectedOutputPath: string;
-    tmpTestDir = `${tmpFolder}_headless`;
     jest.setTimeout(60000);
 
     beforeAll(() => {
         console.warn = () => {}; // Suppress warning messages from generator caching
         cleanTestDir(testDir);
-        try {
-            mkdirSync(tmpTestDir, { recursive: true });
-        } catch {
-            () => {
-                // Needed for lint
-            };
-        }
     });
 
     afterAll(() => {
@@ -125,7 +115,6 @@ describe('Headless generation', () => {
             if (readdirSync(testDir).length === 0) {
                 console.log('Removing test output folder');
                 cleanTestDir(testDir);
-                cleanTestDir(tmpTestDir);
             }
             process.chdir(originalCwd);
         } catch {

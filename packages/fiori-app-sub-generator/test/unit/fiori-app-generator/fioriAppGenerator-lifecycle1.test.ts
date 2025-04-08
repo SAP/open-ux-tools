@@ -11,25 +11,20 @@ import { initTelemetrySettings } from '@sap-ux/telemetry';
 import { type UI5ApplicationAnswers } from '@sap-ux/ui5-application-inquirer';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 import yeomanTest from 'yeoman-test';
-import {
-    addDeployGen,
-    addFlpGen,
-    FioriAppGenerator,
-    promptOdataServiceAnswers,
-    promptUI5ApplicationAnswers
-} from '../../../src/fiori-app-generator';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions';
+import { FioriAppGenerator, type FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
+import { promptOdataServiceAnswers, promptUI5ApplicationAnswers } from '../../../src/fiori-app-generator/prompting';
+import { addDeployGen, addFlpGen } from '../../../src/fiori-app-generator/subgenHelpers';
 import type { Project } from '../../../src/types';
 import {
     FIORI_STEPS,
     FloorplanFE,
     FloorplanFF,
     type Service,
-    STEP_PROJECT_ATTRIBUTES,
-    STEP_DATASOURCE_AND_SERVICE
+    STEP_DATASOURCE_AND_SERVICE,
+    STEP_PROJECT_ATTRIBUTES
 } from '../../../src/types';
 import * as commonUtils from '../../../src/utils';
-import { getCdsUi5PluginInfo, getYeomanUiStepConfig, t, type AppWizardCache } from '../../../src/utils';
+import { type AppWizardCache, getCdsUi5PluginInfo, getYeomanUiStepConfig, t } from '../../../src/utils';
 
 /**
  * Tests the FioriAppGenerator generator lifecycle methods call what they should with the correct parameters.
@@ -98,7 +93,7 @@ jest.mock('@sap-ux/fiori-generator-shared', () => {
 
 jest.mock('@sap-ux/ui5-info', () => {
     return {
-        ...(jest.requireActual('@sap-ux/ui5-info') as {}),
+        ...jest.requireActual('@sap-ux/ui5-info'),
         getUI5Versions: jest.fn().mockResolvedValue(() => Promise.resolve([]))
     };
 });
@@ -112,15 +107,14 @@ const mockEntityRelatedQuestions = [
 ];
 jest.mock('@sap-ux/odata-service-inquirer', () => {
     return {
-        ...(jest.requireActual('@sap-ux/odata-service-inquirer') as {}),
+        ...jest.requireActual('@sap-ux/odata-service-inquirer'),
         getEntityRelatedPrompts: jest.fn().mockImplementation(() => mockEntityRelatedQuestions)
     };
 });
 
 jest.mock('@sap-ux/telemetry', () => {
     return {
-        ...(jest.requireActual('@sap-ux/telemetry') as {}),
-        //isInternalFeaturesSettingEnabled: jest.fn().mockReturnValue(false),
+        ...jest.requireActual('@sap-ux/telemetry'),
         initTelemetrySettings: jest.fn().mockResolvedValue(() => Promise.resolve())
     };
 });
@@ -580,7 +574,9 @@ describe('Test FioriAppGenerator', () => {
         expect(addFlpGen).toHaveBeenCalledWith(
             {
                 projectName: ui5ApplicationAnswers.name,
-                targetFolder: ui5ApplicationAnswers.targetFolder
+                targetFolder: ui5ApplicationAnswers.targetFolder,
+                title: ui5ApplicationAnswers.title,
+                skipPrompt: false
             },
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger

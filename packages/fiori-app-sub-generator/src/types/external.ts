@@ -32,7 +32,6 @@ export enum FloorplanFF {
  * FE_FEOP = FETemplateType.FormEntryObjectPage,
  * FE_WORKLIST = FETemplateType.Worklist
  */
-// Note that ordering here determines rendering order
 export enum FloorplanFE {
     FE_FPM = 'fpm',
     FE_LROP = 'lrop',
@@ -47,8 +46,6 @@ export type Floorplan = FloorplanFE | FloorplanFF;
 
 // Used in external interfaces to define floorplans using a simple meaningful string key
 export type FloorplanKey = keyof typeof FloorplanFE | keyof typeof FloorplanFF;
-
-// TODO: Extend for https://github.wdf.sap.corp/ux-engineering/tools-suite/issues/11636
 
 type FloorplanAttributesType = {
     [K in Floorplan]: {
@@ -146,7 +143,7 @@ export interface AppConfig {
  * Defines the entity config property of the external app config interface used to generate in headless mode (no prompts)
  */
 export interface EntityConfig {
-    mainEntity?: { entityName: string; type?: any }; //todo: is type necessary?
+    mainEntity?: { entityName: string; type?: any };
     filterEntityType?: string;
     navigationEntity?: {
         EntitySet: string;
@@ -311,7 +308,6 @@ export enum PROJECT_TYPE {
  * @deprecated Use FloorplanFF instead, will be removed shortly
  */
 export enum Template {
-    // todo: use open source FF template type
     Simple = 'simple'
 }
 

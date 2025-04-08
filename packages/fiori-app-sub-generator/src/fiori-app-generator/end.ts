@@ -134,16 +134,14 @@ export async function runPostGenerationTasks(
     // Persist backend system connection information
     const hostEnv = getHostEnvironment();
 
-    if (service.backendSystem && hostEnv !== hostEnvironment.bas) {
-        if (service.backendSystem && service.backendSystem.newOrUpdated) {
-            const storeService = await getService<BackendSystem, BackendSystemKey>({
-                logger: logger,
-                entityName: 'system'
-            });
-            // No need to await, we cannot recover anyway
-            /*eslint no-void: ["error", { "allowAsStatement": true }]*/
-            void storeService.write(service.backendSystem);
-        }
+    if (service.backendSystem && hostEnv !== hostEnvironment.bas && service.backendSystem.newOrUpdated) {
+        const storeService = await getService<BackendSystem, BackendSystemKey>({
+            logger: logger,
+            entityName: 'system'
+        });
+        // No need to await, we cannot recover anyway
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        storeService.write(service.backendSystem);
     }
 
     // Display info message if using a cap service as it is not otherwise shown when a top level dir is not created

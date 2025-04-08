@@ -15,11 +15,11 @@ import { ServiceType } from '@sap-ux/odata-service-writer';
 import { join } from 'path';
 import Generator from 'yeoman-generator';
 import yeomanTest from 'yeoman-test';
-import { FioriAppGenerator, writeAPIHubKeyFiles, writeReadMe } from '../../../src/fiori-app-generator';
+import { type FioriAppGeneratorOptions, FioriAppGenerator } from '../../../src/fiori-app-generator';
 import { runPostGenerationTasks } from '../../../src/fiori-app-generator/end';
-import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions';
 import { installDependencies } from '../../../src/fiori-app-generator/install';
 import { transformState } from '../../../src/fiori-app-generator/transforms';
+import { writeAPIHubKeyFiles, writeReadMe } from '../../../src/fiori-app-generator/writing';
 import type { Project, State } from '../../../src/types';
 import { ApiHubType, FIORI_STEPS, FloorplanFE, FloorplanFF, PLATFORMS, generatorName } from '../../../src/types';
 import { deleteCache, getYeomanUiStepConfig, t } from '../../../src/utils';
@@ -244,14 +244,16 @@ describe('Test FioriAppGenerator', () => {
                 ToolsId: 'abcd1234'
             });
             expect(writeReadMe).toHaveBeenCalledWith(
-                mockState.project,
-                mockState.service,
-                floorplan,
+                {
+                    project: mockState.project,
+                    service: mockState.service,
+                    floorplan,
+                    entityRelatedConfig: mockState.entityRelatedConfig
+                },
                 generatorName,
                 mockGenVer,
                 appPath,
                 expect.objectContaining({ commit: expect.any(Function) }),
-                mockState.entityRelatedConfig,
                 { ui5Version: appConfigMocked.ui5?.minUI5Version }
             );
             expect(writeAPIHubKeyFiles).not.toHaveBeenCalled();

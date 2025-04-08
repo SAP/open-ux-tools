@@ -68,8 +68,8 @@ async function installProjectDependencies(
     } catch (error) {
         log?.info(error ?? t('logMessages.errorInstallingDependencies'));
         TelemetryHelper.createTelemetryData({ installFailure: true });
-        /*eslint no-void: ["error", { "allowAsStatement": true }]*/
-        void sendTelemetry('GENERATION_INSTALL_FAIL', TelemetryHelper.telemetryData);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        sendTelemetry('GENERATION_INSTALL_FAIL', TelemetryHelper.telemetryData);
     }
 }
 
@@ -106,16 +106,14 @@ export async function installDependencies(
     // Install additional libs to root CAP project
     let capInstallOpts: CapInstallOptions | undefined;
     if (capService) {
-        capInstallOpts = Object.assign(
-            {
-                codeAssist: enableCodeAssist,
-                rootPath: capService.projectPath,
-                // if NPM workspaces are used, depsInstallPath will be the CAP projectpackage.json. Otherwise the CAP app package.json.
-                depsInstallPath: useNpmWorkspaces ? capService.projectPath : appPackagePath,
-                useNpmWorkspaces
-            },
-            { ui5Version }
-        );
+        capInstallOpts = {
+            codeAssist: enableCodeAssist,
+            rootPath: capService.projectPath,
+            // if NPM workspaces are used, depsInstallPath will be the CAP projectpackage.json. Otherwise the CAP app package.json.
+            depsInstallPath: useNpmWorkspaces ? capService.projectPath : appPackagePath,
+            useWorkspaces: useNpmWorkspaces,
+            ui5Version
+        };
     }
     await installProjectDependencies(capInstallOpts?.depsInstallPath ?? appPackagePath, logger, capInstallOpts);
 }

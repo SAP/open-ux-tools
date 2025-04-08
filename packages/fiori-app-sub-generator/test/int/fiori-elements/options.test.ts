@@ -1,21 +1,12 @@
-import { ApiHubType, FloorplanFE } from '../../../src/types';
-import type { Project, Service, State, ApiHubConfig } from '../../../src/types';
-import '@sap-ux/jest-file-matchers';
-import { mkdirSync, readdirSync, readFileSync } from 'fs';
-import { join } from 'path';
-import { cleanTestDir, ignoreMatcherOpts } from '../test-utils';
-import cloneDeep from 'lodash/cloneDeep';
-import {
-    baseTestProject,
-    getExpectedOutputPath,
-    originalCwd,
-    runWritingPhase,
-    tmpFolder,
-    v2EntityConfig,
-    v2Service
-} from './test-utils';
-import { getTestDir } from '../test-utils';
 import * as btpUtils from '@sap-ux/btp-utils';
+import '@sap-ux/jest-file-matchers';
+import { readdirSync, readFileSync } from 'fs';
+import cloneDeep from 'lodash/cloneDeep';
+import { join } from 'path';
+import type { ApiHubConfig, Project, Service, State } from '../../../src/types';
+import { ApiHubType, FloorplanFE } from '../../../src/types';
+import { cleanTestDir, getTestDir, ignoreMatcherOpts, originalCwd, runWritingPhaseGen } from '../test-utils';
+import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -30,7 +21,6 @@ describe('Optional settings', () => {
     let testProjectName;
     let project: Partial<Project>;
     const testDir: string = getTestDir('options');
-    const tmpTestDir: string = `${tmpFolder}_options`;
 
     const defaultFEState: Partial<State> = {
         service: { ...v2Service, annotations: undefined },
@@ -40,13 +30,6 @@ describe('Optional settings', () => {
 
     beforeAll(() => {
         cleanTestDir(testDir);
-        try {
-            mkdirSync(tmpTestDir, { recursive: true });
-        } catch {
-            () => {
-                // Needed for lint
-            };
-        }
     });
 
     afterAll(() => {
@@ -55,7 +38,6 @@ describe('Optional settings', () => {
             if (readdirSync(testDir).length === 0) {
                 console.log('Removing test output folder');
                 cleanTestDir(testDir);
-                cleanTestDir(tmpTestDir);
             }
             process.chdir(originalCwd);
         } catch {
@@ -88,7 +70,7 @@ describe('Optional settings', () => {
             }) as Project
         });
 
-        await runWritingPhase(testFEState, tmpTestDir);
+        await runWritingPhaseGen(testFEState);
         expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -104,7 +86,7 @@ describe('Optional settings', () => {
                 enableEslint: true
             }) as Project
         });
-        await runWritingPhase(testFEState, tmpTestDir);
+        await runWritingPhaseGen(testFEState);
         expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -120,7 +102,7 @@ describe('Optional settings', () => {
                 enableTypeScript: true
             }) as Project
         });
-        await runWritingPhase(testFEState, tmpTestDir);
+        await runWritingPhaseGen(testFEState);
         expect(join(testDir, testProjectName)).toMatchFolder(expectedOutputPath, ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -136,7 +118,7 @@ describe('Optional settings', () => {
             }) as Project
         });
 
-        await runWritingPhase(testFEState, tmpTestDir);
+        await runWritingPhaseGen(testFEState);
         let fileAsString = readFileSync(join(testDir, testProjectName, 'webapp/index.html')).toString();
         expect(fileAsString).toMatch(/data-sap-ui-theme="sap_fiori_3_dark"/);
 
@@ -158,7 +140,7 @@ describe('Optional settings', () => {
             }) as Project
         });
 
-        await runWritingPhase(testFEState, tmpTestDir);
+        await runWritingPhaseGen(testFEState);
         let fileAsString = readFileSync(join(testDir, testProjectName, 'webapp/index.html')).toString();
         expect(fileAsString).toMatch(/data-sap-ui-theme="sap_horizon"/);
 
@@ -186,7 +168,7 @@ describe('Optional settings', () => {
             floorplan: FloorplanFE.FE_LROP
         });
         jest.spyOn(btpUtils, 'isAppStudio').mockImplementation(() => true);
-        await runWritingPhase(testFEState, tmpTestDir);
+        await runWritingPhaseGen(testFEState);
         const fileAsString = readFileSync(join(testDir, testProjectName, '.env')).toString();
         expect(fileAsString).toMatchInlineSnapshot(`
             "API_HUB_API_KEY=testAPIHubKey:zbcd1234

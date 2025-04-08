@@ -1,21 +1,19 @@
 import '@sap-ux/jest-file-matchers';
 import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
-import type { Project, State, Service } from '../../../src/types';
-import { ApiHubType, FloorplanFE } from '../../../src/types';
-import { mkdirSync, readdirSync } from 'fs';
+import { readdirSync } from 'fs';
 import cloneDeep from 'lodash/cloneDeep';
 import { join } from 'path';
-import { cleanTestDir, getTestData, ignoreMatcherOpts } from '../test-utils';
+import type { Project, Service, State } from '../../../src/types';
+import { ApiHubType, FloorplanFE } from '../../../src/types';
 import {
-    baseTestProject,
-    getExpectedOutputPath,
+    cleanTestDir,
+    getTestData,
+    getTestDir,
+    ignoreMatcherOpts,
     originalCwd,
-    runWritingPhase,
-    tmpFolder,
-    v2EntityConfig,
-    v2Service
-} from './test-utils';
-import { getTestDir } from '../test-utils';
+    runWritingPhaseGen
+} from '../test-utils';
+import { baseTestProject, getExpectedOutputPath, v2EntityConfig, v2Service } from './test-utils';
 
 jest.mock('@sap-ux/fiori-generator-shared', () => {
     const fioriGenShared = jest.requireActual('@sap-ux/fiori-generator-shared');
@@ -31,19 +29,12 @@ describe('Generate v2 apps', () => {
     const v2Project: Partial<Project> = cloneDeep({
         ...baseTestProject(testDir)
     });
-    const tmpTestDir: string = `${tmpFolder}_generate_v2`;
     const fixturesPath = join(__dirname, './fixtures');
 
     beforeAll(() => {
         console.warn = () => {}; // Suppress warning messages from generator caching
         console.log(`Removing test output folder: ${testDir}`);
         cleanTestDir(testDir);
-        try {
-            console.log(`Creating temp folder: ${tmpTestDir}`);
-            mkdirSync(tmpTestDir, { recursive: true });
-        } catch (err) {
-            console.log('Error during tests setup', err);
-        }
     });
 
     afterAll(() => {
@@ -52,8 +43,6 @@ describe('Generate v2 apps', () => {
             if (readdirSync(testDir).length === 0) {
                 console.log(`Removing test output folder: ${testDir}`);
                 cleanTestDir(testDir);
-                console.log(`Removing temp folder: ${tmpTestDir}`);
-                cleanTestDir(tmpTestDir);
             }
             console.log(`Restoring cwd: ${originalCwd}`);
             process.chdir(originalCwd);
@@ -75,7 +64,7 @@ describe('Generate v2 apps', () => {
             service: v2Service,
             entityRelatedConfig: v2EntityConfig
         });
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -102,7 +91,7 @@ describe('Generate v2 apps', () => {
             service: destService,
             entityRelatedConfig: v2EntityConfig
         });
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -130,7 +119,7 @@ describe('Generate v2 apps', () => {
             service: destService,
             entityRelatedConfig: v2EntityConfig
         });
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -154,7 +143,7 @@ describe('Generate v2 apps', () => {
             }),
             entityRelatedConfig: v2EntityConfig
         });
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -183,7 +172,7 @@ describe('Generate v2 apps', () => {
             entityRelatedConfig: v2EntityConfig
         };
 
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -208,7 +197,7 @@ describe('Generate v2 apps', () => {
             }),
             entityRelatedConfig: v2EntityConfig
         });
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -256,7 +245,7 @@ describe('Generate v2 apps', () => {
                 smartVariantManagement: true
             }
         });
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
 
@@ -271,7 +260,7 @@ describe('Generate v2 apps', () => {
         testProjectName = `${testProjectName}_no_opts`;
         testState.project!.name = testProjectName;
 
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -308,7 +297,7 @@ describe('Generate v2 apps', () => {
                 }
             }
         });
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });
@@ -325,7 +314,7 @@ describe('Generate v2 apps', () => {
             entityRelatedConfig: v2EntityConfig
         });
 
-        await runWritingPhase(testState, tmpTestDir);
+        await runWritingPhaseGen(testState);
         expect(join(testDir, testProjectName)).toMatchFolder(getExpectedOutputPath(testProjectName), ignoreMatcherOpts);
         cleanTestDir(join(testDir, testProjectName));
     });

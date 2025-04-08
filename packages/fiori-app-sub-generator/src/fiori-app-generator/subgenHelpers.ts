@@ -3,7 +3,8 @@ import type { ILogWrapper } from '@sap-ux/fiori-generator-shared';
 import type { FlpConfigOptions } from '@sap-ux/flp-config-sub-generator';
 import { join } from 'path';
 import type Generator from 'yeoman-generator';
-import type { Service } from '../types';
+import { defaultNavActionDisplay, type Service } from '../types';
+import { getSemanticObject } from '../utils';
 
 /**
  * Add the '@sap/fiori:fiori-deployment' generator as a subgenerator.
@@ -50,10 +51,14 @@ export function addDeployGen(
 }
 
 /**
+ * Add the '@sap/fiori:flp-config' generator as a subgenerator using `composeWith`.
+ * Skipping the prompting (`skipPrompt`) will still write the config, but not ask for any input.
  *
- * @param root0
- * @param root0.projectName
- * @param root0.targetFolder
+ * @param param0
+ * @param param0.projectName
+ * @param param0.targetFolder
+ * @param param0.title
+ * @param param0.skipPrompt The FLP config prompt step will be skipped, but the config will still br written
  * @param composeWith
  * @param logger
  * @param appWizard
@@ -62,17 +67,21 @@ export function addDeployGen(
 export function addFlpGen(
     {
         projectName,
-        targetFolder
+        targetFolder,
+        title,
+        skipPrompt
     }: {
         projectName: string;
         targetFolder: string;
+        title: string;
+        skipPrompt: boolean;
     },
     composeWith: Generator['composeWith'],
     logger: ILogWrapper,
     appWizard?: AppWizard,
     vscode?: any
 ): void {
-    const flpConfigOptions = {
+    let flpConfigOptions = {
         launchFlpConfigAsSubGenerator: true,
         appWizard,
         vscode,
@@ -80,5 +89,16 @@ export function addFlpGen(
         logWrapper: logger
     } as FlpConfigOptions;
 
+    if (skipPrompt) {
+        flpConfigOptions = {
+            ...flpConfigOptions,
+            skipPrompt: true,
+            inboundConfig: {
+                semanticObject: getSemanticObject(projectName),
+                action: defaultNavActionDisplay,
+                title
+            }
+        };
+    }
     composeWith('@sap/fiori:flp-config', flpConfigOptions);
 }

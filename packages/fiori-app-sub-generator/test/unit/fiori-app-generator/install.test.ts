@@ -58,16 +58,19 @@ describe('Test install queue functions', () => {
             os.platform() === 'win32' ? 'Running: `npm.cmd install`' : 'Running: `npm install`'
         );
         expect(infoLog).toHaveBeenCalledWith('Some process log');
+        expect(infoLog).toHaveBeenCalledWith('Stack trace error from stderr buffer');
         expect(infoLog).toHaveBeenCalledWith(
             os.platform() === 'win32'
                 ? '`npm.cmd install` failed with error code 1.'
                 : '`npm install` failed with error code 1.'
         );
-        expect(infoLog).toHaveBeenCalledWith(
-            os.platform() === 'win32'
-                ? 'Error code 1 returned from `npm.cmd install`. Some process log, Stack trace error from stderr buffer'
-                : 'Error code 1 returned from `npm install`. Some process log, Stack trace error from stderr buffer'
-        );
+        expect(infoLog.mock.lastCall).toEqual([
+            new Error(
+                `Error code 1 returned from \`${
+                    os.platform() === 'win32' ? 'npm.cmd' : 'npm'
+                } install\`. Some process log, Stack trace error from stderr buffer`
+            )
+        ]);
     });
 
     it('Successful exit code', async () => {

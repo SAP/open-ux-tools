@@ -33,6 +33,7 @@ import {
     FloorplanFF,
     generatorName,
     STEP_DATASOURCE_AND_SERVICE,
+    STEP_FLP_CONFIG,
     STEP_PROJECT_ATTRIBUTES
 } from '../types';
 import {
@@ -76,7 +77,6 @@ export class FioriAppGenerator extends Generator {
     private readonly vscode: unknown;
     // Performance measurement
     private generationTime0: number; // start of writing phase millisecond timestamp
-    // Provide a convienient way to access the appWizard instance from child classes
     private appWizard: AppWizard | undefined;
 
     protected state: State;
@@ -86,9 +86,8 @@ export class FioriAppGenerator extends Generator {
     protected generatorVersion = this.rootGeneratorVersion();
 
     // The configuration of steps in YUI and their interdependance
-    // todo: private all when prompting is in this class
     private yeomanUiStepConfig: YeomanUiStepConfig;
-    private setPromptsCallback: (fn: any) => void;
+    private readonly setPromptsCallback: (fn: any) => void;
     private prompts: YeomanUiSteps;
     protected fioriSteps: FioriStep[];
 
@@ -101,7 +100,6 @@ export class FioriAppGenerator extends Generator {
         super(args, opts, {
             unique: 'namespace'
         });
-        // TODO: this is a temp workaround - we need an alternative
         this.vscode = opts['vscode'];
 
         FioriAppGenerator._logger = this.options.logWrapper ?? DefaultLogger;
@@ -146,7 +144,8 @@ export class FioriAppGenerator extends Generator {
                 useCache: true
             };
             // do not await as this is pre-loading the cache
-            void getUI5Versions(filterOptions);
+            // eslint-disable-next-line @typescript-eslint/no-floating-promises
+            getUI5Versions(filterOptions);
         }
 
         // Floorplans, externally configured either via adapters or headless config
@@ -194,7 +193,7 @@ export class FioriAppGenerator extends Generator {
                     }
                 }
                 /** END: Back button temp fix */
-                this.state.service = Object.assign({}, this.state?.service, serviceAnswers);
+                this.state.service = { ...this.state?.service, ...serviceAnswers };
             }
 
             // Freestyle templates require a view name
@@ -304,7 +303,9 @@ export class FioriAppGenerator extends Generator {
                 addFlpGen(
                     {
                         projectName: this.state.project.name,
-                        targetFolder: this.state.project.targetFolder
+                        targetFolder: this.state.project.targetFolder,
+                        title: this.state.project.title,
+                        skipPrompt: !hasStep(this.fioriSteps, STEP_FLP_CONFIG)
                     },
                     this.composeWith.bind(this),
                     FioriAppGenerator.logger,
@@ -325,7 +326,7 @@ export class FioriAppGenerator extends Generator {
         try {
             this.generationTime0 = performance.now();
             TelemetryHelper.markAppGenStartTime();
-            const { service, project, floorplan, entityRelatedConfig, readMe } = this.state;
+            const { service, project, floorplan } = this.state;
             FioriAppGenerator.logger.info(
                 t('logMessages.copyingTemplateFiles', { templateName: this.state.floorplan })
             );
@@ -363,7 +364,7 @@ export class FioriAppGenerator extends Generator {
                 Template: t(`floorplans.label.${floorplan}`, {
                     odataVersion: service.version
                 }),
-                DataSource: service.source, // Why are we setting the same value twice? todo: remove one
+                DataSource: service.source,
                 UI5Version: project.ui5Version || latestVersionString,
                 Theme: project.ui5Theme,
                 AppGenVersion: this.generatorVersion,
@@ -384,18 +385,8 @@ export class FioriAppGenerator extends Generator {
             }
 
             // Write after app, using values from the transformed state so defaults have been applied
-            const readMeUpdated = { ...readMe, ui5Version: appConfig.ui5?.minUI5Version };
-            await writeReadMe(
-                project,
-                service,
-                floorplan,
-                generatorName,
-                this.generatorVersion,
-                destRoot,
-                this.fs,
-                entityRelatedConfig,
-                readMeUpdated
-            );
+            const readMeUpdated = { ui5Version: appConfig.ui5?.minUI5Version };
+            await writeReadMe(this.state, generatorName, this.generatorVersion, destRoot, this.fs, readMeUpdated);
         } catch (error) {
             FioriAppGenerator.logger.fatal(`${t('error.errorWritingApplicationFiles')} : ${error}`);
             this._exitOnError(error);
@@ -449,9 +440,9 @@ export class FioriAppGenerator extends Generator {
             this.options.followUpCommand
         );
 
-        const generationTime03 = performance.now();
+        const generationTime02 = performance.now();
         FioriAppGenerator.logger.info(
-            `Total time taken: ${Math.round((generationTime03 - this.generationTime0) / 1000)} seconds.`
+            `Total time taken: ${Math.round((generationTime02 - this.generationTime0) / 1000)} seconds.`
         );
     }
 
@@ -460,8 +451,8 @@ export class FioriAppGenerator extends Generator {
      * @param error
      */
     private _exitOnError(error: string): void {
-        /*eslint no-void: ["error", { "allowAsStatement": true }]*/
-        void sendTelemetry('GENERATION_WRITING_FAIL', TelemetryHelper.telemetryData);
+        // eslint-disable-next-line @typescript-eslint/no-floating-promises
+        sendTelemetry('GENERATION_WRITING_FAIL', TelemetryHelper.telemetryData);
         throw new Error(error);
     }
 }

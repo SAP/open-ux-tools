@@ -7,15 +7,21 @@ import {
     README_GENERATOR_REGEX,
     YAML_VERSION_REGEX
 } from '@sap-ux/jest-file-matchers';
-import { readFileSync } from 'fs';
 import { execSync } from 'child_process';
+import { readFileSync } from 'fs';
+import os from 'os';
 import { join } from 'path';
 import { rimraf } from 'rimraf';
-import os from 'os';
+import yeomanTest from 'yeoman-test';
+import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator/fioriAppGeneratorOptions';
+import type { State } from '../../../src/types';
 import { TestWritingGenerator } from './testGeneratorWriting';
+
 export { TestWritingGenerator };
 
-const testOutputDir = './test-output/';
+const testOutputFolder = './test-output/';
+const testDir: string = join(__dirname, '../', testOutputFolder);
+export const originalCwd: string = process.cwd(); // Generation changes the cwd, this breaks sonar report so we restore later
 
 export function cleanTestDir(path: string): void {
     console.log('Test path clean', path);
@@ -68,9 +74,21 @@ export const ignoreMatcherOpts: MatcherIgnore = {
  * Sets the output test directory path appending the specified path if provided.
  * If this function is not called the default test directoty will be used.
  *
- * @param testGroup - name of the folder that will be used for testing outputs
+ * @param testGroup - subfolder to enable parallel test execution so output are not overwritten or deleted
  * @returns the path to the test directory
  */
 export function getTestDir(testGroup = ''): string {
-    return join(__dirname, '../../', testOutputDir, testGroup);
+    return join(testDir, testGroup);
+}
+
+export async function runWritingPhaseGen(
+    state: Partial<State>,
+    options?: Partial<FioriAppGeneratorOptions>
+): Promise<any> {
+    const mergedOptions = {
+        state,
+        skipInstall: true,
+        ...options
+    };
+    return yeomanTest.create(TestWritingGenerator, {}, {}).withOptions(mergedOptions).run();
 }
