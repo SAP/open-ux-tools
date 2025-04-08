@@ -3,7 +3,7 @@ import { UI5_VERSIONS_CDN_URL, UI5_VERSIONS_NEO_CDN_URL } from '../../../src/bas
 
 import { fetchMock } from '../../__mock__/global';
 
-describe('fetchers', () => {
+describe('ui5 fetchers', () => {
     beforeEach(() => {
         fetchMock.mockClear();
     });

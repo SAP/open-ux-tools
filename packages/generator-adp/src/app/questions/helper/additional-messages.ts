@@ -20,7 +20,7 @@ interface SupportFlags {
  * @param isCloudProject
  * @returns {{message: string, severity: Severity} | undefined} An object containing a message and its severity level.
  */
-export const systemAdditionalMessages = (
+export const getSystemAdditionalMessages = (
     flexUISystem: FlexUISupportedSystem | undefined,
     isCloudProject: boolean
 ): { message: string; severity: Severity } | undefined => {
@@ -70,7 +70,7 @@ export const systemAdditionalMessages = (
  * @param {boolean} isApplicationSupported - Indicates whether the application is supported at all.
  * @returns {{ message: string; severity: Severity } | undefined} Message object or undefined if no message is applicable.
  */
-export const appAdditionalMessages = (
+export const getAppAdditionalMessages = (
     app: SourceApplication,
     { hasSyncViews, isSupported, isPartiallySupported, isV4AppInternalMode }: SupportFlags,
     isApplicationSupported: boolean

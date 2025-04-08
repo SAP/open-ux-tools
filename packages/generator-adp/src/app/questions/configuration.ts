@@ -31,7 +31,7 @@ import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
 import { getApplicationChoices } from './helper/choices';
 import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
-import { appAdditionalMessages, systemAdditionalMessages } from './helper/additional-messages';
+import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -186,7 +186,7 @@ export class ConfigPrompter {
             },
             default: '',
             validate: async (value: string, answers: ConfigAnswers) => await this.validateSystem(value, answers),
-            additionalMessages: () => systemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
+            additionalMessages: () => getSystemAdditionalMessages(this.flexUISystem, !!this.isCloudProject)
         };
     }
 
@@ -285,7 +285,7 @@ export class ConfigPrompter {
                     this.isLoginSuccessful
                 ),
             additionalMessages: (app) =>
-                appAdditionalMessages(
+                getAppAdditionalMessages(
                     app as SourceApplication,
                     {
                         hasSyncViews: this.containsSyncViews,
@@ -533,10 +533,9 @@ export class ConfigPrompter {
             throw new Error(t('error.manifestCouldNotBeValidated'));
         }
 
-        if (this.appManifest['sap.ui5']) {
-            if (this.appManifest['sap.ui5']?.flexEnabled === false) {
-                throw new Error(t('error.appDoesNotSupportAdaptation'));
-            }
+        const ui5 = this.appManifest?.['sap.ui5'];
+        if (ui5?.flexEnabled === false) {
+            throw new Error(t('error.appDoesNotSupportAdaptation'));
         }
     }
 
