@@ -26,7 +26,7 @@
     "routerType": {
         "standaloneAppRouter": "Standalone Approuter",
         "managedAppRouter": "Managed Approuter",
-        "appFrontAppService": "Application Frontend Service"
+        "appFrontAppService": "Application Front-End Service"
     },
     "errors": {
         "emptyDestinationNameError": "You must provide a destination name in order to continue.",
