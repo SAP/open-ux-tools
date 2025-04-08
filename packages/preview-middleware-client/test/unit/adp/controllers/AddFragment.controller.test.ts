@@ -22,7 +22,7 @@ import {
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from 'open/ux/preview/client/adp/quick-actions/control-types';
-// import { AddFragmentData } from '../../../../src/adp/add-fragment';
+import { AddFragmentData } from '../../../../src/adp/add-fragment';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -1639,6 +1639,70 @@ describe('AddFragment', () => {
                     });
                 }
             );
+        });
+
+        test('resolve deffered data promise when passed', async () => {
+            const executeSpy = jest.fn();
+            rtaMock.getCommandStack.mockReturnValue({
+                pushAndExecute: executeSpy
+            });
+            rtaMock.getFlexSettings.mockReturnValue({ projectId: 'adp.app' });
+
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+            jest.spyOn(ControlUtils, 'getRuntimeControl').mockReturnValue({
+                getMetadata: jest.fn().mockReturnValue({
+                    getAllAggregations: jest.fn().mockReturnValue({}),
+                    getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
+                    getDefaultAggregationName: jest.fn().mockReturnValue('content')
+                })
+            } as unknown as ManagedObject);
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+            const resolveSpy = jest.fn();
+            const mockData = {
+                deferred: {
+                    resolve: resolveSpy
+                }
+            };
+            const addFragment = new AddFragment(
+                'TestName',
+                overlays as unknown as UI5Element,
+                rtaMock as unknown as RuntimeAuthoring,
+                { title: 'Test Title' },
+                mockData as unknown as AddFragmentData
+            );
+            addFragment.model = {
+                setProperty: jest.fn(),
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce('test')
+                    .mockReturnValueOnce(1)
+                    .mockReturnValueOnce('content')
+            } as unknown as JSONModel;
+
+            addFragment.handleDialogClose = jest.fn();
+
+            await addFragment.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await addFragment.onCreateBtnPress(event as unknown as Event);
+
+            expect(mockData.deferred.resolve).toHaveBeenCalledWith({
+                fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
+                fragmentPath: `fragments/test.fragment.xml`,
+                index: 1,
+                targetAggregation: 'content'
+            });
         });
     });
 });
