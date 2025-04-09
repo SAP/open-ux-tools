@@ -1,5 +1,5 @@
 import { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { AttributesAnswers, FlexLayer, validateUI5Version } from '@sap-ux/adp-tooling';
+import { AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
 import {
     validateEmptyString,
     validateNamespaceAdp,
@@ -15,7 +15,6 @@ import {
     type NamespacePromptOptions,
     basicPromptNames,
     TargetFolderPromptOptions,
-    UI5VersionPromptOptions,
     EnableTypeScriptPromptOptions
 } from '../types';
 import { t } from '../../utils/i18n';
@@ -71,20 +70,15 @@ export function getPrompts(path: string, config: Config, promptOptions?: BasicPr
  *
  * @param {string} path - The base project path.
  * @param {boolean} isCustomerBase - Whether the layer is CUSTOMER_BASE.
- * @param {ProjectNamePromptOptions} [options] - Optional prompt options.
+ * @param {ProjectNamePromptOptions} [_] - Optional prompt options.
  * @returns {AttributesQuestion} The prompt configuration for project name.
  */
-function getProjectNamePrompt(
-    path: string,
-    isCustomerBase: boolean,
-    options?: ProjectNamePromptOptions
-): AttributesQuestion {
+function getProjectNamePrompt(path: string, isCustomerBase: boolean, _?: ProjectNamePromptOptions): AttributesQuestion {
     return {
         type: 'input',
         name: basicPromptNames.projectName,
         message: t('prompts.projectNameLabel'),
-        default: (answers: AttributesAnswers) =>
-            options?.default ?? getDefaultProjectName(answers.targetFolder || path),
+        default: (answers: AttributesAnswers) => getDefaultProjectName(answers.targetFolder || path),
         guiOptions: {
             mandatory: true,
             breadcrumb: true,
@@ -197,7 +191,7 @@ function getUi5VersionPrompt(
             breadcrumb: t('prompts.ui5VersionBreadcrumb'),
             mandatory: true
         },
-        validate: async (version: string) => await validateUI5Version(version),
+        validate: async (version: string) => await validateUI5VersionExists(version),
         default: async () => await getVersionDefaultValue(ui5Versions),
         additionalMessages: () => getVersionAdditionalMessages(isVersionDetected)
     } as ListQuestion<AttributesAnswers>;

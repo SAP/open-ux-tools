@@ -1,3 +1,5 @@
+import { validateEmptyString } from '@sap-ux/project-input-validator';
+
 import { t } from '../i18n';
 import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from './format';
 
@@ -7,24 +9,26 @@ import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from './format';
  * @param {string} [version] - The version to validate.
  * @returns {Promise<string | boolean>} True if the version is valid, a string message if not, or if an error occurs.
  */
-export async function validateUI5Version(version?: string): Promise<string | boolean> {
-    if (version) {
-        const selectedVersionURL = getOfficialBaseUI5VersionUrl(version);
-        const resource = version.includes('snapshot') ? 'neo-app.json' : getFormattedVersion(version);
-
-        try {
-            await fetch(`${selectedVersionURL}/${resource}`);
-            return true;
-        } catch (e) {
-            if (version.includes('snapshot')) {
-                const message = t('validators.ui5VersionNotReachableError');
-                return `${message.replace('<URL>', selectedVersionURL)}`;
-            }
-            if (e.response.status === 400 || e.response.status === 404) {
-                return t('validators.ui5VersionOutdatedError');
-            }
-            return `Error on validating UI5 Version: ${e.message}`;
-        }
+export async function validateUI5VersionExists(version: string): Promise<string | boolean> {
+    const validationResult = validateEmptyString(version);
+    if (typeof validationResult === 'string') {
+        return validationResult;
     }
-    return t('validators.ui5VersionCannotBeEmpty');
+
+    const selectedVersionURL = getOfficialBaseUI5VersionUrl(version);
+    const resource = version.includes('snapshot') ? 'neo-app.json' : getFormattedVersion(version);
+
+    try {
+        await fetch(`${selectedVersionURL}/${resource}`);
+        return true;
+    } catch (e) {
+        if (version.includes('snapshot')) {
+            const message = t('validators.ui5VersionNotReachableError');
+            return `${message.replace('<URL>', selectedVersionURL)}`;
+        }
+        if (e.response.status === 400 || e.response.status === 404) {
+            return t('validators.ui5VersionOutdatedError');
+        }
+        return t('validators.ui5VersionDoesNotExistGeneric', { error: e.message });
+    }
 }

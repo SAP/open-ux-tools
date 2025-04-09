@@ -1,4 +1,4 @@
-import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers } from '@sap-ux/adp-tooling';
 
 /**
  * Determines if a credential question should be shown.

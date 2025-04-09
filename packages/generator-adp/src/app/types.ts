@@ -94,7 +94,6 @@ export enum basicPromptNames {
 export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
 
 export interface ProjectNamePromptOptions {
-    default?: string;
     hide?: boolean;
 }
 
