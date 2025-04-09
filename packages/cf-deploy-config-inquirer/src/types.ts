@@ -36,9 +36,7 @@ export enum appRouterPromptNames {
     /* Prompt for selecting abap service binding*/
     addABAPServiceBinding = 'addABAPServiceBinding',
     /* Prompt for selecting the ABAP environments */
-    abapServiceProvider = 'abapServiceProvider',
-    /** The prompt for confirming if the router options should be displayed */
-    showRouterOptions = 'showRouterOptions'
+    abapServiceProvider = 'abapServiceProvider'
 }
 
 /**
@@ -92,7 +90,7 @@ export type booleanPromptOptions = Partial<
         | appRouterPromptNames.routerType
         | appRouterPromptNames.addABAPServiceBinding
         | appRouterPromptNames.addConnectivityService
-        | appRouterPromptNames.showRouterOptions,
+        | promptNames.showRouterOptions,
         boolean
     >
 >;
@@ -139,6 +137,8 @@ export interface CfDeployConfigAnswers {
     addManagedAppRouter?: boolean;
     /** Indicates whether the user opted to overwrite the destination. */
     overwrite?: boolean;
+    /** Indicates whether the user opted to include the router type. */
+    routerType?: RouterModuleType;
 }
 
 /**

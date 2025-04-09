@@ -5,8 +5,8 @@ import {
     appRouterPromptNames,
     type CfAppRouterDeployConfigPromptOptions,
     type CfAppRouterDeployConfigQuestions,
-    type CfDeployConfigPromptOptions,
     type CfDeployConfigQuestions,
+    type CfDeployConfigPromptOptions,
     getAppRouterPrompts,
     getPrompts,
     promptNames
@@ -58,12 +58,12 @@ export async function getCFQuestions({
     const options: CfDeployConfigPromptOptions = {
         [promptNames.destinationName]: {
             defaultValue: destinationQuestionDefaultOption(isAbapDirectServiceBinding, isBAS, cfDestination),
-            hint: !!isAbapDirectServiceBinding,
+            hint: isAbapDirectServiceBinding,
             useAutocomplete: getHostEnvironment() === hostEnvironment.cli,
             addBTPDestinationList: isBAS ? !isAbapDirectServiceBinding : false,
             additionalChoiceList: cfChoices
         },
-        [promptNames.addManagedAppRouter]: !mtaYamlExists && !isCap,
+        [promptNames.showRouterOptions]: !mtaYamlExists && !isCap,
         [promptNames.overwrite]: addOverwrite
     };
 

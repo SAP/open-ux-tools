@@ -41,7 +41,8 @@ import { CfDeployConfigOptions } from './types';
 import {
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,
-    CfDeployConfigAnswers
+    CfDeployConfigAnswers,
+    RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Answers } from 'inquirer';
@@ -254,9 +255,17 @@ export default class extends DeploymentGenerator {
     private async _reconcileAnswersWithOptions(): Promise<void> {
         const destinationName = this.destinationName || this.answers.destinationName;
         const destination = await getDestination(destinationName);
-        const addManagedAppRouter = this.options.addManagedAppRouter ?? this.answers.addManagedAppRouter ?? false;
         const isDestinationFullUrl =
             this.options.isFullUrlDest ?? (destination && isFullUrlDestination(destination)) ?? false;
+        let addManagedAppRouter =
+            this.options.addManagedAppRouter ?? this.answers.routerType === RouterModuleType.Managed ?? false;
+        let addAppFrontendRouter =
+            this.options.addAppFrontendRouter ?? this.answers.routerType === RouterModuleType.AppFront ?? false;
+        // Options passed to generator, can toggle these values
+        if (addManagedAppRouter && addManagedAppRouter && this.answers.routerType === RouterModuleType.None) {
+            addManagedAppRouter = false;
+            addAppFrontendRouter = false;
+        }
         const destinationAuthentication =
             this.options.destinationAuthType ?? destination?.Authentication ?? DESTINATION_AUTHTYPE_NOTFOUND;
         const overwrite = this.options.overwrite ?? this.answers.overwrite;
@@ -266,7 +275,8 @@ export default class extends DeploymentGenerator {
             addManagedAppRouter,
             isDestinationFullUrl,
             destinationAuthentication,
-            overwrite
+            overwrite,
+            addAppFrontendRouter
         };
     }
 
@@ -310,7 +320,8 @@ export default class extends DeploymentGenerator {
     private _getAppConfig(): CFAppConfig {
         return {
             appPath: this.appPath,
-            addManagedAppRouter: this.answers.addManagedAppRouter,
+            addManagedAppRouter: this.answers.routerType === RouterModuleType.Managed,
+            addAppFrontendRouter: this.answers.routerType === RouterModuleType.AppFront,
             destinationName: this.answers.destinationName,
             destinationAuthentication: this.answers.destinationAuthentication,
             isDestinationFullUrl: this.answers.isDestinationFullUrl,
@@ -383,6 +394,7 @@ export default class extends DeploymentGenerator {
             TelemetryHelper.createTelemetryData({
                 DeployTarget: 'CF',
                 ManagedApprouter: this.answers.addManagedAppRouter,
+                AppFrontendRouter: this.answers.addAppFrontendRouter,
                 MTA: this.mtaPath ? 'true' : 'false',
                 ...this.options.telemetryData
             }) ?? {};
