@@ -2,7 +2,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig, CustomConfig, PackageJson } from '../types';
+import type { CloudApp, AdpWriterConfig, CustomConfig } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -19,9 +19,9 @@ import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-conf
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
  *
- * @returns {PackageJson} An object containing the `name` and `version` of the package.
+ * @returns {Package} An object containing the `name` and `version` of the package.
  */
-export function getPackageJSONInfo(): PackageJson {
+export function getPackageJSONInfo(): Package {
     const defaultPackage = {
         name: '@sap-ux/adp-tooling',
         version: 'NO_VERSION_FOUND'

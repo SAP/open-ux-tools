@@ -50,7 +50,7 @@ interface ConfigOptions {
  * @param {FlexLayer} options.layer - The FlexLayer indicating the deployment layer.
  * @param {object} options.defaults - Default project parameters.
  * @param {string} options.defaults.namespace - The default namespace to be used.
- * @param {PackageJson} options.packageJson - The package.json information for generating custom configuration.
+ * @param {Package} options.packageJson - The package.json information for generating custom configuration.
  * @param {ToolsLogger} options.logger - The logger for debugging and error logging.
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
