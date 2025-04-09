@@ -48,7 +48,7 @@ class ApplicationInsightClient extends Client {
      */
     public reportBlocking(
         eventName: string,
-        properties: { [key: string]: string | boolean },
+        properties: { [key: string]: string | boolean | number },
         measurements: { [key: string]: number },
         sampleRate: SampleRate | undefined,
         ignoreSettings: boolean = false
@@ -74,7 +74,7 @@ class ApplicationInsightClient extends Client {
      */
     public async report(
         eventName: string,
-        properties: { [key: string]: string | boolean },
+        properties: { [key: string]: string | boolean | number },
         measurements: { [key: string]: number },
         sampleRate: SampleRate | undefined,
         telemetryHelperProperties?: { [key: string]: string },
@@ -98,7 +98,7 @@ class ApplicationInsightClient extends Client {
      */
     private prepareClientAndEvent(
         eventName: string,
-        properties: { [key: string]: string | boolean },
+        properties: { [key: string]: string | boolean | number },
         measurements: { [key: string]: number },
         sampleRate = SampleRate.NoSampling
     ): { client: appInsights.TelemetryClient; event: appInsights.Contracts.EventTelemetry } {
