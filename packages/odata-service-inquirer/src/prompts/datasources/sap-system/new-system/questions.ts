@@ -4,8 +4,7 @@
 import { withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { OdataServicePromptOptions, SapSystemType } from '../../../../types';
-import type { promptNames } from '../../../../types';
+import type { OdataServicePromptOptions, SapSystemType, promptNames } from '../../../../types';
 import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
 import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
 import { newSystemPromptNames } from './types';
