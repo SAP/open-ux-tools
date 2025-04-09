@@ -12,8 +12,9 @@ import {
     enhanceUI5YamlWithTranspileMiddleware
 } from './options';
 
-import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
+import type { Package } from '@sap-ux/project-access';
 import type { OperationsType } from '@sap-ux/axios-extension';
+import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
 
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
@@ -42,13 +43,13 @@ export function getPackageJSONInfo(): PackageJson {
  * @param {string} pkg.version - The version of the tool generating the config.
  * @returns {CustomConfig} The generated ADP custom configuration object.
  */
-export function getCustomConfig(environment: OperationsType, { name: id, version }: PackageJson): CustomConfig {
+export function getCustomConfig(environment: OperationsType, { name: id, version }: Package): CustomConfig {
     return {
         adp: {
             environment,
             support: {
-                id,
-                version,
+                id: id ?? '',
+                version: version ?? '',
                 toolsId: uuidv4()
             }
         }

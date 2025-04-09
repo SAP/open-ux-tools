@@ -1,11 +1,12 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
+import type { AdpWriterConfig, ConfigAnswers } from '../types';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
-import type { AdpWriterConfig, ConfigAnswers, PackageJson } from '../types';
 import { UI5VersionInfo, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
 
 interface ConfigOptions {
@@ -33,7 +34,7 @@ interface ConfigOptions {
     /**
      * The package.json information used to generate custom configuration.
      */
-    packageJson: PackageJson;
+    packageJson: Package;
     /**
      * Logger instance for debugging and error reporting.
      */
