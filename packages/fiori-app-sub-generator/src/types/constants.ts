@@ -102,7 +102,6 @@ export const MAIN_MODEL_NAME = 'mainModel';
 export const generatorName = 'SAP Fiori Application Generator';
 
 export const FPM_DEFAULT_PAGE_NAME = 'Main';
-export const GUIDED_ANSWERS_EXTENSION_ID = 'saposs.sap-guided-answers-extension';
 // App gen specific (not writer specific) supported UI5 versions
 export const minSupportedUi5Version = '1.65.0';
 export const minSupportedUi5VersionV4 = '1.84.0';
