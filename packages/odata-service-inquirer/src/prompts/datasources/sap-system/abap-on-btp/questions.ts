@@ -26,7 +26,7 @@ import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import type { ValidationResult } from '../../../types';
-import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
 import { newSystemPromptNames } from '../new-system/types';
 import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
 import { connectWithDestination } from '../system-selection/prompt-helpers';
