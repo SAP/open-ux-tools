@@ -36,7 +36,7 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             {
                 projectName: 'testAppName',
                 targetFolder: '/test/target/folder',
-                title: 'testAppName',
+                title: 'testTitle',
                 skipPrompt: true
             },
             composeWithMock,
@@ -54,7 +54,7 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             inboundConfig: {
                 action: 'display',
                 semanticObject: 'testAppName',
-                title: 'testAppName'
+                title: 'testTitle'
             }
         });
     });

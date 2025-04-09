@@ -1,5 +1,5 @@
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
-import { Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import { MessageType, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 import { DefaultLogger, getHostEnvironment, hostEnvironment, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import {
     type CapService,
@@ -25,7 +25,13 @@ import {
     STEP_PROJECT_ATTRIBUTES
 } from '../../../src/types';
 import * as commonUtils from '../../../src/utils';
-import { type AppWizardCache, getCdsUi5PluginInfo, getYeomanUiStepConfig, t } from '../../../src/utils';
+import {
+    type AppWizardCache,
+    getCdsUi5PluginInfo,
+    getYeomanUiStepConfig,
+    t,
+    updateDependentStep
+} from '../../../src/utils';
 
 /**
  * Tests the FioriAppGenerator generator lifecycle methods call what they should with the correct parameters.
@@ -133,7 +139,9 @@ describe('Test FioriAppGenerator', () => {
     beforeEach(() => {
         // Reset the options object
         options = {
-            appWizard: {} as AppWizard,
+            appWizard: {
+                showError: jest.fn()
+            } as unknown as AppWizard,
             env: (yeomanTest as any).createEnv([]), // Latest @types/yeoman-test are not up to date with yeoman-test@6.3.0
             telemetryData: { data1: 'value1' },
             floorplan: FloorplanFE.FE_OVP,
@@ -192,7 +200,8 @@ describe('Test FioriAppGenerator', () => {
         // Should load from cache (to support back navigation state restoration)
         expect(getFromCacheSpy).toHaveBeenCalledWith(
             {
-                '$fiori-cache': {}
+                '$fiori-cache': {},
+                showError: expect.any(Function)
             },
             'service',
             expect.objectContaining({ debug: expect.any(Function) }) // Logger
@@ -569,7 +578,7 @@ describe('Test FioriAppGenerator', () => {
             },
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            { '$fiori-cache': {} } // AppWizard
+            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
         );
 
         expect(addFlpGen).toHaveBeenCalledWith(
@@ -582,11 +591,11 @@ describe('Test FioriAppGenerator', () => {
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             undefined, // VSCode
-            { '$fiori-cache': {} } // AppWizard);
+            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
         );
 
-        // If the FLP config step is skipped, the addFlpGen should be called with skipPrompt: true, if `addFlpConfig` is true (can be set from adaptors, for exmaple)
-        // Skipping the service selection step and FLP config for this test
+        // If the FLP config step is skipped, the addFlpGen should be called with skipPrompt: true, if `addFlpConfig` is true (can be set from adaptors, for example)
+        // Skipping the service selection step and FLP config for this test. `updateDependentStep` is not called since the step is not in the active steps.
         options.fioriSteps = FIORI_STEPS.filter(
             (step) => ![STEP_DATASOURCE_AND_SERVICE, STEP_FLP_CONFIG].includes(step.key)
         );
@@ -601,6 +610,7 @@ describe('Test FioriAppGenerator', () => {
         // Skipping the FLP config step should still call the addFlpGen but with the skipPrompt option true
         ui5ApplicationAnswers.addFlpConfig = true;
         (addFlpGen as jest.Mock).mockClear();
+        (updateDependentStep as jest.Mock).mockClear();
 
         fioriAppGen = new FioriAppGenerator([], options);
         await fioriAppGen.initializing();
@@ -615,23 +625,35 @@ describe('Test FioriAppGenerator', () => {
             expect.any(Function), // composeWith
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             undefined, // VSCode
-            { '$fiori-cache': {} } // AppWizard);
+            { '$fiori-cache': {}, showError: expect.any(Function) } // AppWizard
+        );
+        // Should only be called for deploy config step, not flp config step since its skipped
+        expect(updateDependentStep).toHaveBeenCalledTimes(1);
+        expect(updateDependentStep).toHaveBeenCalledWith(
+            'Project Attributes',
+            [options.yeomanUiStepConfig],
+            true,
+            t('steps.deployConfig.title')
         );
     });
 
     test('Should report errors and exit', async () => {
-        options.floorplan = undefined; // Force an error
+        options.floorplan = undefined; // Force an error since supported odata version lookup requires a floorplan
         const fioriAppGen = new FioriAppGenerator([], options);
         await fioriAppGen.initializing();
         await expect(fioriAppGen.prompting()).rejects.toThrowError(t('error.fatalError'));
 
         expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('error.fatalError')));
 
-        // Dont throw in YUI as this crashes the Wizard
+        // Fatal error must exit YUI or genertion continues
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
         await fioriAppGen.initializing();
-        await expect(fioriAppGen.prompting()).resolves.not.toThrowError();
+        await expect(fioriAppGen.prompting()).rejects.toThrowError(t('error.fatalError'));
         expect(DefaultLogger.error).toHaveBeenCalledWith(expect.stringContaining(t('error.fatalError')));
+        expect(options.appWizard?.showError).toHaveBeenCalledWith(
+            expect.stringContaining(t('error.fatalError')),
+            MessageType.notification
+        );
     });
 
     test('Should skip prompt steps as expected', async () => {

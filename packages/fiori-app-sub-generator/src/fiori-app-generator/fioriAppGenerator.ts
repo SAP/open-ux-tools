@@ -1,4 +1,4 @@
-import type { AppWizard, Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
+import { type AppWizard, MessageType, type Prompts as YeomanUiSteps } from '@sap-devx/yeoman-ui-types';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import {
@@ -33,6 +33,7 @@ import {
     FloorplanFF,
     generatorName,
     STEP_DATASOURCE_AND_SERVICE,
+    STEP_DEPLOY_CONFIG,
     STEP_FLP_CONFIG,
     STEP_PROJECT_ATTRIBUTES
 } from '../types';
@@ -268,7 +269,10 @@ export class FioriAppGenerator extends Generator {
             if (this.state.project?.addDeployConfig) {
                 // Allows back nav where we have inter-dependant steps
                 // Re-add dependant steps on back nav
-                if (!hasActiveStep(t('steps.deployConfig.title'), this.yeomanUiStepConfig.activeSteps)) {
+                if (
+                    hasStep(this.fioriSteps, STEP_DEPLOY_CONFIG) &&
+                    !hasActiveStep(t('steps.deployConfig.title'), this.yeomanUiStepConfig.activeSteps)
+                ) {
                     updateDependentStep(
                         t('steps.projectAttributesConfig.title'),
                         [this.yeomanUiStepConfig],
@@ -292,7 +296,10 @@ export class FioriAppGenerator extends Generator {
             if (this.state.project?.addFlpConfig) {
                 // Allows back nav where we have inter-dependant steps
                 // Re-add dependant steps on back nav
-                if (!hasActiveStep(t('steps.flpConfig.title'), this.yeomanUiStepConfig.activeSteps)) {
+                if (
+                    hasStep(this.fioriSteps, STEP_FLP_CONFIG) &&
+                    !hasActiveStep(t('steps.flpConfig.title'), this.yeomanUiStepConfig.activeSteps)
+                ) {
                     updateDependentStep(
                         t('steps.projectAttributesConfig.title'),
                         [this.yeomanUiStepConfig],
@@ -313,12 +320,10 @@ export class FioriAppGenerator extends Generator {
                     this.appWizard
                 );
             }
-        } catch (err) {
+        } catch (error) {
             // Fatal prompting error
-            FioriAppGenerator.logger.error(`${t('error.fatalError')} : ${err}`);
-            if (getHostEnvironment() === hostEnvironment.cli) {
-                throw new Error(`${t('error.fatalError')} : ${err}`);
-            }
+            FioriAppGenerator.logger.error(`${t('error.fatalError')} : ${error}`);
+            this._exitOnError(error);
         }
     }
 
@@ -453,6 +458,9 @@ export class FioriAppGenerator extends Generator {
     private _exitOnError(error: string): void {
         // eslint-disable-next-line @typescript-eslint/no-floating-promises
         sendTelemetry('GENERATION_WRITING_FAIL', TelemetryHelper.telemetryData);
-        throw new Error(error);
+        if (getHostEnvironment() !== hostEnvironment.cli) {
+            this.appWizard?.showError(`${t('error.fatalError')} : ${error}`, MessageType.notification);
+        }
+        throw new Error(`${t('error.fatalError')} : ${error}`);
     }
 }
