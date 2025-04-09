@@ -18,7 +18,6 @@ import { type DestinationFilters } from '../../../../types';
 import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
-import { type SystemSelectionAnswerType } from './questions';
 import type { ValidationResult } from '../../../types';
 
 // New system choice value is a hard to guess string to avoid conflicts with existing system names or user named systems
@@ -27,6 +26,11 @@ export const NewSystemChoice = '!@£*&937newSystem*X~qy^';
 export type NewSystemChoice = typeof NewSystemChoice;
 export const CfAbapEnvServiceChoice = 'cfAbapEnvService';
 export type CfAbapEnvServiceChoice = typeof CfAbapEnvServiceChoice;
+
+export type SystemSelectionAnswerType = {
+    type: 'destination' | 'backendSystem' | 'newSystemChoice' | CfAbapEnvServiceChoice;
+    system: Destination | BackendSystem | NewSystemChoice | CfAbapEnvServiceChoice;
+};
 
 /**
  * Connects to the specified backend system and validates the connection.

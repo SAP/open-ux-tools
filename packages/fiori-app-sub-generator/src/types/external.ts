@@ -9,40 +9,9 @@ import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
 import type { Answers, Question } from 'inquirer';
 import { LEGACY_CAP_TYPE_JAVA, LEGACY_CAP_TYPE_NODE } from './constants';
-import type { ALPOptions, Project, Service } from './state';
+import { type ALPOptions, type Project, type Service, type Floorplan, FloorplanFE, FloorplanFF } from './state';
 
-// Union types to expose a single interface property for Floorplan
-// This provides a layer of abstraction to isolate internal changes from external headless API consumers
-// Since these keys are used as an external API definiton they need to be meaningful
-// Note that ordering here determines rendering order
-/**
- * Due to ts(18033) we cannot use the type values directly here:
- * FF_SIMPLE = FFTemplateType.Basic // Once https://github.com/microsoft/TypeScript/pull/59475 is merged we can remove the hardcoded values and directly use the template values
- */
-export enum FloorplanFF {
-    FF_SIMPLE = 'basic'
-}
-/**
- * Due to ts(18033) we cannot use the type values directly here:
- * Once https://github.com/microsoft/TypeScript/pull/59475 is merged we can remove hardcoded values and directly use the template values
- * FE_FPM = FETemplateType.FlexibleProgrammingModel,
- * FE_LROP = FETemplateType.ListReportObjectPage,
- * FE_OVP = FETemplateType.OverviewPage,
- * FE_ALP = FETemplateType.AnalyticalListPage,
- * FE_FEOP = FETemplateType.FormEntryObjectPage,
- * FE_WORKLIST = FETemplateType.Worklist
- */
-export enum FloorplanFE {
-    FE_FPM = 'fpm',
-    FE_LROP = 'lrop',
-    FE_OVP = 'ovp',
-    FE_ALP = 'alp',
-    FE_FEOP = 'feop',
-    FE_WORKLIST = 'worklist'
-}
-
-// Used internally to join Floorplan types from multiple generators (until we have a merged type)
-export type Floorplan = FloorplanFE | FloorplanFF;
+export { Floorplan, FloorplanFE, FloorplanFF };
 
 // Used in external interfaces to define floorplans using a simple meaningful string key
 export type FloorplanKey = keyof typeof FloorplanFE | keyof typeof FloorplanFF;

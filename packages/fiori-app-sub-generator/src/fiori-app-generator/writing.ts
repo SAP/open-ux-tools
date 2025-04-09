@@ -52,9 +52,7 @@ export async function writeReadMe(
         readMe
     );
 
-    if (!readMeCustom.additionalEntries) {
-        readMeCustom.additionalEntries = [];
-    }
+    readMeCustom.additionalEntries ??= [];
 
     if (entityRelatedConfig?.mainEntity) {
         readMeCustom.additionalEntries.push({
@@ -83,8 +81,8 @@ export async function writeReadMe(
     );
 
     const readme: ReadMe = {
-        generationDate: readMeCustom?.generationDate || new Date().toString(),
-        generatorPlatform: readMeCustom?.generatorPlatform || getHostEnvironment().name,
+        generationDate: readMeCustom?.generationDate ?? new Date().toString(),
+        generatorPlatform: readMeCustom?.generatorPlatform ?? getHostEnvironment().name,
         serviceType: readMeCustom?.serviceType,
         metadataFilename: service.localEdmxFilePath ? basename(service.localEdmxFilePath) : '',
         serviceUrl: readMeCustom?.serviceUrl,
@@ -98,10 +96,10 @@ export async function writeReadMe(
         enableEslint: project.enableEslint,
         enableTypeScript: project.enableTypeScript,
         showMockDataInfo: !!service.edmx && !service.capService,
-        generatorVersion: readMeCustom?.generatorVersion || '',
-        template: readMeCustom?.template || '',
-        generatorName: readMeCustom?.generatorName || '',
-        additionalEntries: readMeCustom?.additionalEntries || [],
+        generatorVersion: readMeCustom?.generatorVersion ?? '',
+        template: readMeCustom?.template ?? '',
+        generatorName: readMeCustom?.generatorName ?? '',
+        additionalEntries: readMeCustom?.additionalEntries ?? [],
         launchText
     };
     generateReadMe(targetPath, readme, fs);

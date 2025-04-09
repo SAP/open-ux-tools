@@ -20,8 +20,7 @@ import { v4 as uuidV4 } from 'uuid';
 import type { GenerateLaunchConfigOptions, Service } from '../types';
 import { ApiHubType, SapSystemSourceType } from '../types';
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
-import type { Floorplan } from '../types/external';
-import { FloorplanAttributes, FloorplanFF } from '../types/external';
+import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
 import { t } from './i18n';
 
 /**
