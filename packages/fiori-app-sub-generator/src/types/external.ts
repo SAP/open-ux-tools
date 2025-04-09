@@ -293,7 +293,6 @@ export type RecursiveReadonly<T> = {
  * @deprecated Use FloorplanFE instead, will be removed shortly
  */
 export enum PROJECT_TYPE {
-    // todo: use open source FE template type
     Worklist = 'WORKLIST',
     OverviewPage = 'OVERVIEW',
     ListReportObjectPage = 'LIST_REPORT_OBJECT_PAGE',

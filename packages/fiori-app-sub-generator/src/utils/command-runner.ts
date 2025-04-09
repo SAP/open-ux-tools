@@ -72,7 +72,7 @@ export class CommandRunner {
                 stack.push(data.toString());
             });
             spawnedCmd.on('error', (error) => {
-                reject(`${t('error.commandFailed')}: ${error.message}`);
+                reject(new Error(`${t('error.commandFailed')}: ${error.message}`));
             });
             spawnedCmd.on('close', (errorCode: number, signal: string) => {
                 if (signal) {

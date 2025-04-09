@@ -68,8 +68,8 @@ export function updateDependentStep(
             // Count number of dependent steps that are active
             let count = 0;
             let dependentStepToAdd: YeomanUiStep | undefined;
-            for (let i = 0; i < dependentSteps.length; i++) {
-                const dependentStep = dependentSteps[i];
+
+            for (const dependentStep of dependentSteps) {
                 if (dependentStep.name === dependentStepName) {
                     dependentStepToAdd = dependentStep;
                     break;
