@@ -11,7 +11,13 @@ import { downloadApp } from '../utils/download-utils';
 import { EventName } from '../telemetryEvents';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
-import type { BspAppDownloadOptions, BspAppDownloadAnswers, BspAppDownloadQuestions, AppContentConfig, QuickDeployedAppConfig } from './types';
+import type {
+    BspAppDownloadOptions,
+    BspAppDownloadAnswers,
+    BspAppDownloadQuestions,
+    AppContentConfig,
+    QuickDeployedAppConfig
+} from './types';
 import { getPrompts } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'path';
@@ -29,7 +35,7 @@ import { PromptState } from '../prompts/prompt-state';
 import { PromptNames } from './types';
 import { getAbapDeployConfig, getAppConfig } from './config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { sampleAppContentJson } from './example-app-content';
+import { sampleAppContentTestData } from './example-app-content';
 import { replaceWebappFiles } from '../utils/file-helpers';
 import { fetchAppListForSelectedSystem, extractAppData } from '../prompts/prompt-helpers';
 import { isValidPromptState, validateAppContentJsonFile } from '../utils/validators';
@@ -46,7 +52,6 @@ export default class extends Generator {
     private readonly prompts: Prompts;
     private answers: BspAppDownloadAnswers = defaultAnswers;
     public options: BspAppDownloadOptions;
-    // re visit this
     private projectPath: string;
     private extractedProjectPath: string;
     setPromptsCallback: (fn: object) => void;
@@ -91,7 +96,7 @@ export default class extends Generator {
     }
 
     /**
-     * Initializes necessary settings and telemetry for the generator.
+     * Initialises necessary settings and telemetry for the generator.
      */
     public async initializing(): Promise<void> {
         if ((this.env as unknown as YeomanEnvironment).conflicter) {
@@ -118,41 +123,53 @@ export default class extends Generator {
         const answers: BspAppDownloadAnswers = await this.prompt(questions);
         const { targetFolder } = answers;
         if (quickDeployedAppConfig?.appId) {
-            // Handle quick deployed app download where prompts for system selection and app selection are not shown
-            // Only target folder ptompt is shown
+            // Handle quick deployed app download where prompts for system selection and app selection are not displayed
+            // Only target folder prompt is shown
             await this._handleQuickDeployedAppDownload(quickDeployedAppConfig, targetFolder);
         } else {
-            // Handle normal app download where prompts for system selection and app selection are shown
+            // Handle app download where prompts for system selection and app selection are shown
             Object.assign(this.answers, answers);
-        }
-        if (isValidPromptState(targetFolder, this.answers.selectedApp.appId)) {
-            this.projectPath = join(targetFolder, this.answers.selectedApp.appId);
-            this.extractedProjectPath = join(this.projectPath, extractedFilePath);
-            // Trigger app download
-            await downloadApp(this.answers.selectedApp.repoName, this.extractedProjectPath, this.fs);
         }
     }
 
-    private async _handleQuickDeployedAppDownload (quickDeployedAppConfig: QuickDeployedAppConfig, targetFolder: string): Promise<void> {
+    /**
+     *
+     * @param quickDeployedAppConfig
+     * @param targetFolder
+     */
+    private async _handleQuickDeployedAppDownload(
+        quickDeployedAppConfig: QuickDeployedAppConfig,
+        targetFolder: string
+    ): Promise<void> {
         debugger;
         const appList = await fetchAppListForSelectedSystem(
             quickDeployedAppConfig.serviceProvider,
             quickDeployedAppConfig.appId
         );
-        if(!appList.length) {
-            BspAppDownloadLogger.logger?.error(t('error.quickDeployedAppDownloadErrors.noAppsFound', { appId: quickDeployedAppConfig.appId }));
+        if (!appList.length) {
+            BspAppDownloadLogger.logger?.error(
+                t('error.quickDeployedAppDownloadErrors.noAppsFound', { appId: quickDeployedAppConfig.appId })
+            );
+            throw new Error(); 
         }
         this.answers.selectedApp = extractAppData(appList[0]).value;
         this.answers.targetFolder = targetFolder;
-        this.answers.systemSelection = PromptState.systemSelection; 
+        this.answers.systemSelection = PromptState.systemSelection;
     }
 
     /**
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
+        if (isValidPromptState(this.answers.targetFolder, this.answers.selectedApp.appId)) {
+            this.projectPath = join(this.answers.targetFolder, this.answers.selectedApp.appId);
+            this.extractedProjectPath = join(this.projectPath, extractedFilePath);
+            // Trigger app download
+            await downloadApp(this.answers.selectedApp.repoName, this.extractedProjectPath, this.fs);
+        }
+
         // const appContentJsonTempPath = join(__dirname, 'example-app-content.json');
-        const appContentJson: AppContentConfig = sampleAppContentJson;
+        const appContentJson: AppContentConfig = sampleAppContentTestData;
         // todo: add back once json is available along with downloaded app
         // if(!this.fs.exists(appContentJsonTempPath)) {
         //     appContentJson = this.fs.readJSON(appContentJsonTempPath) as unknown as AppContentConfig; //todo: extract from extracted path
@@ -186,7 +203,7 @@ export default class extends Generator {
             writeApplicationInfoSettings(this.projectPath, this.fs);
         }
         // Replace webapp files with downloaded app files
-        replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+        await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
         // Clean up extracted project files
         // this.fs.delete(this.extractedProjectPath);
     }
@@ -306,11 +323,11 @@ export default class extends Generator {
             };
             updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
         }
-        if (this.options.data?.postGenCommands) {
+        if (this.options.data?.postGenCommand) {
             await runPostAppGenHook({
                 path: this.projectPath,
                 vscodeInstance: this.vscode,
-                postGenCommand: this.options.data?.postGenCommands
+                postGenCommand: this.options.data?.postGenCommand
             });
         }
     }
@@ -319,17 +336,21 @@ export default class extends Generator {
      * Finalises the generator process by creating launch configurations and running post-generation hooks.
      */
     async end() {
-        this.appWizard.showWarning(t('info.bspAppDownloadCompleteMsg'), MessageType.prompt);
-        sendTelemetry(
-            EventName.GENERATION_SUCCESS,
-            TelemetryHelper.createTelemetryData({
-                appType: 'bsp-app-download-sub-generator',
-                ...this.options.telemetryData
-            }) ?? {}
-        ).catch((error) => {
-            BspAppDownloadLogger.logger.error(t('error.telemetry', { error }));
-        });
-        await this._handlePostAppGeneration();
+        try {
+            this.appWizard.showWarning(t('info.bspAppDownloadCompleteMsg'), MessageType.notification);
+            await sendTelemetry(
+                EventName.GENERATION_SUCCESS,
+                TelemetryHelper.createTelemetryData({
+                    appType: 'bsp-app-download-sub-generator',
+                    ...this.options.telemetryData
+                }) ?? {}
+            ).catch((error) => {
+                BspAppDownloadLogger.logger?.error(t('error.telemetry', { error: error.message }));
+            });
+            await this._handlePostAppGeneration();
+        } catch (error) {
+            BspAppDownloadLogger.logger?.error(t('error.endPhase', { error: error.message }));
+        }
     }
 }
 

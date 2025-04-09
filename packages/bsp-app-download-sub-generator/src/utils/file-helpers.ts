@@ -30,7 +30,6 @@ export function readManifest(extractedProjectPath: string, fs: Editor): Manifest
     return manifest;
 }
 
-
 /**
  * Replaces the specified files in the `webapp` directory with the corresponding files from the `extractedPath`.
  *
@@ -38,11 +37,7 @@ export function readManifest(extractedProjectPath: string, fs: Editor): Manifest
  * @param {string} extractedPath - The path from which files will be copied.
  * @param {Editor} fs - The file system editor instance to modify files in memory.
  */
-export async function replaceWebappFiles(
-    projectPath: string,
-    extractedPath: string,
-    fs: Editor
-): Promise<void> {
+export async function replaceWebappFiles(projectPath: string, extractedPath: string, fs: Editor): Promise<void> {
     try {
         const webappPath = join(projectPath, DirName.Webapp);
         // Define the paths of the files to be replaced
@@ -51,7 +46,6 @@ export async function replaceWebappFiles(
             { webappFile: 'i18n/i18n.properties', extractedFile: 'i18n.properties' }, // replace 'i18n/i18n.properties' in extractedFile
             { webappFile: 'index.html', extractedFile: 'index.html' }
         ];
-
         // Loop through each file and perform the replacement
         for (const { webappFile, extractedFile } of filesToReplace) {
             const webappFilePath = join(webappPath, webappFile);
@@ -68,6 +62,3 @@ export async function replaceWebappFiles(
         BspAppDownloadLogger.logger?.error(t('error.replaceWebappFilesError', { error }));
     }
 }
-
-
-

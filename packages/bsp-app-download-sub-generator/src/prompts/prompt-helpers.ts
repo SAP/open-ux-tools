@@ -2,9 +2,8 @@ import { generatorTitle, generatorDescription } from '../utils/constants';
 import { appListSearchParams, appListResultFields } from '../utils/constants';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
 import type { AppInfo } from '../app/types';
-import { PromptNames } from '../app/types';
 import { PromptState } from './prompt-state';
-import type { BspAppDownloadAnswers, AppItem } from '../app/types';
+import type { AppItem } from '../app/types';
 import { t } from '../utils/i18n';
 import BspAppDownloadLogger from '../utils/logger';
 
@@ -71,14 +70,17 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  * Fetches a list of deployed applications from the ABAP repository.
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
+ * @param appId
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
 async function getAppList(provider: AbapServiceProvider, appId?: string): Promise<AppIndex> {
     try {
-        const searchParams = appId ? {
-            ...appListSearchParams, 
-            'sap.app/id': appId 
-        } : appListSearchParams
+        const searchParams = appId
+            ? {
+                  ...appListSearchParams,
+                  'sap.app/id': appId
+              }
+            : appListSearchParams;
         return await provider.getAppIndex().search(searchParams, appListResultFields);
     } catch (error) {
         BspAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
@@ -90,9 +92,13 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
  * Fetches the application list for the selected system.
  *
  * @param {AbapServiceProvider} serviceProvider - The ABAP service provider.
+ * @param appId
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
-export async function fetchAppListForSelectedSystem(serviceProvider: AbapServiceProvider, appId?: string): Promise<AppIndex> {
+export async function fetchAppListForSelectedSystem(
+    serviceProvider: AbapServiceProvider,
+    appId?: string
+): Promise<AppIndex> {
     if (serviceProvider) {
         PromptState.systemSelection = {
             connectedSystem: { serviceProvider }

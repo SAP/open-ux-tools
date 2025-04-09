@@ -13,6 +13,7 @@ import { fetchAppListForSelectedSystem } from './prompt-helpers';
  * Gets the target folder selection prompt.
  *
  * @param {string} [appRootPath] - The application root path.
+ * @param appId
  * @returns {FileBrowserQuestion<BspAppDownloadAnswers>} The target folder prompt configuration.
  */
 const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowserQuestion<BspAppDownloadAnswers> => {
@@ -22,14 +23,14 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
         message: t('prompts.targetPath.message'),
         guiType: 'folder-browser',
         when: (answers: BspAppDownloadAnswers) => {
-            // Display the prompt if appId is provided. This occurs when the generator is invoked 
+            // Display the prompt if appId is provided. This occurs when the generator is invoked
             // as part of the quick deployment process from ADT.
             if (appId) {
                 return true;
             }
             // If appId is not provided, check if the user has selected an app.
             // If an app is selected, display the prompt accordingly.
-            return Boolean(answers?.selectedApp?.appId)
+            return Boolean(answers?.selectedApp?.appId);
         },
         guiOptions: {
             applyDefaultWhenDirty: true,
@@ -51,7 +52,10 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
  * @param {QuickDeployConfig} [quickDeployedAppConfig] - quick deploy config.
  * @returns {Promise<BspAppDownloadQuestions[]>} A list of questions for user interaction.
  */
-export async function getPrompts(appRootPath?: string, quickDeployedAppConfig?: QuickDeployedAppConfig): Promise<BspAppDownloadQuestions[]> {
+export async function getPrompts(
+    appRootPath?: string,
+    quickDeployedAppConfig?: QuickDeployedAppConfig
+): Promise<BspAppDownloadQuestions[]> {
     PromptState.reset();
     // If quickDeployedAppConfig is provided, return only the target folder prompt
     if (quickDeployedAppConfig?.appId) {
@@ -63,7 +67,7 @@ export async function getPrompts(appRootPath?: string, quickDeployedAppConfig?: 
     const appSelectionPrompt = [
         {
             when: async (answers: BspAppDownloadAnswers): Promise<boolean> => {
-                if(answers[PromptNames.systemSelection]) {
+                if (answers[PromptNames.systemSelection]) {
                     appList = await fetchAppListForSelectedSystem(
                         systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider
                     );

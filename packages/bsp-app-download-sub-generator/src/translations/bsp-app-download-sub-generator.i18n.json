@@ -7,6 +7,7 @@
         "applicationListFetchError": "Error fetching application list: {{- error}}",
         "metadataFetchError": "Error fetching metadata: {{- error}}",
         "appConfigGenError": "Error generating application configuration: {{- error}}",
+        "endPhase": "Error in end phase: {{- error}}",
         "validationErrors": {
             "invalidMetadataPackage": "Invalid or missing package in metadata",
             "invalidServiceName": "Invalid or missing serviceName in serviceBindingDetails",
@@ -36,7 +37,7 @@
             "sourceTemplateNotSupported": "Error: Source template not supported"
         },
         "quickDeployedAppDownloadErrors": {
-            "noAppsFound": "No application with if {{ appId }} found in the system. Please check if the application is deployed correctly"
+            "noAppsFound": "No application with id {{ appId }} found in the system. Please check if the application is deployed correctly"
         }
     },
     "warn": {
@@ -58,7 +59,7 @@
         "appDescription" : "This application was converted from an ABAP basic app that was deployed from ADT",
         "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
     }, 
-    "success": {
+    "info": {
         "bspAppDownloadCompleteMsg": "The selected application has been downloaded and updated to support SAP Fiori tools"
     }
 }

@@ -8,7 +8,7 @@ import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
 /**
- * Quick deploy app config are applicable only in scenarios where an application 
+ * Quick deploy app config are applicable only in scenarios where an application
  * deployed via ADT Quick Deploy is being downloaded from a BSP repository.
  */
 export interface QuickDeployedAppConfig {

@@ -1,0 +1,149 @@
+{
+  "sap.app": {
+    "id": "travel.approver",
+    "type": "application",
+    "i18n": "i18n.properties",
+    "applicationVersion":{
+      "version": "0.0.1"
+    },
+    "title": "{{appTitle}}",
+    "description": "{{appDescription}}",
+    "resources": "resources.json",
+    "sourceTemplate": {
+      "id": "@sap.adt.sevicebinding.deploy:lrop",
+      "version": "1.0.0",
+      "toolsId": "15AB9F96A8DF1FE081C6CD7B64A2046B"
+    },
+    "dataSources": {
+      "mainService": {
+        "uri": "/sap/opu/odata/sap/ZSB_TRAVEL_APPROVER",
+        "type": "OData",
+        "settings": {
+          "odataVersion": "2.0",
+          "annotations": [
+            "mainAnnotations"
+          ]
+        }
+      },
+      "mainAnnotations": {
+        "uri": "/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='ZSB_TRAVEL_APPROVER_VAN',Version='0001')/$value/",
+        "type": "ODataAnnotation"
+      }
+    }
+
+  },
+  "sap.ui": {
+    "technology": "UI5"
+  },
+  "sap.ui5": {
+    "resources": {
+      "js": [],
+      "css": []
+    },
+    "dependencies": {
+      "libs": {
+        "sap.ui.generic.app": {},
+        "sap.suite.ui.generic.template": {},
+        "sap.suite.ui.commons": {}
+}
+,
+      "components": {}
+    },
+    "models": {
+      "i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "settings": {
+          "bundleName": "travel.approver.i18n"
+        }
+      },
+      "@i18n": {
+        "type": "sap.ui.model.resource.ResourceModel",
+        "uri": "i18n/i18n.properties"
+      },
+      "": {
+        "dataSource": "mainService",
+        "preload": true,
+        "settings": {
+          "defaultBindingMode": "TwoWay",
+          "refreshAfterChange": false,
+          "metadataUrlParams": {
+            "sap-value-list": "none"
+          }
+        }
+
+      }
+    },
+    "routing": {}
+
+  },
+  "sap.ui.generic.app": {
+    "_version": "1.3.0",
+    "settings": {
+      "forceGlobalRefresh": false,
+      "objectPageHeaderType": "Dynamic",
+      "considerAnalyticalParameters": true,
+      "showDraftToggle": false
+    },
+    "pages": {
+      "ListReport|Travel": {
+        "entitySet": "Travel",
+        "component": {
+          "name": "sap.suite.ui.generic.template.ListReport",
+          "list": true,
+          "settings": {
+            "condensedTableLayout": true,
+            "smartVariantManagement": true,
+            "enableTableFilterInPageVariant": true,
+            "filterSettings": {
+              "dateSettings": {
+                "useDateRange": true
+              }
+            }
+          }
+        },
+        "pages": { 
+          "ObjectPage|Travel": {
+            "entitySet": "Travel",
+            "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+            "component": {
+              "name": "sap.suite.ui.generic.template.ObjectPage"
+            },
+            "pages": {    "ObjectPage|Booking": {
+    "navigationProperty": "to_Booking",
+    "entitySet": "Booking",
+    "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+    "component": {
+      "name": "sap.suite.ui.generic.template.ObjectPage"
+    },
+    "pages": {  "ObjectPage|BookingStatus": {
+    "navigationProperty": "to_BookingStatus",
+    "entitySet": "BookingStatus",
+    "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+    "component": {
+      "name": "sap.suite.ui.generic.template.ObjectPage"
+    },
+    "pages": {}
+  }
+ }
+  }
+ ,
+ "ObjectPage|OverallStatus": {
+    "navigationProperty": "to_OverallStatus",
+    "entitySet": "OverallStatus",
+    "defaultLayoutTypeIfExternalNavigation": "MidColumnFullScreen",
+    "component": {
+      "name": "sap.suite.ui.generic.template.ObjectPage"
+    },
+    "pages": {}
+  }
+ }
+          }
+         }
+      }
+    }
+  },
+
+  "sap.fiori": {
+    "archeType": "transactional"
+  }
+}

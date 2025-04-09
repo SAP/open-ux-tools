@@ -1,0 +1,60 @@
+{
+  "_version": "3.1.0",
+  "site": {
+    "identification": {
+      "namespace": "",
+      "title": "Fiori Elements Application Preview",
+      "description": "Fiori Elements Application Preview"
+    },
+    "payload": {}
+  },
+  "groups": {},
+  "catalogs": {},
+  "applications": {
+        "travel.approver": {
+            "sap.app": {
+                "id": "travel.approver",
+                "title": "Fiori Application Preview",
+                "crossNavigation": {
+                    "inbounds": {
+                        "app-preview": {
+                            "semanticObject": "app",
+                            "action": "preview",
+                            "title": "Fiori Application Preview",
+                            "subTitle": "",
+                            "info": "",
+                            "signature": {
+                                "parameters": { },
+                                "additionalParameters": "allowed"
+                            }
+                        }
+                    }
+                }
+            },
+            "sap.ui5": {
+                "componentName": "travel.approver"
+            },
+            "sap.flp": {
+                "type": "application"
+            },
+            "sap.ui": {
+                "technology": "UI5",
+                    "deviceTypes": {
+                    "desktop": true,
+                    "tablet": true,
+                    "phone": true
+                }
+            },
+            "sap.platform.runtime": {
+                "componentProperties": {
+                    "url": "./",
+                    "asyncHints": {}
+                }
+            }
+        }        
+  },
+  "visualizations": {},
+  "vizTypes": {},
+  "pages": {},
+  "menus": {}
+}

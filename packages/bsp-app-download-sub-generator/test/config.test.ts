@@ -6,10 +6,10 @@ import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { PromptState } from '../src/prompts/prompt-state';
 import type { AppInfo, AppContentConfig } from '../src/app/types';
 import { readManifest } from '../src/utils/file-helpers';
-import { sampleAppContentTestData } from './fixtures/example-app-content';
 import { t } from '../src/utils/i18n';
 import { adtSourceTemplateId } from '../src/utils/constants';
 import BspAppDownloadLogger from '../src/utils/logger';
+import { sampleAppContentTestData } from './fixtures/downloaded-app/example-app-content';
 
 jest.mock('../src/utils/logger', () => ({
     logger: {

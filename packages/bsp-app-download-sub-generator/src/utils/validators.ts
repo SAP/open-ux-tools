@@ -1,5 +1,5 @@
 import { t } from '../utils/i18n';
-import type { AppContentConfig, AppInfo } from '../app/types';
+import type { AppContentConfig } from '../app/types';
 import BspAppDownloadLogger from '../utils/logger';
 import { PromptState } from '../prompts/prompt-state';
 
@@ -82,8 +82,9 @@ export const validateAppContentJsonFile = (config: AppContentConfig): boolean =>
     );
 };
 
-/** Validates the prompt state for the app download process.
- * 
+/**
+ * Validates the prompt state for the app download process.
+ *
  * @param {string} targetFolder - The target folder for the app download.
  * @param {string} [appId] - The selected app id.
  * @returns {boolean} - Returns true if the prompt state is valid, false otherwise.

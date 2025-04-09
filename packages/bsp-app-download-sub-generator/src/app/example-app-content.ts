@@ -1,28 +1,28 @@
-export const sampleAppContentJson = {
-    'metadata': {
-        'package': 'Z_I576700',
-        'masterLanguage': 'EN'
+export const sampleAppContentTestData = {
+    metadata: {
+        package: 'TEST_PACKAGE',
+        masterLanguage: 'EN'
     },
-    'serviceBindingDetails': {
-        'name': 'Z_RAHI_SRVB_V2',
-        'serviceName': 'Z_RAHI_SRVB_V2',
-        'serviceVersion': '0001',
-        'mainEntityName': 'I_BusinessPartner'
+    serviceBindingDetails: {
+        name: 'TEST_SERVICE_BINDING',
+        serviceName: 'TEST_SERVICE_NAME',
+        serviceVersion: '0001',
+        mainEntityName: 'TEST_ENTITY'
     },
-    'projectAttribute': {
-        'moduleName': 'z_module_name',
-        'applicationTitle': 'This is a demo app',
-        'template': 'List Report',
-        'minimumUi5Version': '1.130.5'
+    projectAttribute: {
+        moduleName: 'test_module_name',
+        applicationTitle: 'Test Application Title',
+        template: 'Test Template',
+        minimumUi5Version: '1.100.0'
     },
-    'deploymentDetails': {
-        'repositoryName': 'ZTEST_MOD_NAME',
-        'repositoryDescription': 'This is demo app'
+    deploymentDetails: {
+        repositoryName: 'TEST_REPO_NAME',
+        repositoryDescription: 'This is a test repository'
     },
-    'fioriLaunchpadConfiguration': {
-        'semanticObject': 'Z_SO',
-        'action': 'manage',
-        'title': 'Z_Title',
-        'subtitle': 'Z_sub_titile'
+    fioriLaunchpadConfiguration: {
+        semanticObject: 'TEST_SEMANTIC_OBJECT',
+        action: 'testAction',
+        title: 'Test Title',
+        subtitle: 'Test Subtitle'
     }
 };

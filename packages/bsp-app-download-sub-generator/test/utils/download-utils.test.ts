@@ -17,17 +17,12 @@ jest.mock('../../src/utils/logger', () => ({
 
 describe('download-utils', () => {
     let mockFs: Editor;
-    let mockLog: Logger;
     let mockServiceProvider: AbapServiceProvider;
 
     beforeEach(() => {
         mockFs = {
             write: jest.fn(),
         } as unknown as Editor;
-
-        mockLog = {
-            error: jest.fn(),
-        } as unknown as Logger;
 
         mockServiceProvider = {
             getUi5AbapRepository: jest.fn().mockReturnValue({
