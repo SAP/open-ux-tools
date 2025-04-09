@@ -57,7 +57,7 @@ customConfiguration:
   adp:
     support:
       id: '@sap-ux/generator-adp'
-      version: 0.1.1
+      version: mocked-version
       toolsId: mocked-uuid
 server:
   customMiddleware:

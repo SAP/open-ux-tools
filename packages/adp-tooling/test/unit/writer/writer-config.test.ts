@@ -1,8 +1,9 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer, UI5VersionInfo, getProviderConfig, getConfig } from '../../../src';
-import type { ConfigAnswers, PackageJson, SourceApplication } from '../../../src';
+import type { ConfigAnswers, SourceApplication } from '../../../src';
 
 jest.mock('../../../src/abap/config.ts', () => ({
     getProviderConfig: jest.fn()
@@ -48,7 +49,7 @@ describe('getConfig', () => {
             configAnswers,
             layer: FlexLayer.CUSTOMER_BASE,
             defaults,
-            packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as PackageJson,
+            packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
             logger: {} as ToolsLogger
         });
 
