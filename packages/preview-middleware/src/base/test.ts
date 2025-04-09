@@ -1,7 +1,7 @@
 import type { Resource } from '@ui5/fs';
-import type { InternalTestConfig, TestConfig, TestConfigDefaults } from '../types';
+import type { CompleteTestConfig, TestConfig, TestConfigDefaults } from '../types';
 
-const DEFAULTS: Record<string, Readonly<InternalTestConfig>> = {
+const DEFAULTS: Record<string, Readonly<CompleteTestConfig>> = {
     qunit: {
         path: '/test/unitTests.qunit.html',
         init: '/test/unitTests.qunit.js',
@@ -28,9 +28,9 @@ const DEFAULTS: Record<string, Readonly<InternalTestConfig>> = {
  * @param config test configuration
  * @returns merged test configuration
  */
-export function mergeTestConfigDefaults(config: TestConfig): InternalTestConfig {
+export function mergeTestConfigDefaults(config: TestConfig): CompleteTestConfig {
     const defaults = DEFAULTS[config.framework.toLowerCase()] ?? {};
-    const merged: InternalTestConfig = { ...defaults, ...config };
+    const merged: CompleteTestConfig = { ...defaults, ...config };
     if (!merged.path.startsWith('/')) {
         merged.path = `/${merged.path}`;
     }
