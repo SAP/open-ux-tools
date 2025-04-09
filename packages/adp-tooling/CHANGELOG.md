@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.24
+
+### Patch Changes
+
+-   c81864a: fix: ADP Generator integration test mocking
+
 ## 0.13.23
 
 ### Patch Changes

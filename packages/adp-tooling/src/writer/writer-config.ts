@@ -1,11 +1,12 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
+import type { AdpWriterConfig, ConfigAnswers } from '../types';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
-import type { AdpWriterConfig, ConfigAnswers, PackageJson } from '../types';
 import { UI5VersionInfo, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
 
 interface ConfigOptions {
@@ -33,7 +34,7 @@ interface ConfigOptions {
     /**
      * The package.json information used to generate custom configuration.
      */
-    packageJson: PackageJson;
+    packageJson: Package;
     /**
      * Logger instance for debugging and error reporting.
      */
@@ -49,7 +50,7 @@ interface ConfigOptions {
  * @param {FlexLayer} options.layer - The FlexLayer indicating the deployment layer.
  * @param {object} options.defaults - Default project parameters.
  * @param {string} options.defaults.namespace - The default namespace to be used.
- * @param {PackageJson} options.packageJson - The package.json information for generating custom configuration.
+ * @param {Package} options.packageJson - The package.json information for generating custom configuration.
  * @param {ToolsLogger} options.logger - The logger for debugging and error logging.
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */

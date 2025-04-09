@@ -13,8 +13,6 @@ export interface DescriptorVariant {
     content: DescriptorVariantContent[];
 }
 
-export type PackageJson = { name: string; version: string };
-
 export interface DescriptorVariantContent {
     changeType: string;
     content: Record<string, unknown>;

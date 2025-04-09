@@ -199,8 +199,8 @@ async function fetchSystemInformation(
         adp: {
             environment: ato.operationsType ?? 'P',
             support: {
-                id: packageJson.name,
-                version: packageJson.version,
+                id: packageJson.name ?? '',
+                version: packageJson.version ?? '',
                 toolsId: uuidv4()
             }
         }

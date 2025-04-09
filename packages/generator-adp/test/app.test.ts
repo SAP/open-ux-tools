@@ -52,6 +52,11 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getProviderConfig: jest.fn()
 }));
 
+jest.mock('../src/utils/deps.ts', () => ({
+    ...jest.requireActual('../src/utils/deps.ts'),
+    getPackageInfo: jest.fn().mockReturnValue({ name: '@sap-ux/generator-adp', version: 'mocked-version' })
+}));
+
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
     ...(jest.requireActual('@sap-ux/fiori-generator-shared') as {}),
     sendTelemetry: jest.fn().mockReturnValue(new Promise(() => {})),
