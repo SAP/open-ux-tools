@@ -1,5 +1,3 @@
-import { join } from 'path';
-import { readFileSync } from 'fs';
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
@@ -20,8 +18,8 @@ import { t, initI18n } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
 import type { AdpGeneratorOptions } from './types';
-import { installDependencies } from '../utils/deps';
 import { ConfigPrompter } from './questions/configuration';
+import { getPackageInfo, installDependencies } from '../utils/deps';
 import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
@@ -127,7 +125,7 @@ export default class extends Generator {
             const namespace = generateValidNamespace(projectName, this.layer);
             this.targetFolder = this.destinationPath(projectName);
 
-            const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
+            const packageJson = getPackageInfo();
             const config = await getConfig({
                 provider: this.prompter.provider,
                 configAnswers: this.configAnswers,
