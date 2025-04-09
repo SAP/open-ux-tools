@@ -16,15 +16,19 @@ import {
     MTAExecutable,
     CDSXSUAAService,
     CDSDestinationService,
-    CDSHTML5RepoService
+    CDSHTML5RepoService,
+    RouterModule,
+    XSAppFile
 } from '../constants';
 import type { mta } from '@sap/mta-lib';
-import type { MTABaseConfig, CFBaseConfig, CDSServiceType, RouterModuleType, CAPConfig } from '../types';
+import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPConfig, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { t } from '../i18n';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { type Editor } from 'mem-fs-editor';
+import { apiGetInstanceCredentials } from '@sap/cf-tools';
+import { FileName } from '@sap-ux/project-access';
 
 /**
  * Get the MTA ID, read from the root path specified.
@@ -51,10 +55,11 @@ export async function getMtaConfig(rootPath: string): Promise<MtaConfig | undefi
                 break;
             }
         } catch (error) {
-            await new Promise((resolve) => setTimeout(resolve, 500));
+            LoggerHelper.logger?.debug(t('debug.errorReadingMta', { error: error.message }));
+            await new Promise((resolve) => setTimeout(resolve, 1000));
         }
     }
-    LoggerHelper.logger?.debug(`Read mta.yaml with prefix ${mtaConfig?.prefix}`);
+    LoggerHelper.logger?.debug(t('debug.mtaReadWithPrefix', { prefix: mtaConfig?.prefix }));
     return mtaConfig;
 }
 
@@ -240,6 +245,68 @@ export async function runCommand(cwd: string, cmd: string, args: string[], error
         await commandRunner.run(cmd, args, { cwd });
     } catch (e) {
         throw new Error(`${errorMsg} ${e.message}`);
+    }
+}
+
+/**
+ *  Add standalone approuter to the target folder.
+ *
+ * @param cfConfig writer configuration
+ * @param mtaInstance MTA configuration instance
+ * @param fs reference to a mem-fs editor
+ */
+async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
+    await mtaInstance.addStandaloneRouter(true);
+    if (cfConfig.addConnectivityService) {
+        await mtaInstance.addConnectivityResource();
+    }
+    const { abapServiceName, abapService } = cfConfig.abapServiceProvider ?? {};
+    if (abapServiceName && abapService) {
+        await mtaInstance.addAbapService(abapServiceName, abapService);
+    }
+
+    fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/${FileName.Package}`));
+
+    if (abapServiceName) {
+        let serviceKey;
+        try {
+            const instanceCredentials = await apiGetInstanceCredentials(abapServiceName);
+            serviceKey = instanceCredentials?.credentials;
+        } catch {
+            LoggerHelper.logger?.error(t('error.serviceKeyFailed'));
+        }
+        const endpoints = serviceKey?.endpoints ? Object.keys(serviceKey.endpoints) : [''];
+        const service = serviceKey ? serviceKey['sap.cloud.service'] : '';
+        fs.copyTpl(
+            getTemplatePath('router/xs-app-abapservice.json'),
+            join(cfConfig.mtaPath, `${RouterModule}/${XSAppFile}`),
+            { servicekeyService: service, servicekeyEndpoint: endpoints[0] }
+        );
+    } else {
+        fs.copyTpl(
+            getTemplatePath('router/xs-app-server.json'),
+            join(cfConfig.mtaPath, `${RouterModule}/${XSAppFile}`)
+        );
+    }
+}
+
+/**
+ * Add standalone | managed | appfront approuter to the target folder.
+ *
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
+ */
+export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
+    const mtaConfigInstance = await getMtaConfig(config.mtaPath);
+    if (mtaConfigInstance) {
+        if (config.routerType === RouterModuleType.Standard) {
+            await addStandaloneRouter(config, mtaConfigInstance, fs);
+        } else {
+            await mtaConfigInstance.addRouterType({ routerType: config.routerType, addMissingModules: false });
+        }
+        await addMtaDeployParameters(mtaConfigInstance);
+        await mtaConfigInstance.save();
+        LoggerHelper.logger?.debug(t('debug.capMtaUpdated'));
     }
 }
 

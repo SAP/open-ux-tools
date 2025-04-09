@@ -23,8 +23,6 @@ import {
     UI5TaskZipperPackage,
     UI5TaskZipperPackageVersion,
     XSSecurityFile,
-    RouterModule,
-    XSAppFile,
     rootDeployMTAScript,
     undeployMTAScript,
     MTAFileExtension,
@@ -37,11 +35,7 @@ import {
     CDSPackage
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
-import { type MTABaseConfig, type CFConfig, type CFBaseConfig, RouterModuleType, type CFAppConfig } from './types';
-import { getMtaId, type MtaConfig, addMtaDeployParameters, getMtaConfig } from './mta-config';
-import { apiGetInstanceCredentials } from '@sap/cf-tools';
-import LoggerHelper from './logger-helper';
-import { t } from './i18n';
+import { type MTABaseConfig, type CFConfig, type CFBaseConfig, type CFAppConfig } from './types';
 
 let cachedDestinationsList: Destinations = {};
 
@@ -193,19 +187,18 @@ export async function addCommonPackageDependencies(targetPath: string, fs: Edito
  * @param fs reference to a mem-fs editor
  */
 export async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<void> {
-    const mtaId: string = config.mtaId ?? (await getMtaId(config.rootPath));
-    // Add specific MTA ID configurations
-    const mtaConfig = { mtaId, mtaPath: config.rootPath } as MTABaseConfig;
-    if (mtaId && !fs.exists(join(config.rootPath, 'package.json'))) {
+    const mtaConfig = { mtaId: config.mtaId, mtaPath: config.rootPath } as MTABaseConfig;
+    if (mtaConfig.mtaId && !fs.exists(join(config.rootPath, 'package.json'))) {
         addRootPackage(mtaConfig, fs);
     }
     if (
         (config.addManagedAppRouter || config.addAppFrontendRouter) &&
+        mtaConfig.mtaId &&
         !fs.exists(join(config.rootPath, XSSecurityFile))
     ) {
         addXSSecurityConfig(mtaConfig, fs, config.addManagedAppRouter);
     }
-    // Be a good developer and add a .gitignore if missing from the existing project root
+    // Be a good citizen and add a .gitignore if missing from the existing project root
     if (!fs.exists(join(config.rootPath, '.gitignore'))) {
         addGitIgnore(config.rootPath, fs);
     }
@@ -221,68 +214,6 @@ export function addSupportingConfig(config: MTABaseConfig, fs: Editor): void {
     addRootPackage(config, fs);
     addGitIgnore(config.mtaPath, fs);
     addXSSecurityConfig(config, fs);
-}
-
-/**
- *  Add standalone approuter to the target folder.
- *
- * @param cfConfig writer configuration
- * @param mtaInstance MTA configuration instance
- * @param fs reference to a mem-fs editor
- */
-async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfig, fs: Editor): Promise<void> {
-    await mtaInstance.addStandaloneRouter(true);
-    if (cfConfig.addConnectivityService) {
-        await mtaInstance.addConnectivityResource();
-    }
-    const { abapServiceName, abapService } = cfConfig.abapServiceProvider ?? {};
-    if (abapServiceName && abapService) {
-        await mtaInstance.addAbapService(abapServiceName, abapService);
-    }
-
-    fs.copyTpl(getTemplatePath(`router/package.json`), join(cfConfig.mtaPath, `${RouterModule}/${FileName.Package}`));
-
-    if (abapServiceName) {
-        let serviceKey;
-        try {
-            const instanceCredentials = await apiGetInstanceCredentials(abapServiceName);
-            serviceKey = instanceCredentials?.credentials;
-        } catch {
-            LoggerHelper.logger?.error(t('error.serviceKeyFailed'));
-        }
-        const endpoints = serviceKey?.endpoints ? Object.keys(serviceKey.endpoints) : [''];
-        const service = serviceKey ? serviceKey['sap.cloud.service'] : '';
-        fs.copyTpl(
-            getTemplatePath('router/xs-app-abapservice.json'),
-            join(cfConfig.mtaPath, `${RouterModule}/${XSAppFile}`),
-            { servicekeyService: service, servicekeyEndpoint: endpoints[0] }
-        );
-    } else {
-        fs.copyTpl(
-            getTemplatePath('router/xs-app-server.json'),
-            join(cfConfig.mtaPath, `${RouterModule}/${XSAppFile}`)
-        );
-    }
-}
-
-/**
- * Add standalone | managed | appfront approuter to the target folder.
- *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
- */
-export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promise<void> {
-    const mtaConfigInstance = await getMtaConfig(config.mtaPath);
-    if (mtaConfigInstance) {
-        if (config.routerType === RouterModuleType.Standard) {
-            await addStandaloneRouter(config, mtaConfigInstance, fs);
-        } else {
-            await mtaConfigInstance.addRouterType({ routerType: config.routerType, addMissingModules: false });
-        }
-        await addMtaDeployParameters(mtaConfigInstance);
-        await mtaConfigInstance.save();
-        LoggerHelper.logger?.debug(t('debug.capMtaUpdated'));
-    }
 }
 
 /**

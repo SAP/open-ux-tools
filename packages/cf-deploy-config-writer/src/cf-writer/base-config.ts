@@ -1,8 +1,8 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { addSupportingConfig, addRoutingConfig } from '../utils';
+import { addSupportingConfig } from '../utils';
 import LoggerHelper from '../logger-helper';
-import { createMTA, validateMtaConfig } from '../mta-config';
+import { createMTA, validateMtaConfig, addRoutingConfig } from '../mta-config';
 import { type Logger } from '@sap-ux/logger';
 import { type CFBaseConfig, type MTABaseConfig } from '../types';
 import { join } from 'path';

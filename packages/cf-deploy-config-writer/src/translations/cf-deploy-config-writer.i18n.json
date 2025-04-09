@@ -2,7 +2,7 @@
     "debug": {
         "logError": "{{method}} error found: {{ error }}",
         "mtaLoaded": "MTA {{ type }} loaded. The size is: {{ size }}.",
-        "ui5YamlDoesNotExist": "The ui5.yaml file does not exist in the project. Please create one.",
+        "ui5YamlDoesNotExist": "The ui5.yaml file does not exist in the project. Please create one, error thrown {{- error }}",
         "capMtaCreated": "CAP MTA configuration created.",
         "capMtaUpdated": "CAP MTA configuration updated.",
         "capGenerationCompleted": "CAP generation completed.",
@@ -14,7 +14,9 @@
         "cleanupModules": "Cleanup modules.",
         "creatingMta": "Creating MTA using {{- cdsParams }}...",
         "html5AppAdded": "HTML5 application added to MTA configuration {{- appName}}",
-        "addXsuaaService": "Adding XSUAA service to MTA configuration."
+        "addXsuaaService": "Adding XSUAA service to MTA configuration.",
+        "mtaReadWithPrefix": "Read mta.yaml with prefix {{- prefix }}.",
+        "errorReadingMta": "Error reading mta.yaml file {{- error }}."
     },
     "error": {
         "unableToLoadMTA": "Unable to load mta.yaml configuration {{- mtaDir }}, error thrown {{- error }}.",
@@ -35,7 +37,7 @@
         "errorGeneratingMtaYaml": "An error occurred when creating the mta.yaml file. Please view the logs."
     },
     "info":{
-        "existingMTAExtensionNotFound": "Cannot find a valid existing mta extension file, a new one will be created.",
+        "existingMTAExtensionNotFound": "Cannot find a valid existing mta extension file, a new one will be created, error found {{- error}}.",
         "existingDestinationNotFound": "A destination service resource cannot be found in the mta.yaml. An mta extension destination instance cannot be added.",
         "mtaExtensionCreated": "Created file: {{mtaExtFile}} to extend mta module {{appMtaId}} with destination configuration.",
         "mtaExtensionUpdated": "Updated file: {{mtaExtFile}} with module destination configuration."

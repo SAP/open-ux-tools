@@ -187,7 +187,7 @@ async function processUI5Config(
             firstServicePathSegmentUI5Config = toolsConfig?.configuration?.backend[0].path;
         }
     } catch (error) {
-        LoggerHelper.logger?.debug(t('debug.ui5YamlDoesNotExist'));
+        LoggerHelper.logger?.debug(t('debug.ui5YamlDoesNotExist', { error: error.message }));
     }
     return { destination, serviceHost, firstServicePathSegmentUI5Config };
 }

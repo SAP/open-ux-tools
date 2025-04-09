@@ -837,7 +837,7 @@ export class MtaConfig {
             mtaExtensionYamlFile = await YamlDocument.newInstance(mtaExtContents);
         } catch (err) {
             // File does not exist or cannot be parsed, either way we create a new one
-            this.log?.info(t('info.existingMTAExtensionNotFound'));
+            this.log?.info(t('info.existingMTAExtensionNotFound', { error: err.message }));
         }
 
         // Create a new mta extension file
