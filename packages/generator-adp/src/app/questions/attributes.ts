@@ -1,4 +1,4 @@
-import { InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 import { AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
 import {
     validateEmptyString,
@@ -33,6 +33,7 @@ interface Config {
  * Returns all basic info prompts, filtering based on promptOptions.
  *
  * @param {string} path - The project base path.
+ * @param {Config} config - Configuration values needed for conditional prompt logic.
  * @param {BasicPromptOptions} [promptOptions] - Optional settings to control visibility and defaults.
  * @returns {AttributesQuestion[]} An array of prompt objects for basic info input.
  */
@@ -169,10 +170,12 @@ function getTargetFolderPrompt(options?: TargetFolderPromptOptions): AttributesQ
 }
 
 /**
- * Creates the ui5 version prompt.
+ * Creates the UI5 version selection prompt.
  *
- * @param {string[]} ui5Versions - The ui5 version a strings.
- * @returns {AttributesQuestion} The prompt configuration for ui5 version.
+ * @param {string[]} ui5Versions - Array of available UI5 versions.
+ * @param {boolean} isVersionDetected - Whether a UI5 version was detected from the system.
+ * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
+ * @returns {AttributesQuestion} The prompt configuration for UI5 version.
  */
 function getUi5VersionPrompt(
     ui5Versions: string[],
@@ -198,19 +201,20 @@ function getUi5VersionPrompt(
 }
 
 /**
- * Creates the enable typescript confirm prompt.
+ * Creates the TypeScript enablement confirm prompt.
  *
- * @returns {AttributesQuestion} The prompt configuration for enable typescript confirm question.
+ * @param {EnableTypeScriptPromptOptions} [options] - Optional prompt options to control visibility.
+ * @returns {AttributesQuestion} The prompt configuration for TypeScript confirmation.
  */
 function getEnableTypeScriptPrompt(options?: EnableTypeScriptPromptOptions): AttributesQuestion {
     return {
         type: 'confirm',
-        name: 'enableTypeScript',
+        name: basicPromptNames.enableTypeScript,
         message: 'Enable TypeScript',
         default: false,
         when: () => options?.hide ?? true,
         guiOptions: {
             breadcrumb: true
         }
-    };
+    } as ConfirmQuestion<AttributesAnswers>;
 }

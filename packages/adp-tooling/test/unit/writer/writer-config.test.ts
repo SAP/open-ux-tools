@@ -3,7 +3,7 @@ import type { Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer, UI5VersionInfo, getProviderConfig, getConfig } from '../../../src';
-import type { ConfigAnswers, SourceApplication } from '../../../src';
+import type { AttributesAnswers, ConfigAnswers, SourceApplication } from '../../../src';
 
 jest.mock('../../../src/abap/config.ts', () => ({
     getProviderConfig: jest.fn()
@@ -30,8 +30,13 @@ const configAnswers: ConfigAnswers = {
     username: ''
 };
 
-const defaults = {
-    namespace: 'customer.app.variant1'
+const attributeAnswers: AttributesAnswers = {
+    namespace: 'customer.app.variant1',
+    enableTypeScript: false,
+    projectName: 'app.variant1',
+    targetFolder: '/some-path',
+    title: '',
+    ui5Version: '1.134.1'
 };
 
 describe('getConfig', () => {
@@ -47,8 +52,8 @@ describe('getConfig', () => {
         const config = await getConfig({
             provider: mockAbapProvider,
             configAnswers,
+            attributeAnswers,
             layer: FlexLayer.CUSTOMER_BASE,
-            defaults,
             packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
             logger: {} as ToolsLogger
         });
