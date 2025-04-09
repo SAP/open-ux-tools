@@ -617,7 +617,6 @@ describe('Test FioriAppGenerator', () => {
             undefined, // VSCode
             { '$fiori-cache': {} } // AppWizard);
         );
-
     });
 
     test('Should report errors and exit', async () => {
