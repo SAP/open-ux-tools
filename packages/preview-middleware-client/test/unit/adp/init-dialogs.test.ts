@@ -15,7 +15,7 @@ import { getTextBundle } from '../../../src/i18n';
 
 const addFragmentServiceMock = jest.fn();
 jest.mock('open/ux/preview/client/adp/add-fragment', () => ({
-    init: addFragmentServiceMock
+    initAddXMLPlugin: addFragmentServiceMock
 }));
 
 describe('Dialogs', () => {

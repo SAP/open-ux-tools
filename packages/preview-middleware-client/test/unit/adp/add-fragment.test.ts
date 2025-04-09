@@ -1,4 +1,4 @@
-import AddFragmentService from '../../../src/adp/add-fragment';
+import { initAddXMLPlugin } from '../../../src/adp/add-fragment';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
@@ -34,7 +34,7 @@ describe('AddFragmentService', () => {
             const mockCommandFactory = jest.fn();
             (CommandFactory as unknown as jest.Mock).mockImplementation(() => mockCommandFactory);
 
-            AddFragmentService.init(mockRta);
+            initAddXMLPlugin(mockRta);
 
             expect(AddXMLPlugin).toHaveBeenCalledWith({
                 commandFactory: mockCommandFactory,

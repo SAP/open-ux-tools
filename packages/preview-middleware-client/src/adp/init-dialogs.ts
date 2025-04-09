@@ -149,8 +149,7 @@ export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[],
             enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, isReuseComponentChecker, isCloud)
         });
     } else {
-        const addFragmentService = (await import('open/ux/preview/client/adp/add-fragment')).default;
-        addFragmentService.init(rta);
+        const addFragment = (await import('open/ux/preview/client/adp/add-fragment')).initAddXMLPlugin(rta);
     }
 
     contextMenu.addMenuItem({
