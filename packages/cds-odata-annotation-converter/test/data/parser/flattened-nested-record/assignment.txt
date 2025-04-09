@@ -1,0 +1,4 @@
+UI : {
+    HeaderInfo.Title.$Type : 'UI.DataFieldForAnnotation',
+    HeaderInfo.Title.Target : '@Communication.Contact'
+}

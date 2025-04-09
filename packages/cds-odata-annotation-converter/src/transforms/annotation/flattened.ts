@@ -1,7 +1,8 @@
 import type { Identifier, AnnotationValue } from '@sap-ux/cds-annotation-parser';
+import { nodeRange, ReservedProperties, STRING_LITERAL_TYPE } from '@sap-ux/cds-annotation-parser';
 
 import type { Element, Range } from '@sap-ux/odata-annotation-core';
-import { Edm, createElementNode } from '@sap-ux/odata-annotation-core';
+import { Edm, createAttributeNode, createElementNode } from '@sap-ux/odata-annotation-core';
 
 import type { Subtree } from './handler';
 
@@ -46,18 +47,29 @@ export function convertFlattenedPath(
     //             Property    Property      Enum Member
     let root: Element | undefined;
     let parent: Element | undefined;
-    const expandedStructures = convertToExpandedStructure(state, segments, value?.range);
+    const expandedStructures = convertToExpandedStructure(state, segments, value);
     for (const expandedStructure of expandedStructures) {
         if (parent) {
-            const record: Element = createElementNode({
-                name: Edm.Record,
-                range: expandedStructure.element.range ?? undefined,
-                content: [expandedStructure.element],
-                contentRange: expandedStructure.element.range ?? undefined
-            });
-            // property content range should include only child range
-            parent.contentRange = record.range ?? undefined;
-            parent.content.push(record);
+            if (expandedStructure.kind === 'record-type') {
+                if (expandedStructure.element.attributes['Type'].nameRange?.start && parent.contentRange?.end) {
+                    const range: Range = {
+                        start: expandedStructure.element.attributes['Type'].nameRange?.start,
+                        end: parent.contentRange?.end
+                    };
+                    parent.contentRange = copyRange(range);
+                }
+                parent.content.push(expandedStructure.element);
+            } else {
+                const record: Element = createElementNode({
+                    name: Edm.Record,
+                    range: expandedStructure.element.range ?? undefined,
+                    content: [expandedStructure.element],
+                    contentRange: expandedStructure.element.range ?? undefined
+                });
+                // property content range should include only child range
+                parent.contentRange = record.range ?? undefined;
+                parent.content.push(record);
+            }
         } else {
             root = expandedStructure.element;
         }
@@ -72,6 +84,8 @@ export function convertFlattenedPath(
 
     if (last.kind === 'annotation') {
         newContext.termType = last.vocabularyObject?.type;
+    } else if (last.kind === 'record-type') {
+        newContext.recordType = last.element.attributes[Edm.Type].value;
     } else {
         newContext.propertyName = last.element.attributes[Edm.Property].value;
     }
@@ -89,7 +103,7 @@ export function convertFlattenedPath(
 }
 
 interface ExpandedStructure {
-    kind: 'annotation' | 'property';
+    kind: 'annotation' | 'property' | 'record-type';
     name: string;
     element: Element;
     vocabularyObject?: Term | ComplexTypeProperty;
@@ -99,14 +113,15 @@ interface ExpandedStructure {
  *
  * @param state VisitorSate for which context will be updated with the inferred value types.
  * @param segments Array of identifiers representing flattened record structure.
- * @param valueRange element content/value range.
+ * @param value AnnotationValue
  * @returns expanded structure either annotation or property kind.
  */
 function convertToExpandedStructure(
     state: VisitorState,
     segments: Identifier[],
-    valueRange: Range | undefined
+    value: AnnotationValue | undefined
 ): ExpandedStructure[] {
+    const valueRange = value?.range;
     const expandedStructure: ExpandedStructure[] = [];
     const initialType = state.context.recordType ?? state.context.termType;
     const lastSegment = valueRange ? undefined : segments[segments.length - 1];
@@ -144,30 +159,48 @@ function convertToExpandedStructure(
             i += 2;
             continue;
         }
-
-        const flatProperty: Element = createElementNode({
-            name: Edm.PropertyValue,
-            range: propertyRange,
-            contentRange: propertyRange,
-            attributes: {
-                [Edm.Property]: createPropertyAttribute(segment.value, segment.range)
+        if (segment.value === ReservedProperties.Type && value?.type === STRING_LITERAL_TYPE) {
+            const flatProperty: Element = createElementNode({
+                name: Edm.Record,
+                attributes: {
+                    [Edm.Type]: createAttributeNode(Edm.Type, value.value, segment.range, nodeRange(value, false))
+                },
+                range: propertyRange
+            });
+            if (expandedStructure.length > 0) {
+                const last = expandedStructure[i - 1];
+                last.element.contentRange = createRange(segment.range?.start, valueRange?.end);
             }
-        });
+            expandedStructure.push({
+                kind: 'record-type',
+                name: segment.value,
+                element: flatProperty
+            });
+        } else {
+            const flatProperty: Element = createElementNode({
+                name: Edm.PropertyValue,
+                range: propertyRange,
+                contentRange: propertyRange,
+                attributes: {
+                    [Edm.Property]: createPropertyAttribute(segment.value, segment.range)
+                }
+            });
 
-        const parentType = expandedStructure[expandedStructure.length - 1]?.vocabularyObject?.type ?? initialType;
-        expandedStructure.push({
-            kind: 'property',
-            name: segment.value,
-            vocabularyObject: getPropertyType(state.vocabularyService, parentType, segment.value),
-            element: flatProperty
-        });
+            const parentType = expandedStructure[expandedStructure.length - 1]?.vocabularyObject?.type ?? initialType;
+            expandedStructure.push({
+                kind: 'property',
+                name: segment.value,
+                vocabularyObject: getPropertyType(state.vocabularyService, parentType, segment.value),
+                element: flatProperty
+            });
+        }
         i++;
     }
 
     // the leaf element should only include the values range in it's contentRange
     const last = expandedStructure[expandedStructure.length - 1];
     if (last) {
-        if (valueRange) {
+        if (valueRange && last.kind !== 'record-type') {
             last.element.contentRange = copyRange(valueRange);
         } else {
             // content range should not be added in case value does not exist

@@ -7,7 +7,6 @@ export interface Context {
      */
     recordType?: string;
     termType?: string;
-    isFlattened$Type?: boolean;
     /**
      * Alias used in annotation group.
      */
@@ -90,8 +89,9 @@ export class VisitorState {
     pushContext(context: Context) {
         this._contextStack.push(Object.seal({ ...context }));
     }
+
     popContext() {
-        return this._contextStack.splice(-1);
+        this._contextStack.splice(-1);
     }
 
     // collectors
