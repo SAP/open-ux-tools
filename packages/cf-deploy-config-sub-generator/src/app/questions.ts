@@ -58,7 +58,7 @@ export async function getCFQuestions({
     const options: CfDeployConfigPromptOptions = {
         [promptNames.destinationName]: {
             defaultValue: destinationQuestionDefaultOption(isAbapDirectServiceBinding, isBAS, cfDestination),
-            hint: isAbapDirectServiceBinding,
+            hint: !!isAbapDirectServiceBinding,
             useAutocomplete: getHostEnvironment() === hostEnvironment.cli,
             addBTPDestinationList: isBAS ? !isAbapDirectServiceBinding : false,
             additionalChoiceList: cfChoices

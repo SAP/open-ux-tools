@@ -258,11 +258,11 @@ export default class extends DeploymentGenerator {
         const isDestinationFullUrl =
             this.options.isFullUrlDest ?? (destination && isFullUrlDestination(destination)) ?? false;
         let addManagedAppRouter =
-            this.options.addManagedAppRouter ?? this.answers.routerType === RouterModuleType.Managed ?? false;
+            this.options.addManagedAppRouter ?? this.answers.routerType === RouterModuleType.Managed;
         let addAppFrontendRouter =
-            this.options.addAppFrontendRouter ?? this.answers.routerType === RouterModuleType.AppFront ?? false;
+            this.options.addAppFrontendRouter ?? this.answers.routerType === RouterModuleType.AppFront;
         // Options passed to generator, can toggle these values
-        if (addManagedAppRouter && addManagedAppRouter && this.answers.routerType === RouterModuleType.None) {
+        if (this.answers.routerType === RouterModuleType.None && (addManagedAppRouter || addAppFrontendRouter)) {
             addManagedAppRouter = false;
             addAppFrontendRouter = false;
         }
@@ -320,8 +320,8 @@ export default class extends DeploymentGenerator {
     private _getAppConfig(): CFAppConfig {
         return {
             appPath: this.appPath,
-            addManagedAppRouter: this.answers.routerType === RouterModuleType.Managed,
-            addAppFrontendRouter: this.answers.routerType === RouterModuleType.AppFront,
+            addManagedAppRouter: this.answers.addManagedAppRouter,
+            addAppFrontendRouter: this.answers.addAppFrontendRouter,
             destinationName: this.answers.destinationName,
             destinationAuthentication: this.answers.destinationAuthentication,
             isDestinationFullUrl: this.answers.isDestinationFullUrl,

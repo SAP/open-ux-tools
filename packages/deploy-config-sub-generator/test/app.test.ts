@@ -258,7 +258,6 @@ describe('Deployment Generator', () => {
                 .run()
         ).resolves.not.toThrow();
         expect(getCFQuestionsSpy).toHaveBeenCalledWith({
-            addManagedAppRouter: true,
             destinationName: {
                 addBTPDestinationList: false,
                 additionalChoiceList: expect.any(Array),
@@ -266,7 +265,8 @@ describe('Deployment Generator', () => {
                 hint: false,
                 useAutocomplete: true
             },
-            overwriteDestinationName: false
+            overwriteDestinationName: false,
+            showRouterOptions: true
         });
         expect(getABAPPromptsSpy).toHaveBeenCalledWith({
             appRootPath: expect.stringContaining('project1'),
