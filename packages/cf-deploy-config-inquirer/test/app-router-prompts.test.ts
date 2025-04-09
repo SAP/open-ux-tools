@@ -117,14 +117,19 @@ describe('App Router Prompt Generation Tests', () => {
                 [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
                 [appRouterPromptNames.routerType]: true
             };
-            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(promptOptions);
+            const questions: CfAppRouterDeployConfigQuestions[] = await getAppRouterQuestions(
+                promptOptions,
+                undefined,
+                true
+            );
             const routerTypePrompt = questions.find((question) => question.name === appRouterPromptNames.routerType);
+            expect(routerTypePrompt).toBeDefined();
             expect(routerTypePrompt?.message).toBe(t('prompts.routerTypeMessage'));
             expect(routerTypePrompt?.type).toBe('list');
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(true);
             expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Managed);
-            expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
+            expect(((routerTypePrompt as ListQuestion).choices as Function)()).toEqual([
                 { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
                 { name: t('routerType.appFrontAppService'), value: RouterModuleType.AppFront },
                 { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard }

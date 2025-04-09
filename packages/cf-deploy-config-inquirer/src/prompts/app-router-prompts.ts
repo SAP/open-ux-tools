@@ -86,9 +86,10 @@ function getMtaVersionPrompt(): CfAppRouterDeployConfigQuestions {
  * This prompt allows users to choose between a standalone | managed | app frontend router for deployment.
  * The prompt is mandatory, with a default selection of the "managed" router type.
  *
+ * @param {boolean} isInternalFeaturesSettingEnabled - Flag to determine if internal features setting is enabled.
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting the router type.
  */
-function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
+function getRouterTypePrompt(isInternalFeaturesSettingEnabled: boolean = false): CfAppRouterDeployConfigQuestions {
     return {
         type: 'list',
         name: appRouterPromptNames.routerType,
@@ -98,11 +99,16 @@ function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
         },
         default: () => RouterModuleType.Managed, // Should always be the preferred choice
         message: t('prompts.routerTypeMessage'),
-        choices: [
-            { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
-            { name: t('routerType.appFrontAppService'), value: RouterModuleType.AppFront },
-            { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard }
-        ]
+        choices: () => {
+            const choices: ListChoiceOptions[] = [
+                { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
+                { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard }
+            ];
+            if (isInternalFeaturesSettingEnabled) {
+                choices.splice(1, 0, { name: t('routerType.appFrontAppService'), value: RouterModuleType.AppFront });
+            }
+            return choices as ListChoiceOptions[];
+        }
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
 }
 
@@ -195,11 +201,13 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
  *
  * @param {CfAppRouterDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
  * @param {Logger} [log] - The logger instance to use for logging.
+ * @param {boolean} [isInternalFeaturesSettingEnabled] - Whether internal features setting is enabled.
  * @returns {CfAppRouterDeployConfigQuestions[]} Returns an array of questions related to cf deployment configuration.
  */
 export async function getAppRouterQuestions(
     promptOptions: CfAppRouterDeployConfigPromptOptions,
-    log?: Logger
+    log?: Logger,
+    isInternalFeaturesSettingEnabled: boolean = false
 ): Promise<CfAppRouterDeployConfigQuestions[]> {
     const mtaPath = promptOptions[appRouterPromptNames.mtaPath];
 
@@ -210,13 +218,16 @@ export async function getAppRouterQuestions(
     // Mapping of options
     const questionMapping: {
         key: keyof CfAppRouterDeployConfigPromptOptions;
-        getQuestion: () => CfAppRouterDeployConfigQuestions;
+        getQuestion: (isFeatureEnabled?: boolean) => CfAppRouterDeployConfigQuestions;
         logMessage?: string;
     }[] = [
         { key: appRouterPromptNames.mtaId, getQuestion: getMtaIdPrompt },
         { key: appRouterPromptNames.mtaDescription, getQuestion: getMtaDescriptionPrompt },
         { key: appRouterPromptNames.mtaVersion, getQuestion: getMtaVersionPrompt },
-        { key: appRouterPromptNames.routerType, getQuestion: getRouterTypePrompt },
+        {
+            key: appRouterPromptNames.routerType,
+            getQuestion: (isFeatureEnabled) => getRouterTypePrompt(isFeatureEnabled)
+        },
         {
             key: appRouterPromptNames.addConnectivityService,
             getQuestion: getConnectivityServicePrompt,
@@ -236,7 +247,7 @@ export async function getAppRouterQuestions(
             if (logMessage) {
                 log?.info(t(logMessage));
             }
-            questions.push(getQuestion());
+            questions.push(getQuestion(isInternalFeaturesSettingEnabled));
         }
     }
 

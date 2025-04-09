@@ -139,6 +139,8 @@ export interface CfDeployConfigAnswers {
     addManagedAppRouter?: boolean;
     /** Indicates whether the user opted to overwrite the destination. */
     overwrite?: boolean;
+    /** Indicates whether the user opted to include the router type. */
+    routerType?: RouterModuleType;
 }
 
 /**

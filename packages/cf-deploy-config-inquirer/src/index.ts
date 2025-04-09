@@ -42,18 +42,20 @@ async function getPrompts(
  *
  * @param {CfDeployConfigPromptOptions} promptOptions - The options for configuring application router prompts.
  * @param {Logger} [logger] - An optional logger instance.
+ * @param {boolean} [isInternalFeaturesSettingEnabled] - A flag indicating whether internal features are enabled.
  * @returns {Promise<CfAppRouterDeployConfigQuestions[]>} A promise that resolves to an array of
  * application router deployment configuration questions.
  */
 async function getAppRouterPrompts(
     promptOptions: CfAppRouterDeployConfigPromptOptions,
-    logger?: Logger
+    logger?: Logger,
+    isInternalFeaturesSettingEnabled: boolean = false
 ): Promise<CfAppRouterDeployConfigQuestions[]> {
     if (logger) {
         LoggerHelper.logger = logger;
     }
     await initI18nCfDeployConfigInquirer();
-    return getAppRouterQuestions(promptOptions, LoggerHelper.logger);
+    return getAppRouterQuestions(promptOptions, LoggerHelper.logger, isInternalFeaturesSettingEnabled);
 }
 
 /**
