@@ -41,9 +41,7 @@ export default class LoggerHelper {
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const logResponseData =
             typeof (LoggerHelper.logger as any).getLogLevel === 'function' &&
-            (LoggerHelper.logger as any).getLogLevel() === 'trace'
-                ? true
-                : false;
+            (LoggerHelper.logger as any).getLogLevel() === 'trace';
         const debugLogger = LoggerHelper.logger.debug.bind(LoggerHelper.logger);
         interceptors.request.use(
             (request) => {
