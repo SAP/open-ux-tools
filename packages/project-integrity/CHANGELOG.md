@@ -1,5 +1,11 @@
 # @sap-ux/project-integrity
 
+## 0.1.17
+
+### Patch Changes
+
+-   3005a27: fix: make integrity check format free
+
 ## 0.1.16
 
 ### Patch Changes
