@@ -14,7 +14,7 @@ import {
     extendWithOptions
 } from '@sap-ux/inquirer-common';
 import { getMtaPath } from '@sap-ux/project-access';
-import { validateModuleName, validateNamespace } from '@sap-ux/project-input-validator';
+import { validateModuleName, validateNamespace, validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import {
     defaultVersion,
     getDefaultUI5Theme,
@@ -25,7 +25,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import { t } from '../i18n';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
 import { promptNames } from '../types';
-import { defaultAppName, hidePrompts, isVersionIncluded, validateTargetFolder } from './prompt-helpers';
+import { defaultAppName, hidePrompts, isVersionIncluded } from './prompt-helpers';
 import { validateAppName } from './validators';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 
@@ -344,7 +344,7 @@ function getTargetFolderPrompt(targetDir: string, validateFioriAppFolder?: boole
         default: (answers: UI5ApplicationAnswers) => answers.targetFolder || targetDir,
         validate: async (target, { name = '' }: UI5ApplicationAnswers): Promise<boolean | string> => {
             if (name.length > 2) {
-                return await validateTargetFolder(target, name, validateFioriAppFolder);
+                return await validateFioriAppTargetFolder(target, name, validateFioriAppFolder);
             }
             return false;
         }

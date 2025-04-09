@@ -22,7 +22,6 @@ export const CALLOUT_STYLES = {
     boxShadow: 'var(--ui-box-shadow-small)',
     borderColor: 'var(--vscode-editorWidget-border)',
     text: 'var(--vscode-editorWidget-foreground)',
-    font: 'var(--vscode-font-family)',
     borderRadius: 2
 };
 
@@ -73,7 +72,6 @@ export const getCalloutStyle = (props: UICalloutProps): ICalloutContentStyles =>
         calloutMain: {
             backgroundColor: 'transparent',
             color: CALLOUT_STYLES.text,
-            fontFamily: CALLOUT_STYLES.font,
             borderRadius: CALLOUT_STYLES.borderRadius,
             minWidth: props.calloutMinWidth ?? 300,
             boxSizing: 'border-box',
