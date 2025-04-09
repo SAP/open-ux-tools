@@ -65,6 +65,9 @@ export interface FlpConfig {
     enhancedHomePage?: boolean;
 }
 
+/**
+ * Configration for the virtual test pages endpoints.
+ */
 export interface TestConfig {
     framework: 'OPA5' | 'QUnit' | 'Testsuite';
     /**
