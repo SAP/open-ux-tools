@@ -1,7 +1,7 @@
 import type Generator from 'yeoman-generator';
 import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
-import type { ConfigAnswers } from '@sap-ux/adp-tooling';
+import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
 import type { YUIQuestion } from '@sap-ux/inquirer-common';
 import type { TelemetryData } from '@sap-ux/fiori-generator-shared';
 
@@ -80,4 +80,51 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.password]: PasswordPromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
+}>;
+
+export enum basicPromptNames {
+    projectName = 'projectName',
+    title = 'title',
+    namespace = 'namespace',
+    targetFolder = 'targetFolder',
+    ui5Version = 'ui5Version',
+    enableTypeScript = 'enableTypeScript'
+}
+
+export type AttributesQuestion = YUIQuestion<AttributesAnswers>;
+
+export interface ProjectNamePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface ApplicationTitlePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface NamespacePromptOptions {
+    default?: string;
+    hide?: boolean;
+}
+
+export interface TargetFolderPromptOptions {
+    default?: string;
+}
+
+export interface UI5VersionPromptOptions {
+    default?: string;
+}
+
+export interface EnableTypeScriptPromptOptions {
+    hide?: boolean;
+}
+
+export type BasicPromptOptions = Partial<{
+    [basicPromptNames.projectName]: ProjectNamePromptOptions;
+    [basicPromptNames.title]: ApplicationTitlePromptOptions;
+    [basicPromptNames.namespace]: NamespacePromptOptions;
+    [basicPromptNames.targetFolder]: TargetFolderPromptOptions;
+    [basicPromptNames.ui5Version]: UI5VersionPromptOptions;
+    [basicPromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
 }>;

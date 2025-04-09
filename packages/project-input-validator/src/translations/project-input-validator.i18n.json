@@ -54,5 +54,17 @@
         "invalidValueForSpecialChars": "Input must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'",
         "maxLength": "Maximum length: {{maxLength}} characters",
         "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed"
+    },
+    "adp": {
+        "projectNameUppercaseError": "The name cannot contain uppercase letters.",
+        "projectNameLengthErrorExt": "The name cannot contain more than 61 characters or end with 'component'.",
+        "projectNameValidationErrorExt": "The name must contain only Latin alphanumeric characters. Different parts can be separated by period and every part must start with a letter.",
+        "duplicatedProjectName": "Project with this name already exists in your workspace",
+        "projectNameLengthErrorInt": "The name cannot start with 'customer' or contain more than 61 characters or end with 'component'.",
+        "projectNameValidationErrorInt": "The name must contain only Latin alphanumeric characters and it must have at least two parts. The different parts must be separated by period and every part must start with a letter.",
+        "differentNamespaceThanProjectName": "Namespace should be the same as Project Name.",
+        "namespaceSameAsProjectNameError": "Namespace should be the same as Project Name.",
+        "namespaceLengthError": "Namespace cannot contain more than 61 characters or end with 'component'.",
+        "namespaceValidationError": "The namespace must contain only Latin alphanumeric characters. Different parts can be separated by period and every part must start with a letter."
     }
 }

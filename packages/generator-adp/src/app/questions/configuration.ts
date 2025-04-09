@@ -92,9 +92,25 @@ export class ConfigPrompter {
      */
     private isPartiallySupported = false;
     /**
+     * UI5 Versions in string format.
+     */
+    private ui5Versions: string[];
+    /**
      * UI5 version manager for handling version-related validations.
      */
     private readonly ui5Info: UI5VersionInfo;
+
+    public get relevantUI5Versions(): string[] {
+        return this.ui5Versions;
+    }
+
+    public get isVersionDetected(): boolean {
+        return this.ui5Info.isVersionDetected;
+    }
+
+    public get isCloud(): boolean {
+        return !!this.isCloudProject;
+    }
 
     /**
      * Returns the configured abap provider instance.
@@ -495,10 +511,10 @@ export class ConfigPrompter {
     private async validateSystemVersion(): Promise<void> {
         try {
             const version = await getSystemUI5Version(this.abapProvider);
-            await this.ui5Info.getRelevantVersions(version);
+            this.ui5Versions = await this.ui5Info.getRelevantVersions(version);
         } catch (e) {
             this.logger.debug(`Could not fetch system version: ${e.message}`);
-            await this.ui5Info.getRelevantVersions();
+            this.ui5Versions = await this.ui5Info.getRelevantVersions();
         }
     }
 

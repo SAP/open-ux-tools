@@ -1,6 +1,5 @@
+import { validateUI5Version } from '@sap-ux/adp-tooling';
 import { readdirSync } from 'fs';
-
-import { FlexLayer } from '@sap-ux/adp-tooling';
 
 const APP_VARIANT_REGEX = /^app[.]variant\d{1,3}$/;
 
@@ -8,11 +7,11 @@ const APP_VARIANT_REGEX = /^app[.]variant\d{1,3}$/;
  * Generates a namespace for a project based on its layer.
  *
  * @param {string} projectName - The name of the project.
- * @param {FlexLayer} layer -  The UI5 Flex layer, indicating the deployment layer (e.g., CUSTOMER_BASE).
+ * @param {FlexLayer} isCustomerBase - Indicates the deployment layer (e.g., CUSTOMER_BASE).
  * @returns {string} The namespace string, prefixed appropriately if it's a customer base project.
  */
-export function generateValidNamespace(projectName: string, layer: FlexLayer): string {
-    return layer === FlexLayer.CUSTOMER_BASE ? `customer.${projectName}` : projectName;
+export function generateValidNamespace(projectName: string, isCustomerBase: boolean): string {
+    return isCustomerBase ? `customer.${projectName}` : projectName;
 }
 
 /**
@@ -52,4 +51,20 @@ export function getDefaultProjectName(path: string): string {
     const newProjectIndex = parseInt(lastProjectIdx, 10) + 1;
 
     return `${defaultPrefix}${newProjectIndex}`;
+}
+
+/**
+ * Gets the default UI5 version from the system versions list by validating the first available version.
+ * If the first version is valid according to the UI5 service, it returns that version; otherwise, returns an empty string.
+ *
+ * @param {string[]} versionsOnSystem Array of available versions.
+ * @returns {Promise<string>} The valid UI5 version or an empty string if the first version is not valid or if there are no versions.
+ */
+export async function getVersionDefaultValue(versionsOnSystem: string[]): Promise<string> {
+    if (!versionsOnSystem || versionsOnSystem.length === 0) {
+        return '';
+    }
+
+    const isValid = (await validateUI5Version(versionsOnSystem[0])) === true;
+    return isValid ? versionsOnSystem[0] : '';
 }

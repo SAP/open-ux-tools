@@ -107,3 +107,17 @@ export const getAppAdditionalMessages = (
         };
     }
 };
+
+/**
+ * Provides additional messages related to UI5 version detection based on system and authentication conditions.
+ *
+ * @returns {object | undefined} An object containing a message and its severity level if conditions are met; otherwise, undefined.
+ */
+export const getVersionAdditionalMessages = (isVersionDetected: boolean): object | undefined => {
+    if (!isVersionDetected) {
+        return {
+            message: t('validators.ui5VersionNotDetectedError'),
+            severity: Severity.warning
+        };
+    }
+};

@@ -1,8 +1,8 @@
 import Generator from 'yeoman-generator';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import { ToolsLogger } from '@sap-ux/logger';
-import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
+import { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
 import {
@@ -21,6 +21,8 @@ import type { AdpGeneratorOptions } from './types';
 import { ConfigPrompter } from './questions/configuration';
 import { getPackageInfo, installDependencies } from '../utils/deps';
 import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
+import { getPrompts } from './questions/attributes';
+import { join } from 'path';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -54,9 +56,9 @@ export default class extends Generator {
      */
     private configAnswers: ConfigAnswers;
     /**
-     * Target folder for the generated project.
+     * Project attribute answers.
      */
-    private targetFolder: string;
+    private attributeAnswers: AttributesAnswers;
     /**
      * SystemLookup instance for managing system endpoints.
      */
@@ -87,12 +89,16 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         await initI18n();
 
-        const pages = [{ name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') }];
+        const pages = [
+            { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') },
+            { name: t('yuiNavSteps.projectAttributesName'), description: t('yuiNavSteps.projectAttributesDescr') }
+        ];
         this.prompts.splice(0, 0, pages);
 
         this.layer = await getFlexLayer();
 
         this.systemLookup = new SystemLookup(this.toolsLogger);
+        this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -105,7 +111,6 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
         const isCLI = getHostEnvironment() === hostEnvironment.cli;
 
         const configQuestions = this.prompter.getPrompts({
@@ -117,25 +122,36 @@ export default class extends Generator {
 
         this.logger.info(`System: ${this.configAnswers.system}`);
         this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
+
+        const promptConfig = {
+            ui5Versions: this.prompter.relevantUI5Versions,
+            isVersionDetected: this.prompter.isVersionDetected,
+            isCloudProject: this.prompter.isCloud,
+            layer: this.layer
+        };
+        const options = {
+            targetFolder: { default: this._getDefaultFolder() }
+        };
+        const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
+
+        this.attributeAnswers = await this.prompt(attributesQuestions);
+
+        this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
     }
 
     async writing(): Promise<void> {
         try {
-            const projectName = getDefaultProjectName(this.destinationPath());
-            const namespace = generateValidNamespace(projectName, this.layer);
-            this.targetFolder = this.destinationPath(projectName);
-
             const packageJson = getPackageInfo();
             const config = await getConfig({
                 provider: this.prompter.provider,
                 configAnswers: this.configAnswers,
+                attributeAnswers: this.attributeAnswers,
                 layer: this.layer,
-                defaults: { namespace },
                 packageJson,
                 logger: this.toolsLogger
             });
 
-            await generate(this.targetFolder, config, this.fs);
+            await generate(this._getProjectPath(), config, this.fs);
         } catch (e) {
             this.logger.error(`Writing phase failed: ${e}`);
             throw new Error(t('error.updatingApp'));
@@ -145,7 +161,7 @@ export default class extends Generator {
     async install(): Promise<void> {
         try {
             if (this.shouldInstallDeps) {
-                await installDependencies(this.targetFolder);
+                await installDependencies(this._getProjectPath());
             }
         } catch (e) {
             this.logger.error(`Installation of dependencies failed: ${e.message}`);
@@ -159,10 +175,25 @@ export default class extends Generator {
                 ...this.options.telemetryData
             }) ?? {};
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this.targetFolder).catch((error) => {
-                this.logger.error(t('error.telemetry', { error }));
-            });
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this._getProjectPath()).catch(
+                (error) => {
+                    this.logger.error(t('error.telemetry', { error }));
+                }
+            );
         }
+    }
+
+    private _getProjectPath() {
+        return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
+    }
+
+    private _getDefaultFolder() {
+        if (!this.vscode || this.vscode?.workspace?.workspaceFolders?.length === 0) {
+            this.appWizard.showInformation('There is currently no opened workspace folder.', MessageType.notification);
+            return '';
+        }
+
+        return this.vscode?.workspace?.workspaceFolders?.[0]?.uri?.fsPath;
     }
 
     /**

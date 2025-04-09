@@ -5,7 +5,7 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
-import type { AdpWriterConfig, ConfigAnswers } from '../types';
+import type { AdpWriterConfig, AttributesAnswers, ConfigAnswers } from '../types';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
 import { UI5VersionInfo, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
 
@@ -19,18 +19,13 @@ interface ConfigOptions {
      */
     configAnswers: ConfigAnswers;
     /**
+     * User-provided project attribute answers.
+     */
+    attributeAnswers: AttributesAnswers;
+    /**
      * The FlexLayer indicating the deployment layer (e.g., CUSTOMER_BASE or VENDOR).
      */
     layer: FlexLayer;
-    /**
-     * Default project parameters.
-     */
-    defaults: {
-        /**
-         * The default namespace for the project.
-         */
-        namespace: string;
-    };
     /**
      * The package.json information used to generate custom configuration.
      */
@@ -55,7 +50,7 @@ interface ConfigOptions {
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
 export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig> {
-    const { configAnswers, defaults, layer, logger, packageJson, provider } = options;
+    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider } = options;
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
@@ -68,12 +63,18 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     const ui5Info = UI5VersionInfo.getInstance(layer);
     const ui5Version = isCloudProject ? ui5Info.getLatestVersion() : ui5Info.getVersionToBeUsed('', isCustomerBase);
 
+    const { namespace, title, enableTypeScript } = attributeAnswers;
+    const {
+        application: { id, bspName }
+    } = configAnswers;
+
     return {
         app: {
-            id: defaults.namespace,
-            reference: configAnswers.application.id,
+            id: namespace,
+            reference: id,
             layer,
-            title: '',
+            title,
+            bspName,
             content: [getNewModelEnhanceWithChange()]
         },
         ui5: {
@@ -85,7 +86,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         target,
         options: {
             fioriTools: true,
-            enableTypeScript: false
+            enableTypeScript
         }
     };
 }
