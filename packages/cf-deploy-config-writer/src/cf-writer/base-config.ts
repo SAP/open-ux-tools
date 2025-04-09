@@ -9,7 +9,7 @@ import { join } from 'path';
 import { t } from '../i18n';
 
 /**
- * Add a standalone | managed approuter to an empty target folder.
+ * Add a standalone | managed | app frontend approuter to an empty target folder.
  *
  * @param config writer configuration
  * @param fs an optional reference to a mem-fs editor

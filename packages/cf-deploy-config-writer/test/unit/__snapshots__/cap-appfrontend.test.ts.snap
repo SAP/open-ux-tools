@@ -257,10 +257,9 @@ resources:
 
 exports[`CF Writer with CAP App Frontend Generate deployment config Generate CAP project with App Frontend Service 3`] = `
 "{
+  \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
-  \\"attributes\\": [],
-  \\"role-templates\\": [],
-  \\"authorities-inheritance\\": false
+  \\"role-templates\\": []
 }
 "
 `;

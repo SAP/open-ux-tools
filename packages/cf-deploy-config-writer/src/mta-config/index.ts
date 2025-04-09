@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
-import { getTemplatePath, setMtaDefaults, validateVersion } from '../utils';
+import { addXSSecurityConfig, alignCdsVersions, getTemplatePath, setMtaDefaults, validateVersion } from '../utils';
 import {
     MTAYamlFile,
     MTAVersion,
@@ -19,11 +19,12 @@ import {
     CDSHTML5RepoService
 } from '../constants';
 import type { mta } from '@sap/mta-lib';
-import type { MTABaseConfig, CFBaseConfig, CDSServiceType, RouterModuleType } from '../types';
+import type { MTABaseConfig, CFBaseConfig, CDSServiceType, RouterModuleType, CAPConfig } from '../types';
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { t } from '../i18n';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
+import { type Editor } from 'mem-fs-editor';
 
 /**
  * Get the MTA ID, read from the root path specified.
@@ -196,11 +197,14 @@ export function validateMtaConfig(config: CFBaseConfig): void {
 /**
  * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
  *
+ * Note: this function is deprecated and will be removed in future releases since the cds binary currently does not support app frontend services.
+ *
  * @param config writer configuration
- * @param isCap whether MTA should support CAP
+ * @param fs reference to a mem-fs editor
+ * @deprecated this function is deprecated and will be removed in future releases
  */
-export async function createAppfrontendMta(config: MTABaseConfig, isCap = false): Promise<void> {
-    const mtaTemplate = readFileSync(getTemplatePath(`frontend/${isCap ? 'mta-cap.yaml' : MTAYamlFile}`), 'utf-8');
+export async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
+    const mtaTemplate = readFileSync(getTemplatePath(`frontend/${MTAYamlFile}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
         id: `${config.mtaId.slice(0, 128)}`,
         mtaDescription: config.mtaDescription ?? MTADescription,
@@ -208,9 +212,11 @@ export async function createAppfrontendMta(config: MTABaseConfig, isCap = false)
     });
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
     writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
-    // Ensure the package-lock is created otherwise mta build will fail
+    // Add missing configurations
+    addXSSecurityConfig(config, fs, false);
+    await alignCdsVersions(config.mtaPath, fs);
     const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    await runCommand(config.mtaPath, cmd, ['update', '--package-lock-only'], t('error.errorInstallingNodeModules'));
+    await runCommand(config.mtaPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 

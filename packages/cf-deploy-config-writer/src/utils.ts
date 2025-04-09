@@ -7,7 +7,13 @@ import {
     type Authentication,
     type Destinations
 } from '@sap-ux/btp-utils';
-import { addPackageDevDependency, FileName, type Manifest, updatePackageScript } from '@sap-ux/project-access';
+import {
+    addPackageDevDependency,
+    FileName,
+    type Manifest,
+    type Package,
+    updatePackageScript
+} from '@sap-ux/project-access';
 import {
     MTAVersion,
     UI5BuilderWebIdePackage,
@@ -26,7 +32,9 @@ import {
     RimrafVersion,
     MbtPackageVersion,
     MbtPackage,
-    MTABuildScript
+    MTABuildScript,
+    CDSDKPackage,
+    CDSPackage
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
 import { type MTABaseConfig, type CFConfig, type CFBaseConfig, RouterModuleType, type CFAppConfig } from './types';
@@ -296,19 +304,19 @@ export function setMtaDefaults(config: CFBaseConfig): void {
  * @param {object} Options Input params
  * @param {string} Options.mtaId - MTA ID to be written to package.json
  * @param {string} Options.rootPath - MTA project path
- * @param fs - reference to a mem-fs editor
+ * @param fs - optional reference to a mem-fs editor
  */
 export async function updateRootPackage(
     { mtaId, rootPath }: { mtaId: string; rootPath: string },
     fs: Editor
 ): Promise<void> {
     const packageExists = fs.exists(join(rootPath, FileName.Package));
-    // Append mta scripts only if mta.yaml is at a different level to the HTML5 app
+    // Append package.json only if mta.yaml is at a different level to the HTML5 app
     if (packageExists) {
         await addPackageDevDependency(rootPath, Rimraf, RimrafVersion);
         await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion);
         let deployArgs: string[] = [];
-        if (fs.exists(join(rootPath, MTAFileExtension))) {
+        if (fs?.exists(join(rootPath, MTAFileExtension))) {
             deployArgs = ['-e', MTAFileExtension];
         }
         for (const script of [
@@ -337,5 +345,21 @@ export function enforceValidRouterConfig(config: CFAppConfig): void {
         // Set default values
         config.addManagedAppRouter ??= true;
         config.addAppFrontendRouter ??= false;
+    }
+}
+
+/**
+ * Append devDependency if missing, required by mta `cds build` step.
+ *
+ * @param rootPath Path to the project folder
+ * @param fs reference to a mem-fs editor
+ */
+export async function alignCdsVersions(rootPath: string, fs: Editor): Promise<void> {
+    const filePath = join(rootPath, FileName.Package);
+    const packageJson = (fs.readJSON(filePath) ?? {}) as Package;
+    const cdsDKDevDepVersion = coerce(packageJson?.devDependencies?.[CDSDKPackage]);
+    const cdsDepVersion = packageJson?.dependencies?.[CDSPackage];
+    if (!cdsDKDevDepVersion && cdsDepVersion) {
+        await addPackageDevDependency(rootPath, CDSDKPackage, cdsDepVersion, fs);
     }
 }

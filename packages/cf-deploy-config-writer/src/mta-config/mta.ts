@@ -645,7 +645,6 @@ export class MtaConfig {
         if (routerType === RouterModuleType.Managed) {
             await this.addManagedAppRouter();
         }
-
         if (routerType === RouterModuleType.AppFront) {
             await this.addAppFrontAppRouter();
         }

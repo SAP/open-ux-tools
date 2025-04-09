@@ -22,7 +22,8 @@ export const CloudFoundry = 'cf';
 export const deployMode = 'deploy_mode';
 export const enableParallelDeployments = 'enable-parallel-deployments';
 export const CDSExecutable = 'cds';
-export const CDSPackage = '@sap/cds-dk';
+export const CDSDKPackage = '@sap/cds-dk';
+export const CDSPackage = '@sap/cds';
 export const MTAExecutable = 'mta';
 export const MTAPackage = 'mta';
 export const MTAPackageVersion = '^1.2.27';
@@ -127,5 +128,5 @@ export const rootDeployMTAScript = (args: string[]): string => {
 export const undeployMTAScript = (mtaId: string): string =>
     `cf undeploy ${mtaId} --delete-services --delete-service-keys --delete-service-brokers`;
 const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFindBinary', { bin, pkg });
-export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSPackage);
+export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSDKPackage);
 export const MTABinNotFound = cannotFindBinary(MTAExecutable, MTAPackage);

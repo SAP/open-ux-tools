@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { updateRootPackage, addRoutingConfig } from '../utils';
-import { createCAPMTA, validateMtaConfig, isMTAFound, createAppfrontendMta } from '../mta-config';
+import { createCAPMTA, validateMtaConfig, isMTAFound, createCAPMTAAppFrontend } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
 import { type CAPConfig, type CFBaseConfig, RouterModuleType } from '../types';
@@ -26,8 +26,7 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
     if (config.routerType === RouterModuleType.AppFront) {
-        // For now, CDS does not support generating mta configuration for App frontend services
-        await createAppfrontendMta(config, true);
+        await createCAPMTAAppFrontend(config, fs);
     } else {
         await createCAPMTA(config.mtaPath, [], config.routerType);
     }
