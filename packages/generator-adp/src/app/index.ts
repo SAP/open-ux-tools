@@ -4,19 +4,23 @@ import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import { ToolsLogger } from '@sap-ux/logger';
 import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { TargetSystems, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
-import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
+import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
+import {
+    TelemetryHelper,
+    sendTelemetry,
+    type ILogWrapper,
+    getHostEnvironment,
+    hostEnvironment
+} from '@sap-ux/fiori-generator-shared';
 
 import { getFlexLayer } from './layer';
 import { t, initI18n } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
 import type { AdpGeneratorOptions } from './types';
-import { installDependencies } from '../utils/deps';
 import { ConfigPrompter } from './questions/configuration';
+import { getPackageInfo, installDependencies } from '../utils/deps';
 import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { readFileSync } from 'fs';
-import { join } from 'path';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -54,9 +58,13 @@ export default class extends Generator {
      */
     private targetFolder: string;
     /**
-     * EndpointsManager instance for managing system endpoints.
+     * SystemLookup instance for managing system endpoints.
      */
-    private targetSystems: TargetSystems;
+    private systemLookup: SystemLookup;
+    /**
+     * Instance of the configuration prompter class.
+     */
+    private prompter: ConfigPrompter;
 
     /**
      * Creates an instance of the generator.
@@ -84,7 +92,7 @@ export default class extends Generator {
 
         this.layer = await getFlexLayer();
 
-        this.targetSystems = new TargetSystems(this.toolsLogger);
+        this.systemLookup = new SystemLookup(this.toolsLogger);
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -97,9 +105,13 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
+        this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+        const isCLI = getHostEnvironment() === hostEnvironment.cli;
 
-        const configQuestions = prompter.getPrompts();
+        const configQuestions = this.prompter.getPrompts({
+            appValidationCli: { hide: !isCLI },
+            systemValidationCli: { hide: !isCLI }
+        });
 
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
 
@@ -109,14 +121,13 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
-            const provider = await getConfiguredProvider(this.configAnswers, this.toolsLogger);
             const projectName = getDefaultProjectName(this.destinationPath());
             const namespace = generateValidNamespace(projectName, this.layer);
             this.targetFolder = this.destinationPath(projectName);
 
-            const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
+            const packageJson = getPackageInfo();
             const config = await getConfig({
-                provider,
+                provider: this.prompter.provider,
                 configAnswers: this.configAnswers,
                 layer: this.layer,
                 defaults: { namespace },
