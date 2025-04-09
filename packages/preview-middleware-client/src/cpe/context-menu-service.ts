@@ -1,6 +1,7 @@
 import {
     executeContextMenuAction,
     ExternalAction,
+    reportTelemetry,
     requestControlContextMenu
 } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
@@ -8,6 +9,8 @@ import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import { ActionService } from 'sap/ui/rta/service/Action';
 import { DialogFactory } from '../adp/dialog-factory';
 import { getTextBundle } from '../i18n';
+import Log from 'sap/base/Log';
+import { getControlById } from '../utils/core';
 
 /**
  * A Class of ContextMenuService
@@ -33,8 +36,18 @@ export class ContextMenuService {
         const resourceBundle = await getTextBundle();
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeContextMenuAction.match(action)) {
-                const { actionName, controlId } = action.payload;
-                await this.actionService.execute(controlId, actionName);
+                try {
+                    const { actionName, controlId } = action.payload;
+                    await this.actionService.execute(controlId, actionName);
+                    const controlName = getControlById(controlId)?.getMetadata().getName();
+                    await reportTelemetry({
+                        category: 'OutlineContextMenu',
+                        actionName,
+                        controlName
+                    });
+                } catch (err) {
+                    Log.error('Error in reporting Telemetry:', err);
+                }
             }
             if (requestControlContextMenu.pending.match(action)) {
                 const controlId = action.payload;
