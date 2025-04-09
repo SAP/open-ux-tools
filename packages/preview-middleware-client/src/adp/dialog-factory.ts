@@ -10,7 +10,7 @@ import AddTableColumnFragments from './controllers/AddTableColumnFragments.contr
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
-import { ExtensionPointData } from './extension-point';
+import type { ExtensionPointData } from './extension-point';
 import { AddFragmentData } from './add-fragment';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
