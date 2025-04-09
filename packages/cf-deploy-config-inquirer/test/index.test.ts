@@ -1,4 +1,12 @@
-import { getPrompts, promptNames, type CfDeployConfigPromptOptions, prompt } from '../src';
+import {
+    getPrompts,
+    getAppRouterPrompts,
+    promptNames,
+    type CfDeployConfigPromptOptions,
+    prompt,
+    type CfAppRouterDeployConfigPromptOptions,
+    appRouterPromptNames
+} from '../src';
 import * as cfPrompts from '../src/prompts/prompts';
 import type { CfDeployConfigAnswers } from '../src/types';
 import type { Logger } from '@sap-ux/logger';
@@ -55,5 +63,14 @@ describe('index', () => {
         );
         expect(prompts.length).toBe(3);
         expect(getQuestionsSpy).toHaveBeenCalledWith(promptOptions, mockLog);
+    });
+
+    it('should return prompts from getAppRouterPrompts', async () => {
+        const promptOptions: CfAppRouterDeployConfigPromptOptions = {
+            [appRouterPromptNames.mtaPath]: 'defaultMtaPath',
+            [appRouterPromptNames.routerType]: true
+        };
+        const prompts = await getAppRouterPrompts(promptOptions, mockLog);
+        expect(prompts.length).toBe(2);
     });
 });

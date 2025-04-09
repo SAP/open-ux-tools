@@ -89,7 +89,7 @@ function getMtaVersionPrompt(): CfAppRouterDeployConfigQuestions {
  * @param {boolean} isInternalFeaturesSettingEnabled - Flag to determine if internal features setting is enabled.
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting the router type.
  */
-function getRouterTypePrompt(isInternalFeaturesSettingEnabled: boolean = false): CfAppRouterDeployConfigQuestions {
+function getRouterTypePrompt(isInternalFeaturesSettingEnabled?: boolean): CfAppRouterDeployConfigQuestions {
     return {
         type: 'list',
         name: appRouterPromptNames.routerType,
@@ -107,7 +107,7 @@ function getRouterTypePrompt(isInternalFeaturesSettingEnabled: boolean = false):
             if (isInternalFeaturesSettingEnabled) {
                 choices.splice(1, 0, { name: t('routerType.appFrontAppService'), value: RouterModuleType.AppFront });
             }
-            return choices as ListChoiceOptions[];
+            return choices;
         }
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
 }
