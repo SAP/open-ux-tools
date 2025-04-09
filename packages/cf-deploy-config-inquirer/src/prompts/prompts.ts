@@ -8,7 +8,6 @@ import {
     type CfSystemChoice,
     type CfDeployConfigRouterAnswers,
     type CfDeployConfigRouterQuestions,
-    type CfDeployConfigRouterPromptOptions,
     RouterModuleType,
     promptNames
 } from '../types';
@@ -157,7 +156,6 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
  * @param {CfDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
  * @param {Logger} [log] - The logger instance to use for logging.
  * @returns {CfDeployConfigQuestions[]} Returns an array of questions related to cf deployment configuration.
- * @deprecated This function is deprecated and will be removed in future versions. Use `getQuestionsWithRouterOptions` instead.
  */
 export async function getQuestions(
     promptOptions: CfDeployConfigPromptOptions,
@@ -166,6 +164,7 @@ export async function getQuestions(
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
     const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
     const addManagedAppRouter = promptOptions[promptNames.addManagedAppRouter] ?? false;
+    const showRouterOptions = promptOptions[promptNames.showRouterOptions] ?? false;
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
@@ -181,34 +180,9 @@ export async function getQuestions(
         questions.push(getOverwritePrompt());
     }
 
-    return questions;
-}
-
-/**
- * Retrieves a list of deployment questions based on the application root and destination name prompt option.
- *
- * @param {CfDeployConfigRouterPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
- * @param {Logger} [log] - The logger instance to use for logging.
- * @returns {CfDeployConfigRouterQuestions[]} Returns an array of questions related to cf deployment configuration.
- */
-export async function getQuestionsWithRouterOptions(
-    promptOptions: CfDeployConfigRouterPromptOptions,
-    log?: Logger
-): Promise<CfDeployConfigRouterQuestions[]> {
-    const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
-    const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
-    const showRouterOptions = promptOptions[promptNames.showRouterOptions] ?? true;
-
-    const questions: CfDeployConfigQuestions[] = [];
-    questions.push(await getDestinationNamePrompt(destinationOptions));
     if (showRouterOptions) {
         log?.info(t('info.routerOptions'));
         questions.push(getRouterOptionsPrompt());
-    }
-
-    if (addOverwriteQuestion) {
-        log?.info(t('info.overwriteDestination'));
-        questions.push(getOverwritePrompt());
     }
 
     return questions;

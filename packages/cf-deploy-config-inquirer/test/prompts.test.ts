@@ -1,7 +1,6 @@
-import { getQuestions, getQuestionsWithRouterOptions } from '../src/prompts';
+import { getQuestions } from '../src/prompts';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { t } from '../src/i18n';
-import type { CfDeployConfigRouterPromptOptions } from '../src/types';
 import {
     type CfDeployConfigPromptOptions,
     type CfSystemChoice,
@@ -254,13 +253,16 @@ describe('Prompt Generation Tests', () => {
         });
     });
 
-    describe('getQuestionsWithRouterOptions', () => {
+    describe('getQuestions with Router Option', () => {
         it('Displays CF prompt with App Router selection', async () => {
-            const questions: CfDeployConfigQuestions[] = await getQuestionsWithRouterOptions(promptOptions, mockLog);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(
+                { ...promptOptions, showRouterOptions: true },
+                mockLog
+            );
             const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
             expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
             expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
-            expect((routerTypePrompt?.default as Function)()).toBe('none');
+            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.None);
             expect((routerTypePrompt?.message as Function)()).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
                 { name: t('prompts.routerType.none'), value: RouterModuleType.None },
@@ -275,11 +277,7 @@ describe('Prompt Generation Tests', () => {
             });
         });
         it('Displays CF prompt with App Router selection disabled', async () => {
-            const routerOptions: CfDeployConfigRouterPromptOptions = {
-                ...promptOptions,
-                [promptNames.showRouterOptions]: false
-            };
-            const questions: CfDeployConfigQuestions[] = await getQuestionsWithRouterOptions(routerOptions, mockLog);
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
             const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
             expect(routerTypePrompt).toBeUndefined();
         });

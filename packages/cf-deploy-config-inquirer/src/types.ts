@@ -36,7 +36,9 @@ export enum appRouterPromptNames {
     /* Prompt for selecting abap service binding*/
     addABAPServiceBinding = 'addABAPServiceBinding',
     /* Prompt for selecting the ABAP environments */
-    abapServiceProvider = 'abapServiceProvider'
+    abapServiceProvider = 'abapServiceProvider',
+    /** The prompt for confirming if the router options should be displayed */
+    showRouterOptions = 'showRouterOptions'
 }
 
 /**
@@ -89,7 +91,8 @@ export type booleanPromptOptions = Partial<
         | appRouterPromptNames.mtaVersion
         | appRouterPromptNames.routerType
         | appRouterPromptNames.addABAPServiceBinding
-        | appRouterPromptNames.addConnectivityService,
+        | appRouterPromptNames.addConnectivityService
+        | appRouterPromptNames.showRouterOptions,
         boolean
     >
 >;
@@ -103,13 +106,6 @@ type destinationNamePromptOptions = Partial<Record<promptNames.destinationName, 
  * Configuration options for CF deployment prompts.
  */
 export type CfDeployConfigPromptOptions = Partial<destinationNamePromptOptions & booleanPromptOptions>;
-
-/**
- * Configuration options for CF deployment with router option prompts.
- */
-export type CfDeployConfigRouterPromptOptions = Partial<Omit<CfDeployConfigPromptOptions, 'addManagedAppRouter'>> & {
-    showRouterOptions?: boolean;
-};
 
 /**
  * Configuration options for CF App Router deployment prompts.
