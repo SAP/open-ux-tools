@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.15
+
+### Patch Changes
+
+-   fccd2c2: feat: refactor types
+
 ## 0.19.14
 
 ### Patch Changes
