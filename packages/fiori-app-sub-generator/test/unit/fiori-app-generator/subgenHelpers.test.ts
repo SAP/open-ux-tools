@@ -29,6 +29,34 @@ describe('Subgen (flp/deploy) are correctly composedWith', () => {
             logWrapper: DefaultLogger,
             vscode: {}
         });
+
+        composeWithMock.mockClear();
+
+        addFlpGen(
+            {
+                projectName: 'testAppName',
+                targetFolder: '/test/target/folder',
+                title: 'testAppName',
+                skipPrompt: true
+            },
+            composeWithMock,
+            DefaultLogger,
+            {} as AppWizard,
+            {} as any
+        );
+        expect(composeWithMock).toHaveBeenCalledWith('@sap/fiori:flp-config', {
+            launchFlpConfigAsSubGenerator: true,
+            appRootPath: join('/test/target/folder', 'testAppName'),
+            appWizard: {},
+            logWrapper: DefaultLogger,
+            vscode: {},
+            skipPrompt: true,
+            inboundConfig: {
+                action: 'display',
+                semanticObject: 'testAppName',
+                title: 'testAppName'
+            }
+        });
     });
 
     it('Should call composeWith `@sap/fiori:fiori-deployment` with correct options', async () => {

@@ -21,6 +21,7 @@ import {
     FloorplanFF,
     type Service,
     STEP_DATASOURCE_AND_SERVICE,
+    STEP_FLP_CONFIG,
     STEP_PROJECT_ATTRIBUTES
 } from '../../../src/types';
 import * as commonUtils from '../../../src/utils';
@@ -534,9 +535,9 @@ describe('Test FioriAppGenerator', () => {
         ui5ApplicationAnswers.addFlpConfig = true;
 
         // Resolve view name prompt
-        jest.spyOn(FioriAppGenerator.prototype, 'prompt').mockResolvedValueOnce({});
+        jest.spyOn(FioriAppGenerator.prototype, 'prompt').mockResolvedValue({});
 
-        const fioriAppGen = new FioriAppGenerator([], options);
+        let fioriAppGen = new FioriAppGenerator([], options);
         await fioriAppGen.initializing();
         await fioriAppGen.prompting();
 
@@ -583,6 +584,40 @@ describe('Test FioriAppGenerator', () => {
             undefined, // VSCode
             { '$fiori-cache': {} } // AppWizard);
         );
+
+        // If the FLP config step is skipped, the addFlpGen should be called with skipPrompt: true, if `addFlpConfig` is true (can be set from adaptors, for exmaple)
+        // Skipping the service selection step and FLP config for this test
+        options.fioriSteps = FIORI_STEPS.filter(
+            (step) => ![STEP_DATASOURCE_AND_SERVICE, STEP_FLP_CONFIG].includes(step.key)
+        );
+        options.state = {
+            project: {} as Project,
+            service: {
+                edmx: '<edmx></edmx>',
+                source: DatasourceType.none
+            },
+            floorplan: FloorplanFF.FF_SIMPLE
+        };
+        // Skipping the FLP config step should still call the addFlpGen but with the skipPrompt option true
+        ui5ApplicationAnswers.addFlpConfig = true;
+        (addFlpGen as jest.Mock).mockClear();
+
+        fioriAppGen = new FioriAppGenerator([], options);
+        await fioriAppGen.initializing();
+        await fioriAppGen.prompting();
+        expect(addFlpGen).toHaveBeenCalledWith(
+            {
+                projectName: ui5ApplicationAnswers.name,
+                targetFolder: ui5ApplicationAnswers.targetFolder,
+                title: ui5ApplicationAnswers.title,
+                skipPrompt: true
+            },
+            expect.any(Function), // composeWith
+            expect.objectContaining({ debug: expect.any(Function) }), // Logger
+            undefined, // VSCode
+            { '$fiori-cache': {} } // AppWizard);
+        );
+
     });
 
     test('Should report errors and exit', async () => {
