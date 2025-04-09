@@ -1,16 +1,17 @@
 import type { Editor } from 'mem-fs-editor';
 import type { AddXMLChange, CommonChangeProperties, CodeExtChange, AnnotationFileChange } from '../types';
-import { ChangeType } from '../types';
+import { ChangeType, TemplateFileName } from '../types';
 import { basename, join } from 'path';
 import { DirName, FileName } from '@sap-ux/project-access';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
 import { randomBytes } from 'crypto';
 import { ManifestService } from '../base/abap/manifest-service';
-import { getAdpConfig, getVariant } from '../base/helper';
+import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { generateChange } from '../writer/editors';
+import path from 'path';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
@@ -194,6 +195,16 @@ export function isAddXMLChange(change: CommonChangeProperties): change is AddXML
 }
 
 /**
+ * Determines whether a given change is of type `codeExt`.
+ *
+ * @param {CommonChangeProperties} change - The change object to check.
+ * @returns {boolean} `true` if the `changeType` is `codeExt`, indicating the change is of type `codeExtChange`.
+ */
+export function isCodeExtChange(change: CommonChangeProperties): change is CodeExtChange {
+    return change.changeType === 'codeExt';
+}
+
+/**
  * Determines whether a given change is of type `AnnotationFileChange`.
  *
  * @param {CommonChangeProperties} change - The change object to check.
@@ -232,6 +243,37 @@ export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Edito
     } catch (error) {
         logger.error(`Failed to create XML Fragment "${fragmentPath}": ${error}`);
     }
+}
+
+/**
+ * Asynchronously adds an XML fragment to the project if it doesn't already exist.
+ *
+ * @param {string} basePath - The base path of the project.
+ * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {Editor} fs - The mem-fs-editor instance.
+ * @param {Logger} logger - The logging instance.
+ */
+export async function addControllerExtension(
+    rootPath: string,
+    basePath: string,
+    change: CodeExtChange,
+    fs: Editor,
+    logger: Logger
+): Promise<void> {
+    const { codeRef } = change.content;
+    const id = (await getVariant(rootPath))?.id;
+    const isTsSupported = isTypescriptSupported(rootPath);
+    const fileExtension = path.extname(codeRef);
+    const fileName = path.basename(codeRef, fileExtension);
+    const fullName = `${path.basename(codeRef, fileExtension)}.${isTsSupported ? 'ts' : 'js'}`;
+    const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
+    const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
+    const text = fs.read(tmplPath);
+    const extensionPath = `${id}.${fileName}`;
+    const templateData = isTsSupported ? { fileName, ns: id } : { extensionPath };
+
+    const template = render(text, templateData);
+    fs.write(path.join(basePath, DirName.Changes, DirName.Coding, fullName), template);
 }
 
 /**

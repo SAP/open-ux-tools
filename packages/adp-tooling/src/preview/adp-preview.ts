@@ -16,6 +16,8 @@ import {
     addXmlFragment,
     isAddAnnotationChange,
     isAddXMLChange,
+    isCodeExtChange,
+    addControllerExtension,
     moduleNameContentMap,
     tryFixChange
 } from './change-handler';
@@ -250,6 +252,9 @@ export class AdpPreview {
             case 'write':
                 if (isAddXMLChange(change)) {
                     addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger);
+                }
+                if (isCodeExtChange(change)) {
+                    await addControllerExtension(this.util.getProject().getRootPath(), this.util.getProject().getSourcePath(), change, fs, logger)
                 }
                 if (isAddAnnotationChange(change)) {
                     await addAnnotationFile(

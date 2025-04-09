@@ -41,6 +41,7 @@ export class WorkspaceConnectorService {
             content?: {
                 templateName?: string;
                 fragmentPath?: string;
+                codeRef?: string;
             };
         };
         if (
@@ -58,6 +59,9 @@ export class WorkspaceConnectorService {
             // so we should ignore the first file change event that comes for the fragment.
             // (We don't want to show "Reload" button)
             this.sendAction(storageFileChanged(content.fragmentPath));
+        }
+        if (changeType === 'codeExt' && content?.codeRef !== undefined) {
+            this.sendAction(storageFileChanged(content?.codeRef));
         }
     }
 }
