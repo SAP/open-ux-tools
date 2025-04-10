@@ -4,4 +4,4 @@
 '@sap-ux/cf-deploy-config-writer': patch
 ---
 
-Expose App Frontend Service from cf-sub-generator
+Expose App Frontend Service from cf-sub-generator, with minor code cleanup
