@@ -1,55 +1,91 @@
-import type { AbapProvider } from '../client';
+import type { ToolsLogger } from '@sap-ux/logger';
+import type { Package } from '@sap-ux/project-access';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+
+import { FlexLayer } from '../types';
+import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
+import type { AdpWriterConfig, ConfigAnswers } from '../types';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
-import type { AdpWriterConfig, ConfigAnswers, FlexLayer } from '../types';
+import { UI5VersionInfo, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
+
+interface ConfigOptions {
+    /**
+     * The ABAP service provider instance used to retrieve system-specific information.
+     */
+    provider: AbapServiceProvider;
+    /**
+     * User-provided configuration details, including system and application data.
+     */
+    configAnswers: ConfigAnswers;
+    /**
+     * The FlexLayer indicating the deployment layer (e.g., CUSTOMER_BASE or VENDOR).
+     */
+    layer: FlexLayer;
+    /**
+     * Default project parameters.
+     */
+    defaults: {
+        /**
+         * The default namespace for the project.
+         */
+        namespace: string;
+    };
+    /**
+     * The package.json information used to generate custom configuration.
+     */
+    packageJson: Package;
+    /**
+     * Logger instance for debugging and error reporting.
+     */
+    logger: ToolsLogger;
+}
 
 /**
- * A class that handles the construction of the ADP writer configuration needed from generating an Adaptation Project.
+ * Generates the configuration object for the Adaptation Project.
+ *
+ * @param {ConfigOptions} options - The configuration options.
+ * @param {AbapServiceProvider} options.provider - The ABAP service provider instance.
+ * @param {ConfigAnswers} options.configAnswers - User-provided configuration details (system, application, etc.).
+ * @param {FlexLayer} options.layer - The FlexLayer indicating the deployment layer.
+ * @param {object} options.defaults - Default project parameters.
+ * @param {string} options.defaults.namespace - The default namespace to be used.
+ * @param {Package} options.packageJson - The package.json information for generating custom configuration.
+ * @param {ToolsLogger} options.logger - The logger for debugging and error logging.
+ * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
-export class WriterConfig {
-    /**
-     * Constructs an instance of WriterConfig class.
-     *
-     * @param {AbapProvider} abapProvider - The instance of AbapProvider class.
-     * @param {FlexLayer} layer - The FlexLayer used to determine the base (customer or otherwise).
-     */
-    constructor(private readonly abapProvider: AbapProvider, private readonly layer: FlexLayer) {}
+export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig> {
+    const { configAnswers, defaults, layer, logger, packageJson, provider } = options;
+    const ato = await provider.getAtoInfo();
+    const operationsType = ato.operationsType ?? 'P';
 
-    /**
-     * Generates the configuration object for the Adaptation Project.
-     *
-     * @param {ConfigAnswers} configAnswers - The configuration answers (i.e system, application).
-     * @param {object} defaults - Default project parameters.
-     * @param {string} defaults.namespace - The namespace for the project.
-     * @returns {Promise<AdpWriterConfig>} The generated project configuration.
-     */
-    public async getConfig(
-        configAnswers: ConfigAnswers,
-        defaults: {
-            namespace: string;
+    const target = await getProviderConfig(configAnswers.system, logger);
+    const customConfig = getCustomConfig(operationsType, packageJson);
+
+    const isCloudProject = await provider.isAbapCloud();
+    const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+
+    const ui5Info = UI5VersionInfo.getInstance(layer);
+    const ui5Version = isCloudProject ? ui5Info.getLatestVersion() : ui5Info.getVersionToBeUsed('', isCustomerBase);
+
+    return {
+        app: {
+            id: defaults.namespace,
+            reference: configAnswers.application.id,
+            layer,
+            title: '',
+            content: [getNewModelEnhanceWithChange()]
+        },
+        ui5: {
+            minVersion: ui5Version?.split(' ')[0],
+            version: getFormattedVersion(ui5Version),
+            frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version)
+        },
+        customConfig,
+        target,
+        options: {
+            fioriTools: true,
+            enableTypeScript: false
         }
-    ): Promise<AdpWriterConfig> {
-        const provider = this.abapProvider.getProvider();
-        const ato = await provider.getAtoInfo();
-        const operationsType = ato.operationsType ?? 'P';
-
-        const target = await this.abapProvider.determineTarget(configAnswers.system, {});
-        const customConfig = getCustomConfig(operationsType);
-
-        return {
-            app: {
-                id: defaults.namespace,
-                reference: configAnswers.application.id,
-                layer: this.layer,
-                title: '',
-                content: [getNewModelEnhanceWithChange()]
-            },
-            customConfig,
-            target,
-            options: {
-                fioriTools: true,
-                enableTypeScript: false
-            }
-        };
-    }
+    };
 }

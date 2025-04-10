@@ -1,5 +1,20 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.28
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/inquirer-common@0.6.33
+
+## 2.2.27
+
+### Patch Changes
+
+-   07b9160: prevent converting service path to lower case
+
 ## 2.2.26
 
 ### Patch Changes

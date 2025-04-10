@@ -4,6 +4,8 @@ import type UI5Element from 'sap/ui/core/Element';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import type AppComponentV4 from 'sap/fe/core/AppComponent';
+import type AppComponentV2 from 'sap/suite/ui/generic/template/lib/AppComponent';
 
 import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
 import { fetchMock, sapCoreMock } from 'mock/window';
@@ -110,14 +112,15 @@ describe('AddSubpage controller', () => {
                 {} as unknown as RuntimeAuthoring,
                 {
                     title: 'QUICK_ACTION_ADD_SUBPAGE',
+                    navProperties: [
+                        { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                        { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                    ],
                     appReference: 'dummyApp',
-                    appType: 'fe-v2',
                     pageDescriptor: {
+                        appType: 'fe-v2',
+                        appComponent: {} as unknown as AppComponentV2,
                         entitySet: 'Travels',
-                        navProperties: [
-                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                        ],
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
                 }
@@ -209,13 +212,14 @@ describe('AddSubpage controller', () => {
                 {
                     title: 'QUICK_ACTION_ADD_SUBPAGE',
                     appReference: 'dummyApp',
-                    appType: 'fe-v2',
+                    navProperties: [
+                        { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                        { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                    ],
                     pageDescriptor: {
+                        appType: 'fe-v2',
+                        appComponent: {} as unknown as AppComponentV2,
                         entitySet: 'Travels',
-                        navProperties: [
-                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                        ],
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
                 }
@@ -254,13 +258,14 @@ describe('AddSubpage controller', () => {
                 {
                     title: 'QUICK_ACTION_ADD_SUBPAGE',
                     appReference: 'dummyApp',
-                    appType: 'fe-v2',
+                    navProperties: [
+                        { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                        { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                    ],
                     pageDescriptor: {
+                        appType: 'fe-v2',
+                        appComponent: {} as unknown as AppComponentV2,
                         entitySet: 'Travels',
-                        navProperties: [
-                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                        ],
                         pageType: 'sap.suite.ui.generic.template.ObjectPage'
                     }
                 }
@@ -359,47 +364,7 @@ describe('AddSubpage controller', () => {
     });
 
     describe('onCreateBtnPress', () => {
-        const getTestModel = () =>
-            ({
-                setProperty: jest.fn(),
-                getProperty: jest.fn()
-            } as unknown as JSONModel);
-
         let addSubpage: AddSubpage;
-        let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
-
-        const createDialog = (content: Control[], rtaMock: RuntimeAuthoring = {} as unknown as RuntimeAuthoring) => {
-            addSubpage = new AddSubpage(
-                'adp.extension.controllers.AddSubpage',
-                {
-                    getId: jest.fn().mockReturnValue('some-id')
-                } as unknown as UI5Element,
-                rtaMock,
-                {
-                    title: 'QUICK_ACTION_ADD_SUBPAGE',
-                    appReference: 'dummyApp',
-                    appType: 'fe-v2',
-                    pageDescriptor: {
-                        entitySet: 'Travels',
-                        navProperties: [
-                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                        ],
-                        pageType: 'sap.suite.ui.generic.template.ObjectPage'
-                    }
-                }
-            );
-            addSubpage.model = getTestModel();
-            beginBtnSetEnabledMock = jest.fn().mockReturnValue({ rerender: jest.fn() });
-            addSubpage.dialog = {
-                getBeginButton: jest.fn().mockReturnValue({ setEnabled: beginBtnSetEnabledMock }),
-                getContent: jest.fn().mockReturnValue([
-                    {
-                        getContent: jest.fn().mockReturnValue(content)
-                    } as unknown as SimpleForm<Control[]>
-                ])
-            } as unknown as Dialog;
-        };
 
         beforeEach(() => {
             mocks.setValueStateTextMock = jest.fn();
@@ -412,26 +377,96 @@ describe('AddSubpage controller', () => {
             jest.restoreAllMocks();
         });
 
-        const testModel = {
-            getProperty: jest.fn().mockImplementation((name: string) => {
-                const props: Record<string, any> = {
-                    '/navigationData': [
-                        { entitySet: 'Bookings', navProperty: 'to_Booking' },
-                        { entitySet: 'Airlines', navProperty: 'to_Airline' }
-                    ],
-                    '/selectedNavigation/key': 'to_Booking',
-                    '/appType': 'fe-v2',
-                    '/pageType': 'ObjectPageType',
-                    '/appReference': 'app',
-                    '/currentEntitySet': 'Travel'
-                };
-                return props[name];
-            }),
-            setProperty: jest.fn()
-        } as unknown as JSONModel;
-        const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+        const testCases: {
+            appType: 'v2' | 'v4';
+            routePattern?: string;
+            expectedPattern?: string;
+        }[] = [
+            {
+                appType: 'v2'
+            },
+            {
+                appType: 'v4',
+                routePattern: ':?query:',
+                expectedPattern: 'Bookings({BookingsKey}):?query:'
+            },
+            {
+                appType: 'v4',
+                routePattern: 'Travel({key}):?query:',
+                expectedPattern: 'Travel({key})/to_Booking({BookingsKey}):?query:'
+            }
+        ];
 
-        test('calls rta command to add new subpage', async () => {
+        test.each(testCases)('calls rta command to add new subpage (%s)', async (testCase) => {
+            CommandFactory.getCommandFor.mockClear();
+            const getTestModel = () =>
+                ({
+                    setProperty: jest.fn(),
+                    getProperty: jest.fn()
+                } as unknown as JSONModel);
+
+            let beginBtnSetEnabledMock: jest.Mock<any, any, any>;
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
+            const testModel = {
+                getProperty: jest.fn().mockImplementation((name: string) => {
+                    const props: Record<string, any> = {
+                        '/navigationData': [
+                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                        ],
+                        '/selectedNavigation/key': 'to_Booking',
+                        '/currentEntitySet': 'Travels'
+                    };
+                    return props[name];
+                }),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+
+            const createDialog = (
+                content: Control[],
+                rtaMock: RuntimeAuthoring = {} as unknown as RuntimeAuthoring
+            ) => {
+                addSubpage = new AddSubpage(
+                    'adp.extension.controllers.AddSubpage',
+                    {
+                        getId: jest.fn().mockReturnValue('some-id')
+                    } as unknown as UI5Element,
+                    rtaMock,
+                    {
+                        title: 'QUICK_ACTION_ADD_SUBPAGE',
+                        appReference: 'dummyApp',
+                        navProperties: [
+                            { entitySet: 'Bookings', navProperty: 'to_Booking' },
+                            { entitySet: 'Airlines', navProperty: 'to_Airline' }
+                        ],
+                        pageDescriptor:
+                            testCase.appType === 'v2'
+                                ? {
+                                      appType: 'fe-v2',
+                                      appComponent: { appComponentType: testCase.appType } as unknown as AppComponentV2,
+                                      entitySet: 'Travels',
+                                      pageType: 'sap.suite.ui.generic.template.ObjectPage'
+                                  }
+                                : {
+                                      appType: 'fe-v4',
+                                      appComponent: { appComponentType: testCase.appType } as unknown as AppComponentV4,
+                                      pageId: 'CurrentPageId',
+                                      routePattern: testCase.routePattern ?? ''
+                                  }
+                    }
+                );
+                addSubpage.model = getTestModel();
+                beginBtnSetEnabledMock = jest.fn().mockReturnValue({ rerender: jest.fn() });
+                addSubpage.dialog = {
+                    getBeginButton: jest.fn().mockReturnValue({ setEnabled: beginBtnSetEnabledMock }),
+                    getContent: jest.fn().mockReturnValue([
+                        {
+                            getContent: jest.fn().mockReturnValue(content)
+                        } as unknown as SimpleForm<Control[]>
+                    ])
+                } as unknown as Dialog;
+            };
+
             const executeSpy = jest.fn();
             rtaMock.getCommandStack.mockReturnValue({
                 pushAndExecute: executeSpy
@@ -482,25 +517,54 @@ describe('AddSubpage controller', () => {
             expect(sendActionSpy).toHaveBeenCalledWith(setApplicationRequiresReload(true));
 
             const commandCall = CommandFactory.getCommandFor.mock.calls[0];
-            expect(commandCall[0]).toBe(runtimeControlMock);
+
+            expect(commandCall[0]).toEqual(runtimeControlMock);
             expect(commandCall[1]).toBe('appDescriptor');
-            expect(commandCall[2]).toStrictEqual({
-                'changeType': 'appdescr_ui_generic_app_addNewObjectPage',
-                'parameters': {
-                    'childPage': {
-                        'definition': {
-                            'entitySet': 'Bookings',
-                            'navigationProperty': 'to_Booking'
-                        },
-                        'id': 'ObjectPage|to_Booking'
-                    },
-                    'parentPage': {
-                        'component': 'ObjectPageType',
-                        'entitySet': 'Travel'
-                    }
-                },
-                'reference': 'app'
-            });
+            expect(commandCall[2]).toStrictEqual(
+                testCase.appType === 'v2'
+                    ? {
+                          'appComponent': { appComponentType: testCase.appType },
+                          'changeType': 'appdescr_ui_generic_app_addNewObjectPage',
+                          'parameters': {
+                              'childPage': {
+                                  'definition': {
+                                      'entitySet': 'Bookings',
+                                      'navigationProperty': 'to_Booking'
+                                  },
+                                  'id': 'ObjectPage|to_Booking'
+                              },
+                              'parentPage': {
+                                  'component': 'sap.suite.ui.generic.template.ObjectPage',
+                                  'entitySet': 'Travels'
+                              }
+                          },
+                          'reference': 'dummyApp'
+                      }
+                    : {
+                          'appComponent': { appComponentType: testCase.appType },
+                          'changeType': 'appdescr_fe_addNewPage',
+                          'reference': 'dummyApp',
+                          'parameters': {
+                              'sourcePage': {
+                                  'id': 'CurrentPageId',
+                                  'navigationSource': 'to_Booking'
+                              },
+                              'targetPage': {
+                                  'type': 'Component',
+                                  'id': 'BookingsObjectPage',
+                                  'name': 'sap.fe.templates.ObjectPage',
+                                  'routePattern': testCase.expectedPattern,
+                                  'settings': {
+                                      'contextPath': '/Bookings',
+                                      'controlConfiguration': {},
+                                      'editableHeaderContent': false,
+                                      'entitySet': 'Bookings',
+                                      'pageLayout': ''
+                                  }
+                              }
+                          }
+                      }
+            );
         });
     });
 });

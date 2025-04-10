@@ -187,7 +187,7 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, 'fixtures/mta-types/cdsmta'), appPath);
         await generateSupportingConfig(
-            { appPath, rootPath: appPath, addManagedAppRouter: true } as unknown as CFConfig,
+            { appPath, rootPath: appPath, addManagedAppRouter: true, mtaId: 'captestproject' } as unknown as CFConfig,
             fs
         );
         expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();

@@ -1,5 +1,17 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
+## 0.2.23
+
+### Patch Changes
+
+-   88d2a71: expose new UI prompting to support app frontend service
+
 ## 0.2.22
 
 ### Patch Changes

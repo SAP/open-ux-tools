@@ -1,5 +1,25 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.38
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/inquirer-common@0.6.33
+
+## 1.2.37
+
+### Patch Changes
+
+-   36518cc: check cloud systems are connected before making backend call
+
+## 1.2.36
+
+### Patch Changes
+
+-   5629071: make backend call for scp systems when initialising transport config
+
 ## 1.2.35
 
 ### Patch Changes

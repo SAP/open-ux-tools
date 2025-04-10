@@ -23,7 +23,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { RtaEditor, FlpConfig, InternalTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type { RtaEditor, FlpConfig, CompleteTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -78,6 +78,9 @@ export class FlpSandbox {
     public readonly test?: TestConfig[];
     public readonly router: EnhancedRouter;
     private fs: MemFsEditor | undefined;
+    private readonly logger: Logger;
+    private readonly utils: MiddlewareUtils;
+    private readonly project: ReaderCollection;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -87,12 +90,10 @@ export class FlpSandbox {
      * @param utils middleware utilities provided by the UI5 CLI
      * @param logger logger instance
      */
-    constructor(
-        config: Partial<MiddlewareConfig>,
-        private readonly project: ReaderCollection,
-        private readonly utils: MiddlewareUtils,
-        private readonly logger: Logger
-    ) {
+    constructor(config: Partial<MiddlewareConfig>, project: ReaderCollection, utils: MiddlewareUtils, logger: Logger) {
+        this.logger = logger;
+        this.project = project;
+        this.utils = utils;
         this.flpConfig = getFlpConfigWithDefaults(config.flp);
         this.test = config.test;
         this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
@@ -682,7 +683,7 @@ export class FlpSandbox {
     private async testSuiteJsGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         initTemplate: string,
         testPaths: string[]
     ): Promise<void> {
@@ -786,7 +787,7 @@ export class FlpSandbox {
     private async testRunnerHtmlGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         htmlTemplate: string,
         id: string
     ): Promise<void> {
@@ -816,7 +817,7 @@ export class FlpSandbox {
     private async testRunnerJsGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         initTemplate: string,
         ns: string
     ): Promise<void> {

@@ -1,5 +1,29 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.0
+
+### Minor Changes
+
+-   4d3fe73: Expose new App Frontend server
+
+## 0.1.29
+
+### Patch Changes
+
+-   37c2e00: remove fs, causing issues when cds is updating package.json
+
+## 0.1.28
+
+### Patch Changes
+
+-   a8cbdcf: append install script
+
+## 0.1.27
+
+### Patch Changes
+
+-   145f4c9: Change post install script
+
 ## 0.1.26
 
 ### Patch Changes

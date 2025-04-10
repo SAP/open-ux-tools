@@ -12,17 +12,16 @@ import {
     enhanceUI5YamlWithTranspileMiddleware
 } from './options';
 
-import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
+import type { Package } from '@sap-ux/project-access';
 import type { OperationsType } from '@sap-ux/axios-extension';
-
-type PackageJSON = { name: string; version: string };
+import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
 
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
  *
- * @returns {PackageJSON} An object containing the `name` and `version` of the package.
+ * @returns {Package} An object containing the `name` and `version` of the package.
  */
-export function getPackageJSONInfo(): PackageJSON {
+export function getPackageJSONInfo(): Package {
     const defaultPackage = {
         name: '@sap-ux/adp-tooling',
         version: 'NO_VERSION_FOUND'
@@ -36,19 +35,21 @@ export function getPackageJSONInfo(): PackageJSON {
 }
 
 /**
- * Constructs a custom configuration object.
+ * Constructs a custom configuration object for the Adaptation Project (ADP).
  *
- * @param {OperationsType} environment - The operations type indicating a cloud or on-premise project.
- * @returns {CustomConfig} The generated custom configuration.
+ * @param {OperationsType} environment - The operations type ('P' for on-premise or 'C' for cloud ready).
+ * @param {object} pkg - The parsed contents of `package.json`.
+ * @param {string} pkg.name - The name of the tool or package generating the config.
+ * @param {string} pkg.version - The version of the tool generating the config.
+ * @returns {CustomConfig} The generated ADP custom configuration object.
  */
-export function getCustomConfig(environment: OperationsType): CustomConfig {
-    const { name: id, version } = getPackageJSONInfo();
+export function getCustomConfig(environment: OperationsType, { name: id, version }: Package): CustomConfig {
     return {
         adp: {
             environment,
             support: {
-                id,
-                version,
+                id: id ?? '',
+                version: version ?? '',
                 toolsId: uuidv4()
             }
         }

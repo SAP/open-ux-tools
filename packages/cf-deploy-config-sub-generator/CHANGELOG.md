@@ -1,5 +1,56 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.40
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.40
+    -   @sap-ux/inquirer-common@0.6.33
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.24
+
+## 0.1.39
+
+### Patch Changes
+
+-   Updated dependencies [4d3fe73]
+    -   @sap-ux/cf-deploy-config-writer@0.2.0
+
+## 0.1.38
+
+### Patch Changes
+
+-   Updated dependencies [88d2a71]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.23
+
+## 0.1.37
+
+### Patch Changes
+
+-   Updated dependencies [37c2e00]
+    -   @sap-ux/cf-deploy-config-writer@0.1.29
+
+## 0.1.36
+
+### Patch Changes
+
+-   Updated dependencies [a8cbdcf]
+    -   @sap-ux/cf-deploy-config-writer@0.1.28
+
+## 0.1.35
+
+### Patch Changes
+
+-   Updated dependencies [145f4c9]
+    -   @sap-ux/cf-deploy-config-writer@0.1.27
+
+## 0.1.34
+
+### Patch Changes
+
+-   04ac8a9: Ensure the completion msg is shown to the user
+
 ## 0.1.33
 
 ### Patch Changes

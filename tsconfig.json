@@ -17,6 +17,7 @@
     "sourceMap": true,
     "strict": true,
     "strictPropertyInitialization": false,
+    "strictNullChecks": true,
     "target": "ES2022",
     "skipLibCheck": true,
     "resolveJsonModule": true,
@@ -112,6 +113,9 @@
     },
     {
       "path": "packages/fiori-annotation-api"
+    },
+    {
+      "path": "packages/fiori-app-sub-generator"
     },
     {
       "path": "packages/fiori-elements-writer"
