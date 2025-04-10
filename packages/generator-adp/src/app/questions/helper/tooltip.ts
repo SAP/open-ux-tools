@@ -8,8 +8,7 @@ import { t } from '../../../utils/i18n';
  */
 export function getProjectNameTooltip(isCustomerBase: boolean): string {
     const baseType = isCustomerBase ? 'Ext' : 'Int';
-    const emptyErrorMsg = t('validators.inputCannotBeEmpty');
-    const lenghtErrorMsg = t(`validators.projectNameLengthError${baseType}`);
-    const validationErrorMsg = t(`validators.projectNameValidationError${baseType}`);
-    return `${emptyErrorMsg} ${lenghtErrorMsg} ${validationErrorMsg}`;
+    const lengthErrorMsg = t(`adp.projectNameLengthError${baseType}`);
+    const validationErrorMsg = t(`adp.projectNameValidationError${baseType}`);
+    return `${lengthErrorMsg} ${validationErrorMsg}`;
 }

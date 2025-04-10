@@ -5,9 +5,9 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
-import type { AdpWriterConfig, AttributesAnswers, ConfigAnswers } from '../types';
+import type { AdpWriterConfig, AttributesAnswers, ConfigAnswers, UI5Version } from '../types';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
-import { UI5VersionInfo, getFormattedVersion, getOfficialBaseUI5VersionUrl } from '../ui5';
+import { getFormattedVersion, getLatestVersion, getOfficialBaseUI5VersionUrl, getVersionToBeUsed } from '../ui5';
 
 interface ConfigOptions {
     /**
@@ -31,6 +31,10 @@ interface ConfigOptions {
      */
     packageJson: Package;
     /**
+     * Public UI5 Versions.
+     */
+    publicVersions: UI5Version;
+    /**
      * Logger instance for debugging and error reporting.
      */
     logger: ToolsLogger;
@@ -50,7 +54,7 @@ interface ConfigOptions {
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
 export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig> {
-    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider } = options;
+    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider, publicVersions } = options;
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
@@ -60,8 +64,9 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     const isCloudProject = await provider.isAbapCloud();
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
-    const ui5Info = UI5VersionInfo.getInstance(layer);
-    const ui5Version = isCloudProject ? ui5Info.getLatestVersion() : ui5Info.getVersionToBeUsed('', isCustomerBase);
+    const ui5Version = isCloudProject
+        ? getLatestVersion(publicVersions)
+        : getVersionToBeUsed(attributeAnswers.ui5Version, isCustomerBase, publicVersions);
 
     const { namespace, title, enableTypeScript } = attributeAnswers;
     const {

@@ -1,3 +1,4 @@
+import { join } from 'path';
 import { existsSync } from 'fs';
 
 import { t } from '../i18n';
@@ -119,7 +120,7 @@ export function validateProjectNameInternal(value: string, destinationPath: stri
  * @returns {string | boolean} If project with same name already exists return error message otherwise true.
  */
 export function validateDuplicateProjectName(value: string, destinationPath: string): boolean | string {
-    if (existsSync(destinationPath + '/' + value)) {
+    if (existsSync(join(destinationPath, value))) {
         return t('adp.duplicatedProjectName');
     }
 

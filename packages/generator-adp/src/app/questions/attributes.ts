@@ -9,7 +9,7 @@ import {
 
 import {
     type AttributesQuestion,
-    type BasicPromptOptions,
+    type AttributePromptOptions,
     type ProjectNamePromptOptions,
     type ApplicationTitlePromptOptions,
     type NamespacePromptOptions,
@@ -37,7 +37,7 @@ interface Config {
  * @param {BasicPromptOptions} [promptOptions] - Optional settings to control visibility and defaults.
  * @returns {AttributesQuestion[]} An array of prompt objects for basic info input.
  */
-export function getPrompts(path: string, config: Config, promptOptions?: BasicPromptOptions): AttributesQuestion[] {
+export function getPrompts(path: string, config: Config, promptOptions?: AttributePromptOptions): AttributesQuestion[] {
     const { isVersionDetected, ui5Versions, isCloudProject, layer } = config;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 

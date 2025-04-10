@@ -1,3 +1,4 @@
+import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
@@ -18,11 +19,9 @@ import { t, initI18n } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
 import type { AdpGeneratorOptions } from './types';
+import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { getPackageInfo, installDependencies } from '../utils/deps';
-import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { getPrompts } from './questions/attributes';
-import { join } from 'path';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -123,9 +122,10 @@ export default class extends Generator {
         this.logger.info(`System: ${this.configAnswers.system}`);
         this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
 
+        const { ui5Versions, systemVersion } = this.prompter.ui5;
         const promptConfig = {
-            ui5Versions: this.prompter.relevantUI5Versions,
-            isVersionDetected: this.prompter.isVersionDetected,
+            ui5Versions,
+            isVersionDetected: !!systemVersion,
             isCloudProject: this.prompter.isCloud,
             layer: this.layer
         };
@@ -146,6 +146,7 @@ export default class extends Generator {
                 provider: this.prompter.provider,
                 configAnswers: this.configAnswers,
                 attributeAnswers: this.attributeAnswers,
+                publicVersions: this.prompter?.ui5?.publicVersions,
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger

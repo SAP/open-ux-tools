@@ -119,7 +119,7 @@ export interface EnableTypeScriptPromptOptions {
     hide?: boolean;
 }
 
-export type BasicPromptOptions = Partial<{
+export type AttributePromptOptions = Partial<{
     [basicPromptNames.projectName]: ProjectNamePromptOptions;
     [basicPromptNames.title]: ApplicationTitlePromptOptions;
     [basicPromptNames.namespace]: NamespacePromptOptions;
