@@ -5,14 +5,7 @@ import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { ConfigAnswers, SourceApplication, SystemLookup } from '@sap-ux/adp-tooling';
-import {
-    FlexLayer,
-    SourceManifest,
-    UI5VersionInfo,
-    getConfiguredProvider,
-    isAppSupported,
-    loadApps
-} from '@sap-ux/adp-tooling';
+import { FlexLayer, SourceManifest, getConfiguredProvider, isAppSupported, loadApps } from '@sap-ux/adp-tooling';
 
 import { initI18n, t } from '../../../src/utils/i18n';
 import { configPromptNames } from '../../../src/app/types';
@@ -205,10 +198,11 @@ describe('ConfigPrompter Integration Tests', () => {
     });
 
     describe('System CLI Validation Prompt', () => {
-        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
-            getSystemRelevantVersions: jest.fn(),
-            getRelevantVersions: jest.fn()
-        } as unknown as UI5VersionInfo);
+        // TODO: Mock the ui5 methods without class
+        // jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
+        //     getSystemRelevantVersions: jest.fn(),
+        //     getRelevantVersions: jest.fn()
+        // } as unknown as UI5VersionInfo);
 
         beforeEach(() => {
             getHostEnvironmentMock.mockReturnValue(hostEnvironment.cli);
@@ -301,10 +295,11 @@ describe('ConfigPrompter Integration Tests', () => {
             getManifestSpy = jest
                 .spyOn(SourceManifest.prototype, 'getManifest')
                 .mockResolvedValue({ 'sap.ui5': { flexEnabled: true } } as Manifest);
-            jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
-                systemVersion: '1.135.0',
-                isVersionDetected: true
-            } as unknown as UI5VersionInfo);
+            // TODO: Mock the ui5 methods without class
+            // jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
+            //     systemVersion: '1.135.0',
+            //     isVersionDetected: true
+            // } as unknown as UI5VersionInfo);
         });
 
         it('application prompt validate should return true if value is passed', async () => {
