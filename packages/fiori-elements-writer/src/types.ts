@@ -79,6 +79,7 @@ export type OVPSettings =
     | {
           /**
            * Represents the entity type to use as a global filter in the smart filter bar control. Deprecated since SAPUI5 1.54.
+           *
            * @deprecated since version SAPUI5 1.54
            */
           filterEntityType: string;
