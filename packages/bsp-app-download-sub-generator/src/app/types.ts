@@ -132,6 +132,7 @@ export interface QfaJsonConfig {
     deployment_details: {
         repository_name: string;
         repository_description?: string;
+        transport_request?: string;
     };
     fiori_launchpad_configuration: {
         semantic_object: string;

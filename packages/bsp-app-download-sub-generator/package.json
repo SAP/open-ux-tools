@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/bsp-app-download-sub-generator",
-    "description": "Generator for downloading Fiori LROP Apps from BSP",
+    "description": "Generator to support downloading ABAP Deployed Fiori App from BSP Repository",
     "version": "0.1.40",
     "repository": {
         "type": "git",

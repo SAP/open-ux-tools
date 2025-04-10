@@ -142,7 +142,7 @@ export class Ui5AbapRepositoryService extends ODataService {
     }
 
     /**
-     * 
+     *
      * @param str string to check
      * @returns true if the string is base64 encoded, false otherwise
      */
@@ -172,7 +172,9 @@ export class Ui5AbapRepositoryService extends ODataService {
             });
             const data = response.odata();
 
-            if (!data.ZipArchive) return undefined;
+            if (!data.ZipArchive) {
+                return undefined;
+            }
             const isBase64 = this.isBase64Encoded(data.ZipArchive);
             return Buffer.from(data.ZipArchive, isBase64 ? 'base64' : undefined);
         } catch (error) {

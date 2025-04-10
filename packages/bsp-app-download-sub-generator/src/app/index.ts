@@ -102,7 +102,7 @@ export default class extends Generator {
             (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
         }
 
-        // Initialize telemetry settings
+        // Initialise telemetry settings
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
                 name: generatorName,

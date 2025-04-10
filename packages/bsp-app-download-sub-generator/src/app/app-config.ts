@@ -11,7 +11,6 @@ import { adtSourceTemplateId } from '../utils/constants';
 import { PromptState } from '../prompts/prompt-state';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import BspAppDownloadLogger from '../utils/logger';
-import { supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
 
 /**
  * Generates the deployment configuration for an ABAP application.
@@ -30,7 +29,7 @@ export const getAbapDeployConfig = (app: AppInfo, qfaJson: QfaJsonConfig): AbapD
             name: qfaJson.deployment_details.repository_name,
             package: qfaJson.metadata.package,
             description: qfaJson.deployment_details.repository_description,
-            transport: 'REPLACE_WITH_TRANSPORT'
+            transport: qfaJson.deployment_details.transport_request ?? 'REPLACE_WITH_TRANSPORT'
         }
     };
 };
@@ -92,8 +91,8 @@ export async function getAppConfig(
                 sourceTemplate: {
                     id: adtSourceTemplateId
                 },
-                projectType: 'EDMXBackend', 
-                flpAppId: `${app.appId.replace(/[-_.#]/g, '')}-tile`,
+                projectType: 'EDMXBackend',
+                flpAppId: `${app.appId.replace(/[-_.#]/g, '')}-tile`
             },
             package: {
                 name: app.appId,
@@ -123,13 +122,12 @@ export async function getAppConfig(
             ui5: {
                 version:
                     qfaJson.project_attribute?.minimum_ui5_version ??
-                    //supportedUi5VersionFallbacks[0].version ??
                     getMinimumUI5Version(manifest) ??
                     (await getLatestUI5Version())
             }
         };
         //todo: confirm this
-        if(qfaJson.service_binding_details.navigation_entity) {
+        if (qfaJson.service_binding_details.navigation_entity) {
             appConfig.template.settings.entityConfig.navigationEntity = {
                 EntitySet: qfaJson.service_binding_details.navigation_entity,
                 Name: qfaJson.service_binding_details.navigation_entity
