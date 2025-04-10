@@ -2,10 +2,6 @@ import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
-import { ToolsLogger } from '@sap-ux/logger';
-import { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
 import {
     TelemetryHelper,
     sendTelemetry,
@@ -13,6 +9,10 @@ import {
     getHostEnvironment,
     hostEnvironment
 } from '@sap-ux/fiori-generator-shared';
+import { ToolsLogger } from '@sap-ux/logger';
+import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
+import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 
 import { getFlexLayer } from './layer';
 import { t, initI18n } from '../utils/i18n';

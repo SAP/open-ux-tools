@@ -19,6 +19,8 @@ export function generateValidNamespace(projectName: string, isCustomerBase: bool
 /**
  * Generates a default project name based on the existing projects in the specified directory.
  *
+ * @param {string} basePath - Base path of the project.
+ * @param {string} dirName - Directory name to search for.
  * @returns {string} A default project name with an incremented index if similar projects exist.
  */
 export function getDefaultProjectName(basePath: string, dirName: string = DEFAULT_PREFIX): string {

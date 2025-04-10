@@ -6,8 +6,8 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
   "layer": "CUSTOMER_BASE",
   "fileType": "appdescr_variant",
   "reference": "sap.ui.demoapps.f1",
-  "id": "customer.app.variant1",
-  "namespace": "apps/sap.ui.demoapps.f1/appVariants/customer.app.variant1/",
+  "id": "customer.app.variant",
+  "namespace": "apps/sap.ui.demoapps.f1/appVariants/customer.app.variant/",
   "version": "0.1.0",
   "content": [
     {
@@ -34,12 +34,12 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
 `;
 
 exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 2`] = `
-"# This is the resource bundle for customer.app.variant1
+"# This is the resource bundle for customer.app.variant
 
 #Texts for manifest.json
 
 #XTIT: Application name
-customer.app.variant1_sap.app.title=
+customer.app.variant_sap.app.title=App Title
 "
 `;
 
@@ -48,7 +48,7 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
 
 specVersion: "3.0"
 metadata:
-  name: customer-app-variant1
+  name: customer-app-variant
 type: application
 resources:
   configuration:
@@ -88,6 +88,6 @@ server:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.135.0
+          version: 1.134.1
 "
 `;

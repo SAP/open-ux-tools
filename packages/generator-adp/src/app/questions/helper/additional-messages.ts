@@ -111,6 +111,7 @@ export const getAppAdditionalMessages = (
 /**
  * Provides additional messages related to UI5 version detection based on system and authentication conditions.
  *
+ * @param {boolean} isVersionDetected - Flag indicating that the system ui5 version was detected.
  * @returns {object | undefined} An object containing a message and its severity level if conditions are met; otherwise, undefined.
  */
 export const getVersionAdditionalMessages = (isVersionDetected: boolean): object | undefined => {

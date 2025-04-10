@@ -1,5 +1,5 @@
-import { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
-import { AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
+import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import { type AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
 import {
     validateEmptyString,
     validateNamespaceAdp,
@@ -7,16 +7,16 @@ import {
     validateProjectName
 } from '@sap-ux/project-input-validator';
 
-import {
-    type AttributesQuestion,
-    type AttributePromptOptions,
-    type ProjectNamePromptOptions,
-    type ApplicationTitlePromptOptions,
-    type NamespacePromptOptions,
-    basicPromptNames,
+import type {
+    AttributesQuestion,
+    AttributePromptOptions,
+    ProjectNamePromptOptions,
+    ApplicationTitlePromptOptions,
+    NamespacePromptOptions,
     TargetFolderPromptOptions,
     EnableTypeScriptPromptOptions
 } from '../types';
+import { basicPromptNames } from '../types';
 import { t } from '../../utils/i18n';
 import { getProjectNameTooltip } from './helper/tooltip';
 import { getDefaultProjectName, generateValidNamespace, getVersionDefaultValue } from './helper/default-values';
