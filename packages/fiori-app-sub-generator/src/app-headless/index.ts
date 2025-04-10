@@ -6,9 +6,9 @@ import { initI18nFioriAppSubGenerator, t } from '../utils/i18n';
 import { transformExtState } from './transforms';
 
 /**
- *
+ * Generator that allows the creation of a Fiori applications without prompting based on a provided app config.
  */
-export default class extends FioriAppGenerator {
+export class FioriAppGeneratorHeadless extends FioriAppGenerator {
     /**
      *
      * @param args
@@ -73,3 +73,5 @@ export default class extends FioriAppGenerator {
         await super.end();
     }
 }
+
+export default FioriAppGeneratorHeadless;

@@ -3,7 +3,7 @@ import { existsSync, readFileSync } from 'fs';
 import 'jest-extended';
 import { join } from 'path';
 import yeomanTest from 'yeoman-test';
-import HeadlessGenerator from '../../../src/app-headless';
+import { FioriAppGeneratorHeadless } from '../../../src/app-headless';
 import type { FioriAppGeneratorOptions } from '../../../src/fiori-app-generator';
 import * as install from '../../../src/fiori-app-generator/install';
 import { type FFAppConfig } from '../../../src/types';
@@ -50,7 +50,7 @@ async function runHeadlessGen(
 
     return yeomanTest
         .create(
-            HeadlessGenerator,
+            FioriAppGeneratorHeadless,
             {
                 resolved: join(__dirname, '../../src/app-headless') // Required to find root dir name
             },
@@ -98,8 +98,8 @@ describe('Test headless generator', () => {
         testProjectName = 'simpleflightv2';
         expectedOutputPath = join(__dirname, MOCK_FILES_DIR_NAME, 'headless', testProjectName);
         // Mock writing, we are not testing that here
-        jest.spyOn(HeadlessGenerator.prototype, 'writing').mockImplementation(jest.fn());
-        jest.spyOn(HeadlessGenerator.prototype, 'end').mockImplementation(jest.fn());
+        jest.spyOn(FioriAppGeneratorHeadless.prototype, 'writing').mockImplementation(jest.fn());
+        jest.spyOn(FioriAppGeneratorHeadless.prototype, 'end').mockImplementation(jest.fn());
         const installDepsSpy = jest.spyOn(install, 'installDependencies').mockResolvedValue();
 
         await runHeadlessGen(testProjectName, undefined, { skipInstall: false });
