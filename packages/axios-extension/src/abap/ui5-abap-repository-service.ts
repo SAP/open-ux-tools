@@ -171,9 +171,10 @@ export class Ui5AbapRepositoryService extends ODataService {
                 }
             });
             const data = response.odata();
-            return this.isBase64Encoded(data.ZipArchive)
-                ? Buffer.from(data.ZipArchive, 'base64')
-                : Buffer.from(data.ZipArchive);
+
+            if (!data.ZipArchive) return undefined;
+            const isBase64 = this.isBase64Encoded(data.ZipArchive);
+            return Buffer.from(data.ZipArchive, isBase64 ? 'base64' : undefined);
         } catch (error) {
             this.log.debug(`Retrieving application ${app}, ${error}`);
             if (isAxiosError(error) && error.response?.status === 404) {

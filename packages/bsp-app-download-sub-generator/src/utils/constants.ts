@@ -8,6 +8,8 @@ export const generatorDescription = 'Download a basic LROP app from a BSP reposi
 export const generatorName = '@sap-ux/bsp-app-download-sub-generator';
 // The source template ID used for filtering the apps in the BSP repository
 export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
+// The name of the QFA JSON file provided with the downloaded app, containing all user inputs.
+export const qfaJsonFileName = 'qfa.json';
 
 // Default initial answers to use as a fallback.
 export const defaultAnswers: BspAppDownloadAnswers = {

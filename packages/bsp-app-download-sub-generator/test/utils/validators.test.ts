@@ -1,5 +1,5 @@
-import { validateAppContentJsonFile } from '../../src/utils/validators'; 
-import { AppContentConfig } from '../../src/app/types';
+import { validateQfaJsonFile } from '../../src/utils/validators'; 
+import { QfaJsonConfig } from '../../src/app/types';
 import { t } from '../../src/utils/i18n';
 import BspAppDownloadLogger from '../../src/utils/logger';
 
@@ -9,18 +9,18 @@ jest.mock('../../src/utils/logger', () => ({
     }
 }));
 
-describe('validateAppContentJsonFile', () => {
-    const validConfig: AppContentConfig = {
+describe('validateQfaJsonFile', () => {
+    const validConfig: QfaJsonConfig = {
         metadata: { package: 'valid-package' },
-        serviceBindingDetails: {
-            serviceName: 'validService',
-            serviceVersion: '1.0.0',
-            mainEntityName: 'validEntity',
+        service_binding_details: {
+            service_name: 'validService',
+            service_version: '1.0.0',
+            main_entity_name: 'validEntity',
         },
-        projectAttribute: { moduleName: 'validModule' },
-        deploymentDetails: { repositoryName: 'validRepository' },
-        fioriLaunchpadConfiguration: {
-            semanticObject: 'semanticObject',
+        project_attribute: { module_name: 'validModule' },
+        deployment_details: { repository_name: 'validRepository' },
+        fiori_launchpad_configuration: {
+            semantic_object: 'semanticObject',
             action: 'action',
             title: 'title'
         },
@@ -31,7 +31,7 @@ describe('validateAppContentJsonFile', () => {
     });
 
     it('should return true when all validation functions pass', () => {
-        const result = validateAppContentJsonFile(validConfig);
+        const result = validateQfaJsonFile(validConfig);
         expect(result).toBe(true);
     });
 
@@ -39,9 +39,9 @@ describe('validateAppContentJsonFile', () => {
         const invalidMetadataConfig = {
             ...validConfig,
             metadata: { package: '' } // Invalid package
-        } as unknown as AppContentConfig;
+        } as unknown as QfaJsonConfig;
 
-        const result = validateAppContentJsonFile(invalidMetadataConfig);
+        const result = validateQfaJsonFile(invalidMetadataConfig);
         expect(result).toBe(false);
         expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidMetadataPackage')); 
     });
@@ -49,13 +49,13 @@ describe('validateAppContentJsonFile', () => {
     it('should return false and log an error when service binding details validation fails', () => {
         const invalidServiceBindingConfig = {
             ...validConfig,
-            serviceBindingDetails: {
-                ...validConfig.serviceBindingDetails,
-                serviceName: '', // Invalid service name
+            service_binding_details: {
+                ...validConfig.service_binding_details,
+                service_name: '', // Invalid service name
             }
-        } as unknown as AppContentConfig;
+        } as unknown as QfaJsonConfig;
 
-        const result = validateAppContentJsonFile(invalidServiceBindingConfig);
+        const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
         expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidServiceName'));
     });
@@ -63,13 +63,13 @@ describe('validateAppContentJsonFile', () => {
     it('should return false and log an error when service binding version is not provided', () => {
         const invalidServiceBindingConfig = {
             ...validConfig,
-            serviceBindingDetails: {
-                ...validConfig.serviceBindingDetails,
-                serviceVersion: '' // Invalid service version
+            service_binding_details: {
+                ...validConfig.service_binding_details,
+                service_version: '' // Invalid service version
             }
-        } as unknown as AppContentConfig;
+        } as unknown as QfaJsonConfig;
 
-        const result = validateAppContentJsonFile(invalidServiceBindingConfig);
+        const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
         expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidServiceVersion'));
     });
@@ -77,13 +77,13 @@ describe('validateAppContentJsonFile', () => {
     it('should return false and log an error when main entity name is missing', () => {
         const invalidServiceBindingConfig = {
             ...validConfig,
-            serviceBindingDetails: {
-                ...validConfig.serviceBindingDetails,
-                mainEntityName: '' // Invalid main entity name
+            service_binding_details: {
+                ...validConfig.service_binding_details,
+                main_entity_name: '' // Invalid main entity name
             }
-        } as unknown as AppContentConfig;
+        } as unknown as QfaJsonConfig;
 
-        const result = validateAppContentJsonFile(invalidServiceBindingConfig);
+        const result = validateQfaJsonFile(invalidServiceBindingConfig);
         expect(result).toBe(false);
         expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidMainEntityName'));
     });
@@ -91,10 +91,10 @@ describe('validateAppContentJsonFile', () => {
     it('should return false and log an error when project attribute validation fails', () => {
         const invalidProjectAttributeConfig = {
             ...validConfig,
-            projectAttribute: { moduleName: '' } // Invalid module name
-        } as unknown as AppContentConfig;
+            project_attribute: { module_name: '' } // Invalid module name
+        } as unknown as QfaJsonConfig;
 
-        const result = validateAppContentJsonFile(invalidProjectAttributeConfig);
+        const result = validateQfaJsonFile(invalidProjectAttributeConfig);
         expect(result).toBe(false); 
         expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidModuleName'));
     });
@@ -102,10 +102,10 @@ describe('validateAppContentJsonFile', () => {
     it('should return false and log an error when deployment details validation fails', () => {
         const invalidDeploymentDetailsConfig = {
            ...validConfig,
-            deploymentDetails: { repositoryName: '' } // Invalid repository name
-        } as unknown as AppContentConfig;
+           deployment_details: { repository_name: '' } // Invalid repository name
+        } as unknown as QfaJsonConfig;
 
-        const result = validateAppContentJsonFile(invalidDeploymentDetailsConfig);
+        const result = validateQfaJsonFile(invalidDeploymentDetailsConfig);
         expect(result).toBe(false);
         expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.invalidRepositoryName'));
     });

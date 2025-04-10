@@ -4,6 +4,7 @@ import type { Editor } from 'mem-fs-editor';
 import { FileName, DirName, type Manifest } from '@sap-ux/project-access';
 import { t } from './i18n';
 import BspAppDownloadLogger from './logger';
+import type { QfaJsonConfig } from '../app/types';
 
 /**
  * Reads and validates the `manifest.json` file.
@@ -43,8 +44,9 @@ export async function replaceWebappFiles(projectPath: string, extractedPath: str
         // Define the paths of the files to be replaced
         const filesToReplace = [
             { webappFile: FileName.Manifest, extractedFile: FileName.Manifest },
-            { webappFile: 'i18n/i18n.properties', extractedFile: 'i18n.properties' }, // replace 'i18n/i18n.properties' in extractedFile
-            { webappFile: 'index.html', extractedFile: 'index.html' }
+            { webappFile: join('i18n', 'i18n.properties'), extractedFile: join('i18n', 'i18n.properties') },
+            { webappFile: 'index.html', extractedFile: 'index.html' },
+            { webappFile: 'Component.js', extractedFile: 'component.js' }
         ];
         // Loop through each file and perform the replacement
         for (const { webappFile, extractedFile } of filesToReplace) {
@@ -53,12 +55,39 @@ export async function replaceWebappFiles(projectPath: string, extractedPath: str
 
             // Check if the extracted file exists before replacing
             if (fs.exists(extractedFilePath)) {
-                fs.copy(extractedFilePath, webappFilePath);
+                if (webappFile === FileName.Manifest) {
+                    // Pretify manifest.json file
+                    const manifestContent = fs.read(extractedFilePath);
+                    const prettifiedContent = JSON.stringify(JSON.parse(manifestContent), null, 2);
+                    fs.write(webappFilePath, prettifiedContent);
+                } else {
+                    fs.copy(extractedFilePath, webappFilePath);
+                }
             } else {
                 BspAppDownloadLogger.logger?.warn(t('warn.extractedFileNotFound', { extractedFilePath }));
             }
         }
     } catch (error) {
         BspAppDownloadLogger.logger?.error(t('error.replaceWebappFilesError', { error }));
+    }
+}
+
+/**
+ *
+ * @param filePath - Path to the JSON file
+ * @param fs - File system editor instance
+ * @returns - Parsed JSON object
+ */
+export function makeValidJson(filePath: string, fs: Editor): QfaJsonConfig {
+    try {
+        // Read the file contents
+        const fileContents = fs.read(filePath);
+        // Replace property names without quotes with quoted property names
+        const validJsonString = fileContents.replace(/(\w+):/g, '"$1":');
+        // Parse to ensure it's valid JSON
+        const validJson: QfaJsonConfig = JSON.parse(validJsonString);
+        return validJson;
+    } catch (error) {
+        throw new Error(t('error.errorProcessingJsonFile', { error }));
     }
 }

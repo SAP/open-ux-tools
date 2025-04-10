@@ -1,15 +1,17 @@
-import { getAppConfig, getAbapDeployConfig } from '../src/app/config';
+import { getAppConfig, getAbapDeployConfig } from '../src/app/app-config';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import { getLatestUI5Version } from '@sap-ux/ui5-info';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { PromptState } from '../src/prompts/prompt-state';
-import type { AppInfo, AppContentConfig } from '../src/app/types';
+import type { AppInfo, QfaJsonConfig } from '../src/app/types';
 import { readManifest } from '../src/utils/file-helpers';
 import { t } from '../src/utils/i18n';
 import { adtSourceTemplateId } from '../src/utils/constants';
 import BspAppDownloadLogger from '../src/utils/logger';
-import { sampleAppContentTestData } from './fixtures/downloaded-app/example-app-content';
+import { TestFixture } from './fixtures';
+import { join } from 'path';
+import { qfaJsonFileName } from '../src/utils/constants';
 
 jest.mock('../src/utils/logger', () => ({
     logger: {
@@ -32,6 +34,9 @@ jest.mock('@sap-ux/project-access', () => ({
     getMinimumUI5Version: jest.fn()
 }));
 
+const testFixture = new TestFixture();
+const mockQfaJson: QfaJsonConfig = JSON.parse(testFixture.getContents(join('downloaded-app', qfaJsonFileName)));
+
 describe('getAppConfig', () => {
     const mockApp: AppInfo = {
         appId: 'testAppId',
@@ -40,13 +45,13 @@ describe('getAppConfig', () => {
         repoName: 'testRepoName',
         url: 'https://example.com/testApp'
     };
-    const mockAppContentJson: AppContentConfig = sampleAppContentTestData;
     const mockFs = {} as Editor;
     const expectedAppConfig = {
         app: {
             id: mockApp.appId,
             title: mockApp.title,
             description: mockApp.description,
+            flpAppId: `${mockApp.appId}-tile`,
             sourceTemplate: { id: adtSourceTemplateId },
             projectType: 'EDMXBackend'
         },
@@ -61,7 +66,7 @@ describe('getAppConfig', () => {
             type: expect.any(String),
             settings: {
                 entityConfig: {
-                    mainEntityName: sampleAppContentTestData.serviceBindingDetails.mainEntityName
+                    mainEntityName: mockQfaJson.service_binding_details.main_entity_name
                 }
             }
         },
@@ -76,7 +81,7 @@ describe('getAppConfig', () => {
             addTests: true
         },
         ui5: {
-            version: sampleAppContentTestData.projectAttribute.minimumUi5Version
+            version: mockQfaJson.project_attribute.minimum_ui5_version ?? '1.90.0'
         }
     };
 
@@ -109,8 +114,16 @@ describe('getAppConfig', () => {
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
         (getLatestUI5Version as jest.Mock).mockResolvedValue('1.100.0');
         (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
-
-        const result = await getAppConfig(mockApp, '/path/to/project', mockAppContentJson, mockFs);
+        const mockQfaJsonWithoutNavEntity = {
+            ...mockQfaJson, 
+            service_binding_details: {
+                name: mockQfaJson.service_binding_details.name,
+                service_name: mockQfaJson.service_binding_details.service_name,
+                service_version: mockQfaJson.service_binding_details.service_version,
+                main_entity_name: mockQfaJson.service_binding_details.main_entity_name,
+            }
+        }
+        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonWithoutNavEntity, mockFs);
         expect(result).toEqual(expectedAppConfig);
     });
 
@@ -139,28 +152,25 @@ describe('getAppConfig', () => {
         (getLatestUI5Version as jest.Mock).mockResolvedValue('1.100.0');
         (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
 
-        const mockAppContentJsonWithNavEntity = {
-            ...mockAppContentJson,
-            serviceBindingDetails: {
-                ...mockAppContentJson.serviceBindingDetails,
-                mainEntityName: mockAppContentJson.serviceBindingDetails.mainEntityName,
-                navigationEntity: {
-                    EntitySet: 'EnitySet',
-                    Name: 'SomeNavigationProperty'
-                }
+        const mockQfaJsonJsonWithNavEntity = {
+            ...mockQfaJson,
+            service_binding_details: {
+                ...mockQfaJson.service_binding_details,
+                main_entity_name: mockQfaJson.service_binding_details.main_entity_name,
+                navigation_entity: mockQfaJson.service_binding_details.navigation_entity
             }
         }
-        const result = await getAppConfig(mockApp, '/path/to/project', mockAppContentJsonWithNavEntity, mockFs);
+        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithNavEntity, mockFs);
         const expectedAppConfigWithNavEntity = {
             ...expectedAppConfig,
             template: {
                 ...expectedAppConfig.template,
                 settings: {
                     entityConfig: {
-                        mainEntityName: mockAppContentJson.serviceBindingDetails.mainEntityName,
+                        mainEntityName: mockQfaJson.service_binding_details.main_entity_name,
                         navigationEntity: {
-                            EntitySet: mockAppContentJsonWithNavEntity.serviceBindingDetails.navigationEntity.EntitySet,
-                            Name: mockAppContentJsonWithNavEntity.serviceBindingDetails.navigationEntity.Name
+                            EntitySet: mockQfaJsonJsonWithNavEntity.service_binding_details.navigation_entity,
+                            Name: mockQfaJsonJsonWithNavEntity.service_binding_details.navigation_entity
                         }
                     }
                 }
@@ -175,7 +185,7 @@ describe('getAppConfig', () => {
         };
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
-        const result = await getAppConfig(mockApp, '/path/to/project', mockAppContentJson, mockFs);
+        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockFs);
         expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.dataSourcesNotFound')); 
     });
 
@@ -210,7 +220,7 @@ describe('getAppConfig', () => {
 
         (readManifest as jest.Mock).mockReturnValue(mockManifest);
 
-        await getAppConfig(mockApp, '/path/to/project', mockAppContentJson, mockFs);
+        await getAppConfig(mockApp, '/path/to/project', mockQfaJson, mockFs);
         expect(BspAppDownloadLogger.logger?.error).toHaveBeenCalledWith(t('error.metadataFetchError', { error: errorMsg }));
     });
 
@@ -245,14 +255,14 @@ describe('getAppConfig', () => {
         (getLatestUI5Version as jest.Mock).mockResolvedValue('1.100.0');
         (getMinimumUI5Version as jest.Mock).mockReturnValue('1.90.0');
 
-        const mockAppContentJsonWithoutUi5Version = {
-            ...sampleAppContentTestData,
-            projectAttribute: {
-                ...sampleAppContentTestData.projectAttribute,
-                minimumUi5Version: null
+        const mockQfaJsonJsonWithoutUi5Version = {
+            ...mockQfaJson,
+            project_attribute: {
+                ...mockQfaJson.project_attribute,
+                minimum_ui5_version: null
             }
-        } as unknown as AppContentConfig;
-        await getAppConfig(mockApp, '/path/to/project', mockAppContentJsonWithoutUi5Version, mockFs);
+        } as unknown as QfaJsonConfig;
+        await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithoutUi5Version, mockFs);
         expect(BspAppDownloadLogger.logger?.error).not.toHaveBeenCalled();
     });
 
@@ -274,17 +284,13 @@ describe('getAbapDeployConfig', () => {
                 destination: 'TEST_REPO'
             },
             app: {
-                name: 'TEST_REPO_NAME',
-                package: 'TEST_PACKAGE',
-                description: 'This is a test repository',
+                name: 'ZSB_TRVL_APR2',
+                package: '$TMP',
+                description: 'Travel Approver 2.0',
                 transport: 'REPLACE_WITH_TRANSPORT'
             }
         };
-
-        // Call the function
-        const result = getAbapDeployConfig(app, sampleAppContentTestData);
-
-        // Assertions
+        const result = getAbapDeployConfig(app, mockQfaJson);
         expect(result).toEqual(expectedConfig);
     });
 });

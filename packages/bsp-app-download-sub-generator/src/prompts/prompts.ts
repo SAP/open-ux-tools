@@ -1,6 +1,6 @@
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
-import type { BspAppDownloadAnswers, BspAppDownloadQuestions, QuickDeployedAppConfig } from '../app/types';
+import type { BspAppDownloadAnswers, BspAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
 import { t } from '../utils/i18n';
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
@@ -13,7 +13,7 @@ import { fetchAppListForSelectedSystem } from './prompt-helpers';
  * Gets the target folder selection prompt.
  *
  * @param {string} [appRootPath] - The application root path.
- * @param appId
+ * @param {string} appId - The application ID.
  * @returns {FileBrowserQuestion<BspAppDownloadAnswers>} The target folder prompt configuration.
  */
 const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowserQuestion<BspAppDownloadAnswers> => {
@@ -49,7 +49,7 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
  * Retrieves questions for selecting system, app lists and target path where app will be generated.
  *
  * @param {string} [appRootPath] - The root path of the application.
- * @param {QuickDeployConfig} [quickDeployedAppConfig] - quick deploy config.
+ * @param {QuickDeployedAppConfig} [quickDeployedAppConfig] - quick deployed app config.
  * @returns {Promise<BspAppDownloadQuestions[]>} A list of questions for user interaction.
  */
 export async function getPrompts(
@@ -62,7 +62,7 @@ export async function getPrompts(
         return [getTargetFolderPrompt(appRootPath, quickDeployedAppConfig.appId)] as BspAppDownloadQuestions[];
     }
 
-    const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, false); // todo: remove this isYUI value
+    const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, false);
     let appList: AppIndex = [];
     const appSelectionPrompt = [
         {
@@ -82,7 +82,7 @@ export async function getPrompts(
                 breadcrumb: t('prompts.appSelection.breadcrumb')
             },
             message: t('prompts.appSelection.message'),
-            choices: () => (appList.length ? formatAppChoices(appList) : []),
+            choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
             validate: (): string | boolean => (appList.length ? true : t('prompts.appSelection.noAppsDeployed'))
         }
     ];

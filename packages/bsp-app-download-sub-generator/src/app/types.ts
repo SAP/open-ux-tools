@@ -106,48 +106,37 @@ export interface BspAppDownloadAnswers {
     [PromptNames.targetFolder]: string;
 }
 
-interface Metadata {
-    package: string;
-    masterLanguage?: string;
-}
-
-export interface EntityConfig {
-    mainEntityName: string;
-    navigationEntity?: {
-        EntitySet: string;
-        Name: string;
+/**
+ * Interface representing the configuration of a QFA JSON file.
+ * This QFA JSON file is used for configuring the application download process
+ * and contains user inputs.
+ */
+export interface QfaJsonConfig {
+    metadata: {
+        package: string;
+        master_language?: string;
     };
-}
-
-interface ServiceBindingDetails extends EntityConfig {
-    name?: string;
-    serviceName: string;
-    serviceVersion: string;
-}
-
-interface ProjectAttribute {
-    moduleName: string;
-    applicationTitle?: string;
-    template?: string;
-    minimumUi5Version?: string;
-}
-
-interface DeploymentDetails {
-    repositoryName: string;
-    repositoryDescription?: string;
-}
-
-interface FioriLaunchpadConfiguration {
-    semanticObject: string;
-    action: string;
-    title: string;
-    subtitle?: string;
-}
-
-export interface AppContentConfig {
-    metadata: Metadata;
-    serviceBindingDetails: ServiceBindingDetails;
-    projectAttribute: ProjectAttribute;
-    deploymentDetails: DeploymentDetails;
-    fioriLaunchpadConfiguration: FioriLaunchpadConfiguration;
+    service_binding_details: {
+        name?: string;
+        service_name: string;
+        service_version: string;
+        main_entity_name: string;
+        navigation_entity?: string;
+    };
+    project_attribute: {
+        module_name: string;
+        application_title?: string;
+        minimum_ui5_version?: string;
+        template?: string;
+    };
+    deployment_details: {
+        repository_name: string;
+        repository_description?: string;
+    };
+    fiori_launchpad_configuration: {
+        semantic_object: string;
+        action: string;
+        title: string;
+        subtitle?: string;
+    };
 }

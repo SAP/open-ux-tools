@@ -7,26 +7,24 @@
         <title>Fiori Application Preview</title>
         <style>html, body, body > div, #container, #container-uiarea { height: 100%; }</style>
         <script id="sap-ui-bootstrap"
-            src="/sap/public/bc/ui5_ui5/1/resources/~20250319083100~/sap-ui-core.js"
+            src="resources/sap-ui-core.js"
             data-sap-ui-theme="sap_horizon"
-            data-sap-ui-libs="sap.ui.generic.app, sap.suite.ui.generic.template, sap.suite.ui.commons"
+            data-sap-ui-libs="sap.ui.core, sap.m, sap.fe.templates, sap.uxap"
 
             data-sap-ui-preload="async"
-            data-sap-ui-resourceroots='{ 
-"travel.approver": "." }'
+            data-sap-ui-resourceroots='{ "travel.approver.2": "." }'
             data-sap-ui-oninit="module:sap/ui/core/ComponentSupport"
             data-sap-ui-compatVersion="edge"
             data-sap-ui-async="true"
             data-sap-ui-frameOptions="trusted">
     </script>
-    <script src="userinfo.js"></script>
     </head>
     <body class="sapUiBody sapUiSizeCompact" id="content">
         <div
             data-sap-ui-component
-            data-name="travel.approver"
+            data-name="travel.approver.2"
             data-id="container"
-            data-settings='{"id" : "travel.approver"}'
+            data-settings='{"id" : "travel.approver.2"}'
             data-handle-validation="true">
         </div>
     </body>

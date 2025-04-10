@@ -4,7 +4,7 @@ import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
 import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
-import { generatorTitle, extractedFilePath, generatorName, defaultAnswers } from '../utils/constants';
+import { generatorTitle, extractedFilePath, generatorName, defaultAnswers, qfaJsonFileName } from '../utils/constants';
 import { t } from '../utils/i18n';
 import { getYUIDetails } from '../prompts/prompt-helpers';
 import { downloadApp } from '../utils/download-utils';
@@ -15,7 +15,7 @@ import type {
     BspAppDownloadOptions,
     BspAppDownloadAnswers,
     BspAppDownloadQuestions,
-    AppContentConfig,
+    QfaJsonConfig,
     QuickDeployedAppConfig
 } from './types';
 import { getPrompts } from '../prompts/prompts';
@@ -33,12 +33,11 @@ import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import { generate as generateDeployConfig } from '@sap-ux/abap-deploy-config-writer';
 import { PromptState } from '../prompts/prompt-state';
 import { PromptNames } from './types';
-import { getAbapDeployConfig, getAppConfig } from './config';
+import { getAbapDeployConfig, getAppConfig } from './app-config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
-import { sampleAppContentTestData } from './example-app-content';
-import { replaceWebappFiles } from '../utils/file-helpers';
+import { replaceWebappFiles, makeValidJson } from '../utils/file-helpers';
 import { fetchAppListForSelectedSystem, extractAppData } from '../prompts/prompt-helpers';
-import { isValidPromptState, validateAppContentJsonFile } from '../utils/validators';
+import { isValidPromptState, validateQfaJsonFile } from '../utils/validators';
 
 /**
  * Generator class for downloading a basic app from BSP repository.
@@ -134,14 +133,13 @@ export default class extends Generator {
 
     /**
      *
-     * @param quickDeployedAppConfig
-     * @param targetFolder
+     * @param quickDeployedAppConfig - The configuration for the quick deployed app.
+     * @param targetFolder - The target folder where the app will be downloaded.
      */
     private async _handleQuickDeployedAppDownload(
         quickDeployedAppConfig: QuickDeployedAppConfig,
         targetFolder: string
     ): Promise<void> {
-        debugger;
         const appList = await fetchAppListForSelectedSystem(
             quickDeployedAppConfig.serviceProvider,
             quickDeployedAppConfig.appId
@@ -150,7 +148,7 @@ export default class extends Generator {
             BspAppDownloadLogger.logger?.error(
                 t('error.quickDeployedAppDownloadErrors.noAppsFound', { appId: quickDeployedAppConfig.appId })
             );
-            throw new Error(); 
+            throw new Error();
         }
         this.answers.selectedApp = extractAppData(appList[0]).value;
         this.answers.targetFolder = targetFolder;
@@ -168,44 +166,43 @@ export default class extends Generator {
             await downloadApp(this.answers.selectedApp.repoName, this.extractedProjectPath, this.fs);
         }
 
-        // const appContentJsonTempPath = join(__dirname, 'example-app-content.json');
-        const appContentJson: AppContentConfig = sampleAppContentTestData;
-        // todo: add back once json is available along with downloaded app
-        // if(!this.fs.exists(appContentJsonTempPath)) {
-        //     appContentJson = this.fs.readJSON(appContentJsonTempPath) as unknown as AppContentConfig; //todo: extract from extracted path
-        // } else {
-        //    BspAppDownloadLogger.logger?.error(t('error.appContentJsonNotFound', { jsonFileName: 'example-app-content.json' }));
-        // }
+        const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
+        if (this.fs.exists(qfaJsonFilePath)) {
+            const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
+            // Generate project files
+            validateQfaJsonFile(qfaJson);
 
-        // Generate project files
-        validateAppContentJsonFile(appContentJson);
-        const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, appContentJson, this.fs);
-        await generate(this.projectPath, config, this.fs);
+            // Generate app config
+            const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, qfaJson, this.fs);
+            await generate(this.projectPath, config, this.fs);
 
-        // Generate deploy config
-        const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, appContentJson);
-        await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
+            // Generate deploy config
+            const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, qfaJson);
+            await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
 
-        // Generate README
-        const readMeConfig = this._getReadMeConfig(config);
-        generateReadMe(this.projectPath, readMeConfig, this.fs);
+            // Generate README
+            const readMeConfig = this._getReadMeConfig(config);
+            generateReadMe(this.projectPath, readMeConfig, this.fs);
 
-        if (this.vscode) {
-            // Generate Fiori launch config
-            const fioriOptions = this._getLaunchConfig(config);
-            // Create launch configuration
-            await createLaunchConfig(
-                this.projectPath,
-                fioriOptions,
-                this.fs,
-                BspAppDownloadLogger.logger as unknown as Logger
-            );
-            writeApplicationInfoSettings(this.projectPath, this.fs);
+            if (this.vscode) {
+                // Generate Fiori launch config
+                const fioriOptions = this._getLaunchConfig(config);
+                // Create launch configuration
+                await createLaunchConfig(
+                    this.projectPath,
+                    fioriOptions,
+                    this.fs,
+                    BspAppDownloadLogger.logger as unknown as Logger
+                );
+                writeApplicationInfoSettings(this.projectPath, this.fs);
+            }
+            // Replace webapp files with downloaded app files
+            await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+            // Clean up extracted project files
+            this.fs.delete(this.extractedProjectPath);
+        } else {
+            BspAppDownloadLogger.logger?.error(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }));
         }
-        // Replace webapp files with downloaded app files
-        await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
-        // Clean up extracted project files
-        // this.fs.delete(this.extractedProjectPath);
     }
 
     /**
@@ -221,7 +218,7 @@ export default class extends Generator {
             appNamespace: '', // todo: cant find namespace in manifest json - default?
             appDescription: t('readMe.appDescription'),
             ui5Theme: getDefaultUI5Theme(config.ui5?.version),
-            generatorName: generatorName, // todo: check if this is correct
+            generatorName: generatorName, // todo: check if this name is okay ?
             generatorVersion: this.rootGeneratorVersion(),
             ui5Version: config.ui5?.version ?? '',
             template: TemplateType.ListReportObjectPage,
@@ -335,9 +332,9 @@ export default class extends Generator {
     /**
      * Finalises the generator process by creating launch configurations and running post-generation hooks.
      */
-    async end() {
+    async end(): Promise<void> {
         try {
-            this.appWizard.showWarning(t('info.bspAppDownloadCompleteMsg'), MessageType.notification);
+            this.appWizard.showInformation(t('info.bspAppDownloadCompleteMsg'), MessageType.notification);
             await sendTelemetry(
                 EventName.GENERATION_SUCCESS,
                 TelemetryHelper.createTelemetryData({

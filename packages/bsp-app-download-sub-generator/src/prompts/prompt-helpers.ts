@@ -25,7 +25,7 @@ export function getYUIDetails(): { name: string; description: string }[] {
  * Returns the prompt details for the selected application.
  *
  * @param {AppItem} app - The application item to extract details from.
- * @returns { name: string; value: AppInfo } The extracted details including name and value.
+ * @returns {{ name: string; value: AppInfo }} The extracted details including name and value.
  */
 export const extractAppData = (app: AppItem): { name: string; value: AppInfo } => {
     // cast to string because TypeScript doesn't automatically know at the point that these fields are defined
@@ -70,7 +70,7 @@ export const formatAppChoices = (appList: AppIndex): Array<{ name: string; value
  * Fetches a list of deployed applications from the ABAP repository.
  *
  * @param {AbapServiceProvider} provider - The ABAP service provider.
- * @param appId
+ * @param {string} appId - Application ID to filter the list.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
 async function getAppList(provider: AbapServiceProvider, appId?: string): Promise<AppIndex> {
@@ -92,7 +92,7 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
  * Fetches the application list for the selected system.
  *
  * @param {AbapServiceProvider} serviceProvider - The ABAP service provider.
- * @param appId
+ * @param {string} appId - Application ID to be downloaded.
  * @returns {Promise<AppIndex>} A list of applications filtered by source template.
  */
 export async function fetchAppListForSelectedSystem(

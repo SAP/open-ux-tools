@@ -1,13 +1,14 @@
 {
     "error": {
         "telemetry": "Failed to send telemetry data after downloading app from BSP. {{- error}}",
-        "appContentJsonNotFound": "{{- jsonFileName }} not found in the downloaded app",
+        "qfaJsonNotFound": "{{- jsonFileName }} not found in the downloaded app",
         "replaceWebappFilesError": "Error replacing files in the downloaded app: {{- error}}", 
         "requiredFieldsMissing": "Required fields are missing for app: {{- app }}. Check if the app is deployed correctly",
         "applicationListFetchError": "Error fetching application list: {{- error}}",
         "metadataFetchError": "Error fetching metadata: {{- error}}",
         "appConfigGenError": "Error generating application configuration: {{- error}}",
         "endPhase": "Error in end phase: {{- error}}",
+        "errorProcessingJsonFile": "Error processing JSON file: {{- error}}",
         "validationErrors": {
             "invalidMetadataPackage": "Invalid or missing package in metadata",
             "invalidServiceName": "Invalid or missing serviceName in serviceBindingDetails",

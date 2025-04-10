@@ -39,7 +39,6 @@ async function extractZip(extractedProjectPath: string, archive: Buffer, fs: Edi
 export async function downloadApp(repoName: string, extractedProjectPath: string, fs: Editor): Promise<void> {
     try {
         const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
-        debugger;
         const archive = await serviceProvider.getUi5AbapRepository().downloadFiles(repoName);
         if (Buffer.isBuffer(archive)) {
             await extractZip(extractedProjectPath, archive, fs);

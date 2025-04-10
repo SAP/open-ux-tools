@@ -1,8 +1,8 @@
 sap.ui.define(
-    ["sap/suite/ui/generic/template/lib/AppComponent"],
+    ["sap/fe/core/AppComponent"],
     function (Component){
         "use strict";
-        return Component.extend("travel.approver.Component",{
+        return Component.extend("travel.approver.2.Component",{
             metadata:{
                 manifest: "json"
             }

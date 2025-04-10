@@ -1,15 +1,15 @@
 import { t } from '../utils/i18n';
-import type { AppContentConfig } from '../app/types';
+import type { QfaJsonConfig } from '../app/types';
 import BspAppDownloadLogger from '../utils/logger';
 import { PromptState } from '../prompts/prompt-state';
 
 /**
  * Validates the metadata section of the app configuration.
  *
- * @param {AppContentConfig['metadata']} metadata - The metadata object.
+ * @param {QfaJsonConfig['metadata']} metadata - The metadata object.
  * @returns {boolean} - Returns true if valid, false otherwise.
  */
-const validateMetadata = (metadata: AppContentConfig['metadata']): boolean => {
+const validateMetadata = (metadata: QfaJsonConfig['metadata']): boolean => {
     if (!metadata.package || typeof metadata.package !== 'string') {
         BspAppDownloadLogger.logger?.error(t('error.invalidMetadataPackage'));
         return false;
@@ -20,19 +20,19 @@ const validateMetadata = (metadata: AppContentConfig['metadata']): boolean => {
 /**
  * Validates the service binding details section of the app configuration.
  *
- * @param {AppContentConfig['serviceBindingDetails']} serviceBinding - The service binding details object.
+ * @param {QfaJsonConfig['serviceBindingDetails']} serviceBinding - The service binding details object.
  * @returns {boolean} - Returns true if valid, false otherwise.
  */
-const validateServiceBindingDetails = (serviceBinding: AppContentConfig['serviceBindingDetails']): boolean => {
-    if (!serviceBinding.serviceName || typeof serviceBinding.serviceName !== 'string') {
+const validateServiceBindingDetails = (serviceBinding: QfaJsonConfig['service_binding_details']): boolean => {
+    if (!serviceBinding.service_name || typeof serviceBinding.service_name !== 'string') {
         BspAppDownloadLogger.logger?.error(t('error.invalidServiceName'));
         return false;
     }
-    if (!serviceBinding.serviceVersion || typeof serviceBinding.serviceVersion !== 'string') {
+    if (!serviceBinding.service_version || typeof serviceBinding.service_version !== 'string') {
         BspAppDownloadLogger.logger?.error(t('error.invalidServiceVersion'));
         return false;
     }
-    if (!serviceBinding.mainEntityName || typeof serviceBinding.mainEntityName !== 'string') {
+    if (!serviceBinding.main_entity_name || typeof serviceBinding.main_entity_name !== 'string') {
         BspAppDownloadLogger.logger?.error(t('error.invalidMainEntityName'));
         return false;
     }
@@ -42,11 +42,11 @@ const validateServiceBindingDetails = (serviceBinding: AppContentConfig['service
 /**
  * Validates the project attribute section of the app configuration.
  *
- * @param {AppContentConfig['projectAttribute']} projectAttribute - The project attribute object.
+ * @param {QfaJsonConfig['projectAttribute']} projectAttribute - The project attribute object.
  * @returns {boolean} - Returns true if valid, false otherwise.
  */
-const validateProjectAttribute = (projectAttribute: AppContentConfig['projectAttribute']): boolean => {
-    if (!projectAttribute.moduleName || typeof projectAttribute.moduleName !== 'string') {
+const validateProjectAttribute = (projectAttribute: QfaJsonConfig['project_attribute']): boolean => {
+    if (!projectAttribute.module_name || typeof projectAttribute.module_name !== 'string') {
         BspAppDownloadLogger.logger?.error(t('error.invalidModuleName'));
         return false;
     }
@@ -56,11 +56,11 @@ const validateProjectAttribute = (projectAttribute: AppContentConfig['projectAtt
 /**
  * Validates the deployment details section of the app configuration.
  *
- * @param {AppContentConfig['deploymentDetails']} deploymentDetails - The deployment details object.
+ * @param {QfaJsonConfig['deploymentDetails']} deploymentDetails - The deployment details object.
  * @returns {boolean} - Returns true if valid, false otherwise.
  */
-const validateDeploymentDetails = (deploymentDetails: AppContentConfig['deploymentDetails']): boolean => {
-    if (!deploymentDetails.repositoryName) {
+const validateDeploymentDetails = (deploymentDetails: QfaJsonConfig['deployment_details']): boolean => {
+    if (!deploymentDetails.repository_name) {
         BspAppDownloadLogger.logger?.error(t('error.invalidRepositoryName'));
         return false;
     }
@@ -70,15 +70,15 @@ const validateDeploymentDetails = (deploymentDetails: AppContentConfig['deployme
 /**
  * Validates the entire app configuration.
  *
- * @param {AppContentConfig} config - The app configuration object.
+ * @param {QfaJsonConfig} config - The QFA JSON configuration containing app details.
  * @returns {boolean} - Returns true if the configuration is valid, false otherwise.
  */
-export const validateAppContentJsonFile = (config: AppContentConfig): boolean => {
+export const validateQfaJsonFile = (config: QfaJsonConfig): boolean => {
     return (
         validateMetadata(config.metadata) &&
-        validateServiceBindingDetails(config.serviceBindingDetails) &&
-        validateProjectAttribute(config.projectAttribute) &&
-        validateDeploymentDetails(config.deploymentDetails)
+        validateServiceBindingDetails(config.service_binding_details) &&
+        validateProjectAttribute(config.project_attribute) &&
+        validateDeploymentDetails(config.deployment_details)
     );
 };
 

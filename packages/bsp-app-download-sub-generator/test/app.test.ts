@@ -6,15 +6,13 @@ import * as prompts from '../src/prompts/prompts';
 import { PromptNames } from '../src/app/types';
 import fs from 'fs';
 import { TestFixture } from './fixtures';
-import { getAppConfig } from '../src/app/config';
+import { getAppConfig } from '../src/app/app-config';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { adtSourceTemplateId, extractedFilePath } from '../src/utils/constants';
 import { removeSync } from 'fs-extra';
 import { isValidPromptState } from '../src/utils/validators';
 import { hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
-import * as memFs from 'mem-fs';
-import * as editor from 'mem-fs-editor';
 import { FileName, DirName } from '@sap-ux/project-access';
 import BspAppDownloadLogger from '../src/utils/logger';
 import { t } from '../src/utils/i18n';
@@ -42,8 +40,8 @@ jest.mock('../src/utils/file-helpers', () => ({
 	readManifest: jest.fn()
 }));
 jest.mock('../src/utils/download-utils');
-jest.mock('../src/app/config', () => ({
-    ...jest.requireActual('../src/app/config'),
+jest.mock('../src/app/app-config', () => ({
+    ...jest.requireActual('../src/app/app-config'),
 	getAppConfig: jest.fn()
 }));
 jest.mock('../src/utils/validators');
@@ -142,20 +140,28 @@ function copyFilesToExtractedProjectPath(
     if (!fs.existsSync(extractedProjectPath)) {
         fs.mkdirSync(extractedProjectPath, { recursive: true });
     }
-
     // List all files in the test fixture directory
     const files = fs.readdirSync(testFixtureDir);
     // Copy each file to the extracted project path
     files.forEach((file) => {
-        const sourceFilePath = join(testFixtureDir, file);
-        const destinationFilePath = join(extractedProjectPath, file);
-        // Copy the file
-        fs.copyFileSync(sourceFilePath, destinationFilePath);
+		const sourceFilePath = join(testFixtureDir, file);
+		const destinationFilePath = join(extractedProjectPath, file);
+		if(file === 'i18n') {
+			// Create the directory if it doesn't exist
+			if (!fs.existsSync(destinationFilePath)) {
+				fs.mkdirSync(destinationFilePath, { recursive: true });
+			}
+			// Copy the i18n.properties file
+			fs.copyFileSync(join(sourceFilePath, 'i18n.properties'), join(destinationFilePath, 'i18n.properties'));
+		} else { 
+			// Copy the file
+			fs.copyFileSync(sourceFilePath, destinationFilePath);
+		}
     });
 }
 
 
-function verifyGeneratedFiles(testOutputDir: string, appId: string, extractedProjectPath: string): void {
+function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureDir: string): void {
     const projectPath = join(`${testOutputDir}/${appId}`);
     expect(fs.existsSync(projectPath)).toBe(true);
 
@@ -181,14 +187,18 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, extractedPro
         expect(fs.existsSync(filePath)).toBe(true);
     });
 
-    expect(fs.readFileSync(join(projectPath, DirName.Webapp, FileName.Manifest), 'utf-8')).toBe(
-        fs.readFileSync(join(extractedProjectPath, FileName.Manifest), 'utf-8')
-    );
+	const projectManifest = JSON.stringify(
+		JSON.parse(fs.readFileSync(join(projectPath, DirName.Webapp, FileName.Manifest), 'utf-8'))
+	);
+	const extractedManifest = JSON.stringify(
+		JSON.parse(fs.readFileSync(join(testFixtureDir, FileName.Manifest), 'utf-8'))
+	);
+	expect(projectManifest).toEqual(extractedManifest);
     expect(fs.readFileSync(join(projectPath, DirName.Webapp, 'i18n', 'i18n.properties'), 'utf-8')).toBe(
-        fs.readFileSync(join(extractedProjectPath, 'i18n.properties'), 'utf-8')
+        fs.readFileSync(join(testFixtureDir, 'i18n', 'i18n.properties'), 'utf-8')
     );
     expect(fs.readFileSync(join(projectPath, DirName.Webapp, 'index.html'), 'utf-8')).toBe(
-        fs.readFileSync(join(extractedProjectPath, 'index.html'), 'utf-8')
+        fs.readFileSync(join(testFixtureDir, 'index.html'), 'utf-8')
     );
 }
 
@@ -205,8 +215,6 @@ describe('BSP App Download', () => {
 		showError: jest.fn(),
 		showInformation: jest.fn()
 	};
-	const store = memFs.create();
-	const fsEditor = editor.create(store);
 	const appId = 'app-1', repoName = 'app-1-repo';
 	const extractedProjectPath = join(testOutputDir, appId, extractedFilePath);
 	const testFixtureDir = join(__dirname, 'fixtures', 'downloaded-app');
@@ -259,11 +267,9 @@ describe('BSP App Download', () => {
 				})
 			)
 		.resolves.not.toThrow();
-		verifyGeneratedFiles(testOutputDir, appId, extractedProjectPath);
-		expect(mockAppWizard.showWarning).toHaveBeenCalledWith(t('info.bspAppDownloadCompleteMsg'), MessageType.notification);
+		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
+		expect(mockAppWizard.showInformation).toHaveBeenCalledWith(t('info.bspAppDownloadCompleteMsg'), MessageType.notification);
 		expect(BspAppDownloadLogger.logger.info).toHaveBeenCalledWith(t('info.installationErrors.skippedInstallation'));
-		
-		
     });
 
 	it('Should not throw error in end phase if telemetry fails', async () => {
@@ -297,7 +303,7 @@ describe('BSP App Download', () => {
 		)
 		.resolves.not.toThrow();
 		expect(BspAppDownloadLogger.logger.error).toHaveBeenCalledWith(t('error.telemetry', { error: errorMsg }));
-		verifyGeneratedFiles(testOutputDir, appId, extractedProjectPath);
+		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
 
 	it('Should execute post app gen hook event when postGenCommand is provided', async () => {
@@ -331,7 +337,7 @@ describe('BSP App Download', () => {
 				})
 		)
 		.resolves.not.toThrow();
-		verifyGeneratedFiles(testOutputDir, appId, extractedProjectPath);
+		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
 
 	it('Should successfully download a quick deployed app from BSP', async () => {
@@ -390,7 +396,7 @@ describe('BSP App Download', () => {
 		)
 		.resolves.not.toThrow();
 		expect(fetchAppListForSelectedSystem).toHaveBeenCalledWith(mockServiceProvider, appConfig.app.id);
-		verifyGeneratedFiles(testOutputDir, appId, extractedProjectPath);
+		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
 
 	it('Should throw error when fetchAppListForSelectedSystem fetches no app', async () => {
