@@ -75,9 +75,22 @@ export interface FEOPSettings {
     entityConfig: EntityConfig;
 }
 
-export interface OVPSettings {
-    filterEntitySet: string; // Filters the `globalFilterModel` data displayed in OVP cards
-}
+export type OVPSettings =
+    | {
+          /**
+           * Represents the entity type to use as a global filter in the smart filter bar control. Deprecated since SAPUI5 1.54.
+           * @deprecated since version SAPUI5 1.54
+           */
+          filterEntityType: string;
+          filterEntitySet?: string;
+      }
+    | {
+          /**
+           * Represents the entity set to use as a global filter in the smart filter bar control. Available from SAPUI5 1.54 onwards.
+           */
+          filterEntitySet: string;
+          filterEntityType?: string;
+      };
 
 export interface ALPSettings extends TableSettings {
     entityConfig: EntityConfig;

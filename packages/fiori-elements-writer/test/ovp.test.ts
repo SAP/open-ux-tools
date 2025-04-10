@@ -108,6 +108,40 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                 }),
                 service: v4Service
             } as FioriElementsApp<OVPSettings>
+        },
+        {
+            name: 'ovpV4_with_filterEntityType',
+            config: {
+                ...Object.assign(feBaseConfig('feovp2'), {
+                    template: {
+                        type: TemplateType.OverviewPage,
+                        settings: {
+                            filterEntityType: 'SalesOrderItemType'
+                        }
+                    },
+                    ui5: {
+                        version: '1.97.0'
+                    }
+                }),
+                service: v4Service
+            } as FioriElementsApp<OVPSettings>
+        },
+        {
+            name: 'ovpV4_with_filterEntitySet',
+            config: {
+                ...Object.assign(feBaseConfig('feovp2'), {
+                    template: {
+                        type: TemplateType.OverviewPage,
+                        settings: {
+                            filterEntitySet: 'SalesOrderItem'
+                        }
+                    },
+                    ui5: {
+                        version: '1.97.0'
+                    }
+                }),
+                service: v4Service
+            } as FioriElementsApp<OVPSettings>
         }
     ];
 
