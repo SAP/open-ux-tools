@@ -2,8 +2,8 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { FlexLayer, UI5VersionInfo, getProviderConfig, getConfig } from '../../../src';
-import type { ConfigAnswers, SourceApplication } from '../../../src';
+import { FlexLayer, getProviderConfig, getConfig } from '../../../src';
+import type { AttributesAnswers, ConfigAnswers, SourceApplication, VersionDetail } from '../../../src';
 
 jest.mock('../../../src/abap/config.ts', () => ({
     getProviderConfig: jest.fn()
@@ -30,8 +30,13 @@ const configAnswers: ConfigAnswers = {
     username: ''
 };
 
-const defaults = {
-    namespace: 'customer.app.variant1'
+const attributeAnswers: AttributesAnswers = {
+    namespace: 'customer.app.variant1',
+    enableTypeScript: false,
+    projectName: 'app.variant1',
+    targetFolder: '/some-path',
+    title: '',
+    ui5Version: '1.134.1'
 };
 
 describe('getConfig', () => {
@@ -40,15 +45,13 @@ describe('getConfig', () => {
     });
 
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
-        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
-            getLatestVersion: jest.fn().mockReturnValue('1.135.0')
-        } as unknown as UI5VersionInfo);
         isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig({
             provider: mockAbapProvider,
             configAnswers,
+            attributeAnswers,
             layer: FlexLayer.CUSTOMER_BASE,
-            defaults,
+            publicVersions: { latest: { version: '1.135.0' } as VersionDetail },
             packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
             logger: {} as ToolsLogger
         });

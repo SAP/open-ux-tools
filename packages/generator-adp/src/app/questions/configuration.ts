@@ -1,5 +1,4 @@
 import {
-    UI5VersionInfo,
     FlexLayer,
     getConfiguredProvider,
     getEndpointNames,
@@ -10,14 +9,23 @@ import {
     SourceManifest,
     isAppSupported,
     isSyncLoadedView,
-    isV4Application
+    isV4Application,
+    getRelevantVersions,
+    fetchPublicVersions,
+    checkSystemVersionPattern
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
-import type { ConfigAnswers, FlexUISupportedSystem, SourceApplication, SystemLookup } from '@sap-ux/adp-tooling';
+import type {
+    ConfigAnswers,
+    FlexUISupportedSystem,
+    SourceApplication,
+    SystemLookup,
+    UI5Version
+} from '@sap-ux/adp-tooling';
 
 import type {
     ApplicationPromptOptions,
@@ -92,9 +100,39 @@ export class ConfigPrompter {
      */
     private isPartiallySupported = false;
     /**
-     * UI5 version manager for handling version-related validations.
+     * UI5 versions in string format.
      */
-    private readonly ui5Info: UI5VersionInfo;
+    private ui5Versions: string[];
+    /**
+     * Publicly available UI5 versions.
+     */
+    private publicVersions: UI5Version;
+    /**
+     * System UI5 version.
+     */
+    private systemVersion: string | undefined;
+
+    /**
+     * Returns the needed ui5 properties from calling the CDN.
+     *
+     * @returns Object with properties related to ui5.
+     */
+    public get ui5(): { ui5Versions: string[]; systemVersion: string | undefined; publicVersions: UI5Version } {
+        return {
+            ui5Versions: this.ui5Versions,
+            systemVersion: this.systemVersion,
+            publicVersions: this.publicVersions
+        };
+    }
+
+    /**
+     * Returns flag indicating if the project is a cloud project.
+     *
+     * @returns Whether system is cloud-ready.
+     */
+    public get isCloud(): boolean {
+        return !!this.isCloudProject;
+    }
 
     /**
      * Returns the configured abap provider instance.
@@ -132,7 +170,6 @@ export class ConfigPrompter {
      */
     constructor(private readonly systemLookup: SystemLookup, layer: FlexLayer, private readonly logger: ToolsLogger) {
         this.isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
-        this.ui5Info = UI5VersionInfo.getInstance(layer);
     }
 
     /**
@@ -443,10 +480,9 @@ export class ConfigPrompter {
      * @param {Application} application - The application data.
      */
     private evaluateAppSupport(application: SourceApplication): void {
-        const systemVersion = this.ui5Info.systemVersion;
-        const isFullSupport = this.ui5Info.isVersionDetected && !isFeatureSupportedVersion('1.96.0', systemVersion);
+        const isFullSupport = !!this.systemVersion && !isFeatureSupportedVersion('1.96.0', this.systemVersion);
         const isPartialSupport =
-            this.ui5Info.isVersionDetected && isFullSupport && isFeatureSupportedVersion('1.90.0', systemVersion);
+            !!this.systemVersion && isFullSupport && isFeatureSupportedVersion('1.90.0', this.systemVersion);
 
         this.setSupportFlags(application, isFullSupport, isPartialSupport);
     }
@@ -473,7 +509,11 @@ export class ConfigPrompter {
     private async handleSystemDataValidation(): Promise<boolean | string> {
         try {
             await this.getSystemData();
-            await this.validateSystemVersion();
+
+            const version = await getSystemUI5Version(this.abapProvider);
+            this.systemVersion = checkSystemVersionPattern(version);
+            this.publicVersions = await fetchPublicVersions();
+            this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);
 
             if (!this.isCustomerBase && this.isCloudProject) {
                 return t('error.cloudSystemsForInternalUsers');
@@ -483,22 +523,6 @@ export class ConfigPrompter {
         } catch (e) {
             this.logger.debug(`Validating system failed. Reason: ${e.message}`);
             return e.message;
-        }
-    }
-
-    /**
-     * Validates the UI5 system version based on the provided value or fetches all relevant versions if no value is provided.
-     * Updates the internal state with the fetched versions and the detection status.
-     *
-     * @returns {Promise<void>} Resolves after checking system ui5 version.
-     */
-    private async validateSystemVersion(): Promise<void> {
-        try {
-            const version = await getSystemUI5Version(this.abapProvider);
-            await this.ui5Info.getRelevantVersions(version);
-        } catch (e) {
-            this.logger.debug(`Could not fetch system version: ${e.message}`);
-            await this.ui5Info.getRelevantVersions();
         }
     }
 
