@@ -1,0 +1,286 @@
+<edmx:Edmx xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx" Version="4.0">
+    <edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470974/Common.xml?api=v2">
+        <edmx:Include Alias="Common" Namespace="com.sap.vocabularies.Common.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://wiki.scn.sap.com/wiki/download/attachments/448470968/UI.xml?api=v2">
+        <edmx:Include Alias="UI" Namespace="com.sap.vocabularies.UI.v1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="/here/goes/your/serviceurl/$metadata">
+        <edmx:Include Alias="Metadata" Namespace="GWSAMPLE_BASIC"/>
+    </edmx:Reference>
+    <edmx:DataServices>
+        <Schema xmlns="http://docs.oasis-open.org/odata/ns/edm" Namespace="teched-ovp.annotations.annotations.GWSAMPLE_BASIC">
+            <Annotations Target="GWSAMPLE_BASIC.GlobalFilters">
+                <Annotation Term="UI.SelectionFields">
+                    <Collection>
+                        <PropertyPath>CountryCode</PropertyPath>
+                        <PropertyPath>SupplierName</PropertyPath>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="GWSAMPLE_BASIC.GlobalFilters/CountryCode">
+                <Annotation Term="Common.ValueList">
+                    <Record Type="Common.ValueListType">
+                        <PropertyValue Property="CollectionPath" String="VH_CountrySet"/>
+                        <PropertyValue Property="Parameters">
+                            <Collection>
+                                <Record Type="Common.ValueListParameterInOut">
+                                    <PropertyValue Property="LocalDataProperty" PropertyPath="CountryCode"/>
+                                    <PropertyValue Property="ValueListProperty" String="CountryCode"/>
+                                </Record>
+                                <Record Type="Common.ValueListParameterDisplayOnly">
+                                    <PropertyValue Property="ValueListProperty" String="CountryName"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="SearchSupported" Bool="true"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="GWSAMPLE_BASIC.VH_Country/CountryCode">
+                <Annotation Term="Common.Text" Path="CountryName">
+                    <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst"/>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="GWSAMPLE_BASIC.CustomerService">
+                <Annotation Term="UI.DataPoint" Qualifier="Priority">
+                    <Record Type="UI.DataPointType">
+                        <PropertyValue Property="Value" Path="Priority"/>
+                        <PropertyValue Property="Criticality" Path="PriorityCriticality"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.LineItem">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Complain"/>
+                            <PropertyValue Property="Label" String="Complain"/>
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="CustomerName"/>
+                            <PropertyValue Property="Label" String="Customer Name"/>
+                        </Record>
+                        <Record Type="UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Priority"/>
+                        </Record>
+                    </Collection>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="Metadata.RunnersType">
+                <Annotation Term="UI.Identification">
+                    <Collection/>
+                </Annotation>
+                <Annotation Term="UI.DataPoint" Qualifier="TotalRunners">
+                    <Record Type="UI.DataPointType">
+                        <PropertyValue Property="Value" Path="TotalCount"/>
+                        <PropertyValue Property="ValueFormat">
+                            <Record>
+                                <PropertyValue Property="ScaleFactor" Decimal="100000"/>
+                                <PropertyValue Property="NumberOfFractionalDigits" Int="2"/>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="Title" String="Total Runners"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.KPI" Qualifier="RunnersByType">
+                    <Record Type="UI.KPIType">
+                        <PropertyValue Property="Detail">
+                            <Record Type="UI.KPIDetailType">
+                                <PropertyValue Property="DefaultPresentationVariant" Path="@UI.PresentationVariant#RunnersByType"/>
+                                <PropertyValue Property="AlternativePresentationVariants">
+                                    <Collection/>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="SelectionVariant">
+                            <Record>
+                                <PropertyValue Property="SelectOptions">
+                                    <Collection/>
+                                </PropertyValue>
+                            </Record>
+                        </PropertyValue>
+                        <PropertyValue Property="DataPoint" Path="@UI.DataPoint#TotalRunners"/>
+                        <PropertyValue Property="ID" String="RunnersByTypeKPI"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant" Qualifier="RunnersByType">
+                    <Record>
+                        <PropertyValue Property="MaxItems" Int="5"/>
+                        <PropertyValue Property="GroupBy">
+                            <Collection>
+                                <PropertyPath>CountryCode</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="Type"/>
+                                    <PropertyValue Property="Descending" Boolean="true" Bool="true"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#RunnersByType</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Chart" Qualifier="RunnersByType">
+                    <Record Type="UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="By Category"/>
+                        <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut"/>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>Count</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Dimensions">
+                            <Collection>
+                                <PropertyPath>Type</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="Count"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="DimensionAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="Type"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="Metadata.ShoeSalesType">
+                <Annotation Term="UI.Identification">
+                    <Collection/>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant" Qualifier="ShoesByRunners">
+                    <Record>
+                        <PropertyValue Property="GroupBy">
+                            <Collection>
+                                <PropertyPath>CountryCode</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="Type"/>
+                                    <PropertyValue Property="Descending" Boolean="true" Bool="true"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#ShoesByRunners</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Chart" Qualifier="ShoesByRunners">
+                    <Record Type="UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="Total figures this year"/>
+                        <PropertyValue Property="ChartType" EnumMember="UI.ChartType/ColumnStacked"/>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>Count</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Dimensions">
+                            <Collection>
+                                <PropertyPath>Shoe</PropertyPath>
+                                <PropertyPath>Type</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="Count"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="DimensionAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="Shoe"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                                </Record>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="Type"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Series"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <Annotations Target="Metadata.InventoryType">
+                <Annotation Term="UI.Identification">
+                    <Collection/>
+                </Annotation>
+                <Annotation Term="UI.PresentationVariant" Qualifier="InventoryByMonth">
+                    <Record>
+                        <PropertyValue Property="SortOrder">
+                            <Collection>
+                                <Record>
+                                    <PropertyValue Property="Property" PropertyPath="Month"/>
+                                    <PropertyValue Property="Descending" Bool="false"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Visualizations">
+                            <Collection>
+                                <AnnotationPath>@UI.Chart#InventoryByMonth</AnnotationPath>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+                <Annotation Term="UI.Chart" Qualifier="InventoryByMonth">
+                    <Record Type="UI.ChartDefinitionType">
+                        <PropertyValue Property="Title" String="Number of Items"/>
+                        <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line"/>
+                        <PropertyValue Property="Measures">
+                            <Collection>
+                                <PropertyPath>Count</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="Dimensions">
+                            <Collection>
+                                <PropertyPath>Shoe</PropertyPath>
+                                <PropertyPath>Month</PropertyPath>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="MeasureAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartMeasureAttributeType">
+                                    <PropertyValue Property="Measure" PropertyPath="Count"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                        <PropertyValue Property="DimensionAttributes">
+                            <Collection>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="Shoe"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Series"/>
+                                </Record>
+                                <Record Type="UI.ChartDimensionAttributeType">
+                                    <PropertyValue Property="Dimension" PropertyPath="Month"/>
+                                    <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category"/>
+                                </Record>
+                            </Collection>
+                        </PropertyValue>
+                    </Record>
+                </Annotation>
+            </Annotations>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
