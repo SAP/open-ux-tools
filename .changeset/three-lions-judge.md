@@ -1,5 +1,5 @@
 ---
-'@sap-ux/fiori-app-sub-generator': major
+'@sap-ux/fiori-app-sub-generator': patch
 '@sap-ux/fiori-generator-shared': minor
 '@sap-ux/ui5-application-inquirer': patch
 '@sap-ux/odata-service-inquirer': patch
