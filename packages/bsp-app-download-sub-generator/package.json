@@ -68,6 +68,7 @@
         "@types/fs-extra": "9.0.13",
         "fs-extra": "10.0.0",
         "@sap-ux/store": "workspace:*",
+        "@sap-ux/ui5-config": "workspace:*",
         "@vscode-logging/logger": "2.0.0",
         "@types/adm-zip": "0.5.5",
         "memfs": "3.4.13",
