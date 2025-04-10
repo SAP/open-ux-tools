@@ -1,15 +1,31 @@
 import { QuickActionContext } from '../../cpe/quick-actions/quick-action-definition';
 
 import { EnablementValidator, EnablementValidatorError, EnablementValidatorResult } from './enablement-validator';
+import { DIALOG_ENABLEMENT_VALIDATOR } from './dialog-enablement-validator';
 
 /**
  * Base class for all  quick actions.
  */
 export abstract class QuickActionDefinitionBase<T extends string> {
+    private telemetryIdentifier: string;
+
     public get id(): string {
         return `${this.context.key}-${this.type}`;
     }
 
+    public getTelemetryIdentifier(update = false) {
+        if (update === true) {
+            this.telemetryIdentifier = new Date().toISOString();
+        }
+        return this.telemetryIdentifier;
+    }
+
+    public get quickActionSteps(): number {
+        return this.enablementValidators.find((item) => item === DIALOG_ENABLEMENT_VALIDATOR) 
+            ? 2
+            : 1;
+    }
+    
     /**
      * Quick Actions tooltip.
      */

@@ -1,5 +1,78 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.14
+
+### Patch Changes
+
+-   3727441: fix: CPE Add Subpage Quick Action not displayed for SAP Fiori Elements for OData V4 applications in Adaptation Projects, if current page has `contextPath` defined in manifest instead of `entitySet`.
+
+## 0.13.13
+
+### Patch Changes
+
+-   9522deb: fix: Cannot create a Extension Point fragment when clicking create button in the dialog
+
+## 0.13.12
+
+### Patch Changes
+
+-   6095875: fix: Cannot create a Fragment and Controller Extension when clicking create button in the dialog
+
+## 0.13.11
+
+### Patch Changes
+
+-   ed6c364: Reuse component detection
+
+## 0.13.10
+
+### Patch Changes
+
+-   59ab22b: feat: Add Subpage CPE quick action added for ADP projects with OData V4.
+
+## 0.13.9
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
+## 0.13.8
+
+### Patch Changes
+
+-   6e32009: feat: introduce enhanced flp homepage
+    -   controlled via boolean property `flp.enhancedHomePage`, which is false by default
+
+## 0.13.7
+
+### Patch Changes
+
+-   02874f7: feat: Feature toggle removed for Add Subpage CPE quick action
+
+## 0.13.6
+
+### Patch Changes
+
+-   e754cb0: fix: disable "Add New Annotation File" Quick Action with tooltip, when 'metadata' is not loaded
+
+## 0.13.5
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
+## 0.13.4
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
+## 0.13.3
+
+### Patch Changes
+
+-   f659540: fix: disable "Add Header Field" Quick Action when `showHeaderContent` is set to `false` for `ObjectPageLayout`
+
 ## 0.13.2
 
 ### Patch Changes

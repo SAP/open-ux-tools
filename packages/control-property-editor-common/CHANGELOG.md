@@ -1,5 +1,11 @@
 # @sap-ux-private/control-property-editor-common
 
+## 0.6.1
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
 ## 0.6.0
 
 ### Minor Changes

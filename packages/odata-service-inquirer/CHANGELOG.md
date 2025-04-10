@@ -1,5 +1,54 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.27
+
+### Patch Changes
+
+-   07b9160: prevent converting service path to lower case
+
+## 2.2.26
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/axios-extension@1.19.2
+    -   @sap-ux/inquirer-common@0.6.32
+
+## 2.2.25
+
+### Patch Changes
+
+-   Updated dependencies [ab81490]
+    -   @sap-ux/project-input-validator@0.5.0
+
+## 2.2.24
+
+### Patch Changes
+
+-   Updated dependencies [c69752b]
+    -   @sap-ux/project-input-validator@0.4.0
+
+## 2.2.23
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/fiori-generator-shared@0.9.11
+    -   @sap-ux/telemetry@0.5.72
+    -   @sap-ux/inquirer-common@0.6.31
+
+## 2.2.22
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/telemetry@0.5.71
+-   @sap-ux/axios-extension@1.19.1
+-   @sap-ux/fiori-generator-shared@0.9.10
+-   @sap-ux/inquirer-common@0.6.30
+
 ## 2.2.21
 
 ### Patch Changes

@@ -573,7 +573,7 @@ describe('ConnectionValidator', () => {
         expect(
             await connectValidator.validateDestination({
                 Name: 'DEST1',
-                Host: 'https://system1:12345/path/to/service',
+                Host: 'https://system1:12345/path/to/Service',
                 Type: 'HTTP',
                 Authentication: 'NoAuthentication',
                 ProxyType: 'Internet',
@@ -584,7 +584,7 @@ describe('ConnectionValidator', () => {
         ).toEqual({ valResult: true });
 
         expect(connectValidator.validatedUrl).toEqual('https://dest1.dest');
-        expect(connectValidator.destinationUrl).toEqual('https://system1:12345/path/to/service');
+        expect(connectValidator.destinationUrl).toEqual('https://system1:12345/path/to/Service');
         expect(connectValidator.validity).toEqual({
             authenticated: true,
             reachable: true

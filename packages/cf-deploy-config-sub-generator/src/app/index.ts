@@ -32,7 +32,7 @@ import {
 } from '@sap-ux/deploy-config-generator-shared';
 import { t, initI18n, DESTINATION_AUTHTYPE_NOTFOUND, API_BUSINESS_HUB_ENTERPRISE_PREFIX } from '../utils';
 import { loadManifest } from './utils';
-import { getMtaPath, findCapProjectRoot, FileName } from '@sap-ux/project-access';
+import { getMtaPath, findCapProjectRoot, FileName, type Package } from '@sap-ux/project-access';
 import { EventName } from '../telemetryEvents';
 import { getCFQuestions, getCAPMTAQuestions } from './questions';
 import type { ApiHubConfig, CFAppConfig, CAPConfig } from '@sap-ux/cf-deploy-config-writer';
@@ -70,6 +70,7 @@ export default class extends DeploymentGenerator {
     private destinationName: string;
     private abort = false;
     private deployConfigExists = false;
+    private packageName: string;
 
     /**
      * Constructor for the CF deployment configuration generator.
@@ -152,6 +153,12 @@ export default class extends DeploymentGenerator {
             }
             this.isCap = true;
             this.projectRoot = capRoot;
+            try {
+                this.packageName =
+                    (this.fs.readJSON(join(this.projectRoot, FileName.Package)) as unknown as Package)?.name ?? '';
+            } catch {
+                // Ignore errors while reading the package.json file, will be handled in the validators of the respective modules
+            }
         } else if (this.mtaPath) {
             this.projectRoot = dirname(this.mtaPath);
         }
@@ -192,6 +199,7 @@ export default class extends DeploymentGenerator {
                 return;
             }
             // Configure defaults
+            this.appRouterAnswers.mtaId = this.packageName; // Required for the MTA validation
             this.destinationName = DefaultMTADestination;
             this.options.overwrite = true; // Don't prompt the user to overwrite files we've just written!
             this.answers = {};
@@ -270,7 +278,7 @@ export default class extends DeploymentGenerator {
         if (!this.launchDeployConfigAsSubGenerator) {
             await this._writing();
         } else {
-            // Need to delay `init` as the yaml configurations wont be ready!
+            // Need to delay `init` as the yaml configurations won't be ready!
             await this._init();
             await this._writing();
         }
@@ -330,7 +338,7 @@ export default class extends DeploymentGenerator {
                     await this._runNpmInstall(this.appPath);
                 }
             } catch (error) {
-                handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error }) });
+                handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error: error.message }) });
             }
         } else {
             DeploymentGenerator.logger?.info(t('cfGen.info.skippedInstallation'));
@@ -358,7 +366,8 @@ export default class extends DeploymentGenerator {
     public async end(): Promise<void> {
         try {
             if (
-                this.options.launchStandaloneFromYui &&
+                (this.options.launchStandaloneFromYui || !this.launchDeployConfigAsSubGenerator) &&
+                !this.abort &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('cfGen.info.filesGenerated'), MessageType.notification);

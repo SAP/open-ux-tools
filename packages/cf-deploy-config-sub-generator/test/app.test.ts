@@ -4,7 +4,7 @@ import yeomanTest from 'yeoman-test';
 import { load, dump } from 'js-yaml';
 import { join } from 'path';
 import { TestFixture } from './fixtures';
-import { Manifest } from '@sap-ux/project-access';
+import type { Manifest } from '@sap-ux/project-access';
 import { initI18n, t } from '../src/utils';
 import { MessageType } from '@sap-devx/yeoman-ui-types';
 import { hostEnvironment } from '@sap-ux/fiori-generator-shared';
@@ -38,7 +38,9 @@ jest.mock('@sap-ux/project-access', () => {
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -51,7 +53,9 @@ jest.mock('hasbin', () => ({
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        Mta: require('./utils/mock-mta').MockMta
+        get Mta() {
+            return jest.requireActual('./utils/mock-mta').MockMta;
+        }
     };
 });
 

@@ -34,11 +34,18 @@ export class AddPageActionQuickAction extends SimpleQuickActionDefinitionBase im
     async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.ADD_FRAGMENT, undefined, {
-                aggregation: 'actions',
-                title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
-                defaultAggregationArrayIndex: 1
-            });
+            await DialogFactory.createDialog(
+                overlay,
+                this.context.rta,
+                DialogNames.ADD_FRAGMENT,
+                undefined,
+                {
+                    aggregation: 'actions',
+                    title: 'QUICK_ACTION_ADD_CUSTOM_PAGE_ACTION',
+                    defaultAggregationArrayIndex: 1
+                },
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+            );
         }
         return [];
     }

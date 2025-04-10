@@ -5,7 +5,7 @@ import type {
     DefaultIntent,
     FlpConfig,
     Intent,
-    InternalTestConfig,
+    CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
     TestConfig
@@ -76,6 +76,7 @@ export interface TemplateConfig {
     };
     features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
+    enhancedHomePage?: boolean;
 }
 
 /**
@@ -172,7 +173,8 @@ export function getFlpConfigWithDefaults(config: Partial<FlpConfig> = {}): FlpCo
         apps: config.apps ?? [],
         libs: config.libs,
         theme: config.theme,
-        init: config.init
+        init: config.init,
+        enhancedHomePage: config.enhancedHomePage === true
     } satisfies FlpConfig;
     if (!flpConfig.path.startsWith('/')) {
         flpConfig.path = `/${flpConfig.path}`;
@@ -359,7 +361,8 @@ export function createFlpTemplateConfig(
             },
             bootstrapOptions: ''
         },
-        locateReuseLibsScript: config.libs
+        locateReuseLibsScript: config.libs,
+        enhancedHomePage: config.enhancedHomePage
     } satisfies TemplateConfig;
 }
 
@@ -371,7 +374,7 @@ export function createFlpTemplateConfig(
  * @param theme theme to be used
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string): TestTemplateConfig {
+export function createTestTemplateConfig(config: CompleteTestConfig, id: string, theme: string): TestTemplateConfig {
     return {
         id,
         framework: config.framework,

@@ -131,3 +131,24 @@ export async function createManifestPropertyChange(
 
     return command;
 }
+
+/**
+ * Returns application object page definitions found in manifest
+ *
+ * @param manifest - manifest object
+ * @returns array with page descriptors
+ */
+export function getV4ApplicationPages(manifest: Manifest): { id: string; entitySet?: string; contextPath?: string }[] {
+    const result: { id: string; entitySet?: string; contextPath?: string }[] = [];
+    const targets = manifest['sap.ui5'].routing?.targets ?? {};
+    for (const target of Object.values(targets)) {
+        if (target.name === 'sap.fe.templates.ObjectPage') {
+            result.push({
+                id: target.id,
+                entitySet: target.options?.settings?.entitySet,
+                contextPath: target.options?.settings?.contextPath
+            });
+        }
+    }
+    return result;
+}

@@ -9,6 +9,7 @@ import { type CFBaseConfig, generateBaseConfig } from '../../src';
 import { RouterModuleType } from '../../src/types';
 import { MTABinNotFound } from '../../src/constants';
 import type { Editor } from 'mem-fs-editor';
+import fs from 'fs';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -85,7 +86,6 @@ describe('CF Writer Base', () => {
                 logger
             );
             expect(localFs.dump(mtaPath)).toMatchSnapshot();
-            // Since mta.yaml is not in memfs, read from disk
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
         });
 
@@ -105,7 +105,7 @@ describe('CF Writer Base', () => {
                 undefined,
                 logger
             );
-            expect(debugSpy).toBeCalledTimes(3);
+            expect(debugSpy).toBeCalledTimes(8);
             expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
@@ -129,10 +129,34 @@ describe('CF Writer Base', () => {
                 undefined,
                 logger
             );
-            expect(debugSpy).toBeCalledTimes(3);
+            expect(debugSpy).toBeCalledTimes(10);
             expect(localFs.dump(mtaPath)).toMatchSnapshot();
             // Since mta.yaml is not in memfs, read from disk
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+        });
+    });
+
+    describe('Generate Base Config - App Frontend', () => {
+        test('Generate deployment configs - app frontend', async () => {
+            const debugSpy = jest.spyOn(logger, 'debug');
+            const mtaId = 'appfrontend';
+            const mtaPath = join(outputDir, mtaId);
+            fsExtra.mkdirSync(outputDir, { recursive: true });
+            fsExtra.mkdirSync(mtaPath);
+            const localFs = await generateBaseConfig(
+                {
+                    mtaPath,
+                    mtaId,
+                    mtaDescription: 'MyManagedDescription',
+                    routerType: RouterModuleType.AppFront
+                },
+                undefined,
+                logger
+            );
+            expect(debugSpy).toBeCalledTimes(9);
+            expect(localFs.dump(mtaPath)).toMatchSnapshot();
+            // Since mta.yaml is not in memfs, read from disk
+            expect(fs.readFileSync(join(mtaPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
         });
     });
 

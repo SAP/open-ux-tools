@@ -5,7 +5,7 @@ import { join } from 'path';
 import { TestFixture } from './fixtures';
 import { initI18n, t } from '../src/utils';
 import { RouterModuleType } from '@sap-ux/cf-deploy-config-writer';
-import * as fs from 'fs';
+import type * as fs from 'fs';
 import * as fioriGenShared from '@sap-ux/fiori-generator-shared';
 import * as memfs from 'memfs';
 import * as cfDeployWriter from '@sap-ux/cf-deploy-config-writer';
@@ -30,7 +30,9 @@ jest.mock('@sap-ux/project-access', () => {
 
 jest.mock('fs', () => {
     const fsLib = jest.requireActual('fs');
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const Union = require('unionfs').Union;
+    // eslint-disable-next-line @typescript-eslint/no-var-requires
     const vol = require('memfs').vol;
     const _fs = new Union().use(fsLib);
     _fs.constants = fsLib.constants;
@@ -43,7 +45,9 @@ jest.mock('hasbin', () => ({
 
 jest.mock('@sap/mta-lib', () => {
     return {
-        Mta: require('./utils/mock-mta').MockMta
+        get Mta() {
+            return jest.requireActual('./utils/mock-mta').MockMta;
+        }
     };
 });
 
@@ -159,10 +163,10 @@ describe('Cloud foundry generator tests', () => {
 
     it('Validate Approuter prompting is shown if HTML5 is being added to a CAP project with missing mta', async () => {
         hasbinSyncMock.mockReturnValue(true);
-        mockFindCapProjectRoot.mockReturnValueOnce('/capmissingmta');
+        mockFindCapProjectRoot.mockReturnValue(join('/output/', '/capmissingmta'));
         const mockGenerateCAPConfig = jest.spyOn(cfDeployWriter, 'generateCAPConfig').mockResolvedValue(fsMock);
         const mockGenerateAppConfig = jest.spyOn(cfDeployWriter, 'generateAppConfig').mockResolvedValue(fsMock);
-        jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
+        const mockisExtensionInstalled = jest.spyOn(fioriGenShared, 'isExtensionInstalled').mockImplementation(() => {
             return true;
         });
 
@@ -180,7 +184,8 @@ describe('Cloud foundry generator tests', () => {
                     testFixture.getContents('cap/app/services.cds'),
                 [`.${OUTPUT_DIR_PREFIX}/capmissingmta/db/schmea.cds`]: testFixture.getContents('cap/db/schema.cds'),
                 [`.${OUTPUT_DIR_PREFIX}/capmissingmta/srv/cat-service.cds`]:
-                    testFixture.getContents('cap/srv/cat-service.cds')
+                    testFixture.getContents('cap/srv/cat-service.cds'),
+                [`.${OUTPUT_DIR_PREFIX}/capmissingmta/package.json`]: testFixture.getContents('cap/package.json')
             },
             '/'
         );
@@ -205,14 +210,14 @@ describe('Cloud foundry generator tests', () => {
                     addCapMtaContinue: true,
                     routerType: RouterModuleType.Managed,
                     mtaPath: join(OUTPUT_DIR_PREFIX, 'capmissingmta'),
-                    mtaId: 'capmtaid'
+                    mtaId: 'capmtaid' // Will be ignored as question is disabled
                 })
                 .run()
         ).resolves.not.toThrow();
         expect(mockGenerateCAPConfig).toHaveBeenCalledWith(
             expect.objectContaining({
+                mtaId: 'captestproject', // Read from the package.json
                 addCapMtaContinue: true,
-                mtaId: 'capmtaid',
                 mtaPath: join(OUTPUT_DIR_PREFIX, 'capmissingmta'),
                 routerType: 'managed'
             }),
@@ -222,5 +227,6 @@ describe('Cloud foundry generator tests', () => {
         expect(mockGenerateAppConfig).toHaveBeenCalled();
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
         expect(mockSendTelemetry).toHaveBeenCalled();
+        expect(mockisExtensionInstalled).toHaveBeenCalled();
     });
 });
