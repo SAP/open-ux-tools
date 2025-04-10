@@ -262,12 +262,12 @@ export type RecursiveReadonly<T> = {
  * @deprecated Use FloorplanFE instead, will be removed shortly
  */
 export enum PROJECT_TYPE {
-    Worklist = 'WORKLIST',
-    OverviewPage = 'OVERVIEW',
-    ListReportObjectPage = 'LIST_REPORT_OBJECT_PAGE',
-    AnalyticalListPage = 'ANALYTICAL_LIST_PAGE',
-    FormEntryObjectPage = 'FORM_ENTRY_OBJECT_PAGE',
-    FlexibleProgrammingModel = 'FLEXIBLE_PROGRAMMING_MODEL'
+    Worklist = FloorplanFE.FE_WORKLIST,
+    OverviewPage = FloorplanFE.FE_OVP,
+    ListReportObjectPage = FloorplanFE.FE_LROP,
+    AnalyticalListPage = FloorplanFE.FE_ALP,
+    FormEntryObjectPage = FloorplanFE.FE_FEOP,
+    FlexibleProgrammingModel = FloorplanFE.FE_FPM
 }
 
 /**
@@ -276,7 +276,7 @@ export enum PROJECT_TYPE {
  * @deprecated Use FloorplanFF instead, will be removed shortly
  */
 export enum Template {
-    Simple = 'simple'
+    Simple = FloorplanFF.FF_SIMPLE
 }
 
 /**
