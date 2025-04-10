@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.0
+
+### Minor Changes
+
+-   4d3fe73: Expose new App Frontend server
+
 ## 0.1.29
 
 ### Patch Changes
