@@ -81,12 +81,12 @@ export class FioriAppGenerator extends Generator {
     private appWizard: AppWizard | undefined;
 
     protected state: State;
-    // The logger is static to allow convienient access from everywhere, cross-cutting concern
+    // The logger is static to allow convenient access from everywhere, cross-cutting concern
     private static _logger: ILogWrapper & Logger = DefaultLogger;
     // Generator name for use in telemetry, readmes etc.
     protected generatorVersion = this.rootGeneratorVersion();
 
-    // The configuration of steps in YUI and their interdependance
+    // The configuration of steps in YUI and their interdependence
     private yeomanUiStepConfig: YeomanUiStepConfig;
     private readonly setPromptsCallback: (fn: any) => void;
     private prompts: YeomanUiSteps;
@@ -267,7 +267,7 @@ export class FioriAppGenerator extends Generator {
             }
 
             if (this.state.project?.addDeployConfig) {
-                // Allows back nav where we have inter-dependant steps
+                // Allows back nav where we have iinterdependent steps
                 // Re-add dependant steps on back nav
                 if (
                     hasStep(this.fioriSteps, STEP_DEPLOY_CONFIG) &&
@@ -294,7 +294,7 @@ export class FioriAppGenerator extends Generator {
             }
 
             if (this.state.project?.addFlpConfig) {
-                // Allows back nav where we have inter-dependant steps
+                // Allows back nav where we have interdependent steps
                 // Re-add dependant steps on back nav
                 if (
                     hasStep(this.fioriSteps, STEP_FLP_CONFIG) &&

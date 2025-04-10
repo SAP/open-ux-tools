@@ -16,10 +16,11 @@ export interface GeneratorContext {
 export type Event = 'app-generated';
 
 /**
+ * Run the post generation events. This can be used to run any follow up commands.
  *
- * @param event
- * @param context
- * @param logger
+ * @param event The event to run
+ * @param context Additional information required to run the commands
+ * @param logger The logger to use
  * @returns
  */
 export async function runHooks(event: Event, context: GeneratorContext, logger?: ILogWrapper): Promise<void> {
@@ -31,9 +32,10 @@ export async function runHooks(event: Event, context: GeneratorContext, logger?:
 }
 
 /**
+ * Run the commands defined by the GeneratorContext.
  *
- * @param context
- * @param logger
+ * @param context - information required to run the commands
+ * @param logger - the logger to use
  */
 async function postGenerationHook(context: GeneratorContext, logger?: ILogWrapper): Promise<void> {
     if (context.vscodeInstance) {

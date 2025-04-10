@@ -28,6 +28,8 @@ export type CapInstallOptions = {
 };
 
 /**
+ * Install the dependencies for the specified project. In the case of CAP projects, the dependencies are installed to the root project
+ * if npm workspace option is used, otherwise they are installed to the app project only.
  *
  * @param projectPath
  * @param log

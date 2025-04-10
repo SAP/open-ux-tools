@@ -4,6 +4,7 @@ import { t } from '../utils/i18n';
 import type { FioriStep, YeomanUiStepConfig } from '../types/yeomanUiStepConfig';
 
 /**
+ * Find the index of a step in the Yeoman UI steps.
  *
  * @param stepName The name (title) of the step to check. Not the step key.
  * @param prompts
@@ -17,6 +18,7 @@ function getStepIndex(stepName: string, prompts: YeomanUiSteps): number {
 }
 
 /**
+ * Update the dependent step in the active steps of the Yeoman UI steps. Ultimately this will result in a new step being added to the Application Wizard.
  *
  * @param currentStepName The name (title) of the step that is being toggled. Not the step key.
  * @param stepConfigList
@@ -92,6 +94,7 @@ export function updateDependentStep(
 }
 
 /**
+ * Check if a step is considered active in the Yeoman UI steps.
  *
  * @param stepName The name (title) of the step to check. Not the step key.
  * @param yuiSteps
@@ -102,6 +105,7 @@ export function hasActiveStep(stepName: string, yuiSteps: YeomanUiSteps): boolea
 }
 
 /**
+ *  Check if a step is present in the steps array. Non-present steps are not added to the Application Wizard, essentially skipping them.
  *
  * @param steps
  * @param stepKey
@@ -112,6 +116,7 @@ export function hasStep(steps: FioriStep[], stepKey: string): boolean {
 }
 
 /**
+ * Get the Yeoman UI step configuration.
  *
  * @param stepsArr
  * @returns
@@ -145,6 +150,8 @@ export function getYeomanUiStepConfig(stepsArr: YeomanUiStep[]): YeomanUiStepCon
 }
 
 /**
+ * Used in Inquirer prompt validators to dynamically add or remove dependent steps to the Application Wizard.
+ * For example, may be used when a user checks `addDeployConfig` to add that deployment config step to the wizard.
  *
  * @param addDependentStep
  * @param currentStepName

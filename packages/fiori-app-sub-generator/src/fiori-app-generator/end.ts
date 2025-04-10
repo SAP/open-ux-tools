@@ -160,10 +160,6 @@ export async function runPostGenerationTasks(
             targetFolder: projectPath
         })
     );
-
-    // connection no longer required and security session should be ended No axios extension equivalent??
-    // await this.state?.service?.connectedSystem?.serviceProvider.endSecuritySession();
-
     await sendTelemetry('GENERATION_SUCCESS', TelemetryHelper.telemetryData, projectPath);
     await runPostGenHooks(projectPath, logger, vscode as VSCodeInstance, followUpCommand);
 }

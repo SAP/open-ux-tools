@@ -3,6 +3,7 @@ import { ApiHubType, type TelemetryBusinessHubType, type Service, type Telemetry
 import { isBTPHosted } from './common';
 
 /**
+ * Get the SAP system type as reported in telemetry events.
  *
  * @param connectedSystem
  * @returns
@@ -27,6 +28,7 @@ export function getTelemetrySapSystemType(
 }
 
 /**
+ * Get the business hub type as reported in telemetry events.
  *
  * @param apiHubType
  * @returns

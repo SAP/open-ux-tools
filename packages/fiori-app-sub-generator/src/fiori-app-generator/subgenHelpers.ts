@@ -54,11 +54,11 @@ export function addDeployGen(
  * Add the '@sap/fiori:flp-config' generator as a subgenerator using `composeWith`.
  * Skipping the prompting (`skipPrompt`) will still write the config, but not ask for any input.
  *
- * @param param0
- * @param param0.projectName
- * @param param0.targetFolder
- * @param param0.title
- * @param param0.skipPrompt The FLP config prompt step will be skipped, but the config will still br written
+ * @param options
+ * @param options.projectName
+ * @param options.targetFolder
+ * @param options.title
+ * @param options.skipPrompt The FLP config prompt step will be skipped, but the config will still br written
  * @param composeWith
  * @param logger
  * @param appWizard
