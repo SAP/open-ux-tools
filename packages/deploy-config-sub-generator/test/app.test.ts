@@ -266,7 +266,7 @@ describe('Deployment Generator', () => {
                 useAutocomplete: true
             },
             overwriteDestinationName: false,
-            showRouterOptions: true
+            routerType: true
         });
         expect(getABAPPromptsSpy).toHaveBeenCalledWith({
             appRootPath: expect.stringContaining('project1'),
