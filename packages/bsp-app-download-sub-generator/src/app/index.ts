@@ -83,15 +83,13 @@ export default class extends Generator {
 
         this.prompts = new Prompts([]);
         // Initialise prompts and callbacks if not launched as a subgenerator
-        if (!this.launchAppDownloaderAsSubGenerator) {
-            this.appWizard.setHeaderTitle(generatorTitle);
-            this.prompts = new Prompts(getYUIDetails());
-            this.setPromptsCallback = (fn): void => {
-                if (this.prompts) {
-                    this.prompts.setCallback(fn);
-                }
-            };
-        }
+        this.appWizard.setHeaderTitle(generatorTitle);
+        this.prompts = new Prompts(getYUIDetails());
+        this.setPromptsCallback = (fn): void => {
+            if (this.prompts) {
+                this.prompts.setCallback(fn);
+            }
+        };
     }
 
     /**
@@ -140,6 +138,7 @@ export default class extends Generator {
         quickDeployedAppConfig: QuickDeployedAppConfig,
         targetFolder: string
     ): Promise<void> {
+        console.log("quickDeployedAppConfig---", quickDeployedAppConfig, "--");
         const appList = await fetchAppListForSelectedSystem(
             quickDeployedAppConfig.serviceProvider,
             quickDeployedAppConfig.appId
@@ -150,6 +149,7 @@ export default class extends Generator {
             );
             throw new Error();
         }
+        console.log("appList---", appList, "--");
         this.answers.selectedApp = extractAppData(appList[0]).value;
         this.answers.targetFolder = targetFolder;
         this.answers.systemSelection = PromptState.systemSelection;

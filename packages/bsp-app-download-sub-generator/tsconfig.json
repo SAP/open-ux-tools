@@ -64,6 +64,9 @@
       "path": "../ui5-application-writer"
     },
     {
+      "path": "../ui5-config"
+    },
+    {
       "path": "../ui5-info"
     }
   ]
