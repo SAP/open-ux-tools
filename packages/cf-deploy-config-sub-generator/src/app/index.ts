@@ -261,11 +261,6 @@ export default class extends DeploymentGenerator {
             this.options.addManagedAppRouter ?? this.answers.routerType === RouterModuleType.Managed;
         let addAppFrontendRouter =
             this.options.addAppFrontendRouter ?? this.answers.routerType === RouterModuleType.AppFront;
-        // Options passed to generator, can toggle these values
-        if (this.answers.routerType === RouterModuleType.None && (addManagedAppRouter || addAppFrontendRouter)) {
-            addManagedAppRouter = false;
-            addAppFrontendRouter = false;
-        }
         const destinationAuthentication =
             this.options.destinationAuthType ?? destination?.Authentication ?? DESTINATION_AUTHTYPE_NOTFOUND;
         const overwrite = this.options.overwrite ?? this.answers.overwrite;
