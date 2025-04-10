@@ -63,7 +63,7 @@ export async function getCFQuestions({
             addBTPDestinationList: isBAS ? !isAbapDirectServiceBinding : false,
             additionalChoiceList: cfChoices
         },
-        [promptNames.showRouterOptions]: !mtaYamlExists && !isCap,
+        [promptNames.routerType]: !mtaYamlExists && !isCap,
         [promptNames.overwrite]: addOverwrite
     };
 

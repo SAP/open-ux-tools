@@ -257,9 +257,9 @@ export default class extends DeploymentGenerator {
         const destination = await getDestination(destinationName);
         const isDestinationFullUrl =
             this.options.isFullUrlDest ?? (destination && isFullUrlDestination(destination)) ?? false;
-        let addManagedAppRouter =
+        const addManagedAppRouter =
             this.options.addManagedAppRouter ?? this.answers.routerType === RouterModuleType.Managed;
-        let addAppFrontendRouter =
+        const addAppFrontendRouter =
             this.options.addAppFrontendRouter ?? this.answers.routerType === RouterModuleType.AppFront;
         const destinationAuthentication =
             this.options.destinationAuthType ?? destination?.Authentication ?? DESTINATION_AUTHTYPE_NOTFOUND;

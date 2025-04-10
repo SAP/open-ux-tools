@@ -12,9 +12,7 @@ export enum promptNames {
     /** The prompt for confirming destination overwrite. */
     overwrite = 'overwriteDestinationName',
     /** The prompt for confirming the router type. */
-    routerType = 'routerType',
-    /** The prompt for confirming if the router options should be displayed */
-    showRouterOptions = 'showRouterOptions'
+    routerType = 'routerType'
 }
 
 /**
@@ -89,8 +87,7 @@ export type booleanPromptOptions = Partial<
         | appRouterPromptNames.mtaVersion
         | appRouterPromptNames.routerType
         | appRouterPromptNames.addABAPServiceBinding
-        | appRouterPromptNames.addConnectivityService
-        | promptNames.showRouterOptions,
+        | appRouterPromptNames.addConnectivityService,
         boolean
     >
 >;
