@@ -104,7 +104,10 @@ describe('getAppConfig', () => {
         };
 
         const mockServiceProvider = {
-            defaults: { baseURL: 'https://test-url.com' }
+            defaults: { 
+                baseURL: 'https://test-url.com',
+                params: { 'sap-client': '100' }
+            }
         } as unknown as AbapServiceProvider;
 
         PromptState.systemSelection = {
@@ -141,7 +144,10 @@ describe('getAppConfig', () => {
         };
 
         const mockServiceProvider = {
-            defaults: { baseURL: 'https://test-url.com' }
+            defaults: { 
+                baseURL: 'https://test-url.com',
+                params: { 'sap-client': '100' } 
+            }
         } as unknown as AbapServiceProvider;
 
         PromptState.systemSelection = {
@@ -208,7 +214,10 @@ describe('getAppConfig', () => {
 
         const errorMsg = 'Metadata fetch failed';
         const mockServiceProvider = {
-            defaults: { baseURL: 'https://test-url.com' },
+            defaults: { 
+                baseURL: 'https://test-url.com',
+                params: { 'sap-client': '100' } 
+            },
             service: jest.fn().mockReturnValue({
                 metadata: jest.fn().mockRejectedValue(new Error(errorMsg))
             })
@@ -238,7 +247,10 @@ describe('getAppConfig', () => {
         };
 
         const mockServiceProvider = {
-            defaults: { baseURL: 'https://test-url.com' },
+            defaults: { 
+                baseURL: 'https://test-url.com',
+                params: { 'sap-client': '100' }
+            },
             service: jest.fn().mockReturnValue({
                 metadata: jest.fn().mockResolvedValue({
                     dataServices: {
@@ -280,7 +292,8 @@ describe('getAbapDeployConfig', () => {
 
         const expectedConfig = {
             target: {
-                url: 'https://target-url.com',
+                url: 'https://test-url.com',
+                client: '100',
                 destination: 'TEST_REPO'
             },
             app: {

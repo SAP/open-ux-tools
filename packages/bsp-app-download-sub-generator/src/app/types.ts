@@ -32,9 +32,6 @@ export interface BspAppDownloadOptions extends Generator.GeneratorOptions {
     /** AppWizard instance for managing the application download flow. */
     appWizard?: AppWizard;
 
-    /** Indicates if the generator is launched as a subgenerator. */
-    launchAppDownloaderAsSubGenerator?: boolean; // TODO: Verify this option.
-
     /** Path to the application root where the Fiori launchpad configuration will be added. */
     appRootPath?: string;
 

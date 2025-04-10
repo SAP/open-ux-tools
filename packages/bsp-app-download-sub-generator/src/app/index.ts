@@ -46,7 +46,6 @@ import { isValidPromptState, validateQfaJsonFile } from '../utils/validators';
 export default class extends Generator {
     private readonly appWizard: AppWizard;
     private readonly vscode?: any;
-    private readonly launchAppDownloaderAsSubGenerator: boolean;
     private readonly appRootPath: string;
     private readonly prompts: Prompts;
     private answers: BspAppDownloadAnswers = defaultAnswers;
@@ -67,7 +66,6 @@ export default class extends Generator {
         // Initialise properties from options
         this.appWizard = opts.appWizard ?? AppWizard.create(opts);
         this.vscode = opts.vscode;
-        this.launchAppDownloaderAsSubGenerator = opts.launchAppDownloaderAsSubGenerator ?? false;
         this.appRootPath = opts?.appRootPath ?? getDefaultTargetFolder(this.vscode) ?? this.destinationRoot();
         this.options = opts;
 
@@ -81,7 +79,7 @@ export default class extends Generator {
             this.vscode
         );
 
-        this.prompts = new Prompts([]);
+        //this.prompts = new Prompts([]);
         // Initialise prompts and callbacks if not launched as a subgenerator
         this.appWizard.setHeaderTitle(generatorTitle);
         this.prompts = new Prompts(getYUIDetails());
@@ -138,7 +136,6 @@ export default class extends Generator {
         quickDeployedAppConfig: QuickDeployedAppConfig,
         targetFolder: string
     ): Promise<void> {
-        console.log("quickDeployedAppConfig---", quickDeployedAppConfig, "--");
         const appList = await fetchAppListForSelectedSystem(
             quickDeployedAppConfig.serviceProvider,
             quickDeployedAppConfig.appId
@@ -149,7 +146,6 @@ export default class extends Generator {
             );
             throw new Error();
         }
-        console.log("appList---", appList, "--");
         this.answers.selectedApp = extractAppData(appList[0]).value;
         this.answers.targetFolder = targetFolder;
         this.answers.systemSelection = PromptState.systemSelection;
@@ -218,7 +214,7 @@ export default class extends Generator {
             appNamespace: '', // todo: cant find namespace in manifest json - default?
             appDescription: t('readMe.appDescription'),
             ui5Theme: getDefaultUI5Theme(config.ui5?.version),
-            generatorName: generatorName, // todo: check if this name is okay ?
+            generatorName: generatorName,
             generatorVersion: this.rootGeneratorVersion(),
             ui5Version: config.ui5?.version ?? '',
             template: TemplateType.ListReportObjectPage,
@@ -238,7 +234,7 @@ export default class extends Generator {
         const debugOptions: DebugOptions = {
             vscode: this.vscode,
             addStartCmd: true,
-            sapClientParam: '', // todo: check if sap-client info is available
+            sapClientParam: PromptState.sapClient,
             flpAppId: config.app.flpAppId ?? config.app.id,
             flpSandboxAvailable: true,
             isAppStudio: isAppStudio(),

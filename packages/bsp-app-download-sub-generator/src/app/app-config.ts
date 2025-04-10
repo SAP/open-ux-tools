@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import { t } from '../utils/i18n';
 import type { AppInfo, QfaJsonConfig } from '../app/types';
 import { readManifest } from '../utils/file-helpers';
-import { getLatestUI5Version } from '@sap-ux/ui5-info';
+import { supportedUi5VersionFallbacks, getUI5Versions } from '@sap-ux/ui5-info';
 import { getMinimumUI5Version } from '@sap-ux/project-access';
 import { adtSourceTemplateId } from '../utils/constants';
 import { PromptState } from '../prompts/prompt-state';
@@ -22,7 +22,8 @@ import BspAppDownloadLogger from '../utils/logger';
 export const getAbapDeployConfig = (app: AppInfo, qfaJson: QfaJsonConfig): AbapDeployConfig => {
     return {
         target: {
-            url: app.url,
+            url: PromptState.baseURL,
+            client: PromptState.sapClient,
             destination: app.repoName
         },
         app: {
@@ -83,6 +84,9 @@ export async function getAppConfig(
             serviceProvider,
             manifest?.['sap.app']?.dataSources?.mainService.uri ?? ''
         );
+        const availableUI5Versions = await getUI5Versions({ includeMaintained: true });
+        const manifestUi5Version = getMinimumUI5Version(manifest);
+        const ui5Version = availableUI5Versions.find((version) => version.version === manifestUi5Version);
         const appConfig: FioriElementsApp<LROPSettings> = {
             app: {
                 id: app.appId,
@@ -120,10 +124,7 @@ export async function getAppConfig(
                 addTests: true
             },
             ui5: {
-                version:
-                    qfaJson.project_attribute?.minimum_ui5_version ??
-                    getMinimumUI5Version(manifest) ??
-                    (await getLatestUI5Version())
+                version: ui5Version ? manifestUi5Version : supportedUi5VersionFallbacks[0].version
             }
         };
         //todo: confirm this

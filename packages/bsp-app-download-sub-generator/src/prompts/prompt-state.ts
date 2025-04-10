@@ -27,6 +27,24 @@ export class PromptState {
         this._systemSelection = value;
     }
 
+    /**
+     * Get the baseURL from the connected system's service provider defaults.
+     *
+     * @returns {string | undefined} baseURL
+     */
+    public static get baseURL(): string | undefined {
+        return this._systemSelection.connectedSystem?.serviceProvider?.defaults?.baseURL;
+    }
+
+    /**
+     * Get the sap-client parameter from the connected system's service provider defaults.
+     *
+     * @returns {string | undefined} sap-client
+     */
+    public static get sapClient(): string | undefined {
+        return this._systemSelection.connectedSystem?.serviceProvider?.defaults?.params?.['sap-client'];
+    }
+
     static reset(): void {
         PromptState.systemSelection = {};
     }
