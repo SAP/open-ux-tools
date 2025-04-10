@@ -4,6 +4,7 @@ import Component from 'sap/ui/core/Component';
 import AppComponent from 'sap/fe/core/AppComponent';
 import XMLView from 'sap/ui/core/mvc/XMLView';
 import type { FlexSettings, Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+
 import { isA } from './core';
 import CommandFactory from 'sap/ui/rta/command/CommandFactory';
 import { getOverlay } from '../cpe/utils';
@@ -151,4 +152,22 @@ export function getV4ApplicationPages(manifest: Manifest): { id: string; entityS
         }
     }
     return result;
+}
+
+export function findNestedElement(
+    ownerComponent: UI5Element,
+    candidates: UI5Element[]
+): UI5Element | undefined {
+    const hasParent = (component: ManagedObject, parentIdToFind: string): boolean => {
+        const parent = component.getParent();
+        if (!parent) {
+            return false;
+        }
+        if (parent.getId() === parentIdToFind) {
+            return true;
+        }
+        return hasParent(parent, parentIdToFind);
+    };
+    const ownerId = ownerComponent.getId();
+    return candidates.find((item) => hasParent(item, ownerId));
 }
