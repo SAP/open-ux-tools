@@ -138,7 +138,7 @@ export default class extends Generator {
         quickDeployedAppConfig: QuickDeployedAppConfig,
         targetFolder: string
     ): Promise<void> {
-        console.log("quickDeployedAppConfig---", quickDeployedAppConfig, "--");
+        console.log('quickDeployedAppConfig---', quickDeployedAppConfig, '--');
         const appList = await fetchAppListForSelectedSystem(
             quickDeployedAppConfig.serviceProvider,
             quickDeployedAppConfig.appId
@@ -149,7 +149,7 @@ export default class extends Generator {
             );
             throw new Error();
         }
-        console.log("appList---", appList, "--");
+        console.log('appList---', appList, '--');
         this.answers.selectedApp = extractAppData(appList[0]).value;
         this.answers.targetFolder = targetFolder;
         this.answers.systemSelection = PromptState.systemSelection;
