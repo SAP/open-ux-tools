@@ -443,16 +443,21 @@ export class ConnectionValidator {
     }
 
     /**
-     * Depending on the initial error, it will run the catalog request and handle the error if it occurs.
+     * Determine if a v4 catalog request should be made based on the specified error and if the error originated from a v2 or v4 catalog request.
+     * If the error originated from a v2 catalog request and it is of type 401/403/404 then we try the v4 catalog.
+     * If the v4 catalog request fails, for any reason, and the v2 catalog request failed with 401/403 we will throw that (401/403) error,
+     * ultimately resulting in a basic auth prompt for the end-user.
+     * Otherwise the v4 catalog request error is thrown, which may also be a 401/403, again resulting in a basic auth prompt and re-validation.
+     * If both catalogs have returned 404 nothing else can be done, the error is thrown and reported.
      *
-     * @param error - error
+     * @param error - an error returned from either a v2 or v4 catalog listServices request.
      * @param v4Requested - has the v4 catalog been requested
      */
     private async handleCatalogError(error: unknown, v4Requested: boolean): Promise<void> {
         const statusCode = (error as AxiosError).response?.status;
         const errorType = statusCode ? ErrorHandler.getErrorType(statusCode) : undefined;
 
-        // We will try the v4 catalog if v2 returns a 404 or an auth code. Try the v4 catalog with the credentials provided also
+        // Try the v4 catalog with the credentials provided
         // as the user may not be authorized for the v2 catalog specifically.
         const shouldFallbackToV4 =
             statusCode && !v4Requested && (errorType === ERROR_TYPE.NOT_FOUND || errorType === ERROR_TYPE.AUTH);
