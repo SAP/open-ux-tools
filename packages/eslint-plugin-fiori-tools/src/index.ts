@@ -2,7 +2,7 @@
 // Plugin Definition
 //------------------------------------------------------------------------------
 
-module.exports.configs = {
+export const config = {
     defaultTS: {
         extends: [
             '../config/legacy/eslintrc-common.js',

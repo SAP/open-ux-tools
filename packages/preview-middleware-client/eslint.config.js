@@ -1,29 +1,24 @@
 const { defineConfig } = require('eslint/config');
-
 const js = require('@eslint/js');
 
-const { FlatCompat } = require('@eslint/eslintrc');
-
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
+const jsdoc = require('eslint-plugin-jsdoc');
+const config  = require('@sap-ux/eslint-plugin-fiori-tools');
 
 module.exports = defineConfig([
+    ...config.defaultTS,
     {
-        extends: compat.extends('plugin:@sap-ux/eslint-plugin-fiori-tools/defaultTS'),
-
         languageOptions: {
             ecmaVersion: 5,
             sourceType: 'script',
 
             parserOptions: {
                 project: './tsconfig.eslint.json',
-                tsconfigRootDir: '/Users/I058153/git/SAPDevelop/open-ux-tools/packages/preview-middleware-client'
+                tsconfigRootDir: './'
             }
         },
-
+        plugins: {
+            jsdoc
+        },
         rules: {
             quotes: [
                 'error',
@@ -33,14 +28,23 @@ module.exports = defineConfig([
                 }
             ],
 
-            'valid-jsdoc': [
-                'error',
-                {
-                    requireParamType: false,
-                    requireReturn: false,
-                    requireReturnType: false
-                }
-            ],
+            // Replace valid-jsdoc with eslint-plugin-jsdoc rules
+            'jsdoc/check-alignment': 'error',
+            'jsdoc/check-param-names': 'error',
+            'jsdoc/check-tag-names': 'error',
+            'jsdoc/check-types': 'error',
+            'jsdoc/implements-on-classes': 'error',
+            // "jsdoc/newline-after-description": 'error',
+            'jsdoc/no-types': 'error',
+            'jsdoc/require-description': 'error',
+            'jsdoc/require-param': 'error',
+            'jsdoc/require-param-description': 'error',
+            'jsdoc/require-param-name': 'error',
+            'jsdoc/require-param-type': 'off',
+            'jsdoc/require-returns': 'off',
+            'jsdoc/require-returns-check': 'error',
+            'jsdoc/require-returns-description': 'error',
+            'jsdoc/require-returns-type': 'off',
 
             '@typescript-eslint/no-unused-vars': [
                 'error',

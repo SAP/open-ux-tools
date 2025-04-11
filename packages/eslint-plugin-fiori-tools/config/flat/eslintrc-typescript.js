@@ -5,18 +5,14 @@ const {
 const typescriptEslint = require("@typescript-eslint/eslint-plugin");
 const tsParser = require("@typescript-eslint/parser");
 const js = require("@eslint/js");
+const tseslint = require('typescript-eslint');
 
-const {
-    FlatCompat,
-} = require("@eslint/eslintrc");
 
-const compat = new FlatCompat({
-    baseDirectory: __dirname,
-    recommendedConfig: js.configs.recommended,
-    allConfig: js.configs.all
-});
 
-module.exports = defineConfig([{
+module.exports = defineConfig([
+    ...tseslint.configs.recommended,
+    ...tseslint.configs.recommended_requiring_type_checking,
+    {
     files: ["./webapp/*.ts", "./webapp/**/*.ts"],
 
     ignores: [
@@ -30,11 +26,6 @@ module.exports = defineConfig([{
         "**/*.d.ts",
         "**/*.d.ts",
     ],
-
-    extends: compat.extends(
-        "plugin:@typescript-eslint/recommended",
-        "plugin:@typescript-eslint/recommended-requiring-type-checking",
-    ),
 
     plugins: {
         "@typescript-eslint": typescriptEslint,
