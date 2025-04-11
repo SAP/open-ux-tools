@@ -139,7 +139,7 @@ export function getDefaultChoiceIndex(list: ListChoiceOptions[]): number | undef
  */
 export function removeCircularFromServiceProvider(serviceProvider: ServiceProvider): ServiceProvider {
     for (const service in (serviceProvider as any).services) {
-        delete (serviceProvider as any)[service].log;
+        delete (serviceProvider as any).services?.[service]?.log;
     }
     delete (serviceProvider as any).log;
     return serviceProvider;
