@@ -5,16 +5,18 @@ jest.mock('crypto', () => ({
 import type { Logger } from '@sap-ux/logger';
 import type { Editor } from 'mem-fs-editor';
 import * as crypto from 'crypto';
+import * as path from 'path';
 
 import {
     addAnnotationFile,
     addXmlFragment,
+    addControllerExtension,
     isAddAnnotationChange,
     isAddXMLChange,
     moduleNameContentMap,
     tryFixChange
 } from '../../../src/preview/change-handler';
-import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange } from '../../../src';
+import type { AddXMLChange, CommonChangeProperties, AnnotationFileChange, DescriptorVariant } from '../../../src';
 import * as manifestService from '../../../src/base/abap/manifest-service';
 import * as helper from '../../../src/base/helper';
 import * as editors from '../../../src/writer/editors';
@@ -488,6 +490,94 @@ id=\\"btn-30303030\\""
 
                 expect(mockLogger.info).toHaveBeenCalledWith(`XML Fragment "${fragmentName}.fragment.xml" was created`);
             });
+        });
+    });
+
+    describe('addControllerExtension', () => {
+        const mockFs = {
+            read: jest.fn(),
+            write: jest.fn()
+        };
+
+        const mockLogger = {
+            error: jest.fn()
+        };
+
+        const rootPath = '/project/root';
+        const basePath = '/project/root/webapp';
+        const change = {
+            content: {
+                codeRef: 'controllers/MyController.js'
+            }
+        };
+
+        beforeEach(() => {
+            jest.clearAllMocks();
+        });
+
+        it('should create a controller extension file for JavaScript', async () => {
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+            jest.spyOn(helper, 'getVariant').mockResolvedValue({ id: 'my.namespace' } as unknown as DescriptorVariant);
+            mockFs.read.mockReturnValue('<template content>');
+
+            await addControllerExtension(
+                rootPath,
+                basePath,
+                change as any,
+                mockFs as unknown as Editor,
+                mockLogger as unknown as Logger
+            );
+
+            expect(helper.isTypescriptSupported).toHaveBeenCalledWith(rootPath, mockFs);
+            expect(helper.getVariant).toHaveBeenCalledWith(rootPath);
+            expect(mockFs.read).toHaveBeenCalledWith(path.join(__dirname, '../../../templates/rta/controller.ejs'));
+            expect(mockFs.write).toHaveBeenCalledWith(
+                path.join(basePath, 'changes/coding/MyController.js'),
+                '<template content>'
+            );
+        });
+
+        it('should create a controller extension file for TypeScript', async () => {
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(true);
+            jest.spyOn(helper, 'getVariant').mockResolvedValue({ id: 'my.namespace' } as unknown as DescriptorVariant);
+            mockFs.read.mockReturnValue('<template content>');
+
+            await addControllerExtension(
+                rootPath,
+                basePath,
+                change as any,
+                mockFs as unknown as Editor,
+                mockLogger as unknown as Logger
+            );
+
+            expect(helper.isTypescriptSupported).toHaveBeenCalledWith(rootPath, mockFs);
+            expect(helper.getVariant).toHaveBeenCalledWith(rootPath);
+            expect(mockFs.read).toHaveBeenCalledWith(path.join(__dirname, '../../../templates/rta/ts-controller.ejs'));
+            expect(mockFs.write).toHaveBeenCalledWith(
+                path.join(basePath, 'changes/coding/MyController.ts'),
+                '<template content>'
+            );
+        });
+
+        it('should log an error if the controller extension creation fails', async () => {
+            jest.spyOn(helper, 'isTypescriptSupported').mockReturnValue(false);
+            mockFs.read.mockImplementation(() => {
+                throw new Error('Read failed');
+            });
+
+            await expect(
+                addControllerExtension(
+                    rootPath,
+                    basePath,
+                    change as any,
+                    mockFs as unknown as Editor,
+                    mockLogger as unknown as Logger
+                )
+            ).rejects.toThrow('Failed to create controller extensionRead failed');
+
+            expect(mockLogger.error).toHaveBeenCalledWith(
+                expect.stringContaining('Failed to create controller extension "controllers/MyController.js"')
+            );
         });
     });
 
