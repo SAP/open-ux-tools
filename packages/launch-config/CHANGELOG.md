@@ -1,5 +1,11 @@
 # @sap-ux/launch-config
 
+## 0.8.1
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+
 ## 0.8.0
 
 ### Minor Changes

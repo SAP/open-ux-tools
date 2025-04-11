@@ -1,17 +1,24 @@
 import { exec } from 'child_process';
-import { installDependencies } from '../../../src/utils/deps';
+import { getPackageInfo, installDependencies } from '../../../src/utils/deps';
+import { readFileSync } from 'fs';
 
 jest.mock('child_process', () => ({
     ...jest.requireActual('child_process'),
     exec: jest.fn()
 }));
 
+jest.mock('fs', () => ({
+    ...jest.requireActual('fs'),
+    readFileSync: jest.fn()
+}));
+
 const execMock = exec as unknown as jest.Mock;
+const readFileSyncMock = readFileSync as jest.Mock;
 
 describe('installDependencies', () => {
     const dummyProjectPath = '/dummy/path';
 
-    beforeEach(() => {
+    afterEach(() => {
         jest.clearAllMocks();
     });
 
@@ -32,5 +39,20 @@ describe('installDependencies', () => {
         });
 
         await expect(installDependencies(dummyProjectPath)).rejects.toThrow('Installation of dependencies failed.');
+    });
+});
+
+describe('getPackageInfo', () => {
+    const mockPackage = { name: '@sap-ux/generator-adp', version: '0.0.1' };
+
+    afterEach(() => {
+        jest.clearAllMocks();
+    });
+
+    it('should return the correct package.json', async () => {
+        readFileSyncMock.mockReturnValue(JSON.stringify(mockPackage));
+        const result = getPackageInfo();
+
+        expect(result).toEqual(mockPackage);
     });
 });

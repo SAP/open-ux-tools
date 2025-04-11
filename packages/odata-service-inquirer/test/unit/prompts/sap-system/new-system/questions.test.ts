@@ -1,7 +1,7 @@
 import { ODataService, type ServiceProvider } from '@sap-ux/axios-extension';
 import type { SapSystemType } from '../../../../../src';
 import { initI18nOdataServiceInquirer } from '../../../../../src/i18n';
-import { getUserSystemNameQuestion } from '../../../../../src/prompts/datasources/sap-system/new-system/questions';
+import { getUserSystemNameQuestion } from '../../../../../src/prompts/datasources/sap-system/shared-prompts/shared-prompts';
 import * as sapSystemValidators from '../../../../../src/prompts/datasources/sap-system/validators';
 import { PromptState } from '../../../../../src/utils';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';

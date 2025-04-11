@@ -1,5 +1,29 @@
 # @sap-ux/adp-tooling
 
+## 0.13.26
+
+### Patch Changes
+
+-   c4278fb: Change build and deploy scripts for cloud ready adaptation projects
+
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
+## 0.13.24
+
+### Patch Changes
+
+-   c81864a: fix: ADP Generator integration test mocking
+
+## 0.13.23
+
+### Patch Changes
+
+-   4f0eaae: feat: Enhance system and app prompt validations
+
 ## 0.13.22
 
 ### Patch Changes
