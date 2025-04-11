@@ -1,10 +1,10 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { updateRootPackage } from '../utils';
-import { createCAPMTA, validateMtaConfig, isMTAFound, createCAPMTAAppFrontend, addRoutingConfig } from '../mta-config';
+import { validateMtaConfig, isMTAFound, addRoutingConfig, runCommand, generateCAPMTA } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
-import { type CAPConfig, type CFBaseConfig, RouterModuleType } from '../types';
+import { type CAPConfig, type CFBaseConfig } from '../types';
 import { t } from '../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
 
@@ -14,9 +14,15 @@ import { getCapProjectType } from '@sap-ux/project-access';
  * @param config writer configuration
  * @param fs an optional reference to a mem-fs editor
  * @param logger optional logger instance
+ * @param skipInstall skip install of node modules
  * @returns file system reference
  */
-export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
+export async function generateCAPConfig(
+    config: CAPConfig,
+    fs?: Editor,
+    logger?: Logger,
+    skipInstall = false
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -25,15 +31,20 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     }
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
-    if (config.routerType === RouterModuleType.AppFront) {
-        await createCAPMTAAppFrontend(config, fs);
-    } else {
-        await createCAPMTA(config.mtaPath, [], config.routerType);
-    }
+    await generateCAPMTA(config, fs);
     // Delay, known issues with loading mta yaml after generation!
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
+    // In some instances, you want to delay the install to another phase!
+    if (!skipInstall) {
+        // When installing, we need to ensure that the package.json is written to disk before running npm install
+        await new Promise((resolve) => fs.commit(resolve));
+        LoggerHelper?.logger?.debug(`npm install command will be executed in ${config.mtaPath}`);
+        const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
+        // Install latest dev dependencies, if any, added by the CF writer
+        await runCommand(config.mtaPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
+    }
     LoggerHelper.logger?.debug(t('debug.capGenerationCompleted'));
     return fs;
 }
