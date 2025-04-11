@@ -46,6 +46,6 @@ export async function downloadApp(repoName: string, extractedProjectPath: string
             BspAppDownloadLogger.logger?.error(t('error.appDownloadErrors.downloadedFileNotBufferError'));
         }
     } catch (error) {
-        BspAppDownloadLogger.logger?.error(t('error.appDownloadErrors.appDownloadFailure', { error: error.message }));
+        throw new Error(t('error.appDownloadErrors.appDownloadFailure', { error: error.message }));
     }
 }

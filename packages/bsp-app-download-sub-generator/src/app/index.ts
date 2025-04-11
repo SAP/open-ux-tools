@@ -119,6 +119,12 @@ export default class extends Generator {
             // Handle app download where prompts for system selection and app selection are shown
             Object.assign(this.answers, answers);
         }
+        if (isValidPromptState(this.answers.targetFolder, this.answers.selectedApp.appId)) {
+            this.projectPath = join(this.answers.targetFolder, this.answers.selectedApp.appId);
+            this.extractedProjectPath = join(this.projectPath, extractedFilePath);
+            // Trigger app download
+            await downloadApp(this.answers.selectedApp.repoName, this.extractedProjectPath, this.fs);
+        }
     }
 
     /**
@@ -149,13 +155,6 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
-        if (isValidPromptState(this.answers.targetFolder, this.answers.selectedApp.appId)) {
-            this.projectPath = join(this.answers.targetFolder, this.answers.selectedApp.appId);
-            this.extractedProjectPath = join(this.projectPath, extractedFilePath);
-            // Trigger app download
-            await downloadApp(this.answers.selectedApp.repoName, this.extractedProjectPath, this.fs);
-        }
-
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
         if (this.fs.exists(qfaJsonFilePath)) {
             const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);

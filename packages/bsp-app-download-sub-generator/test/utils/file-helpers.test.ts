@@ -3,6 +3,7 @@ import type { Editor } from 'mem-fs-editor';
 import { t } from '../../src/utils/i18n'; 
 import { adtSourceTemplateId } from '../../src/utils/constants';
 import BspAppDownloadLogger from '../../src/utils/logger';
+import { join } from 'path';
 
 jest.mock('../../src/utils/logger', () => ({
     logger: {
@@ -32,7 +33,7 @@ describe('readManifest', () => {
         mockReadJSON.mockReturnValue(validManifest);
         const result = readManifest(extractedProjectPath, mockFs);
         expect(result).toBe(validManifest);
-        expect(mockFs.readJSON).toHaveBeenCalledWith('project-path/manifest.json');
+        expect(mockFs.readJSON).toHaveBeenCalledWith(join('project-path','manifest.json'));
     });
 
     it('should throw an error if manifest is not found', async () => {

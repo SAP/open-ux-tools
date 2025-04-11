@@ -53,11 +53,11 @@ describe('download-utils', () => {
         expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.appDownloadErrors.downloadedFileNotBufferError'));
     });
 
-    it('should log an error if the download fails', async () => {
+    it('should throw an error if the download fails', async () => {
         const errorMessage = 'Mock download error';
         jest.spyOn(mockServiceProvider.getUi5AbapRepository(), 'downloadFiles').mockRejectedValue(new Error(errorMessage));
-        await downloadApp('repoName', extractedPath, mockFs)
-        expect(BspAppDownloadLogger.logger.error).toBeCalledWith(t('error.appDownloadErrors.appDownloadFailure', { error: errorMessage }));
+        await expect(downloadApp('repoName', extractedPath, mockFs)).rejects.toThrowError(
+            t('error.appDownloadErrors.appDownloadFailure', { error: errorMessage }));
     });
 
     it('should extract files from a ZIP archive and write them to the file system', async () => {
@@ -76,7 +76,7 @@ describe('download-utils', () => {
         await downloadApp('repoName', extractedPath, mockFs);
 
         expect(mockZip.getEntries).toHaveBeenCalled();
-        expect(mockFs.write).toHaveBeenCalledWith(`${extractedPath}/${appName}`, appContents);
+        expect(mockFs.write).toHaveBeenCalledWith(join(`${extractedPath}/${appName}`), appContents);
     });
 
     it('should log an error if extraction fails', async () => {
