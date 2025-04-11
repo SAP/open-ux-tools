@@ -1,5 +1,21 @@
 # @sap-ux/generator-adp
 
+## 0.1.3
+
+### Patch Changes
+
+-   c81864a: fix: ADP Generator integration test mocking
+-   Updated dependencies [c81864a]
+    -   @sap-ux/adp-tooling@0.13.24
+
+## 0.1.2
+
+### Patch Changes
+
+-   4f0eaae: feat: Enhance system and app prompt validations
+-   Updated dependencies [4f0eaae]
+    -   @sap-ux/adp-tooling@0.13.23
+
 ## 0.1.1
 
 ### Patch Changes

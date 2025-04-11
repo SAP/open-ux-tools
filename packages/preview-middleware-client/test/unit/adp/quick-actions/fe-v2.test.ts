@@ -4037,7 +4037,7 @@ describe('FE V2 quick actions', () => {
             VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
             const pageView = new XMLView();
             const scrollIntoView = jest.fn();
-            const tableId = 'SmartTable' + testCase.isWithIconTabBar ? '-tab1' : '';
+            const tableId = 'SmartTable' + (testCase.isWithIconTabBar ? '-tab1' : '');
 
             const opLayout = {
                 isA: (type: string) => type === 'sap.uxap.ObjectPageLayout',
