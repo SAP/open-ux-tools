@@ -57,7 +57,9 @@ export const ui5Proxy = (config: ProxyConfig, options?: Options, filter?: Filter
         },
         target: config.url,
         changeOrigin: true,
-        pathRewrite: { [config.path]: ui5Ver + config.path },
+        pathRewrite: (path: string, _req) => {
+            return path.startsWith(config.path) ? ui5Ver + path : ui5Ver + config.path + path;
+        },
         pathFilter: proxyFilter,
         ...options,
         logger: config.logLevel === LogLevel.Debug ? logger : undefined

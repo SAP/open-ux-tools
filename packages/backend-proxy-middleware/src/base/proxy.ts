@@ -124,7 +124,7 @@ async function getApiHubKey(logger: Logger): Promise<string | undefined> {
  */
 export const PathRewriters = {
     /**
-     * Generates a rewrite funtion that replace the match string with the prefix in the given string.
+     * Generates a rewrite function that replaces the matched string with the prefix in the given string.
      *
      * @param match part of the path that is to be replaced
      * @param prefix new path that is used as replacement
@@ -146,7 +146,8 @@ export const PathRewriters = {
             if (path.match(/sap-client=\d{3}/)) {
                 return path.replace(/sap-client=\d{3}/, sapClient);
             } else {
-                return path.indexOf('?') !== -1 ? path + '&' + sapClient : path + '?' + sapClient;
+                const separator = path.includes('?') ? '&' : '?';
+                return `${path}${separator}${sapClient}`;
             }
         };
     },
@@ -160,6 +161,11 @@ export const PathRewriters = {
      */
     getPathRewrite(config: BackendConfig, log: Logger): ((path: string) => string) | undefined {
         const functions: ((path: string) => string)[] = [];
+        functions.push((path) => {
+            // ensure that the path starts with the configured path
+            // sometimes it gets lost in the http proxy middleware
+            return path.startsWith(config.path) ? path : (config.path ?? '') + path;
+        });
         if (config.pathReplace) {
             functions.push(PathRewriters.replacePrefix(config.path, config.pathReplace));
         }
@@ -306,10 +312,9 @@ export async function generateProxyMiddlewareOptions(
             ...ProxyEventHandlers
         },
         ...options,
-        // always set the changeOrigin to true
         changeOrigin: true,
-        // always set the target to the url provided in yaml
         target: backend.url,
+        pathRewrite: PathRewriters.getPathRewrite(backend, logger),
         logger
     };
 
@@ -361,8 +366,6 @@ export async function generateProxyMiddlewareOptions(
         proxyOptions.auth = `${process.env.FIORI_TOOLS_USER}:${process.env.FIORI_TOOLS_PASSWORD}`;
     }
 
-    proxyOptions.pathRewrite = PathRewriters.getPathRewrite(backend, logger);
-
     if (backend.bsp) {
         await addOptionsForEmbeddedBSP(backend.bsp, proxyOptions, logger);
     }
@@ -385,7 +388,7 @@ export async function generateProxyMiddlewareOptions(
         proxyOptions.agent = new HttpsProxyAgent(backend.proxy);
     }
 
-    logger.info(`Backend proxy created for ${proxyOptions.target} ${backend.path ? backend.path : ''}`);
+    logger.info(`Backend proxy created for ${proxyOptions.target}`);
     return proxyOptions;
 }
 
