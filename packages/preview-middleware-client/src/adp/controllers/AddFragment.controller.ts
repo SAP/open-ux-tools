@@ -38,12 +38,7 @@ import {
     TREE_TABLE_TYPE
 } from '../quick-actions/control-types';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-
-interface CreateFragmentProps {
-    fragmentName: string;
-    index: string | number;
-    targetAggregation: string;
-}
+import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
 
 const radix = 10;
 
@@ -65,11 +60,14 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
+    public readonly data?: AddFragmentData;
+
     constructor(
         name: string,
         overlays: UI5Element,
         rta: RuntimeAuthoring,
         readonly options: AddFragmentOptions,
+        data?: AddFragmentData,
         telemetryData?: QuickActionTelemetryData
     ) {
         super(name, telemetryData);
@@ -80,6 +78,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             completeView: options.aggregation === undefined
         });
         this.commandExecutor = new CommandExecutor(this.rta);
+        this.data = data;
     }
 
     /**
@@ -149,14 +148,23 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
         const fragmentName = this.model.getProperty('/newFragmentName');
         const index = this.model.getProperty('/selectedIndex');
-        const targetAggregation = this.model.getProperty('/selectedAggregation/value');
-        const fragmentData = {
-            index,
-            fragmentName,
-            targetAggregation
+        const targetAggregation = this.model.getProperty('/selectedAggregation/value') ?? 'content';
+
+        const templateName = this.getFragmentTemplateName(targetAggregation);
+
+        const modifiedValue = {
+            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
+            fragmentPath: `fragments/${fragmentName}.fragment.xml`,
+            index: index ?? 0,
+            targetAggregation: targetAggregation ?? 'content',
+            templateName
         };
 
-        const templateName = await this.createFragmentChange(fragmentData);
+        if(this.data){
+            this.data.deferred.resolve(modifiedValue);
+        } else {
+            await this.createFragmentChange(modifiedValue, templateName);
+        }
 
         const textKey = templateName ? 'ADP_ADD_FRAGMENT_WITH_TEMPLATE_NOTIFICATION' : 'ADP_ADD_FRAGMENT_NOTIFICATION';
         const bundle = await getTextBundle();
@@ -227,22 +235,14 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
     /**
      * Creates an addXML fragment command and pushes it to the command stack
      *
-     * @param fragmentData Fragment Data
+     * @param modifiedValue - modified value
+     * @param templateName - fragment template name
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps): Promise<string | undefined> {
-        const { fragmentName, index, targetAggregation } = fragmentData;
-
+    private async createFragmentChange(modifiedValue: DeferredXmlFragmentData, templateName: string): Promise<string | undefined> {
         const flexSettings = this.rta.getFlexSettings();
 
         const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();
-
-        const modifiedValue = {
-            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
-            fragmentPath: `fragments/${fragmentName}.fragment.xml`,
-            index: index ?? 0,
-            targetAggregation: targetAggregation ?? 'content'
-        };
 
         const command = await this.commandExecutor.getCommand<AddFragmentChangeContentType>(
             this.runtimeControl,
@@ -252,7 +252,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             flexSettings
         );
 
-        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
         if (templateName) {
             const preparedChange = command.getPreparedChange();
             const content = preparedChange.getContent();
