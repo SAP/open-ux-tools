@@ -71,9 +71,6 @@ resources:
 - name: appfrontend-uaa
   type: org.cloudfoundry.managed-service
   parameters:
-    config:
-      tenant-mode: dedicated
-      xsappname: appfrontend-\${org}-\${space}
     path: ./xs-security.json
     service: xsuaa
     service-name: appfrontend-xsuaa-service
