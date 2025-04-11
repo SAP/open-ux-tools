@@ -438,34 +438,40 @@ export class ConnectionValidator {
                 await this._catalogV4?.listServices();
             }
         } catch (error) {
-            // We will try the v4 catalog if v2 returns a 404 or an auth code. Try the v4 catalog with the credentials provided also
-            // as the user may not be authorized for the v2 catalog specifically.
-            if (
-                this._catalogV4 &&
-                !v4Requested &&
-                this.shouldAttemptV4Catalog((error as AxiosError).response?.status)
-            ) {
-                await this._catalogV4.listServices();
-            } else {
-                // Either the v2 or v4 catalog request failed for a specific odata version, or both failed where no odata verison was specified
-                // Do some root cause analysis to determine the end user help message
-                throw error;
-            }
+            await this.handleCatalogError(error, v4Requested);
         }
     }
 
     /**
-     * Check if we should attempt to use the v4 catalog service as a fallback.
+     * Depending on the initial error, it will run the catalog request and handle the error if it occurs.
      *
-     * @param statusCode http status code, if not provided will return false as we cannot determine the reason for v2 catalog request failure
-     * @returns true if we should attempt the v4 catalog service
+     * @param error - error
+     * @param v4Requested - has the v4 catalog been requested
      */
-    private shouldAttemptV4Catalog(statusCode?: number): boolean {
-        if (!statusCode) {
-            return false;
+    private async handleCatalogError(error: unknown, v4Requested: boolean): Promise<void> {
+        const statusCode = (error as AxiosError).response?.status;
+        const errorType = statusCode ? ErrorHandler.getErrorType(statusCode) : undefined;
+
+        // We will try the v4 catalog if v2 returns a 404 or an auth code. Try the v4 catalog with the credentials provided also
+        // as the user may not be authorized for the v2 catalog specifically.
+        const shouldFallbackToV4 =
+            statusCode && !v4Requested && (errorType === ERROR_TYPE.NOT_FOUND || errorType === ERROR_TYPE.AUTH);
+
+        if (this._catalogV4 && shouldFallbackToV4) {
+            try {
+                await this._catalogV4.listServices();
+            } catch (v4Error) {
+                // if original error was of type auth, throw it so the consumer can handle it accordingly e.g show basic auth prompts
+                if (errorType === ERROR_TYPE.AUTH) {
+                    throw error;
+                }
+                throw v4Error;
+            }
+        } else {
+            // Either the v2 or v4 catalog request failed for a specific odata version, or both failed where no odata verison was specified
+            // Do some root cause analysis to determine the end user help message
+            throw error;
         }
-        const errorType = ErrorHandler.getErrorType(statusCode);
-        return errorType === ERROR_TYPE.NOT_FOUND || errorType === ERROR_TYPE.AUTH;
     }
 
     /**
