@@ -47,9 +47,9 @@ type ControllerModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
-    public readonly data: ExtenControllerData;
+    public readonly data?: ExtenControllerData;
 
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, data: ExtenControllerData, telemetryData?: QuickActionTelemetryData) {
+    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, data?: ExtenControllerData, telemetryData?: QuickActionTelemetryData) {
         super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
@@ -150,7 +150,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             };
 
             if(this.data) {
-                this.resolveModifiedValue(controllerRef);
+                this.data.deferred.resolve(controllerRef);
             } else {
                 await this.createNewController(controllerName, controllerRef);
             }
@@ -273,14 +273,5 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             await this.getControllers();
             this.handleError(e);
         }
-    }
-
-    /**
-     * Resolves deferred value for plugin scenario
-     *
-     * @param controllerRef Controller reference
-     */
-    private resolveModifiedValue(controllerRef: DeferredExtendControllerData): void {
-        this.data.deferred.resolve(controllerRef);
     }
 }
