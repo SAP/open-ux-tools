@@ -83,8 +83,8 @@ function getMtaVersionPrompt(): CfAppRouterDeployConfigQuestions {
 /**
  * Generates a prompt for selecting the router type.
  *
- * This prompt allows users to choose between a standalone app router or a managed app router for deployment.
- * The prompt is mandatory, with a default selection of the "standard" router type.
+ * This prompt allows users to choose between a standalone | managed | app frontend router for deployment.
+ * The prompt is mandatory, with a default selection of the "managed" router type.
  *
  * @returns {CfAppRouterDeployConfigQuestions} - The prompt configuration object for selecting the router type.
  */
@@ -100,6 +100,7 @@ function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
         message: t('prompts.routerTypeMessage'),
         choices: [
             { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
+            { name: t('routerType.appFrontAppService'), value: RouterModuleType.AppFront },
             { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard }
         ]
     } as ListQuestion<CfAppRouterDeployConfigAnswers>;
@@ -116,7 +117,7 @@ function getRouterTypePrompt(): CfAppRouterDeployConfigQuestions {
 function getConnectivityServicePrompt(): CfAppRouterDeployConfigQuestions {
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean =>
-            previousAnswers.routerType !== RouterModuleType.Managed,
+            previousAnswers.routerType === RouterModuleType.Standard,
         type: 'confirm',
         name: appRouterPromptNames.addConnectivityService,
         guiOptions: {
@@ -140,7 +141,7 @@ function getConnectivityServicePrompt(): CfAppRouterDeployConfigQuestions {
 function getDestinationService(): CfAppRouterDeployConfigQuestions {
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean =>
-            previousAnswers.routerType !== RouterModuleType.Managed,
+            previousAnswers.routerType === RouterModuleType.Standard,
         type: 'confirm',
         name: appRouterPromptNames.addABAPServiceBinding,
         message: t('prompts.serviceAdvancedOptionMessage'),
@@ -161,7 +162,7 @@ function getServiceProvider(): CfAppRouterDeployConfigQuestions {
     const errorHandler = new ErrorHandler();
     return {
         when: (previousAnswers: CfAppRouterDeployConfigAnswers): boolean => {
-            return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType !== RouterModuleType.Managed;
+            return !!previousAnswers.addABAPServiceBinding && previousAnswers.routerType === RouterModuleType.Standard;
         },
         type: 'list',
         name: appRouterPromptNames.abapServiceProvider,

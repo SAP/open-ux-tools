@@ -6,7 +6,7 @@ import {
     type Destinations
 } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations } from '../src/prompts/prompt-helpers';
-import type { CfSystemChoice } from '../src/types';
+import type { CfSystemChoice } from '../src';
 import LoggerHelper from '../src/logger-helper';
 import { t } from '../src/i18n';
 
