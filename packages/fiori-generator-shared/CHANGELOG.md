@@ -1,5 +1,11 @@
 # @sap-ux/fiori-generator-shared
 
+## 0.10.0
+
+### Minor Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+
 ## 0.9.11
 
 ### Patch Changes

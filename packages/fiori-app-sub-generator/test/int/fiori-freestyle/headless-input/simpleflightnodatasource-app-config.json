@@ -1,0 +1,20 @@
+{
+  "version": "0.2",
+  "floorplan": "FF_SIMPLE",
+  "project": {
+    "viewName": "ViewNoDS",
+    "name": "simpleflightnodatasource",
+    "description": "An SAP Fiori application.",
+    "title": "App Title",
+    "namespace": "",
+    "targetFolder": "",
+    "ui5Theme": "sap_fiori_3",
+    "ui5Version": "1.82.2",
+    "skipAnnotations": false,
+    "launchDeployConfigAsSubGenerator": false,
+    "launchFlpConfigAsSubGenerator": false,
+    "sapux": false,
+    "localUI5Version": "1.82.2",
+    "manifestVersion": "1.31.0"
+  }
+}
