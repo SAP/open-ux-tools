@@ -24,6 +24,7 @@
         "lint:summary": "eslint . --ext .ts,.tsx -f summary",
         "pre-commit": "lint-staged --quiet",
         "test": "jest --maxWorkers=2",
+        "test:update": "node scripts/update-test-data.js",
         "watch": "tsc --build ./ -watch"
     },
     "files": [
