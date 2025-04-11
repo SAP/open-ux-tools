@@ -40,13 +40,14 @@ import {
 } from '../utils';
 import {
     addMtaDeployParameters,
-    createCAPMTA,
     createMTA,
     doesCDSBinaryExist,
     doesMTABinaryExist,
+    generateCAPMTA,
     getMtaConfig,
     getMtaId,
     type MtaConfig,
+    runCommand,
     toMtaModuleName
 } from '../mta-config';
 import LoggerHelper from '../logger-helper';
@@ -60,9 +61,15 @@ import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type M
  * @param cfAppConfig writer configuration
  * @param fs an optional reference to a mem-fs editor
  * @param logger optional logger instance
+ * @param skipInstall skip install of node modules
  * @returns file system reference
  */
-export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
+export async function generateAppConfig(
+    cfAppConfig: CFAppConfig,
+    fs?: Editor,
+    logger?: Logger,
+    skipInstall = false
+): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -70,7 +77,7 @@ export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, l
         LoggerHelper.logger = logger;
     }
     doesMTABinaryExist();
-    await generateDeployConfig(cfAppConfig, fs);
+    await generateDeployConfig(cfAppConfig, fs, skipInstall);
     return fs;
 }
 
@@ -215,11 +222,13 @@ async function processManifest(
 }
 
 /**
+ * Generates the deployment configuration for the HTML5 application.
  *
  * @param cfAppConfig writer configuration
  * @param fs reference to a mem-fs editor
+ * @param skipInstall skip install of node modules
  */
-async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<void> {
+async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor, skipInstall: boolean): Promise<void> {
     LoggerHelper?.logger?.debug(`Generate HTML5 app deployment configuration with: \n ${JSON.stringify(cfAppConfig)}`);
 
     const config = await getUpdatedConfig(cfAppConfig, fs);
@@ -227,7 +236,7 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
 
     // Generate MTA Config, LCAP will generate the mta.yaml on the fly so we don't care about it!
     if (!config.lcapMode) {
-        await generateMTAFile(config);
+        await generateMTAFile(config, fs);
         await generateSupportingConfig(config, fs);
         await updateMtaConfig(config, fs);
     }
@@ -238,17 +247,26 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
     if (config.isMtaRoot) {
         await updateRootPackage({ mtaId: config.mtaId ?? config.appId, rootPath: config.rootPath }, fs);
     }
+    if (!skipInstall) {
+        // When installing, we need to ensure that the package.json is written to disk before running npm install
+        await new Promise((resolve) => fs.commit(resolve));
+        LoggerHelper?.logger?.debug(`npm install command will be executed in ${config.rootPath}`);
+        const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
+        // Install latest dev dependencies, if any, added by the CF writer
+        await runCommand(config.rootPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
+    }
 }
 
 /**
  * Creates the MTA configuration file.
  *
  * @param cfConfig writer configuration
+ * @param fs
  */
-export async function generateMTAFile(cfConfig: CFConfig): Promise<void> {
+export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<void> {
     if (!cfConfig.mtaId) {
         if (cfConfig.isCap) {
-            await createCAPMTA(cfConfig.rootPath);
+            await generateCAPMTA({ ...cfConfig, mtaPath: cfConfig.rootPath }, fs);
         } else {
             createMTA({ mtaId: cfConfig.appId, mtaPath: cfConfig.mtaPath ?? cfConfig.rootPath } as MTABaseConfig);
         }

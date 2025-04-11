@@ -79,7 +79,7 @@ describe('CF Writer with CAP App Frontend', () => {
             expect(getMtaPathMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
             expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
-            expect(commandRunnerMock).not.toHaveBeenCalled();
+            expect(commandRunnerMock).toHaveBeenCalled();
             expect(localFs.read(join(capPath, 'app/lrop', 'xs-app.json'))).toMatchSnapshot();
             expect(localFs.read(join(capPath, 'xs-security.json'))).toMatchSnapshot();
             expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();

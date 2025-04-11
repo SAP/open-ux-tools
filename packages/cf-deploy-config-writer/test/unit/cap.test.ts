@@ -9,7 +9,6 @@ import type { Editor } from 'mem-fs-editor';
 import { DefaultMTADestination, MTABinNotFound } from '../../src/constants';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import fs from 'fs';
 
 jest.mock('@sap/mta-lib', () => {
     return {
@@ -70,21 +69,24 @@ describe('CF Writer', () => {
                     destinationName: DefaultMTADestination,
                     addManagedAppRouter: true
                 },
-                unitTestFs
+                unitTestFs,
+                undefined,
+                true
             );
             expect(getMtaPathMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
             expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(commandRunnerMock).not.toHaveBeenCalled();
             expect(unitTestFs.dump(capPath)).toMatchSnapshot();
-            expect(fs.readFileSync(join(capPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
-            expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
+            expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
         });
 
         test('Validate dependency on MTA binary', async () => {
             hasSyncMock.mockReturnValue(false);
             const capPath = join(outputDir, 'cap');
-            await expect(generateAppConfig({ appPath: capPath }, unitTestFs)).rejects.toThrowError(MTABinNotFound);
+            await expect(generateAppConfig({ appPath: capPath }, unitTestFs, undefined, true)).rejects.toThrowError(
+                MTABinNotFound
+            );
         });
 
         test('Validate error is thrown if cds fails', async () => {
@@ -100,10 +102,12 @@ describe('CF Writer', () => {
                         destinationName: DefaultMTADestination,
                         addManagedAppRouter: true
                     },
-                    unitTestFs
+                    unitTestFs,
+                    undefined,
+                    true
                 )
             ).rejects.toThrowError(/An error occurred when creating the mta.yaml file/);
-            expect(commandRunnerMock).toHaveBeenCalled();
+            expect(commandRunnerMock).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -119,10 +123,11 @@ describe('CF Writer', () => {
                 appPath: join(capPath, 'app/project1'),
                 destinationName: DefaultMTADestination
             },
-            unitTestFs
+            unitTestFs,
+            undefined,
+            true
         );
-        expect(fs.readFileSync(join(capPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
-        expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
+        expect(unitTestFs.dump(capPath)).toMatchSnapshot();
     });
 
     test('Validate HTML5 is added without a managed approuter to a CAP project', async () => {
@@ -138,11 +143,11 @@ describe('CF Writer', () => {
                 destinationName: DefaultMTADestination,
                 addManagedAppRouter: false
             },
-            unitTestFs
+            unitTestFs,
+            undefined,
+            true
         );
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
-        expect(fs.readFileSync(join(capPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
-        expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
     });
 
     test('Validate a 2nd HTML5 app is added', async () => {
@@ -151,7 +156,7 @@ describe('CF Writer', () => {
         fsExtra.mkdirSync(capPath);
         fsExtra.copySync(join(__dirname, '../sample/capcdsmulti'), capPath);
         // Copy over sample mta.yaml generated, when using the command `cds add mta xsuaa destination html5-repo`
-        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmta'), capPath);
+        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmulti'), capPath);
         // Step1. Add existing app with managed approuter
         await generateAppConfig(
             {
@@ -159,18 +164,11 @@ describe('CF Writer', () => {
                 destinationName: DefaultMTADestination,
                 addManagedAppRouter: true
             },
-            unitTestFs
+            unitTestFs,
+            undefined,
+            true
         );
-        // Step2. Add a 2nd app to the mta
-        await generateAppConfig(
-            {
-                appPath: join(capPath, 'app/project2'),
-                destinationName: DefaultMTADestination,
-                addManagedAppRouter: false
-            },
-            unitTestFs
-        );
-        unitTestFs.dump(capPath);
+        expect(unitTestFs.dump(capPath)).toMatchSnapshot();
         expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
     });
 });

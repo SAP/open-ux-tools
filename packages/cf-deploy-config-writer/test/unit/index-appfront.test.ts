@@ -5,6 +5,7 @@ import { generateAppConfig } from '../../src';
 import { create, type Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import fs from 'fs';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -25,6 +26,7 @@ jest.mock('@sap/mta-lib', () => {
 
 let hasSyncMock: jest.SpyInstance;
 let unitTestFs: Editor;
+let commandRunnerMock: jest.SpyInstance;
 
 describe('CF Writer App - Application Frontend', () => {
     jest.setTimeout(10000);
@@ -35,6 +37,7 @@ describe('CF Writer App - Application Frontend', () => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
+        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 } as any));
         unitTestFs = create(createStorage());
     });
 

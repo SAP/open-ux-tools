@@ -14,9 +14,12 @@
         "cleanupModules": "Cleanup modules.",
         "creatingMta": "Creating MTA using {{- cdsParams }}...",
         "html5AppAdded": "HTML5 application added to MTA configuration {{- appName}}",
+        "html5AlreadyExists": "HTML5 application {{- appName}} already exists in the MTA configuration.",
         "addXsuaaService": "Adding XSUAA service to MTA configuration.",
         "mtaReadWithPrefix": "Read mta.yaml with prefix {{- prefix }}.",
-        "errorReadingMta": "Error reading mta.yaml file {{- error }}."
+        "errorReadingMta": "Error reading mta.yaml file {{- error }}.",
+        "unableToReadPackageJson": "Unable to read package.json file {{- error }}.",
+        "processHTML5App": "Processing HTML5 app {{- appName }}."
     },
     "error": {
         "unableToLoadMTA": "Unable to load mta.yaml configuration {{- mtaDir }}, error thrown {{- error }}.",

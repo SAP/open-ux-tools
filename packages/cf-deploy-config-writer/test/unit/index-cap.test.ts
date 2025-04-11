@@ -77,19 +77,18 @@ describe('CF Writer CAP', () => {
                     routerType
                 },
                 undefined,
-                logger
+                logger,
+                true
             );
-            expect(fs.readFileSync(join(mtaPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
-            expect(fs.readFileSync(join(mtaPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot(); // Ensure it hasn't changed!
+            expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot(); // Ensure it hasn't changed! // Ensure it hasn't changed!
             expect(getCapProjectTypeMock).toHaveBeenCalled();
-            expect(commandRunnerMock.mock.calls).toHaveLength(2);
+            expect(commandRunnerMock.mock.calls).toHaveLength(1);
             expect(commandRunnerMock).toHaveBeenCalledWith(
                 'cds',
                 ['add', 'mta', 'xsuaa', 'destination', 'html5-repo'],
                 expect.objectContaining({ cwd: expect.stringContaining(mtaId) })
             );
-            expect(commandRunnerMock.mock.calls[1][0]).toStrictEqual('npm.cmd'); // Just always test for windows!
-            expect(commandRunnerMock.mock.calls[1][1]).toStrictEqual(['install', '--ignore-engines']);
             if (RouterModuleType.Standard === routerType) {
                 expect(localFs.read(join(mtaPath, `router`, 'package.json'))).toMatchSnapshot();
                 expect(localFs.read(join(mtaPath, `router`, 'xs-app.json'))).toMatchSnapshot();
