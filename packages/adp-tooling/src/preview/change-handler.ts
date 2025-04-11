@@ -248,6 +248,7 @@ export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Edito
 /**
  * Asynchronously adds an XML fragment to the project if it doesn't already exist.
  *
+ * @param {string} rootPath - The root path of the project.
  * @param {string} basePath - The base path of the project.
  * @param {AddXMLChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
@@ -261,19 +262,24 @@ export async function addControllerExtension(
     logger: Logger
 ): Promise<void> {
     const { codeRef } = change.content;
-    const id = (await getVariant(rootPath))?.id;
-    const isTsSupported = isTypescriptSupported(rootPath);
+    const isTsSupported = isTypescriptSupported(rootPath, fs);
     const fileExtension = path.extname(codeRef);
     const fileName = path.basename(codeRef, fileExtension);
     const fullName = `${path.basename(codeRef, fileExtension)}.${isTsSupported ? 'ts' : 'js'}`;
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
     const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
-    const text = fs.read(tmplPath);
-    const extensionPath = `${id}.${fileName}`;
-    const templateData = isTsSupported ? { fileName, ns: id } : { extensionPath };
+    try {
+        const text = fs.read(tmplPath);
+        const id = (await getVariant(rootPath))?.id;
+        const extensionPath = `${id}.${fileName}`;
+        const templateData = isTsSupported ? { fileName, ns: id } : { extensionPath };
 
-    const template = render(text, templateData);
-    fs.write(path.join(basePath, DirName.Changes, DirName.Coding, fullName), template);
+        const template = render(text, templateData);
+        fs.write(path.join(basePath, DirName.Changes, DirName.Coding, fullName), template);
+    } catch (error) {
+        logger.error(`Failed to create controller extension "${codeRef}": ${error}`);
+        throw new Error('Failed to create controller extension' + error.message);
+    }
 }
 
 /**

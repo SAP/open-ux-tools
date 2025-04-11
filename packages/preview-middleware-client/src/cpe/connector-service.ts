@@ -60,8 +60,5 @@ export class WorkspaceConnectorService {
             // (We don't want to show "Reload" button)
             this.sendAction(storageFileChanged(content.fragmentPath));
         }
-        if (changeType === 'codeExt' && content?.codeRef !== undefined) {
-            this.sendAction(storageFileChanged(content?.codeRef));
-        }
     }
 }
