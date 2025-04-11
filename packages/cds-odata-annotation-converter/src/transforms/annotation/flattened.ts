@@ -217,14 +217,16 @@ function convertToExpandedStructure(
 }
 
 function addDiagnosticForSegmentAfterType(state: VisitorState, segments: Identifier[], valueRange?: Range): void {
-    if (segments.length > 1) {
+    if (segments.length >= 1) {
+        const message =
+            segments.length === 1 ? i18n.t('Segment_is_not_allowed_here') : i18n.t('Segments_are_not_allowed_here');
         const lastSegment = segments[segments.length - 1];
         const propertyRange = createRange(segments[0].range?.start, valueRange?.end ?? lastSegment?.range?.end);
         if (propertyRange) {
             state.addDiagnostic({
                 range: propertyRange,
                 severity: DiagnosticSeverity.Error,
-                message: i18n.t('Segment_is_not_allowed_here')
+                message
             });
         }
     }

@@ -392,9 +392,72 @@
                     "value": "test",
                     "range": "[(7,12)..(7,16)]"
                 }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Chart.$Type.ChartType",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Chart",
+                            "range": "[(8,4)..(8,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(8,10)..(8,15)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "ChartType",
+                            "range": "[(8,16)..(8,25)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(8,9)..(8,10)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(8,15)..(8,16)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(8,4)..(8,25)]"
+                },
+                "range": "[(8,4)..(8,52)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(8,26)..(8,27)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "UI.ChartDefinitionType",
+                    "range": "[(8,28)..(8,52)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(8,28)..(8,29)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(8,51)..(8,52)]"
+                    }
+                }
             }
         ],
-        "range": "[(0,5)..(8,1)]",
+        "range": "[(0,5)..(9,1)]",
         "commas": [
             {
                 "type": "token",
@@ -425,6 +488,16 @@
                 "type": "token",
                 "value": ",",
                 "range": "[(6,35)..(6,36)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(7,35)..(7,36)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(8,52)..(8,53)]"
             }
         ],
         "openToken": {
@@ -435,10 +508,10 @@
         "closeToken": {
             "type": "token",
             "value": "}",
-            "range": "[(8,0)..(8,1)]"
+            "range": "[(9,0)..(9,1)]"
         }
     },
-    "range": "[(0,0)..(8,1)]",
+    "range": "[(0,0)..(9,1)]",
     "colon": {
         "type": "token",
         "value": ":",

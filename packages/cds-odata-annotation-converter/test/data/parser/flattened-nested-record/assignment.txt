@@ -5,5 +5,6 @@ UI : {
     PresentationVariant.$Type:12,
     SelectionVariant.$Type,
     Badge.$Type.Title.Value: 'test',
-    ![Badge#test].$Type.Title.Value
+    ![Badge#test].$Type.Title.Value,
+    Chart.$Type.ChartType : 'UI.ChartDefinitionType',
 };
