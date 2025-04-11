@@ -83,7 +83,7 @@ export interface CommonFioriProjectProperties extends TelemetryProperties {
 }
 
 export interface TelemetryProperties {
-    [key: string]: string | boolean;
+    [key: string]: string | boolean | number;
 }
 
 export interface TelemetryMeasurements {

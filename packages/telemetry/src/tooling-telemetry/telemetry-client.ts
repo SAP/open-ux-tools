@@ -37,7 +37,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
      */
     public async report(
         eventName: string,
-        properties: { [key: string]: string },
+        properties: TelemetryProperties,
         measurements: { [key: string]: number },
         sampleRate: SampleRate | undefined,
         telemetryHelperProperties?: TelemetryHelperProperties,
@@ -53,7 +53,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
             ...properties,
             ...fioriProjectCommonProperties,
             ...commonProperties
-        } as TelemetryProperties;
+        };
 
         await super.report(
             eventName,
@@ -131,7 +131,10 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     private async collectToolsSuiteTelemetry(
         event: TelemetryEvent,
         telemetryHelperProperties?: TelemetryHelperProperties
-    ): Promise<{ finalProperties: Record<string, string | boolean>; finalMeasurements: Record<string, number> }> {
+    ): Promise<{
+        finalProperties: Record<string, string | boolean | number>;
+        finalMeasurements: Record<string, number>;
+    }> {
         const fioriProjectCommonProperties = await processToolsSuiteTelemetry(telemetryHelperProperties);
         const telemetryEventCommonProperties = {
             v: this.extensionVersion,
