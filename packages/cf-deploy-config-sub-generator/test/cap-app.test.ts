@@ -222,7 +222,8 @@ describe('Cloud foundry generator tests', () => {
                 routerType: 'managed'
             }),
             expect.anything(),
-            expect.anything()
+            expect.anything(),
+            true
         );
         expect(mockGenerateAppConfig).toHaveBeenCalled();
         expect(mockFindCapProjectRoot).toHaveBeenCalled();
