@@ -11,6 +11,7 @@ import { fetchMock, openMock, sapCoreMock } from 'mock/window';
 import * as apiHandler from '../../../../src/adp/api-handler';
 
 import ControllerExtension from '../../../../src/adp/controllers/ControllerExtension.controller';
+import { ExtenControllerData } from 'open/ux/preview/client/adp/extend-controller';
 
 describe('ControllerExtension', () => {
     beforeAll(() => {
@@ -91,8 +92,7 @@ describe('ControllerExtension', () => {
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 overlays as unknown as UI5Element,
-                {} as unknown as RuntimeAuthoring,
-
+                {} as unknown as RuntimeAuthoring
             );
 
             fetchMock.mockResolvedValue({
@@ -510,6 +510,57 @@ describe('ControllerExtension', () => {
             expect(apiHandler.writeChange).toHaveBeenCalledWith({
                 creation: '2020-01-01T00:00:00.000Z',
                 fileName: 'something.change'
+            });
+        });
+
+        test('resolve deffered data promise when passed', async () => {
+            const addSpy = jest.fn().mockResolvedValue({ fileName: 'something.change' });
+            const overlays = {
+                getId: jest.fn().mockReturnValue('some-id')
+            };
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+            const resolveSpy = jest.fn();
+            const mockData = {
+                deferred: {
+                    resolve: resolveSpy
+                }
+            } as unknown as ExtenControllerData;
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                overlays as unknown as UI5Element,
+                {
+                    getService: jest.fn().mockResolvedValue({ add: addSpy })
+                } as unknown as RuntimeAuthoring,
+                mockData
+            );
+            controllerExt.model = {
+                setProperty: jest.fn(),
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce(undefined)
+                    .mockReturnValueOnce('testController')
+                    .mockReturnValueOnce('viewId')
+            } as unknown as JSONModel;
+
+            controllerExt.handleDialogClose = jest.fn();
+
+            await controllerExt.setup({
+                setEscapeHandler: jest.fn(),
+                destroy: jest.fn(),
+                setModel: jest.fn(),
+                open: jest.fn(),
+                close: jest.fn()
+            } as unknown as Dialog);
+
+            await controllerExt.onCreateBtnPress(event as unknown as Event);
+
+            expect(mockData.deferred.resolve).toHaveBeenCalledWith({
+                codeRef: 'coding/testController.js',
+                viewId: 'viewId'
             });
         });
 
