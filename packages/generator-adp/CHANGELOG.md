@@ -1,5 +1,12 @@
 # @sap-ux/generator-adp
 
+## 0.1.5
+
+### Patch Changes
+
+-   Updated dependencies [c4278fb]
+    -   @sap-ux/adp-tooling@0.13.26
+
 ## 0.1.4
 
 ### Patch Changes
