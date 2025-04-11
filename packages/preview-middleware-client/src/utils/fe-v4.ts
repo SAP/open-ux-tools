@@ -153,21 +153,3 @@ export function getV4ApplicationPages(manifest: Manifest): { id: string; entityS
     }
     return result;
 }
-
-export function findNestedElement(
-    ownerComponent: UI5Element,
-    candidates: UI5Element[]
-): UI5Element | undefined {
-    const hasParent = (component: ManagedObject, parentIdToFind: string): boolean => {
-        const parent = component.getParent();
-        if (!parent) {
-            return false;
-        }
-        if (parent.getId() === parentIdToFind) {
-            return true;
-        }
-        return hasParent(parent, parentIdToFind);
-    };
-    const ownerId = ownerComponent.getId();
-    return candidates.find((item) => hasParent(item, ownerId));
-}

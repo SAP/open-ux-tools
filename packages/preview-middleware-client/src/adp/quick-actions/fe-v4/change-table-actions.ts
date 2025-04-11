@@ -1,14 +1,14 @@
 import OverlayUtil from 'sap/ui/dt/OverlayUtil';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
+import UI5Element from 'sap/ui/core/Element';
 import { QuickActionContext, NestedQuickActionDefinition } from '../../../cpe/quick-actions/quick-action-definition';
-import { getControlById } from '../../../utils/core';
+import { getControlById, findNestedElements } from '../../../utils/core';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { MDC_ACTION_TOOLBAR_TYPE, MDC_TABLE_TYPE } from '../control-types';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
-import { findNestedElement } from '../../../utils/fe-v4';
-import UI5Element from 'sap/ui/core/Element';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const CHANGE_TABLE_ACTIONS = 'change-table-actions';
 const ACTION_ID = 'CTX_SETTINGS';
@@ -23,7 +23,9 @@ export class ChangeTableActionsQuickAction
     public toolbarsMap: Record<string, UI5Element | undefined> = {};
 
     constructor(context: QuickActionContext) {
-        super(CHANGE_TABLE_ACTIONS, [MDC_TABLE_TYPE], 'V4_QUICK_ACTION_CHANGE_TABLE_ACTIONS', context, undefined, []);
+        super(CHANGE_TABLE_ACTIONS, [MDC_TABLE_TYPE], 'V4_QUICK_ACTION_CHANGE_TABLE_ACTIONS', context, undefined, [
+            DIALOG_ENABLEMENT_VALIDATOR
+        ]);
     }
 
     async initialize(): Promise<void> {
@@ -34,7 +36,7 @@ export class ChangeTableActionsQuickAction
         const processChild = async (child: NestedQuickActionChild, mapKey: string) => {
             const mapEntry = this.tableMap[mapKey];
             if (mapEntry) {
-                const tableToolbar = findNestedElement(mapEntry.table, toolbars);
+                const tableToolbar = findNestedElements(mapEntry.table, toolbars)[0];
                 this.toolbarsMap[mapKey] = tableToolbar;
                 const actions = tableToolbar ? await this.context.actionService.get(tableToolbar.getId()) : [];
                 const changeToolbarContentAction = actions.find((action) => action.id === ACTION_ID);
@@ -46,10 +48,10 @@ export class ChangeTableActionsQuickAction
                 } else if (!child.enabled) {
                     tooltip = this.context.resourceBundle.getText('TABLE_HEADER_TOOLBAR_NOT_CHANGEABLE');
                 }
-                child.tooltip = tooltip;
+                child.tooltip = tooltip ?? child.tooltip;
             }
             for (let idx = 0; idx < child.children.length; idx++) {
-                await processChild(child.children[idx], `${mapKey}/${idx.toFixed(0)}`);
+                await processChild(child.children[idx], `${mapKey}/${idx}`);
             }
         };
 
@@ -57,7 +59,7 @@ export class ChangeTableActionsQuickAction
 
         // disable nested actions based on conditions
         for (let idx = 0; idx < this.children.length; idx++) {
-            await processChild(this.children[idx], `${idx.toFixed(0)}`);
+            await processChild(this.children[idx], `${idx}`);
         }
     }
 

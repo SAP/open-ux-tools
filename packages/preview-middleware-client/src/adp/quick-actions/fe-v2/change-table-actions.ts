@@ -5,6 +5,7 @@ import { getControlById } from '../../../utils/core';
 import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { NestedQuickActionChild } from '@sap-ux-private/control-property-editor-common';
 import { SMART_TABLE_TYPE } from '../control-types';
+import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 
 export const CHANGE_TABLE_ACTIONS = 'change-table-actions';
 const CONTROL_TYPES = [SMART_TABLE_TYPE];
@@ -22,7 +23,7 @@ export class ChangeTableActionsQuickAction
             {
                 includeServiceAction: true
             },
-            []
+            [DIALOG_ENABLEMENT_VALIDATOR]
         );
     }
 
@@ -33,13 +34,13 @@ export class ChangeTableActionsQuickAction
             child.tooltip = child.enabled
                 ? undefined
                 : this.context.resourceBundle.getText('TABLE_HEADER_TOOLBAR_NOT_CHANGEABLE');
-            child.children.forEach((nestedChild, idx) => processChild(nestedChild, `${mapKey}/${idx.toFixed(0)}`));
+            child.children.forEach((nestedChild, idx) => processChild(nestedChild, `${mapKey}/${idx}`));
         };
 
         await super.initialize();
 
         // disable nested actions based on conditions
-        this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx.toFixed(0)}`));
+        this.children.forEach((nestedChild, idx) => processChild(nestedChild, `${idx}`));
     }
 
     async execute(path: string): Promise<FlexCommand[]> {
