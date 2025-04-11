@@ -206,7 +206,10 @@ describe('getSystemQuestions', () => {
             objectGenerator: genMock
         } as any;
 
-        questions = getConfigPrompts(systemSelectionAnswers).prompts;
+        questions = getConfigPrompts(systemSelectionAnswers, {
+            useDraftEnabled: undefined,
+            useLaunchGen: undefined
+        }).prompts;
         questions.forEach((question) => {
             q[question.name] = question as Question;
         });
@@ -216,8 +219,10 @@ describe('getSystemQuestions', () => {
         expect(q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(q.serviceName.default()).toEqual(0);
         expect(await q.serviceName.validate!('testPackage')).toEqual(true);
+        expect(q.draftEnabled.when!({})).toEqual(true);
         expect(await q.draftEnabled.validate!(true)).toEqual(true);
         expect(await q.draftEnabled.validate!(false)).toEqual(true);
+        expect(q.launchAppGen.when!({})).toEqual(true);
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(false)).toBeUndefined();
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(true)).toEqual({
             message: 'info.appGenLaunch',
@@ -247,19 +252,23 @@ describe('getSystemQuestions', () => {
         } as any;
 
         PromptState.resetConnectedSystem();
-        questions = getConfigPrompts(systemSelectionAnswers1).prompts;
+        questions = getConfigPrompts(systemSelectionAnswers1, {
+            useDraftEnabled: false,
+            useLaunchGen: false
+        }).prompts;
         questions.forEach((question) => {
             q[question.name] = question as Question;
         });
         expect(await q.serviceName.when!({ packageManual: 'package' })).toEqual(true);
         expect(await q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
+        expect(q.draftEnabled.when!({})).toEqual(false);
         expect(await q.draftEnabled.validate!(false)).toEqual('error.validatingContent');
         PromptState.resetServiceConfig();
         expect(await q.serviceName.when!({ packageManual: '', packageAutocomplete: '' })).toEqual(false);
         PromptState.resetServiceConfig();
         expect(await q.serviceName.when!({ packageManual: undefined, packageAutocomplete: undefined })).toEqual(false);
-
+        expect(q.launchAppGen.when!({})).toEqual(false);
         const genMockValidateContent2 = {
             getContent: getContentMock,
             validateContent: jest.fn().mockImplementation(() => {
