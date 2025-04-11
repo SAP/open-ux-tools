@@ -249,7 +249,7 @@ describe('`writing` tests', () => {
                             navigationPropertyName: 'navigationProperty1',
                             entitySetName: 'navigationEntitySetName1'
                         },
-                        filterEntityType: {
+                        filterEntitySet: {
                             entitySetName: 'filterEntitySetName1',
                             entitySetType: 'FilterEntitySetType1'
                         }
@@ -282,7 +282,7 @@ describe('`writing` tests', () => {
                             navigationPropertyName: '',
                             entitySetName: 'navigationEntitySetName1'
                         },
-                        filterEntityType: {
+                        filterEntitySet: {
                             entitySetName: 'filterEntitySetName1',
                             entitySetType: 'FilterEntitySetType1'
                         }

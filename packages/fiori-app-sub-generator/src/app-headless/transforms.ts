@@ -85,7 +85,7 @@ function _setEntityRelatedConfig(feAppConfig: FEAppConfig): EntityRelatedAnswers
         };
     }
     if (feAppConfig.entityConfig?.filterEntityType) {
-        entityRelatedConfig.filterEntityType = {
+        entityRelatedConfig.filterEntitySet = {
             entitySetName: feAppConfig.entityConfig.filterEntityType,
             entitySetType: feAppConfig.entityConfig.filterEntityType
         };
