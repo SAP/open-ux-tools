@@ -1,8 +1,8 @@
-import type { Identifier, AnnotationValue } from '@sap-ux/cds-annotation-parser';
+import type { Identifier, AnnotationValue, StringLiteral } from '@sap-ux/cds-annotation-parser';
 import { nodeRange, ReservedProperties, STRING_LITERAL_TYPE } from '@sap-ux/cds-annotation-parser';
 
 import type { Element, Range } from '@sap-ux/odata-annotation-core';
-import { Edm, createAttributeNode, createElementNode } from '@sap-ux/odata-annotation-core';
+import { DiagnosticSeverity, Edm, createAttributeNode, createElementNode } from '@sap-ux/odata-annotation-core';
 
 import type { Subtree } from './handler';
 
@@ -12,6 +12,7 @@ import { getPropertyType, getTerm } from './type-resolver';
 import type { Context, VisitorState } from './visitor-state';
 import { copyRange, createRange } from './range';
 import type { ComplexTypeProperty, Term } from '@sap-ux/odata-vocabularies';
+import { i18n } from '../../i18n';
 
 /**
  * Builds a tree from a flattened annotation structure and updates context with the final value type.
@@ -51,12 +52,8 @@ export function convertFlattenedPath(
     for (const expandedStructure of expandedStructures) {
         if (parent) {
             if (expandedStructure.kind === 'record-type') {
-                if (expandedStructure.element.attributes['Type'].nameRange?.start && parent.contentRange?.end) {
-                    const range: Range = {
-                        start: expandedStructure.element.attributes['Type'].nameRange?.start,
-                        end: parent.contentRange?.end
-                    };
-                    parent.contentRange = copyRange(range);
+                if (expandedStructure.element.range) {
+                    parent.contentRange = copyRange(expandedStructure.element.range);
                 }
                 parent.content.push(expandedStructure.element);
             } else {
@@ -159,23 +156,30 @@ function convertToExpandedStructure(
             i += 2;
             continue;
         }
-        if (segment.value === ReservedProperties.Type && value?.type === STRING_LITERAL_TYPE) {
+        if (segment.value === ReservedProperties.Type) {
             const flatProperty: Element = createElementNode({
                 name: Edm.Record,
                 attributes: {
-                    [Edm.Type]: createAttributeNode(Edm.Type, value.value, segment.range, nodeRange(value, false))
+                    [Edm.Type]: createAttributeNode(
+                        Edm.Type,
+                        (value as StringLiteral)?.value,
+                        segment.range,
+                        nodeRange(value, false)
+                    )
                 },
                 range: propertyRange
             });
-            if (expandedStructure.length > 0) {
-                const last = expandedStructure[i - 1];
-                last.element.contentRange = createRange(segment.range?.start, valueRange?.end);
-            }
             expandedStructure.push({
                 kind: 'record-type',
                 name: segment.value,
                 element: flatProperty
             });
+            const hasSegmentAhead = segments[i + 1];
+            if (hasSegmentAhead) {
+                addDiagnosticForSegmentAfterType(state, segments.slice(i + 1), valueRange);
+                break;
+            }
+            addDiagnosticForNonStringLiteralType(state, value, segment.range);
         } else {
             const flatProperty: Element = createElementNode({
                 name: Edm.PropertyValue,
@@ -210,4 +214,43 @@ function convertToExpandedStructure(
     }
 
     return expandedStructure;
+}
+
+function addDiagnosticForSegmentAfterType(state: VisitorState, segments: Identifier[], valueRange?: Range): void {
+    if (segments.length > 1) {
+        const lastSegment = segments[segments.length - 1];
+        const propertyRange = createRange(segments[0].range?.start, valueRange?.end ?? lastSegment?.range?.end);
+        if (propertyRange) {
+            state.addDiagnostic({
+                range: propertyRange,
+                severity: DiagnosticSeverity.Error,
+                message: i18n.t('Segment_is_not_allowed_here')
+            });
+        }
+    }
+}
+function addDiagnosticForNonStringLiteralType(
+    state: VisitorState,
+    value?: AnnotationValue,
+    segmentRange?: Range
+): void {
+    if (value?.type !== STRING_LITERAL_TYPE && value?.range) {
+        const message = i18n.t('The_name_attribute_value_must_be_a_string_literal', {
+            name: ReservedProperties.Type
+        });
+        state.addDiagnostic({
+            range: value.range,
+            severity: DiagnosticSeverity.Error,
+            message
+        });
+    } else if (!value && segmentRange) {
+        const message = i18n.t('The_attribute_value_must_be_provided', {
+            name: ReservedProperties.Type
+        });
+        state.addDiagnostic({
+            range: segmentRange,
+            severity: DiagnosticSeverity.Error,
+            message
+        });
+    }
 }

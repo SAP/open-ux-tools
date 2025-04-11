@@ -255,8 +255,8 @@ export type AnnotationNodeType =
     | typeof TOKEN_TYPE
     | AnnotationValueType;
 
-export const nodeRange = (node: AnnotationNode, includeDelimiters: boolean): Range | undefined => {
-    if (!node.range) {
+export const nodeRange = (node?: AnnotationNode, includeDelimiters?: boolean): Range | undefined => {
+    if (!node?.range) {
         return undefined;
     }
 

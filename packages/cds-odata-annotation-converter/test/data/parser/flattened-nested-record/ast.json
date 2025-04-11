@@ -134,14 +134,297 @@
                         "range": "[(2,53)..(2,54)]"
                     }
                 }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Chart.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Chart",
+                            "range": "[(3,4)..(3,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(3,10)..(3,15)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(3,9)..(3,10)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(3,4)..(3,15)]"
+                },
+                "range": "[(3,4)..(3,42)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(3,16)..(3,17)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "UI.ChartDefinitionType",
+                    "range": "[(3,18)..(3,42)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(3,18)..(3,19)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(3,41)..(3,42)]"
+                    }
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "PresentationVariant.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "PresentationVariant",
+                            "range": "[(4,4)..(4,23)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(4,24)..(4,29)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(4,23)..(4,24)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(4,4)..(4,29)]"
+                },
+                "range": "[(4,4)..(4,32)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(4,29)..(4,30)]"
+                },
+                "value": {
+                    "type": "number",
+                    "value": 12,
+                    "range": "[(4,30)..(4,32)]"
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "SelectionVariant.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "SelectionVariant",
+                            "range": "[(5,4)..(5,20)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(5,21)..(5,26)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(5,20)..(5,21)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(5,4)..(5,26)]"
+                },
+                "range": "[(5,4)..(5,26)]"
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Badge.$Type.Title.Value",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Badge",
+                            "range": "[(6,4)..(6,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(6,10)..(6,15)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Title",
+                            "range": "[(6,16)..(6,21)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Value",
+                            "range": "[(6,22)..(6,27)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(6,9)..(6,10)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(6,15)..(6,16)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(6,21)..(6,22)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(6,4)..(6,27)]"
+                },
+                "range": "[(6,4)..(6,35)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(6,27)..(6,28)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "test",
+                    "range": "[(6,29)..(6,35)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(6,29)..(6,30)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(6,34)..(6,35)]"
+                    }
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Badge#test.$Type.Title.Value",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Badge",
+                            "range": "[(7,6)..(7,11)]",
+                            "quoted": true
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(7,18)..(7,23)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Title",
+                            "range": "[(7,24)..(7,29)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Value",
+                            "range": "[(7,30)..(7,35)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(7,17)..(7,18)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(7,23)..(7,24)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(7,29)..(7,30)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(7,4)..(7,35)]"
+                },
+                "range": "[(7,4)..(7,35)]",
+                "qualifier": {
+                    "type": "qualifier",
+                    "value": "test",
+                    "range": "[(7,12)..(7,16)]"
+                }
             }
         ],
-        "range": "[(0,5)..(3,1)]",
+        "range": "[(0,5)..(8,1)]",
         "commas": [
             {
                 "type": "token",
                 "value": ",",
                 "range": "[(1,56)..(1,57)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(2,54)..(2,55)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(3,42)..(3,43)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(4,32)..(4,33)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(5,26)..(5,27)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(6,35)..(6,36)]"
             }
         ],
         "openToken": {
@@ -152,10 +435,10 @@
         "closeToken": {
             "type": "token",
             "value": "}",
-            "range": "[(3,0)..(3,1)]"
+            "range": "[(8,0)..(8,1)]"
         }
     },
-    "range": "[(0,0)..(3,1)]",
+    "range": "[(0,0)..(8,1)]",
     "colon": {
         "type": "token",
         "value": ":",

@@ -266,7 +266,7 @@ describe('ast to generic format', () => {
         });
     });
 
-    describe('flatten nested record- HeaderInfo Title', () => {
+    describe('flatten nested record', () => {
         testConversion('flattened-nested-record');
 
         describe('pointer', () => {
