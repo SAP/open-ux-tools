@@ -1,5 +1,23 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.1.0
+
+### Minor Changes
+
+-   7e03084: adds headless support to the deploy config sub generator
+
+## 0.0.27
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/odata-service-inquirer@2.2.28
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.58
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.40
+    -   @sap-ux/deploy-config-generator-shared@0.0.40
+    -   @sap-ux/inquirer-common@0.6.33
+
 ## 0.0.26
 
 ### Patch Changes

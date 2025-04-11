@@ -19,8 +19,7 @@ import { getSystemServiceQuestion } from '../service-selection/questions';
 import { getCfAbapBASQuestions } from '../cf-abap/questions';
 import { validateServiceUrl } from '../validators';
 import {
-    type CfAbapEnvServiceChoice,
-    type NewSystemChoice,
+    type SystemSelectionAnswerType,
     connectWithBackendSystem,
     connectWithDestination,
     createSystemChoices,
@@ -36,11 +35,6 @@ const systemSelectionPromptNames = {
     systemSelectionCli: 'systemSelectionCli',
     destinationServicePath: 'destinationServicePath'
 } as const;
-
-export type SystemSelectionAnswerType = {
-    type: 'destination' | 'backendSystem' | 'newSystemChoice' | CfAbapEnvServiceChoice;
-    system: Destination | BackendSystem | NewSystemChoice | CfAbapEnvServiceChoice;
-};
 
 interface SystemSelectionCredentialsAnswers {
     [usernamePromptName]?: string;

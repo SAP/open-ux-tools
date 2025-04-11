@@ -938,8 +938,8 @@ importers:
         specifier: workspace:*
         version: link:../yaml
       i18next:
-        specifier: 20.6.1
-        version: 20.6.1
+        specifier: 23.11.2
+        version: 23.11.2
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -1605,12 +1605,21 @@ importers:
       '@sap-ux/cf-deploy-config-writer':
         specifier: workspace:*
         version: link:../cf-deploy-config-writer
+      '@sap-ux/fiori-app-sub-generator':
+        specifier: workspace:*
+        version: link:../fiori-app-sub-generator
+      '@sap-ux/jest-file-matchers':
+        specifier: workspace:*
+        version: link:../jest-file-matchers
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
       '@sap/mta-lib':
         specifier: 1.7.4
         version: 1.7.4
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
       '@types/hasbin':
         specifier: 1.2.2
         version: 1.2.2
@@ -1638,6 +1647,9 @@ importers:
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
@@ -1934,6 +1946,145 @@ importers:
       npm-run-all:
         specifier: 4.1.5
         version: 4.1.5
+
+  packages/fiori-app-sub-generator:
+    dependencies:
+      '@sap-ux/annotation-converter':
+        specifier: 0.10.3
+        version: 0.10.3
+      '@sap-ux/annotation-generator':
+        specifier: workspace:*
+        version: link:../annotation-generator
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/cap-config-writer':
+        specifier: workspace:*
+        version: link:../cap-config-writer
+      '@sap-ux/edmx-parser':
+        specifier: 0.9.0
+        version: 0.9.0
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/fiori-elements-writer':
+        specifier: workspace:*
+        version: link:../fiori-elements-writer
+      '@sap-ux/fiori-freestyle-writer':
+        specifier: workspace:*
+        version: link:../fiori-freestyle-writer
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/fiori-tools-settings':
+        specifier: workspace:*
+        version: link:../fiori-tools-settings
+      '@sap-ux/launch-config':
+        specifier: workspace:*
+        version: link:../launch-config
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
+      '@sap-ux/odata-service-writer':
+        specifier: workspace:*
+        version: link:../odata-service-writer
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/telemetry':
+        specifier: workspace:*
+        version: link:../telemetry
+      '@sap-ux/ui5-application-inquirer':
+        specifier: workspace:*
+        version: link:../ui5-application-inquirer
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
+      '@sap/service-provider-apis':
+        specifier: 2.1.5
+        version: 2.1.5
+      i18next:
+        specifier: 23.11.2
+        version: 23.11.2
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      mem-fs:
+        specifier: 2.1.0
+        version: 2.1.0
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      uuid:
+        specifier: 11.0.5
+        version: 11.0.5
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.16.9
+        version: 1.16.9
+      '@sap-ux/flp-config-sub-generator':
+        specifier: workspace:*
+        version: link:../flp-config-sub-generator
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/jest-file-matchers':
+        specifier: workspace:*
+        version: link:../jest-file-matchers
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/vscode':
+        specifier: 1.73.1
+        version: 1.73.1
+      '@types/yeoman-environment':
+        specifier: 2.10.11
+        version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.14
+        version: 5.2.14
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      jest-extended:
+        specifier: 4.0.2
+        version: 4.0.2(jest@29.7.0)
+      jest-mock:
+        specifier: 29.7.0
+        version: 29.7.0
+      mock-spawn:
+        specifier: 0.2.6
+        version: 0.2.6
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
 
   packages/fiori-elements-writer:
     dependencies:
@@ -8748,10 +8899,15 @@ packages:
 
   /@sap-devx/yeoman-ui-types@1.16.9:
     resolution: {integrity: sha512-GpyTtj2RGWopUWROS3dfAV+0MQzARSRpqoWGDLQflCQpQWCkEFUQlj/dgowrEblj+1oJDTYBEdLu7nPc5lkNMA==}
-    dev: false
 
   /@sap-ux/annotation-converter@0.10.2:
     resolution: {integrity: sha512-3GY8Etb2D+HnCNf2Yy7qfRtZuJ8ITjAGdlnbpmIg5sLtHRfhffEzZOveEWWMJ0apgIedUouvglkw6+oBabTfnA==}
+    dependencies:
+      '@sap-ux/vocabularies-types': 0.13.0
+    dev: false
+
+  /@sap-ux/annotation-converter@0.10.3:
+    resolution: {integrity: sha512-mLQTJv4SXyxbizE2guXi/m9BuFi+jcn7Vk8pGzkbdjWhBgI2OK0F30GXEsy7lprYFGycCLzXbBj/X7Unz+pIeg==}
     dependencies:
       '@sap-ux/vocabularies-types': 0.13.0
     dev: false
@@ -8830,7 +8986,6 @@ packages:
       xml2js: 0.6.2
     transitivePeerDependencies:
       - debug
-    dev: true
 
   /@sap/service-provider-apis@2.1.7:
     resolution: {integrity: sha512-OFNKOt10oseaAO4u8xxOsVLB6CHAaTxrjBore7ybxT103IOQV9geSF5CcTL38a5Q4CJZqyQLsXE8VXpiSBZKDg==}
@@ -10317,7 +10472,7 @@ packages:
       '@types/node': 18.11.9
       '@types/text-table': 0.2.2
       '@types/vinyl': 2.0.7
-      '@types/yeoman-generator': 5.2.11
+      '@types/yeoman-generator': 5.2.14
       chalk: 4.1.2
       commander: 9.4.0
       execa: 5.1.1
@@ -10346,6 +10501,18 @@ packages:
       '@types/ejs': 3.1.2
       '@types/inquirer': 8.2.6
       '@types/mem-fs-editor': 7.0.1
+      '@types/yeoman-environment': 2.10.11
+      rxjs: 6.6.7
+    dev: true
+
+  /@types/yeoman-generator@5.2.14:
+    resolution: {integrity: sha512-eIYBqQyURXiAaoU6jvJqMI+tNSG4s7EXtcHucLCgb8EV2vqz4x1WPr91MT0MiWHV8+9dDRrMkc1VZ6LduexuyA==}
+    dependencies:
+      '@types/debug': 4.1.12
+      '@types/ejs': 3.1.2
+      '@types/inquirer': 8.2.6
+      '@types/mem-fs-editor': 7.0.1
+      '@types/node': 18.11.9
       '@types/yeoman-environment': 2.10.11
       rxjs: 6.6.7
     dev: true
@@ -13083,7 +13250,6 @@ packages:
       path-key: 3.1.1
       shebang-command: 2.0.0
       which: 2.0.2
-    dev: true
 
   /crypto-random-string@4.0.0:
     resolution: {integrity: sha512-x8dy3RnvYdlUcPOjkEHqozhiwzKNSq7GcPuXFbnyMOCHxX8V3OgIg/pYuabl2sbUPfIJaeAQB7PMOK8DFIdoRA==}
@@ -14837,7 +15003,7 @@ packages:
     resolution: {integrity: sha512-j5W0//W7f8UxAn8hXVnwG8tLwdiUy4FJLcSupCg6maBYZDpyBvTApK7KyuI4bKj8KOh1r2YH+6ucuYtJv1bTZA==}
     engines: {node: '>=10'}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       get-stream: 5.2.0
       human-signals: 1.1.1
       is-stream: 2.0.1
@@ -14865,7 +15031,7 @@ packages:
     resolution: {integrity: sha512-UduyVP7TLB5IcAQl+OzLyLcS/l32W/GLg+AhHJ+ow40FOk2U3SAllPwR44v4vmdFwIWqpdwxxpQbF1n5ta9seA==}
     engines: {node: ^14.18.0 || ^16.14.0 || >=18.0.0}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       get-stream: 6.0.1
       human-signals: 4.3.1
       is-stream: 3.0.0
@@ -15274,7 +15440,7 @@ packages:
     resolution: {integrity: sha512-Ld2g8rrAyMYFXBhEqMz8ZAHBi4J4uS1i/CxGMDnjyFWddMXLVcDp051DZfu+t7+ab7Wv6SMqpWmyFIj5UbfFvg==}
     engines: {node: '>=14'}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       signal-exit: 4.1.0
 
   /fork-ts-checker-webpack-plugin@8.0.0(typescript@5.6.2)(webpack@5.96.1):
@@ -16213,7 +16379,7 @@ packages:
   /i18next@23.11.2:
     resolution: {integrity: sha512-qMBm7+qT8jdpmmDw/kQD16VpmkL9BdL+XNAK5MNbNFaf1iQQq35ZbPrSlqmnNPOSUY4m342+c0t0evinF5l7sA==}
     dependencies:
-      '@babel/runtime': 7.23.2
+      '@babel/runtime': 7.25.0
 
   /i18next@23.5.1:
     resolution: {integrity: sha512-JelYzcaCoFDaa+Ysbfz2JsGAKkrHiMG6S61+HLBUEIPaF40WMwW9hCPymlQGrP+wWawKxKPuSuD71WZscCsWHg==}
@@ -17170,12 +17336,7 @@ packages:
     dependencies:
       jest: 29.7.0(@types/node@18.11.9)(ts-node@10.9.2)
       jest-diff: 29.7.0
-      jest-get-type: 29.4.3
-    dev: true
-
-  /jest-get-type@29.4.3:
-    resolution: {integrity: sha512-J5Xez4nRRMjk8emnTpWrlkyb9pfRQQanDrvWHhsR1+VUfbwxi30eVcZFlcdGInRibU4G5LwHXpI7IRHU0CY+gg==}
-    engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
+      jest-get-type: 29.6.3
     dev: true
 
   /jest-get-type@29.6.3:
@@ -21688,7 +21849,7 @@ packages:
   /spawndamnit@3.0.1:
     resolution: {integrity: sha512-MmnduQUuHCoFckZoWnXsTg7JaiLBJrKFj9UI2MbRPGaJeVpsLcVBu6P/IGZovziM/YBsellCmsprgNA+w0CzVg==}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       signal-exit: 4.1.0
     dev: true
 
@@ -22821,6 +22982,7 @@ packages:
   /typescript@5.6.2:
     resolution: {integrity: sha512-NW8ByodCSNCwZeghjN3o+JX5OFH0Ojg6sadjEKY4huZ52TqbJTJnDo5+Tw98lSy63NZvi4n+ez5m2u5d4PkZyw==}
     engines: {node: '>=14.17'}
+    hasBin: true
     dev: true
 
   /typescript@5.8.2:
@@ -23201,7 +23363,6 @@ packages:
   /uuid@11.0.5:
     resolution: {integrity: sha512-508e6IcKLrhxKdBbcA2b4KQZlLVp2+J5UwQ6F7Drckkc5N9ZJwFa4TgWtsww9UG8fGHbm6gbV19TdM5pQ4GaIA==}
     hasBin: true
-    dev: true
 
   /uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
@@ -23737,12 +23898,10 @@ packages:
     dependencies:
       sax: 1.2.4
       xmlbuilder: 11.0.1
-    dev: true
 
   /xmlbuilder@11.0.1:
     resolution: {integrity: sha512-fDlsI/kFEx7gLvbecc0/ohLG50fugQp8ryHzMTuW9vSa1GJ0XYWKnhsUx7oie3G98+r56aTQIUB4kht42R3JvA==}
     engines: {node: '>=4.0'}
-    dev: true
 
   /xmlchars@2.2.0:
     resolution: {integrity: sha512-JZnDKK8B0RCDw84FNdDAIpZK+JuJw+s7Lz8nksI7SIuU3UXJJslUthsi+uWBUYOwPFwW7W7PRLRfUKpxjtjFCw==}
