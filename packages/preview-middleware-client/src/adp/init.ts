@@ -39,6 +39,8 @@ export default async function (rta: RuntimeAuthoring) {
     const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
     const quickActionRegistries = await loadDefinitions(applicationType);
 
+    
+
     await init(rta, quickActionRegistries);
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo)) {

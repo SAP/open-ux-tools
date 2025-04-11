@@ -136,22 +136,18 @@ export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComp
 export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<Promise<void>> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
-        const resources = await getTextBundle();
+    const resources = await getTextBundle();
     const isReuseComponentChecker = await getReuseComponentChecker(ui5VersionInfo);
 
-    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
-        contextMenu.addMenuItem({
-            id: 'ADD_FRAGMENT',
-            text: (overlay: ElementOverlay) => getAddFragmentItemText(overlay, isReuseComponentChecker, isCloud, resources),
-            handler: async (overlays: UI5Element[]) =>
-                await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
-            icon: 'sap-icon://attachment-html',
-            enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, isReuseComponentChecker, isCloud)
-        });
-    } else {
-        const addFragmentService = (await import('open/ux/preview/client/adp/add-fragment')).default;
-        new addFragmentService(rta).init();
-    }  
+    contextMenu.addMenuItem({
+        id: 'ADD_FRAGMENT',
+        text: (overlay: ElementOverlay) => getAddFragmentItemText(overlay, isReuseComponentChecker, isCloud, resources),
+        handler: async (overlays: UI5Element[]) =>
+            await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
+        icon: 'sap-icon://attachment-html',
+        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, isReuseComponentChecker, isCloud)
+    });
+
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 135 })) {
         contextMenu.addMenuItem({
@@ -163,7 +159,6 @@ export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[],
             enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentChecker, isCloud)
         });
     } else {
-        const extendControllerService = (await import('open/ux/preview/client/adp/extend-controller')).default;
-        new extendControllerService(rta).init();
+        (await import('open/ux/preview/client/adp/extend-controller')).initExtendControllerPlugin(rta);
     }
 };

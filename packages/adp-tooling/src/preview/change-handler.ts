@@ -272,7 +272,7 @@ export async function addControllerExtension(
         const text = fs.read(tmplPath);
         const id = (await getVariant(rootPath))?.id;
         const extensionPath = `${id}.${fileName}`;
-        const templateData = isTsSupported ? { fileName, ns: id } : { extensionPath };
+        const templateData = isTsSupported ? { name: fileName, ns: id } : { extensionPath };
 
         const template = render(text, templateData);
         fs.write(path.join(basePath, DirName.Changes, DirName.Coding, fullName), template);
