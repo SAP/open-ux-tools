@@ -1,4 +1,4 @@
-import { ServiceProvider } from '@sap-ux/axios-extension';
+import type { ServiceProvider } from '@sap-ux/axios-extension';
 import { OdataVersion } from '@sap-ux/odata-service-writer';
 import { readFile } from 'fs/promises';
 import { join } from 'path';
