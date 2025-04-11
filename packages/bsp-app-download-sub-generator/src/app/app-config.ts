@@ -124,6 +124,7 @@ export async function getAppConfig(
                 addTests: true
             },
             ui5: {
+                //todo: confirm this and also add to the manifest json being replaced
                 version: ui5Version ? manifestUi5Version : supportedUi5VersionFallbacks[0].version
             }
         };

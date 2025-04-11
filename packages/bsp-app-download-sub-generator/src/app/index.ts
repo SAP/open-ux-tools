@@ -9,7 +9,6 @@ import { t } from '../utils/i18n';
 import { getYUIDetails } from '../prompts/prompt-helpers';
 import { downloadApp } from '../utils/download-utils';
 import { EventName } from '../telemetryEvents';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
 import type {
     BspAppDownloadOptions,
@@ -79,7 +78,6 @@ export default class extends Generator {
             this.vscode
         );
 
-        //this.prompts = new Prompts([]);
         // Initialise prompts and callbacks if not launched as a subgenerator
         this.appWizard.setHeaderTitle(generatorTitle);
         this.prompts = new Prompts(getYUIDetails());
@@ -94,10 +92,6 @@ export default class extends Generator {
      * Initialises necessary settings and telemetry for the generator.
      */
     public async initializing(): Promise<void> {
-        if ((this.env as unknown as YeomanEnvironment).conflicter) {
-            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
-        }
-
         // Initialise telemetry settings
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {

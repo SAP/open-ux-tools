@@ -81,7 +81,7 @@ describe('getAppConfig', () => {
             addTests: true
         },
         ui5: {
-            version: mockQfaJson.project_attribute.minimum_ui5_version ?? '1.90.0'
+            version: mockQfaJson.project_attribute.minimum_ui5_version ?? '1.129.0'
         }
     };
 
