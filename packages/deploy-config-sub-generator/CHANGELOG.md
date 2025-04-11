@@ -1,5 +1,11 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.1.0
+
+### Minor Changes
+
+-   7e03084: adds headless support to the deploy config sub generator
+
 ## 0.0.27
 
 ### Patch Changes
