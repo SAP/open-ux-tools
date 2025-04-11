@@ -17,7 +17,7 @@
         "html5AlreadyExists": "HTML5 application {{- appName}} already exists in the MTA configuration.",
         "addXsuaaService": "Adding XSUAA service to MTA configuration.",
         "mtaReadWithPrefix": "Read mta.yaml with prefix {{- prefix }}.",
-        "errorReadingMta": "Error reading mta.yaml file {{- error }}.",
+        "errorReadingMta": "An error when reading the `mta.yaml` file: {{- error }}. Please check the file.",
         "unableToReadPackageJson": "Unable to read package.json file {{- error }}.",
         "processHTML5App": "Processing HTML5 app {{- appName }}."
     },
