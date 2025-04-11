@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import type { AddXMLChange, CommonChangeProperties, CodeExtChange, AnnotationFileChange } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
-import { basename, join } from 'path';
+import { basename, join, extname } from 'path';
 import { DirName, FileName } from '@sap-ux/project-access';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
@@ -11,7 +11,6 @@ import { getAdpConfig, getVariant, isTypescriptSupported } from '../base/helper'
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { getAnnotationNamespaces } from '@sap-ux/odata-service-writer';
 import { generateChange } from '../writer/editors';
-import path from 'path';
 
 const OBJECT_PAGE_CUSTOM_SECTION = 'OBJECT_PAGE_CUSTOM_SECTION';
 const CUSTOM_ACTION = 'CUSTOM_ACTION';
@@ -263,11 +262,11 @@ export async function addControllerExtension(
 ): Promise<void> {
     const { codeRef } = change.content;
     const isTsSupported = isTypescriptSupported(rootPath, fs);
-    const fileExtension = path.extname(codeRef);
-    const fileName = path.basename(codeRef, fileExtension);
-    const fullName = `${path.basename(codeRef, fileExtension)}.${isTsSupported ? 'ts' : 'js'}`;
+    const fileExtension = extname(codeRef);
+    const fileName = basename(codeRef, fileExtension);
+    const fullName = `${basename(codeRef, fileExtension)}.${isTsSupported ? 'ts' : 'js'}`;
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
-    const tmplPath = path.join(__dirname, '../../templates/rta', tmplFileName);
+    const tmplPath = join(__dirname, '../../templates/rta', tmplFileName);
     try {
         const text = fs.read(tmplPath);
         const id = (await getVariant(rootPath))?.id;
@@ -275,7 +274,7 @@ export async function addControllerExtension(
         const templateData = isTsSupported ? { name: fileName, ns: id } : { extensionPath };
 
         const template = render(text, templateData);
-        fs.write(path.join(basePath, DirName.Changes, DirName.Coding, fullName), template);
+        fs.write(join(basePath, DirName.Changes, DirName.Coding, fullName), template);
     } catch (error) {
         logger.error(`Failed to create controller extension "${codeRef}": ${error}`);
         throw new Error('Failed to create controller extension' + error.message);
