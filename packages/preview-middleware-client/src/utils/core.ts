@@ -59,3 +59,22 @@ export function isManagedObject(element: object | undefined): element is Managed
 export function isA<T extends ManagedObject>(type: string, element: ManagedObject | undefined): element is T {
     return !!element?.isA(type);
 }
+
+export function hasParent(component: ManagedObject, parentIdToFind: string): boolean  {
+    const parent = component.getParent();
+    if (!parent) {
+        return false;
+    }
+    if (parent.getId() === parentIdToFind) {
+        return true;
+    }
+    return hasParent(parent, parentIdToFind);
+}
+
+export function findNestedElements(
+    ownerElement: Element,
+    candidates: Element[]
+): Element[] {
+    const ownerId = ownerElement.getId();
+    return candidates.filter((item) => hasParent(item, ownerId));
+}
