@@ -17,6 +17,7 @@ import type { IsReuseComponentApi } from '../cpe/types';
 import { getTextBundle, type TextBundle } from '../i18n';
 import { getReuseComponentChecker } from './utils';
 import type { Ui5VersionInfo } from '../utils/version';
+import { isLowerThanMinimalUi5Version } from '../utils/version';
 
 /**
  * Handler for enablement of Extend With Controller context menu entry
@@ -132,7 +133,7 @@ export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComp
  * @param syncViewsIds Ids of all application sync views
  * @param ui5VersionInfo UI5 version information
  */
-export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<void> => {
+export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<Promise<void>> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
     const resources = await getTextBundle();
@@ -147,12 +148,17 @@ export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[],
         enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, isReuseComponentChecker, isCloud)
     });
 
-    contextMenu.addMenuItem({
-        id: 'EXTEND_CONTROLLER',
-        text: (overlay: ElementOverlay) => getExtendControllerItemText(overlay, isReuseComponentChecker, isCloud, resources),
-        handler: async (overlays: UI5Element[]) =>
-            await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
-        icon: 'sap-icon://create-form',
-        enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentChecker, isCloud)
-    });
+
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 135 })) {
+        contextMenu.addMenuItem({
+            id: 'EXTEND_CONTROLLER',
+            text: (overlay: ElementOverlay) => getExtendControllerItemText(overlay, isReuseComponentChecker, isCloud, resources),
+            handler: async (overlays: UI5Element[]) =>
+                await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
+            icon: 'sap-icon://create-form',
+            enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentChecker, isCloud)
+        });
+    } else {
+        (await import('open/ux/preview/client/adp/extend-controller')).initExtendControllerPlugin(rta);
+    }
 };
