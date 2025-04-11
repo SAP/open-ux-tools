@@ -11,6 +11,7 @@ import { DialogFactory } from '../adp/dialog-factory';
 import { getTextBundle } from '../i18n';
 import Log from 'sap/base/Log';
 import { getControlById } from '../utils/core';
+import { getUi5Version } from '../utils/version';
 
 /**
  * A Class of ContextMenuService
@@ -40,10 +41,12 @@ export class ContextMenuService {
                     const { actionName, controlId } = action.payload;
                     await this.actionService.execute(controlId, actionName);
                     const controlName = getControlById(controlId)?.getMetadata().getName();
+                    const versionInfo = await getUi5Version()
                     await reportTelemetry({
                         category: 'OutlineContextMenu',
                         actionName,
-                        controlName
+                        controlName,
+                        ui5Version: `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`
                     });
                 } catch (err) {
                     Log.error('Error in reporting Telemetry:', err);
