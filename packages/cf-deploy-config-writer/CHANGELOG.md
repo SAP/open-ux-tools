@@ -1,5 +1,56 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.0
+
+### Minor Changes
+
+-   4d3fe73: Expose new App Frontend server
+
+## 0.1.29
+
+### Patch Changes
+
+-   37c2e00: remove fs, causing issues when cds is updating package.json
+
+## 0.1.28
+
+### Patch Changes
+
+-   a8cbdcf: append install script
+
+## 0.1.27
+
+### Patch Changes
+
+-   145f4c9: Change post install script
+
+## 0.1.26
+
+### Patch Changes
+
+-   d148718: append timeout after mta writing, append extra logging
+
+## 0.1.25
+
+### Patch Changes
+
+-   15222c2: add spawn options for windows
+
+## 0.1.24
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+
+## 0.1.23
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/project-access@1.29.17
+
 ## 0.1.22
 
 ### Patch Changes

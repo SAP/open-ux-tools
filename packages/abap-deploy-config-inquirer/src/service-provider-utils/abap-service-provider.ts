@@ -15,6 +15,7 @@ import type { AbapTarget } from '@sap-ux/ui5-config';
 export class AbapServiceProviderManager {
     private static abapServiceProvider: AbapServiceProvider | undefined;
     private static system: SystemConfig;
+    private static isDefaultProviderAbapCloud: boolean | undefined;
 
     /**
      * Get or create an ABAP service provider.
@@ -35,12 +36,25 @@ export class AbapServiceProviderManager {
         // 2. Use connected service provider passed in prompt options with backend target
         if (this.isBackendTargetServiceProviderValid(backendTarget)) {
             this.abapServiceProvider = backendTarget?.serviceProvider as AbapServiceProvider;
+            await this.setIsDefaultAbapCloud();
+
             return this.abapServiceProvider;
         }
 
         // 3. Create a new service provider
         this.abapServiceProvider = await this.createNewServiceProvider(credentials, backendTarget);
+        await this.setIsDefaultAbapCloud();
+
         return this.abapServiceProvider;
+    }
+
+    /**
+     * Checks if the service provider has a valid connection.
+     *
+     * @returns true if the system is cloud and the service provider is connected
+     */
+    public static isConnected(): boolean {
+        return !!AbapServiceProviderManager.abapServiceProvider?.cookies;
     }
 
     /**
@@ -172,6 +186,31 @@ export class AbapServiceProviderManager {
             ignoreCertErrors: false,
             auth
         };
+    }
+
+    /**
+     * Set if the default provider is AbapCloud.
+     */
+    private static async setIsDefaultAbapCloud(): Promise<void> {
+        if (this.isDefaultProviderAbapCloud === undefined && this.abapServiceProvider) {
+            this.isDefaultProviderAbapCloud = await this.abapServiceProvider?.isAbapCloud();
+        }
+    }
+
+    /**
+     * Retrieves the status of whether the default provider is an ABAP Cloud system.
+     *
+     * @returns {boolean|undefined} if the default provider is an ABAP Cloud system or not or undefined if the status is not set
+     */
+    public static getIsDefaultProviderAbapCloud(): boolean | undefined {
+        return this.isDefaultProviderAbapCloud;
+    }
+
+    /**
+     * Clear the cached is default provider abap cloud.
+     */
+    public static resetIsDefaultProviderAbapCloud(): void {
+        this.isDefaultProviderAbapCloud = undefined;
     }
 
     /**

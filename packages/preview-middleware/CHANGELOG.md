@@ -1,5 +1,170 @@
 # @sap-ux/preview-middleware
 
+## 0.19.17
+
+### Patch Changes
+
+-   Updated dependencies [c4278fb]
+    -   @sap-ux/adp-tooling@0.13.26
+
+## 0.19.16
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.25
+
+## 0.19.15
+
+### Patch Changes
+
+-   fccd2c2: feat: refactor types
+
+## 0.19.14
+
+### Patch Changes
+
+-   Updated dependencies [c81864a]
+    -   @sap-ux/adp-tooling@0.13.24
+
+## 0.19.13
+
+### Patch Changes
+
+-   Updated dependencies [4f0eaae]
+    -   @sap-ux/adp-tooling@0.13.23
+
+## 0.19.12
+
+### Patch Changes
+
+-   3727441: fix: CPE Add Subpage Quick Action not displayed for SAP Fiori Elements for OData V4 applications in Adaptation Projects, if current page has `contextPath` defined in manifest instead of `entitySet`.
+
+## 0.19.11
+
+### Patch Changes
+
+-   9522deb: fix: Cannot create a Extension Point fragment when clicking create button in the dialog
+
+## 0.19.10
+
+### Patch Changes
+
+-   6095875: fix: Cannot create a Fragment and Controller Extension when clicking create button in the dialog
+
+## 0.19.9
+
+### Patch Changes
+
+-   ed6c364: Reuse component detection
+
+## 0.19.8
+
+### Patch Changes
+
+-   59ab22b: feat: Add Subpage CPE quick action added for ADP projects with OData V4.
+
+## 0.19.7
+
+### Patch Changes
+
+-   Updated dependencies [fbdf2d0]
+    -   @sap-ux/adp-tooling@0.13.22
+
+## 0.19.6
+
+### Patch Changes
+
+-   eebf808: feat: enable TypeScript compiler option `erasableSyntaxOnly`
+
+## 0.19.5
+
+### Patch Changes
+
+-   6cedb61: fix: enable telemetry for quickactions in adp
+
+## 0.19.4
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/adp-tooling@0.13.21
+    -   @sap-ux/system-access@0.5.34
+
+## 0.19.3
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.20
+
+## 0.19.2
+
+### Patch Changes
+
+-   Updated dependencies [93f07bc]
+    -   @sap-ux/adp-tooling@0.13.19
+
+## 0.19.1
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.18
+
+## 0.19.0
+
+### Minor Changes
+
+-   6e32009: feat: introduce enhanced flp homepage
+    -   controlled via boolean property `flp.enhancedHomePage`, which is false by default
+
+## 0.18.23
+
+### Patch Changes
+
+-   02874f7: feat: Feature toggle removed for Add Subpage CPE quick action
+
+## 0.18.22
+
+### Patch Changes
+
+-   e754cb0: fix: disable "Add New Annotation File" Quick Action with tooltip, when 'metadata' is not loaded
+-   Updated dependencies [e754cb0]
+    -   @sap-ux/adp-tooling@0.13.17
+
+## 0.18.21
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/adp-tooling@0.13.16
+    -   @sap-ux/system-access@0.5.33
+
+## 0.18.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.15
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/system-access@0.5.33
+
+## 0.18.19
+
+### Patch Changes
+
+-   b012c01: feat: Added new CPE Quick Action to create application subpages in V2 ADP projects
+
+## 0.18.18
+
+### Patch Changes
+
+-   1fd8b3f: fix: legacy free ui5 version handling
+
+## 0.18.17
+
+### Patch Changes
+
+-   f659540: fix: disable "Add Header Field" Quick Action when `showHeaderContent` is set to `false` for `ObjectPageLayout`
+
 ## 0.18.16
 
 ### Patch Changes

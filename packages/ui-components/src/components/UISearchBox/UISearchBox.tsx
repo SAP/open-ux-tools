@@ -30,7 +30,6 @@ export class UISearchBox extends React.Component<ISearchBoxProps, {}> {
             ...{
                 root: [
                     {
-                        fontFamily: 'var(--vscode-font-family)',
                         fontSize: 13,
                         backgroundColor: 'var(--vscode-input-background)',
                         border: '1px solid var(--vscode-editorWidget-border)',

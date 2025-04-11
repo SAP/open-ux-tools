@@ -1,5 +1,42 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
+## 0.2.23
+
+### Patch Changes
+
+-   88d2a71: expose new UI prompting to support app frontend service
+
+## 0.2.22
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/inquirer-common@0.6.32
+
+## 0.2.21
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.31
+
+## 0.2.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.30
+
+## 0.2.19
+
+### Patch Changes
+
+-   c3e7f11: remove mta id prompt for CAP flow
+
 ## 0.2.18
 
 ### Patch Changes

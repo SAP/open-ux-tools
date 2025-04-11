@@ -4,7 +4,7 @@ import * as helpers from '../../../../src/prompts/helpers';
 import * as conditions from '../../../../src/prompts/conditions';
 import * as validators from '../../../../src/prompts/validators';
 import { promptNames, PackageInputChoices } from '../../../../src/types';
-import { ListQuestion } from '@sap-ux/inquirer-common';
+import type { ListQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 import { PromptState } from '../../../../src/prompts/prompt-state';
 
@@ -126,7 +126,7 @@ describe('getPackagePrompts', () => {
 
     test('should return expected values from packageManual prompt methods', async () => {
         jest.spyOn(conditions, 'defaultOrShowManualPackageQuestion').mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validatePackage').mockResolvedValueOnce(true);
+        jest.spyOn(validators, 'validatePackageExtended').mockResolvedValueOnce(true);
 
         const packagePrompts = getPackagePrompts({});
         const packageManualPrompt = packagePrompts.find((prompt) => prompt.name === promptNames.packageManual);

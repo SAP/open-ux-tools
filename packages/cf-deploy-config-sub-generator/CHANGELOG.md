@@ -1,5 +1,112 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.40
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.40
+    -   @sap-ux/inquirer-common@0.6.33
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.24
+
+## 0.1.39
+
+### Patch Changes
+
+-   Updated dependencies [4d3fe73]
+    -   @sap-ux/cf-deploy-config-writer@0.2.0
+
+## 0.1.38
+
+### Patch Changes
+
+-   Updated dependencies [88d2a71]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.23
+
+## 0.1.37
+
+### Patch Changes
+
+-   Updated dependencies [37c2e00]
+    -   @sap-ux/cf-deploy-config-writer@0.1.29
+
+## 0.1.36
+
+### Patch Changes
+
+-   Updated dependencies [a8cbdcf]
+    -   @sap-ux/cf-deploy-config-writer@0.1.28
+
+## 0.1.35
+
+### Patch Changes
+
+-   Updated dependencies [145f4c9]
+    -   @sap-ux/cf-deploy-config-writer@0.1.27
+
+## 0.1.34
+
+### Patch Changes
+
+-   04ac8a9: Ensure the completion msg is shown to the user
+
+## 0.1.33
+
+### Patch Changes
+
+-   Updated dependencies [d148718]
+    -   @sap-ux/cf-deploy-config-writer@0.1.26
+
+## 0.1.32
+
+### Patch Changes
+
+-   Updated dependencies [15222c2]
+    -   @sap-ux/cf-deploy-config-writer@0.1.25
+
+## 0.1.31
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/inquirer-common@0.6.32
+    -   @sap-ux/deploy-config-generator-shared@0.0.39
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.22
+
+## 0.1.30
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/cf-deploy-config-writer@0.1.24
+    -   @sap-ux/fiori-generator-shared@0.9.11
+    -   @sap-ux/deploy-config-generator-shared@0.0.39
+    -   @sap-ux/inquirer-common@0.6.31
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.21
+
+## 0.1.29
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/cf-deploy-config-writer@0.1.23
+    -   @sap-ux/project-access@1.29.17
+    -   @sap-ux/fiori-generator-shared@0.9.10
+    -   @sap-ux/inquirer-common@0.6.30
+    -   @sap-ux/deploy-config-generator-shared@0.0.38
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.20
+
+## 0.1.28
+
+### Patch Changes
+
+-   c3e7f11: remove mta id prompt for CAP flow
+-   Updated dependencies [c3e7f11]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.19
+
 ## 0.1.27
 
 ### Patch Changes

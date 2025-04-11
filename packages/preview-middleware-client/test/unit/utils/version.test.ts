@@ -32,10 +32,10 @@ describe('utils/version', () => {
         expect(version.patch).toEqual(11);
     });
 
-    test('getUi5Version fallback to 1.121.0', async () => {
+    test('getUi5Version fallback to 1.130.0', async () => {
         const version = await getUi5Version();
         expect(version.major).toEqual(1);
-        expect(version.minor).toEqual(121);
+        expect(version.minor).toEqual(130);
     });
 
     test('getUi5Version for snapshot', async () => {

@@ -1,5 +1,32 @@
 # @sap-ux/launch-config
 
+## 0.8.1
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+
+## 0.8.0
+
+### Minor Changes
+
+-   913e924: Add enableVSCodeReload flag to control VS Code reload on workspace update
+
+## 0.7.37
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+
+## 0.7.36
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/project-access@1.29.17
+
 ## 0.7.35
 
 ### Patch Changes

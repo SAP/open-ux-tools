@@ -1,5 +1,41 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.2.6
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/cap-config-writer@0.9.23
+
+## 2.2.5
+
+### Patch Changes
+
+-   4310ee1: Exports type required by consuming generators
+
+## 2.2.4
+
+### Patch Changes
+
+-   @sap-ux/cap-config-writer@0.9.22
+-   @sap-ux/fiori-generator-shared@0.9.11
+-   @sap-ux/odata-service-writer@0.26.13
+-   @sap-ux/ui5-application-writer@1.3.3
+-   @sap-ux/ui5-test-writer@0.6.3
+
+## 2.2.3
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/odata-service-writer@0.26.12
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/ui5-application-writer@1.3.3
+    -   @sap-ux/cap-config-writer@0.9.21
+    -   @sap-ux/fiori-generator-shared@0.9.10
+    -   @sap-ux/ui5-test-writer@0.6.3
+
 ## 2.2.2
 
 ### Patch Changes

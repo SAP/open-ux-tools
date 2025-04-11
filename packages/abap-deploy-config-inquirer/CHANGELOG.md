@@ -1,5 +1,60 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.38
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/inquirer-common@0.6.33
+
+## 1.2.37
+
+### Patch Changes
+
+-   36518cc: check cloud systems are connected before making backend call
+
+## 1.2.36
+
+### Patch Changes
+
+-   5629071: make backend call for scp systems when initialising transport config
+
+## 1.2.35
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/axios-extension@1.19.2
+    -   @sap-ux/inquirer-common@0.6.32
+    -   @sap-ux/system-access@0.5.34
+
+## 1.2.34
+
+### Patch Changes
+
+-   1bca2d8: Adapt Deploy Config Inquirer and Deploy Config Sub Generator to support ADP Projects
+
+## 1.2.33
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.19.1
+-   @sap-ux/fiori-generator-shared@0.9.11
+-   @sap-ux/system-access@0.5.33
+-   @sap-ux/inquirer-common@0.6.31
+
+## 1.2.32
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/fiori-generator-shared@0.9.10
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/inquirer-common@0.6.30
+
 ## 1.2.31
 
 ### Patch Changes
