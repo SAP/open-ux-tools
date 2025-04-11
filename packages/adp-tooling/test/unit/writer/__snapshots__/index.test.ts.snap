@@ -20,10 +20,10 @@ Object {
         \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"build\\": \\"ui5 build --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -137,10 +137,10 @@ Object {
         \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"build\\": \\"ui5 build --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -254,10 +254,10 @@ Object {
         \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"build\\": \\"ui5 build --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -1400,10 +1400,10 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"build\\": \\"ui5 build --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -1557,10 +1557,10 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"build\\": \\"ui5 build --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
@@ -1715,10 +1715,10 @@ dist/
         \\"@ui5/cli\\": \\"^3.9.2\\"
     },
     \\"scripts\\": {
-        \\"build\\": \\"ui5 build --exclude-task generateFlexChangesBundle generateComponentPreload minify --clean-dest\\",
+        \\"build\\": \\"ui5 build --clean-dest\\",
         \\"start\\": \\"fiori run --open /test/flp.html#app-preview\\",
         \\"start-editor\\": \\"fiori run --open /test/adaptation-editor.html\\",
-        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml\\",
+        \\"deploy\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml && rimraf archive.zip\\",
         \\"undeploy\\": \\"npm run build && fiori undeploy --config ui5-deploy.yaml\\",
         \\"deploy-test\\": \\"npm run build && fiori deploy --config ui5-deploy.yaml --testMode true\\"
     }
