@@ -234,9 +234,6 @@ resources:
       service: xsuaa
       service-name: managedAppCAPProject-xsuaa-service
       service-plan: application
-      config:
-        xsappname: 'managedAppCAPProject-\${org}-\${space}'
-        tenant-mode: dedicated
   - name: managedAppCAPProject-repo-host
     type: org.cloudfoundry.managed-service
     parameters:

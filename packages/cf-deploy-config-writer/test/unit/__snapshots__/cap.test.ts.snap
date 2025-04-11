@@ -424,9 +424,6 @@ resources:
       service: xsuaa
       service-name: cappapp-xsuaa-service
       service-plan: application
-      config:
-        xsappname: 'cappapp-\${org}-\${space}'
-        tenant-mode: dedicated
   - name: cappapp-repo-host
     type: org.cloudfoundry.managed-service
     parameters:

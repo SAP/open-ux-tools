@@ -372,7 +372,7 @@ export class MtaConfig {
                 service: 'xsuaa',
                 'service-name': `${this.prefix.slice(0, 100)}-xsuaa-service`,
                 'service-plan': 'application',
-                ...(this.modules.has('nodejs')
+                ...(this.modules.has('nodejs') && this.modules.has('com.sap.application.content:appfront')
                     ? {
                           config: {
                               xsappname: `${this.prefix.slice(0, 100)}-\${org}-\${space}`,
