@@ -37,6 +37,11 @@ export default class LoggerHelper {
         request: AxiosInterceptorManager<InternalAxiosRequestConfig>;
         response: AxiosInterceptorManager<AxiosResponse>;
     }): void {
+        // Dont log response data, which can be huge (edmx) unless log level is explictly set to `trace` (@vscode-logging/logger)
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        const logResponseData =
+            typeof (LoggerHelper.logger as any).getLogLevel === 'function' &&
+            (LoggerHelper.logger as any).getLogLevel() === 'trace';
         const debugLogger = LoggerHelper.logger.debug.bind(LoggerHelper.logger);
         interceptors.request.use(
             (request) => {
@@ -57,7 +62,7 @@ export default class LoggerHelper {
         interceptors.response.use(
             (response) => {
                 return AxiosLogger.responseLogger(response, {
-                    data: true,
+                    data: logResponseData,
                     prefixText: '@sap-ux/odata-service-inquirer',
                     status: true,
                     headers: true,

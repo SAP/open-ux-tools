@@ -1,5 +1,17 @@
 # @sap-ux/adp-tooling
 
+## 0.13.26
+
+### Patch Changes
+
+-   c4278fb: Change build and deploy scripts for cloud ready adaptation projects
+
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
 ## 0.13.24
 
 ### Patch Changes

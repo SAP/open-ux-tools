@@ -1,0 +1,373 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx" xmlns:m="http://schemas.microsoft.com/ado/2007/08/dataservices/metadata" xmlns:sap="http://www.sap.com/Protocols/SAPData">
+    <edmx:Reference Uri="https://ldciuia.wdf.sap.corp:44300/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CAPABILITIES',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="Org.OData.Capabilities.V1"/>
+    </edmx:Reference>
+    <edmx:Reference Uri="https://ldciuia.wdf.sap.corp:44300/sap/opu/odata/iwfnd/catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_CODELIST',Version='0001',SAP__Origin='LOCAL')/$value" xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+        <edmx:Include Namespace="com.sap.vocabularies.CodeList.v1" Alias="SAP__CodeList"/>
+    </edmx:Reference>
+    <edmx:DataServices m:DataServiceVersion="2.0">
+        <Schema Namespace="PAGE_BUILDER_PERS" xml:lang="en" sap:schema-version="1" xmlns="http://schemas.microsoft.com/ado/2008/09/edm">
+            <EntityType Name="Catalog" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="id" Type="Edm.String" Nullable="false"/>
+                <Property Name="type" Type="Edm.String" sap:updatable="false"/>
+                <Property Name="domainId" Type="Edm.String"/>
+                <Property Name="remoteType" Type="Edm.String"/>
+                <Property Name="title" Type="Edm.String"/>
+                <Property Name="systemAlias" Type="Edm.String"/>
+                <Property Name="remoteId" Type="Edm.String"/>
+                <Property Name="isReadOnly" Type="Edm.String" MaxLength="1"/>
+                <Property Name="originalLanguage" Type="Edm.String"/>
+                <Property Name="scope" Type="Edm.String"/>
+                <Property Name="baseUrl" Type="Edm.String"/>
+                <Property Name="chipCount" Type="Edm.String" MaxLength="4" sap:label="Counter"/>
+                <Property Name="outdated" Type="Edm.String"/>
+                <NavigationProperty Name="CatalogPage" Relationship="PAGE_BUILDER_PERS.Catalog_Page" FromRole="FromRole_Catalog_Page" ToRole="ToRole_Catalog_Page"/>
+                <NavigationProperty Name="Chips" Relationship="PAGE_BUILDER_PERS.Catalog_Chip" FromRole="FromRole_Catalog_Chip" ToRole="ToRole_Catalog_Chip"/>
+            </EntityType>
+            <EntityType Name="Page" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="id" Type="Edm.String" Nullable="false"/>
+                <Property Name="title" Type="Edm.String"/>
+                <Property Name="catalogId" Type="Edm.String"/>
+                <Property Name="layout" Type="Edm.String"/>
+                <Property Name="originalLanguage" Type="Edm.String"/>
+                <Property Name="isCatalogPage" Type="Edm.String" MaxLength="1"/>
+                <Property Name="chipInstanceCount" Type="Edm.String" MaxLength="4" sap:label="Counter"/>
+                <Property Name="isPersLocked" Type="Edm.String" MaxLength="1"/>
+                <Property Name="isReadOnly" Type="Edm.String" MaxLength="1"/>
+                <Property Name="scope" Type="Edm.String" sap:updatable="false"/>
+                <Property Name="updated" Type="Edm.DateTime" Precision="7" m:FC_TargetPath="SyndicationUpdated" m:FC_KeepInContent="false" sap:label="Time Stamp" sap:updatable="false"/>
+                <Property Name="outdated" Type="Edm.String" MaxLength="1" sap:updatable="false"/>
+                <NavigationProperty Name="Catalog" Relationship="PAGE_BUILDER_PERS.Page_Catalog" FromRole="FromRole_Page_Catalog" ToRole="ToRole_Page_Catalog"/>
+                <NavigationProperty Name="allCatalogs" Relationship="PAGE_BUILDER_PERS.Page_Catalogs" FromRole="FromRole_Page_Catalogs" ToRole="ToRole_Page_Catalogs"/>
+                <NavigationProperty Name="PageChipInstances" Relationship="PAGE_BUILDER_PERS.Page_PageChipInstance" FromRole="FromRole_Page_PageChipInstance" ToRole="ToRole_Page_PageChipInstance"/>
+                <NavigationProperty Name="Bags" Relationship="PAGE_BUILDER_PERS.Page_Bags" FromRole="FromRole_Page_Bags" ToRole="ToRole_Page_Bags"/>
+            </EntityType>
+            <EntityType Name="PageChipInstance" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="pageId"/>
+                    <PropertyRef Name="instanceId"/>
+                </Key>
+                <Property Name="pageId" Type="Edm.String" Nullable="false"/>
+                <Property Name="instanceId" Type="Edm.String" Nullable="false"/>
+                <Property Name="chipId" Type="Edm.String"/>
+                <Property Name="title" Type="Edm.String"/>
+                <Property Name="configuration" Type="Edm.String"/>
+                <Property Name="layoutData" Type="Edm.String"/>
+                <Property Name="remoteCatalogId" Type="Edm.String"/>
+                <Property Name="referencePageId" Type="Edm.String" sap:updatable="false"/>
+                <Property Name="referenceChipInstanceId" Type="Edm.String" sap:updatable="false"/>
+                <Property Name="isReadOnly" Type="Edm.String" MaxLength="1"/>
+                <Property Name="scope" Type="Edm.String" sap:updatable="false"/>
+                <Property Name="updated" Type="Edm.DateTime" Precision="7" m:FC_TargetPath="SyndicationUpdated" m:FC_KeepInContent="false" sap:label="Time Stamp" sap:updatable="false"/>
+                <Property Name="outdated" Type="Edm.String" MaxLength="1" sap:updatable="false"/>
+                <NavigationProperty Name="Chip" Relationship="PAGE_BUILDER_PERS.PageChipInstance_Chip" FromRole="FromRole_PageChipInstance_Chip" ToRole="ToRole_PageChipInstance_Chip"/>
+                <NavigationProperty Name="ReferenceChip" Relationship="PAGE_BUILDER_PERS.PageChipInstance_Chip" FromRole="FromRole_PageChipInstance_Chip" ToRole="ToRole_PageChipInstance_Chip"/>
+                <NavigationProperty Name="RemoteCatalog" Relationship="PAGE_BUILDER_PERS.PageChipInstance_Catalog" FromRole="FromRole_PageChipInstance_Catalog" ToRole="ToRole_PageChipInstance_Catalog"/>
+                <NavigationProperty Name="ReferenceChipInstance" Relationship="PAGE_BUILDER_PERS.PageChipInstance_PageChipInstance" FromRole="FromRole_PageChipInstance_PageChipInstance" ToRole="ToRole_PageChipInstance_PageChipInstance"/>
+                <NavigationProperty Name="ChipInstanceBags" Relationship="PAGE_BUILDER_PERS.PageChipInstance_ChipInstanceBags" FromRole="FromRole_PageChipInstance_ChipInstanceBags" ToRole="ToRole_PageChipInstance_ChipInstanceBags"/>
+            </EntityType>
+            <EntityType Name="Chip" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="id" Type="Edm.String" Nullable="false"/>
+                <Property Name="title" Type="Edm.String"/>
+                <Property Name="description" Type="Edm.String"/>
+                <Property Name="configuration" Type="Edm.String"/>
+                <Property Name="url" Type="Edm.String"/>
+                <Property Name="baseChipId" Type="Edm.String"/>
+                <Property Name="catalogId" Type="Edm.String"/>
+                <Property Name="catalogPageChipInstanceId" Type="Edm.String"/>
+                <Property Name="referenceChipId" Type="Edm.String"/>
+                <Property Name="isReadOnly" Type="Edm.String" MaxLength="1"/>
+                <NavigationProperty Name="Catalog" Relationship="PAGE_BUILDER_PERS.Chip_Catalog" FromRole="FromRole_Chip_Catalog" ToRole="ToRole_Chip_Catalog"/>
+                <NavigationProperty Name="ReferenceChip" Relationship="PAGE_BUILDER_PERS.Chip_Chip" FromRole="FromRole_Chip_Chip" ToRole="ToRole_Chip_Chip"/>
+                <NavigationProperty Name="ChipBags" Relationship="PAGE_BUILDER_PERS.Chip_ChipBags" FromRole="FromRole_Chip_ChipBags" ToRole="ToRole_Chip_ChipBags"/>
+                <NavigationProperty Name="CatalogPageChipInstance" Relationship="PAGE_BUILDER_PERS.Chip_PageChipInstance" FromRole="FromRole_Chip_PageChipInstance" ToRole="ToRole_Chip_PageChipInstance"/>
+            </EntityType>
+            <EntityType Name="Bag" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="pageId"/>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="pageId" Type="Edm.String" Nullable="false"/>
+                <Property Name="id" Type="Edm.String" Nullable="false"/>
+                <Property Name="scope" Type="Edm.String" sap:updatable="false"/>
+                <NavigationProperty Name="Properties" Relationship="PAGE_BUILDER_PERS.Bag_Property" FromRole="FromRole_Bag_Property" ToRole="ToRole_Bag_Property"/>
+            </EntityType>
+            <EntityType Name="Property" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="pageId"/>
+                    <PropertyRef Name="bagId"/>
+                    <PropertyRef Name="name"/>
+                </Key>
+                <Property Name="pageId" Type="Edm.String" Nullable="false"/>
+                <Property Name="bagId" Type="Edm.String" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" Nullable="false"/>
+                <Property Name="value" Type="Edm.String"/>
+                <Property Name="translatable" Type="Edm.String" MaxLength="1"/>
+            </EntityType>
+            <EntityType Name="ChipBag" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="chipId"/>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="chipId" Type="Edm.String" Nullable="false"/>
+                <Property Name="id" Type="Edm.String" Nullable="false"/>
+                <NavigationProperty Name="ChipProperties" Relationship="PAGE_BUILDER_PERS.ChipBag_ChipProperties" FromRole="FromRole_ChipBag_ChipProperties" ToRole="ToRole_ChipBag_ChipProperties"/>
+            </EntityType>
+            <EntityType Name="ChipProperty" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="chipId"/>
+                    <PropertyRef Name="bagId"/>
+                    <PropertyRef Name="name"/>
+                </Key>
+                <Property Name="chipId" Type="Edm.String" Nullable="false"/>
+                <Property Name="bagId" Type="Edm.String" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" Nullable="false"/>
+                <Property Name="value" Type="Edm.String"/>
+                <Property Name="translatable" Type="Edm.String" MaxLength="1"/>
+            </EntityType>
+            <EntityType Name="ChipInstanceBag" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="pageId"/>
+                    <PropertyRef Name="instanceId"/>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="pageId" Type="Edm.String" Nullable="false"/>
+                <Property Name="instanceId" Type="Edm.String" Nullable="false"/>
+                <Property Name="id" Type="Edm.String" Nullable="false"/>
+                <Property Name="scope" Type="Edm.String" sap:updatable="false"/>
+                <NavigationProperty Name="ChipInstanceProperties" Relationship="PAGE_BUILDER_PERS.ChipInstanceBag_ChipInstanceProperty" FromRole="FromRole_ChipInstanceBag_ChipInstanceProperty" ToRole="ToRole_ChipInstanceBag_ChipInstanceProperty"/>
+            </EntityType>
+            <EntityType Name="ChipInstanceProperty" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="pageId"/>
+                    <PropertyRef Name="instanceId"/>
+                    <PropertyRef Name="bagId"/>
+                    <PropertyRef Name="name"/>
+                </Key>
+                <Property Name="pageId" Type="Edm.String" Nullable="false"/>
+                <Property Name="instanceId" Type="Edm.String" Nullable="false"/>
+                <Property Name="bagId" Type="Edm.String" Nullable="false"/>
+                <Property Name="name" Type="Edm.String" Nullable="false"/>
+                <Property Name="value" Type="Edm.String"/>
+                <Property Name="translatable" Type="Edm.String" MaxLength="1"/>
+            </EntityType>
+            <EntityType Name="PageSet" sap:content-version="1">
+                <Key>
+                    <PropertyRef Name="id"/>
+                </Key>
+                <Property Name="id" Type="Edm.String" Nullable="false"/>
+                <Property Name="configuration" Type="Edm.String"/>
+                <NavigationProperty Name="Pages" Relationship="PAGE_BUILDER_PERS.PageSet_Pages" FromRole="FromRole_PageSet_Pages" ToRole="ToRole_PageSet_Pages"/>
+                <NavigationProperty Name="MyPages" Relationship="PAGE_BUILDER_PERS.PageSet_Pages" FromRole="FromRole_PageSet_Pages" ToRole="ToRole_PageSet_Pages"/>
+                <NavigationProperty Name="AssignedPages" Relationship="PAGE_BUILDER_PERS.PageSet_Pages" FromRole="FromRole_PageSet_Pages" ToRole="ToRole_PageSet_Pages"/>
+                <NavigationProperty Name="DefaultPage" Relationship="PAGE_BUILDER_PERS.PageSet_Page" FromRole="FromRole_PageSet_Page" ToRole="ToRole_PageSet_Page"/>
+            </EntityType>
+            <Association Name="PageSet_Pages" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.PageSet" Multiplicity="0..1" Role="FromRole_PageSet_Pages"/>
+                <End Type="PAGE_BUILDER_PERS.Page" Multiplicity="*" Role="ToRole_PageSet_Pages"/>
+            </Association>
+            <Association Name="PageSet_Page" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.PageSet" Multiplicity="1" Role="FromRole_PageSet_Page"/>
+                <End Type="PAGE_BUILDER_PERS.Page" Multiplicity="1" Role="ToRole_PageSet_Page"/>
+            </Association>
+            <Association Name="Catalog_Page" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Catalog" Multiplicity="1" Role="FromRole_Catalog_Page"/>
+                <End Type="PAGE_BUILDER_PERS.Page" Multiplicity="0..1" Role="ToRole_Catalog_Page"/>
+            </Association>
+            <Association Name="Catalog_Chip" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Catalog" Multiplicity="*" Role="FromRole_Catalog_Chip"/>
+                <End Type="PAGE_BUILDER_PERS.Chip" Multiplicity="*" Role="ToRole_Catalog_Chip"/>
+            </Association>
+            <Association Name="PageChipInstance_Chip" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.PageChipInstance" Multiplicity="*" Role="FromRole_PageChipInstance_Chip"/>
+                <End Type="PAGE_BUILDER_PERS.Chip" Multiplicity="0..1" Role="ToRole_PageChipInstance_Chip"/>
+            </Association>
+            <Association Name="PageChipInstance_Catalog" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.PageChipInstance" Multiplicity="*" Role="FromRole_PageChipInstance_Catalog"/>
+                <End Type="PAGE_BUILDER_PERS.Catalog" Multiplicity="0..1" Role="ToRole_PageChipInstance_Catalog"/>
+            </Association>
+            <Association Name="PageChipInstance_PageChipInstance" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.PageChipInstance" Multiplicity="1" Role="FromRole_PageChipInstance_PageChipInstance"/>
+                <End Type="PAGE_BUILDER_PERS.PageChipInstance" Multiplicity="0..1" Role="ToRole_PageChipInstance_PageChipInstance"/>
+            </Association>
+            <Association Name="PageChipInstance_ChipInstanceBags" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.PageChipInstance" Multiplicity="1" Role="FromRole_PageChipInstance_ChipInstanceBags"/>
+                <End Type="PAGE_BUILDER_PERS.ChipInstanceBag" Multiplicity="*" Role="ToRole_PageChipInstance_ChipInstanceBags"/>
+            </Association>
+            <Association Name="Chip_Catalog" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Chip" Multiplicity="*" Role="FromRole_Chip_Catalog"/>
+                <End Type="PAGE_BUILDER_PERS.Catalog" Multiplicity="1" Role="ToRole_Chip_Catalog"/>
+            </Association>
+            <Association Name="Chip_Chip" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Chip" Multiplicity="1" Role="FromRole_Chip_Chip"/>
+                <End Type="PAGE_BUILDER_PERS.Chip" Multiplicity="0..1" Role="ToRole_Chip_Chip"/>
+            </Association>
+            <Association Name="Chip_ChipBags" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Chip" Multiplicity="1" Role="FromRole_Chip_ChipBags"/>
+                <End Type="PAGE_BUILDER_PERS.ChipBag" Multiplicity="*" Role="ToRole_Chip_ChipBags"/>
+            </Association>
+            <Association Name="Chip_PageChipInstance" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Chip" Multiplicity="1" Role="FromRole_Chip_PageChipInstance"/>
+                <End Type="PAGE_BUILDER_PERS.PageChipInstance" Multiplicity="0..1" Role="ToRole_Chip_PageChipInstance"/>
+            </Association>
+            <Association Name="ChipBag_ChipProperties" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.ChipBag" Multiplicity="1" Role="FromRole_ChipBag_ChipProperties"/>
+                <End Type="PAGE_BUILDER_PERS.ChipProperty" Multiplicity="*" Role="ToRole_ChipBag_ChipProperties"/>
+            </Association>
+            <Association Name="Page_Catalogs" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Page" Multiplicity="*" Role="FromRole_Page_Catalogs"/>
+                <End Type="PAGE_BUILDER_PERS.Catalog" Multiplicity="*" Role="ToRole_Page_Catalogs"/>
+            </Association>
+            <Association Name="Page_PageChipInstance" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Page" Multiplicity="1" Role="FromRole_Page_PageChipInstance"/>
+                <End Type="PAGE_BUILDER_PERS.PageChipInstance" Multiplicity="*" Role="ToRole_Page_PageChipInstance"/>
+            </Association>
+            <Association Name="Page_Bags" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Page" Multiplicity="1" Role="FromRole_Page_Bags"/>
+                <End Type="PAGE_BUILDER_PERS.Bag" Multiplicity="*" Role="ToRole_Page_Bags"/>
+            </Association>
+            <Association Name="Page_Catalog" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Page" Multiplicity="*" Role="FromRole_Page_Catalog"/>
+                <End Type="PAGE_BUILDER_PERS.Catalog" Multiplicity="0..1" Role="ToRole_Page_Catalog"/>
+            </Association>
+            <Association Name="ChipInstanceBag_ChipInstanceProperty" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.ChipInstanceBag" Multiplicity="1" Role="FromRole_ChipInstanceBag_ChipInstanceProperty"/>
+                <End Type="PAGE_BUILDER_PERS.ChipInstanceProperty" Multiplicity="*" Role="ToRole_ChipInstanceBag_ChipInstanceProperty"/>
+            </Association>
+            <Association Name="Bag_Property" sap:content-version="1">
+                <End Type="PAGE_BUILDER_PERS.Bag" Multiplicity="1" Role="FromRole_Bag_Property"/>
+                <End Type="PAGE_BUILDER_PERS.Property" Multiplicity="*" Role="ToRole_Bag_Property"/>
+            </Association>
+            <EntityContainer Name="PAGE_BUILDER_PERS_Entities" m:IsDefaultEntityContainer="true" sap:supported-formats="atom json xlsx">
+                <EntitySet Name="Catalogs" EntityType="PAGE_BUILDER_PERS.Catalog" sap:content-version="1"/>
+                <EntitySet Name="Pages" EntityType="PAGE_BUILDER_PERS.Page" sap:content-version="1"/>
+                <EntitySet Name="PageChipInstances" EntityType="PAGE_BUILDER_PERS.PageChipInstance" sap:content-version="1"/>
+                <EntitySet Name="Chips" EntityType="PAGE_BUILDER_PERS.Chip" sap:content-version="1"/>
+                <EntitySet Name="Bags" EntityType="PAGE_BUILDER_PERS.Bag" sap:content-version="1"/>
+                <EntitySet Name="Properties" EntityType="PAGE_BUILDER_PERS.Property" sap:content-version="1"/>
+                <EntitySet Name="ChipBags" EntityType="PAGE_BUILDER_PERS.ChipBag" sap:content-version="1"/>
+                <EntitySet Name="ChipProperties" EntityType="PAGE_BUILDER_PERS.ChipProperty" sap:content-version="1"/>
+                <EntitySet Name="ChipInstanceBags" EntityType="PAGE_BUILDER_PERS.ChipInstanceBag" sap:content-version="1"/>
+                <EntitySet Name="ChipInstanceProperties" EntityType="PAGE_BUILDER_PERS.ChipInstanceProperty" sap:content-version="1"/>
+                <EntitySet Name="PageSets" EntityType="PAGE_BUILDER_PERS.PageSet" sap:content-version="1"/>
+                <AssociationSet Name="Page_Catalog_AssocSet" Association="PAGE_BUILDER_PERS.Page_Catalog" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Pages" Role="FromRole_Page_Catalog"/>
+                    <End EntitySet="Catalogs" Role="ToRole_Page_Catalog"/>
+                </AssociationSet>
+                <AssociationSet Name="ChipBag_ChipProperties_AssocSet" Association="PAGE_BUILDER_PERS.ChipBag_ChipProperties" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ChipBags" Role="FromRole_ChipBag_ChipProperties"/>
+                    <End EntitySet="ChipProperties" Role="ToRole_ChipBag_ChipProperties"/>
+                </AssociationSet>
+                <AssociationSet Name="Bag_Property_AssocSet" Association="PAGE_BUILDER_PERS.Bag_Property" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Bags" Role="FromRole_Bag_Property"/>
+                    <End EntitySet="Properties" Role="ToRole_Bag_Property"/>
+                </AssociationSet>
+                <AssociationSet Name="Catalog_Page_AssocSet" Association="PAGE_BUILDER_PERS.Catalog_Page" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Catalogs" Role="FromRole_Catalog_Page"/>
+                    <End EntitySet="Pages" Role="ToRole_Catalog_Page"/>
+                </AssociationSet>
+                <AssociationSet Name="PageChipInstance_Catalog_AssocSet" Association="PAGE_BUILDER_PERS.PageChipInstance_Catalog" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="PageChipInstances" Role="FromRole_PageChipInstance_Catalog"/>
+                    <End EntitySet="Catalogs" Role="ToRole_PageChipInstance_Catalog"/>
+                </AssociationSet>
+                <AssociationSet Name="PageChipInstance_ChipInstanceBags_AssocS" Association="PAGE_BUILDER_PERS.PageChipInstance_ChipInstanceBags" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="PageChipInstances" Role="FromRole_PageChipInstance_ChipInstanceBags"/>
+                    <End EntitySet="ChipInstanceBags" Role="ToRole_PageChipInstance_ChipInstanceBags"/>
+                </AssociationSet>
+                <AssociationSet Name="Chip_ChipBags_AssocSet" Association="PAGE_BUILDER_PERS.Chip_ChipBags" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Chips" Role="FromRole_Chip_ChipBags"/>
+                    <End EntitySet="ChipBags" Role="ToRole_Chip_ChipBags"/>
+                </AssociationSet>
+                <AssociationSet Name="Page_Bags_AssocSet" Association="PAGE_BUILDER_PERS.Page_Bags" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Pages" Role="FromRole_Page_Bags"/>
+                    <End EntitySet="Bags" Role="ToRole_Page_Bags"/>
+                </AssociationSet>
+                <AssociationSet Name="PageSet_Pages_AssocSet" Association="PAGE_BUILDER_PERS.PageSet_Pages" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="PageSets" Role="FromRole_PageSet_Pages"/>
+                    <End EntitySet="Pages" Role="ToRole_PageSet_Pages"/>
+                </AssociationSet>
+                <AssociationSet Name="PageChipInstance_PageChipInstance_AssocS" Association="PAGE_BUILDER_PERS.PageChipInstance_PageChipInstance" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="PageChipInstances" Role="FromRole_PageChipInstance_PageChipInstance"/>
+                    <End EntitySet="PageChipInstances" Role="ToRole_PageChipInstance_PageChipInstance"/>
+                </AssociationSet>
+                <AssociationSet Name="ChipInstanceBag_ChipInstanceProperty_Ass" Association="PAGE_BUILDER_PERS.ChipInstanceBag_ChipInstanceProperty" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="ChipInstanceBags" Role="FromRole_ChipInstanceBag_ChipInstanceProperty"/>
+                    <End EntitySet="ChipInstanceProperties" Role="ToRole_ChipInstanceBag_ChipInstanceProperty"/>
+                </AssociationSet>
+                <AssociationSet Name="PageChipInstance_Chip_AssocSet" Association="PAGE_BUILDER_PERS.PageChipInstance_Chip" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="PageChipInstances" Role="FromRole_PageChipInstance_Chip"/>
+                    <End EntitySet="Chips" Role="ToRole_PageChipInstance_Chip"/>
+                </AssociationSet>
+                <AssociationSet Name="Chip_Catalog_AssocSet" Association="PAGE_BUILDER_PERS.Chip_Catalog" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Chips" Role="FromRole_Chip_Catalog"/>
+                    <End EntitySet="Catalogs" Role="ToRole_Chip_Catalog"/>
+                </AssociationSet>
+                <AssociationSet Name="Page_Catalogs_AssocSet" Association="PAGE_BUILDER_PERS.Page_Catalogs" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Pages" Role="FromRole_Page_Catalogs"/>
+                    <End EntitySet="Catalogs" Role="ToRole_Page_Catalogs"/>
+                </AssociationSet>
+                <AssociationSet Name="Chip_PageChipInstance_AssocSet" Association="PAGE_BUILDER_PERS.Chip_PageChipInstance" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Chips" Role="FromRole_Chip_PageChipInstance"/>
+                    <End EntitySet="PageChipInstances" Role="ToRole_Chip_PageChipInstance"/>
+                </AssociationSet>
+                <AssociationSet Name="Page_PageChipInstance_AssocSet" Association="PAGE_BUILDER_PERS.Page_PageChipInstance" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Pages" Role="FromRole_Page_PageChipInstance"/>
+                    <End EntitySet="PageChipInstances" Role="ToRole_Page_PageChipInstance"/>
+                </AssociationSet>
+                <AssociationSet Name="Chip_Chip_AssocSet" Association="PAGE_BUILDER_PERS.Chip_Chip" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Chips" Role="FromRole_Chip_Chip"/>
+                    <End EntitySet="Chips" Role="ToRole_Chip_Chip"/>
+                </AssociationSet>
+                <AssociationSet Name="PageSet_Page_AssocSet" Association="PAGE_BUILDER_PERS.PageSet_Page" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="PageSets" Role="FromRole_PageSet_Page"/>
+                    <End EntitySet="Pages" Role="ToRole_PageSet_Page"/>
+                </AssociationSet>
+                <AssociationSet Name="Catalog_Chip_AssocSet" Association="PAGE_BUILDER_PERS.Catalog_Chip" sap:creatable="false" sap:updatable="false" sap:deletable="false" sap:content-version="1">
+                    <End EntitySet="Catalogs" Role="FromRole_Catalog_Chip"/>
+                    <End EntitySet="Chips" Role="ToRole_Catalog_Chip"/>
+                </AssociationSet>
+                <FunctionImport Name="CloneCatalog" ReturnType="PAGE_BUILDER_PERS.Catalog" EntitySet="Catalogs" m:HttpMethod="POST">
+                    <Parameter Name="sourceId" Type="Edm.String" Mode="In"/>
+                    <Parameter Name="targetId" Type="Edm.String" Mode="In"/>
+                    <Parameter Name="title" Type="Edm.String" Mode="In" Nullable="true"/>
+                </FunctionImport>
+                <FunctionImport Name="ClonePageChipInstance" ReturnType="PAGE_BUILDER_PERS.PageChipInstance" EntitySet="PageChipInstances" m:HttpMethod="POST">
+                    <Parameter Name="sourcePageId" Type="Edm.String" Mode="In"/>
+                    <Parameter Name="sourceChipInstanceId" Type="Edm.String" Mode="In"/>
+                    <Parameter Name="targetPageId" Type="Edm.String" Mode="In"/>
+                </FunctionImport>
+            </EntityContainer>
+            <Annotations Target="_Entities" xmlns="http://docs.oasis-open.org/odata/ns/edm">
+                <Annotation Term="Org.OData.Capabilities.V1.BatchSupport">
+                    <Record Type="Org.OData.Capabilities.V1.BatchSupportType">
+                        <PropertyValue Property="ReferencesAcrossChangeSetsSupported" Bool="true"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__CodeList.CurrencyCodes">
+                    <Record>
+                        <PropertyValue Property="Url" String="../../iwbep/common;v=0001;o=LOCAL/$metadata"/>
+                        <PropertyValue Property="CollectionPath" String="Currencies"/>
+                    </Record>
+                </Annotation>
+                <Annotation Term="SAP__CodeList.UnitsOfMeasure">
+                    <Record>
+                        <PropertyValue Property="Url" String="../../iwbep/common;v=0001;o=LOCAL/$metadata"/>
+                        <PropertyValue Property="CollectionPath" String="UnitsOfMeasure"/>
+                    </Record>
+                </Annotation>
+            </Annotations>
+            <atom:link rel="self" href="https://ldciuia.wdf.sap.corp:44300/sap/opu/odata/ui2/PAGE_BUILDER_PERS/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+            <atom:link rel="latest-version" href="https://ldciuia.wdf.sap.corp:44300/sap/opu/odata/ui2/PAGE_BUILDER_PERS/$metadata" xmlns:atom="http://www.w3.org/2005/Atom"/>
+        </Schema>
+    </edmx:DataServices>
+</edmx:Edmx>
