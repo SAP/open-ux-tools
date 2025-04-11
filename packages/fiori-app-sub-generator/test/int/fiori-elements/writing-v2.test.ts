@@ -291,7 +291,7 @@ describe('Generate v2 apps', () => {
             floorplan: FloorplanFE.FE_OVP,
             service: ovpService,
             entityRelatedConfig: {
-                filterEntityType: {
+                filterEntitySet: {
                     entitySetName: 'GlobalFilters',
                     entitySetType: 'GlobalFilters'
                 }
