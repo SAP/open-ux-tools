@@ -246,11 +246,11 @@ export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Edito
 }
 
 /**
- * Asynchronously adds an XML fragment to the project if it doesn't already exist.
+ * Asynchronously adds an controller extension to the project if it doesn't already exist.
  *
  * @param {string} rootPath - The root path of the project.
  * @param {string} basePath - The base path of the project.
- * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {CodeExtChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  */
@@ -287,7 +287,7 @@ export async function addControllerExtension(
  *
  * @param {string} basePath - The base path of the project.
  * @param {string} projectRoot - The root path of the project.
- * @param {AddXMLChange} change - The change data, including the fragment path.
+ * @param {AnnotationFileChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
  */
