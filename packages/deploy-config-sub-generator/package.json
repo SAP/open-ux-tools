@@ -64,6 +64,7 @@
         "@types/yeoman-test": "4.0.6",
         "@sap-ux/cf-deploy-config-inquirer": "workspace:*",
         "@sap-ux/cf-deploy-config-writer": "workspace:*",
+        "@sap-ux/fiori-app-sub-generator": "workspace:*",
         "@sap-ux/jest-file-matchers": "workspace:*",
         "@sap-ux/logger": "workspace:*",
         "@sap/mta-lib": "1.7.4",

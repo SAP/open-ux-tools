@@ -1605,6 +1605,9 @@ importers:
       '@sap-ux/cf-deploy-config-writer':
         specifier: workspace:*
         version: link:../cf-deploy-config-writer
+      '@sap-ux/fiori-app-sub-generator':
+        specifier: workspace:*
+        version: link:../fiori-app-sub-generator
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
         version: link:../jest-file-matchers

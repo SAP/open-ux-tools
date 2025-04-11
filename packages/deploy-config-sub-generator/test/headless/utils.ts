@@ -4,6 +4,7 @@ import { existsSync, readFileSync } from 'fs';
 import { join } from 'path';
 import { generatorNamespace } from '../../src/utils';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
+import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
 
 /**
  *
@@ -23,10 +24,10 @@ export async function runHeadlessGen(testNameOrJsonOrPath: string, targetDir?: s
                 ? readFileSync(testFilePath, { encoding: 'utf-8' })
                 : testNameOrJsonOrPath;
             if (testConfig) {
-                appConfig = JSON.parse(testConfig) as any; // todo - replace with appconfig
+                appConfig = JSON.parse(testConfig) as AppConfig;
             }
         }
-        if (appConfig.project?.targetFolder) {
+        if (appConfig?.project?.targetFolder) {
             appConfig.project.targetFolder = targetDir;
         }
     }

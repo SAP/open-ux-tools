@@ -1,4 +1,3 @@
-import 'jest-extended';
 import hasbin from 'hasbin';
 import * as childProcess from 'child_process';
 import { toMatchFolder } from '@sap-ux/jest-file-matchers';
@@ -8,7 +7,7 @@ import { readFile, rename } from 'fs/promises';
 import { rimraf } from 'rimraf';
 import { basename, join } from 'path';
 import CFGen from '@sap-ux/cf-deploy-config-sub-generator';
-import { TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
+import { type TelemetryHelper, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     INPUT_APP_DIR,
     INPUT_APP_NAME_BASE,
@@ -24,6 +23,7 @@ import {
 import { runHeadlessGen } from './utils';
 import Generator from 'yeoman-generator';
 import { generatorNamespace, initI18n } from '../../src/utils';
+import type { AppConfig } from '@sap-ux/fiori-app-sub-generator';
 
 expect.extend({ toMatchFolder });
 
@@ -83,7 +83,9 @@ describe('Test headless generator', () => {
                 console.log('Removing test output folder');
                 rimraf.sync(OUTPUT_DIR);
             }
-        } catch {}
+        } catch {
+            // do nothing
+        }
     });
 
     it('Test: Headless deploy-config', async () => {
@@ -244,7 +246,7 @@ describe('Test headless generator', () => {
         }
         await copy(lcapTestProjectSrc, lcapTestProjectDest);
         // Create the app config file with absolute target folder property
-        const appConfigAbsTarget = JSON.parse(await readFile(testConfigFilePathBase, 'utf-8')) as any; // todo - replace with appconfig
+        const appConfigAbsTarget = JSON.parse(await readFile(testConfigFilePathBase, 'utf-8')) as AppConfig;
 
         appConfigAbsTarget.project.targetFolder = targetDir;
         // Write the updated app config file
@@ -262,7 +264,7 @@ describe('Test headless generator', () => {
     it('Test: Headless deploy-config - telemetry is sent', async () => {
         const testAppName = 'app5-telem';
 
-        let expectedTelemetryProperties = {
+        const expectedTelemetryProperties = {
             AppGenLaunchSource: 'Test Headless',
             AppGenLaunchSourceVersion: '1.1.1'
         };
