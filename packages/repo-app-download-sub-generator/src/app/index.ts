@@ -6,10 +6,9 @@ import type { Logger } from '@sap-ux/logger';
 import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { generatorTitle, extractedFilePath, generatorName, defaultAnswers, qfaJsonFileName } from '../utils/constants';
 import { t } from '../utils/i18n';
-import { getYUIDetails } from '../prompts/prompt-helpers';
 import { downloadApp } from '../utils/download-utils';
 import { EventName } from '../telemetryEvents';
-import { getDefaultTargetFolder } from '@sap-ux/fiori-generator-shared';
+import { getDefaultTargetFolder, generateReadMe, type ReadMe } from '@sap-ux/fiori-generator-shared';
 import type {
     RepoAppDownloadOptions,
     RepoAppDownloadAnswers,
@@ -21,7 +20,6 @@ import { getPrompts } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'path';
 import { platform } from 'os';
-import { generateReadMe, type ReadMe } from '@sap-ux/fiori-generator-shared';
 import { runPostAppGenHook } from '../utils/event-hook';
 import { getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
@@ -35,7 +33,7 @@ import { PromptNames } from './types';
 import { getAbapDeployConfig, getAppConfig } from './app-config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { replaceWebappFiles, makeValidJson, validateAndUpdateManifestUI5Version } from '../utils/file-helpers';
-import { fetchAppListForSelectedSystem, extractAppData } from '../prompts/prompt-helpers';
+import { fetchAppListForSelectedSystem, extractAppData, getYUIDetails } from '../prompts/prompt-helpers';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators';
 import { FileName, DirName } from '@sap-ux/project-access';
 

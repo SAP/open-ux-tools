@@ -1,9 +1,7 @@
-import { generatorTitle, generatorDescription } from '../utils/constants';
-import { appListSearchParams, appListResultFields } from '../utils/constants';
+import { appListSearchParams, appListResultFields, generatorTitle, generatorDescription } from '../utils/constants';
 import type { AbapServiceProvider, AppIndex } from '@sap-ux/axios-extension';
-import type { AppInfo } from '../app/types';
+import type { AppInfo, AppItem } from '../app/types';
 import { PromptState } from './prompt-state';
-import type { AppItem } from '../app/types';
 import { t } from '../utils/i18n';
 import RepoAppDownloadLogger from '../utils/logger';
 

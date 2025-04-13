@@ -4,10 +4,9 @@ import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedApp
 import { PromptNames } from '../app/types';
 import { t } from '../utils/i18n';
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
-import { formatAppChoices } from './prompt-helpers';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import { PromptState } from './prompt-state';
-import { fetchAppListForSelectedSystem } from './prompt-helpers';
+import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
 
 /**
  * Gets the target folder selection prompt.

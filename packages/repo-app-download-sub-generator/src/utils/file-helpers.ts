@@ -63,9 +63,7 @@ export function readManifest(manifesFilePath: string, fs: Editor): Manifest {
  */
 export async function validateAndUpdateManifestUI5Version(manifestFilePath: string, fs: Editor): Promise<void> {
     const manifestJson = readManifest(manifestFilePath, fs);
-    let validatedManifest: Manifest;
-
-    if (!manifestJson['sap.ui5'] || !manifestJson['sap.ui5'].dependencies) {
+    if (!manifestJson['sap.ui5']?.dependencies) {
         throw new Error(t('error.readManifestErrors.invalidManifestStructureError'));
     }
 
@@ -79,20 +77,17 @@ export async function validateAndUpdateManifestUI5Version(manifestFilePath: stri
 
     if (ui5VersionAvailable) {
         // Return the manifest as it is if the version is valid
-        validatedManifest = manifestJson;
-    }
-    // Handle internal features setting
-    if (isInternalFeaturesSettingEnabled()) {
+        // No changes needed
+    } else if (isInternalFeaturesSettingEnabled()) {
+        // Handle internal features setting
         manifestJson['sap.ui5'].dependencies.minUI5Version = '${sap.ui5.dist.version}';
-        validatedManifest = manifestJson;
     } else {
         // Handle fallback to the closest released version
         const closestAvailableUi5Version = availableUI5Versions[0]?.version;
         manifestJson['sap.ui5'].dependencies.minUI5Version = closestAvailableUi5Version;
-        validatedManifest = manifestJson;
     }
     // update manifest at extracted path
-    fs.writeJSON(manifestFilePath, validatedManifest, undefined, 2);
+    fs.writeJSON(manifestFilePath, manifestJson, undefined, 2);
 }
 
 /**
