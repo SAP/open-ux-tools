@@ -10,7 +10,7 @@ The SAP App download sub-generator  sub-generator is installed as part of the [@
 
 ## Launch the SAP Reuse Library sub-generator
 
-Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and execute the Fiori: Download ADT deployed app from UI5 ABAP repository.
+Open the Command Palette in MS Visual Studio Code ( CMD/CTRL + Shift + P ) and execute the Fiori: Download ADT deployed app from an UI5 ABAP repository.
 
 ## Keywords
 SAP Fiori Generator
