@@ -152,7 +152,7 @@ export class Ui5AbapRepositoryService extends ODataService {
             return Buffer.from(str, 'base64').toString('base64') === str.trim();
         } catch (e) {
             // If decoding fails, it's not valid Base64
-            return false;
+            return false; //NOSONAR
         }
     }
 

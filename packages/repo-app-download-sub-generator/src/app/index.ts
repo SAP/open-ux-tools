@@ -46,7 +46,7 @@ export default class extends Generator {
     private readonly vscode?: any;
     private readonly appRootPath: string;
     private readonly prompts: Prompts;
-    private answers: RepoAppDownloadAnswers = defaultAnswers;
+    private readonly answers: RepoAppDownloadAnswers = defaultAnswers;
     public options: RepoAppDownloadOptions;
     private projectPath: string;
     private extractedProjectPath: string;
@@ -209,7 +209,7 @@ export default class extends Generator {
         const readMeConfig: ReadMe = {
             appName: config.app.id,
             appTitle: config.app.title ?? '',
-            appNamespace: '', // todo: cant find namespace in manifest json - default?
+            appNamespace: config.app.id.substring(0, config.app.id.lastIndexOf('.')),
             appDescription: t('readMe.appDescription'),
             ui5Theme: getDefaultUI5Theme(config.ui5?.version),
             generatorName: generatorName,
