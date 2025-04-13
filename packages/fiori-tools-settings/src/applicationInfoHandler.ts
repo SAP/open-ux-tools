@@ -50,9 +50,7 @@ export function writeApplicationInfoSettings(path: string, fs?: Editor) {
     appInfoContents.latestGeneratedFiles.push(path);
     fs.write(appInfoFilePath, JSON.stringify(appInfoContents, null, 2));
     fs.commit((err) => {
-        if (err) {
-            console.log('Error in writting to AppInfo.json file', err);
-        }
+        console.log('Error in writting to AppInfo.json file', err);
     });
 }
 
@@ -70,9 +68,7 @@ export function deleteAppInfoSettings(fs?: Editor) {
         try {
             fs.delete(appInfoFilePath);
             fs.commit((err) => {
-                if (err) {
-                    console.log('Failed to commit the deletion of the AppInfo.json file: ', err);
-                }
+                console.log('Failed to commit the deletion of the AppInfo.json file: ', err);
             });
         } catch (err) {
             throw new Error(`Error deleting appInfo.json file: ${err}`);
