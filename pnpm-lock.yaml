@@ -1605,12 +1605,21 @@ importers:
       '@sap-ux/cf-deploy-config-writer':
         specifier: workspace:*
         version: link:../cf-deploy-config-writer
+      '@sap-ux/fiori-app-sub-generator':
+        specifier: workspace:*
+        version: link:../fiori-app-sub-generator
+      '@sap-ux/jest-file-matchers':
+        specifier: workspace:*
+        version: link:../jest-file-matchers
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
       '@sap/mta-lib':
         specifier: 1.7.4
         version: 1.7.4
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
       '@types/hasbin':
         specifier: 1.2.2
         version: 1.2.2
@@ -1638,6 +1647,9 @@ importers:
       '@types/yeoman-test':
         specifier: 4.0.6
         version: 4.0.6
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
       js-yaml:
         specifier: 4.1.0
         version: 4.1.0
