@@ -52,9 +52,6 @@
       "path": "packages/backend-proxy-middleware"
     },
     {
-      "path": "packages/bsp-app-download-sub-generator"
-    },
-    {
       "path": "packages/btp-utils"
     },
     {
@@ -203,6 +200,9 @@
     },
     {
       "path": "packages/reload-middleware"
+    },
+    {
+      "path": "packages/repo-app-download-sub-generator"
     },
     {
       "path": "packages/serve-static-middleware"

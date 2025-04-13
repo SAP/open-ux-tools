@@ -904,151 +904,6 @@ importers:
         specifier: 2.2.2
         version: 2.2.2
 
-  packages/bsp-app-download-sub-generator:
-    dependencies:
-      '@sap-devx/yeoman-ui-types':
-        specifier: 1.14.4
-        version: 1.14.4
-      '@sap-ux/abap-deploy-config-writer':
-        specifier: workspace:*
-        version: link:../abap-deploy-config-writer
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
-      '@sap-ux/btp-utils':
-        specifier: workspace:*
-        version: link:../btp-utils
-      '@sap-ux/feature-toggle':
-        specifier: workspace:*
-        version: link:../feature-toggle
-      '@sap-ux/fiori-elements-writer':
-        specifier: workspace:*
-        version: link:../fiori-elements-writer
-      '@sap-ux/fiori-generator-shared':
-        specifier: workspace:*
-        version: link:../fiori-generator-shared
-      '@sap-ux/fiori-tools-settings':
-        specifier: workspace:*
-        version: link:../fiori-tools-settings
-      '@sap-ux/i18n':
-        specifier: workspace:*
-        version: link:../i18n
-      '@sap-ux/inquirer-common':
-        specifier: workspace:*
-        version: link:../inquirer-common
-      '@sap-ux/launch-config':
-        specifier: workspace:*
-        version: link:../launch-config
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
-      '@sap-ux/odata-service-inquirer':
-        specifier: workspace:*
-        version: link:../odata-service-inquirer
-      '@sap-ux/project-access':
-        specifier: workspace:*
-        version: link:../project-access
-      '@sap-ux/project-input-validator':
-        specifier: workspace:*
-        version: link:../project-input-validator
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
-      '@sap-ux/ui5-application-inquirer':
-        specifier: workspace:*
-        version: link:../ui5-application-inquirer
-      '@sap-ux/ui5-application-writer':
-        specifier: workspace:*
-        version: link:../ui5-application-writer
-      '@sap-ux/ui5-info':
-        specifier: workspace:*
-        version: link:../ui5-info
-      adm-zip:
-        specifier: 0.5.10
-        version: 0.5.10
-      i18next:
-        specifier: 23.5.1
-        version: 23.5.1
-      inquirer:
-        specifier: 8.2.6
-        version: 8.2.6
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
-      yeoman-generator:
-        specifier: 5.10.0
-        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
-    devDependencies:
-      '@jest/types':
-        specifier: 29.6.3
-        version: 29.6.3
-      '@sap-ux/nodejs-utils':
-        specifier: workspace:*
-        version: link:../nodejs-utils
-      '@sap-ux/ui5-config':
-        specifier: workspace:*
-        version: link:../ui5-config
-      '@types/adm-zip':
-        specifier: 0.5.5
-        version: 0.5.5
-      '@types/fs-extra':
-        specifier: 9.0.13
-        version: 9.0.13
-      '@types/inquirer':
-        specifier: 8.2.6
-        version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.1
-        version: 2.0.1
-      '@types/lodash':
-        specifier: 4.14.202
-        version: 4.14.202
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
-      '@types/mem-fs-editor':
-        specifier: 7.0.1
-        version: 7.0.1
-      '@types/yeoman-environment':
-        specifier: 2.10.11
-        version: 2.10.11
-      '@types/yeoman-generator':
-        specifier: 5.2.11
-        version: 5.2.11
-      '@types/yeoman-test':
-        specifier: 4.0.6
-        version: 4.0.6
-      '@vscode-logging/logger':
-        specifier: 2.0.0
-        version: 2.0.0
-      fs-extra:
-        specifier: 10.0.0
-        version: 10.0.0
-      lodash:
-        specifier: 4.17.21
-        version: 4.17.21
-      mem-fs-editor:
-        specifier: 9.4.0
-        version: 9.4.0(mem-fs@2.1.0)
-      memfs:
-        specifier: 3.4.13
-        version: 3.4.13
-      rimraf:
-        specifier: 5.0.5
-        version: 5.0.5
-      typescript:
-        specifier: 5.3.3
-        version: 5.3.3
-      unionfs:
-        specifier: 4.4.0
-        version: 4.4.0
-      yeoman-test:
-        specifier: 6.3.0
-        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
-      yo:
-        specifier: '4'
-        version: 4.3.1(mem-fs@2.1.0)
-
   packages/btp-utils:
     dependencies:
       '@sap/bas-sdk':
@@ -3416,6 +3271,145 @@ importers:
       supertest:
         specifier: 6.3.3
         version: 6.3.3
+
+  packages/repo-app-download-sub-generator:
+    dependencies:
+      '@sap-devx/yeoman-ui-types':
+        specifier: 1.14.4
+        version: 1.14.4
+      '@sap-ux/abap-deploy-config-writer':
+        specifier: workspace:*
+        version: link:../abap-deploy-config-writer
+      '@sap-ux/axios-extension':
+        specifier: workspace:*
+        version: link:../axios-extension
+      '@sap-ux/btp-utils':
+        specifier: workspace:*
+        version: link:../btp-utils
+      '@sap-ux/feature-toggle':
+        specifier: workspace:*
+        version: link:../feature-toggle
+      '@sap-ux/fiori-elements-writer':
+        specifier: workspace:*
+        version: link:../fiori-elements-writer
+      '@sap-ux/fiori-generator-shared':
+        specifier: workspace:*
+        version: link:../fiori-generator-shared
+      '@sap-ux/fiori-tools-settings':
+        specifier: workspace:*
+        version: link:../fiori-tools-settings
+      '@sap-ux/i18n':
+        specifier: workspace:*
+        version: link:../i18n
+      '@sap-ux/inquirer-common':
+        specifier: workspace:*
+        version: link:../inquirer-common
+      '@sap-ux/launch-config':
+        specifier: workspace:*
+        version: link:../launch-config
+      '@sap-ux/logger':
+        specifier: workspace:*
+        version: link:../logger
+      '@sap-ux/odata-service-inquirer':
+        specifier: workspace:*
+        version: link:../odata-service-inquirer
+      '@sap-ux/project-access':
+        specifier: workspace:*
+        version: link:../project-access
+      '@sap-ux/project-input-validator':
+        specifier: workspace:*
+        version: link:../project-input-validator
+      '@sap-ux/store':
+        specifier: workspace:*
+        version: link:../store
+      '@sap-ux/ui5-info':
+        specifier: workspace:*
+        version: link:../ui5-info
+      adm-zip:
+        specifier: 0.5.10
+        version: 0.5.10
+      i18next:
+        specifier: 23.5.1
+        version: 23.5.1
+      inquirer:
+        specifier: 8.2.6
+        version: 8.2.6
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
+      yeoman-generator:
+        specifier: 5.10.0
+        version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
+    devDependencies:
+      '@jest/types':
+        specifier: 29.6.3
+        version: 29.6.3
+      '@sap-ux/nodejs-utils':
+        specifier: workspace:*
+        version: link:../nodejs-utils
+      '@sap-ux/ui5-config':
+        specifier: workspace:*
+        version: link:../ui5-config
+      '@types/adm-zip':
+        specifier: 0.5.5
+        version: 0.5.5
+      '@types/fs-extra':
+        specifier: 9.0.13
+        version: 9.0.13
+      '@types/inquirer':
+        specifier: 8.2.6
+        version: 8.2.6
+      '@types/inquirer-autocomplete-prompt':
+        specifier: 2.0.1
+        version: 2.0.1
+      '@types/lodash':
+        specifier: 4.14.202
+        version: 4.14.202
+      '@types/mem-fs':
+        specifier: 1.1.2
+        version: 1.1.2
+      '@types/mem-fs-editor':
+        specifier: 7.0.1
+        version: 7.0.1
+      '@types/yeoman-environment':
+        specifier: 2.10.11
+        version: 2.10.11
+      '@types/yeoman-generator':
+        specifier: 5.2.11
+        version: 5.2.11
+      '@types/yeoman-test':
+        specifier: 4.0.6
+        version: 4.0.6
+      '@vscode-logging/logger':
+        specifier: 2.0.0
+        version: 2.0.0
+      fs-extra:
+        specifier: 10.0.0
+        version: 10.0.0
+      lodash:
+        specifier: 4.17.21
+        version: 4.17.21
+      mem-fs-editor:
+        specifier: 9.4.0
+        version: 9.4.0(mem-fs@2.1.0)
+      memfs:
+        specifier: 3.4.13
+        version: 3.4.13
+      rimraf:
+        specifier: 5.0.5
+        version: 5.0.5
+      typescript:
+        specifier: 5.3.3
+        version: 5.3.3
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
+      yeoman-test:
+        specifier: 6.3.0
+        version: 6.3.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)(yeoman-generator@5.10.0)
+      yo:
+        specifier: '4'
+        version: 4.3.1(mem-fs@2.1.0)
 
   packages/serve-static-middleware:
     dependencies:
@@ -10688,7 +10682,7 @@ packages:
       '@types/mem-fs': 1.1.2
       '@types/mem-fs-editor': 7.0.1
       '@types/yeoman-environment': 2.10.11
-      '@types/yeoman-generator': 5.2.11
+      '@types/yeoman-generator': 5.2.14
     dev: true
 
   /@typescript-eslint/eslint-plugin@5.62.0(@typescript-eslint/parser@5.62.0)(eslint@8.57.0)(typescript@5.8.2):
@@ -17482,6 +17476,7 @@ packages:
   /is-docker@3.0.0:
     resolution: {integrity: sha512-eljcgEDlEns/7AXFosB5K/2nCM4P7FQPkGc/DWLy5rmFEWvZayGrik1d9/QIY5nJ4f9YsVvBkA6kJpHn9rISdQ==}
     engines: {node: ^12.20.0 || ^14.13.1 || >=16.0.0}
+    hasBin: true
     dev: true
 
   /is-extglob@2.1.1:
@@ -25696,7 +25691,7 @@ packages:
       chalk: 4.1.2
       cli-list: 0.2.0
       configstore: 5.0.1
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       figures: 3.2.0
       fullname: 4.0.1
       global-agent: 3.0.0

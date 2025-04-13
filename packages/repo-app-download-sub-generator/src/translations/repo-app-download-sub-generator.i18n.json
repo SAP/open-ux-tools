@@ -1,0 +1,67 @@
+{
+    "error": {
+        "telemetry": "Failed to send telemetry data after downloading app from UI5 ABAP Repository. {{- error}}",
+        "qfaJsonNotFound": "{{- jsonFileName }} not found in the downloaded app",
+        "replaceWebappFilesError": "Error replacing files in the downloaded app: {{- error}}", 
+        "requiredFieldsMissing": "Required fields are missing for app: {{- app }}. Check if the app is deployed correctly",
+        "applicationListFetchError": "Error fetching application list: {{- error}}",
+        "metadataFetchError": "Error fetching metadata: {{- error}}",
+        "appConfigGenError": "Error generating application configuration: {{- error}}",
+        "endPhase": "Error in end phase: {{- error}}",
+        "errorProcessingJsonFile": "Error processing JSON file: {{- error}}",
+        "validationErrors": {
+            "invalidMetadataPackage": "Invalid or missing package in metadata",
+            "invalidServiceName": "Invalid or missing serviceName in serviceBindingDetails",
+            "invalidServiceVersion": "Invalid or missing serviceVersion in serviceBindingDetails",
+            "invalidMainEntityName": "Invalid or missing mainEntityName in serviceBindingDetails",
+            "invalidModuleName": "Invalid or missing moduleName in serviceBindingDetails",
+            "invalidRepositoryName": "Invalid or missing repositoryName in serviceBindingDetails"
+        },
+        "installationErrors": {
+            "npmInstall": "Error in install phase: {{- error}}",
+            "skippedInstallation": "Option `--skipInstall` was specified. Installation of dependencies will be skipped."
+        },
+        "appDownloadErrors": {
+            "downloadedFileNotBufferError": "Error: The downloaded file is not a Buffer.",
+            "appDownloadFailure": "Error downloading app: {{- error}}",
+            "zipExtractionError": "Error extracting zip: {{- error}}"
+        },
+        "eventHookErrors": {
+            "vscodeInstanceMissing": "Error: Missing VSCode instance in event hook",
+            "postGenCommandMissing": "Error: Missing postGenCommand in event hook",
+            "commandExecutionFailed": "Error executing postGenCommand in event hook: {{- error}}"
+        },
+        "readManifestErrors": {
+            "manifestFileNotFound": "Error: Manifest file not found in the downloaded app",
+            "readManifestFailed": "Error: Failed to read manifest file",
+            "sapAppNotDefined": "Error: sap.app not defined in the manifest file",
+            "sourceTemplateNotSupported": "Error: Source template not supported",
+            "invalidManifestStructureError": "Error: Invalid manifest structure: 'sap.ui5' or dependencies are missing."
+        },
+        "quickDeployedAppDownloadErrors": {
+            "noAppsFound": "No application with id {{ appId }} found in the system. Please check if the application is deployed correctly"
+        }
+    },
+    "warn": {
+        "extractedFileNotFound": "Extracted file not found - {{- extractedFilePath}}"
+    },
+    "prompts": {
+        "appSelection": {
+            "message": "App",
+            "hint": "Select the app to download",
+            "breadcrumb": "App",
+            "noAppsDeployed": "No applications deployed to this system can be downloaded.  Please see <GA link> for more details"
+        },
+        "targetPath": {
+            "message": "Project folder path",
+            "breadcrumb": "Project Path"
+        }
+    },
+    "readMe": {
+        "appDescription" : "This application was converted from an ABAP basic app that was deployed from ADT",
+        "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
+    }, 
+    "info": {
+        "repoAppDownloadCompleteMsg": "The selected application has been downloaded and updated to support SAP Fiori tools."
+    }
+}
