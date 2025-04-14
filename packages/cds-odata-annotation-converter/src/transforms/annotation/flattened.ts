@@ -205,7 +205,18 @@ function convertToExpandedStructure(
         }
         i++;
     }
+    adjustLastSegmentRange(expandedStructure, valueRange);
 
+    return expandedStructure;
+}
+
+/**
+ * Adjusts the last segment range of the expanded structure.
+ *
+ * @param expandedStructure expanded structure either annotation or property kind.
+ * @param valueRange Value range
+ */
+function adjustLastSegmentRange(expandedStructure: ExpandedStructure[], valueRange?: Range): void {
     // the leaf element should only include the values range in it's contentRange
     const last = expandedStructure[expandedStructure.length - 1];
     if (last) {
@@ -217,12 +228,11 @@ function convertToExpandedStructure(
             delete last.element.contentRange;
         }
     }
-
-    return expandedStructure;
 }
 
 /**
- *
+ * Adds a diagnostic for segments after $Type.
+ * 
  * @param state VisitorSate for which context will be updated with the inferred value types.
  * @param segments Array of identifiers representing flattened record structure.
  * @param valueRange value range
@@ -242,7 +252,8 @@ function addDiagnosticForSegmentAfterType(state: VisitorState, segments: Identif
     }
 }
 /**
- *
+ * Adds a diagnostic for non-string literal type and no value scenarios.
+ * 
  * @param state VisitorSate for which context will be updated with the inferred value types.
  * @param value AnnotationValue
  * @param segmentRange segment range
