@@ -1,5 +1,25 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [751cad8]
+    -   @sap-ux/odata-service-inquirer@2.2.30
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [3fc72be]
+    -   @sap-ux/odata-service-inquirer@2.2.29
+
+## 0.1.0
+
+### Minor Changes
+
+-   7e03084: adds headless support to the deploy config sub generator
+
 ## 0.0.27
 
 ### Patch Changes
