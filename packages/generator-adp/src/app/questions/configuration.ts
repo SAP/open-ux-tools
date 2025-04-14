@@ -450,7 +450,7 @@ export class ConfigPrompter {
     /**
      * Validates the selected application to ensure it is supported.
      *
-     * @param {Application} app - The application to validate.
+     * @param {SourceApplication} app - The application to validate.
      * @returns {Promise<boolean | string>} True if the application is valid, otherwise an error message.
      */
     private async validateAppData(app: SourceApplication): Promise<boolean | string> {
@@ -476,7 +476,7 @@ export class ConfigPrompter {
     /**
      * Evaluate if the application version supports certain features.
      *
-     * @param {Application} application - The application data.
+     * @param {SourceApplication} application - The application data.
      */
     private evaluateAppSupport(application: SourceApplication): void {
         const isFullSupport = !!this.systemVersion && !isFeatureSupportedVersion('1.96.0', this.systemVersion);

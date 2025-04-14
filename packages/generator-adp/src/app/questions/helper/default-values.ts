@@ -12,7 +12,7 @@ const DEFAULT_PREFIX = 'app.variant';
  * @param {FlexLayer} isCustomerBase - Indicates the deployment layer (e.g., CUSTOMER_BASE).
  * @returns {string} The namespace string, prefixed appropriately if it's a customer base project.
  */
-export function generateValidNamespace(projectName: string, isCustomerBase: boolean): string {
+export function getDefaultNamespace(projectName: string, isCustomerBase: boolean): string {
     return isCustomerBase ? `customer.${projectName}` : projectName;
 }
 
@@ -42,7 +42,7 @@ export function getDefaultProjectName(basePath: string, dirName: string = DEFAUL
  * @param {string[]} ui5Versions Array of available versions.
  * @returns {Promise<string>} The valid UI5 version or an empty string if the first version is not valid or if there are no versions.
  */
-export async function getVersionDefaultValue(ui5Versions: string[]): Promise<string> {
+export async function getDefaultVersion(ui5Versions: string[]): Promise<string> {
     if (ui5Versions?.length === 0) {
         return '';
     }

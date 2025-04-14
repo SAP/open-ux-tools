@@ -19,7 +19,7 @@ import type {
 import { basicPromptNames } from '../types';
 import { t } from '../../utils/i18n';
 import { getProjectNameTooltip } from './helper/tooltip';
-import { getDefaultProjectName, generateValidNamespace, getVersionDefaultValue } from './helper/default-values';
+import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
 import { getVersionAdditionalMessages } from './helper/additional-messages';
 
 interface Config {
@@ -34,7 +34,7 @@ interface Config {
  *
  * @param {string} path - The project base path.
  * @param {Config} config - Configuration values needed for conditional prompt logic.
- * @param {BasicPromptOptions} [promptOptions] - Optional settings to control visibility and defaults.
+ * @param {AttributePromptOptions} [promptOptions] - Optional settings to control visibility and defaults.
  * @returns {AttributesQuestion[]} An array of prompt objects for basic info input.
  */
 export function getPrompts(path: string, config: Config, promptOptions?: AttributePromptOptions): AttributesQuestion[] {
@@ -126,7 +126,7 @@ function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOp
         name: basicPromptNames.namespace,
         message: t('prompts.namespaceLabel'),
         default: (answers: AttributesAnswers) =>
-            options?.default ?? generateValidNamespace(answers.projectName, isCustomerBase),
+            options?.default ?? getDefaultNamespace(answers.projectName, isCustomerBase),
         guiOptions: {
             applyDefaultWhenDirty: true
         },
@@ -135,7 +135,7 @@ function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOp
 
     if (!isCustomerBase) {
         prompt.guiOptions!.type = 'label';
-        prompt.when = (answers) => !!answers.projectName;
+        prompt.when = (answers): boolean => !!answers.projectName;
     } else {
         prompt.guiOptions!.mandatory = true;
         prompt.guiOptions!.breadcrumb = true;
@@ -195,7 +195,7 @@ function getUi5VersionPrompt(
             mandatory: true
         },
         validate: async (version: string) => await validateUI5VersionExists(version),
-        default: async () => await getVersionDefaultValue(ui5Versions),
+        default: async () => await getDefaultVersion(ui5Versions),
         additionalMessages: () => getVersionAdditionalMessages(isVersionDetected)
     } as ListQuestion<AttributesAnswers>;
 }

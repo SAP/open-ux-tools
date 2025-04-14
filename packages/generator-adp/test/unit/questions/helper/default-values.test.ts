@@ -1,9 +1,9 @@
 import { existsSync } from 'fs';
 
 import {
-    generateValidNamespace,
+    getDefaultNamespace,
     getDefaultProjectName,
-    getVersionDefaultValue
+    getDefaultVersion
 } from '../../../../src/app/questions/helper/default-values';
 
 jest.mock('fs', () => ({
@@ -22,12 +22,12 @@ const existsSyncMock = existsSync as jest.Mock;
 describe('generateValidNamespace', () => {
     const projectName = 'app.variant1';
     it('should prepend "customer." when layer is CUSTOMER_BASE', () => {
-        const namespace = generateValidNamespace(projectName, true);
+        const namespace = getDefaultNamespace(projectName, true);
         expect(namespace).toBe(`customer.${projectName}`);
     });
 
     it('should return projectName unchanged when layer is not CUSTOMER_BASE', () => {
-        const namespace = generateValidNamespace(projectName, false);
+        const namespace = getDefaultNamespace(projectName, false);
         expect(namespace).toBe(projectName);
     });
 });
@@ -54,13 +54,13 @@ describe('getVersionDefaultValue', () => {
     });
 
     it('should return empty string if no ui5 versions passed', async () => {
-        const defaultVersion = await getVersionDefaultValue([]);
+        const defaultVersion = await getDefaultVersion([]);
 
         expect(defaultVersion).toBe('');
     });
 
     it('should return validate the first version passed and return it', async () => {
-        const defaultVersion = await getVersionDefaultValue(['1.134.1', '1.133.0']);
+        const defaultVersion = await getDefaultVersion(['1.134.1', '1.133.0']);
 
         expect(defaultVersion).toBe('1.134.1');
     });

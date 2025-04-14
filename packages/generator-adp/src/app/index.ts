@@ -184,11 +184,21 @@ export default class extends Generator {
         }
     }
 
-    private _getProjectPath() {
+    /**
+     * Combines the target folder and project name.
+     *
+     * @returns {string} The project path from the answers.
+     */
+    private _getProjectPath(): string {
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
     }
 
-    private _getDefaultFolder() {
+    /**
+     * Gets the default folder path from the current open workspace.
+     *
+     * @returns {string} Default folder path.
+     */
+    private _getDefaultFolder(): string {
         if (!this.vscode || this.vscode?.workspace?.workspaceFolders?.length === 0) {
             this.appWizard.showInformation('There is currently no opened workspace folder.', MessageType.notification);
             return '';
