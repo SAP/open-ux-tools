@@ -178,24 +178,8 @@
                 "valueRange": "[(4,4)..(4,23)]"
             }
         },
-        "contentRange": "[(4,24)..(4,32)]",
-        "content": [
-            {
-                "type": "element",
-                "range": "[(4,24)..(4,32)]",
-                "name": "Record",
-                "attributes": {
-                    "Type": {
-                        "type": "attribute",
-                        "name": "Type",
-                        "nameRange": "[(4,24)..(4,29)]",
-                        "value": 12,
-                        "valueRange": "[(4,30)..(4,32)]"
-                    }
-                },
-                "content": []
-            }
-        ]
+        "contentRange": "[(4,30)..(4,32)]",
+        "content": []
     },
     {
         "type": "element",
@@ -209,23 +193,7 @@
                 "valueRange": "[(5,4)..(5,20)]"
             }
         },
-        "contentRange": "[(5,21)..(5,26)]",
-        "content": [
-            {
-                "type": "element",
-                "range": "[(5,21)..(5,26)]",
-                "name": "Record",
-                "attributes": {
-                    "Type": {
-                        "type": "attribute",
-                        "name": "Type",
-                        "nameRange": "[(5,21)..(5,26)]",
-                        "value": ""
-                    }
-                },
-                "content": []
-            }
-        ]
+        "content": []
     },
     {
         "type": "element",
@@ -291,23 +259,7 @@
                 "valueRange": "[(7,12)..(7,16)]"
             }
         },
-        "contentRange": "[(7,18)..(7,35)]",
-        "content": [
-            {
-                "type": "element",
-                "range": "[(7,18)..(7,35)]",
-                "name": "Record",
-                "attributes": {
-                    "Type": {
-                        "type": "attribute",
-                        "name": "Type",
-                        "nameRange": "[(7,18)..(7,23)]",
-                        "value": ""
-                    }
-                },
-                "content": []
-            }
-        ]
+        "content": []
     },
     {
         "type": "element",
@@ -352,6 +304,64 @@
                         ]
                     }
                 ]
+            }
+        ]
+    },
+    {
+        "type": "element",
+        "range": "[(9,4)..(9,26)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Chart",
+                "valueRange": "[(9,6)..(9,11)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "test",
+                "valueRange": "[(9,12)..(9,16)]"
+            }
+        },
+        "contentRange": "[(9,25)..(9,26)]",
+        "content": []
+    },
+    {
+        "type": "element",
+        "range": "[(10,4)..(10,34)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Chart",
+                "valueRange": "[(10,6)..(10,11)]"
+            },
+            "Qualifier": {
+                "type": "attribute",
+                "name": "Qualifier",
+                "value": "qualifier2",
+                "valueRange": "[(10,12)..(10,22)]"
+            }
+        },
+        "contentRange": "[(10,24)..(10,34)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(10,24)..(10,34)]",
+                "name": "Record",
+                "attributes": {
+                    "Type": {
+                        "type": "attribute",
+                        "name": "Type",
+                        "nameRange": "[(10,24)..(10,29)]",
+                        "value": "",
+                        "valueRange": "[(10,33)..(10,33)]"
+                    }
+                },
+                "content": []
             }
         ]
     }

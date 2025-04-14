@@ -49,6 +49,10 @@ export function convertFlattenedPath(
     let root: Element | undefined;
     let parent: Element | undefined;
     const expandedStructures = convertToExpandedStructure(state, segments, value);
+    if (!expandedStructures.length) {
+        return;
+    }
+
     for (const expandedStructure of expandedStructures) {
         if (parent) {
             if (expandedStructure.kind === 'record-type') {
@@ -157,23 +161,8 @@ function convertToExpandedStructure(
             continue;
         }
         if (segment.value === ReservedProperties.Type) {
-            const flatProperty: Element = createElementNode({
-                name: Edm.Record,
-                attributes: {
-                    [Edm.Type]: createAttributeNode(
-                        Edm.Type,
-                        (value as StringLiteral)?.value,
-                        segment.range,
-                        nodeRange(value, false)
-                    )
-                },
-                range: propertyRange
-            });
-            expandedStructure.push({
-                kind: 'record-type',
-                name: segment.value,
-                element: flatProperty
-            });
+            expandedStructure.push(...createRecordTypeStructure(segment, propertyRange, value));
+
             const hasSegmentAhead = segments[i + 1];
             if (hasSegmentAhead) {
                 addDiagnosticForSegmentAfterType(state, segments.slice(i + 1), valueRange);
@@ -216,10 +205,15 @@ function convertToExpandedStructure(
     return expandedStructure;
 }
 
+/**
+ *
+ * @param state VisitorSate for which context will be updated with the inferred value types.
+ * @param segments Array of identifiers representing flattened record structure.
+ * @param valueRange value range
+ */
 function addDiagnosticForSegmentAfterType(state: VisitorState, segments: Identifier[], valueRange?: Range): void {
     if (segments.length >= 1) {
-        const message =
-            segments.length === 1 ? i18n.t('Segment_is_not_allowed_here') : i18n.t('Segments_are_not_allowed_here');
+        const message = i18n.t('No_segments_after_type');
         const lastSegment = segments[segments.length - 1];
         const propertyRange = createRange(segments[0].range?.start, valueRange?.end ?? lastSegment?.range?.end);
         if (propertyRange) {
@@ -231,28 +225,64 @@ function addDiagnosticForSegmentAfterType(state: VisitorState, segments: Identif
         }
     }
 }
+/**
+ *
+ * @param state VisitorSate for which context will be updated with the inferred value types.
+ * @param value AnnotationValue
+ * @param segmentRange segment range
+ */
 function addDiagnosticForNonStringLiteralType(
     state: VisitorState,
     value?: AnnotationValue,
     segmentRange?: Range
 ): void {
     if (value?.type !== STRING_LITERAL_TYPE && value?.range) {
-        const message = i18n.t('The_name_attribute_value_must_be_a_string_literal', {
-            name: ReservedProperties.Type
-        });
+        const message = i18n.t('Type_value_must_be_string');
         state.addDiagnostic({
             range: value.range,
             severity: DiagnosticSeverity.Error,
             message
         });
     } else if (!value && segmentRange) {
-        const message = i18n.t('The_attribute_value_must_be_provided', {
-            name: ReservedProperties.Type
-        });
         state.addDiagnostic({
             range: segmentRange,
             severity: DiagnosticSeverity.Error,
-            message
+            message: i18n.t('Value_must_be_provided')
         });
     }
+}
+/**
+ *
+ * @param segment Identifier in a flattened path
+ * @param propertyRange Range of a property
+ * @param value Annotation value node
+ * @returns expanded structure either annotation or property kind.
+ */
+function createRecordTypeStructure(
+    segment: Identifier,
+    propertyRange?: Range,
+    value?: AnnotationValue
+): ExpandedStructure[] {
+    if (value?.type === STRING_LITERAL_TYPE) {
+        const flatProperty: Element = createElementNode({
+            name: Edm.Record,
+            attributes: {
+                [Edm.Type]: createAttributeNode(
+                    Edm.Type,
+                    (value as StringLiteral)?.value,
+                    segment.range,
+                    nodeRange(value, false)
+                )
+            },
+            range: propertyRange
+        });
+        return [
+            {
+                kind: 'record-type',
+                name: segment.value,
+                element: flatProperty
+            }
+        ];
+    }
+    return [];
 }

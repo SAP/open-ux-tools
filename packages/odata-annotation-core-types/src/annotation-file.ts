@@ -164,7 +164,7 @@ export function createAttributeNode(name: string, value: string, nameRange?: Ran
     const attribute: Attribute = {
         type: ATTRIBUTE_TYPE,
         name,
-        value: value ?? ''
+        value: value
     };
     if (nameRange) {
         attribute.nameRange = nameRange;

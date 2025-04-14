@@ -2,12 +2,12 @@
     {
         "range": "[(4,30)..(4,32)]",
         "severity": 1,
-        "message": "The `$Type` attribute value must be a string literal."
+        "message": "The `$Type` value must be a string literal."
     },
     {
         "range": "[(5,21)..(5,26)]",
         "severity": 1,
-        "message": "The attribute `$Type` must have a value."
+        "message": "The `$Type` must have a value."
     },
     {
         "range": "[(6,16)..(6,35)]",
@@ -23,5 +23,10 @@
         "range": "[(8,16)..(8,52)]",
         "severity": 1,
         "message": "Segment not allowed after `$Type`"
+    },
+    {
+        "range": "[(9,25)..(9,26)]",
+        "severity": 1,
+        "message": "The `$Type` value must be a string literal."
     }
 ]

@@ -455,9 +455,110 @@
                         "range": "[(8,51)..(8,52)]"
                     }
                 }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Chart#test.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Chart",
+                            "range": "[(9,6)..(9,11)]",
+                            "quoted": true
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(9,18)..(9,23)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(9,17)..(9,18)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(9,4)..(9,23)]"
+                },
+                "range": "[(9,4)..(9,26)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(9,24)..(9,25)]"
+                },
+                "qualifier": {
+                    "type": "qualifier",
+                    "value": "test",
+                    "range": "[(9,12)..(9,16)]"
+                },
+                "value": {
+                    "type": "empty-value",
+                    "range": "[(9,25)..(9,26)]"
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Chart#qualifier2.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Chart",
+                            "range": "[(10,6)..(10,11)]",
+                            "quoted": true
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(10,24)..(10,29)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(10,23)..(10,24)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(10,4)..(10,29)]"
+                },
+                "range": "[(10,4)..(10,34)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(10,30)..(10,31)]"
+                },
+                "qualifier": {
+                    "type": "qualifier",
+                    "value": "qualifier2",
+                    "range": "[(10,12)..(10,22)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "",
+                    "range": "[(10,32)..(10,34)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(10,32)..(10,33)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(10,33)..(10,34)]"
+                    }
+                }
             }
         ],
-        "range": "[(0,5)..(9,1)]",
+        "range": "[(0,5)..(11,1)]",
         "commas": [
             {
                 "type": "token",
@@ -498,6 +599,16 @@
                 "type": "token",
                 "value": ",",
                 "range": "[(8,52)..(8,53)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(9,26)..(9,27)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(10,34)..(10,35)]"
             }
         ],
         "openToken": {
@@ -508,10 +619,10 @@
         "closeToken": {
             "type": "token",
             "value": "}",
-            "range": "[(9,0)..(9,1)]"
+            "range": "[(11,0)..(11,1)]"
         }
     },
-    "range": "[(0,0)..(9,1)]",
+    "range": "[(0,0)..(11,1)]",
     "colon": {
         "type": "token",
         "value": ":",
