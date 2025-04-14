@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
-import { addXSSecurityConfig, alignCdsVersions, getTemplatePath, setMtaDefaults, validateVersion } from '../utils';
+import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion, runCommand } from '../utils';
 import {
     MTAYamlFile,
     MTAVersion,
@@ -25,7 +25,6 @@ import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPCon
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { t } from '../i18n';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { type Editor } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { FileName } from '@sap-ux/project-access';
@@ -140,35 +139,6 @@ export function doesCDSBinaryExist(): void {
 }
 
 /**
- * Generate an MTA using `cds` binary, appending any optional services passed in. Specific services are added if the router type is defined.
- *
- * @async
- * @param {string} cwd - working directory
- * @param {CDSServiceType[]} optionsList - optional list of services to add
- * @param {RouterModuleType} routerType - router type
- * @returns {Promise<void>} - A promise that resolves when the MTA creation is complete.
- * @throws {Error} May throw an error if the MTA creation fails for any reason.
- */
-export async function createCAPMTA(
-    cwd: string,
-    optionsList?: CDSServiceType[],
-    routerType?: RouterModuleType
-): Promise<void> {
-    let defaultOptions: CDSServiceType[] = [];
-    if (routerType) {
-        defaultOptions = [CDSXSUAAService, CDSDestinationService, CDSHTML5RepoService] as CDSServiceType[];
-    }
-    const cdsParams = [...CDSAddMtaParams, ...(optionsList ?? []), ...defaultOptions];
-    LoggerHelper.logger?.debug(t('debug.creatingMta', { cdsParams: cdsParams.toString() }));
-    await runCommand(cwd, CDSExecutable, cdsParams, t('error.errorGeneratingMtaYaml'));
-    // Ensure the package-lock is updated otherwise mta build will fail
-    const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    // Install latest dev dependencies, if any, added by the CF writer
-    await runCommand(cwd, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
-    LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
-}
-
-/**
  * Validate the writer configuration to ensure all required parameters are present.
  *
  * @param config writer configuration
@@ -208,7 +178,7 @@ export function validateMtaConfig(config: CFBaseConfig): void {
  * @param fs reference to a mem-fs editor
  * @deprecated this function is deprecated and will be removed in future releases
  */
-export async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
+async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
     const mtaTemplate = readFileSync(getTemplatePath(`frontend/${MTAYamlFile}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
         id: `${config.mtaId.slice(0, 128)}`,
@@ -219,33 +189,7 @@ export async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Pr
     writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
     // Add missing configurations
     addXSSecurityConfig(config, fs, false);
-    await alignCdsVersions(config.mtaPath, fs);
-    const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    await runCommand(config.mtaPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
-}
-
-/**
- * Executes a command in the specified project directory.
- *
- * @async
- * @param {string} cwd - Working directory where the command will be executed
- * @param {string} cmd - Command to execute
- * @param {string[]} args - Arguments to pass to the command
- * @param {string} errorMsg - Error message prefix to display if the command fails
- * @returns {Promise<void>} - A promise that resolves when the command completes successfully
- * @throws {Error} Throws an error with the provided error message concatenated with the original error if execution fails
- * @example
- * // Execute npm install in the project directory
- * await runCommand('/path/to/project', 'npm', ['install'], 'Failed to install dependencies:');
- */
-export async function runCommand(cwd: string, cmd: string, args: string[], errorMsg: string): Promise<void> {
-    const commandRunner = new CommandRunner();
-    try {
-        await commandRunner.run(cmd, args, { cwd });
-    } catch (e) {
-        throw new Error(`${errorMsg} ${e.message}`);
-    }
 }
 
 /**
@@ -307,6 +251,28 @@ export async function addRoutingConfig(config: CFBaseConfig, fs: Editor): Promis
         await addMtaDeployParameters(mtaConfigInstance);
         await mtaConfigInstance.save();
         LoggerHelper.logger?.debug(t('debug.capMtaUpdated'));
+    }
+}
+
+/**
+ * Create an MTA file in the target folder, needs to be written to disk as subsequent calls are dependent on it being on the file system i.e mta-lib.
+ *
+ * @param config writer configuration
+ * @param fs reference to a mem-fs editor
+ */
+export async function generateCAPMTA(config: CAPConfig, fs: Editor): Promise<void> {
+    if (config.routerType === RouterModuleType.AppFront) {
+        await createCAPMTAAppFrontend(config, fs);
+    } else {
+        const defaultOptions: CDSServiceType[] = [
+            CDSXSUAAService,
+            CDSDestinationService,
+            CDSHTML5RepoService
+        ] as CDSServiceType[];
+        const cdsParams = [...CDSAddMtaParams, ...defaultOptions];
+        LoggerHelper.logger?.debug(t('debug.creatingMta', { cdsParams: cdsParams.toString() }));
+        await runCommand(config.mtaPath, CDSExecutable, cdsParams, t('error.errorGeneratingMtaYaml'));
+        LoggerHelper.logger?.debug(t('debug.capMtaCreated'));
     }
 }
 
