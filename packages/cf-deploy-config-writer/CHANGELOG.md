@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.1
+
+### Patch Changes
+
+-   77b7ab1: Introduce improvements to handle known issues with CAP
+
 ## 0.2.0
 
 ### Minor Changes
