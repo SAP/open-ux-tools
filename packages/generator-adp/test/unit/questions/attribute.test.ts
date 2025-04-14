@@ -16,14 +16,24 @@ import { getPrompts } from '../../../src/app/questions/attributes';
 import { getProjectNameTooltip } from '../../../src/app/questions/helper/tooltip';
 import { getVersionAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
 
-jest.mock('@sap-ux/project-input-validator');
-jest.mock('@sap-ux/adp-tooling', () => ({ validateUI5VersionExists: jest.fn() }));
+jest.mock('@sap-ux/project-input-validator', () => ({
+    validateProjectName: jest.fn(),
+    validateNamespaceAdp: jest.fn(),
+    validateEmptyString: jest.fn(),
+    validateProjectFolder: jest.fn()
+}));
+
+jest.mock('@sap-ux/adp-tooling', () => ({
+    ...jest.requireActual('@sap-ux/adp-tooling'),
+    validateUI5VersionExists: jest.fn()
+}));
 
 jest.mock('../../../src/app/questions/helper/default-values', () => ({
     getDefaultProjectName: jest.fn(),
     getDefaultNamespace: jest.fn(),
     getDefaultVersion: jest.fn()
 }));
+
 jest.mock('../../../src/app/questions/helper/tooltip', () => ({ getProjectNameTooltip: jest.fn() }));
 jest.mock('../../../src/app/questions/helper/additional-messages', () => ({ getVersionAdditionalMessages: jest.fn() }));
 
@@ -37,6 +47,10 @@ const mockConfig = {
 
 const getDefaultVersionMock = getDefaultVersion as jest.Mock;
 const getDefaultNamespaceMock = getDefaultNamespace as jest.Mock;
+const validateProjectNameMock = validateProjectName as jest.Mock;
+const validateEmptyStringMock = validateEmptyString as jest.Mock;
+const validateNamespaceAdpMock = validateNamespaceAdp as jest.Mock;
+const validateProjectFolderMock = validateProjectFolder as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 const getProjectNameTooltipMock = getProjectNameTooltip as jest.Mock;
 const validateUI5VersionExistsMock = validateUI5VersionExists as jest.Mock;
@@ -59,7 +73,7 @@ describe('Project Name Prompt', () => {
 
         const validateFn = (prompt as any).validate;
         validateFn('project1', { targetFolder: '' });
-        expect(validateProjectName).toHaveBeenCalledWith('project1', mockPath, true);
+        expect(validateProjectNameMock).toHaveBeenCalledWith('project1', mockPath, true);
     });
 });
 
@@ -74,7 +88,7 @@ describe('Application Title Prompt', () => {
         expect((prompt as any).default).toBe('prompts.appTitleDefault');
 
         (prompt as any).validate('title');
-        expect(validateEmptyString).toHaveBeenCalledWith('title');
+        expect(validateEmptyStringMock).toHaveBeenCalledWith('title');
     });
 });
 
@@ -93,7 +107,7 @@ describe('Namespace Prompt', () => {
 
         const validateFn = (prompt as any).validate;
         validateFn('ns', { projectName: 'project' });
-        expect(validateNamespaceAdp).toHaveBeenCalledWith('ns', 'project', true);
+        expect(validateNamespaceAdpMock).toHaveBeenCalledWith('ns', 'project', true);
     });
 
     it('should not show namespace when not CUSTOMER_BASE', async () => {
@@ -119,7 +133,7 @@ describe('Target Folder Prompt', () => {
         expect(defaultVal).toBeUndefined();
 
         (prompt as any).validate('path/to/project', { projectName: 'proj' });
-        expect(validateProjectFolder).toHaveBeenCalledWith('path/to/project', 'proj');
+        expect(validateProjectFolderMock).toHaveBeenCalledWith('path/to/project', 'proj');
     });
 });
 
@@ -146,7 +160,7 @@ describe('UI5 Version Prompt', () => {
 
         const valid = await (prompt as any).validate('1.119.0');
         expect(valid).toBe(true);
-        expect(validateUI5VersionExists).toHaveBeenCalledWith('1.119.0');
+        expect(validateUI5VersionExistsMock).toHaveBeenCalledWith('1.119.0');
     });
 });
 
