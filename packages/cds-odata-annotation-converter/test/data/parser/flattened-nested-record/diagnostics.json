@@ -12,17 +12,17 @@
     {
         "range": "[(6,16)..(6,35)]",
         "severity": 1,
-        "message": "Segments not allowed after `$Type`"
+        "message": "Segments are not allowed after `$Type.`"
     },
     {
         "range": "[(7,24)..(7,35)]",
         "severity": 1,
-        "message": "Segments not allowed after `$Type`"
+        "message": "Segments are not allowed after `$Type.`"
     },
     {
         "range": "[(8,16)..(8,52)]",
         "severity": 1,
-        "message": "Segment not allowed after `$Type`"
+        "message": "Segments are not allowed after `$Type.`"
     },
     {
         "range": "[(9,25)..(9,26)]",
