@@ -37,6 +37,7 @@ import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../util
 import { fetchAppListForSelectedSystem, extractAppData, getYUIDetails } from '../prompts/prompt-helpers';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators';
 import { FileName, DirName } from '@sap-ux/project-access';
+import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generator class for downloading a basic app from a repository.
@@ -92,6 +93,9 @@ export default class extends Generator {
      * Initialises necessary settings and telemetry for the generator.
      */
     public async initializing(): Promise<void> {
+        if ((this.env as unknown as YeomanEnvironment).conflicter) {
+            (this.env as unknown as YeomanEnvironment).conflicter.force = this.options.force ?? true;
+        }
         // Initialise telemetry settings
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
