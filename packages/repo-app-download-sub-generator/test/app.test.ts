@@ -9,11 +9,11 @@ import { TestFixture } from './fixtures';
 import { getAppConfig } from '../src/app/app-config';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
-import { adtSourceTemplateId, extractedFilePath } from '../src/utils/constants';
+import { adtSourceTemplateId, fioriAppSourcetemplateId, extractedFilePath } from '../src/utils/constants';
 import { removeSync } from 'fs-extra';
 import { isValidPromptState } from '../src/utils/validators';
 import { hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
-import { FileName, DirName } from '@sap-ux/project-access';
+import { FileName, DirName, type Manifest } from '@sap-ux/project-access';
 import RepoAppDownloadLogger from '../src/utils/logger';
 import { t } from '../src/utils/i18n';
 import { type AbapServiceProvider } from '@sap-ux/axios-extension';
@@ -182,12 +182,15 @@ function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureD
         const filePath = join(projectPath, file);
         expect(fs.existsSync(filePath)).toBe(true);
     });
-
-	const projectManifest = JSON.stringify(
-		JSON.parse(fs.readFileSync(join(projectPath, DirName.Webapp, FileName.Manifest), 'utf-8'))
-	);
-	const extractedManifest = JSON.stringify(
-		JSON.parse(fs.readFileSync(join(testFixtureDir, FileName.Manifest), 'utf-8'))
+	// after converting to fiori app, manifest will be updated with fiori app source template id
+	const extractedManifest = JSON.parse(
+		fs.readFileSync(join(testFixtureDir, FileName.Manifest), 'utf-8')
+	) as Manifest;
+	if (extractedManifest && extractedManifest['sap.app'] && extractedManifest['sap.app'].sourceTemplate) {
+		extractedManifest['sap.app'].sourceTemplate.id = fioriAppSourcetemplateId;
+	}
+	const projectManifest = JSON.parse(
+		fs.readFileSync(join(projectPath, DirName.Webapp, FileName.Manifest), 'utf-8')
 	);
 	expect(projectManifest).toEqual(extractedManifest);
     expect(fs.readFileSync(join(projectPath, DirName.Webapp, 'i18n', 'i18n.properties'), 'utf-8')).toBe(

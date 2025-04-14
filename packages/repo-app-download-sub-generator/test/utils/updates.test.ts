@@ -8,6 +8,7 @@ import { readManifest } from '../../src/utils/file-helpers';
 import { join } from 'path';
 import { FileName, DirName } from '@sap-ux/project-access';
 import RepoAppDownloadLogger from '../../src/utils/logger';
+import { fioriAppSourcetemplateId } from '../../src/utils/constants';
 
 jest.mock('@sap-ux/ui5-info', () => ({
     ...jest.requireActual('@sap-ux/ui5-info'),
@@ -63,6 +64,11 @@ describe('validateAndUpdateManifestUI5Version', () => {
                 dependencies: {
                     minUI5Version: '1.90.0',
                 }
+            },
+            'sap.app': {
+                sourceTemplate: {
+                    id: fioriAppSourcetemplateId
+                }
             }
         };
         (readManifest as jest.Mock).mockReturnValue(manifest);
@@ -79,6 +85,11 @@ describe('validateAndUpdateManifestUI5Version', () => {
                     minUI5Version: '1.80.0',
                 },
             },
+            'sap.app': {
+                sourceTemplate: {
+                    id: fioriAppSourcetemplateId
+                }
+            }
         };
         (readManifest as jest.Mock).mockReturnValue(manifest);
         (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.90.0' }]);
@@ -94,6 +105,11 @@ describe('validateAndUpdateManifestUI5Version', () => {
                         minUI5Version: '${sap.ui5.dist.version}',
                     },
                 },
+                'sap.app': {
+                    sourceTemplate: {
+                        id: fioriAppSourcetemplateId
+                    }
+                }
             },
             undefined,
             2
@@ -105,8 +121,13 @@ describe('validateAndUpdateManifestUI5Version', () => {
             'sap.ui5': {
                 dependencies: {
                     minUI5Version: '1.70.0',
-                },
+                }
             },
+            'sap.app': {
+                sourceTemplate: {
+                    id: fioriAppSourcetemplateId
+                }
+            }
         };
         (readManifest as jest.Mock).mockReturnValue(manifest);
         (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.90.0' }]);
@@ -122,6 +143,11 @@ describe('validateAndUpdateManifestUI5Version', () => {
                         minUI5Version: '1.90.0',
                     },
                 },
+                'sap.app': {
+                    sourceTemplate: {
+                        id: fioriAppSourcetemplateId
+                    }
+                }
             },
             undefined,
             2

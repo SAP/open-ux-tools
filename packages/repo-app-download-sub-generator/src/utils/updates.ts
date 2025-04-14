@@ -6,6 +6,7 @@ import RepoAppDownloadLogger from './logger';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import { getUI5Versions } from '@sap-ux/ui5-info';
 import { readManifest } from './file-helpers';
+import { fioriAppSourcetemplateId } from './constants';
 
 /**
  * Validates and updates the UI5 version in the manifest.
@@ -21,7 +22,8 @@ import { readManifest } from './file-helpers';
  */
 export async function validateAndUpdateManifestUI5Version(manifestFilePath: string, fs: Editor): Promise<void> {
     const manifestJson = readManifest(manifestFilePath, fs);
-    if (!manifestJson?.['sap.ui5']?.dependencies) {
+    if (!manifestJson?.['sap.ui5']?.dependencies || !manifestJson?.['sap.app']?.sourceTemplate) {
+        // Check if the manifest structure is valid) {
         throw new Error(t('error.readManifestErrors.invalidManifestStructureError'));
     }
 
@@ -44,6 +46,7 @@ export async function validateAndUpdateManifestUI5Version(manifestFilePath: stri
         const closestAvailableUi5Version = availableUI5Versions[0]?.version;
         manifestJson['sap.ui5'].dependencies.minUI5Version = closestAvailableUi5Version;
     }
+    manifestJson['sap.app'].sourceTemplate.id = fioriAppSourcetemplateId;
     // update manifest at extracted path
     fs.writeJSON(manifestFilePath, manifestJson, undefined, 2);
 }

@@ -23,7 +23,7 @@ describe('validateQfaJsonFile', () => {
             semanticObject: 'semanticObject',
             action: 'action',
             title: 'title'
-        },
+        }
     };
 
     afterEach(() => {

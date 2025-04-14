@@ -36,7 +36,7 @@
             "readManifestFailed": "Error: Failed to read manifest file",
             "sapAppNotDefined": "Error: sap.app not defined in the manifest file",
             "sourceTemplateNotSupported": "Error: Source template not supported",
-            "invalidManifestStructureError": "Invalid manifest structure: 'sap.ui5' or dependencies are missing."
+            "invalidManifestStructureError": "Invalid manifest structure: 'sap.ui5' or 'sap.app' are missing."
         },
         "quickDeployedAppDownloadErrors": {
             "noAppsFound": "No application with id {{ appId }} found in the system. Please check if the application is deployed correctly"
