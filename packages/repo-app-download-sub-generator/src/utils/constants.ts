@@ -1,8 +1,9 @@
 import { PromptNames, type RepoAppDownloadAnswers } from '../app/types';
 
 // Title and description for the generator
-export const generatorTitle = 'UI5 ABAP Repository';
-export const generatorDescription = 'Download a basic LROP app from a UI5 ABAP Repository';
+export const generatorTitle = 'Download ADT deployed app from UI5 ABAP repository';
+export const generatorDescription =
+    'Download an application that was generated with the ADT Quick Fiori Application generator';
 
 // Name of the generator used for Fiori app download
 export const generatorName = '@sap-ux/repo-app-download-sub-generator';

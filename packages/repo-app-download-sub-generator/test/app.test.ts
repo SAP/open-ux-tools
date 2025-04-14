@@ -35,10 +35,6 @@ jest.mock('../src/utils/logger', () => ({
 	configureLogging: jest.fn()
 }));
 
-jest.mock('../src/utils/file-helpers', () => ({
-    ...jest.requireActual('../src/utils/file-helpers'),
-	readManifest: jest.fn()
-}));
 jest.mock('../src/utils/download-utils');
 jest.mock('../src/app/app-config', () => ({
     ...jest.requireActual('../src/app/app-config'),
