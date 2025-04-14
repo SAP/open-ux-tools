@@ -127,7 +127,6 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "message": "prompts.launchAppGen",
     "name": "launchAppGen",
     "type": "confirm",
-    "when": [Function],
   },
 ]
 `;

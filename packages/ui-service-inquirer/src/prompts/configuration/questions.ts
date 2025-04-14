@@ -70,7 +70,7 @@ export function getConfigQuestions(logger: Logger, options?: ServiceConfigOption
     }
 
     if (defaultOrShowAppGenLaunchQuestion(options?.useLaunchGen)) {
-        configPrompts.push(getAppGenLaunchQuestion(logger, options));
+        configPrompts.push(getAppGenLaunchQuestion());
     }
 
     return [...packagePrompts, ...transportPrompts, ...(configPrompts as ServiceConfigQuestion[])];
@@ -150,7 +150,6 @@ function getDraftEnabledQuestion(logger: Logger): Question<UiServiceAnswers> {
         default: true,
         validate: async (input: boolean) => {
             if (input !== draftEnabled && PromptState.serviceConfig.content) {
-                logger.error('in draftEnabled validate condition');
                 const content = JSON.parse(PromptState.serviceConfig.content);
                 content.businessObject.projectionBehavior.withDraft = input;
                 PromptState.serviceConfig.content = JSON.stringify(content);
@@ -175,13 +174,10 @@ function getDraftEnabledQuestion(logger: Logger): Question<UiServiceAnswers> {
 /**
  * Returns the app gen launch question.
  *
- * @param logger - logger instance to use for logging
- * @param options - configuration options for prompts
  * @returns question for app gen launch
  */
-function getAppGenLaunchQuestion(logger: Logger, options?: ServiceConfigOptions): Question<UiServiceAnswers> {
+function getAppGenLaunchQuestion(): Question<UiServiceAnswers> {
     return {
-        when: (): boolean => defaultOrShowAppGenLaunchQuestion(options?.useLaunchGen),
         name: 'launchAppGen',
         type: 'confirm',
         message: t('prompts.launchAppGen'),
