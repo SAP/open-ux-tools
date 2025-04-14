@@ -5,7 +5,7 @@ import { render } from 'ejs';
 import { Mta, type mta } from '@sap/mta-lib';
 import { type Destination, isGenericODataDestination, isAbapEnvironmentOnBtp } from '@sap-ux/btp-utils';
 import { YamlDocument } from '@sap-ux/yaml';
-import { getMtaPath } from '@sap-ux/project-access';
+import { FileName, getMtaPath, hasDependency, type Package } from '@sap-ux/project-access';
 import {
     CloudFoundry,
     RouterModule,
@@ -534,11 +534,11 @@ export class MtaConfig {
     /**
      * Append the UI5 app to the MTA.
      *
-     * @param {string} appModule the name of the app module i.e. myui5app
+     * @param {string} appName the name of the app module i.e. myui5app
      * @param {string} appPath path to the UI5 app i.e. ./apps/myui5app
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
-    public async addApp(appModule: string, appPath: string): Promise<void> {
+    public async addApp(appName: string, appPath: string): Promise<void> {
         const contentModule = this.getAppContentModule();
         let isHTML5AlreadyExisting = false; // False by default
         if (contentModule) {
@@ -546,7 +546,7 @@ export class MtaConfig {
             contentModule[MTABuildParams][MTABuildResult] =
                 contentModule[MTABuildParams]?.[MTABuildResult] ?? `resources`; // Default
             contentModule[MTABuildParams].requires = contentModule[MTABuildParams].requires ?? [];
-            const artifactName = `${appModule.slice(0, 128)}.zip`;
+            const artifactName = `${appName}.zip`;
             // The name of the HTML5 app will always be the artifact name
             if (
                 contentModule[MTABuildParams].requires?.findIndex(
@@ -554,10 +554,11 @@ export class MtaConfig {
                         app.artifacts?.includes?.(artifactName)
                 ) !== -1
             ) {
+                this.log?.debug(t('debug.html5AlreadyExists', { appName }));
                 isHTML5AlreadyExisting = true;
             } else {
                 contentModule[MTABuildParams].requires.push({
-                    name: appModule.slice(0, 128),
+                    name: appName.slice(0, 128),
                     artifacts: [artifactName],
                     'target-path': `${contentModule[MTABuildParams][MTABuildResult]}/`.replace(/\/{2,}/g, '/') // Matches two or more consecutive slashes where at least 2 repetitions of /
                 });
@@ -565,27 +566,42 @@ export class MtaConfig {
             await this.mta.updateModule(contentModule);
             this.dirty = true;
         }
-        // Need to handle where existing HTML5 apps are added by `cds` which follow a different naming convention when added to mta
-        const modules = await this.mta.getModules();
-        for (const module of modules) {
-            if (module.type === 'html5' && module.name.endsWith(appModule) && isHTML5AlreadyExisting) {
-                module['build-parameters'] = HTMLAppBuildParams as HTML5App['build-parameters'];
-                await this.mta.updateModule(module);
-                this.dirty = true;
-            }
-        }
+
         // Add application module, if not found already
-        if (!isHTML5AlreadyExisting && !this.apps.get(appModule)) {
+        if (!isHTML5AlreadyExisting && !this.apps.get(appName)) {
             const app: HTML5App = {
-                name: appModule.slice(0, 128),
+                name: appName.slice(0, 128),
                 type: 'html5',
                 path: appPath,
                 'build-parameters': HTMLAppBuildParams as HTML5App['build-parameters']
             } as HTML5App;
             await this.mta.addModule(app);
-            this.apps.set(appModule, app);
+            this.apps.set(appName, app);
             this.dirty = true;
-            this.log?.debug(t('debug.html5AppAdded', { appName: appModule.slice(0, 128) }));
+            this.log?.debug(t('debug.html5AppAdded', { appName }));
+        }
+        await this.syncHtml5Apps();
+    }
+
+    private async syncHtml5Apps(): Promise<void> {
+        // Need to handle where existing HTML5 apps are added by `cds` which follow a different naming convention when added to mta
+        for (const [appName, app] of this.apps.entries()) {
+            if (app.type === 'html5' && app.path && app['build-parameters']) {
+                this.log?.debug(t('debug.processHTML5App', { appName }));
+                try {
+                    // Supported apps will have a dependency on`@sap/ux-ui5-tooling`, assume it's a UI5 app managed by our tooling
+                    const packageJson = JSON.parse(
+                        readFileSync(join(this.mtaDir, app.path, FileName.Package), 'utf8')
+                    ) as Package;
+                    if (packageJson && hasDependency(packageJson, '@sap/ux-ui5-tooling')) {
+                        app['build-parameters'].commands = ['npm install', 'npm run build:cf'];
+                        await this.mta.updateModule(app);
+                        this.dirty = true;
+                    }
+                } catch (error) {
+                    this.log?.debug(t('debug.unableToReadPackageJson', { error }));
+                }
+            }
         }
     }
 

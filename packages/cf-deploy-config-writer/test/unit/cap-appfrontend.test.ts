@@ -82,7 +82,7 @@ describe('CF Writer with CAP App Frontend', () => {
             expect(commandRunnerMock).not.toHaveBeenCalled();
             expect(localFs.read(join(capPath, 'app/lrop', 'xs-app.json'))).toMatchSnapshot();
             expect(localFs.read(join(capPath, 'xs-security.json'))).toMatchSnapshot();
-            expect(fs.readFileSync(join(capPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
+            expect(localFs.read(join(capPath, 'package.json'))).toMatchSnapshot();
             expect(fs.readFileSync(join(capPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
         });
 
@@ -101,13 +101,11 @@ describe('CF Writer with CAP App Frontend', () => {
                 undefined,
                 logger
             );
-            expect(fs.readFileSync(join(mtaPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot();
             expect(fs.readFileSync(join(mtaPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
             expect(localFs.read(join(mtaPath, 'xs-security.json'))).toMatchSnapshot();
             expect(getCapProjectTypeMock).toHaveBeenCalled();
-            expect(commandRunnerMock).toHaveBeenCalled();
-            expect(commandRunnerMock.mock.calls[0][0]).toStrictEqual('npm');
-            expect(commandRunnerMock.mock.calls[0][1]).toStrictEqual(['install', '--ignore-engines']);
+            expect(commandRunnerMock).not.toHaveBeenCalled();
         });
     });
 });
