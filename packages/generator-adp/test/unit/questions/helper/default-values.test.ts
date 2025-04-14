@@ -1,7 +1,10 @@
-import type { Dirent } from 'fs';
-import { existsSync, readdirSync } from 'fs';
+import { existsSync } from 'fs';
 
-import { generateValidNamespace, getDefaultProjectName } from '../../../../src/app/questions/helper/default-values';
+import {
+    generateValidNamespace,
+    getDefaultProjectName,
+    getVersionDefaultValue
+} from '../../../../src/app/questions/helper/default-values';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
@@ -9,15 +12,12 @@ jest.mock('fs', () => ({
     existsSync: jest.fn()
 }));
 
-const readdirSyncMock = readdirSync as jest.Mock;
-const existsSyncMock = existsSync as jest.Mock;
+jest.mock('@sap-ux/adp-tooling', () => ({
+    ...jest.requireActual('@sap-ux/adp-tooling'),
+    validateUI5VersionExists: jest.fn().mockResolvedValue(true)
+}));
 
-function fakeDirent(name: string, isFile: boolean): Partial<Dirent> {
-    return {
-        name,
-        isFile: () => isFile
-    };
-}
+const existsSyncMock = existsSync as jest.Mock;
 
 describe('generateValidNamespace', () => {
     const projectName = 'app.variant1';
@@ -45,5 +45,23 @@ describe('getDefaultProjectName', () => {
         const defaultName = getDefaultProjectName(testPath);
 
         expect(defaultName).toBe('app.variant2');
+    });
+});
+
+describe('getVersionDefaultValue', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
+    });
+
+    it('should return empty string if no ui5 versions passed', async () => {
+        const defaultVersion = await getVersionDefaultValue([]);
+
+        expect(defaultVersion).toBe('');
+    });
+
+    it('should return validate the first version passed and return it', async () => {
+        const defaultVersion = await getVersionDefaultValue(['1.134.1', '1.133.0']);
+
+        expect(defaultVersion).toBe('1.134.1');
     });
 });

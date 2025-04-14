@@ -43,7 +43,6 @@ import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/
 
 /**
  * A stateful prompter class that creates configuration questions.
- * This class accepts the needed dependencies and keeps track of state (e.g. the ApplicationManager instance).
  * It exposes a single public method {@link getPrompts} to retrieve the configuration questions.
  */
 export class ConfigPrompter {
@@ -148,8 +147,8 @@ export class ConfigPrompter {
      *
      * @returns Application manifest.
      */
-    public get manifest(): Manifest {
-        return this.manifest;
+    public get manifest(): Manifest | undefined {
+        return this.appManifest;
     }
 
     /**

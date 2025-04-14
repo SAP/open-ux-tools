@@ -127,6 +127,12 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await systemPrompt?.validate?.(dummyAnswers.system, dummyAnswers);
 
             expect(result).toEqual(true);
+            expect(configPrompter.provider).toEqual(provider);
+            expect(configPrompter.ui5).toEqual({
+                publicVersions: expect.any(Object),
+                systemVersion: '1.135.0',
+                ui5Versions: ['1.135.0 (system version)']
+            });
         });
 
         it('system prompt validate should return string when input is empty', async () => {
@@ -198,12 +204,6 @@ describe('ConfigPrompter Integration Tests', () => {
     });
 
     describe('System CLI Validation Prompt', () => {
-        // TODO: Mock the ui5 methods without class
-        // jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
-        //     getSystemRelevantVersions: jest.fn(),
-        //     getRelevantVersions: jest.fn()
-        // } as unknown as UI5VersionInfo);
-
         beforeEach(() => {
             getHostEnvironmentMock.mockReturnValue(hostEnvironment.cli);
         });
@@ -289,17 +289,11 @@ describe('ConfigPrompter Integration Tests', () => {
 
     describe('Application Prompt', () => {
         let getManifestSpy: jest.SpyInstance;
+        const mockManifest = { 'sap.ui5': { flexEnabled: true } } as Manifest;
 
         beforeEach(() => {
             isAppSupportedMock.mockResolvedValue(true);
-            getManifestSpy = jest
-                .spyOn(SourceManifest.prototype, 'getManifest')
-                .mockResolvedValue({ 'sap.ui5': { flexEnabled: true } } as Manifest);
-            // TODO: Mock the ui5 methods without class
-            // jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
-            //     systemVersion: '1.135.0',
-            //     isVersionDetected: true
-            // } as unknown as UI5VersionInfo);
+            getManifestSpy = jest.spyOn(SourceManifest.prototype, 'getManifest').mockResolvedValue(mockManifest);
         });
 
         it('application prompt validate should return true if value is passed', async () => {
@@ -310,6 +304,8 @@ describe('ConfigPrompter Integration Tests', () => {
             const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
 
             expect(result).toEqual(true);
+            expect(configPrompter.manifest).toEqual(mockManifest);
+            expect(configPrompter.hasSyncViews).toEqual(false);
         });
 
         it('application prompt validate should return string when manifest fetching fails', async () => {
