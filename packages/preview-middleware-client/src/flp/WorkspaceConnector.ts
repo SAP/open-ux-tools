@@ -16,6 +16,12 @@ const connector = merge({}, ObjectStorageConnector, {
                 change.support.generator = settings.generator;
             }
 
+            const extendedChangeData = sessionStorage.getItem(change.fileName);
+            let extendedChange;
+            if (extendedChangeData) {
+                extendedChange = JSON.parse(extendedChangeData);
+            }
+
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
                     this.fileChangeRequestNotifier(change.fileName, 'create', change);
@@ -24,9 +30,14 @@ const connector = merge({}, ObjectStorageConnector, {
                 }
             }
 
+            const body = {
+                change,
+                extendedChange
+            }
+
             return fetch(CHANGES_API_PATH, {
                 method: 'POST',
-                body: JSON.stringify(change, null, 2),
+                body: JSON.stringify(body, null, 2),
                 headers: {
                     'content-type': 'application/json'
                 }

@@ -38,6 +38,7 @@ import { getTextBundle } from '../../i18n';
 import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
 import { getConfigMapControlIdMap } from '../../utils/fe-v4';
+import { setExtendedChangeInSession } from '../extend-changes/extended-change'
 
 const TITLE_MAP: { [key: string]: string } = {
     appdescr_app_addAnnotationsToOData: 'Add New Annotation File'
@@ -636,6 +637,8 @@ export class ChangeService extends EventTarget {
         if (!changeType) {
             return undefined;
         }
+
+        setExtendedChangeInSession(change);
 
         const { fileName } = change.getDefinition ? change.getDefinition() : (change.getJson() as { fileName: string });
         if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {

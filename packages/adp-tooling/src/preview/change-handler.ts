@@ -1,5 +1,11 @@
 import type { Editor } from 'mem-fs-editor';
-import type { AddXMLChange, CommonChangeProperties, CodeExtChange, AnnotationFileChange } from '../types';
+import type {
+    AddXMLChange,
+    CommonChangeProperties,
+    CodeExtChange,
+    AnnotationFileChange,
+    CommonExtendedChangeProperties
+} from '../types';
 import { ChangeType } from '../types';
 import { basename, join } from 'path';
 import { DirName, FileName } from '@sap-ux/project-access';
@@ -211,11 +217,18 @@ export function isAddAnnotationChange(change: CommonChangeProperties): change is
  * @param {AddXMLChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
+ * @param {CommonExtendedChangeProperties} extendedChange - Optional extended change properties.
  */
-export function addXmlFragment(basePath: string, change: AddXMLChange, fs: Editor, logger: Logger): void {
+export function addXmlFragment(
+    basePath: string,
+    change: AddXMLChange,
+    fs: Editor,
+    logger: Logger,
+    extendedChange?: CommonExtendedChangeProperties
+): void {
     const { fragmentPath } = change.content;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
-    const templateConfig = fragmentTemplateDefinitions[change.content?.templateName ?? ''];
+    const templateConfig = fragmentTemplateDefinitions[extendedChange?.templateName ?? ''];
     try {
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);
