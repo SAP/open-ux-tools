@@ -1,5 +1,13 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.0.15
+
+### Patch Changes
+
+-   d0b2dc2: remove draftEnabled prompt for ABAP CDS view
+-   Updated dependencies [d0b2dc2]
+    -   @sap-ux/ui-service-inquirer@0.0.15
+
 ## 0.0.14
 
 ### Patch Changes
