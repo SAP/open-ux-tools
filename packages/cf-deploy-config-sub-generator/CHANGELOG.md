@@ -1,5 +1,13 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.41
+
+### Patch Changes
+
+-   77b7ab1: Introduce improvements to handle known issues with CAP
+-   Updated dependencies [77b7ab1]
+    -   @sap-ux/cf-deploy-config-writer@0.2.1
+
 ## 0.1.40
 
 ### Patch Changes
