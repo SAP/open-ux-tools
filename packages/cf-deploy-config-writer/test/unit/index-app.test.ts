@@ -9,6 +9,7 @@ import type { CFConfig } from '../../src/types';
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { Mta } from '@sap/mta-lib';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -31,6 +32,7 @@ jest.mock('@sap/mta-lib', () => {
 let hasSyncMock: jest.SpyInstance;
 let isAppStudioMock: jest.SpyInstance;
 let listDestinationsMock: jest.SpyInstance;
+let commandRunnerMock: jest.SpyInstance;
 
 describe('CF Writer App', () => {
     jest.setTimeout(10000);
@@ -58,6 +60,7 @@ describe('CF Writer App', () => {
         isAppStudioMock = jest.spyOn(btp, 'isAppStudio');
         listDestinationsMock = jest.spyOn(btp, 'listDestinations');
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
+        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 } as any));
     });
 
     beforeAll(() => {
@@ -187,7 +190,7 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, 'fixtures/mta-types/cdsmta'), appPath);
         await generateSupportingConfig(
-            { appPath, rootPath: appPath, addManagedAppRouter: true } as unknown as CFConfig,
+            { appPath, rootPath: appPath, addManagedAppRouter: true, mtaId: 'captestproject' } as unknown as CFConfig,
             fs
         );
         expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();
