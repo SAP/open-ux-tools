@@ -4,7 +4,7 @@ import type { AxiosError } from '@sap-ux/axios-extension';
 import type { ListQuestion } from '@sap-ux/inquirer-common';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import type { ConfigAnswers, SourceApplication, SystemLookup } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, SourceApplication, SystemLookup, UI5Version } from '@sap-ux/adp-tooling';
 import { FlexLayer, SourceManifest, getConfiguredProvider, isAppSupported, loadApps } from '@sap-ux/adp-tooling';
 
 import { initI18n, t } from '../../../src/utils/i18n';
@@ -26,6 +26,10 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getConfiguredProvider: jest.fn(),
     loadApps: jest.fn(),
     getSystemUI5Version: jest.fn().mockResolvedValue('1.135.0'),
+    fetchPublicVersions: jest.fn().mockResolvedValue({
+        latest: { version: '1.134.1', support: 'Maintained', lts: false },
+        '1.133.0': { version: '1.133.0', support: 'Maintained', lts: false }
+    } as UI5Version),
     isAppSupported: jest.fn()
 }));
 
