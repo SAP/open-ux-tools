@@ -54,25 +54,24 @@ export function convertFlattenedPath(
     }
 
     for (const expandedStructure of expandedStructures) {
-        if (parent) {
-            if (expandedStructure.kind === 'record-type') {
-                if (expandedStructure.element.range) {
-                    parent.contentRange = copyRange(expandedStructure.element.range);
-                }
-                parent.content.push(expandedStructure.element);
-            } else {
-                const record: Element = createElementNode({
-                    name: Edm.Record,
-                    range: expandedStructure.element.range ?? undefined,
-                    content: [expandedStructure.element],
-                    contentRange: expandedStructure.element.range ?? undefined
-                });
-                // property content range should include only child range
-                parent.contentRange = record.range ?? undefined;
-                parent.content.push(record);
-            }
-        } else {
+        if (!parent) {
             root = expandedStructure.element;
+            parent = expandedStructure.element;
+            continue;
+        }
+        if (expandedStructure.kind === 'record-type') {
+            parent.contentRange = copyRange(expandedStructure?.element?.range) ?? parent.contentRange;
+            parent.content.push(expandedStructure.element);
+        } else {
+            const record: Element = createElementNode({
+                name: Edm.Record,
+                range: expandedStructure.element.range ?? undefined,
+                content: [expandedStructure.element],
+                contentRange: expandedStructure.element.range ?? undefined
+            });
+            // property content range should include only child range
+            parent.contentRange = record.range ?? undefined;
+            parent.content.push(record);
         }
         parent = expandedStructure.element;
     }
@@ -161,8 +160,25 @@ function convertToExpandedStructure(
             continue;
         }
         if (segment.value === ReservedProperties.Type) {
-            expandedStructure.push(...createRecordTypeStructure(segment, propertyRange, value));
-
+            if (value?.type === STRING_LITERAL_TYPE) {
+                const flatProperty: Element = createElementNode({
+                    name: Edm.Record,
+                    attributes: {
+                        [Edm.Type]: createAttributeNode(
+                            Edm.Type,
+                            (value as StringLiteral)?.value,
+                            segment.range,
+                            nodeRange(value, false)
+                        )
+                    },
+                    range: propertyRange
+                });
+                expandedStructure.push({
+                    kind: 'record-type',
+                    name: segment.value,
+                    element: flatProperty
+                });
+            }
             const hasSegmentAhead = segments[i + 1];
             if (hasSegmentAhead) {
                 addDiagnosticForSegmentAfterType(state, segments.slice(i + 1), valueRange);
@@ -250,39 +266,4 @@ function addDiagnosticForNonStringLiteralType(
             message: i18n.t('Value_must_be_provided')
         });
     }
-}
-/**
- *
- * @param segment Identifier in a flattened path
- * @param propertyRange Range of a property
- * @param value Annotation value node
- * @returns expanded structure either annotation or property kind.
- */
-function createRecordTypeStructure(
-    segment: Identifier,
-    propertyRange?: Range,
-    value?: AnnotationValue
-): ExpandedStructure[] {
-    if (value?.type === STRING_LITERAL_TYPE) {
-        const flatProperty: Element = createElementNode({
-            name: Edm.Record,
-            attributes: {
-                [Edm.Type]: createAttributeNode(
-                    Edm.Type,
-                    (value as StringLiteral)?.value,
-                    segment.range,
-                    nodeRange(value, false)
-                )
-            },
-            range: propertyRange
-        });
-        return [
-            {
-                kind: 'record-type',
-                name: segment.value,
-                element: flatProperty
-            }
-        ];
-    }
-    return [];
 }
