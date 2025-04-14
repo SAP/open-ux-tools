@@ -1,5 +1,11 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.15
+
+### Patch Changes
+
+-   a64c215: feat: Change Table Actions CPE quick action added for ADP projects with OData V2 and V4
+
 ## 0.13.14
 
 ### Patch Changes
