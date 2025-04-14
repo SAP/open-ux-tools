@@ -1,5 +1,20 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.29
+
+### Patch Changes
+
+-   3fc72be: Fix for undefined ref exception
+
+## 2.2.28
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/inquirer-common@0.6.33
+
 ## 2.2.27
 
 ### Patch Changes
