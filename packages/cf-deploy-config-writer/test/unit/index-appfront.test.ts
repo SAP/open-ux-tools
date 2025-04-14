@@ -80,7 +80,7 @@ describe('CF Writer App - Application Frontend', () => {
         await generateAppConfig({ appPath, addAppFrontendRouter: true }, unitTestFs);
         expect(unitTestFs.read(join(appPath, 'xs-app.json'))).toMatchSnapshot();
         expect(unitTestFs.read(join(rootPath, 'xs-security.json'))).toMatchSnapshot();
-        expect(fs.readFileSync(join(rootPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot();
+        expect(unitTestFs.read(join(rootPath, 'package.json'))).toMatchSnapshot();
         expect(fs.readFileSync(join(rootPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
     });
 });

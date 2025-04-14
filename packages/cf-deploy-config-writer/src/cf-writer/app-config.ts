@@ -35,7 +35,6 @@ import {
     getDestinationProperties,
     getTemplatePath,
     readManifest,
-    runNpmInstall,
     toPosixPath,
     updateRootPackage
 } from '../utils';
@@ -61,15 +60,9 @@ import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type M
  * @param cfAppConfig writer configuration
  * @param fs an optional reference to a mem-fs editor
  * @param logger optional logger instance
- * @param skipInstall skip install of node modules
  * @returns file system reference
  */
-export async function generateAppConfig(
-    cfAppConfig: CFAppConfig,
-    fs?: Editor,
-    logger?: Logger,
-    skipInstall = false
-): Promise<Editor> {
+export async function generateAppConfig(cfAppConfig: CFAppConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -77,7 +70,7 @@ export async function generateAppConfig(
         LoggerHelper.logger = logger;
     }
     doesMTABinaryExist();
-    await generateDeployConfig(cfAppConfig, fs, skipInstall);
+    await generateDeployConfig(cfAppConfig, fs);
     return fs;
 }
 
@@ -226,9 +219,8 @@ async function processManifest(
  *
  * @param cfAppConfig writer configuration
  * @param fs reference to a mem-fs editor
- * @param skipInstall skip install of node modules
  */
-async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor, skipInstall: boolean): Promise<void> {
+async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<void> {
     LoggerHelper?.logger?.debug(`Generate HTML5 app deployment configuration with: \n ${JSON.stringify(cfAppConfig)}`);
 
     const config = await getUpdatedConfig(cfAppConfig, fs);
@@ -246,9 +238,6 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor, skipIn
     await updateHTML5AppPackage(config, fs);
     if (config.isMtaRoot) {
         await updateRootPackage({ mtaId: config.mtaId ?? config.appId, rootPath: config.rootPath }, fs);
-    }
-    if (!skipInstall) {
-        await runNpmInstall(config.rootPath, fs);
     }
 }
 

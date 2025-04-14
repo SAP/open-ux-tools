@@ -36,9 +36,7 @@ import {
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
 import { type MTABaseConfig, type CFConfig, type CFBaseConfig, type CFAppConfig } from './types';
-import LoggerHelper from './logger-helper';
 import { CommandRunner } from '@sap-ux/nodejs-utils';
-import { t } from './i18n';
 
 let cachedDestinationsList: Destinations = {};
 
@@ -321,19 +319,4 @@ export async function runCommand(cwd: string, cmd: string, args: string[], error
     } catch (e) {
         throw new Error(`${errorMsg} ${e.message}`);
     }
-}
-
-/**
- * Run npm install in the specified project directory.
- *
- * @param rootPath Path to the project directory
- * @param fs reference to a mem-fs editor
- */
-export async function runNpmInstall(rootPath: string, fs: Editor): Promise<void> {
-    // When installing, we need to ensure that the package.json is written to disk before running npm install
-    await new Promise((resolve) => fs.commit(resolve));
-    LoggerHelper?.logger?.debug(`npm install command will be executed in ${rootPath}`);
-    const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-    // Install latest dev dependencies, if any, added by the CF writer
-    await runCommand(rootPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
 }

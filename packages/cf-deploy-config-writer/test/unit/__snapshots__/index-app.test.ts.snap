@@ -13,7 +13,7 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "package.json": Object {
     "contents": "{
@@ -53,7 +53,7 @@ archive.zip
     \\"sapuxLayer\\": \\"VENDOR\\"
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
@@ -83,7 +83,7 @@ builder:
         additionalFiles:
           - xs-app.json
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "webapp/manifest.json": Object {
     "contents": "{
@@ -196,7 +196,7 @@ builder:
   }
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "xs-app.json": Object {
     "contents": "{
@@ -231,7 +231,7 @@ builder:
   ]
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "xs-security.json": Object {
     "contents": "{
@@ -242,7 +242,7 @@ builder:
   \\"role-templates\\": []
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
 }
 `;
@@ -358,7 +358,7 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "package.json": Object {
     "contents": "{
@@ -398,7 +398,7 @@ archive.zip
     \\"sapuxLayer\\": \\"VENDOR\\"
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
@@ -428,7 +428,7 @@ builder:
         additionalFiles:
           - xs-app.json
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "webapp/manifest.json": Object {
     "contents": "{
@@ -600,7 +600,7 @@ builder:
   }
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "xs-app.json": Object {
     "contents": "{
@@ -628,7 +628,7 @@ builder:
   ]
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "xs-security.json": Object {
     "contents": "{
@@ -639,7 +639,7 @@ builder:
   \\"role-templates\\": []
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
 }
 `;
@@ -755,7 +755,7 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "package.json": Object {
     "contents": "{
@@ -795,7 +795,7 @@ archive.zip
     \\"sapuxLayer\\": \\"VENDOR\\"
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
@@ -825,7 +825,7 @@ builder:
         additionalFiles:
           - xs-app.json
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "webapp/manifest.json": Object {
     "contents": "{
@@ -997,7 +997,7 @@ builder:
   }
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "xs-app.json": Object {
     "contents": "{
@@ -1025,7 +1025,7 @@ builder:
   ]
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "xs-security.json": Object {
     "contents": "{
@@ -1036,7 +1036,7 @@ builder:
   \\"role-templates\\": []
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
 }
 `;
@@ -1152,7 +1152,7 @@ mta-*
 resources
 archive.zip
 .*_mta_build_tmp",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "package.json": Object {
     "contents": "{
@@ -1192,7 +1192,7 @@ archive.zip
     \\"sapuxLayer\\": \\"VENDOR\\"
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "ui5-deploy.yaml": Object {
     "contents": "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
@@ -1222,7 +1222,7 @@ builder:
         additionalFiles:
           - xs-app.json
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "webapp/manifest.json": Object {
     "contents": "{
@@ -1335,7 +1335,7 @@ builder:
   }
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "xs-app.json": Object {
     "contents": "{
@@ -1370,7 +1370,7 @@ builder:
   ]
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
   "xs-security.json": Object {
     "contents": "{
@@ -1381,7 +1381,7 @@ builder:
   \\"role-templates\\": []
 }
 ",
-    "stateCleared": "modified",
+    "state": "modified",
   },
 }
 `;

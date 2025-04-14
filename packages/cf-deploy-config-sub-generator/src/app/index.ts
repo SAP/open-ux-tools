@@ -291,17 +291,11 @@ export default class extends DeploymentGenerator {
                 await generateCAPConfig(
                     this.appRouterAnswers as CAPConfig,
                     this.fs,
-                    DeploymentGenerator.logger as unknown as Logger,
-                    true
+                    DeploymentGenerator.logger as unknown as Logger
                 );
             }
             // Step2. Append HTML5 app to MTA
-            await generateAppConfig(
-                this._getAppConfig(),
-                this.fs,
-                DeploymentGenerator.logger as unknown as Logger,
-                true
-            );
+            await generateAppConfig(this._getAppConfig(), this.fs, DeploymentGenerator.logger as unknown as Logger);
         } catch (error) {
             this.abort = true;
             handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.writing', { error }) });

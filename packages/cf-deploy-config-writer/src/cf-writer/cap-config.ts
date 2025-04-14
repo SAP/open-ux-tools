@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { runNpmInstall, updateRootPackage } from '../utils';
+import { updateRootPackage } from '../utils';
 import { validateMtaConfig, isMTAFound, addRoutingConfig, generateCAPMTA } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
@@ -14,15 +14,9 @@ import { getCapProjectType } from '@sap-ux/project-access';
  * @param config writer configuration
  * @param fs an optional reference to a mem-fs editor
  * @param logger optional logger instance
- * @param skipInstall skip install of node modules
  * @returns file system reference
  */
-export async function generateCAPConfig(
-    config: CAPConfig,
-    fs?: Editor,
-    logger?: Logger,
-    skipInstall = false
-): Promise<Editor> {
+export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?: Logger): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -36,9 +30,6 @@ export async function generateCAPConfig(
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
-    if (!skipInstall) {
-        await runNpmInstall(config.mtaPath, fs);
-    }
     LoggerHelper.logger?.debug(t('debug.capGenerationCompleted'));
     return fs;
 }
