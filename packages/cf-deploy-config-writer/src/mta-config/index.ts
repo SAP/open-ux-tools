@@ -2,7 +2,7 @@ import { readFileSync, writeFileSync } from 'fs';
 import { join } from 'path';
 import { render } from 'ejs';
 import { MtaConfig } from './mta';
-import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion } from '../utils';
+import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion, runCommand } from '../utils';
 import {
     MTAYamlFile,
     MTAVersion,
@@ -25,7 +25,6 @@ import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPCon
 import LoggerHelper from '../logger-helper';
 import { sync } from 'hasbin';
 import { t } from '../i18n';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
 import { type Editor } from 'mem-fs-editor';
 import { apiGetInstanceCredentials } from '@sap/cf-tools';
 import { FileName } from '@sap-ux/project-access';
@@ -191,29 +190,6 @@ async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<v
     // Add missing configurations
     addXSSecurityConfig(config, fs, false);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
-}
-
-/**
- * Executes a command in the specified project directory.
- *
- * @async
- * @param {string} cwd - Working directory where the command will be executed
- * @param {string} cmd - Command to execute
- * @param {string[]} args - Arguments to pass to the command
- * @param {string} errorMsg - Error message prefix to display if the command fails
- * @returns {Promise<void>} - A promise that resolves when the command completes successfully
- * @throws {Error} Throws an error with the provided error message concatenated with the original error if execution fails
- * @example
- * // Execute npm install in the project directory
- * await runCommand('/path/to/project', 'npm', ['install'], 'Failed to install dependencies:');
- */
-export async function runCommand(cwd: string, cmd: string, args: string[], errorMsg: string): Promise<void> {
-    const commandRunner = new CommandRunner();
-    try {
-        await commandRunner.run(cmd, args, { cwd });
-    } catch (e) {
-        throw new Error(`${errorMsg} ${e.message}`);
-    }
 }
 
 /**

@@ -35,6 +35,7 @@ import {
     getDestinationProperties,
     getTemplatePath,
     readManifest,
+    runNpmInstall,
     toPosixPath,
     updateRootPackage
 } from '../utils';
@@ -47,7 +48,6 @@ import {
     getMtaConfig,
     getMtaId,
     type MtaConfig,
-    runCommand,
     toMtaModuleName
 } from '../mta-config';
 import LoggerHelper from '../logger-helper';
@@ -248,12 +248,7 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor, skipIn
         await updateRootPackage({ mtaId: config.mtaId ?? config.appId, rootPath: config.rootPath }, fs);
     }
     if (!skipInstall) {
-        // When installing, we need to ensure that the package.json is written to disk before running npm install
-        await new Promise((resolve) => fs.commit(resolve));
-        LoggerHelper?.logger?.debug(`npm install command will be executed in ${config.rootPath}`);
-        const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-        // Install latest dev dependencies, if any, added by the CF writer
-        await runCommand(config.rootPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
+        await runNpmInstall(config.rootPath, fs);
     }
 }
 
@@ -261,7 +256,7 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor, skipIn
  * Creates the MTA configuration file.
  *
  * @param cfConfig writer configuration
- * @param fs
+ * @param fs reference to a mem-fs editor
  */
 export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<void> {
     if (!cfConfig.mtaId) {

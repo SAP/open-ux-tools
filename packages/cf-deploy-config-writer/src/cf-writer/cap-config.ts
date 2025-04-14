@@ -1,7 +1,7 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { updateRootPackage } from '../utils';
-import { validateMtaConfig, isMTAFound, addRoutingConfig, runCommand, generateCAPMTA } from '../mta-config';
+import { runNpmInstall, updateRootPackage } from '../utils';
+import { validateMtaConfig, isMTAFound, addRoutingConfig, generateCAPMTA } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
 import { type CAPConfig, type CFBaseConfig } from '../types';
@@ -36,14 +36,8 @@ export async function generateCAPConfig(
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await addRoutingConfig(config, fs);
     await updateRootPackage({ mtaId: config.mtaId, rootPath: config.mtaPath }, fs);
-    // In some instances, you want to delay the install to another phase!
     if (!skipInstall) {
-        // When installing, we need to ensure that the package.json is written to disk before running npm install
-        await new Promise((resolve) => fs.commit(resolve));
-        LoggerHelper?.logger?.debug(`npm install command will be executed in ${config.mtaPath}`);
-        const cmd = process.platform === 'win32' ? `npm.cmd` : 'npm';
-        // Install latest dev dependencies, if any, added by the CF writer
-        await runCommand(config.mtaPath, cmd, ['install', '--ignore-engines'], t('error.errorInstallingNodeModules'));
+        await runNpmInstall(config.mtaPath, fs);
     }
     LoggerHelper.logger?.debug(t('debug.capGenerationCompleted'));
     return fs;
