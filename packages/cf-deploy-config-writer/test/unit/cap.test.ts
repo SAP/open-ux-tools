@@ -70,8 +70,7 @@ describe('CF Writer', () => {
                     addManagedAppRouter: true
                 },
                 unitTestFs,
-                undefined,
-                true
+                undefined
             );
             expect(getMtaPathMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
@@ -84,7 +83,7 @@ describe('CF Writer', () => {
         test('Validate dependency on MTA binary', async () => {
             hasSyncMock.mockReturnValue(false);
             const capPath = join(outputDir, 'cap');
-            await expect(generateAppConfig({ appPath: capPath }, unitTestFs, undefined, true)).rejects.toThrowError(
+            await expect(generateAppConfig({ appPath: capPath }, unitTestFs, undefined)).rejects.toThrowError(
                 MTABinNotFound
             );
         });
@@ -103,8 +102,7 @@ describe('CF Writer', () => {
                         addManagedAppRouter: true
                     },
                     unitTestFs,
-                    undefined,
-                    true
+                    undefined
                 )
             ).rejects.toThrowError(/An error occurred when creating the mta.yaml file/);
             expect(commandRunnerMock).toHaveBeenCalledTimes(1);
@@ -124,8 +122,7 @@ describe('CF Writer', () => {
                 destinationName: DefaultMTADestination
             },
             unitTestFs,
-            undefined,
-            true
+            undefined
         );
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
     });
@@ -144,8 +141,7 @@ describe('CF Writer', () => {
                 addManagedAppRouter: false
             },
             unitTestFs,
-            undefined,
-            true
+            undefined
         );
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
     });
@@ -165,8 +161,7 @@ describe('CF Writer', () => {
                 addManagedAppRouter: true
             },
             unitTestFs,
-            undefined,
-            true
+            undefined
         );
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
         expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
