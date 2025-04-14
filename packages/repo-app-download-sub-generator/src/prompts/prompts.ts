@@ -45,99 +45,13 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
     } as FileBrowserQuestion<RepoAppDownloadAnswers>;
 };
 
-// function getDefaultStuff (getDefaultStuff: QuickDeployedAppConfig | undefined): { defaultSystem: string; defaultAppId: string } {
-//     let defaultSystem: string = '';
-//     let defaultAppId: string = '';
-//     if(getDefaultStuff?.appId && getDefaultStuff?.serviceProvider) {
-//         // If appId is provided but serviceProvider is not, set the serviceProvider to the default value
-//         //defaultSystem = getDefaultStuff.serviceProvider.;
-//         defaultAppId = getDefaultStuff.appId;
-//         defaultSystem = getDefaultStuff.serviceProvider.name;
-//     }
-//     return { defaultSystem, defaultAppId};
-// }
-
-// /**
-//  * Retrieves questions for selecting system, app lists and target path where app will be generated.
-//  *
-//  * @param {string} [appRootPath] - The root path of the application.
-//  * @param {QuickDeployedAppConfig} [quickDeployedAppConfig] - quick deployed app config.
-//  * @returns {Promise<RepoAppDownloadQuestions[]>} A list of questions for user interaction.
-//  */
-// export async function getPrompts(
-//     appRootPath?: string,
-//     quickDeployedAppConfig?: QuickDeployedAppConfig
-// ): Promise<RepoAppDownloadQuestions[]> {
-//     PromptState.reset();
-
-//     const { defaultSystem} =  getDefaultStuff(quickDeployedAppConfig)
-//     let  systemQuestions = await getSystemSelectionQuestions( { serviceSelection: { hide: true } }, false);
-//     if (quickDeployedAppConfig?.appId) {
-//         const filteredSystemQuestion = systemQuestions.prompts.find(p => p.name === promptNames.systemSelection);   
-//         let defaultIndex = -1;
-//         if (filteredSystemQuestion) {
-//             //const choices = (filteredSystemQuestion as ListQuestion<RepoAppDownloadAnswers>).choices;
-//             // Filter the choices based on the default system
-//             let choices = (filteredSystemQuestion as ListQuestion<RepoAppDownloadAnswers>).choices;
-//             if (Array.isArray(choices)) {
-//                 // Filter the choices based on the default system
-//                 defaultIndex = choices.findIndex((choice: any) => choice.value.system.name === defaultSystem);
-//                 filteredSystemQuestion.default = defaultIndex !== -1 ? defaultIndex : undefined; // Assign default index if found
-//                 systemQuestions.prompts = [filteredSystemQuestion];
-//             }
-
-//             filteredSystemQuestion.default = defaultIndex !== -1 ? defaultIndex : undefined; // Assign default index if found
-//             systemQuestions.prompts = [filteredSystemQuestion];
-//         }
-//     }
-    
-   
-//     let appList: AppIndex = [];
-//     const appSelectionPrompt = [
-//         {
-//             when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
-//                 if (answers[PromptNames.systemSelection]) {
-//                     debugger;
-//                     if(quickDeployedAppConfig?.appId) {
-//                         appList = await fetchAppListForSelectedSystem(
-//                             systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
-//                             quickDeployedAppConfig.appId
-//                         );
-//                     }
-//                     else {
-//                         appList = await fetchAppListForSelectedSystem(
-//                             systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider
-//                         );
-//                     }
-//                 }
-//                 // display app selection prompt only if user has selected a system
-//                 return !!systemQuestions.answers.connectedSystem?.serviceProvider;
-//             },
-//             type: 'list',
-//             name: PromptNames.selectedApp,
-//             default: () =>  quickDeployedAppConfig?.appId ? 0 : undefined,
-//             guiOptions: {
-//                 mandatory: !!appList.length,
-//                 breadcrumb: t('prompts.appSelection.breadcrumb')
-//             },
-//             message: t('prompts.appSelection.message'),
-//             choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
-//             validate: (): string | boolean => (appList.length ? true : t('prompts.appSelection.noAppsDeployed'))
-//         }
-//     ];
-
-//     const targetFolderPrompts = getTargetFolderPrompt(appRootPath, quickDeployedAppConfig?.appId);
-//     return [...systemQuestions.prompts, ...appSelectionPrompt, targetFolderPrompts] as RepoAppDownloadQuestions[];
-// }
-
-
 /**
  * Extracts default system from the quick deployed app configuration.
  *
  * @param {QuickDeployedAppConfig | undefined} quickDeployedAppConfig - The quick deployed app configuration.
  * @returns {string} The default system.
  */
-function extractDefaultSystem(quickDeployedAppConfig: QuickDeployedAppConfig | undefined): string {
+function extractDefaultSystem(quickDeployedAppConfig?: QuickDeployedAppConfig): string {
     let defaultSystem = '';
 
     if (quickDeployedAppConfig?.appId && quickDeployedAppConfig?.serviceProviderInfo) {
@@ -160,13 +74,12 @@ export async function getPrompts(
 ): Promise<RepoAppDownloadQuestions[]> {
     try {
         PromptState.reset();
-
-        const defaultSystem = extractDefaultSystem(quickDeployedAppConfig);
+        debugger;
         const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, false);
-
         // Filter system questions and set default system if applicable
         if (quickDeployedAppConfig?.appId) {
-            const filteredSystemQuestion = systemQuestions.prompts.find(p => p.name === promptNames.systemSelection);
+            const defaultSystem = extractDefaultSystem(quickDeployedAppConfig);
+            const filteredSystemQuestion = systemQuestions.prompts.find(p => p.name === PromptNames.systemSelection);
 
             if (filteredSystemQuestion) {
                 const choices = (filteredSystemQuestion as ListQuestion<RepoAppDownloadAnswers>).choices;
@@ -208,7 +121,7 @@ export async function getPrompts(
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
                 validate: (): string | boolean => {
                     if (quickDeployedAppConfig?.appId && !appList.length) {
-                        return t('prompts.quickDeployedAppDownloadErrors.noAppsFound');
+                        return t('error.quickDeployedAppDownloadErrors.noAppsFound');
                     }
                     else return (appList.length ? true : t('prompts.appSelection.noAppsDeployed'))
                 },

@@ -16,14 +16,21 @@ export interface QuickDeployedAppConfig {
     appId: string;
     /**  appUrl is the URL pointing to the application */
     appUrl?: string;
-    /**  service provider is used to identify the system from which the app is downloaded from. */
+    /** 
+     * Information about the system from which the application is to be downloaded. 
+     */
     serviceProviderInfo?: {
-        /** system url */
-        serviceUrl: string;
-        /** system name to pre populate App ID prompt */
+        /** 
+         * The base URL of the system providing the application. 
+         */
+        serviceUrl?: string;
+        /** 
+         * The name of the system providing the application. 
+         */
         name: string;
     };
 }
+
 /**
  * Options for downloading an application from repository.
  */

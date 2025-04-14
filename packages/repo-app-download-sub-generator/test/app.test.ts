@@ -377,7 +377,10 @@ describe('Repo App Download', () => {
 						quickDeployedAppConfig: {
 							appId: appConfig.app.id,
 							appUrl: 'https://app-url.com/app',
-							serviceProvider: mockServiceProvider
+							serviceProviderInfo: {
+								serviceUrl: 'https://test-url.com',
+								name: 'system3'
+							}
 						}
 					}
 				})
@@ -394,60 +397,6 @@ describe('Repo App Download', () => {
 				})
 		)
 		.resolves.not.toThrow();
-		expect(fetchAppListForSelectedSystem).toHaveBeenCalledWith(mockServiceProvider, appConfig.app.id);
 		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
-
-	it('Should throw error when fetchAppListForSelectedSystem fetches no app', async () => {
-		(isValidPromptState as jest.Mock).mockReturnValue(true);
-		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
-		(fetchAppListForSelectedSystem as jest.Mock).mockResolvedValue([]);
-		const mockServiceProvider = {
-            defaults: { baseURL: 'https://test-url.com' },
-            service: jest.fn().mockReturnValue({
-                metadata: jest.fn().mockResolvedValue({
-                    dataServices: {
-                        schema: []
-                    }
-                })
-            })
-        } as unknown as AbapServiceProvider;
-        
-        await expect( 
-			yeomanTest
-				.run(RepoAppDownloadGenerator, { 
-					resolved: repoAppDownloadGenPath
-				})
-				.cd('.')
-				.withOptions({ 
-					appRootPath: testOutputDir, 
-					appWizard: mockAppWizard,
-					vscode: mockVSCode, 
-					data: {
-						postGenCommand: 'test-post-gen-command', 
-						quickDeployedAppConfig: {
-							appId: appConfig.app.id,
-							appUrl: 'https://app-url.com/app',
-							serviceProvider: mockServiceProvider
-						}
-					}
-				})
-				.withPrompts({
-					systemSelection: 'system3',
-					selectedApp: {
-						appId: appConfig.app.id,
-						title: appConfig.app.title,
-						description: appConfig.app.description,
-						repoName: repoName,
-						url: 'url-1'
-					},
-					targetFolder: testOutputDir
-				})
-		)
-		.rejects.toThrowError(
-			t('error.quickDeployedAppDownloadErrors.noAppsFound', { appId: appConfig.app.id })
-		);
-		expect(fetchAppListForSelectedSystem).toHaveBeenCalledWith(mockServiceProvider, appConfig.app.id);
-		expect(fs.existsSync(join(`${testOutputDir}/${appId}/${DirName.Webapp}`))).toBe(false);
-    });	
 });

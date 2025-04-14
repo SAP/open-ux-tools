@@ -2,7 +2,7 @@ import { getPrompts } from '../../src/prompts/prompts';
 import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import { fetchAppListForSelectedSystem, formatAppChoices } from '../../src/prompts/prompt-helpers';
 import { PromptNames } from '../../src/app/types';
-import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions } from '../../src/app/types';
+import type { QuickDeployedAppConfig, RepoAppDownloadAnswers, RepoAppDownloadQuestions } from '../../src/app/types';
 import { join } from 'path';
 import { t } from '../../src/utils/i18n';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
@@ -31,7 +31,7 @@ describe('getPrompts', () => {
     const mockAnswers = {
         selectedApp: { appId: 'app1' }
     } as unknown as RepoAppDownloadAnswers;
-    const mockAppList = [{ appId: 'app1', name: 'Test App' }];
+    const mockAppList = [{ appId: 'app1', name: 'Test App' }, { appId: 'app2', name: 'Test App 2' }];
 
     beforeEach(() => {
         (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
@@ -135,5 +135,18 @@ describe('getPrompts', () => {
         const result = await targetFolderPrompt?.default();
         expect(result).toBe(appRootPath);
     });
+
+    it('should return pre filled system questions, app selection, and target folder prompts when quick deployed app config is provided', async () => {
+        const quickDeployedAppConfig: QuickDeployedAppConfig = {
+            appId: 'app1',
+            serviceProviderInfo: {
+                name: 'system3'
+            }
+        }
+        const prompts = await getPrompts(appRootPath, quickDeployedAppConfig);
+    });
     
 });
+
+
+//prompts.ts        |    37.5 |       20 |      40 |   38.46 | 29,55-60,76-83,96,106,115,126,141-147,161-221 

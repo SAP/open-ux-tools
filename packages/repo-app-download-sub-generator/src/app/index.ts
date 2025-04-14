@@ -15,13 +15,7 @@ import {
     sendTelemetry,
     TelemetryHelper
 } from '@sap-ux/fiori-generator-shared';
-import type {
-    RepoAppDownloadOptions,
-    RepoAppDownloadAnswers,
-    RepoAppDownloadQuestions,
-    QfaJsonConfig,
-    QuickDeployedAppConfig
-} from './types';
+import type { RepoAppDownloadOptions, RepoAppDownloadAnswers, RepoAppDownloadQuestions, QfaJsonConfig } from './types';
 import { getPrompts } from '../prompts/prompts';
 import { generate, TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
 import { join, basename } from 'path';
@@ -40,7 +34,7 @@ import { getAbapDeployConfig, getAppConfig } from './app-config';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import { makeValidJson } from '../utils/file-helpers';
 import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../utils/updates';
-import { fetchAppListForSelectedSystem, extractAppData, getYUIDetails } from '../prompts/prompt-helpers';
+import { getYUIDetails } from '../prompts/prompt-helpers';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators';
 import { FileName, DirName } from '@sap-ux/project-access';
 

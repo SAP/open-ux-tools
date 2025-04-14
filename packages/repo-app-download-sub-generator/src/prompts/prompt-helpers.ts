@@ -79,7 +79,6 @@ async function getAppList(provider: AbapServiceProvider, appId?: string): Promis
                   'sap.app/id': appId
               }
             : appListSearchParams;
-        console.log("--- provider ---", provider);
         return await provider.getAppIndex().search(searchParams, appListResultFields);
     } catch (error) {
         RepoAppDownloadLogger.logger?.error(t('error.applicationListFetchError', { error: error.message }));
