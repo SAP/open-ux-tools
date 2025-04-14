@@ -69,8 +69,7 @@ describe('CF Writer', () => {
                     destinationName: DefaultMTADestination,
                     addManagedAppRouter: true
                 },
-                unitTestFs,
-                undefined
+                unitTestFs
             );
             expect(getMtaPathMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);

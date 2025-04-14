@@ -77,8 +77,7 @@ describe('CF Writer CAP', () => {
                     routerType
                 },
                 undefined,
-                logger,
-                true
+                logger
             );
             expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
             expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot(); // Ensure it hasn't changed! // Ensure it hasn't changed!
