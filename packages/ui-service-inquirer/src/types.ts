@@ -53,3 +53,8 @@ export enum ObjectType {
     BUSINESS_OBJECT = 'BusinessObject',
     CDS_VIEW = 'CDSView'
 }
+
+export interface ServiceConfigOptions {
+    useDraftEnabled?: boolean;
+    useLaunchGen?: boolean;
+}
