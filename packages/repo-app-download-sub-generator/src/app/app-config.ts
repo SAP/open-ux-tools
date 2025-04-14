@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import { t } from '../utils/i18n';
 import type { AppInfo, QfaJsonConfig } from '../app/types';
 import { readManifest } from '../utils/file-helpers';
-import { adtSourceTemplateId } from '../utils/constants';
+import { fioriAppSourcetemplateId } from '../utils/constants';
 import { PromptState } from '../prompts/prompt-state';
 import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import RepoAppDownloadLogger from '../utils/logger';
@@ -90,7 +90,7 @@ export async function getAppConfig(
                 title: app.title,
                 description: app.description,
                 sourceTemplate: {
-                    id: adtSourceTemplateId
+                    id: fioriAppSourcetemplateId
                 },
                 projectType: 'EDMXBackend',
                 flpAppId: `${app.appId.replace(/[-_.#]/g, '')}-tile`

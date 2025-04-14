@@ -9,6 +9,8 @@ export const generatorDescription =
 export const generatorName = '@sap-ux/repo-app-download-sub-generator';
 // The source template ID used for filtering the apps in the repository
 export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
+// The source template ID used for Fiori app generation
+export const fioriAppSourcetemplateId = '@sap/generator-fiori:lrop';
 // The name of the QFA JSON file provided with the downloaded app, containing all user inputs.
 export const qfaJsonFileName = 'qfa.json';
 

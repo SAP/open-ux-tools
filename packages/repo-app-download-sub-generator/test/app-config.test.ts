@@ -7,7 +7,7 @@ import { PromptState } from '../src/prompts/prompt-state';
 import type { AppInfo, QfaJsonConfig } from '../src/app/types';
 import { readManifest } from '../src/utils/file-helpers';
 import { t } from '../src/utils/i18n';
-import { adtSourceTemplateId } from '../src/utils/constants';
+import { fioriAppSourcetemplateId } from '../src/utils/constants';
 import RepoAppDownloadLogger from '../src/utils/logger';
 import { TestFixture } from './fixtures';
 import { join } from 'path';
@@ -57,7 +57,7 @@ describe('getAppConfig', () => {
             title: mockApp.title,
             description: mockApp.description,
             flpAppId: `${mockApp.appId}-tile`,
-            sourceTemplate: { id: adtSourceTemplateId },
+            sourceTemplate: { id: fioriAppSourcetemplateId },
             projectType: 'EDMXBackend'
         },
         package: {
