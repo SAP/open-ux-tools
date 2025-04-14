@@ -1,11 +1,6 @@
 import { ApplicationInsightClient } from '../base/client/azure-appinsight-client';
-import type { SampleRate } from '../base/types/sample-rate';
-import type {
-    TelemetryHelperProperties,
-    TelemetryEvent,
-    CommonTelemetryProperties,
-    TelemetryProperties
-} from './types';
+import type { SampleRate, TelemetryProperties } from '../base/types';
+import type { TelemetryHelperProperties, TelemetryEvent, CommonTelemetryProperties } from './types';
 import { processToolsSuiteTelemetry } from '.';
 import { localDatetimeToUTC } from '../base/utils/date';
 
