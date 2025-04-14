@@ -11,7 +11,7 @@ import {
     getDefaultNamespace,
     getDefaultVersion
 } from '../../../src/app/questions/helper/default-values';
-import { basicPromptNames } from '../../../src/app/types';
+import { attributePromptNames } from '../../../src/app/types';
 import { getPrompts } from '../../../src/app/questions/attributes';
 import { getProjectNameTooltip } from '../../../src/app/questions/helper/tooltip';
 import { getVersionAdditionalMessages } from '../../../src/app/questions/helper/additional-messages';
@@ -56,124 +56,160 @@ const getProjectNameTooltipMock = getProjectNameTooltip as jest.Mock;
 const validateUI5VersionExistsMock = validateUI5VersionExists as jest.Mock;
 const getVersionAdditionalMessagesMock = getVersionAdditionalMessages as jest.Mock;
 
-describe('Project Name Prompt', () => {
-    it('should include projectName prompt with correct config', () => {
-        getDefaultProjectNameMock.mockReturnValue('default-name');
-        getProjectNameTooltipMock.mockReturnValue('tooltip');
-
-        const prompts = getPrompts(mockPath, mockConfig);
-        const prompt = prompts.find((p) => p.name === basicPromptNames.projectName)!;
-
-        expect(prompt.type).toBe('input');
-        expect(prompt.message).toBe('prompts.projectNameLabel');
-        expect(prompt.guiOptions).toMatchObject({ mandatory: true, breadcrumb: true, hint: 'tooltip' });
-
-        const defaultVal = (prompt as any).default({ targetFolder: '' });
-        expect(defaultVal).toBe('default-name');
-
-        const validateFn = (prompt as any).validate;
-        validateFn('project1', { targetFolder: '' });
-        expect(validateProjectNameMock).toHaveBeenCalledWith('project1', mockPath, true);
-    });
-});
-
-describe('Application Title Prompt', () => {
-    it('should include title prompt with correct config', () => {
-        const prompts = getPrompts(mockPath, mockConfig);
-        const prompt = prompts.find((p) => p.name === basicPromptNames.title)!;
-
-        expect(prompt.type).toBe('input');
-        expect(prompt.message).toBe('prompts.appTitleLabel');
-        expect(prompt.guiOptions).toMatchObject({ mandatory: true, breadcrumb: true, hint: 'prompts.appTitleTooltip' });
-        expect((prompt as any).default).toBe('prompts.appTitleDefault');
-
-        (prompt as any).validate('title');
-        expect(validateEmptyStringMock).toHaveBeenCalledWith('title');
-    });
-});
-
-describe('Namespace Prompt', () => {
-    it('should include namespace prompt with validation when CUSTOMER_BASE', () => {
-        getDefaultNamespaceMock.mockReturnValue('customer.project');
-
-        const prompts = getPrompts(mockPath, mockConfig);
-        const prompt = prompts.find((p) => p.name === basicPromptNames.namespace)!;
-
-        const defaultVal = (prompt as any).default({ projectName: 'project' });
-        expect(defaultVal).toBe('customer.project');
-
-        expect((prompt.guiOptions as any).mandatory).toBe(true);
-        expect((prompt.guiOptions as any).breadcrumb).toBe(true);
-
-        const validateFn = (prompt as any).validate;
-        validateFn('ns', { projectName: 'project' });
-        expect(validateNamespaceAdpMock).toHaveBeenCalledWith('ns', 'project', true);
+describe('Attribute Prompts', () => {
+    beforeEach(() => {
+        jest.clearAllMocks();
     });
 
-    it('should not show namespace when not CUSTOMER_BASE', async () => {
-        const nonCustomerConfig = { ...mockConfig, layer: FlexLayer.VENDOR };
-        const prompts = getPrompts(mockPath, nonCustomerConfig);
-        const prompt = prompts.find((p) => p.name === basicPromptNames.namespace)!;
+    describe('Project Name Prompt', () => {
+        it('should include projectName prompt with correct config', () => {
+            getDefaultProjectNameMock.mockReturnValue('default-name');
+            getProjectNameTooltipMock.mockReturnValue('tooltip');
 
-        const result = await (prompt as any).when({ projectName: 'foo' });
-        expect(result).toBe(true);
-        expect(prompt.guiOptions!.type).toBe('label');
+            const prompts = getPrompts(mockPath, mockConfig);
+            const prompt = prompts.find((p) => p.name === attributePromptNames.projectName)!;
+
+            expect(prompt.type).toBe('input');
+            expect(prompt.message).toBe('prompts.projectNameLabel');
+            expect(prompt.guiOptions).toMatchObject({ mandatory: true, breadcrumb: true, hint: 'tooltip' });
+
+            const defaultVal = (prompt as any).default({ targetFolder: '' });
+            expect(defaultVal).toBe('default-name');
+
+            const validateFn = (prompt as any).validate;
+            validateFn('project1', { targetFolder: '' });
+            expect(validateProjectNameMock).toHaveBeenCalledWith('project1', mockPath, true);
+        });
     });
-});
 
-describe('Target Folder Prompt', () => {
-    it('should include targetFolder prompt with default and validate', () => {
-        const prompts = getPrompts(mockPath, mockConfig);
-        const prompt = prompts.find((p) => p.name === 'targetFolder')!;
+    describe('Application Title Prompt', () => {
+        it('should include title prompt with correct config', () => {
+            const prompts = getPrompts(mockPath, mockConfig);
+            const prompt = prompts.find((p) => p.name === attributePromptNames.title)!;
 
-        expect(prompt.type).toBe('input');
-        expect(prompt.guiOptions!.type).toBe('folder-browser');
+            expect(prompt.type).toBe('input');
+            expect(prompt.message).toBe('prompts.appTitleLabel');
+            expect(prompt.guiOptions).toMatchObject({
+                mandatory: true,
+                breadcrumb: true,
+                hint: 'prompts.appTitleTooltip'
+            });
+            expect((prompt as any).default).toBe('prompts.appTitleDefault');
 
-        const defaultVal = (prompt as any).default({ targetFolder: undefined });
-        expect(defaultVal).toBeUndefined();
-
-        (prompt as any).validate('path/to/project', { projectName: 'proj' });
-        expect(validateProjectFolderMock).toHaveBeenCalledWith('path/to/project', 'proj');
+            (prompt as any).validate('title');
+            expect(validateEmptyStringMock).toHaveBeenCalledWith('title');
+        });
     });
-});
 
-describe('UI5 Version Prompt', () => {
-    it('should include ui5Version prompt with async props', async () => {
-        getDefaultVersionMock.mockResolvedValue('1.119.0');
-        getVersionAdditionalMessagesMock.mockReturnValue(['info']);
-        validateUI5VersionExistsMock.mockResolvedValue(true);
+    describe('Namespace Prompt', () => {
+        it('should include namespace prompt with validation when CUSTOMER_BASE', () => {
+            getDefaultNamespaceMock.mockReturnValue('customer.project');
 
-        const prompts = getPrompts(mockPath, mockConfig);
-        const prompt = prompts.find((p) => p.name === basicPromptNames.ui5Version)!;
+            const prompts = getPrompts(mockPath, mockConfig);
+            const prompt = prompts.find((p) => p.name === attributePromptNames.namespace)!;
 
-        const shouldShow = await (prompt as any).when();
-        expect(shouldShow).toBe(true);
+            const defaultVal = (prompt as any).default({ projectName: 'project' });
+            expect(defaultVal).toBe('customer.project');
 
-        const choices = await (prompt as any).choices();
-        expect(choices).toEqual(mockConfig.ui5Versions);
+            expect((prompt.guiOptions as any).mandatory).toBe(true);
+            expect((prompt.guiOptions as any).breadcrumb).toBe(true);
 
-        const defaultVal = await (prompt as any).default();
-        expect(defaultVal).toBe('1.119.0');
+            const validateFn = (prompt as any).validate;
+            validateFn('ns', { projectName: 'project' });
+            expect(validateNamespaceAdpMock).toHaveBeenCalledWith('ns', 'project', true);
+        });
 
-        const additional = (prompt as any).additionalMessages();
-        expect(additional).toEqual(['info']);
+        it('should not show namespace when not CUSTOMER_BASE', async () => {
+            const nonCustomerConfig = { ...mockConfig, layer: FlexLayer.VENDOR };
+            const prompts = getPrompts(mockPath, nonCustomerConfig);
+            const prompt = prompts.find((p) => p.name === attributePromptNames.namespace)!;
 
-        const valid = await (prompt as any).validate('1.119.0');
-        expect(valid).toBe(true);
-        expect(validateUI5VersionExistsMock).toHaveBeenCalledWith('1.119.0');
+            const result = await (prompt as any).when({ projectName: 'foo' });
+            expect(result).toBe(true);
+            expect(prompt.guiOptions!.type).toBe('label');
+        });
     });
-});
 
-describe('Enable TypeScript Prompt', () => {
-    it('should include enableTypeScript confirm prompt', () => {
+    describe('Target Folder Prompt', () => {
+        it('should include targetFolder prompt with default and validate', () => {
+            const prompts = getPrompts(mockPath, mockConfig);
+            const prompt = prompts.find((p) => p.name === 'targetFolder')!;
+
+            expect(prompt.type).toBe('input');
+            expect(prompt.guiOptions!.type).toBe('folder-browser');
+
+            const defaultVal = (prompt as any).default({ targetFolder: undefined });
+            expect(defaultVal).toBeUndefined();
+
+            (prompt as any).validate('path/to/project', { projectName: 'proj' });
+            expect(validateProjectFolderMock).toHaveBeenCalledWith('path/to/project', 'proj');
+        });
+    });
+
+    describe('UI5 Version Prompt', () => {
+        it('should include ui5Version prompt with async props', async () => {
+            getDefaultVersionMock.mockResolvedValue('1.119.0');
+            getVersionAdditionalMessagesMock.mockReturnValue(['info']);
+            validateUI5VersionExistsMock.mockResolvedValue(true);
+
+            const prompts = getPrompts(mockPath, mockConfig);
+            const prompt = prompts.find((p) => p.name === attributePromptNames.ui5Version)!;
+
+            const shouldShow = await (prompt as any).when();
+            expect(shouldShow).toBe(true);
+
+            const choices = await (prompt as any).choices();
+            expect(choices).toEqual(mockConfig.ui5Versions);
+
+            const defaultVal = await (prompt as any).default();
+            expect(defaultVal).toBe('1.119.0');
+
+            const additional = (prompt as any).additionalMessages();
+            expect(additional).toEqual(['info']);
+
+            const valid = await (prompt as any).validate('1.119.0');
+            expect(valid).toBe(true);
+            expect(validateUI5VersionExistsMock).toHaveBeenCalledWith('1.119.0');
+        });
+    });
+
+    describe('UI5 Version CLI Validation Prompt', () => {
         const prompts = getPrompts(mockPath, mockConfig);
-        const prompt = prompts.find((p) => p.name === basicPromptNames.enableTypeScript)!;
+        const prompt = prompts.find((p) => p.name === attributePromptNames.ui5ValidationCli)!;
 
-        expect(prompt.type).toBe('confirm');
-        expect(prompt.message).toBe('Enable TypeScript');
-        expect(prompt.default).toBe(false);
+        it('should return false if no UI5 version is provided', async () => {
+            const result = await (prompt as any).when({ ui5Version: undefined });
+            expect(result).toBe(false);
+        });
 
-        const whenFn = (prompt as any).when();
-        expect(whenFn).toBe(true);
+        it('should throw an error if version validation returns a string', async () => {
+            validateUI5VersionExistsMock.mockResolvedValue('Invalid version error');
+
+            await expect((prompt as any).when({ ui5Version: '1.118.0' })).rejects.toThrow('Invalid version error');
+
+            expect(validateUI5VersionExistsMock).toHaveBeenCalledWith('1.118.0');
+        });
+
+        it('should return false if version validation passes', async () => {
+            validateUI5VersionExistsMock.mockResolvedValue(true);
+
+            const result = await (prompt as any).when({ ui5Version: '1.119.0' });
+            expect(result).toBe(false);
+            expect(validateUI5VersionExistsMock).toHaveBeenCalledWith('1.119.0');
+        });
+    });
+
+    describe('Enable TypeScript Prompt', () => {
+        it('should include enableTypeScript confirm prompt', () => {
+            const prompts = getPrompts(mockPath, mockConfig);
+            const prompt = prompts.find((p) => p.name === attributePromptNames.enableTypeScript)!;
+
+            expect(prompt.type).toBe('confirm');
+            expect(prompt.message).toBe('Enable TypeScript');
+            expect(prompt.default).toBe(false);
+
+            const whenFn = (prompt as any).when();
+            expect(whenFn).toBe(true);
+        });
     });
 });

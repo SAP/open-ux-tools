@@ -18,10 +18,10 @@ import { getFlexLayer } from './layer';
 import { t, initI18n } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
-import type { AdpGeneratorOptions } from './types';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { getPackageInfo, installDependencies } from '../utils/deps';
+import type { AdpGeneratorOptions, AttributePromptOptions } from './types';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -129,8 +129,9 @@ export default class extends Generator {
             isCloudProject: this.prompter.isCloud,
             layer: this.layer
         };
-        const options = {
-            targetFolder: { default: this._getDefaultFolder() }
+        const options: AttributePromptOptions = {
+            targetFolder: { default: this._getDefaultFolder() },
+            ui5ValidationCli: { hide: !isCLI }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 

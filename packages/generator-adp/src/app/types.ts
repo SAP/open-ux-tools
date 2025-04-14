@@ -82,12 +82,13 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
 }>;
 
-export enum basicPromptNames {
+export enum attributePromptNames {
     projectName = 'projectName',
     title = 'title',
     namespace = 'namespace',
     targetFolder = 'targetFolder',
     ui5Version = 'ui5Version',
+    ui5ValidationCli = 'ui5ValidationCli',
     enableTypeScript = 'enableTypeScript'
 }
 
@@ -120,10 +121,11 @@ export interface EnableTypeScriptPromptOptions {
 }
 
 export type AttributePromptOptions = Partial<{
-    [basicPromptNames.projectName]: ProjectNamePromptOptions;
-    [basicPromptNames.title]: ApplicationTitlePromptOptions;
-    [basicPromptNames.namespace]: NamespacePromptOptions;
-    [basicPromptNames.targetFolder]: TargetFolderPromptOptions;
-    [basicPromptNames.ui5Version]: UI5VersionPromptOptions;
-    [basicPromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
+    [attributePromptNames.projectName]: ProjectNamePromptOptions;
+    [attributePromptNames.title]: ApplicationTitlePromptOptions;
+    [attributePromptNames.namespace]: NamespacePromptOptions;
+    [attributePromptNames.targetFolder]: TargetFolderPromptOptions;
+    [attributePromptNames.ui5Version]: UI5VersionPromptOptions;
+    [attributePromptNames.ui5ValidationCli]: CliValidationPromptOptions;
+    [attributePromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
 }>;

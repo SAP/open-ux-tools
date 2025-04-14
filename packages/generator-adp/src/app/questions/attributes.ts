@@ -1,4 +1,4 @@
-import type { ConfirmQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
+import type { ConfirmQuestion, InputQuestion, ListQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
 import { type AttributesAnswers, FlexLayer, validateUI5VersionExists } from '@sap-ux/adp-tooling';
 import {
     validateEmptyString,
@@ -16,8 +16,8 @@ import type {
     TargetFolderPromptOptions,
     EnableTypeScriptPromptOptions
 } from '../types';
-import { basicPromptNames } from '../types';
 import { t } from '../../utils/i18n';
+import { attributePromptNames } from '../types';
 import { getProjectNameTooltip } from './helper/tooltip';
 import { getDefaultProjectName, getDefaultNamespace, getDefaultVersion } from './helper/default-values';
 import { getVersionAdditionalMessages } from './helper/additional-messages';
@@ -41,24 +41,28 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
     const { isVersionDetected, ui5Versions, isCloudProject, layer } = config;
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
 
-    const keyedPrompts: Record<basicPromptNames, AttributesQuestion> = {
-        [basicPromptNames.projectName]: getProjectNamePrompt(
+    const keyedPrompts: Record<attributePromptNames, AttributesQuestion> = {
+        [attributePromptNames.projectName]: getProjectNamePrompt(
             path,
             isCustomerBase,
-            promptOptions?.[basicPromptNames.projectName]
+            promptOptions?.[attributePromptNames.projectName]
         ),
-        [basicPromptNames.title]: getApplicationTitlePrompt(promptOptions?.[basicPromptNames.title]),
-        [basicPromptNames.namespace]: getNamespacePrompt(isCustomerBase, promptOptions?.[basicPromptNames.namespace]),
-        [basicPromptNames.targetFolder]: getTargetFolderPrompt(promptOptions?.[basicPromptNames.targetFolder]),
-        [basicPromptNames.ui5Version]: getUi5VersionPrompt(ui5Versions, isVersionDetected, isCloudProject),
-        [basicPromptNames.enableTypeScript]: getEnableTypeScriptPrompt(
-            promptOptions?.[basicPromptNames.enableTypeScript]
+        [attributePromptNames.title]: getApplicationTitlePrompt(promptOptions?.[attributePromptNames.title]),
+        [attributePromptNames.namespace]: getNamespacePrompt(
+            isCustomerBase,
+            promptOptions?.[attributePromptNames.namespace]
+        ),
+        [attributePromptNames.targetFolder]: getTargetFolderPrompt(promptOptions?.[attributePromptNames.targetFolder]),
+        [attributePromptNames.ui5Version]: getUi5VersionPrompt(ui5Versions, isVersionDetected, isCloudProject),
+        [attributePromptNames.ui5ValidationCli]: getUi5VersionValidationPromptForCli(),
+        [attributePromptNames.enableTypeScript]: getEnableTypeScriptPrompt(
+            promptOptions?.[attributePromptNames.enableTypeScript]
         )
     };
 
     const questions = Object.entries(keyedPrompts)
         .filter(([promptName]) => {
-            const options = promptOptions?.[promptName as basicPromptNames];
+            const options = promptOptions?.[promptName as attributePromptNames];
             return !(options && 'hide' in options && options.hide);
         })
         .map(([_, question]) => question);
@@ -77,7 +81,7 @@ export function getPrompts(path: string, config: Config, promptOptions?: Attribu
 function getProjectNamePrompt(path: string, isCustomerBase: boolean, _?: ProjectNamePromptOptions): AttributesQuestion {
     return {
         type: 'input',
-        name: basicPromptNames.projectName,
+        name: attributePromptNames.projectName,
         message: t('prompts.projectNameLabel'),
         default: (answers: AttributesAnswers) => getDefaultProjectName(answers.targetFolder || path),
         guiOptions: {
@@ -100,7 +104,7 @@ function getProjectNamePrompt(path: string, isCustomerBase: boolean, _?: Project
 function getApplicationTitlePrompt(options?: ApplicationTitlePromptOptions): AttributesQuestion {
     return {
         type: 'input',
-        name: basicPromptNames.title,
+        name: attributePromptNames.title,
         message: t('prompts.appTitleLabel'),
         default: options?.default ?? t('prompts.appTitleDefault'),
         guiOptions: {
@@ -123,7 +127,7 @@ function getApplicationTitlePrompt(options?: ApplicationTitlePromptOptions): Att
 function getNamespacePrompt(isCustomerBase: boolean, options?: NamespacePromptOptions): AttributesQuestion {
     const prompt: InputQuestion<AttributesAnswers> = {
         type: 'input',
-        name: basicPromptNames.namespace,
+        name: attributePromptNames.namespace,
         message: t('prompts.namespaceLabel'),
         default: (answers: AttributesAnswers) =>
             options?.default ?? getDefaultNamespace(answers.projectName, isCustomerBase),
@@ -184,7 +188,7 @@ function getUi5VersionPrompt(
 ): AttributesQuestion {
     return {
         type: 'list',
-        name: basicPromptNames.ui5Version,
+        name: attributePromptNames.ui5Version,
         message: t('prompts.ui5VersionLabel'),
         when: () => !isCloudProject,
         choices: () => ui5Versions,
@@ -201,6 +205,29 @@ function getUi5VersionPrompt(
 }
 
 /**
+ * Only used in the CLI context when prompt is of type `list` because the validation does not run on CLI for the UI5 Version list prompt.
+ *
+ * @returns {YUIQuestion<AttributesAnswers>} Dummy prompt that runs in the CLI only.
+ */
+function getUi5VersionValidationPromptForCli(): YUIQuestion<AttributesAnswers> {
+    return {
+        name: attributePromptNames.ui5ValidationCli,
+        when: async (answers: AttributesAnswers): Promise<boolean> => {
+            if (!answers.ui5Version) {
+                return false;
+            }
+
+            const result = await validateUI5VersionExists(answers.ui5Version);
+            if (typeof result === 'string') {
+                throw new Error(result);
+            }
+
+            return false;
+        }
+    } as YUIQuestion;
+}
+
+/**
  * Creates the TypeScript enablement confirm prompt.
  *
  * @param {EnableTypeScriptPromptOptions} [options] - Optional prompt options to control visibility.
@@ -209,7 +236,7 @@ function getUi5VersionPrompt(
 function getEnableTypeScriptPrompt(options?: EnableTypeScriptPromptOptions): AttributesQuestion {
     return {
         type: 'confirm',
-        name: basicPromptNames.enableTypeScript,
+        name: attributePromptNames.enableTypeScript,
         message: 'Enable TypeScript',
         default: false,
         when: () => options?.hide ?? true,
