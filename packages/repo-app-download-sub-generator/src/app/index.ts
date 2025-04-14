@@ -3,12 +3,18 @@ import RepoAppDownloadLogger from '../utils/logger';
 import { AppWizard, Prompts, MessageType } from '@sap-devx/yeoman-ui-types';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
-import { sendTelemetry, TelemetryHelper } from '@sap-ux/fiori-generator-shared';
 import { generatorTitle, extractedFilePath, generatorName, defaultAnswers, qfaJsonFileName } from '../utils/constants';
 import { t } from '../utils/i18n';
 import { downloadApp } from '../utils/download-utils';
 import { EventName } from '../telemetryEvents';
-import { getDefaultTargetFolder, generateReadMe, type ReadMe } from '@sap-ux/fiori-generator-shared';
+import {
+    getDefaultTargetFolder,
+    generateReadMe,
+    type ReadMe,
+    type YeomanEnvironment,
+    sendTelemetry,
+    TelemetryHelper
+} from '@sap-ux/fiori-generator-shared';
 import type {
     RepoAppDownloadOptions,
     RepoAppDownloadAnswers,
@@ -37,7 +43,6 @@ import { replaceWebappFiles, validateAndUpdateManifestUI5Version } from '../util
 import { fetchAppListForSelectedSystem, extractAppData, getYUIDetails } from '../prompts/prompt-helpers';
 import { isValidPromptState, validateQfaJsonFile } from '../utils/validators';
 import { FileName, DirName } from '@sap-ux/project-access';
-import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 
 /**
  * Generator class for downloading a basic app from a repository.
