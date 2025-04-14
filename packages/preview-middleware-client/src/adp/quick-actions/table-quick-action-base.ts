@@ -29,6 +29,7 @@ import {
 const SMART_TABLE_ACTION_ID = 'CTX_COMP_VARIANT_CONTENT';
 const M_TABLE_ACTION_ID = 'CTX_ADD_ELEMENTS_AS_CHILD';
 const SETTINGS_ID = 'CTX_SETTINGS';
+const REARRANGE_TOOLBAR_SETTINGS_ID = 'CTX_SETTINGS0';
 const ICON_TAB_BAR_TYPE = 'sap.m.IconTabBar';
 
 async function getActionId(table: UI5Element): Promise<string[]> {
@@ -44,6 +45,15 @@ async function getActionId(table: UI5Element): Promise<string[]> {
 
     return [M_TABLE_ACTION_ID, SETTINGS_ID];
 }
+
+async function getRearrangeToolbarContentActionId(): Promise<string> {
+    const { major, minor } = await getUi5Version();
+    if (major === 1 && minor <= 127) {
+        return SETTINGS_ID;
+    }
+    return REARRANGE_TOOLBAR_SETTINGS_ID;
+}
+
 export type TableQuickActionsOptions = {
     includeServiceAction?: boolean;
     areTableRowsRequired?: boolean;
@@ -65,6 +75,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             tableUpdateEventAttachedOnce: boolean;
             iconTabBarFilterKey?: string;
             changeColumnActionId?: string;
+            changeToolbarContentAction?: { id: string; enabled: boolean };
             sectionInfo?: {
                 section: ObjectPageSection;
                 subSection: ObjectPageSubSection;
@@ -100,11 +111,18 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
         if (this.options.includeServiceAction) {
             const actions = await this.context.actionService.get(table.getId());
             const actionsIds = await getActionId(table);
-
-            const changeColumnAction = actionsIds.find(
+            const changeColumnActionId = actionsIds.find(
                 (actionId) => actions.findIndex((action) => action.id === actionId) > -1
             );
-            this.tableMap[tableMapKey].changeColumnActionId = changeColumnAction;
+            this.tableMap[tableMapKey].changeColumnActionId = changeColumnActionId;
+            const changeToolbarContentActionId = await getRearrangeToolbarContentActionId();
+            const changeToolbarContentAction = actions.find((action) => action.id === changeToolbarContentActionId);
+            this.tableMap[tableMapKey].changeToolbarContentAction = changeToolbarContentAction
+                ? {
+                      id: changeToolbarContentAction.id,
+                      enabled: changeToolbarContentAction.enabled
+                  }
+                : undefined;
         }
     }
 
