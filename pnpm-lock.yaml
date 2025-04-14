@@ -907,8 +907,8 @@ importers:
   packages/btp-utils:
     dependencies:
       '@sap/bas-sdk':
-        specifier: 3.11.2
-        version: 3.11.2
+        specifier: 3.11.6
+        version: 3.11.6
       '@sap/cf-tools':
         specifier: 3.2.2
         version: 3.2.2
@@ -1736,8 +1736,8 @@ importers:
         specifier: workspace:*
         version: link:../ui5-config
       '@sap/bas-sdk':
-        specifier: 3.8.9
-        version: 3.8.9
+        specifier: 3.11.6
+        version: 3.11.6
       archiver:
         specifier: 7.0.1
         version: 7.0.1
@@ -8922,12 +8922,12 @@ packages:
     resolution: {integrity: sha512-srR9ffXpgvVxsrD/3ZvX6PnxXyY6yeth6LuKfCDgcyDoPeRj1jQknpgVF+k9hHDv7LkGkDiHYvjWY+JP8OlDLw==}
     engines: {node: '>=18.x'}
 
-  /@sap/bas-sdk@3.11.2:
-    resolution: {integrity: sha512-UU7tZNiWg2yvSdS2lqYq8o22GyzFKkqpJnWv1ihGMrfgp7riaZVfSKpO1+VZvmyJl7qbTRP0oyg5DKAoWVyAEw==}
+  /@sap/bas-sdk@3.11.6:
+    resolution: {integrity: sha512-2IMsL0/cXxN2GFTkmq2m9TbY3lKtnKGjOONalw3WTJRH+yWCog2q5f5V2Xf+P+oem67UQcubkMPlbdqmvVIYDA==}
     dependencies:
       axios: 1.8.2
       cross-spawn: 7.0.5
-      fs-extra: 11.1.1
+      fs-extra: 11.2.0
       jwt-decode: 4.0.0
       lodash: 4.17.21
       url-join: 4.0.1
@@ -8942,7 +8942,7 @@ packages:
     resolution: {integrity: sha512-ycYttnSTlEPjDrb0svSv0jBgqEvoekD4bNB4IxuKCu5OKk5FycwsOTgufU8CXYf1ag23wTlurN+N7c4Po6PcJQ==}
     dependencies:
       axios: 1.7.4
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       fs-extra: 11.1.1
       lodash: 4.17.21
       url-join: 4.0.1
@@ -8951,6 +8951,7 @@ packages:
       - bufferutil
       - debug
       - utf-8-validate
+    dev: true
 
   /@sap/cds-compiler@4.8.0:
     resolution: {integrity: sha512-C8IkzNfdMIzG136K/VvOmG65d8UnR9lcZF5q/c//Jp2/RZIZvwFvO5HHPre19+YWhuwJXbIMb3kc5x9CW9ZLNw==}
@@ -14999,7 +15000,7 @@ packages:
     resolution: {integrity: sha512-8uSpZZocAZRBAPIEINJj3Lo9HyGitllczc27Eh5YYojjMFMn8yHMDMaUHE2Jqfq05D/wucwI4JGURyXt1vchyg==}
     engines: {node: '>=10'}
     dependencies:
-      cross-spawn: 7.0.5
+      cross-spawn: 7.0.6
       get-stream: 6.0.1
       human-signals: 2.1.0
       is-stream: 2.0.1
