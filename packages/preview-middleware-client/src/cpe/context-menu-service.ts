@@ -41,7 +41,7 @@ export class ContextMenuService {
                     const { actionName, controlId } = action.payload;
                     await this.actionService.execute(controlId, actionName);
                     const controlName = getControlById(controlId)?.getMetadata().getName();
-                    const versionInfo = await getUi5Version()
+                    const versionInfo = await getUi5Version();
                     await reportTelemetry({
                         category: 'OutlineContextMenu',
                         actionName,
