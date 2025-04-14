@@ -123,34 +123,13 @@ export default class extends Generator {
         if (quickDeployedAppConfig?.appId) {
             // Handle quick deployed app download where prompts for system selection and app selection are not displayed
             // Only target folder prompt is shown
-            await this._handleQuickDeployedAppDownload(quickDeployedAppConfig, targetFolder);
+            this.answers.targetFolder = targetFolder;
+            this.answers.systemSelection = PromptState.systemSelection;
+            this.answers.selectedApp = answers.selectedApp;
         } else {
             // Handle app download where prompts for system selection and app selection are shown
             Object.assign(this.answers, answers);
         }
-    }
-
-    /**
-     *
-     * @param quickDeployedAppConfig - The configuration for the quick deployed app.
-     * @param targetFolder - The target folder where the app will be downloaded.
-     */
-    private async _handleQuickDeployedAppDownload(
-        quickDeployedAppConfig: QuickDeployedAppConfig,
-        targetFolder: string
-    ): Promise<void> {
-        const appList = await fetchAppListForSelectedSystem(
-            quickDeployedAppConfig.serviceProvider,
-            quickDeployedAppConfig.appId
-        );
-        if (!appList.length) {
-            throw new Error(
-                t('error.quickDeployedAppDownloadErrors.noAppsFound', { appId: quickDeployedAppConfig.appId })
-            );
-        }
-        this.answers.selectedApp = extractAppData(appList[0]).value;
-        this.answers.targetFolder = targetFolder;
-        this.answers.systemSelection = PromptState.systemSelection;
     }
 
     /**

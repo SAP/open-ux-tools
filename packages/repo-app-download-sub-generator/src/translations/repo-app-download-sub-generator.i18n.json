@@ -39,7 +39,7 @@
             "invalidManifestStructureError": "Invalid manifest structure: 'sap.ui5' or 'sap.app' are missing."
         },
         "quickDeployedAppDownloadErrors": {
-            "noAppsFound": "No application with id {{ appId }} found in the system. Please check if the application is deployed correctly"
+            "noAppsFound": "No application with id {{ appId }} found in the system. Please check if the application is deployed correctly or select another app"
         }
     },
     "warn": {
