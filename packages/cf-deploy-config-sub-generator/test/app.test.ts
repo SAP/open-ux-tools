@@ -501,7 +501,7 @@ describe('Cloud foundry generator tests', () => {
                     destinationAuthType: 'NoAuthentication' // Validating SH4
                 })
                 .withPrompts({
-                    addManagedAppRouter: true,
+                    routerType: cfConfigWriter.RouterModuleType.Managed,
                     destinationName: 'testDestination'
                 })
                 .run()
