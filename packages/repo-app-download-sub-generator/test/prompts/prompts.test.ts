@@ -19,6 +19,7 @@ jest.mock('@sap-ux/odata-service-inquirer', () => ({
         }
     })
 }));
+
 jest.mock('../../src/prompts/prompt-helpers', () => ({
     fetchAppListForSelectedSystem: jest.fn().mockResolvedValue([
         { appId: 'app1', repoName: 'repo1' },
@@ -104,7 +105,7 @@ describe('getPrompts', () => {
         const systemPrompt = prompts.find(p => p.name === PromptNames.systemSelection) as any;
         expect(systemPrompt.default).toBe('DefaultSystem');
     });
-
+    
     it('should use validateFioriAppTargetFolder in folder prompt', async () => {
         mockGetSystemSelectionQuestions.mockResolvedValue({
             prompts: [],

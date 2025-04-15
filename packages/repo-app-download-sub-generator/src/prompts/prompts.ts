@@ -88,7 +88,7 @@ export async function getPrompts(
                 },
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
-                validate: async (answers: AppInfo): Promise<string | boolean | undefined> => {
+                validate: async (answers: AppInfo): Promise<string | boolean> => {
                     // Quick deploy config exists but no apps found
                     if (quickDeployedAppConfig?.appId && appList.length === 0) {
                         return t('error.quickDeployedAppDownloadErrors.noAppsFound', {
@@ -110,6 +110,7 @@ export async function getPrompts(
                             return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
                         }
                     }
+                    return false;
                 }
             }
         ];
