@@ -433,10 +433,10 @@
         {
             "type": "node",
             "request": "launch",
-            "name": "repo-app-download-sub-generator: Launch Yeoman generators/app",
-            "program": "${workspaceFolder}/packages/repo-app-download-sub-generator/node_modules/yo/lib/cli.js",
+            "name": "repo-app-import-sub-generator: Launch Yeoman generators/app",
+            "program": "${workspaceFolder}/packages/repo-app-import-sub-generator/node_modules/yo/lib/cli.js",
             "args": [
-              "${workspaceFolder}/packages/repo-app-download-sub-generator/generators/app/index.js"
+              "${workspaceFolder}/packages/repo-app-import-sub-generator/generators/app/index.js"
             ],
             "env": {
             },

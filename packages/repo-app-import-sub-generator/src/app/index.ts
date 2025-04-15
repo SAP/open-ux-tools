@@ -318,7 +318,7 @@ export default class extends Generator {
             await sendTelemetry(
                 EventName.GENERATION_SUCCESS,
                 TelemetryHelper.createTelemetryData({
-                    appType: 'ui5-abap-app-fetch-sub-generator',
+                    appType: 'repo-app-import-sub-generator',
                     ...this.options.telemetryData
                 }) ?? {}
             ).catch((error) => {

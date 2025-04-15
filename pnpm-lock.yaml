@@ -3284,7 +3284,7 @@ importers:
         specifier: 6.3.3
         version: 6.3.3
 
-  packages/repo-app-download-sub-generator:
+  packages/repo-app-import-sub-generator:
     dependencies:
       '@sap-devx/yeoman-ui-types':
         specifier: 1.14.4
