@@ -54,7 +54,7 @@ describe('validateUI5VersionExists', () => {
         const version = '1.120.0-snapshot';
         const result = await validateUI5VersionExists(version);
         expect(result).toBe(
-            'The url of the SAPUI5 version you have selected is not reachable. https://sapcdn.com/ui5/1.120.0-snapshot should be made accessible through cloud connector and destination configuration in order to be consumed within SAPUI5 Adaptation project and its SAPUI5 Visual Editor.'
+            'The URL of the SAPUI5 version you have selected is not reachable. The URL https://sapcdn.com/ui5/1.120.0-snapshot should be made accessible through cloud connector and the destination configuration so it can be consumed within the SAPUI5 adaptation project and its SAPUI5 Adaptation Editor.'
         );
     });
 

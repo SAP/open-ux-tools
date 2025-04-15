@@ -195,7 +195,7 @@ function getUi5VersionPrompt(
         guiOptions: {
             applyDefaultWhenDirty: true,
             hint: t('prompts.ui5VersionTooltip'),
-            breadcrumb: t('prompts.ui5VersionBreadcrumb'),
+            breadcrumb: true,
             mandatory: true
         },
         validate: async (version: string) => await validateUI5VersionExists(version),

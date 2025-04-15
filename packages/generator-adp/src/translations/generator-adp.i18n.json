@@ -24,16 +24,15 @@
         "projectFolderLabel": "Project folder path",
         "projectFolderPath": "Project path",
         "ui5VersionLabel": "SAPUI5 version",
-        "ui5VersionBreadcrumb": "UI5 Version",
-        "ui5VersionTooltip": "Select the SAPUI5 version you want to use for preview of your app variant",
+        "ui5VersionTooltip": "Select the SAPUI5 version you want to use to preview your app variant.",
         "appInfoLabel": "Synchronous views are detected for this application. Therefore, the controller extensions are not supported. Controller extension functionality on these views will be disabled.",
         "notSupportedAdpOverAdpLabel": "You have selected 'Adaptation Project' as the base. The selected system has a SAPUI5 version lower than 1.90. Therefore, it does not support 'Adaptation Project' as а base for a new adaptation project. You will be able to create such а project, but after deployment it will not work until the SAPUI5 version of the system is updated.",
         "isPartiallySupportedAdpOverAdpLabel": "You have selected 'Adaptation Project' as the base. The selected system has a SAPUI5 version lower than 1.96 and in order for your adaptation project based on adaptation project to work after deployment, you will need to apply SAP Note 756 SP0 on your system.",
         "v4AppNotOfficialLabel": "You have selected an app based on SAP Fiori elements for OData V4. Note the following important information when you create adaptation changes: https://wiki.wdf.sap.corp/wiki/display/fioritech/Adaptation+Project+Support",
-        "projectNameLengthErrorExt": "The name cannot contain more than 61 characters or end with 'component'.",
-        "projectNameValidationErrorExt": "The name must contain only Latin alphanumeric characters. Different parts can be separated by period and every part must start with a letter.",
-        "projectNameLengthErrorInt": "The name cannot start with 'customer' or contain more than 61 characters or end with 'component'.",
-        "projectNameValidationErrorInt": "The name must contain only Latin alphanumeric characters and it must have at least two parts. The different parts must be separated by period and every part must start with a letter."
+        "projectNameLengthErrorExt": "The name cannot contain more than 61 characters or end with the word 'component'.",
+        "projectNameValidationErrorExt": "The name must contain only latin alphanumeric characters. Different parts can be separated by a period and every part must start with a letter.",
+        "projectNameLengthErrorInt": "The name cannot start with the word 'customer', or contain more than 61 characters, or end with the word 'component'.",
+        "projectNameValidationErrorInt": "The name must contain only latin alphanumeric characters and it must have at least two parts. The different parts must be separated by a period and every part must start with a letter."
     },
     "error": {
         "selectCannotBeEmptyError": "{{value}} has to be selected.",
