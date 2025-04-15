@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.21
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
 ## 0.19.20
 
 ### Patch Changes
