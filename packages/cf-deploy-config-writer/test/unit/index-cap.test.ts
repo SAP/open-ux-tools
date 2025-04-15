@@ -3,21 +3,18 @@ import fsExtra from 'fs-extra';
 import hasbin from 'hasbin';
 import { NullTransport, ToolsLogger } from '@sap-ux/logger';
 import { generateCAPConfig, RouterModuleType } from '../../src';
-import * as childProcess from 'child_process';
 import * as projectAccess from '@sap-ux/project-access';
 import fs from 'fs';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
-jest.mock('child_process');
+let hasSyncMock: jest.SpyInstance;
+let commandRunnerMock: jest.SpyInstance;
+const originalPlatform = process.platform;
+
 jest.mock('hasbin', () => ({
     ...(jest.requireActual('hasbin') as {}),
     sync: jest.fn()
 }));
-
-let hasSyncMock: jest.SpyInstance;
-let spawnMock: jest.SpyInstance;
-const originalPlatform = process.platform;
-
-jest.mock('child_process');
 
 jest.mock('@sap/mta-lib', () => {
     return {
@@ -67,9 +64,9 @@ describe('CF Writer CAP', () => {
             fsExtra.mkdirSync(mtaPath, { recursive: true });
             fsExtra.copySync(join(__dirname, `../sample/capcds`), mtaPath);
             const getCapProjectTypeMock = jest.spyOn(projectAccess, 'getCapProjectType').mockResolvedValue('CAPNodejs');
-            // For testing purposes, an existing mta.yaml is copied to reflect the spawn command;
+            // For testing purposes, an existing mta.yaml is copied to reflect the command;
             // `cds add mta xsuaa connectivity destination html5-repo`
-            spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => {
+            commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => {
                 fsExtra.copySync(join(__dirname, `fixtures/mta-types/cdsmta`), mtaPath);
                 return { status: 0 } as any;
             });
@@ -82,18 +79,15 @@ describe('CF Writer CAP', () => {
                 undefined,
                 logger
             );
-            expect(fs.readFileSync(join(mtaPath, 'mta.yaml'), { encoding: 'utf8' })).toMatchSnapshot();
-            expect(fs.readFileSync(join(mtaPath, 'package.json'), { encoding: 'utf8' })).toMatchSnapshot(); // Ensure it hasn't changed!
+            expect(localFs.read(join(mtaPath, 'mta.yaml'))).toMatchSnapshot();
+            expect(localFs.read(join(mtaPath, 'package.json'))).toMatchSnapshot(); // Ensure it hasn't changed! // Ensure it hasn't changed!
             expect(getCapProjectTypeMock).toHaveBeenCalled();
-            expect(spawnMock.mock.calls).toHaveLength(2);
-            expect(spawnMock).toHaveBeenCalledWith(
+            expect(commandRunnerMock.mock.calls).toHaveLength(1);
+            expect(commandRunnerMock).toHaveBeenCalledWith(
                 'cds',
                 ['add', 'mta', 'xsuaa', 'destination', 'html5-repo'],
                 expect.objectContaining({ cwd: expect.stringContaining(mtaId) })
             );
-            expect(spawnMock.mock.calls[0][2]).toHaveProperty('shell');
-            expect(spawnMock.mock.calls[1][0]).toStrictEqual('npm.cmd');
-            expect(spawnMock.mock.calls[1][1]).toStrictEqual(['install', '--ignore-engines']);
             if (RouterModuleType.Standard === routerType) {
                 expect(localFs.read(join(mtaPath, `router`, 'package.json'))).toMatchSnapshot();
                 expect(localFs.read(join(mtaPath, `router`, 'xs-app.json'))).toMatchSnapshot();

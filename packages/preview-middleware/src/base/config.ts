@@ -5,7 +5,7 @@ import type {
     DefaultIntent,
     FlpConfig,
     Intent,
-    InternalTestConfig,
+    CompleteTestConfig,
     MiddlewareConfig,
     RtaConfig,
     TestConfig
@@ -374,7 +374,7 @@ export function createFlpTemplateConfig(
  * @param theme theme to be used
  * @returns configuration object for the test template
  */
-export function createTestTemplateConfig(config: InternalTestConfig, id: string, theme: string): TestTemplateConfig {
+export function createTestTemplateConfig(config: CompleteTestConfig, id: string, theme: string): TestTemplateConfig {
     return {
         id,
         framework: config.framework,

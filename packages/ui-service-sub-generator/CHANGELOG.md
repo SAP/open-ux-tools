@@ -1,5 +1,57 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.0.17
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+    -   @sap-ux/fiori-generator-shared@0.10.2
+    -   @sap-ux/inquirer-common@0.6.35
+    -   @sap-ux/ui-service-inquirer@0.0.17
+
+## 0.0.16
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/fiori-generator-shared@0.10.1
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/system-access@0.5.35
+    -   @sap-ux/telemetry@0.5.73
+    -   @sap-ux/ui-service-inquirer@0.0.16
+
+## 0.0.15
+
+### Patch Changes
+
+-   d0b2dc2: remove draftEnabled prompt for ABAP CDS view
+-   Updated dependencies [d0b2dc2]
+    -   @sap-ux/ui-service-inquirer@0.0.15
+
+## 0.0.14
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.0.14
+
+## 0.0.13
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.0.13
+
+## 0.0.12
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/inquirer-common@0.6.33
+    -   @sap-ux/ui-service-inquirer@0.0.12
+
 ## 0.0.11
 
 ### Patch Changes

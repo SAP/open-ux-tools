@@ -1,5 +1,24 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.11.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.11.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.34
+
+## 0.11.2
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+    -   @sap-ux/inquirer-common@0.6.33
+
 ## 0.11.1
 
 ### Patch Changes

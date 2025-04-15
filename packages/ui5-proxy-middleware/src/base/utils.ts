@@ -2,7 +2,7 @@ import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { NextFunction, Request, Response } from 'express';
+import type { RequestHandler, NextFunction, Request, Response } from 'express';
 import type { ProxyConfig } from './types';
 import { existsSync, readFileSync } from 'fs';
 import {
@@ -340,4 +340,27 @@ export function proxyErrorHandler(
     } else {
         logger.debug(t('error.noCodeError', { error: JSON.stringify(err, null, 2), request: req.originalUrl }));
     }
+}
+
+/**
+ * Adjust UI5 bootstrap URLs to load directly from UI5 CDN.
+ *
+ * @param ui5Configs the UI5 configuration of the ui5-proxy-middleware
+ * @param rootProject the project root
+ * @param logger logger to be used when running the middleware
+ * @returns RequestHandler to adjust bootstraps
+ */
+export function directLoadProxy(
+    ui5Configs: ProxyConfig[],
+    rootProject: ReaderCollection,
+    logger: ToolsLogger
+): RequestHandler {
+    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            await injectScripts(req, res, next, ui5Configs, rootProject);
+        } catch (error) {
+            logger.error(error);
+            next(error);
+        }
+    };
 }

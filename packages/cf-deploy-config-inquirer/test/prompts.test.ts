@@ -1,16 +1,18 @@
-import { getQuestions } from '../src/prompts/prompts';
+import { getQuestions } from '../src/prompts';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { t } from '../src/i18n';
-import type {
-    CfDeployConfigPromptOptions,
-    CfSystemChoice,
-    CfDeployConfigQuestions,
-    DestinationNamePromptOptions
+import {
+    type CfDeployConfigPromptOptions,
+    type CfSystemChoice,
+    type CfDeployConfigQuestions,
+    type DestinationNamePromptOptions,
+    RouterModuleType
 } from '../src/types';
-import { promptNames } from '../src/types';
+import { promptNames } from '../src';
 import { fetchBTPDestinations } from '../src/prompts/prompt-helpers';
-import { type ListQuestion } from '@sap-ux/inquirer-common';
+import { type ListQuestion, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
+import { Severity } from '@sap-devx/yeoman-ui-types';
 
 jest.mock('@sap-ux/btp-utils', () => ({
     ...jest.requireActual('@sap-ux/btp-utils'),
@@ -248,6 +250,36 @@ describe('Prompt Generation Tests', () => {
             const overwritePrompt = questions.find((question) => question.name === promptNames.overwrite);
             expect(overwritePrompt?.type).toBeUndefined();
             expect(mockLog.info).not.toHaveBeenCalled();
+        });
+    });
+
+    describe('getQuestions with Router Option', () => {
+        it('Displays CF prompt with App Router selection', async () => {
+            const questions: CfDeployConfigQuestions[] = await getQuestions(
+                { ...promptOptions, routerType: true },
+                mockLog
+            );
+            const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
+            expect(routerTypePrompt?.guiOptions?.mandatory).toBe(true);
+            expect(routerTypePrompt?.guiOptions?.breadcrumb).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
+            expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.None);
+            expect((routerTypePrompt?.message as Function)()).toBe(t('prompts.generateDeploymentRouterOptionsMessage'));
+            expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
+                { name: t('prompts.routerType.none'), value: RouterModuleType.None },
+                { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
+                { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront }
+            ]);
+            expect(
+                ((routerTypePrompt as YUIQuestion)?.additionalMessages as Function)(RouterModuleType.AppFront)
+            ).toStrictEqual({
+                message: t('warnings.appFrontendServiceRouterChoice'),
+                severity: Severity.warning
+            });
+        });
+        it('Displays CF prompt with App Router selection disabled', async () => {
+            const questions: CfDeployConfigQuestions[] = await getQuestions(promptOptions, mockLog);
+            const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
+            expect(routerTypePrompt).toBeUndefined();
         });
     });
 });
