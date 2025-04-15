@@ -16,7 +16,7 @@ import { fioriAppSourcetemplateId } from './constants';
  * - If internal features are enabled, it sets the minUI5Version to '${sap.ui5.dist.version}'.
  *
  * @param {string} manifestFilePath - The manifest file path.
- * @param fs
+ * @param {Editor} fs - The file system editor instance.
  * @returns {Promise<Manifest>} - The updated manifest object.
  * @throws {Error} - Throws an error if the manifest structure is invalid or no fallback version is available.
  */

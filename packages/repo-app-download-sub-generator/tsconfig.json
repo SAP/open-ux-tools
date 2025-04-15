@@ -31,9 +31,6 @@
       "path": "../fiori-tools-settings"
     },
     {
-      "path": "../i18n"
-    },
-    {
       "path": "../inquirer-common"
     },
     {
