@@ -514,15 +514,18 @@ describe('QuickActionList', () => {
                                     enabled: true,
                                     kind: 'nested',
                                     title: 'Quick Action 1',
+                                    tooltip: 'wrong1',
                                     children: [
                                         {
                                             path: '0',
                                             label: 'submenu0',
+                                            tooltip: 'wrong2',
                                             enabled: true,
                                             children: [
                                                 {
                                                     path: '0/0',
                                                     label: 'submenu0.0',
+                                                    tooltip: 'correct',
                                                     enabled: false,
                                                     children: []
                                                 }
@@ -537,6 +540,7 @@ describe('QuickActionList', () => {
             });
 
             const quickAction = screen.getByRole('button', { name: /quick action 1/i });
+            expect(quickAction.getAttribute('title')).toStrictEqual('correct');
             expect(quickAction).toBeDisabled();
         });
         test('one leaf nodes without siblings', () => {
