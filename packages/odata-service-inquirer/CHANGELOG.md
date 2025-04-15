@@ -1,5 +1,17 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.30
+
+### Patch Changes
+
+-   751cad8: update for handling catalog request errors
+
+## 2.2.29
+
+### Patch Changes
+
+-   3fc72be: Fix for undefined ref exception
+
 ## 2.2.28
 
 ### Patch Changes
