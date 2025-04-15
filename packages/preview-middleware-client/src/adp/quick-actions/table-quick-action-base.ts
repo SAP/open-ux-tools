@@ -148,9 +148,9 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
                 await this.collectChildrenInSection(section, table);
             } else if (this.iconTabBar && tabKey) {
                 const label = `'${iconTabBarfilterMap[tabKey]}' table`;
-                const child = this.createChild(label, table);
+                const tableMapKey = this.children.length.toString();
+                const child = this.createChild(label, table, tableMapKey);
                 this.children.push(child);
-                const tableMapKey = `${this.children.length - 1}`;
                 this.tableMap[tableMapKey] = {
                     table,
                     iconTabBarFilterKey: tabKey,
@@ -202,9 +202,9 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
                 return `'${header}' table`;
             }
         } else if (isA<Table>(M_TABLE_TYPE, table)) {
-            const tilte = table?.getHeaderToolbar()?.getTitleControl()?.getText();
-            if (tilte) {
-                return `'${tilte}' table`;
+            const title = table?.getHeaderToolbar()?.getTitleControl()?.getText();
+            if (title) {
+                return `'${title}' table`;
             }
         }
 
@@ -255,20 +255,19 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
                 );
                 let tableMapIndex;
                 const label = this.getTableLabel(table);
-                const child = this.createChild(label, table);
                 if (existingChildIdx < 0) {
+                    tableMapIndex = `${this.children.length}/0`;
+                    const child = this.createChild(label, table, tableMapIndex);
                     this.children.push({
+                        path: this.children.length.toString(),
                         label: `'${section?.getTitle()}' section`,
                         enabled: true,
                         children: [child]
                     });
-
-                    tableMapIndex = `${this.children.length - 1}/0`;
                 } else {
+                    tableMapIndex = `${existingChildIdx}/${this.children[existingChildIdx].children.length}`;
+                    const child = this.createChild(label, table, tableMapIndex);
                     this.children[existingChildIdx].children.push(child);
-                    tableMapIndex = `${existingChildIdx.toFixed(0)}/${
-                        this.children[existingChildIdx].children.length - 1
-                    }`;
                 }
 
                 this.tableMap[tableMapIndex] = {
@@ -290,6 +289,7 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
         table: UI5Element,
         sectionInfo?: { section: ObjectPageSection; subSection: ObjectPageSubSection; layout?: ObjectPageLayout }
     ): Promise<void> {
+        const tableMapKey = this.children.length.toString();
         if (
             [
                 SMART_TABLE_TYPE,
@@ -301,11 +301,10 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
             ].some((type) => isA(type, table))
         ) {
             const label = this.getTableLabel(table);
-            const child = this.createChild(label, table);
+            const child = this.createChild(label, table, tableMapKey);
             this.children.push(child);
         }
 
-        const tableMapKey = `${this.children.length - 1}`;
         this.tableMap[tableMapKey] = {
             table,
             sectionInfo: sectionInfo,
@@ -340,8 +339,9 @@ export abstract class TableQuickActionDefinitionBase extends QuickActionDefiniti
         };
     }
 
-    createChild(label: string, table: UI5Element): NestedQuickActionChild {
+    createChild(label: string, table: UI5Element, path: string): NestedQuickActionChild {
         const child: NestedQuickActionChild = {
+            path,
             label,
             enabled: true,
             children: []
