@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.1.1
+
+### Patch Changes
+
+-   24c8498: Fix unit tests for download utils
+
 ## 0.1.0
 
 ### Minor Changes
