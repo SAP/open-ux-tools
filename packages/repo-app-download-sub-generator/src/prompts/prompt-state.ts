@@ -8,6 +8,7 @@ import type { SystemSelectionAnswers } from '../app/types';
  */
 export class PromptState {
     private static _systemSelection: SystemSelectionAnswers = {};
+    private static _downloadedAppPackage?: Buffer;
 
     /**
      * Returns the current state of the service config.
@@ -25,6 +26,22 @@ export class PromptState {
      */
     public static set systemSelection(value: Partial<SystemSelectionAnswers>) {
         this._systemSelection = value;
+    }
+
+    /**
+     * Set the downloaded app package.
+     */
+    public static set downloadedAppPackage(archive: Buffer) {
+        this._downloadedAppPackage = archive;
+    }
+
+    /**
+     * Returns the downloaded app package.
+     *
+     * @returns {Buffer} downloaded app package
+     */
+    public static get downloadedAppPackage(): Buffer {
+        return this._downloadedAppPackage ?? Buffer.alloc(0);
     }
 
     /**
@@ -47,5 +64,6 @@ export class PromptState {
 
     static reset(): void {
         PromptState.systemSelection = {};
+        PromptState._downloadedAppPackage = undefined;
     }
 }

@@ -5,7 +5,7 @@ import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import type { Logger } from '@sap-ux/logger';
 import { generatorTitle, extractedFilePath, generatorName, defaultAnswers, qfaJsonFileName } from '../utils/constants';
 import { t } from '../utils/i18n';
-import { downloadApp } from '../utils/download-utils';
+import { extractZip } from '../utils/download-utils';
 import { EventName } from '../telemetryEvents';
 import {
     getDefaultTargetFolder,
@@ -124,18 +124,21 @@ export default class extends Generator {
             // Handle app download where prompts for system selection and app selection are shown
             Object.assign(this.answers, answers);
         }
+        if (isValidPromptState(this.answers.targetFolder, this.answers.selectedApp.appId)) {
+            this.projectPath = join(this.answers.targetFolder, this.answers.selectedApp.appId);
+            this.extractedProjectPath = join(this.projectPath, extractedFilePath);
+        }
     }
 
     /**
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
-        if (isValidPromptState(this.answers.targetFolder, this.answers.selectedApp.appId)) {
-            this.projectPath = join(this.answers.targetFolder, this.answers.selectedApp.appId);
-            this.extractedProjectPath = join(this.projectPath, extractedFilePath);
-            // Trigger app download
-            await downloadApp(this.answers.selectedApp.repoName, this.extractedProjectPath, this.fs);
-        }
+        // Extract downloaded app
+        const archive = PromptState.downloadedAppPackage;
+        await extractZip(this.extractedProjectPath, archive, this.fs);
+
+        // Check if the qfa.json file
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
         if (this.fs.exists(qfaJsonFilePath)) {
             const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);

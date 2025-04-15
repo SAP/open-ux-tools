@@ -1,5 +1,5 @@
 import type { AppIndex, AbapServiceProvider } from '@sap-ux/axios-extension';
-import { getSystemSelectionQuestions, promptNames } from '@sap-ux/odata-service-inquirer';
+import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
 import { t } from '../utils/i18n';
@@ -7,7 +7,8 @@ import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import { PromptState } from './prompt-state';
 import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
-import { ListQuestion } from 'inquirer';
+import type { ListQuestion } from 'inquirer';
+import { downloadApp } from '../utils/download-utils';
 
 /**
  * Gets the target folder selection prompt.
@@ -74,12 +75,12 @@ export async function getPrompts(
 ): Promise<RepoAppDownloadQuestions[]> {
     try {
         PromptState.reset();
-        debugger;
+
         const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, false);
         // Filter system questions and set default system if applicable
         if (quickDeployedAppConfig?.appId) {
             const defaultSystem = extractDefaultSystem(quickDeployedAppConfig);
-            const filteredSystemQuestion = systemQuestions.prompts.find(p => p.name === PromptNames.systemSelection);
+            const filteredSystemQuestion = systemQuestions.prompts.find((p) => p.name === PromptNames.systemSelection);
 
             if (filteredSystemQuestion) {
                 const choices = (filteredSystemQuestion as ListQuestion<RepoAppDownloadAnswers>).choices;
@@ -115,17 +116,34 @@ export async function getPrompts(
                 default: () => (quickDeployedAppConfig?.appId ? 0 : undefined),
                 guiOptions: {
                     mandatory: !!appList.length,
-                    breadcrumb: t('prompts.appSelection.breadcrumb'),
+                    breadcrumb: t('prompts.appSelection.breadcrumb')
                 },
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
-                validate: (): string | boolean => {
-                    if (quickDeployedAppConfig?.appId && !appList.length) {
-                        return t('error.quickDeployedAppDownloadErrors.noAppsFound');
+                validate: async (answers: AppInfo): Promise<string | boolean | undefined> => {
+                    // Quick deploy config exists but no apps found
+                    if (quickDeployedAppConfig?.appId && appList.length === 0) {
+                        return t('error.quickDeployedAppDownloadErrors.noAppsFound', {
+                            appId: quickDeployedAppConfig.appId
+                        });
                     }
-                    else return (appList.length ? true : t('prompts.appSelection.noAppsDeployed'))
-                },
-            },
+
+                    // No apps available at all
+                    if (appList.length === 0) {
+                        return t('prompts.appSelection.noAppsDeployed');
+                    }
+
+                    // Valid app selected, try to download
+                    if (answers?.appId) {
+                        try {
+                            await downloadApp(answers.repoName);
+                            return true;
+                        } catch (error) {
+                            throw new Error(t('error.appDownloadErrors.appDownloadFailure', { error: error.message }));
+                        }
+                    }
+                }
+            }
         ];
 
         const targetFolderPrompts = getTargetFolderPrompt(appRootPath, quickDeployedAppConfig?.appId);

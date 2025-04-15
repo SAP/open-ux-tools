@@ -50,7 +50,7 @@
             "message": "App",
             "hint": "Select the app to download",
             "breadcrumb": "App",
-            "noAppsDeployed": "No applications deployed to this system can be downloaded.  Please see <GA link> for more details"
+            "noAppsDeployed": "No applications deployed to this system can be downloaded. {{- help}}"
         },
         "targetPath": {
             "message": "Project folder path",

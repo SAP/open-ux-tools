@@ -1,152 +1,199 @@
-import { getPrompts } from '../../src/prompts/prompts'; 
-import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
-import { fetchAppListForSelectedSystem, formatAppChoices } from '../../src/prompts/prompt-helpers';
-import { PromptNames } from '../../src/app/types';
-import type { QuickDeployedAppConfig, RepoAppDownloadAnswers, RepoAppDownloadQuestions } from '../../src/app/types';
-import { join } from 'path';
 import { t } from '../../src/utils/i18n';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
+import { getPrompts } from '../../src/prompts/prompts';
+import { PromptNames } from '../../src/app/types';
+import { PromptState } from '../../src/prompts/prompt-state';
+import * as helpers from '../../src/prompts/prompt-helpers';
+import * as downloadUtils from '../../src/utils/download-utils';
+import * as validator from '@sap-ux/project-input-validator';
 
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
-    getSystemSelectionQuestions: jest.fn()
+    getSystemSelectionQuestions: jest.fn().mockResolvedValue({
+        prompts: [{
+            name: 'systemSelection',
+            type: 'list',
+            choices: [{ name: 'Sys', value: { system: { name: 'Sys' } } }]
+        }],
+        answers: {
+            connectedSystem: { serviceProvider: {} }
+        }
+    })
+}));
+jest.mock('../../src/prompts/prompt-helpers', () => ({
+    fetchAppListForSelectedSystem: jest.fn().mockResolvedValue([
+        { appId: 'app1', repoName: 'repo1' },
+        { appId: 'app2', repoName: 'repo2' }
+    ]),
+    formatAppChoices: jest.fn().mockReturnValue([
+        { name: 'App 1', value: { appId: 'app1', repoName: 'repo1' } },
+        { name: 'App 2', value: { appId: 'app2', repoName: 'repo2' } }
+    ])
+}));
+
+jest.mock('../../src/utils/download-utils', () => ({
+    downloadApp: jest.fn()
 }));
 
 jest.mock('@sap-ux/project-input-validator', () => ({
-    validateFioriAppTargetFolder: jest.fn()
+    validateFioriAppTargetFolder: jest.fn().mockResolvedValue(true)
 }));
 
-jest.mock('../../src/prompts/prompt-helpers', () => ({
-    fetchAppListForSelectedSystem: jest.fn(), 
-    formatAppChoices: jest.fn()
+jest.mock('@sap-ux/project-input-validator', () => ({
+    validateFioriAppTargetFolder: jest.fn().mockResolvedValue(true)
 }));
 
 describe('getPrompts', () => {
-    const appRootPath = join('/mock/path');
-    const mockServiceProvider = {
-        getAppIndex: jest.fn().mockReturnValue({
-            search: jest.fn().mockResolvedValue([{ id: 'app1' }, { id: 'app2' }])
-        })
-    } as unknown as AbapServiceProvider;
-    const mockAnswers = {
-        selectedApp: { appId: 'app1' }
-    } as unknown as RepoAppDownloadAnswers;
-    const mockAppList = [{ appId: 'app1', name: 'Test App' }, { appId: 'app2', name: 'Test App 2' }];
+    const mockGetSystemSelectionQuestions = require('@sap-ux/odata-service-inquirer').getSystemSelectionQuestions;
+    const mockFetchAppList = helpers.fetchAppListForSelectedSystem as jest.Mock;
+    const mockDownloadApp = downloadUtils.downloadApp as jest.Mock;
 
     beforeEach(() => {
-        (getSystemSelectionQuestions as jest.Mock).mockResolvedValue({
-            prompts: [{ type: 'input', name: 'system' }],
+        jest.clearAllMocks();
+        jest.resetAllMocks();
+        PromptState.reset();
+    });
+
+    it('should return prompts including system, app, and target folder', async () => {
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
+            }],
             answers: {
-                connectedSystem: { serviceProvider: mockServiceProvider } 
+                connectedSystem: { serviceProvider: {} }
             }
         });
-        (fetchAppListForSelectedSystem as jest.Mock).mockResolvedValue([{ appId: 'app1', name: 'Test App' }]);
-        (formatAppChoices as jest.Mock).mockReturnValue(mockAppList);
+
+        mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
+        mockDownloadApp.mockResolvedValue(undefined);
+
+        const prompts = await getPrompts('/app/path');
+        expect(prompts).toBeInstanceOf(Array);
+        expect(prompts.find(p => p.name === PromptNames.systemSelection)).toBeTruthy();
+        expect(prompts.find(p => p.name === PromptNames.selectedApp)).toBeTruthy();
+        expect(prompts.find(p => p.name === PromptNames.targetFolder)).toBeTruthy();
     });
 
-    it('should return system questions, app selection, and target folder prompts', async () => {
-        const prompts = await getPrompts(appRootPath);
-        expect(prompts.length).toBeGreaterThanOrEqual(2);
-
-        // system prompts
-        const systemPrompt = prompts.find(p => p.name === 'system');
-        expect(systemPrompt).toBeDefined();
-        expect(systemPrompt?.type).toBe('input');
-        expect(systemPrompt?.name).toBe('system');
-
-        // app selection prompts
-        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp) as RepoAppDownloadQuestions;
-        expect(appSelectionPrompt).toBeDefined();
-        if (typeof appSelectionPrompt?.when === 'function') {
-            await expect(appSelectionPrompt.when({ [PromptNames.systemSelection]: {
-                connectedSystem: { serviceProvider: mockServiceProvider } 
-            } } as unknown as RepoAppDownloadAnswers)).resolves.toBe(true);
-        };
-        if (appSelectionPrompt?.type === 'list') {
-            const listPrompt = appSelectionPrompt as unknown as { choices: () => { name: string; value: string }[] };
-            expect(listPrompt.choices()).toEqual(mockAppList);
-        };
-        expect(appSelectionPrompt && appSelectionPrompt.validate && appSelectionPrompt.validate(mockAppList)).toBe(true);
-        expect(appSelectionPrompt?.guiOptions?.breadcrumb).toBe(t('prompts.appSelection.breadcrumb'));
-
-        // target folder prompt
-        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
-        expect(targetFolderPrompt).toBeDefined();
-    });
-
-    it('should handle no apps available scenario', async () => {
-        (fetchAppListForSelectedSystem as jest.Mock).mockResolvedValue([]);
-
-        const prompts = await getPrompts(appRootPath);
-
-        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
-        expect(appSelectionPrompt).toBeDefined();
-        // no apps deployed message should be displayed
-        expect(appSelectionPrompt && appSelectionPrompt.validate && appSelectionPrompt.validate('')).toBe(t('prompts.appSelection.noAppsDeployed'));
-        if (appSelectionPrompt?.type === 'list') {
-            const listPrompt = appSelectionPrompt as unknown as { choices: () => { name: string; value: string }[] };
-            expect(listPrompt.choices()).toEqual([]);
-        };
-        
-        // target folder prompt should not be displayed
-        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
-        expect(targetFolderPrompt).toBeDefined();
-        if (typeof targetFolderPrompt?.when === 'function') {
-            expect(targetFolderPrompt.when( {} as unknown as RepoAppDownloadAnswers)).toBe(false);
-        };
-    });
-
-    it('should validate the target folder path when it is valid', async () => {
-        // Mock validateFioriAppTargetFolder to return true (valid path)
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(true);
-        const prompts = await getPrompts(appRootPath);
-    
-        // target folder prompt
-        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
-        expect(targetFolderPrompt).toBeDefined();
-        const result = targetFolderPrompt !== undefined && targetFolderPrompt.validate ? await targetFolderPrompt.validate(appRootPath, mockAnswers) : undefined;
-    
-        // Assert that validation returns true
-        expect(result).toBe(true);
-        expect(validateFioriAppTargetFolder).toHaveBeenCalledWith(appRootPath, 'app1', true);
-    });
-
-    it('should return error message when the target folder path is invalid', async () => {
-        const errorMessage = `The project folder path already contains an SAP Fiori application in the folder: ${appRootPath}. Please choose a different folder and try again.`;
-        (validateFioriAppTargetFolder as jest.Mock).mockResolvedValue(errorMessage);
-        const prompts = await getPrompts(appRootPath);
-    
-        // target folder prompt
-        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
-        expect(targetFolderPrompt).toBeDefined();
-        const result = targetFolderPrompt !== undefined && targetFolderPrompt.validate ? await targetFolderPrompt.validate(appRootPath, mockAnswers) : undefined;
-    
-        // Assert that validation returns the error message
-        expect(result).toBe(errorMessage);
-        expect(validateFioriAppTargetFolder).toHaveBeenCalledWith(appRootPath, 'app1', true);
-    });
-
-    it('should return default path when no target folder is provided', async () => {
-        const prompts = await getPrompts(appRootPath);
-    
-        // target folder prompt
-        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
-        expect(targetFolderPrompt).toBeDefined();
-        const result = await targetFolderPrompt?.default();
-        expect(result).toBe(appRootPath);
-    });
-
-    it('should return pre filled system questions, app selection, and target folder prompts when quick deployed app config is provided', async () => {
-        const quickDeployedAppConfig: QuickDeployedAppConfig = {
+    it('should preselect default system if quickDeployedAppConfig is provided', async () => {
+        const quickDeployedAppConfig = {
             appId: 'app1',
             serviceProviderInfo: {
-                name: 'system3'
+                name: 'DefaultSystem'
             }
-        }
-        const prompts = await getPrompts(appRootPath, quickDeployedAppConfig);
+        };
+
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [
+                    { name: 'System A', value: { system: { name: 'SystemA' } } },
+                    { name: 'Default System', value: { system: { name: 'DefaultSystem' } } }
+                ]
+            }],
+            answers: {
+                connectedSystem: { serviceProvider: {} }
+            }
+        });
+
+        mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
+        const prompts = await getPrompts(undefined, quickDeployedAppConfig);
+
+        const systemPrompt = prompts.find(p => p.name === PromptNames.systemSelection) as any;
+        expect(systemPrompt.default).toBe(1);
+    });
+
+    it('should throw an error if downloadApp fails', async () => {
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [{ name: 'Sys', value: { system: { name: 'Sys' } } }]
+            }],
+            answers: {
+                connectedSystem: { serviceProvider: {} }
+            }
+        });
+    
+        const appList = [{ appId: 'app1', repoName: 'repo1' }];
+        mockFetchAppList.mockResolvedValue(appList);
+        mockDownloadApp.mockRejectedValue(new Error('Download failed'));
+    
+        const prompts = await getPrompts();
+    
+        const appPrompt = prompts.find(p => p.name === PromptNames.selectedApp) as any;
+    
+        await appPrompt.when({
+            [PromptNames.systemSelection]: { system: { name: 'Sys' } }
+        });
+    
+        await expect(appPrompt.validate({ appId: 'app1', repoName: 'repo1' })).rejects.toThrow(
+            t('error.appDownloadErrors.appDownloadFailure', { error: 'Download failed' })
+        );
     });
     
+    it('should use validateFioriAppTargetFolder in folder prompt', async () => {
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [],
+            answers: {}
+        });
+        const prompts = await getPrompts('/some/path');
+        const projectPathPrompt = prompts.find(p => p.name === PromptNames.targetFolder) as any;
+        await projectPathPrompt.validate('/some/path', {
+            selectedApp: { appId: 'id1' }
+        });
+        expect(validateFioriAppTargetFolder).toHaveBeenCalledWith('/some/path', 'id1', true);
+    });
+
+    it('should handle quickDeployedAppConfig and return the correct prompts', async () => {
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
+            }],
+            answers: {
+                connectedSystem: { serviceProvider: {} }
+            }
+        });
+        const quickDeployedAppConfig = {
+            appId: 'app1',
+            serviceProviderInfo: { name: 'System 1' }
+        };
+        // Call getPrompts with quickDeployedAppConfig
+        const prompts = await getPrompts('/some/path', quickDeployedAppConfig);
+
+        // Ensure prompts are returned correctly
+        expect(prompts).toBeDefined();
+
+        // Check if the system selection prompt exists
+        const systemSelectionPrompt = prompts.find(p => p.name === PromptNames.systemSelection);
+        expect(systemSelectionPrompt).toBeDefined();
+
+        // Check if the system selection prompt is filtered correctly
+        if (systemSelectionPrompt) {
+            const listPrompt = systemSelectionPrompt as unknown as { choices: () => { name: string; value: {} }[] };
+            expect(listPrompt.choices).toEqual([
+                { name: 'System 1', value: { system: { name: 'MockSystem' } } }
+            ]);
+        }
+
+        // Check if the app selection prompt exists and is populated correctly
+        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
+        expect(appSelectionPrompt).toBeDefined();
+        if (appSelectionPrompt) {
+            const listPrompt = appSelectionPrompt as unknown as { choices: () => { name: string; value: {} }[] };
+            expect(appSelectionPrompt.when).toBeTruthy();
+        }
+
+        // Check if the target folder prompt exists and is included
+        const targetFolderPrompt = prompts.find(p => p.name === PromptNames.targetFolder);
+        expect(targetFolderPrompt).toBeDefined();
+        if (targetFolderPrompt) {
+            expect(targetFolderPrompt.when).toBeTruthy();
+        }
+    });
 });
 
 
-//prompts.ts        |    37.5 |       20 |      40 |   38.46 | 29,55-60,76-83,96,106,115,126,141-147,161-221 

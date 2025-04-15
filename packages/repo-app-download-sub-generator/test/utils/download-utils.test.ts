@@ -1,12 +1,9 @@
-import { downloadApp } from '../../src/utils/download-utils';
+import { downloadApp, extractZip } from '../../src/utils/download-utils';
 import AdmZip from 'adm-zip';
 import { PromptState } from '../../src/prompts/prompt-state';
-import type { Logger } from '@sap-ux/logger';
-import type { Editor } from 'mem-fs-editor';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { join } from 'path';
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
+import type { SystemSelectionAnswers } from '../../src/app/types';
 
 jest.mock('adm-zip');
 jest.mock('../../src/utils/logger', () => ({
@@ -15,77 +12,98 @@ jest.mock('../../src/utils/logger', () => ({
     }
 }));
 
-describe('download-utils', () => {
-    let mockFs: Editor;
-    let mockServiceProvider: AbapServiceProvider;
+describe('extractZip', () => {
+    let mockZip: any;
+    let mockEntry1: any;
+    let mockEntry2: any;
+    let mockFs: any;
 
     beforeEach(() => {
-        mockFs = {
-            write: jest.fn(),
-        } as unknown as Editor;
-
-        mockServiceProvider = {
-            getUi5AbapRepository: jest.fn().mockReturnValue({
-                downloadFiles: jest.fn(),
-            }),
-        } as unknown as AbapServiceProvider;
-
-        (PromptState.systemSelection as any) = {
-            connectedSystem: {
-                serviceProvider: mockServiceProvider,
-            },
-        };
-    });
-
-    afterEach(() => {
-        jest.clearAllMocks();
-    });
-
-    const extractedPath = join('path/to/extract');
-    it('should download and extract the application files', async () => {
-        await downloadApp('repoName', extractedPath, mockFs);
-        expect(mockServiceProvider.getUi5AbapRepository().downloadFiles).toHaveBeenCalledWith('repoName');
-    });
-
-    it('should log an error if the downloaded file is not a Buffer', async () => {
-        jest.spyOn(mockServiceProvider.getUi5AbapRepository(), 'downloadFiles').mockResolvedValue('not-a-buffer' as any);
-        await downloadApp('repoName', extractedPath, mockFs);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.appDownloadErrors.downloadedFileNotBufferError'));
-    });
-
-    it('should throw an error if the download fails', async () => {
-        const errorMessage = 'Mock download error';
-        jest.spyOn(mockServiceProvider.getUi5AbapRepository(), 'downloadFiles').mockRejectedValue(new Error(errorMessage));
-        await expect(downloadApp('repoName', extractedPath, mockFs)).rejects.toThrowError(
-            t('error.appDownloadErrors.appDownloadFailure', { error: errorMessage }));
-    });
-
-    it('should extract files from a ZIP archive and write them to the file system', async () => {
-        const appContents = 'app contents', appName = 'app-name';
-        const mockZipEntry = {
+        mockEntry1 = {
             isDirectory: false,
-            entryName: appName,
-            getData: jest.fn().mockReturnValue(Buffer.from(appContents))
+            entryName: 'file1.txt',
+            getData: jest.fn(() => Buffer.from('File 1 content'))
         };
-        const mockZip = {
-            getEntries: jest.fn().mockReturnValue([mockZipEntry]),
+        mockEntry2 = {
+            isDirectory: false,
+            entryName: 'folder/file2.txt',
+            getData: jest.fn(() => Buffer.from('File 2 content'))
         };
-        (AdmZip as jest.Mock).mockImplementation(() => mockZip);
+        mockZip = {
+            getEntries: jest.fn(() => [mockEntry1, mockEntry2])
+        };
 
-        jest.spyOn(mockServiceProvider.getUi5AbapRepository(), 'downloadFiles').mockResolvedValue(Buffer.from(appContents));
-        await downloadApp('repoName', extractedPath, mockFs);
+        (AdmZip as jest.Mock).mockImplementation(() => mockZip);
+        mockFs = {
+            write: jest.fn()
+        };
+    });
+
+    it('should extract files from zip and write them using fs', async () => {
+        const extractedPath = '/tmp/project';
+        const dummyBuffer = Buffer.from('fake zip content');
+
+        await extractZip(extractedPath, dummyBuffer, mockFs);
 
         expect(mockZip.getEntries).toHaveBeenCalled();
-        expect(mockFs.write).toHaveBeenCalledWith(join(`${extractedPath}/${appName}`), appContents);
+
+        expect(mockFs.write).toHaveBeenCalledWith(
+            '/tmp/project/file1.txt',
+            'File 1 content'
+        );
+
+        expect(mockFs.write).toHaveBeenCalledWith(
+            '/tmp/project/folder/file2.txt',
+            'File 2 content'
+        );
     });
 
-    it('should log an error if extraction fails', async () => {
-        const errorMessage = 'Mock extraction error';
+    it('should log an error if zip extraction fails', async () => {
+        const errorMessage = 'Zip corrupted!';
         (AdmZip as jest.Mock).mockImplementation(() => {
             throw new Error(errorMessage);
         });
-        jest.spyOn(mockServiceProvider.getUi5AbapRepository(), 'downloadFiles').mockResolvedValue(Buffer.from('app contents'));
-        await downloadApp('repoName', extractedPath, mockFs);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith(t('error.appDownloadErrors.zipExtractionError', { error: errorMessage }));
+
+        const dummyBuffer = Buffer.from('broken zip');
+        await extractZip('/tmp/fail', dummyBuffer, mockFs);
+
+        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+            t('error.appDownloadErrors.zipExtractionError', { error: errorMessage })
+        );
+    });
+});
+
+describe('downloadApp', () => {
+    const mockDownloadFiles = jest.fn();
+    const mockGetUi5AbapRepository = jest.fn(() => ({
+        downloadFiles: mockDownloadFiles
+    }));
+    const mockServiceProvider = {
+        getUi5AbapRepository: mockGetUi5AbapRepository
+    };
+
+    beforeEach(() => {
+        mockDownloadFiles.mockReset();
+        mockGetUi5AbapRepository.mockClear();
+        PromptState.systemSelection = {
+            connectedSystem: {
+                serviceProvider: mockServiceProvider
+            }
+        } as any;
+    });
+
+    it('should download app and store it in PromptState', async () => {
+        const mockPackage = { name: 'app-1', files: ['files.js'] };
+        mockDownloadFiles.mockResolvedValue(mockPackage);
+
+        await downloadApp('repo-1');
+
+        expect(mockDownloadFiles).toHaveBeenCalledWith('repo-1');
+        expect(PromptState.downloadedAppPackage).toEqual(mockPackage);
+    });
+
+    it('should throw if serviceProvider is undefined', async () => {
+        PromptState.systemSelection = undefined as unknown as Partial<SystemSelectionAnswers>;
+        await expect(downloadApp('repo-1')).rejects.toThrow();
     });
 });

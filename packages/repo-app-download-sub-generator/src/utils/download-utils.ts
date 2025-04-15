@@ -13,7 +13,7 @@ import RepoAppDownloadLogger from '../utils/logger';
  * @param {Buffer} archive - The ZIP archive buffer.
  * @param {Editor} fs - The file system editor.
  */
-async function extractZip(extractedProjectPath: string, archive: Buffer, fs: Editor): Promise<void> {
+export async function extractZip(extractedProjectPath: string, archive: Buffer, fs: Editor): Promise<void> {
     try {
         const zip = new AdmZip(archive);
         zip.getEntries().forEach(function (zipEntry) {
@@ -33,19 +33,10 @@ async function extractZip(extractedProjectPath: string, archive: Buffer, fs: Edi
  * Downloads application files from the ABAP repository.
  *
  * @param {string} repoName - The repository name of the application.
- * @param {string} extractedProjectPath - The path where the application should be extracted.
- * @param {Editor} fs - The file system editor.
  */
-export async function downloadApp(repoName: string, extractedProjectPath: string, fs: Editor): Promise<void> {
-    try {
-        const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
-        const archive = await serviceProvider.getUi5AbapRepository().downloadFiles(repoName);
-        if (Buffer.isBuffer(archive)) {
-            await extractZip(extractedProjectPath, archive, fs);
-        } else {
-            RepoAppDownloadLogger.logger?.error(t('error.appDownloadErrors.downloadedFileNotBufferError'));
-        }
-    } catch (error) {
-        throw new Error(t('error.appDownloadErrors.appDownloadFailure', { error: error.message }));
-    }
+export async function downloadApp(repoName: string): Promise<void> {
+    const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
+    const downloadedAppPackage = await serviceProvider.getUi5AbapRepository().downloadFiles(repoName);
+    // store downloaded package in prompt state
+    PromptState.downloadedAppPackage = downloadedAppPackage;
 }

@@ -3,11 +3,13 @@ import type { SystemSelectionAnswers } from '../../src/app/types';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 describe('PromptState', () => {
-
     const mockServiceProvider = {
-        getAppIndex: jest.fn().mockReturnValue({
-            search: jest.fn().mockResolvedValue([{ id: 'app1' }, { id: 'app2' }])
-        })
+        defaults: {
+            baseURL: 'https://mock.sap-system.com',
+            params: {
+                'sap-client': '100'
+            }
+        }
     } as unknown as AbapServiceProvider;
     let mockSystemSelection: SystemSelectionAnswers;
     beforeEach(() => {
@@ -33,5 +35,25 @@ describe('PromptState', () => {
 
         PromptState.reset();
         expect(PromptState.systemSelection).toEqual({});
+    });
+
+    it('should set and get downloadedAppPackage correctly', () => {
+        const mockBuffer = Buffer.from('mock zip content');
+        PromptState.downloadedAppPackage = mockBuffer;
+        expect(PromptState.downloadedAppPackage).toBe(mockBuffer);
+    });
+
+    it('should return undefined for downloadedAppPackage if not set', () => {
+        expect(PromptState.downloadedAppPackage.length).toBe(0);
+    });
+
+    it('should return baseURL from connected system', () => {
+        PromptState.systemSelection = mockSystemSelection;
+        expect(PromptState.baseURL).toBe('https://mock.sap-system.com');
+    });
+
+    it('should return sapClient from connected system', () => {
+        PromptState.systemSelection = mockSystemSelection;
+        expect(PromptState.sapClient).toBe('100');
     });
 });

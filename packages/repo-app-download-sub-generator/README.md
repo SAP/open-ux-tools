@@ -6,7 +6,7 @@ The SAP App download sub-generator enables users to download a basic LROP App fr
 
 ## Installation
 
-The SAP App download sub-generator  sub-generator is installed as part of the [@sap/generator-fiori](https://www.npmjs.com/package/@sap/generator-fiori) generator and cannot be used stand alone.
+The SAP App download sub-generator is installed as part of the [@sap/generator-fiori](https://www.npmjs.com/package/@sap/generator-fiori) generator and cannot be used stand alone.
 
 ## Launch the SAP Reuse Library sub-generator
 
