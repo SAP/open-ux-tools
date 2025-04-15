@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.0.1
+
+### Patch Changes
+
+-   92726b5: Add new module @sap-ux/repo-app-import-sub-generator
+
 ## 0.1.1
 
 ### Patch Changes
