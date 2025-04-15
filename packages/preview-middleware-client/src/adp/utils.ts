@@ -9,6 +9,8 @@ import FlexUtils from 'sap/ui/fl/Utils';
 import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
 import { getControlById } from '../utils/core';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
+import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
+import FlexChange from 'sap/ui/fl/Change';
 
 import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
@@ -60,19 +62,54 @@ export function createDeferred<T>(): Deferred<T> {
 }
 
 /**
- * Checks if the fragment name associated with a command matches the specified fragment name.
+ * Checks for the existence of a change associated with a specific fragment name in the RTA command stack.
+ *
+ * @param {RuntimeAuthoring} rta - The RuntimeAuthoring instance to check for existing changes.
+ * @param {string} commandName - The name of the fragment to check for existing changes.
+ * @param {string} propertyName - The name of the property to check in the change content.
+ * @param {string} propertyValue - The value to match against the specified property.
+ * @returns {Promise<boolean>} A promise that resolves to `true` if a matching change is found, otherwise `false`.
+ */
+export function checkForExistingChange(
+    rta: RuntimeAuthoring,
+    commandName: string,
+    propertyName: string,
+    propertyValue: string
+): boolean {
+    const allCommands = rta.getCommandStack().getCommands();
+
+    return allCommands.some((command: FlexCommand) => {
+        if (typeof command.getCommands === 'function') {
+            const addXmlCommand = command
+                .getCommands()
+                .find((c: FlexCommand) => c?.getProperty('name') === commandName);
+
+            return addXmlCommand && matchesChangeProperty(addXmlCommand, propertyName, propertyValue);
+        } else {
+            return matchesChangeProperty(command, propertyName, propertyValue);
+        }
+    });
+}
+
+/**
+ * Checks if a specific property in the command's change matches the given value.
  *
  * @param {FlexCommand} command - The command object containing the prepared change to be examined.
- * @param {string} fragmentName - The name of the fragment to match against the command's change.
- * @returns {boolean} Returns true if the command's change contains a fragment path that matches
- *                    the specified fragment name; otherwise, returns false.
+ * @param {string} propertyName - The name of the property to check in the change content.
+ * @param {string} propertyValue - The value to match against the specified property.
+ * @returns {boolean} Returns true if the command's change contains the specified property with the matching value; otherwise, returns false.
  */
-export function matchesFragmentName(command: FlexCommand, fragmentName: string): boolean {
+export function matchesChangeProperty(command: FlexCommand, propertyName: string, propertyValue: string): boolean {
     if (typeof command.getPreparedChange !== 'function') {
         return false;
     }
-    const change = command.getPreparedChange().getDefinition() as unknown as FragmentChange;
-    return change.content?.fragmentPath?.includes(`${fragmentName}.fragment.xml`) || false;
+    const change = command.getPreparedChange() as unknown as FlexChange<Record<string, any>>;
+
+    return (
+        change.getContent?.()?.[propertyName]?.includes(propertyValue) ||
+        change.getProperty(propertyName)?.includes(propertyValue) ||
+        false
+    );
 }
 
 /**

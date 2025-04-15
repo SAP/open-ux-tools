@@ -13,6 +13,7 @@ import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
 import { getExistingController } from '../../api-handler';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
+import { checkForExistingChange } from '../../utils';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
@@ -29,10 +30,12 @@ export class AddControllerToPageQuickAction
     }
 
     private controllerExists = false;
+    private pendingChangeExists = false;
 
     async initialize(): Promise<void> {
         const version = await getUi5Version();
         const isReuseComponent = await getReuseComponentChecker(version);
+        this.pendingChangeExists = this.hasPendingChange();
 
         for (const control of getRelevantControlFromActivePage(
             this.context.controlIndex,
@@ -43,14 +46,19 @@ export class AddControllerToPageQuickAction
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
-            const isActiveAction = isControllerExtensionEnabledForControl(control, syncViewsIds, isReuseComponent, this.context.flexSettings.isCloud);
+            const isActiveAction = isControllerExtensionEnabledForControl(
+                control,
+                syncViewsIds,
+                isReuseComponent,
+                this.context.flexSettings.isCloud
+            );
             this.control = isActiveAction ? control : undefined;
             break;
         }
     }
 
     protected get textKey() {
-        return this.controllerExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
+        return this.controllerExists || this.pendingChangeExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
     }
 
     async execute(): Promise<FlexCommand[]> {
@@ -66,5 +74,16 @@ export class AddControllerToPageQuickAction
             );
         }
         return [];
+    }
+
+    hasPendingChange(): boolean {
+        const view = this.context.view;
+        // @ts-ignore
+        const baseControllerName = view.getControllerModuleName()
+            ? // @ts-ignore
+              `module:${view.getControllerModuleName()}`
+            : view.getController()?.getMetadata().getName();
+
+        return checkForExistingChange(this.context.rta, 'codeExt', 'controllerName', baseControllerName);
     }
 }

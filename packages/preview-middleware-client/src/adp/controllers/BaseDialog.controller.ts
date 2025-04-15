@@ -7,10 +7,9 @@ import { ValueState } from 'sap/ui/core/library';
 import Controller from 'sap/ui/core/mvc/Controller';
 import JSONModel from 'sap/ui/model/json/JSONModel';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import MessageToast from 'sap/m/MessageToast';
 import CommandExecutor from '../command-executor';
-import { matchesFragmentName } from '../utils';
+import { checkForExistingChange } from '../utils';
 import type { Fragments } from '../api-handler';
 import { getError } from '../../utils/error';
 import ManagedObjectMetadata from 'sap/ui/base/ManagedObjectMetadata';
@@ -168,7 +167,12 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
             return;
         }
 
-        const changeExists = this.checkForExistingChange(fragmentName);
+        const changeExists = checkForExistingChange(
+            this.rta,
+            'addXMLAtExtensionPoint',
+            'fragmentPath',
+            `${fragmentName}.fragment.xml`
+        );
 
         if (changeExists) {
             updateDialogState(
@@ -180,28 +184,6 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
 
         updateDialogState(ValueState.Success);
         this.model.setProperty('/newFragmentName', fragmentName);
-    }
-
-    /**
-     * Checks for the existence of a change associated with a specific fragment name in the RTA command stack.
-     *
-     * @param {string} fragmentName - The name of the fragment to check for existing changes.
-     * @returns {Promise<boolean>} A promise that resolves to `true` if a matching change is found, otherwise `false`.
-     */
-    checkForExistingChange(fragmentName: string): boolean {
-        const allCommands = this.rta.getCommandStack().getCommands();
-
-        return allCommands.some((command: FlexCommand) => {
-            if (typeof command.getCommands === 'function') {
-                const addXmlCommand = command
-                    .getCommands()
-                    .find((c: FlexCommand) => c?.getProperty('name') === 'addXMLAtExtensionPoint');
-
-                return addXmlCommand && matchesFragmentName(addXmlCommand, fragmentName);
-            } else {
-                return matchesFragmentName(command, fragmentName);
-            }
-        });
     }
 
     /**

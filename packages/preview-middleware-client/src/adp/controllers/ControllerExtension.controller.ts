@@ -34,7 +34,7 @@ import { notifyUser } from '../utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
 import CommandExecutor from '../command-executor';
 import { getControlById } from '../../utils/core';
-
+import { checkForExistingChange } from '../utils';
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
 }
@@ -112,7 +112,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
 
-        if (fileExists) {
+        const pendingChangeExists = checkForExistingChange(this.rta, 'codeExt', 'codeRef', `${controllerName}.js`);
+
+        if (fileExists || pendingChangeExists) {
             updateDialogState(
                 ValueState.Error,
                 'Enter a different name. The controller name that you entered already exists in your project.'
@@ -302,7 +304,10 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * @param controllerName Controller name
      * @param controllerRef Controller reference
      */
-    private async createControllerCommand(controllerName: string, controllerRef: DeferredExtendControllerData): Promise<void> {
+    private async createControllerCommand(
+        controllerName: string,
+        controllerRef: DeferredExtendControllerData
+    ): Promise<void> {
         const flexSettings = this.rta.getFlexSettings();
         const commandExecutor = new CommandExecutor(this.rta);
         const view = getControlById(controllerRef.viewId) as UI5Element;
