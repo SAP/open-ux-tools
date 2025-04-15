@@ -49,10 +49,7 @@ describe('index', () => {
 
     it('should return prompts from getPrompts with router options enabled', async () => {
         const getQuestionsSpy = jest.spyOn(cfPrompts, 'getQuestions');
-        const prompts = await getPrompts(
-            { ...promptOptions, showRouterOptions: true, addManagedAppRouter: false },
-            mockLog
-        );
+        const prompts = await getPrompts({ ...promptOptions, routerType: true, addManagedAppRouter: false }, mockLog);
         expect(prompts.length).toBe(3);
         expect(getQuestionsSpy).toHaveBeenCalledWith(promptOptions, mockLog);
     });

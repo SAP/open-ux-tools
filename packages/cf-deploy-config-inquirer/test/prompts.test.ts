@@ -256,7 +256,7 @@ describe('Prompt Generation Tests', () => {
     describe('getQuestions with Router Option', () => {
         it('Displays CF prompt with App Router selection', async () => {
             const questions: CfDeployConfigQuestions[] = await getQuestions(
-                { ...promptOptions, showRouterOptions: true },
+                { ...promptOptions, routerType: true },
                 mockLog
             );
             const routerTypePrompt = questions.find((question) => question.name === promptNames.routerType);
