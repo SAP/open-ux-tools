@@ -1,8 +1,8 @@
 import type { TOptions } from 'i18next';
 import i18next from 'i18next';
-import translations from '../translations/repo-app-download-sub-generator.i18n.json';
+import translations from '../translations/repo-app-import-sub-generator.i18n.json';
 
-const repoAppDownloadGeneratorNs = 'repo-app-download-sub-generator';
+const repoAppDownloadGeneratorNs = 'repo-app-import-sub-generator';
 
 /**
  * Initialize i18next with the translations for this module.
