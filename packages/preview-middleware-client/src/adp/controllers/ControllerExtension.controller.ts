@@ -29,6 +29,11 @@ import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
 import type { ExtenControllerData, DeferredExtendControllerData } from '../extend-controller';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { getResourceModel, getTextBundle } from '../../i18n';
+import { notifyUser } from '../utils';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
+import CommandExecutor from '../command-executor';
+import { getControlById } from '../../utils/core';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -49,7 +54,13 @@ type ControllerModel = JSONModel & {
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
     public readonly data?: ExtenControllerData;
 
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, data?: ExtenControllerData, telemetryData?: QuickActionTelemetryData) {
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        data?: ExtenControllerData,
+        telemetryData?: QuickActionTelemetryData
+    ) {
         super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
@@ -68,7 +79,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         this.setEscapeHandler();
 
         await this.buildDialogData();
+        const resourceModel = await getResourceModel('open.ux.preview.client');
 
+        this.dialog.setModel(resourceModel, 'i18n');
         this.dialog.setModel(this.model);
 
         this.dialog.open();
@@ -149,7 +162,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
                 viewId
             };
 
-            if(this.data) {
+            if (this.data) {
                 this.data.deferred.resolve(controllerRef);
             } else {
                 await this.createNewController(controllerName, controllerRef);
@@ -256,7 +269,15 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * @param controllerName Controller Name
      * @param controllerRef Controller reference
      */
-    private async createNewController(controllerName: string, controllerRef: DeferredExtendControllerData): Promise<void> {
+    private async createNewController(
+        controllerName: string,
+        controllerRef: DeferredExtendControllerData
+    ): Promise<void> {
+        const ui5Version = await getUi5Version();
+        if (!isLowerThanMinimalUi5Version(ui5Version, { major: 1, minor: 135 })) {
+            await this.createControllerCommand(controllerName, controllerRef);
+            return;
+        }
         try {
             await writeController({ controllerName });
 
@@ -273,5 +294,29 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             await this.getControllers();
             this.handleError(e);
         }
+    }
+
+    /**
+     * Creates a controller command and executes it.
+     *
+     * @param controllerName Controller name
+     * @param controllerRef Controller reference
+     */
+    private async createControllerCommand(controllerName: string, controllerRef: DeferredExtendControllerData): Promise<void> {
+        const flexSettings = this.rta.getFlexSettings();
+        const commandExecutor = new CommandExecutor(this.rta);
+        const view = getControlById(controllerRef.viewId) as UI5Element;
+        const command = await commandExecutor.getCommand<DeferredExtendControllerData>(
+            view,
+            'codeExt',
+            controllerRef,
+            undefined,
+            flexSettings
+        );
+
+        await commandExecutor.pushAndExecuteCommand(command);
+
+        const bundle = await getTextBundle();
+        notifyUser(bundle.getText('ADP_CREATE_CONTROLLER_EXTENSION', [controllerName]), 8000);
     }
 }

@@ -8,7 +8,7 @@ import type DesignTimeMetadata from 'sap/ui/dt/DesignTimeMetadata';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import { getError } from '../utils/error';
 
-type CommandNames = 'addXML';
+type CommandNames = 'addXML' | 'codeExt';
 
 /**
  * Class responsible for handling rta calls
@@ -33,7 +33,7 @@ export default class CommandExecutor {
         runtimeControl: ManagedObject,
         commandName: CommandNames,
         modifiedValue: object,
-        designMetadata: DesignTimeMetadata,
+        designMetadata?: DesignTimeMetadata,
         flexSettings: FlexSettings
     ): Promise<FlexCommand<T>> {
         try {
