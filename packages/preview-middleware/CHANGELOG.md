@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.23
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
 ## 0.19.22
 
 ### Patch Changes
