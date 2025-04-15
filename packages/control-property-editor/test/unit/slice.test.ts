@@ -755,15 +755,18 @@ describe('main redux slice', () => {
                             kind: 'nested',
                             children: [
                                 {
+                                    path: '0',
                                     enabled: true,
                                     label: 'test label',
                                     children: [
                                         {
+                                            path: '0/0',
                                             enabled: true,
                                             label: 'test label 2',
                                             children: []
                                         },
                                         {
+                                            path: '0/1',
                                             enabled: true,
                                             label: 'test label 3',
                                             children: []
