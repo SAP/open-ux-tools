@@ -7,7 +7,6 @@ import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import { PromptState } from './prompt-state';
 import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
-import type { ListQuestion } from 'inquirer';
 import { downloadApp } from '../utils/download-utils';
 
 /**
@@ -47,22 +46,6 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
 };
 
 /**
- * Extracts default system from the quick deployed app configuration.
- *
- * @param {QuickDeployedAppConfig | undefined} quickDeployedAppConfig - The quick deployed app configuration.
- * @returns {string} The default system.
- */
-function extractDefaultSystem(quickDeployedAppConfig?: QuickDeployedAppConfig): string {
-    let defaultSystem = '';
-
-    if (quickDeployedAppConfig?.appId && quickDeployedAppConfig?.serviceProviderInfo) {
-        defaultSystem = quickDeployedAppConfig.serviceProviderInfo.name;
-    }
-
-    return defaultSystem;
-}
-
-/**
  * Retrieves prompts for selecting a system, app list, and target folder where the app will be generated.
  *
  * @param {string} [appRootPath] - The root path of the application.
@@ -76,22 +59,13 @@ export async function getPrompts(
     try {
         PromptState.reset();
 
-        const systemQuestions = await getSystemSelectionQuestions({ serviceSelection: { hide: true } }, false);
-        // Filter system questions and set default system if applicable
-        if (quickDeployedAppConfig?.appId) {
-            const defaultSystem = extractDefaultSystem(quickDeployedAppConfig);
-            const filteredSystemQuestion = systemQuestions.prompts.find((p) => p.name === PromptNames.systemSelection);
-
-            if (filteredSystemQuestion) {
-                const choices = (filteredSystemQuestion as ListQuestion<RepoAppDownloadAnswers>).choices;
-
-                if (Array.isArray(choices)) {
-                    const defaultIndex = choices.findIndex((choice: any) => choice.value.system.name === defaultSystem);
-                    filteredSystemQuestion.default = defaultIndex !== -1 ? defaultIndex : undefined;
-                    systemQuestions.prompts = [filteredSystemQuestion];
-                }
-            }
-        }
+        const systemQuestions = await getSystemSelectionQuestions(
+            {
+                serviceSelection: { hide: true },
+                systemSelection: { defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name }
+            },
+            false
+        );
 
         let appList: AppIndex = [];
         const appSelectionPrompt = [
@@ -133,7 +107,7 @@ export async function getPrompts(
                             await downloadApp(answers.repoName);
                             return true;
                         } catch (error) {
-                            throw new Error(t('error.appDownloadErrors.appDownloadFailure', { error: error.message }));
+                            return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
                         }
                     }
                 }

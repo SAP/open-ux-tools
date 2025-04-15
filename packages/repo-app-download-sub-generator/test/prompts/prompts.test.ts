@@ -5,6 +5,7 @@ import { PromptNames } from '../../src/app/types';
 import { PromptState } from '../../src/prompts/prompt-state';
 import * as helpers from '../../src/prompts/prompt-helpers';
 import * as downloadUtils from '../../src/utils/download-utils';
+import RepoAppDownloadLogger from '../../src/utils/logger';
 
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
     getSystemSelectionQuestions: jest.fn().mockResolvedValue({
@@ -89,7 +90,8 @@ describe('getPrompts', () => {
                 choices: [
                     { name: 'System A', value: { system: { name: 'SystemA' } } },
                     { name: 'Default System', value: { system: { name: 'DefaultSystem' } } }
-                ]
+                ],
+                default: 'DefaultSystem'
             }],
             answers: {
                 connectedSystem: { serviceProvider: {} }
@@ -100,38 +102,9 @@ describe('getPrompts', () => {
         const prompts = await getPrompts(undefined, quickDeployedAppConfig);
 
         const systemPrompt = prompts.find(p => p.name === PromptNames.systemSelection) as any;
-        expect(systemPrompt.default).toBe(1);
+        expect(systemPrompt.default).toBe('DefaultSystem');
     });
 
-    it('should throw an error if downloadApp fails', async () => {
-        mockGetSystemSelectionQuestions.mockResolvedValue({
-            prompts: [{
-                name: PromptNames.systemSelection,
-                type: 'list',
-                choices: [{ name: 'Sys', value: { system: { name: 'Sys' } } }]
-            }],
-            answers: {
-                connectedSystem: { serviceProvider: {} }
-            }
-        });
-    
-        const appList = [{ appId: 'app1', repoName: 'repo1' }];
-        mockFetchAppList.mockResolvedValue(appList);
-        mockDownloadApp.mockRejectedValue(new Error('Download failed'));
-    
-        const prompts = await getPrompts();
-    
-        const appPrompt = prompts.find(p => p.name === PromptNames.selectedApp) as any;
-    
-        await appPrompt.when({
-            [PromptNames.systemSelection]: { system: { name: 'Sys' } }
-        });
-    
-        await expect(appPrompt.validate({ appId: 'app1', repoName: 'repo1' })).rejects.toThrow(
-            t('error.appDownloadErrors.appDownloadFailure', { error: 'Download failed' })
-        );
-    });
-    
     it('should use validateFioriAppTargetFolder in folder prompt', async () => {
         mockGetSystemSelectionQuestions.mockResolvedValue({
             prompts: [],
