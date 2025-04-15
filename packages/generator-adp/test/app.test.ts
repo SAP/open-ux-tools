@@ -76,7 +76,8 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     },
     isExtensionInstalled: jest.fn().mockReturnValue(true),
     getHostEnvironment: jest.fn(),
-    isCli: jest.fn().mockReturnValue(false)
+    isCli: jest.fn().mockReturnValue(false),
+    getDefaultTargetFolder: jest.fn().mockReturnValue(undefined)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({

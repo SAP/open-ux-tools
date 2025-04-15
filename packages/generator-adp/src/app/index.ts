@@ -7,7 +7,8 @@ import {
     sendTelemetry,
     type ILogWrapper,
     getHostEnvironment,
-    hostEnvironment
+    hostEnvironment,
+    getDefaultTargetFolder
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
 import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
@@ -129,8 +130,9 @@ export default class extends Generator {
             isCloudProject: this.prompter.isCloud,
             layer: this.layer
         };
+        const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
         const options: AttributePromptOptions = {
-            targetFolder: { default: this._getDefaultFolder() },
+            targetFolder: { default: defaultFolder },
             ui5ValidationCli: { hide: !isCLI }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
@@ -192,20 +194,6 @@ export default class extends Generator {
      */
     private _getProjectPath(): string {
         return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
-    }
-
-    /**
-     * Gets the default folder path from the current open workspace.
-     *
-     * @returns {string} Default folder path.
-     */
-    private _getDefaultFolder(): string {
-        if (!this.vscode || this.vscode?.workspace?.workspaceFolders?.length === 0) {
-            this.appWizard.showInformation('There is currently no opened workspace folder.', MessageType.notification);
-            return '';
-        }
-
-        return this.vscode?.workspace?.workspaceFolders?.[0]?.uri?.fsPath;
     }
 
     /**
