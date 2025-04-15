@@ -10,6 +10,7 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { tmpdir } from 'os';
 import { t } from '../../src/i18n';
 import * as projectAccess from '@sap-ux/project-access';
+import { config } from 'process';
 
 const testDir = tmpdir();
 const commonConfig = {
@@ -38,13 +39,27 @@ describe('generate', () => {
         });
 
         it('faulty manifest.json', async () => {
-            //fs.delete(join(testDir, 'webapp/manifest.json'));
             fs.writeJSON(join(testDir, 'webapp/manifest.json'), {});
             await expect(generate(testDir, config, fs)).rejects.toEqual(
                 Error(
                     t('error.requiredProjectPropertyNotFound', {
                         property: `'sap.app'.id`,
                         path: join(testDir, 'webapp/manifest.json')
+                    })
+                )
+            );
+        });
+
+        it('service URI already exists', async () => {
+            const existingURI = 'dummy/';
+            fs.writeJSON(join(testDir, 'webapp/manifest.json'), {
+                'sap.app': { id: 'error', dataSources: { existing: { uri: existingURI } } }
+            });
+            const service = { ...config, path: 'dummy' };
+            await expect(generate(testDir, service, fs)).rejects.toEqual(
+                Error(
+                    t('error.requiredServiceAlreadyExists', {
+                        uri: existingURI
                     })
                 )
             );
@@ -564,8 +579,8 @@ describe('generate', () => {
                 await enhanceData('', configCopy, fs);
                 expect(configCopy).toMatchInlineSnapshot(`
                     Object {
-                      "model": "",
-                      "name": "mainService",
+                      "model": "mainService1",
+                      "name": "mainService1",
                       "path": "/V2/Northwind/Northwind.svc/",
                       "previewSettings": Object {
                         "path": "/V2",

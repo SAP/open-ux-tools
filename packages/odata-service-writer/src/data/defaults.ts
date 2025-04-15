@@ -1,5 +1,5 @@
 import { join } from 'path';
-import type { OdataService, EdmxAnnotationsInfo } from '../types';
+import type { OdataService, EdmxAnnotationsInfo, DataSources } from '../types';
 import { ServiceType } from '../types';
 import { DEFAULT_DATASOURCE_NAME } from './constants';
 import type { Manifest } from '@sap-ux/project-access';
@@ -16,6 +16,27 @@ import { UI5Config } from '@sap-ux/ui5-config';
  */
 function setDefaultServicePath(service: OdataService): void {
     service.path = service.path?.endsWith('/') ? service.path : (service.path ?? '') + '/';
+}
+
+/**
+ * Generates a unique name for the service.
+ *
+ * @param {OdataService} dataSources - The service object whose path needs to be set or modified.
+ * @param {string} serviceName - The service object whose path needs to be set or modified.
+ * @returns Unique service name.
+ */
+function generateUniqueServiceName(dataSources: DataSources, serviceName: string): string {
+    let tmpSrvName = serviceName;
+    let uniqueNameCount = 1;
+    let doesExist = true; // Ensure data source name is unique
+    do {
+        if (dataSources?.[tmpSrvName]) {
+            tmpSrvName = `${serviceName}${uniqueNameCount++}`; // Try with a new name
+        } else {
+            doesExist = false;
+        }
+    } while (doesExist);
+    return tmpSrvName;
 }
 
 /**
@@ -36,6 +57,8 @@ async function setDefaultServiceName(basePath: string, service: OdataService, fs
         const oDataSources = Object.values(dataSources).filter((dataSource) => dataSource.type === 'OData');
         if (oDataSources.length === 0) {
             service.name = DEFAULT_DATASOURCE_NAME;
+        } else if (service.name) {
+            service.name = generateUniqueServiceName(dataSources, service.name);
         }
     } else {
         // No existing dataSources - no existing services, use default name
