@@ -501,6 +501,44 @@ describe('QuickActionList', () => {
             const child2 = screen.getByRole('menuitem', { name: /submenu1-submenu1.0/i });
             expect(child2.getAttribute('aria-disabled')).toBe('false');
         });
+        test('single disabled action', () => {
+            const element = <QuickActionList />;
+            render(element, {
+                initialState: {
+                    quickActions: [
+                        {
+                            title: 'List Report',
+                            actions: [
+                                {
+                                    id: 'quick-action-1',
+                                    enabled: true,
+                                    kind: 'nested',
+                                    title: 'Quick Action 1',
+                                    children: [
+                                        {
+                                            path: '0',
+                                            label: 'submenu0',
+                                            enabled: true,
+                                            children: [
+                                                {
+                                                    path: '0/0',
+                                                    label: 'submenu0.0',
+                                                    enabled: false,
+                                                    children: []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                }
+            });
+
+            const quickAction = screen.getByRole('button', { name: /quick action 1/i });
+            expect(quickAction).toBeDisabled();
+        });
         test('one leaf nodes without siblings', () => {
             const element = <QuickActionList />;
             render(element, {

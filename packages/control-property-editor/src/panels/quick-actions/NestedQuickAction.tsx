@@ -88,7 +88,7 @@ export function NestedQuickActionListItem({
             {flattened.children.length === 1 && (
                 <UILink
                     underline={false}
-                    disabled={isDisabled ?? !flattened.children[0].enabled}
+                    disabled={isDisabled || !flattened.children[0].enabled}
                     title={
                         action.children[0].tooltip ??
                         action.tooltip ??
