@@ -37,9 +37,9 @@ export class ContextMenuService {
         const resourceBundle = await getTextBundle();
         subscribe(async (action: ExternalAction): Promise<void> => {
             if (executeContextMenuAction.match(action)) {
+                const { actionName, controlId } = action.payload;
+                await this.actionService.execute(controlId, actionName);
                 try {
-                    const { actionName, controlId } = action.payload;
-                    await this.actionService.execute(controlId, actionName);
                     const controlName = getControlById(controlId)?.getMetadata().getName();
                     const versionInfo = await getUi5Version();
                     await reportTelemetry({
