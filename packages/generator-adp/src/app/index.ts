@@ -1,6 +1,6 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import {
     TelemetryHelper,
