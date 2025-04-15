@@ -45,7 +45,10 @@ export function getNamePrompt(
         message: t('prompts.name.message'),
         default: (answers: UI5ApplicationAnswers) => answers.name || appName || defaultAppName(targetDir),
         validate: (name, answers: UI5ApplicationAnswers): boolean | string => {
-            if (!isYUI || isCapProject) {
+            // In a CLI context, we need to validate the name within the default target folder - that it does not already exist.
+            // Also as CAP project folder is set and can't be updated, we need to validate the app name doest not already exist within the CAP project.
+            const shouldValidateNamePath = !isYUI || isCapProject;
+            if (shouldValidateNamePath) {
                 return validateAppName(name, answers.targetFolder || targetDir);
             } else {
                 return validateModuleName(name);
@@ -196,9 +199,11 @@ export function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5App
             return true;
         },
         additionalMessages: (val: boolean) => {
+            let message;
             if (val && capCdsInfo?.hasMinCdsVersion && !capCdsInfo?.hasCdsUi5Plugin) {
-                return { message: t('prompts.enableTypeScript.warningMsg'), severity: Severity.warning };
+                message = { message: t('prompts.enableTypeScript.warningMsg'), severity: Severity.warning };
             }
+            return message;
         },
         type: 'confirm',
         name: promptNames.enableTypeScript,
@@ -330,9 +335,7 @@ export function getUI5ThemePrompt(): UI5ApplicationQuestion {
         },
         choices: ({ ui5Version = defaultVersion }): ListChoiceOptions[] => getUI5ThemesChoices(ui5Version),
         default: ({ ui5Theme, ui5Version }: UI5ApplicationAnswers): string => {
-            if (!ui5Theme) {
-                ui5Theme = getDefaultUI5Theme(ui5Version);
-            }
+            ui5Theme ??= getDefaultUI5Theme(ui5Version);
             return ui5Theme;
         }
     } as ListQuestion<UI5ApplicationAnswers>;
