@@ -289,6 +289,28 @@ describe('ConfigPrompter Integration Tests', () => {
 
             expect(result).toBe('Test error');
         });
+
+        it('password prompt validate should throw error when system info call fails', async () => {
+            const axiosError = {
+                isAxiosError: true,
+                message: 'Unauthorized',
+                name: 'AxiosError',
+                response: {
+                    status: 401,
+                    statusText: 'Unauthorized'
+                }
+            } as AxiosError;
+            isAbapCloudMock.mockRejectedValueOnce(axiosError);
+            isAxiosErrorMock.mockReturnValueOnce(true);
+
+            const prompts = configPrompter.getPrompts();
+            const passwordPrompt = prompts.find((p) => p.name === configPromptNames.password);
+            expect(passwordPrompt).toBeDefined();
+
+            const result = await passwordPrompt?.validate?.(dummyAnswers.password, dummyAnswers);
+
+            expect(result).toEqual(`Authentication error: ${axiosError.message}`);
+        });
     });
 
     describe('Application Prompt', () => {

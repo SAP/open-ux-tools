@@ -30,7 +30,7 @@ interface Config {
 }
 
 /**
- * Returns all basic info prompts, filtering based on promptOptions.
+ * Returns all project attribute prompts, filtering based on promptOptions.
  *
  * @param {string} path - The project base path.
  * @param {Config} config - Configuration values needed for conditional prompt logic.

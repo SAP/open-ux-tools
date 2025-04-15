@@ -396,7 +396,12 @@ export class ConfigPrompter {
 
         try {
             this.abapProvider = await getConfiguredProvider(options, this.logger);
-            await this.getSystemData();
+            const validationResult = await this.handleSystemDataValidation();
+
+            if (typeof validationResult === 'string') {
+                return validationResult;
+            }
+
             this.targetApps = await loadApps(this.abapProvider, this.isCustomerBase);
             this.isLoginSuccessful = true;
             return true;
@@ -491,7 +496,7 @@ export class ConfigPrompter {
      *
      * @returns A promise that resolves when system data is fetched.
      */
-    private async getSystemData(): Promise<void> {
+    private async loadSystemData(): Promise<void> {
         try {
             this.isCloudProject = await this.abapProvider.isAbapCloud();
             this.flexUISystem = await getFlexUISupportedSystem(this.abapProvider, this.isCustomerBase);
@@ -501,18 +506,26 @@ export class ConfigPrompter {
     }
 
     /**
+     * Fetches and processes SAPUI5 version data from the system and public sources.
+     *
+     * @returns {Promise<void>} A promise that resolves once all version data is loaded and assigned.
+     */
+    private async loadUI5Versions(): Promise<void> {
+        const version = await getSystemUI5Version(this.abapProvider);
+        this.systemVersion = checkSystemVersionPattern(version);
+        this.publicVersions = await fetchPublicVersions();
+        this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);
+    }
+
+    /**
      * Handles the fetching and validation of system data.
      *
      * @returns {Promise<boolean | string>} True if successful, or an error message if an error occurs.
      */
     private async handleSystemDataValidation(): Promise<boolean | string> {
         try {
-            await this.getSystemData();
-
-            const version = await getSystemUI5Version(this.abapProvider);
-            this.systemVersion = checkSystemVersionPattern(version);
-            this.publicVersions = await fetchPublicVersions();
-            this.ui5Versions = await getRelevantVersions(this.systemVersion, this.isCustomerBase, this.publicVersions);
+            await this.loadSystemData();
+            await this.loadUI5Versions();
 
             if (!this.isCustomerBase && this.isCloudProject) {
                 return t('error.cloudSystemsForInternalUsers');
