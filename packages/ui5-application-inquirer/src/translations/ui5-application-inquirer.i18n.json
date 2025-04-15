@@ -1,37 +1,74 @@
 {
     "prompts": {
-        "appNameTooltip": "The name of the module for this application that will be loaded at runtime. This also determines the directory name of the generated application.",
-        "appNameMessage": "Module name",
-        "appNameDefault": "project{{defaultProjectNumber}}",
-        "appTitleTooltip": "The title of your application that is displayed in the header of the application.",
-        "appTitleMessage": "Application title",
-        "appTitleDefault": "App Title",
-        "appNamespaceTooltip": "A unique package name for the application module being created. It should follow the standard Java package notation.",
-        "appNamespaceMessage": "Application namespace",
-        "appDescTooltip": "Project description in package.json of your project",
-        "appDescMessage": "Description",
-        "appDescDefault": "An SAP Fiori application.",
-        "appFolderPathMessage": "Project folder path",
-        "appFolderPathBreadcrumb": "Project Path",
-        "appUi5VersionTooltip": "Represents the minimum version of SAPUI5 that this application requires.",
-        "appUi5VersionMessage": "Minimum SAPUI5 version",
-        "appUi5VersionBreadcrumb": "UI5 Version",
-        "appAddDeployConfigMessage": "Add deployment configuration",
-        "appAddDeployConfigToMtaMessage": "Add deployment configuration to MTA project ({{-path}})",
-        "appAddDeployConfigBreadcrumb": "Deploy Config",
-        "appAddFlpConfigMessage": "Add FLP configuration",
-        "appAddFlpConfigBreadcrumb": "FLP Config",
-        "appUi5ThemeMessage": "UI5 theme",
-        "appEnableEslintMessage": "Add Eslint configuration to the project",
-        "appEnableEslintBreadcrumb": "Eslint",
-        "appEnableCodeAssistMessage": "Add code assist libraries to your project",
-        "appEnableCodeAssistBreadcrumb": "Code Assist",
-        "appSkipAnnotationsMessage": "Skip generation of associated annotations.cds file",
-        "appSkipAnnotationsBreadcrumb": "Skip Annotations",
-        "appEnableTypeScriptMessage": "Enable TypeScript",
-        "appEnableTypeScriptWarningMessage": "The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)",
-        "appShowAdvancedOptionsMessage": "Configure advanced options",
-        "appShowAdvancedOptionsHint": "Choosing 'No' will apply defaults"
+        "main": {
+            "name": {
+                "message": "Module name",
+                "tooltip": "The name of the module for this application that will be loaded at runtime. This also determines the directory name of the generated application.",
+                "default": "project{{defaultProjectNumber}}"
+            },
+            "title": {
+                "message": "Application title",
+                "tooltip": "The title of your application that is displayed in the header of the application.",
+                "default": "App Title"
+            },
+            "namespace": {
+                "message": "Application namespace",
+                "tooltip": "A unique package name for the application module being created. It should follow the standard Java package notation."
+            },
+            "description": {
+                "message": "Description",
+                "tooltip": "Project description in package.json of your project",
+                "default": "An SAP Fiori application."
+            },
+            "targetFolder": {
+                "message": "Project folder path",
+                "breadcrumb": "Project Path"
+            },
+            "ui5Version": {
+                "message": "Minimum SAPUI5 version",
+                "tooltip": "Represents the minimum version of SAPUI5 that this application requires.",
+                "breadcrumb": "UI5 Version"
+            },
+            "enableTypeScript": {
+                "message": "Enable TypeScript",
+                "warningMsg": "The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)"
+            },
+            "addDeployConfig": {
+                "message": "Add deployment configuration",
+                "mtaMessage": "Add deployment configuration to MTA project ({{-path}})",
+                "breadcrumb": "Deploy Config"
+            },
+            "addFlpConfig": {
+                "message": "Add FLP configuration",
+                "breadcrumb": "FLP Config"
+            },
+            "useVirtualEndpoints": {
+                "message": "Use virtual endpoints for local preview",
+                "tooltip": "Using virtual endpoints allows the generated application to use the latest features of Fiori tools.",
+                "breadcrumb": "Virtual Endpoints"
+            },
+            "showAdvanced": {
+                "message": "Configure advanced options",
+                "tooltip": "Choosing 'No' will apply defaults"
+            }
+        },
+        "advanced": {
+            "ui5Theme": {
+                "message": "UI5 theme"
+            },
+            "enableEslint": {
+                "message": "Add Eslint configuration to the project",
+                "breadcrumb": "Eslint"
+            },
+            "enableCodeAssist": {
+                "message": "Add code assist libraries to your project",
+                "breadcrumb": "Code Assist"
+            },
+            "skipAnnotations": {
+                "message": "Skip generation of associated annotations.cds file",
+                "breadcrumb": "Skip Annotations"
+            }
+        }
     },
     "validators": {
         "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}",
