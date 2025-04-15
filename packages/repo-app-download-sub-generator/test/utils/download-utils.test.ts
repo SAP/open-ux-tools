@@ -3,7 +3,7 @@ import AdmZip from 'adm-zip';
 import { join } from 'path';
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
-import * as PromptStateModule from '../../src/prompts/prompt-state';
+import * as PromptState from '../../src/prompts/prompt-state';
 
 jest.mock('adm-zip');
 jest.mock('../../src/utils/logger', () => ({
@@ -85,7 +85,7 @@ describe('downloadApp', () => {
         jest.clearAllMocks();
         mockDownloadFiles.mockReset();
 
-        PromptStateModule.PromptState.systemSelection = {
+        PromptState.PromptState.systemSelection = {
             connectedSystem: {
                 serviceProvider: mockServiceProvider
             }
@@ -100,11 +100,11 @@ describe('downloadApp', () => {
 
         expect(mockServiceProvider.getUi5AbapRepository).toHaveBeenCalled();
         expect(mockDownloadFiles).toHaveBeenCalledWith('repo-1');
-        expect(PromptStateModule.PromptState.downloadedAppPackage).toEqual(mockPackage);
+        expect(PromptState.PromptState.downloadedAppPackage).toEqual(mockPackage);
     });
 
     it('should throw if serviceProvider is undefined', async () => {
-        PromptStateModule.PromptState.systemSelection = undefined as any;
+        PromptState.PromptState.systemSelection = undefined as any;
 
         await expect(downloadApp('repo-1')).rejects.toThrow();
     });
