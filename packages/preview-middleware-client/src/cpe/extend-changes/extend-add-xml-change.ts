@@ -13,6 +13,7 @@ export function getExtendedAddXMLChange(change: FlexChange<any>): { templateName
     if (templateName) {
         return { templateName };
     }
+    return undefined;
 }
 
 function getFragmentTemplateName(selectorId: string, targetAggregation: string): string {

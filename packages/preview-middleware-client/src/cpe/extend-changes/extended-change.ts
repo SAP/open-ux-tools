@@ -14,7 +14,6 @@ export async function setExtendedChangeInSession(change: FlexChange<any>) {
     }
 }
 
-
 export async function getExtendedChangeFromSession(change: FlexChange<any>) {
     const extendedChangeData = sessionStorage.getItem(change.getDefinition().fileName);
     let extendedChange;
