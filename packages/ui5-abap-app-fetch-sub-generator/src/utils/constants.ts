@@ -6,7 +6,7 @@ export const generatorDescription =
     'Download an application that was generated with the ADT Quick Fiori Application generator';
 
 // Name of the generator used for Fiori app download
-export const generatorName = '@sap-ux/repo-app-download-sub-generator';
+export const generatorName = '@sap-ux/ui5-abap-app-fetch-sub-generator';
 // The source template ID used for filtering the apps in the repository
 export const adtSourceTemplateId = '@sap.adt.sevicebinding.deploy:lrop';
 // The source template ID used for Fiori app generation

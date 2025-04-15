@@ -1,4 +1,4 @@
-# @sap-ux/repo-app-download-sub-generator
+# @sap-ux/ui5-abap-app-fetch-sub-generator
 
 ## Features
 
