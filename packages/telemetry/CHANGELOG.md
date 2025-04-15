@@ -1,5 +1,11 @@
 # @sap-ux/telemetry
 
+## 0.5.74
+
+### Patch Changes
+
+-   9392ebd: fix: types to allow numeric values in the telemetry properties
+
 ## 0.5.73
 
 ### Patch Changes
