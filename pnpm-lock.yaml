@@ -3346,9 +3346,6 @@ importers:
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
@@ -3398,6 +3395,9 @@ importers:
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0
+      inquirer-autocomplete-prompt:
+        specifier: 2.0.1
+        version: 2.0.1(inquirer@8.2.6)
       lodash:
         specifier: 4.17.21
         version: 4.17.21
@@ -17259,7 +17259,6 @@ packages:
       picocolors: 1.1.1
       run-async: 2.4.1
       rxjs: 7.8.1
-    dev: false
 
   /inquirer@1.2.3:
     resolution: {integrity: sha512-diSnpgfv/Ozq6QKuV2mUcwZ+D24b03J3W6EVxzvtkCWJTPrH2gKLsqgSW0vzRMZZFhFdhnvzka0RUJxIm7AOxQ==}

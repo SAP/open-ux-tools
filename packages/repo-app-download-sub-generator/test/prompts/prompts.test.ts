@@ -5,7 +5,6 @@ import { PromptNames } from '../../src/app/types';
 import { PromptState } from '../../src/prompts/prompt-state';
 import * as helpers from '../../src/prompts/prompt-helpers';
 import * as downloadUtils from '../../src/utils/download-utils';
-import * as validator from '@sap-ux/project-input-validator';
 
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
     getSystemSelectionQuestions: jest.fn().mockResolvedValue({
