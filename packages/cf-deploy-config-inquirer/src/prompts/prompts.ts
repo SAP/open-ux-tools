@@ -164,7 +164,7 @@ export async function getQuestions(
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
     const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
     const addManagedAppRouter = promptOptions[promptNames.addManagedAppRouter] ?? false;
-    const showRouterOptions = promptOptions[promptNames.showRouterOptions] ?? false;
+    const routerType = promptOptions[promptNames.routerType] ?? false;
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
@@ -180,7 +180,7 @@ export async function getQuestions(
         questions.push(getOverwritePrompt());
     }
 
-    if (showRouterOptions) {
+    if (routerType) {
         log?.info(t('info.routerOptions'));
         questions.push(getRouterOptionsPrompt());
     }
