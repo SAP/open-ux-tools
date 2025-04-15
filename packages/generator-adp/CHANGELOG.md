@@ -1,5 +1,14 @@
 # @sap-ux/generator-adp
 
+## 0.1.8
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/adp-tooling@0.13.29
+    -   @sap-ux/system-access@0.5.36
+
 ## 0.1.7
 
 ### Patch Changes
