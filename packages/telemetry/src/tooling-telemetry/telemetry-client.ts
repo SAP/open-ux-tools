@@ -1,5 +1,5 @@
 import { ApplicationInsightClient } from '../base/client/azure-appinsight-client';
-import type { SampleRate, TelemetryProperties } from '../base/types';
+import type { SampleRate, TelemetryMeasurements, TelemetryProperties } from '../base/types';
 import type { TelemetryHelperProperties, TelemetryEvent, CommonTelemetryProperties } from './types';
 import { processToolsSuiteTelemetry } from '.';
 import { localDatetimeToUTC } from '../base/utils/date';
@@ -33,7 +33,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     public async report(
         eventName: string,
         properties: TelemetryProperties,
-        measurements: { [key: string]: number },
+        measurements: TelemetryMeasurements,
         sampleRate: SampleRate | undefined,
         telemetryHelperProperties?: TelemetryHelperProperties,
         ignoreSettings?: boolean
@@ -127,8 +127,8 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
         event: TelemetryEvent,
         telemetryHelperProperties?: TelemetryHelperProperties
     ): Promise<{
-        finalProperties: Record<string, string | boolean | number>;
-        finalMeasurements: Record<string, number>;
+        finalProperties: TelemetryProperties;
+        finalMeasurements: TelemetryMeasurements;
     }> {
         const fioriProjectCommonProperties = await processToolsSuiteTelemetry(telemetryHelperProperties);
         const telemetryEventCommonProperties = {
