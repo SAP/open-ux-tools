@@ -99,7 +99,8 @@ export async function getPrompts(
                 when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
                     if (answers[PromptNames.systemSelection]) {
                         appList = await fetchAppListForSelectedSystem(
-                            systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider
+                            systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
+                            quickDeployedAppConfig?.appId
                         );
                     }
                     return !!systemQuestions.answers.connectedSystem?.serviceProvider;
