@@ -1,5 +1,14 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.43
+
+### Patch Changes
+
+-   0cdc387: Expose App Frontend Service from cf-sub-generator, with minor code cleanup
+-   Updated dependencies [0cdc387]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.26
+    -   @sap-ux/cf-deploy-config-writer@0.2.3
+
 ## 0.1.42
 
 ### Patch Changes
