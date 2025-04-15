@@ -1,9 +1,9 @@
 import { downloadApp, extractZip } from '../../src/utils/download-utils';
 import AdmZip from 'adm-zip';
-import { PromptState } from '../../src/prompts/prompt-state';
+import { join } from 'path';
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
-import type { SystemSelectionAnswers } from '../../src/app/types';
+import * as PromptState from '../../src/prompts/prompt-state';
 
 jest.mock('adm-zip');
 jest.mock('../../src/utils/logger', () => ({
@@ -19,6 +19,7 @@ describe('extractZip', () => {
     let mockFs: any;
 
     beforeEach(() => {
+        jest.clearAllMocks();
         mockEntry1 = {
             isDirectory: false,
             entryName: 'file1.txt',
@@ -40,20 +41,18 @@ describe('extractZip', () => {
     });
 
     it('should extract files from zip and write them using fs', async () => {
-        const extractedPath = '/tmp/project';
+        const extractedPath = join('/tmp/project');
         const dummyBuffer = Buffer.from('fake zip content');
 
         await extractZip(extractedPath, dummyBuffer, mockFs);
 
         expect(mockZip.getEntries).toHaveBeenCalled();
-
         expect(mockFs.write).toHaveBeenCalledWith(
-            '/tmp/project/file1.txt',
+            join(extractedPath, 'file1.txt'),
             'File 1 content'
         );
-
         expect(mockFs.write).toHaveBeenCalledWith(
-            '/tmp/project/folder/file2.txt',
+            join(extractedPath, 'folder/file2.txt'),
             'File 2 content'
         );
     });
@@ -83,9 +82,10 @@ describe('downloadApp', () => {
     };
 
     beforeEach(() => {
+        jest.clearAllMocks();
         mockDownloadFiles.mockReset();
-        mockGetUi5AbapRepository.mockClear();
-        PromptState.systemSelection = {
+
+        PromptState.PromptState.systemSelection = {
             connectedSystem: {
                 serviceProvider: mockServiceProvider
             }
@@ -98,12 +98,14 @@ describe('downloadApp', () => {
 
         await downloadApp('repo-1');
 
+        expect(mockServiceProvider.getUi5AbapRepository).toHaveBeenCalled();
         expect(mockDownloadFiles).toHaveBeenCalledWith('repo-1');
-        expect(PromptState.downloadedAppPackage).toEqual(mockPackage);
+        expect(PromptState.PromptState.downloadedAppPackage).toEqual(mockPackage);
     });
 
     it('should throw if serviceProvider is undefined', async () => {
-        PromptState.systemSelection = undefined as unknown as Partial<SystemSelectionAnswers>;
+        PromptState.PromptState.systemSelection = undefined as any;
+
         await expect(downloadApp('repo-1')).rejects.toThrow();
     });
 });
