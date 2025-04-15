@@ -202,6 +202,9 @@
       "path": "packages/reload-middleware"
     },
     {
+      "path": "packages/repo-app-download-sub-generator"
+    },
+    {
       "path": "packages/serve-static-middleware"
     },
     {
