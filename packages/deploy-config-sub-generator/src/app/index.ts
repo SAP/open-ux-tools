@@ -13,6 +13,7 @@ import {
     getApiHubOptions,
     getEnvApiHubConfig,
     t,
+    initI18n,
     generatorNamespace,
     getBackendConfig,
     getSupportedTargets,
@@ -116,6 +117,7 @@ export default class extends DeploymentGenerator implements DeployConfigGenerato
      */
     public async initializing(): Promise<void> {
         await super.initializing();
+        await initI18n();
         this.extensionPromptOpts = await getExtensionGenPromptOpts(
             this.env.create.bind(this.env),
             this.rootGeneratorName(),
