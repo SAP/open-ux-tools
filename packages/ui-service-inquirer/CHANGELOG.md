@@ -1,5 +1,47 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.17
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+    -   @sap-ux/inquirer-common@0.6.35
+    -   @sap-ux/odata-service-inquirer@2.2.32
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.40
+
+## 0.0.16
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.39
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/odata-service-inquirer@2.2.31
+    -   @sap-ux/telemetry@0.5.73
+
+## 0.0.15
+
+### Patch Changes
+
+-   d0b2dc2: remove draftEnabled prompt for ABAP CDS view
+
+## 0.0.14
+
+### Patch Changes
+
+-   Updated dependencies [751cad8]
+    -   @sap-ux/odata-service-inquirer@2.2.30
+
+## 0.0.13
+
+### Patch Changes
+
+-   Updated dependencies [3fc72be]
+    -   @sap-ux/odata-service-inquirer@2.2.29
+
 ## 0.0.12
 
 ### Patch Changes
