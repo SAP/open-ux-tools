@@ -24,7 +24,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { RtaEditor, FlpConfig, InternalTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type { RtaEditor, FlpConfig, CompleteTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -685,7 +685,7 @@ export class FlpSandbox {
     private async testSuiteJsGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         initTemplate: string,
         testPaths: string[]
     ): Promise<void> {
@@ -789,7 +789,7 @@ export class FlpSandbox {
     private async testRunnerHtmlGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         htmlTemplate: string,
         id: string
     ): Promise<void> {
@@ -819,7 +819,7 @@ export class FlpSandbox {
     private async testRunnerJsGetHandler(
         res: Response | http.ServerResponse,
         next: NextFunction,
-        config: InternalTestConfig,
+        config: CompleteTestConfig,
         initTemplate: string,
         ns: string
     ): Promise<void> {

@@ -1,5 +1,100 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.1.8
+
+### Patch Changes
+
+-   Updated dependencies [d809536]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.45
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.42
+    -   @sap-ux/odata-service-inquirer@2.2.33
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.61
+
+## 0.1.6
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-sub-generator@0.0.60
+-   @sap-ux/fiori-generator-shared@0.10.2
+-   @sap-ux/inquirer-common@0.6.35
+-   @sap-ux/odata-service-inquirer@2.2.32
+-   @sap-ux/cf-deploy-config-sub-generator@0.1.44
+-   @sap-ux/deploy-config-generator-shared@0.0.42
+
+## 0.1.5
+
+### Patch Changes
+
+-   Updated dependencies [0cdc387]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.43
+
+## 0.1.4
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.59
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.42
+    -   @sap-ux/deploy-config-generator-shared@0.0.41
+    -   @sap-ux/fiori-generator-shared@0.10.1
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/nodejs-utils@0.1.9
+    -   @sap-ux/odata-service-inquirer@2.2.31
+
+## 0.1.3
+
+### Patch Changes
+
+-   Updated dependencies [77b7ab1]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.41
+
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [751cad8]
+    -   @sap-ux/odata-service-inquirer@2.2.30
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [3fc72be]
+    -   @sap-ux/odata-service-inquirer@2.2.29
+
+## 0.1.0
+
+### Minor Changes
+
+-   7e03084: adds headless support to the deploy config sub generator
+
+## 0.0.27
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/odata-service-inquirer@2.2.28
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.58
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.40
+    -   @sap-ux/deploy-config-generator-shared@0.0.40
+    -   @sap-ux/inquirer-common@0.6.33
+
+## 0.0.26
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-sub-generator@0.1.39
+
 ## 0.0.25
 
 ### Patch Changes

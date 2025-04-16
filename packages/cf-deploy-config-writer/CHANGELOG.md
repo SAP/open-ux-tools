@@ -1,5 +1,31 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.3
+
+### Patch Changes
+
+-   0cdc387: Expose App Frontend Service from cf-sub-generator, with minor code cleanup
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/nodejs-utils@0.1.9
+
+## 0.2.1
+
+### Patch Changes
+
+-   77b7ab1: Introduce improvements to handle known issues with CAP
+
+## 0.2.0
+
+### Minor Changes
+
+-   4d3fe73: Expose new App Frontend server
+
 ## 0.1.29
 
 ### Patch Changes
