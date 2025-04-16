@@ -258,6 +258,7 @@ export interface NestedQuickAction {
 }
 
 export interface NestedQuickActionChild {
+    path: string;
     label: string;
     tooltip?: string;
     enabled: boolean;

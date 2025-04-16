@@ -1,5 +1,22 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.1.8
+
+### Patch Changes
+
+-   Updated dependencies [d809536]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.45
+
+## 0.1.7
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.42
+    -   @sap-ux/odata-service-inquirer@2.2.33
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.61
+
 ## 0.1.6
 
 ### Patch Changes
