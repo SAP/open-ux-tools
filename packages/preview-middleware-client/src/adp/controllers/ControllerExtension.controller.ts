@@ -27,7 +27,7 @@ import type { CodeExtResponse, ControllersResponse } from '../api-handler';
 import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
-import type { ExtenControllerData, DeferredExtendControllerData } from '../extend-controller';
+import type { ExtendControllerData, DeferredExtendControllerData } from '../extend-controller';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
 import { notifyUser } from '../utils';
@@ -53,14 +53,14 @@ type ControllerModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
-    public readonly data?: ExtenControllerData;
+    public readonly data?: ExtendControllerData;
     private bundle: TextBundle;
 
     constructor(
         name: string,
         overlays: UI5Element,
         rta: RuntimeAuthoring,
-        data?: ExtenControllerData,
+        data?: ExtendControllerData,
         telemetryData?: QuickActionTelemetryData
     ) {
         super(name, telemetryData);

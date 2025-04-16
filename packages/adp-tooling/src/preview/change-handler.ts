@@ -1,7 +1,7 @@
 import type { Editor } from 'mem-fs-editor';
 import type { AddXMLChange, CommonChangeProperties, CodeExtChange, AnnotationFileChange } from '../types';
 import { ChangeType, TemplateFileName } from '../types';
-import { basename, join, extname } from 'path';
+import { basename, join } from 'path';
 import { DirName, FileName } from '@sap-ux/project-access';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import { render } from 'ejs';
@@ -262,9 +262,8 @@ export async function addControllerExtension(
 ): Promise<void> {
     const { codeRef } = change.content;
     const isTsSupported = isTypescriptSupported(rootPath, fs);
-    const fileExtension = extname(codeRef);
-    const fileName = basename(codeRef, fileExtension);
-    const fullName = `${basename(codeRef, fileExtension)}.${isTsSupported ? 'ts' : 'js'}`;
+    const fileName = basename(codeRef, '.js');
+    const fullName = `${fileName}.${isTsSupported ? 'ts' : 'js'}`;
     const tmplFileName = isTsSupported ? TemplateFileName.TSController : TemplateFileName.Controller;
     const tmplPath = join(__dirname, '../../templates/rta', tmplFileName);
     try {
@@ -277,7 +276,7 @@ export async function addControllerExtension(
         fs.write(join(basePath, DirName.Changes, DirName.Coding, fullName), template);
     } catch (error) {
         logger.error(`Failed to create controller extension "${codeRef}": ${error}`);
-        throw new Error('Failed to create controller extension' + error.message);
+        throw new Error(`Failed to create controller extension: ${error.message}`);
     }
 }
 

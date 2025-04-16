@@ -5,7 +5,7 @@ import { Deferred, createDeferred } from './utils';
 import { DialogFactory, DialogNames } from './dialog-factory';
 import ExtendController from 'sap/ui/rta/plugin/ExtendControllerPlugin';
 
-export interface ExtenControllerData {
+export interface ExtendControllerData {
     deferred: Deferred<DeferredExtendControllerData>;
 }
 

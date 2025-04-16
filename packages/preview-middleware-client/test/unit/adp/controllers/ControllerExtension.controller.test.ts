@@ -11,7 +11,7 @@ import { fetchMock, openMock, sapCoreMock } from 'mock/window';
 import * as apiHandler from '../../../../src/adp/api-handler';
 
 import ControllerExtension from '../../../../src/adp/controllers/ControllerExtension.controller';
-import { ExtenControllerData } from 'open/ux/preview/client/adp/extend-controller';
+import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controller';
 
 describe('ControllerExtension', () => {
     beforeAll(() => {
@@ -528,7 +528,7 @@ describe('ControllerExtension', () => {
                 deferred: {
                     resolve: resolveSpy
                 }
-            } as unknown as ExtenControllerData;
+            } as unknown as ExtendControllerData;
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 overlays as unknown as UI5Element,
