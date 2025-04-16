@@ -224,7 +224,8 @@
         "unparseableOdataVersion": "Unable to parse the odata version from the metadata.",
         "unparseableXML": "Unparseable XML was specified: {{-error}}",
         "noRelevantEntities": "The template and service selected have no relevant entities that you can use.",
-        "cfInstanceCredentialsNotReturned": "Could not retrieve credentials to access: {{serviceInstanceName}}"
+        "cfInstanceCredentialsNotReturned": "Could not retrieve credentials to access: {{serviceInstanceName}}",
+        "v2CatalogService": "Error creating v2 catalog service object: {{-error}}"
     },
     "warnings": {
         "largeMetadataDocument": "The metadata for this OData service is significantly large. It may take some time before this operation completes."

@@ -197,14 +197,14 @@ async function getServiceMetadataAndValidate(
         if (!catalog && version === OdataVersion.v2 && axiosConfig) {
             try {
                 // Create an abap provider instance to get the annotations using the same request config
-                // todo: i18n
-                LoggerHelper.logger.debug('Creating a catalog object for v2 service path to request annotations.');
+                LoggerHelper.logger.debug(
+                    'Creating a catalog service object for v2 service path to request annotations.'
+                );
                 const abapProvider = createForAbap(axiosConfig);
                 catalog = abapProvider.catalog(ODataVersion.v2);
                 LoggerHelper.attachAxiosLogger(catalog.interceptors);
             } catch (err) {
-                // todo i18n
-                LoggerHelper.logger.warn('Error creating v2 catalog.');
+                LoggerHelper.logger.warn(t('error.v2CatalogService', err));
             }
         }
 
