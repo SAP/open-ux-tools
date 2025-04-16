@@ -36,7 +36,7 @@
         "@sap-ux/fiori-generator-shared": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/adp-tooling": "workspace:*",
-        "i18next": "23.5.1",
+        "i18next": "24.2.3",
         "lodash": "4.17.21"
     },
     "devDependencies": {

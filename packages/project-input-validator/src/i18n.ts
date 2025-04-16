@@ -17,7 +17,10 @@ export function addi18nResourceBundle(): void {
  * Initialize i18next with the translations for this module.
  */
 export async function initI18nProjectValidators(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' });
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en'
+    });
     addi18nResourceBundle();
 }
 

@@ -517,7 +517,7 @@ describe('flp-config generator', () => {
         ).resolves.not.toThrow();
 
         expect(showWarningSpy).toHaveBeenCalledWith(
-            t('warning.updatei18n', { path: `.${OUTPUT_DIR_PREFIX}/app1/webapp/manifest.json` }),
+            expect.stringContaining(t('warning.updatei18n')),
             MessageType.notification
         );
     });

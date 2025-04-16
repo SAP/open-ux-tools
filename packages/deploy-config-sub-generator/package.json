@@ -46,7 +46,7 @@
         "@sap-ux/ui5-config": "workspace:*",
         "dotenv": "16.3.1",
         "hasbin": "1.2.3",
-        "i18next": "23.5.1",
+        "i18next": "24.2.3",
         "inquirer-autocomplete-prompt": "2.0.1",
         "yeoman-generator": "5.10.0"
     },

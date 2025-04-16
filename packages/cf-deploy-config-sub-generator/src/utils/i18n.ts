@@ -9,9 +9,12 @@ const cfAppRouterGenNs = 'cf-deploy-config-generator';
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', cfAppRouterGenNs, translations)
-    );
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en'
+    });
+    i18next.addResourceBundle('en', cfAppRouterGenNs, translations);
+
     addInquirerCommonTexts();
 }
 
