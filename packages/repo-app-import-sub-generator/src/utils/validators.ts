@@ -92,3 +92,39 @@ export const validateQfaJsonFile = (config: QfaJsonConfig): boolean => {
 export const isValidPromptState = (targetFolder: string, appId?: string): boolean => {
     return !!(PromptState.systemSelection.connectedSystem?.serviceProvider && appId && targetFolder);
 };
+
+/**
+ * Validates the app selection and handles app download if applicable.
+ *
+ * @param answers - The selected app information.
+ * @param appList - The list of available apps.
+ * @param quickDeployedAppConfig - The quick deployed app configuration.
+ * @returns A promise resolving to a boolean or a validation error message.
+ */
+export async function validateAppSelection(
+    answers: AppInfo,
+    appList: AppIndex,
+    quickDeployedAppConfig?: QuickDeployedAppConfig
+): Promise<string | boolean> {
+    // Quick deploy config exists but no apps found
+    if (quickDeployedAppConfig?.appId && appList.length === 0) {
+        return await getValidationErrorLink();
+    }
+
+    // No apps available at all
+    if (appList.length === 0) {
+        return await getValidationErrorLink();
+    }
+
+    // Valid app selected, try to download
+    if (answers?.appId) {
+        try {
+            await downloadApp(answers.repoName);
+            return true;
+        } catch (error) {
+            return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
+        }
+    }
+
+    return t('prompts.appSelection.noAppSelected'); // Return a meaningful error message if no app is selected
+}

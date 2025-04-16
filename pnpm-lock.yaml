@@ -3310,6 +3310,9 @@ importers:
       '@sap-ux/fiori-tools-settings':
         specifier: workspace:*
         version: link:../fiori-tools-settings
+      '@sap-ux/guided-answers-helper':
+        specifier: workspace:*
+        version: link:../guided-answers-helper
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
