@@ -53,6 +53,7 @@ const mockTelemetryEventIdentifier = () => {
 };
 
 describe('FE V2 quick actions', () => {
+    jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
     let sendActionMock: jest.Mock;
     let subscribeMock: jest.Mock;
     const mockChangeService = {

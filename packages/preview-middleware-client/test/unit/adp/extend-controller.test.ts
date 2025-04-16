@@ -28,6 +28,7 @@ describe('AddFragmentService', () => {
         it('should initialize the ExtendControllerPlugin and set it in RTA plugins', async () => {
             const mockCommandFactory = jest.fn();
             (CommandFactory as unknown as jest.Mock).mockImplementation(() => mockCommandFactory);
+            mockRta.getPlugins = jest.fn().mockReturnValue({});
 
             initExtendControllerPlugin(mockRta);
 

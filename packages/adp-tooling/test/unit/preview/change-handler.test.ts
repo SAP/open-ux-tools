@@ -573,7 +573,7 @@ id=\\"btn-30303030\\""
                     mockFs as unknown as Editor,
                     mockLogger as unknown as Logger
                 )
-            ).rejects.toThrow('Failed to create controller extensionRead failed');
+            ).rejects.toThrow('Failed to create controller extension: Read failed');
 
             expect(mockLogger.error).toHaveBeenCalledWith(
                 expect.stringContaining('Failed to create controller extension "controllers/MyController.js"')
