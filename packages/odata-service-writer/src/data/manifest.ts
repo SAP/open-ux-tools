@@ -508,7 +508,7 @@ export async function updateManifest(
         );
     }
     // Throw if only update is required and service is not found in manifest.json
-    if (forceServiceUpdate && service.name && dataSources?.[service.name]) {
+    if (forceServiceUpdate && service.name && !dataSources?.[service.name]) {
         throw new Error(
             t('error.requiredProjectPropertyNotFound', {
                 property: `'${appProp}.dataSources.${service.name}'`,

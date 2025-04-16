@@ -10,7 +10,6 @@ import { UI5Config } from '@sap-ux/ui5-config';
 import { tmpdir } from 'os';
 import { t } from '../../src/i18n';
 import * as projectAccess from '@sap-ux/project-access';
-import { config } from 'process';
 
 const testDir = tmpdir();
 const commonConfig = {
@@ -569,18 +568,18 @@ describe('generate', () => {
                 `);
                 fs.delete(join('webapp', 'manifest.json'));
             });
-            test('model called mainService is being added, "" should be used for model', async () => {
+            test('mainService is being updated, "" should be used for model', async () => {
                 // mainService model already exists
                 fs.writeJSON(join('webapp', 'manifest.json'), {
                     'sap.app': { dataSources: { mainService: { type: 'OData' } } },
                     'sap.ui5': { models: { '': { dataSource: 'mainService' } } }
                 });
                 const configCopy = cloneDeep(Object.assign({}, config, { name: 'mainService' }));
-                await enhanceData('', configCopy, fs);
+                await enhanceData('', configCopy, fs, true);
                 expect(configCopy).toMatchInlineSnapshot(`
                     Object {
-                      "model": "mainService1",
-                      "name": "mainService1",
+                      "model": "",
+                      "name": "mainService",
                       "path": "/V2/Northwind/Northwind.svc/",
                       "previewSettings": Object {
                         "path": "/V2",
