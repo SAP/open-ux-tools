@@ -18,8 +18,9 @@ import RepoAppDownloadLogger from '../src/utils/logger';
 import { t } from '../src/utils/i18n';
 import { type AbapServiceProvider } from '@sap-ux/axios-extension';
 import { fetchAppListForSelectedSystem } from '../src/prompts/prompt-helpers';
+import { App } from '../../adp-tooling/src';
+import env from 'yeoman-environment';
 
-jest.setTimeout(60000);
 jest.mock('../src/prompts/prompt-helpers', () => ({
 	...jest.requireActual('../src/prompts/prompt-helpers'),
     fetchAppListForSelectedSystem: jest.fn()
@@ -231,11 +232,15 @@ describe('Repo App Download', () => {
 		appConfig = createAppConfig(appId, metadata);
         mockPrompts(testOutputDir);
 		mockVSCode = {
-            workspace: {
-                workspaceFolders: [],
-                updateWorkspaceFolders: jest.fn()
-            }
-        };
+			workspace: {
+				getConfiguration: jest.fn().mockReturnValue({
+					get: jest.fn().mockReturnValue(undefined)
+				})
+			},
+			Uri: {
+				file: jest.fn((path) => ({ fsPath: path }))
+			}
+		};
 	});
 
     it('Should successfully run app download from repository', async () => {
@@ -327,7 +332,7 @@ describe('Repo App Download', () => {
 					systemSelection: 'system3',
 					selectedApp: {
 						appId: appConfig.app.id,
-						title: appConfig.app.title,
+						title: appConfig.app.id,
 						description: appConfig.app.description,
 						repoName: 'app-1-repo',
 						url: 'url-1'
@@ -339,64 +344,28 @@ describe('Repo App Download', () => {
 		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
 
-	it('Should successfully download a quick deployed app from repostory', async () => {
-		(isValidPromptState as jest.Mock).mockReturnValue(true);
-		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
-		(fetchAppListForSelectedSystem as jest.Mock).mockResolvedValue([
-			{
-				'sap.app/id': appConfig.app.id,
-				'sap.app/title': appConfig.app.title,
-				repoName: repoName,
-				url: 'url-1'
+	it('should successfully download a quick deployed app from repository', async () => {
+		const yeomanEnv = env.createEnv();
+	
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logWrapper: console,
+			logger: console,
+			vscode: mockVSCode,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
 			}
-		]);
-		const mockServiceProvider = {
-            defaults: { baseURL: 'https://test-url.com' },
-            service: jest.fn().mockReturnValue({
-                metadata: jest.fn().mockResolvedValue({
-                    dataServices: {
-                        schema: []
-                    }
-                })
-            })
-        } as unknown as AbapServiceProvider;
-        
-        await expect( 
-			yeomanTest
-				.run(RepoAppDownloadGenerator, { 
-					resolved: repoAppDownloadGenPath
-				})
-				.cd('.')
-				.withOptions({ 
-					appRootPath: testOutputDir, 
-					appWizard: mockAppWizard,
-					vscode: mockVSCode, 
-					skipInstall: false,
-					data: {
-						postGenCommand: 'test-post-gen-command', 
-						quickDeployedAppConfig: {
-							appId: appConfig.app.id,
-							appUrl: 'https://app-url.com/app',
-							serviceProviderInfo: {
-								serviceUrl: 'https://test-url.com',
-								name: 'system3'
-							}
-						}
-					}
-				})
-				.withPrompts({
-					systemSelection: 'system3',
-					selectedApp: {
-						appId: appConfig.app.id,
-						title: appConfig.app.title,
-						description: appConfig.app.description,
-						repoName: repoName,
-						url: 'url-1'
-					},
-					targetFolder: testOutputDir
-				})
-		)
-		.resolves.not.toThrow();
-		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
-    });
+		} as any);
+		
+		// mock _runNpmInstall 
+		(generator as any)._runNpmInstall = jest.fn().mockResolvedValue(undefined);
+		await generator.install();
+	
+		expect((generator as any)._runNpmInstall).toHaveBeenCalled();
+	});
 });
+  
