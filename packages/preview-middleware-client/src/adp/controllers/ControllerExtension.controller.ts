@@ -361,8 +361,8 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             view,
             'codeExt',
             controllerRef,
-            undefined,
-            flexSettings
+            flexSettings,
+            undefined
         );
 
         await commandExecutor.pushAndExecuteCommand(command);
