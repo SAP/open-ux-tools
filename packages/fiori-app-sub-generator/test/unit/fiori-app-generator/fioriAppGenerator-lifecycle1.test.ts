@@ -452,7 +452,7 @@ describe('Test FioriAppGenerator', () => {
             namespace: ui5ApplicationAnswers.namespace,
             description: ui5ApplicationAnswers.description,
             localUI5Version: '3.2.1',
-            flpAppId: 'testAppNametestNamespace-display'
+            flpAppId: 'testNamespacetestAppName-display'
         });
     });
 
@@ -522,7 +522,7 @@ describe('Test FioriAppGenerator', () => {
             description: ui5ApplicationAnswers.description,
             enableNpmWorkspaces: undefined,
             localUI5Version: '3.2.1',
-            flpAppId: 'testAppNametestNamespace-display'
+            flpAppId: 'testNamespacetestAppName-display'
         });
     });
 
@@ -563,7 +563,7 @@ describe('Test FioriAppGenerator', () => {
             localUI5Version: '3.2.1',
             addDeployConfig: true,
             addFlpConfig: true,
-            flpAppId: 'testAppNametestNamespace-display'
+            flpAppId: 'testNamespacetestAppName-display'
         });
 
         expect(addDeployGen).toHaveBeenCalledWith(
