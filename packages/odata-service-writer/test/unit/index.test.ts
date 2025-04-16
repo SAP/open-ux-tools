@@ -251,6 +251,59 @@ describe('generate', () => {
             });
         });
 
+        it('Valid OData V2 service, service name exists, generate unique', async () => {
+            // Test to verify that service names are generated unique if necessary
+            const existingName = 'existing';
+            const config = {
+                ...commonConfig,
+                version: OdataVersion.v2,
+                name: existingName
+            };
+            fs.writeJSON(join(testDir, 'webapp/manifest.json'), {
+                'sap.app': {
+                    id: 'correct',
+                    dataSources: { [existingName]: { type: 'OData' }, mainService: { type: 'OData' } }
+                }
+            });
+            await generate(testDir, config, fs);
+            // verify updated manifest.json
+            const manifest = fs.readJSON(join(testDir, 'webapp', 'manifest.json')) as Partial<projectAccess.Manifest>;
+            expect(manifest?.['sap.app']?.dataSources).toStrictEqual({
+                existing: {
+                    type: 'OData'
+                },
+                existing1: {
+                    type: 'OData',
+                    uri: '/sap/odata/testme/',
+                    settings: {
+                        annotations: [],
+                        localUri: 'localService/existing1/metadata.xml',
+                        odataVersion: '2.0'
+                    }
+                },
+                mainService: {
+                    type: 'OData'
+                }
+            });
+            expect(fs.exists(join(testDir, 'webapp', 'localService', 'existing1', 'metadata.xml'))).toBe(true);
+            // Make sure files for other services are touched/created
+            expect(fs.exists(join(testDir, 'webapp', 'localService', 'existing', 'metadata.xml'))).toBe(false);
+            expect(fs.exists(join(testDir, 'webapp', 'localService', 'mainService', 'metadata.xml'))).toBe(false);
+            // verify the updated package.json
+            expect(fs.readJSON(join(testDir, 'package.json'))).toStrictEqual({
+                devDependencies: {
+                    '@sap-ux/ui5-middleware-fe-mockserver': '2',
+                    '@sap/ux-ui5-tooling': '1'
+                },
+                scripts: {
+                    'start-mock': `fiori run --config ./ui5-mock.yaml --open \"/\"`
+                },
+                ui5: {
+                    dependencies: ['@sap-ux/ui5-middleware-fe-mockserver', '@sap/ux-ui5-tooling']
+                }
+            });
+        });
+
         it('Valid OData V2 service with multiple annotations', async () => {
             const config = {
                 ...commonConfig,
