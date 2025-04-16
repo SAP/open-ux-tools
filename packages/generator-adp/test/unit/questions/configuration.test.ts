@@ -52,8 +52,8 @@ const provider = {
 
 const sourceSystems: SystemLookup = {
     getSystems: jest.fn().mockResolvedValue([
-        { Name: 'SystemB', Client: '200', Url: 'http://systemb.com', Authentication: 'Basic' },
-        { Name: 'systemA', Client: '010', Url: 'http://systema.com', Authentication: 'NoAuthentication' }
+        { Name: 'SystemB', Client: '200', Url: 'urlB', Authentication: 'Basic' },
+        { Name: 'systemA', Client: '010', Url: 'urlA', Authentication: 'NoAuthentication' }
     ]),
     getSystemRequiresAuth: jest.fn().mockResolvedValue(false)
 } as unknown as SystemLookup;

@@ -93,7 +93,7 @@ const originalCwd = process.cwd();
 const testOutputDir = join(__dirname, 'test-output');
 const generatorPath = join(__dirname, '../src/app/index.ts');
 
-const endpoints = [{ Name: 'SystemA', Client: '010', Url: 'http://systema.com' }];
+const endpoints = [{ Name: 'SystemA', Client: '010', Url: 'urlA' }];
 const apps: SourceApplication[] = [
     {
         ach: '',
@@ -107,7 +107,7 @@ const apps: SourceApplication[] = [
 ];
 
 const answers = {
-    system: 'http://systema.com',
+    system: 'urlA',
     username: 'user1',
     password: 'pass1',
     application: { id: 'sap.ui.demoapps.f1', title: 'App One' },
@@ -174,7 +174,7 @@ describe('Adaptation Project Generator Integration Test', () => {
             callback(null, { stdout: 'ok', stderr: '' });
         });
         getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
-        getProviderConfigMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
+        getProviderConfigMock.mockResolvedValue({ url: 'urlA', client: '010' });
         isAbapCloudMock.mockResolvedValue(false);
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
 

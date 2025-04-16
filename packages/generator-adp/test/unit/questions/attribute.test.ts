@@ -155,10 +155,10 @@ describe('Attribute Prompts', () => {
             const prompts = getPrompts(mockPath, mockConfig);
             const prompt = prompts.find((p) => p.name === attributePromptNames.ui5Version)!;
 
-            const shouldShow = await (prompt as any).when();
+            const shouldShow = await (prompt as any).when;
             expect(shouldShow).toBe(true);
 
-            const choices = await (prompt as any).choices();
+            const choices = await (prompt as any).choices;
             expect(choices).toEqual(mockConfig.ui5Versions);
 
             const defaultVal = await (prompt as any).default();
@@ -208,7 +208,7 @@ describe('Attribute Prompts', () => {
             expect(prompt.message).toBe('Enable TypeScript');
             expect(prompt.default).toBe(false);
 
-            const whenFn = (prompt as any).when();
+            const whenFn = (prompt as any).when;
             expect(whenFn).toBe(true);
         });
     });

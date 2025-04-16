@@ -190,8 +190,8 @@ function getUi5VersionPrompt(
         type: 'list',
         name: attributePromptNames.ui5Version,
         message: t('prompts.ui5VersionLabel'),
-        when: () => !isCloudProject,
-        choices: () => ui5Versions,
+        when: !isCloudProject,
+        choices: ui5Versions,
         guiOptions: {
             applyDefaultWhenDirty: true,
             hint: t('prompts.ui5VersionTooltip'),
@@ -239,7 +239,7 @@ function getEnableTypeScriptPrompt(options?: EnableTypeScriptPromptOptions): Att
         name: attributePromptNames.enableTypeScript,
         message: 'Enable TypeScript',
         default: false,
-        when: () => options?.hide ?? true,
+        when: options?.hide ?? true,
         guiOptions: {
             breadcrumb: true
         }

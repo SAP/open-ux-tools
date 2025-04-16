@@ -73,7 +73,7 @@ server:
         adp:
           target:
             client: '010'
-            url: http://systema.com
+            url: urlA
           ignoreCertErrors: false
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
@@ -81,7 +81,7 @@ server:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - client: '010'
-            url: http://systema.com
+            url: urlA
             path: /sap
         ui5:
           path:
