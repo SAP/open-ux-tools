@@ -16,9 +16,6 @@ import { hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
 import { FileName, DirName, type Manifest } from '@sap-ux/project-access';
 import RepoAppDownloadLogger from '../src/utils/logger';
 import { t } from '../src/utils/i18n';
-import { type AbapServiceProvider } from '@sap-ux/axios-extension';
-import { fetchAppListForSelectedSystem } from '../src/prompts/prompt-helpers';
-import { App } from '../../adp-tooling/src';
 import env from 'yeoman-environment';
 
 jest.mock('../src/prompts/prompt-helpers', () => ({
