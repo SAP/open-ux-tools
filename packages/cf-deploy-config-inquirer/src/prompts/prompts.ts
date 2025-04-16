@@ -135,7 +135,7 @@ function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
             let additionalMessage;
             if (selectedRouter && selectedRouter === RouterModuleType.AppFront) {
                 additionalMessage = {
-                    message: t('warnings.appFrontendServiceRouterChoice'),
+                    message: t('warning.appFrontendServiceRouterChoice'),
                     severity: Severity.warning
                 };
             }
