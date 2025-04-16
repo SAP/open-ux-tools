@@ -9,4 +9,5 @@ UI : {
     Chart.$Type.ChartType : 'UI.ChartDefinitionType',
     ![Chart#test].$Type : ,
     ![Chart#qualifier2].$Type : '',
+    Badge.$MyType: 'test'
 };

@@ -20,7 +20,7 @@ export const annotationHandler: NodeHandler<Annotation> = {
     type: ANNOTATION_TYPE,
     convert,
     getChildren(state: VisitorState, annotation: Annotation): AnnotationNode[] {
-        if (!annotation.term.value.includes(ReservedProperties.Type) && annotation.value) {
+        if (!annotation.term.segments.find((item) => item.value === ReservedProperties.Type) && annotation.value) {
             return [annotation.value];
         } else {
             return [];

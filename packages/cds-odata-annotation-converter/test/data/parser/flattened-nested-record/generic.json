@@ -302,5 +302,60 @@
                 "content": []
             }
         ]
+    },
+    {
+        "type": "element",
+        "range": "[(11,4)..(11,25)]",
+        "name": "Annotation",
+        "attributes": {
+            "Term": {
+                "type": "attribute",
+                "name": "Term",
+                "value": "UI.Badge",
+                "valueRange": "[(11,4)..(11,9)]"
+            }
+        },
+        "contentRange": "[(11,10)..(11,25)]",
+        "content": [
+            {
+                "type": "element",
+                "range": "[(11,10)..(11,25)]",
+                "name": "Record",
+                "attributes": {},
+                "contentRange": "[(11,10)..(11,25)]",
+                "content": [
+                    {
+                        "type": "element",
+                        "range": "[(11,10)..(11,25)]",
+                        "name": "PropertyValue",
+                        "attributes": {
+                            "Property": {
+                                "type": "attribute",
+                                "name": "Property",
+                                "value": "$MyType",
+                                "valueRange": "[(11,10)..(11,17)]"
+                            }
+                        },
+                        "contentRange": "[(11,19)..(11,25)]",
+                        "content": [
+                            {
+                                "type": "element",
+                                "range": "[(11,19)..(11,25)]",
+                                "name": "String",
+                                "attributes": {},
+                                "contentRange": "[(11,20)..(11,24)]",
+                                "content": [
+                                    {
+                                        "type": "text",
+                                        "range": "[(11,20)..(11,24)]",
+                                        "text": "test"
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ]
+            }
+        ]
     }
 ]

@@ -556,9 +556,60 @@
                         "range": "[(10,33)..(10,34)]"
                     }
                 }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Badge.$MyType",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Badge",
+                            "range": "[(11,4)..(11,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$MyType",
+                            "range": "[(11,10)..(11,17)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(11,9)..(11,10)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(11,4)..(11,17)]"
+                },
+                "range": "[(11,4)..(11,25)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(11,17)..(11,18)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "test",
+                    "range": "[(11,19)..(11,25)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(11,19)..(11,20)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(11,24)..(11,25)]"
+                    }
+                }
             }
         ],
-        "range": "[(0,5)..(11,1)]",
+        "range": "[(0,5)..(12,1)]",
         "commas": [
             {
                 "type": "token",
@@ -619,10 +670,10 @@
         "closeToken": {
             "type": "token",
             "value": "}",
-            "range": "[(11,0)..(11,1)]"
+            "range": "[(12,0)..(12,1)]"
         }
     },
-    "range": "[(0,0)..(11,1)]",
+    "range": "[(0,0)..(12,1)]",
     "colon": {
         "type": "token",
         "value": ":",
