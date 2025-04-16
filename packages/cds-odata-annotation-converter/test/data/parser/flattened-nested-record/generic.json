@@ -208,22 +208,7 @@
             }
         },
         "contentRange": "[(6,28)..(6,35)]",
-        "content": [
-            {
-                "type": "element",
-                "range": "[(6,29)..(6,35)]",
-                "name": "String",
-                "attributes": {},
-                "contentRange": "[(6,30)..(6,34)]",
-                "content": [
-                    {
-                        "type": "text",
-                        "range": "[(6,30)..(6,34)]",
-                        "text": "test"
-                    }
-                ]
-            }
-        ]
+        "content": []
     },
     {
         "type": "element",
@@ -258,22 +243,7 @@
             }
         },
         "contentRange": "[(8,27)..(8,52)]",
-        "content": [
-            {
-                "type": "element",
-                "range": "[(8,28)..(8,52)]",
-                "name": "String",
-                "attributes": {},
-                "contentRange": "[(8,29)..(8,51)]",
-                "content": [
-                    {
-                        "type": "text",
-                        "range": "[(8,29)..(8,51)]",
-                        "text": "UI.ChartDefinitionType"
-                    }
-                ]
-            }
-        ]
+        "content": []
     },
     {
         "type": "element",
