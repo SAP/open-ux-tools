@@ -230,10 +230,12 @@ describe('Repo App Download', () => {
         mockPrompts(testOutputDir);
 		mockVSCode = {
 			workspace: {
+                workspaceFolders: [],
+                updateWorkspaceFolders: jest.fn(),
 				getConfiguration: jest.fn().mockReturnValue({
 					get: jest.fn().mockReturnValue(undefined)
 				})
-			},
+            },
 			Uri: {
 				file: jest.fn((path) => ({ fsPath: path }))
 			}
@@ -329,7 +331,7 @@ describe('Repo App Download', () => {
 					systemSelection: 'system3',
 					selectedApp: {
 						appId: appConfig.app.id,
-						title: appConfig.app.id,
+						title: appConfig.app.title,
 						description: appConfig.app.description,
 						repoName: 'app-1-repo',
 						url: 'url-1'
@@ -347,8 +349,7 @@ describe('Repo App Download', () => {
 		const generator = new RepoAppDownloadGenerator([], {
 			env: yeomanEnv,
 			appWizard: mockAppWizard as AppWizard,
-			logWrapper: console,
-			logger: console,
+			logger: {},
 			vscode: mockVSCode,
 			data: {
 				quickDeployedAppConfig: {
@@ -356,7 +357,7 @@ describe('Repo App Download', () => {
 					serviceProviderInfo: { name: 'system3' }
 				}
 			}
-		} as any);
+		});
 		
 		// mock _runNpmInstall 
 		(generator as any)._runNpmInstall = jest.fn().mockResolvedValue(undefined);
