@@ -58,7 +58,9 @@ export class AddControllerToPageQuickAction
     }
 
     protected get textKey() {
-        return this.controllerExists || this.pendingChangeExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
+        return this.controllerExists || this.pendingChangeExists
+            ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER'
+            : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
     }
 
     async execute(): Promise<FlexCommand[]> {
@@ -78,10 +80,8 @@ export class AddControllerToPageQuickAction
 
     hasPendingChange(): boolean {
         const view = this.context.view;
-        // @ts-ignore
-        const baseControllerName = view.getControllerModuleName()
-            ? // @ts-ignore
-              `module:${view.getControllerModuleName()}`
+        const baseControllerName = view?.getControllerModuleName?.()
+            ? `module:${view.getControllerModuleName()}`
             : view.getController()?.getMetadata().getName();
 
         return checkForExistingChange(this.context.rta, 'codeExt', 'controllerName', baseControllerName);

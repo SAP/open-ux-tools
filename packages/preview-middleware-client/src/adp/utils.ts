@@ -80,11 +80,11 @@ export function checkForExistingChange(
 
     return allCommands.some((command: FlexCommand) => {
         if (typeof command.getCommands === 'function') {
-            const addXmlCommand = command
+            const subCommand = command
                 .getCommands()
                 .find((c: FlexCommand) => c?.getProperty('name') === commandName);
 
-            return addXmlCommand && matchesChangeProperty(addXmlCommand, propertyName, propertyValue);
+            return subCommand && matchesChangeProperty(subCommand, propertyName, propertyValue);
         } else {
             return matchesChangeProperty(command, propertyName, propertyValue);
         }
