@@ -204,7 +204,7 @@ async function getServiceMetadataAndValidate(
                 catalog = abapProvider.catalog(ODataVersion.v2);
                 LoggerHelper.attachAxiosLogger(catalog.interceptors);
             } catch (err) {
-                LoggerHelper.logger.warn(t('error.v2CatalogService', err));
+                LoggerHelper.logger.warn(t('error.v2CatalogServiceNoAnnotations', err));
             }
         }
 
