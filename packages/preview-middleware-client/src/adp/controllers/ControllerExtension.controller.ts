@@ -29,12 +29,13 @@ import BaseDialog from './BaseDialog.controller';
 import { getControllerInfo } from '../utils';
 import type { ExtenControllerData, DeferredExtendControllerData } from '../extend-controller';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-import { getResourceModel, getTextBundle } from '../../i18n';
+import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
 import { notifyUser } from '../utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
 import CommandExecutor from '../command-executor';
 import { getControlById } from '../../utils/core';
 import { checkForExistingChange } from '../utils';
+
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
 }
@@ -53,6 +54,7 @@ type ControllerModel = JSONModel & {
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
     public readonly data?: ExtenControllerData;
+    private bundle: TextBundle;
 
     constructor(
         name: string,
@@ -78,8 +80,10 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         this.setEscapeHandler();
 
-        await this.buildDialogData();
         const resourceModel = await getResourceModel('open.ux.preview.client');
+        this.bundle = await getTextBundle();
+
+        await this.buildDialogData();
 
         this.dialog.setModel(resourceModel, 'i18n');
         this.dialog.setModel(this.model);
@@ -112,12 +116,25 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
 
-        const pendingChangeExists = checkForExistingChange(this.rta, 'codeExt', 'codeRef', `${controllerName}.js`);
+        const pendingChangeExists = checkForExistingChange(
+            this.rta,
+            'codeExt',
+            'content.codeRef',
+            `${controllerName}.js`
+        );
 
-        if (fileExists || pendingChangeExists) {
+        if (fileExists) {
             updateDialogState(
                 ValueState.Error,
                 'Enter a different name. The controller name that you entered already exists in your project.'
+            );
+            return;
+        }
+
+        if (pendingChangeExists) {
+            updateDialogState(
+                ValueState.Error,
+                'Enter a different name. The controller name that you entered already exists as a pending change.'
             );
             return;
         }
@@ -187,8 +204,17 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const { controllerName, viewId } = getControllerInfo(overlayControl);
         const data = await this.getExistingController(controllerName);
 
+        const hasPendingChangeForView = checkForExistingChange(
+            this.rta,
+            'codeExt',
+            'selector.controllerName',
+            controllerName
+        );
+
         if (data) {
-            if (data?.controllerExists) {
+            if (hasPendingChangeForView) {
+                this.updateModelForExistingPendingChange();
+            } else if (data?.controllerExists) {
                 this.updateModelForExistingController(data);
             } else {
                 this.updateModelForNewController(viewId, data.isTsSupported);
@@ -211,8 +237,10 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         const content = this.dialog.getContent();
 
-        const form = content[0] as SimpleForm;
-        form.setVisible(false);
+        const form0 = content[0] as SimpleForm;
+        form0.setVisible(false);
+        const form2 = content[2] as SimpleForm;
+        form2.setVisible(false);
 
         const messageForm = content[1] as SimpleForm;
         messageForm.setVisible(true);
@@ -222,6 +250,24 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         } else {
             this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
         }
+        this.dialog.getEndButton().setText('Close');
+    }
+
+    /**
+     * Updates the model properties for an existing controller in a pending change.
+     */
+    private updateModelForExistingPendingChange(): void {
+        const content = this.dialog.getContent();
+
+        const form0 = content[0] as SimpleForm;
+        form0.setVisible(false);
+        const form1 = content[1] as SimpleForm;
+        form1.setVisible(false);
+
+        const messageForm = content[2] as SimpleForm;
+        messageForm.setVisible(true);
+
+        this.dialog.getBeginButton().setVisible(false);
         this.dialog.getEndButton().setText('Close');
     }
 

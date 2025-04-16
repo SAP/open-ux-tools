@@ -30,12 +30,10 @@ export class AddControllerToPageQuickAction
     }
 
     private controllerExists = false;
-    private pendingChangeExists = false;
 
     async initialize(): Promise<void> {
         const version = await getUi5Version();
         const isReuseComponent = await getReuseComponentChecker(version);
-        this.pendingChangeExists = this.hasPendingChange();
 
         for (const control of getRelevantControlFromActivePage(
             this.context.controlIndex,
@@ -58,9 +56,7 @@ export class AddControllerToPageQuickAction
     }
 
     protected get textKey() {
-        return this.controllerExists || this.pendingChangeExists
-            ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER'
-            : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
+        return this.controllerExists ? 'QUICK_ACTION_SHOW_PAGE_CONTROLLER' : 'QUICK_ACTION_ADD_PAGE_CONTROLLER';
     }
 
     async execute(): Promise<FlexCommand[]> {
@@ -76,14 +72,5 @@ export class AddControllerToPageQuickAction
             );
         }
         return [];
-    }
-
-    hasPendingChange(): boolean {
-        const view = this.context.view;
-        const baseControllerName = view?.getControllerModuleName?.()
-            ? `module:${view.getControllerModuleName()}`
-            : view.getController()?.getMetadata().getName();
-
-        return checkForExistingChange(this.context.rta, 'codeExt', 'controllerName', baseControllerName);
     }
 }

@@ -10,7 +10,7 @@ import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
 import { getControlById } from '../utils/core';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import FlexChange from 'sap/ui/fl/Change';
+import type ChangeDefinition from 'sap/ui/fl/Change';
 
 import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
@@ -66,27 +66,25 @@ export function createDeferred<T>(): Deferred<T> {
  *
  * @param {RuntimeAuthoring} rta - The RuntimeAuthoring instance to check for existing changes.
  * @param {string} commandName - The name of the fragment to check for existing changes.
- * @param {string} propertyName - The name of the property to check in the change content.
+ * @param {string} propertyPath - The path to the property as string separated by dot in the change definition to check.
  * @param {string} propertyValue - The value to match against the specified property.
  * @returns {Promise<boolean>} A promise that resolves to `true` if a matching change is found, otherwise `false`.
  */
 export function checkForExistingChange(
     rta: RuntimeAuthoring,
     commandName: string,
-    propertyName: string,
+    propertyPath: string,
     propertyValue: string
 ): boolean {
     const allCommands = rta.getCommandStack().getCommands();
 
     return allCommands.some((command: FlexCommand) => {
         if (typeof command.getCommands === 'function') {
-            const subCommand = command
-                .getCommands()
-                .find((c: FlexCommand) => c?.getProperty('name') === commandName);
+            const subCommand = command.getCommands().find((c: FlexCommand) => c?.getProperty('name') === commandName);
 
-            return subCommand && matchesChangeProperty(subCommand, propertyName, propertyValue);
+            return subCommand && matchesChangeProperty(subCommand, propertyPath, propertyValue);
         } else {
-            return matchesChangeProperty(command, propertyName, propertyValue);
+            return matchesChangeProperty(command, propertyPath, propertyValue);
         }
     });
 }
@@ -95,21 +93,22 @@ export function checkForExistingChange(
  * Checks if a specific property in the command's change matches the given value.
  *
  * @param {FlexCommand} command - The command object containing the prepared change to be examined.
- * @param {string} propertyName - The name of the property to check in the change content.
+ * @param {string} propertyPath - The path to the property in the change definition to check.
  * @param {string} propertyValue - The value to match against the specified property.
  * @returns {boolean} Returns true if the command's change contains the specified property with the matching value; otherwise, returns false.
  */
-export function matchesChangeProperty(command: FlexCommand, propertyName: string, propertyValue: string): boolean {
+export function matchesChangeProperty(command: FlexCommand, propertyPath: string, propertyValue: string): boolean {
     if (typeof command.getPreparedChange !== 'function') {
         return false;
     }
-    const change = command.getPreparedChange() as unknown as FlexChange<Record<string, any>>;
+    const change = command.getPreparedChange().getDefinition();
 
-    return (
-        change.getContent?.()?.[propertyName]?.includes(propertyValue) ||
-        change.getProperty(propertyName)?.includes(propertyValue) ||
-        false
-    );
+    function getNestedProperty(obj: Record<string, any>, path: string): any {
+        return path.split('.').reduce((acc, key) => acc?.[key], obj);
+    }
+
+    const nestedProperty = getNestedProperty(change, propertyPath) as string;
+    return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
 }
 
 /**

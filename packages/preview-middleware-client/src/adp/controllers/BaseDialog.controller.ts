@@ -170,7 +170,7 @@ export default abstract class BaseDialog<T extends BaseDialogModel = BaseDialogM
         const changeExists = checkForExistingChange(
             this.rta,
             'addXMLAtExtensionPoint',
-            'fragmentPath',
+            'content.fragmentPath',
             `${fragmentName}.fragment.xml`
         );
 
