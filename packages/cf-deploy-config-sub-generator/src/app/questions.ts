@@ -17,6 +17,7 @@ import { t } from '../utils';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Answers, Question } from 'inquirer';
 import { withCondition } from '@sap-ux/inquirer-common';
+import type { Logger } from '@sap-ux/logger';
 
 /**
  * Fetches the Cloud Foundry deployment configuration questions.
@@ -68,7 +69,7 @@ export async function getCFQuestions({
     };
 
     DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));
-    return getPrompts(options);
+    return getPrompts(options, DeploymentGenerator.logger as unknown as Logger);
 }
 
 /**

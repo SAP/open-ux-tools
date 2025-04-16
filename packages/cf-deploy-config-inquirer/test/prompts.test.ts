@@ -272,7 +272,7 @@ describe('Prompt Generation Tests', () => {
             expect(
                 ((routerTypePrompt as YUIQuestion)?.additionalMessages as Function)(RouterModuleType.AppFront)
             ).toStrictEqual({
-                message: t('warnings.appFrontendServiceRouterChoice'),
+                message: t('warning.appFrontendServiceRouterChoice'),
                 severity: Severity.warning
             });
         });
