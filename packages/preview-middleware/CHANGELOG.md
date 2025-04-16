@@ -1,5 +1,39 @@
 # @sap-ux/preview-middleware
 
+## 0.19.23
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
+## 0.19.22
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.29
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.21
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
+## 0.19.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.28
+
+## 0.19.19
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/adp-tooling@0.13.27
+    -   @sap-ux/system-access@0.5.35
+
 ## 0.19.18
 
 ### Patch Changes

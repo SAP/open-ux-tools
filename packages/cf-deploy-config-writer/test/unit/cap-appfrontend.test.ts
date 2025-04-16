@@ -28,6 +28,7 @@ const isAppStudioMock = isAppStudio as jest.Mock;
 let hasSyncMock: jest.SpyInstance;
 let commandRunnerMock: jest.SpyInstance;
 let unitTestFs: Editor;
+const originalPlatform = process.platform;
 
 describe('CF Writer with CAP App Frontend', () => {
     const outputDir = join(__dirname, '../test-output', 'capwithappfrontend');
@@ -58,6 +59,9 @@ describe('CF Writer with CAP App Frontend', () => {
 
     afterAll(async () => {
         jest.resetAllMocks();
+        Object.defineProperty(process, 'platform', {
+            value: originalPlatform
+        });
     });
 
     describe('Generate deployment config', () => {
@@ -87,6 +91,9 @@ describe('CF Writer with CAP App Frontend', () => {
         });
 
         test('Generate CAP project with App Frontend Service', async () => {
+            Object.defineProperty(process, 'platform', {
+                value: 'win32'
+            });
             const mtaId = 'base';
             const mtaPath = join(outputDir, mtaId);
             fsExtra.mkdirSync(mtaPath, { recursive: true });

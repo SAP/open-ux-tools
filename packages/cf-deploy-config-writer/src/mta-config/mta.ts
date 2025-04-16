@@ -360,10 +360,9 @@ export class MtaConfig {
     /**
      * Add a managed XSUAA service to the MTA.
      *
-     * @param addTenant - If true, tenant mode is added to the service instead of xs-security.json
      * @private
      */
-    private async addManagedUAAWithSecurity(addTenant: boolean = false): Promise<void> {
+    private async addManagedUAAWithSecurity(): Promise<void> {
         this.log?.debug(t('debug.addXsuaaService'));
         const resource: mta.Resource = {
             name: `${this.prefix.slice(0, 100)}-uaa`,
@@ -373,7 +372,7 @@ export class MtaConfig {
                 service: 'xsuaa',
                 'service-name': `${this.prefix.slice(0, 100)}-xsuaa-service`,
                 'service-plan': 'application',
-                ...(addTenant
+                ...(this.modules.has('nodejs') && this.modules.has('com.sap.application.content:appfront')
                     ? {
                           config: {
                               xsappname: `${this.prefix.slice(0, 100)}-\${org}-\${space}`,
@@ -986,9 +985,12 @@ export class MtaConfig {
         return this.dirty;
     }
 
+    /**
+     * Add an App Router to the MTA.
+     */
     public async addAppFrontAppRouter(): Promise<void> {
         if (!this.resources.has(ManagedXSUAA)) {
-            await this.addManagedUAAWithSecurity(true);
+            await this.addManagedUAAWithSecurity();
         }
         await this.updateServiceName('xsuaa', ManagedXSUAA);
         if (!this.resources.has(ManagedAppFront)) {
