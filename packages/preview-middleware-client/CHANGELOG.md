@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.17
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
+## 0.13.16
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
 ## 0.13.15
 
 ### Patch Changes

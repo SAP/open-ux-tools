@@ -1,5 +1,13 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.45
+
+### Patch Changes
+
+-   d809536: update text label and handle options
+-   Updated dependencies [d809536]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.28
+
 ## 0.1.44
 
 ### Patch Changes
