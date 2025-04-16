@@ -1,5 +1,53 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.2.33
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+
+## 2.2.32
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+    -   @sap-ux/fiori-generator-shared@0.10.2
+    -   @sap-ux/inquirer-common@0.6.35
+
+## 2.2.31
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/fiori-generator-shared@0.10.1
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/telemetry@0.5.73
+
+## 2.2.30
+
+### Patch Changes
+
+-   751cad8: update for handling catalog request errors
+
+## 2.2.29
+
+### Patch Changes
+
+-   3fc72be: Fix for undefined ref exception
+
+## 2.2.28
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/inquirer-common@0.6.33
+
 ## 2.2.27
 
 ### Patch Changes

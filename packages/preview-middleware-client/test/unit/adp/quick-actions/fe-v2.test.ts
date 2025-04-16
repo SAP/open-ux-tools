@@ -45,6 +45,7 @@ import UIComponent from 'sap/ui/core/UIComponent';
 import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
 import * as utils from 'open/ux/preview/client/adp/quick-actions/fe-v2/utils';
+import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -490,6 +491,14 @@ describe('FE V2 quick actions', () => {
                         : []
                 });
 
+                // filter out irrelevant actions
+                const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+                for (let i = actions.length - 1; i >= 0; i--) {
+                    if (actions[i].title !== 'Change Table Columns') {
+                        actions.splice(i, 1);
+                    }
+                }
+
                 expect(sendActionMock).toHaveBeenCalledWith(
                     quickActionListChanged([
                         {
@@ -502,37 +511,12 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: true,
                                             label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
                                         }
                                     ]
-                                },
-                                {
-                                    'kind': 'nested',
-                                    id: 'listReport0-create-table-action',
-                                    title: 'Add Custom Table Action',
-                                    enabled: true,
-                                    children: [
-                                        {
-                                            children: [],
-                                            enabled: true,
-                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
-                                        }
-                                    ]
-                                },
-                                {
-                                    'children': [
-                                        {
-                                            'children': [],
-                                            enabled: true,
-                                            label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
-                                        }
-                                    ],
-                                    'enabled': true,
-                                    'id': 'listReport0-create-table-custom-column',
-                                    'kind': 'nested',
-                                    'title': 'Add Custom Table Column'
                                 }
                             ]
                         }
@@ -767,6 +751,7 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: !(testCase.tableToolbar === 'None'),
                                             label: `'MyTable' table`,
@@ -780,6 +765,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: true,
                                             label: `'MyTable' table`
@@ -1061,6 +1047,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             enabled: true,
                                             'label': `'MyTable' table`
@@ -1074,6 +1061,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             enabled: true,
                                             'label': `'MyTable' table`
@@ -1509,6 +1497,7 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: true,
                                             label: `'MyTable' table`
@@ -1518,6 +1507,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             enabled: true,
                                             'label': `'MyTable' table`
@@ -1700,12 +1690,14 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: testCase.metadataReadErrorMsg ? false : true,
                                             label: `Add Annotation File for ''{0}''`,
                                             tooltip: testCase.metadataReadErrorMsg
                                         },
                                         {
+                                            path: '1',
                                             children: [],
                                             enabled: testCase.metadataReadErrorMsg ? false : true,
                                             label: testCase.metadataReadErrorMsg
@@ -2458,8 +2450,11 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             enabled: true,
-                                            children: [{ enabled: true, children: [], label: `'MyTable' table` }],
+                                            children: [
+                                                { path: '0/0', enabled: true, children: [], label: `'MyTable' table` }
+                                            ],
                                             label: `'section 01' section`
                                         }
                                     ]
@@ -2467,8 +2462,16 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             enabled: true,
-                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
+                                            'children': [
+                                                {
+                                                    path: '0/0',
+                                                    enabled: true,
+                                                    'children': [],
+                                                    'label': `'MyTable' table`
+                                                }
+                                            ],
                                             'label': `'section 01' section`
                                         }
                                     ],
@@ -2647,9 +2650,11 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             enabled: true,
                                             'children': [
                                                 {
+                                                    path: '0/0',
                                                     'children': [],
                                                     enabled: true,
                                                     'label': `'MyTable' table`
@@ -3055,8 +3060,10 @@ describe('FE V2 quick actions', () => {
                                           title: 'Enable Empty Row Mode for Tables',
                                           children: [
                                               {
+                                                  path: '0',
                                                   'children': [
                                                       {
+                                                          path: '0/0',
                                                           'children': [],
                                                           'enabled': !testCase.expectDisabledReason,
                                                           'label': `'MyTable' table`,
@@ -3320,8 +3327,10 @@ describe('FE V2 quick actions', () => {
                                           title: 'Enable Variant Management in Tables',
                                           children: [
                                               {
+                                                  path: '0',
                                                   'children': [
                                                       {
+                                                          path: '0/0',
                                                           'children': [],
                                                           'enabled':
                                                               testCase.isEnabled || testCase.isCustomTable
@@ -3466,6 +3475,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             enabled: true,
                                             'label': `'MyTable' table`
@@ -3480,6 +3490,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             'enabled': true,
                                             'label': `'MyTable' table`
@@ -3935,6 +3946,325 @@ describe('FE V2 quick actions', () => {
                     },
                     { 'actionName': 'add-new-subpage', telemetryEventIdentifier }
                 );
+            }
+        });
+    });
+
+    const pageMap = {
+        ListReport: { title: 'LIST REPORT', type: 'sap.suite.ui.generic.template.ListReport.view.ListReport' },
+        ObjectPage: { title: 'OBJECT PAGE', type: 'sap.suite.ui.generic.template.ObjectPage.view.Details' },
+        AnalyticalListPage: {
+            title: 'ANALYTICAL LIST PAGE',
+            type: 'sap.suite.ui.generic.template.AnalyticalListPage.view.AnalyticalListPage'
+        }
+    };
+    describe('change table actions', () => {
+        const testCases: {
+            versionInfo: string;
+            actionId: 'CTX_SETTINGS' | 'CTX_SETTINGS0' | '';
+            isActionDisabled?: boolean;
+            isNotApplicable?: boolean;
+            isWithIconTabBar?: boolean;
+            pageType: 'ListReport' | 'ObjectPage' | 'AnalyticalListPage';
+            isOPSection?: boolean;
+            expect: {
+                isEnabled: boolean;
+                tooltip?: string;
+            };
+        }[] = [
+            {
+                // object page
+                versionInfo: '1.130.1',
+                actionId: 'CTX_SETTINGS0',
+                pageType: 'ListReport',
+                isNotApplicable: true,
+                expect: {
+                    isEnabled: false,
+                    tooltip: 'This option is disabled because the contents of the table toolbar cannot be changed.'
+                }
+            },
+            {
+                versionInfo: '1.96.0',
+                actionId: '',
+                pageType: 'ListReport',
+                expect: {
+                    isEnabled: false,
+                    tooltip: 'This option is disabled because the contents of the table toolbar cannot be changed.'
+                }
+            },
+            {
+                versionInfo: '1.127.1',
+                actionId: 'CTX_SETTINGS',
+                pageType: 'ListReport',
+                expect: {
+                    isEnabled: true
+                }
+            },
+            {
+                versionInfo: '1.130.1',
+                actionId: 'CTX_SETTINGS0',
+                pageType: 'ListReport',
+                expect: {
+                    isEnabled: true
+                }
+            },
+            {
+                // with icon tabbar
+                versionInfo: '1.130.1',
+                actionId: 'CTX_SETTINGS0',
+                pageType: 'ListReport',
+                isWithIconTabBar: true,
+                expect: {
+                    isEnabled: true
+                }
+            },
+            {
+                // object page
+                versionInfo: '1.130.1',
+                actionId: 'CTX_SETTINGS0',
+                pageType: 'ObjectPage',
+                isWithIconTabBar: true,
+                expect: {
+                    isEnabled: true
+                }
+            },
+            {
+                // object page
+                versionInfo: '1.130.1',
+                actionId: 'CTX_SETTINGS0',
+                pageType: 'ObjectPage',
+                isOPSection: true,
+                expect: {
+                    isEnabled: true
+                }
+            },
+            {
+                // object page
+                versionInfo: '1.130.1',
+                actionId: 'CTX_SETTINGS0',
+                pageType: 'AnalyticalListPage',
+                isWithIconTabBar: true,
+                expect: {
+                    isEnabled: true
+                }
+            },
+            {
+                // action disabled by FE
+                versionInfo: '1.134.1',
+                actionId: 'CTX_SETTINGS0',
+                pageType: 'ListReport',
+                isActionDisabled: true,
+                expect: {
+                    isEnabled: false,
+                    tooltip: 'This option is disabled because the contents of the table toolbar cannot be changed.'
+                }
+            }
+        ];
+        const setSelectedKeyMock = jest.fn();
+        test.each(testCases)('initialize and execute (%s)', async (testCase) => {
+            VersionInfo.load.mockResolvedValue({ name: 'sap.ui.core', version: testCase.versionInfo });
+            const pageView = new XMLView();
+            const scrollIntoView = jest.fn();
+            const tableId = 'SmartTable' + (testCase.isWithIconTabBar ? '-tab1' : '');
+
+            const opLayout = {
+                isA: (type: string) => type === 'sap.uxap.ObjectPageLayout',
+                getParent: () => pageView,
+                setSelectedSection: jest.fn()
+            };
+
+            const subsections: ObjectPageSubSection[] = [];
+            const opSection = {
+                isA: (type: string) => type === 'sap.uxap.ObjectPageSection',
+                getParent: () => opLayout,
+                getSubSections: () => subsections,
+                setSelectedSubSection: jest.fn()
+            };
+
+            const opSubSection = {
+                isA: (type: string) => type === 'sap.uxap.ObjectPageSubSection',
+                getParent: () => opSection,
+                getSubSections: () => []
+            };
+            subsections.push(opSubSection as unknown as ObjectPageSubSection);
+
+            sapCoreMock.byId.mockImplementation((id) => {
+                if (id == tableId) {
+                    return {
+                        isA: (type: string) => type === SMART_TABLE_TYPE,
+                        getHeader: () => 'MyTable',
+                        getId: () => id,
+                        getDomRef: () => ({
+                            scrollIntoView
+                        }),
+                        getAggregation: () => {
+                            return [
+                                {
+                                    getAggregation: () => 'headerToolbar'
+                                }
+                            ];
+                        },
+                        getParent: () => (testCase.isOPSection ? opSubSection : pageView),
+                        getBusy: () => false,
+                        getHeaderToolbar: () => ({
+                            getTitleControl: () => ({
+                                getText: () => 'MyTable'
+                            })
+                        }),
+                        getBindingInfo: () => undefined,
+                        attachEventOnce: jest.fn()
+                    };
+                }
+                if (id == 'NavContainer') {
+                    const container = new NavContainer();
+                    const component = new UIComponentMock();
+                    const view = new XMLView();
+                    pageView.getDomRef.mockImplementation(() => {
+                        return {
+                            contains: () => true
+                        };
+                    });
+                    pageView.getViewName.mockImplementation(() => pageMap[testCase.pageType].type);
+                    const componentContainer = new ComponentContainer();
+                    const spy = jest.spyOn(componentContainer, 'getComponent');
+                    spy.mockImplementation(() => {
+                        return 'component-id';
+                    });
+                    jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                        if (id === 'component-id') {
+                            return component as unknown as ComponentMock;
+                        }
+                    });
+                    view.getContent.mockImplementation(() => {
+                        return [componentContainer];
+                    });
+                    container.getCurrentPage.mockImplementation(() => {
+                        return view;
+                    });
+                    component.getRootControl.mockImplementation(() => {
+                        return pageView;
+                    });
+                    return container;
+                }
+                if ((id = 'IconTabBar')) {
+                    return {
+                        getParent: () => pageView,
+                        getId: () => id,
+                        isA: (type: string) => type === 'sap.m.IconTabBar',
+                        setSelectedKey: setSelectedKeyMock,
+                        getItems: () => [
+                            {
+                                isA: (type: string) =>
+                                    ['sap.m.IconTabFilter', 'sap.ui.base.ManagedObject'].includes(type),
+                                getKey: () => 'tab1',
+                                getText: () => 'Tab 1'
+                            }
+                        ]
+                    };
+                }
+            });
+
+            const execute = jest.fn();
+            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+            jest.spyOn(rtaMock, 'getService').mockImplementation((serviceName: string): any => {
+                if (serviceName === 'action') {
+                    return {
+                        get: (controlId: string) => {
+                            if (controlId === tableId) {
+                                return testCase.isNotApplicable
+                                    ? []
+                                    : [{ id: testCase.actionId, enabled: !testCase.isActionDisabled }];
+                            }
+                        },
+                        execute
+                    };
+                }
+            });
+            const registry = new FEV2QuickActionRegistry();
+            const service = new QuickActionService(
+                rtaMock,
+                new OutlineService(rtaMock, mockChangeService),
+                [registry],
+                { onStackChange: jest.fn() } as any
+            );
+            await service.init(sendActionMock, subscribeMock);
+
+            await service.reloadQuickActions({
+                [SMART_TABLE_TYPE]: [
+                    {
+                        controlId: tableId
+                    } as any
+                ],
+                'sap.m.NavContainer': [
+                    {
+                        controlId: 'NavContainer'
+                    } as any
+                ],
+
+                'sap.m.IconTabBar': testCase.isWithIconTabBar
+                    ? [
+                          {
+                              controlId: 'IconTabBar'
+                          } as any
+                      ]
+                    : []
+            });
+
+            // filter out irrelevant actions
+            const actions = (sendActionMock.mock.calls[0][0].payload[0]?.actions as QuickAction[]) ?? [];
+            for (let i = actions.length - 1; i >= 0; i--) {
+                if (actions[i].title !== 'Change Table Actions') {
+                    actions.splice(i, 1);
+                }
+            }
+
+            const expectedActionId =
+                testCase.pageType[0].toLowerCase() + testCase.pageType.substring(1) + '0-change-table-actions';
+
+            expect(sendActionMock).toHaveBeenCalledWith(
+                quickActionListChanged([
+                    {
+                        title: pageMap[testCase.pageType].title,
+                        actions: [
+                            {
+                                'kind': 'nested',
+                                id: expectedActionId,
+                                title: 'Change Table Actions',
+                                enabled: true,
+                                children: [
+                                    {
+                                        path: '0',
+                                        children: [],
+                                        enabled: !!testCase.expect.isEnabled,
+                                        label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`,
+                                        tooltip: testCase.expect.tooltip
+                                    }
+                                ]
+                            }
+                        ]
+                    }
+                ])
+            );
+
+            if (testCase.expect.isEnabled) {
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: expectedActionId, kind: 'nested', path: '0' })
+                );
+
+                if (testCase.isOPSection) {
+                    expect(opLayout.setSelectedSection.mock.calls[0][0]).toStrictEqual(opSection);
+                    expect(opSection.setSelectedSubSection.mock.calls[0][0]).toStrictEqual(opSubSection);
+                }
+
+                expect(scrollIntoView).toHaveBeenCalledTimes(testCase.isOPSection ? 0 : 1);
+            }
+
+            expect(setSelectedKeyMock.mock.calls[0]).toStrictEqual(testCase.isWithIconTabBar ? ['tab1'] : undefined);
+
+            if (testCase.expect.isEnabled) {
+                expect(execute).toHaveBeenCalledWith(tableId, testCase.actionId);
+            } else {
+                expect(execute).toHaveBeenCalledTimes(0);
             }
         });
     });

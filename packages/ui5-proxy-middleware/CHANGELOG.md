@@ -1,5 +1,17 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.22
+
+### Patch Changes
+
+-   a3da9a3: fix: adjust response type
+
+## 1.4.21
+
+### Patch Changes
+
+-   2260ad5: export directLoadProxy for reuse
+
 ## 1.4.20
 
 ### Patch Changes

@@ -1,5 +1,31 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.27
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.2.26
+
+### Patch Changes
+
+-   0cdc387: Expose App Frontend Service from cf-sub-generator, with minor code cleanup
+
+## 0.2.25
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/inquirer-common@0.6.34
+
+## 0.2.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
 ## 0.2.23
 
 ### Patch Changes
