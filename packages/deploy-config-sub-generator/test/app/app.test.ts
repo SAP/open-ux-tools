@@ -258,17 +258,20 @@ describe('Deployment Generator', () => {
                 .withGenerators([[mockSubGen, generatorNamespace('test', 'cf')]])
                 .run()
         ).resolves.not.toThrow();
-        expect(getCFQuestionsSpy).toHaveBeenCalledWith({
-            addManagedAppRouter: true,
-            destinationName: {
-                addBTPDestinationList: false,
-                additionalChoiceList: expect.any(Array),
-                defaultValue: '~Destination',
-                hint: false,
-                useAutocomplete: true
+        expect(getCFQuestionsSpy).toHaveBeenCalledWith(
+            {
+                destinationName: {
+                    addBTPDestinationList: false,
+                    additionalChoiceList: expect.any(Array),
+                    defaultValue: '~Destination',
+                    hint: false,
+                    useAutocomplete: true
+                },
+                overwriteDestinationName: false,
+                routerType: true
             },
-            overwriteDestinationName: false
-        });
+            expect.any(Object)
+        );
         expect(getABAPPromptsSpy).toHaveBeenCalledWith({
             appRootPath: expect.stringContaining('project1'),
             backendConfig: expect.objectContaining({

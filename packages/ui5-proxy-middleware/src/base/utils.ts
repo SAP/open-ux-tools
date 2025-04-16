@@ -2,7 +2,8 @@ import type { ClientRequest, IncomingMessage, ServerResponse } from 'http';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getMinimumUI5Version, type Manifest } from '@sap-ux/project-access';
 import { UI5Config } from '@sap-ux/ui5-config';
-import type { NextFunction, Request, Response } from 'express';
+import type { RequestHandler, NextFunction, Request, Response } from 'express';
+import type http from 'http';
 import type { ProxyConfig } from './types';
 import { existsSync, readFileSync } from 'fs';
 import {
@@ -183,11 +184,12 @@ export const getWebAppFolderFromYaml = async (ui5YamlPath: string): Promise<stri
 
 /**
  * Sends HTML content as a response.
+ * Ensure compliance with common APIs in express and connect.
  *
  * @param res - The http response object
  * @param html - The HTML content
  */
-export const setHtmlResponse = (res: any, html: string): void => {
+export const sendResponse = (res: (Response | http.ServerResponse) & { _livereload?: boolean }, html: string): void => {
     if (res['_livereload']) {
         res.write(html);
         res.end();
@@ -288,7 +290,7 @@ export const injectScripts = async (
         } else {
             const originalHtml = await files[0].getString();
             const html = injectUI5Url(originalHtml, ui5Configs);
-            setHtmlResponse(res, html);
+            sendResponse(res, html);
         }
     } catch (error) {
         next(error);
@@ -340,4 +342,27 @@ export function proxyErrorHandler(
     } else {
         logger.debug(t('error.noCodeError', { error: JSON.stringify(err, null, 2), request: req.originalUrl }));
     }
+}
+
+/**
+ * Adjust UI5 bootstrap URLs to load directly from UI5 CDN.
+ *
+ * @param ui5Configs the UI5 configuration of the ui5-proxy-middleware
+ * @param rootProject the project root
+ * @param logger logger to be used when running the middleware
+ * @returns RequestHandler to adjust bootstraps
+ */
+export function directLoadProxy(
+    ui5Configs: ProxyConfig[],
+    rootProject: ReaderCollection,
+    logger: ToolsLogger
+): RequestHandler {
+    return async (req: Request, res: Response, next: NextFunction): Promise<void> => {
+        try {
+            await injectScripts(req, res, next, ui5Configs, rootProject);
+        } catch (error) {
+            logger.error(error);
+            next(error);
+        }
+    };
 }

@@ -1,11 +1,6 @@
 import { ApplicationInsightClient } from '../base/client/azure-appinsight-client';
-import type { SampleRate } from '../base/types/sample-rate';
-import type {
-    TelemetryHelperProperties,
-    TelemetryEvent,
-    CommonTelemetryProperties,
-    TelemetryProperties
-} from './types';
+import type { SampleRate, TelemetryMeasurements, TelemetryProperties } from '../base/types';
+import type { TelemetryHelperProperties, TelemetryEvent, CommonTelemetryProperties } from './types';
 import { processToolsSuiteTelemetry } from '.';
 import { localDatetimeToUTC } from '../base/utils/date';
 
@@ -37,8 +32,8 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
      */
     public async report(
         eventName: string,
-        properties: { [key: string]: string },
-        measurements: { [key: string]: number },
+        properties: TelemetryProperties,
+        measurements: TelemetryMeasurements,
         sampleRate: SampleRate | undefined,
         telemetryHelperProperties?: TelemetryHelperProperties,
         ignoreSettings?: boolean
@@ -53,7 +48,7 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
             ...properties,
             ...fioriProjectCommonProperties,
             ...commonProperties
-        } as TelemetryProperties;
+        };
 
         await super.report(
             eventName,
@@ -131,7 +126,10 @@ class ToolsSuiteTelemetryClient extends ApplicationInsightClient {
     private async collectToolsSuiteTelemetry(
         event: TelemetryEvent,
         telemetryHelperProperties?: TelemetryHelperProperties
-    ): Promise<{ finalProperties: Record<string, string | boolean>; finalMeasurements: Record<string, number> }> {
+    ): Promise<{
+        finalProperties: TelemetryProperties;
+        finalMeasurements: TelemetryMeasurements;
+    }> {
         const fioriProjectCommonProperties = await processToolsSuiteTelemetry(telemetryHelperProperties);
         const telemetryEventCommonProperties = {
             v: this.extensionVersion,

@@ -36,6 +36,7 @@ import {
 } from './constants';
 import type { Editor } from 'mem-fs-editor';
 import { type MTABaseConfig, type CFConfig, type CFBaseConfig, type CFAppConfig } from './types';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 let cachedDestinationsList: Destinations = {};
 
@@ -244,8 +245,10 @@ export async function updateRootPackage(
     const packageExists = fs.exists(join(rootPath, FileName.Package));
     // Append package.json only if mta.yaml is at a different level to the HTML5 app
     if (packageExists) {
-        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion);
-        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion);
+        // Align CDS versions if missing otherwise mta.yaml before-all scripts will fail
+        await alignCdsVersions(rootPath, fs);
+        await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, fs);
+        await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, fs);
         let deployArgs: string[] = [];
         if (fs?.exists(join(rootPath, MTAFileExtension))) {
             deployArgs = ['-e', MTAFileExtension];
@@ -255,7 +258,7 @@ export async function updateRootPackage(
             { name: 'build', run: `${MTABuildScript} --mtar archive` },
             { name: 'deploy', run: rootDeployMTAScript(deployArgs) }
         ]) {
-            await updatePackageScript(rootPath, script.name, script.run);
+            await updatePackageScript(rootPath, script.name, script.run, fs);
         }
     }
 }
@@ -292,5 +295,28 @@ export async function alignCdsVersions(rootPath: string, fs: Editor): Promise<vo
     const cdsDepVersion = packageJson?.dependencies?.[CDSPackage];
     if (!cdsDKDevDepVersion && cdsDepVersion) {
         await addPackageDevDependency(rootPath, CDSDKPackage, cdsDepVersion, fs);
+    }
+}
+
+/**
+ * Executes a command in the specified project directory.
+ *
+ * @async
+ * @param {string} cwd - Working directory where the command will be executed
+ * @param {string} cmd - Command to execute
+ * @param {string[]} args - Arguments to pass to the command
+ * @param {string} errorMsg - Error message prefix to display if the command fails
+ * @returns {Promise<void>} - A promise that resolves when the command completes successfully
+ * @throws {Error} Throws an error with the provided error message concatenated with the original error if execution fails
+ * @example
+ * // Execute npm install in the project directory
+ * await runCommand('/path/to/project', 'npm', ['install'], 'Failed to install dependencies:');
+ */
+export async function runCommand(cwd: string, cmd: string, args: string[], errorMsg: string): Promise<void> {
+    const commandRunner = new CommandRunner();
+    try {
+        await commandRunner.run(cmd, args, { cwd });
+    } catch (e) {
+        throw new Error(`${errorMsg} ${e.message}`);
     }
 }
