@@ -13,7 +13,6 @@ import { isControllerExtensionEnabledForControl } from '../../init-dialogs';
 import { getExistingController } from '../../api-handler';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
-import { checkForExistingChange } from '../../utils';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
 const CONTROL_TYPES = ['sap.f.DynamicPage', 'sap.uxap.ObjectPageLayout'];
