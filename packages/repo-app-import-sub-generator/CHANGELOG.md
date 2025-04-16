@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.1.0
+
+### Minor Changes
+
+-   770f90b: Removed Jest timeout from test and mocked \_runNpmInstall method when skipInstall is false
+
 ## 0.0.3
 
 ### Patch Changes
