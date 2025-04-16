@@ -1,5 +1,11 @@
 # @sap-ux/cds-odata-annotation-converter
 
+## 0.5.4
+
+### Patch Changes
+
+-   7cda000: fix: writing empty path values results in a compile error in CDS projects
+
 ## 0.5.3
 
 ### Patch Changes
