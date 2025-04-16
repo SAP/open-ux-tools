@@ -10,7 +10,7 @@ import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
 import { getControlById } from '../utils/core';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import type ChangeDefinition from 'sap/ui/fl/Change';
+import type { ChangeDefinition } from 'sap/ui/fl/Change';
 
 import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
@@ -103,11 +103,13 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
     }
     const change = command.getPreparedChange().getDefinition();
 
-    function getNestedProperty(obj: Record<string, any>, path: string): any {
-        return path.split('.').reduce((acc, key) => acc?.[key], obj);
+    function getNestedProperty(obj: ChangeDefinition, path: string): string | undefined {
+        return path.split('.').reduce((acc: unknown, key) => {
+            return (acc as Record<string, unknown>)?.[key];
+        }, obj) as string | undefined;
     }
 
-    const nestedProperty = getNestedProperty(change, propertyPath) as string;
+    const nestedProperty = getNestedProperty(change, propertyPath);
     return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
 }
 
