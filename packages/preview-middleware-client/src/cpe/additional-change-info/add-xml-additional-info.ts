@@ -8,7 +8,11 @@ import {
 } from '../../adp/quick-actions/control-types';
 import Element from 'sap/ui/core/Element';
 
-export function getExtendedAddXMLChange(change: FlexChange<any>): { templateName: string } | undefined {
+export type AddXMLAdditionalInfo = {
+    templateName: string;
+};
+
+export function getAddXMLAdditionalInfo(change: FlexChange<any>): { templateName: string } | undefined {
     const templateName = getFragmentTemplateName(change.getSelector()?.id, change.getContent()?.targetAggregation);
     if (templateName) {
         return { templateName };
