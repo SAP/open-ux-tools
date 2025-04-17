@@ -25,7 +25,7 @@
         "appDownloadErrors": {
             "downloadedFileNotBufferError": "Error: The downloaded file is not a buffer. Check the file.",
             "appDownloadFailure": "An error occurred when downloading the application: {{- error}}. For more information, view the logs.",
-            "zipExtractionError": "An error occurred when extracting the zip file: {{- error}}"
+            "zipExtractionError": "An error occurred when extracting the zip file: {{- error}}. For more information, view the logs."
         },
         "eventHookErrors": {
             "vscodeInstanceMissing": "Error: Missing VS Code instance in event hook.",
