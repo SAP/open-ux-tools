@@ -19,7 +19,7 @@
             "invalidRepositoryName": "Invalid or missing `repositoryName` in `serviceBindingDetails`. Check the `repositoryName`."
         },
         "installationErrors": {
-            "npmInstall": "An error occurred in the install phase: {{- error}}",
+            "npmInstall": "An error occurred in the install phase: {{- error}}. For more information, view the logs.",
             "skippedInstallation": "`--skipInstall` option was specified. Installation of dependencies will be skipped."
         },
         "appDownloadErrors": {
