@@ -17,6 +17,7 @@ import {
 import type { Url } from 'url';
 import { t } from '../i18n';
 import type { ReaderCollection } from '@ui5/fs';
+import type { Socket } from 'net';
 
 /**
  * Handler for the proxy response event.
@@ -38,15 +39,8 @@ export const proxyResponseHandler = (proxyRes: IncomingMessage, etag: string): v
  * @param proxyReq - proxy request object
  * @param res - server response object
  * @param etag - Etag of the cached UI5 sources, normally the UI5 version
- * @param logger - Logger for loging the requests
  */
-export const proxyRequestHandler = (
-    proxyReq: ClientRequest,
-    res: ServerResponse,
-    etag: string,
-    logger: ToolsLogger
-): void => {
-    logger.debug(proxyReq.path);
+export const proxyRequestHandler = (proxyReq: ClientRequest, res: ServerResponse, etag: string): void => {
     if (proxyReq.getHeader('if-none-match') === etag) {
         res.statusCode = 304;
         res.end();
@@ -330,7 +324,7 @@ export function proxyErrorHandler(
     err: Error & { code?: string },
     req: IncomingMessage & { next?: Function; originalUrl?: string },
     logger: ToolsLogger,
-    _res?: ServerResponse,
+    _res?: ServerResponse | Socket,
     _target?: string | Partial<Url>
 ): void {
     if (err && err.stack?.toLowerCase() !== 'error') {

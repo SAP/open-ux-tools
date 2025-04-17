@@ -61,8 +61,7 @@ describe('backend-proxy-middleware', () => {
         test('additional http-proxy-middleware options', async () => {
             const options: Options = {
                 ws: true,
-                xfwd: true,
-                logLevel: 'debug'
+                xfwd: true
             };
             await getTestServer({ backend, options });
             expect(generateProxyOptionsSpy).toBeCalledWith(
