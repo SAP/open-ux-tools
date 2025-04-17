@@ -84,6 +84,9 @@ describe('getAppConfig', () => {
         appOptions: {
             addAnnotations: true,
             addTests: true
+        },
+        ui5: {
+            localVersion: '1.88.0'
         }
     };
 
@@ -171,6 +174,50 @@ describe('getAppConfig', () => {
         }
         const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithNavEntity, mockFs);
         expect(result).toEqual(expectedAppConfig);
+    });
+
+    it('should generate ui5 local', async () => {
+        const mockManifest = {
+            'sap.app': {
+                dataSources: {
+                    mainService: {
+                        uri: '/odata/service',
+                        settings: { odataVersion: '4.0' }
+                    }
+                },
+                applicationVersion: { version: '1.0.0' }
+            }
+        };
+
+        const mockServiceProvider = {
+            defaults: { 
+                baseURL: 'https://test-url.com',
+                params: { 'sap-client': '100' } 
+            }
+        } as unknown as AbapServiceProvider;
+
+        PromptState.systemSelection = {
+            connectedSystem: { serviceProvider: mockServiceProvider }
+        };
+
+        (readManifest as jest.Mock).mockReturnValue(mockManifest);
+        (getUI5Versions as jest.Mock).mockResolvedValue([{ version: '1.134.0' }, { version: '1.132.0' }, { version: '1.124.0' }]);   
+
+        const mockQfaJsonJsonWithNavEntity = {
+            ...mockQfaJson,
+            service_binding_details: {
+                ...mockQfaJson.serviceBindingDetails,
+                main_entity_name: mockQfaJson.serviceBindingDetails.mainEntityName,
+                navigation_entity: mockQfaJson.serviceBindingDetails.navigationEntity
+            }
+        }
+        const result = await getAppConfig(mockApp, '/path/to/project', mockQfaJsonJsonWithNavEntity, mockFs);
+        expect(result).toEqual({
+            ...expectedAppConfig,
+            ui5: {
+                localVersion: '1.134.0'
+            }
+        });
     });
 
     it('should throw an error if manifest data sources are missing', async () => {
