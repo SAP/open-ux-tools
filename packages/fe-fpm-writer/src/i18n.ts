@@ -1,4 +1,4 @@
-import type { i18n, StringMap, TOptions, TOptionsBase } from 'i18next';
+import type { i18n, TOptions, TOptionsBase } from 'i18next';
 import i18next from 'i18next';
 import FilesystemBackend from 'i18next-fs-backend';
 import { join } from 'path';
@@ -29,7 +29,6 @@ function getTranslationFilePath(language: string, namespace: string): string {
  */
 export async function initI18n(): Promise<void> {
     await i18nInstance.use(FilesystemBackend).init({
-        initImmediate: false,
         fallbackLng: 'en',
         interpolation: { escapeValue: false },
         ns: [i18nNamespaces.buildingBlock],
@@ -38,6 +37,8 @@ export async function initI18n(): Promise<void> {
         }
     });
 }
+
+type StringMap = Record<string, unknown>;
 
 /**
  * Wraps the i18next module's translate function to bind the provided namespace and a key prefix.
@@ -50,6 +51,8 @@ export function translate(
     namespace: string,
     keyPrefix?: string
 ): (key: string, options?: string | TOptions<StringMap & TOptionsBase>) => string {
-    return (key: string, options?: any): string =>
-        i18nInstance.t(`${namespace}:${keyPrefix ?? ''}${key}`, options) || '';
+    return (key: string, options?: any): string => {
+        const result = i18nInstance.t(`${namespace}:${keyPrefix ?? ''}${key}`, options);
+        return typeof result === 'string' ? result : '';
+    };
 }

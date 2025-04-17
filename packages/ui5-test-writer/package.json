@@ -33,7 +33,7 @@
     ],
     "dependencies": {
         "ejs": "3.1.10",
-        "i18next": "20.6.1",
+        "i18next": "24.2.3",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "@sap-ux/ui5-application-writer": "workspace:*",
