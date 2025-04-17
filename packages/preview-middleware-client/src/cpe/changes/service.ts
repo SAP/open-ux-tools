@@ -38,7 +38,7 @@ import { getTextBundle } from '../../i18n';
 import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
 import { getConfigMapControlIdMap } from '../../utils/fe-v4';
-import { setAdditionalChangeInfoInSession } from '../../utils/additional-change-info'
+import { setAdditionalChangeInfoInSession } from '../../utils/additional-change-info';
 
 const TITLE_MAP: { [key: string]: string } = {
     appdescr_app_addAnnotationsToOData: 'Add New Annotation File'

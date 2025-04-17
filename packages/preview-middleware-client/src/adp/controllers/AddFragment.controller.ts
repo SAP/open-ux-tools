@@ -145,7 +145,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
             fragmentPath: `fragments/${fragmentName}.fragment.xml`,
             index: index ?? 0,
-            targetAggregation: targetAggregation ?? 'content',
+            targetAggregation: targetAggregation ?? 'content'
         };
 
         if(this.data){

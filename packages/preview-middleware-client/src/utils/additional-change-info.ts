@@ -15,11 +15,13 @@ export function setAdditionalChangeInfoInSession(change: FlexChange<AddXMLChange
     }
 
     if (additionalChangeInfo) {
+        // eslint-disable-next-line fiori-custom/sap-no-sessionstorage
         sessionStorage.setItem(change.getDefinition().fileName, JSON.stringify(additionalChangeInfo));
     }
 }
 
 export function getAdditionalChangeInforFromSession(change: Change): AddXMLAdditionalInfo | undefined {
+    // eslint-disable-next-line fiori-custom/sap-no-sessionstorage
     const additionalChangeInfo = sessionStorage.getItem(change.fileName);
     if (additionalChangeInfo) {
         return JSON.parse(additionalChangeInfo);

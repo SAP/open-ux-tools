@@ -3,7 +3,7 @@ import ObjectStorageConnector from 'sap/ui/fl/write/api/connectors/ObjectStorage
 import Layer from 'sap/ui/fl/Layer';
 import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
-import { getAdditionalChangeInforFromSession } from '../utils/additional-change-info'
+import { getAdditionalChangeInforFromSession } from '../utils/additional-change-info';
 
 const connector = merge({}, ObjectStorageConnector, {
     layers: [Layer.VENDOR, Layer.CUSTOMER_BASE],
