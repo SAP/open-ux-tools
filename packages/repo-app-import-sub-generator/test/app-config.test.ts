@@ -176,7 +176,7 @@ describe('getAppConfig', () => {
         expect(result).toEqual(expectedAppConfig);
     });
 
-    it('should generate ui5 local', async () => {
+    it('should generate app config with the npm maintained UI5 local version for local preview', async () => {
         const mockManifest = {
             'sap.app': {
                 dataSources: {
