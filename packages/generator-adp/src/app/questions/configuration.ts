@@ -32,6 +32,7 @@ import type {
     SystemLookup,
     UI5Version
 } from '@sap-ux/adp-tooling';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 import type {
     ApplicationInfoErrorPromptOptions,
@@ -440,7 +441,21 @@ export class ConfigPrompter {
             return t('error.selectCannotBeEmptyError', { value: 'Application' });
         }
 
-        return this.validateAppData(app);
+        const validationResult = await this.validateAppData(app);
+
+        if (!isAppStudio()) {
+            return validationResult;
+        }
+
+        if (
+            validationResult === t('error.appDoesNotSupportManifest') ||
+            validationResult === t('error.appDoesNotSupportAdaptation')
+        ) {
+            this.isApplicationSupported = false;
+            return true;
+        }
+
+        return validationResult;
     }
 
     /**
@@ -540,7 +555,6 @@ export class ConfigPrompter {
             }
             this.isApplicationSupported = true;
         } catch (e) {
-            this.isApplicationSupported = false;
             this.logger.debug(`Application failed validation. Reason: ${e.message}`);
             return e.message;
         }

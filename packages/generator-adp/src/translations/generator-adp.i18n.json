@@ -50,6 +50,7 @@
         "notFlexEnabledError": "The system that you have selected is not an ABAP On-Premise system which supports flexibility. Adaptation projects are only supported on those systems. Please choose an ABAP On-Premise system which supports flexibility. If you continue, you will only be able to create an extension project.",
         "manifestCouldNotBeValidated": "The manifest.json file of the selected application could not be validated. Please select a different application.",
         "appDoesNotSupportAdaptation": "The application that you have selected does not support flexibility. Adaptation projects are only supported with those applications. Please choose an application which supports flexibility.",
+        "appDoesNotSupportManifest": "The selected application is not supported by the adaptation project. Please select a different application. For more information, see SAPUI5 Adaptation Project documentation.",
         "extensibilityGenNotFound": "Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension."
     }
 }
