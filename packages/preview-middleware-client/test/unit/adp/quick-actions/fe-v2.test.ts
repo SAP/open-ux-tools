@@ -511,6 +511,7 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: true,
                                             label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`
@@ -750,6 +751,7 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: !(testCase.tableToolbar === 'None'),
                                             label: `'MyTable' table`,
@@ -763,6 +765,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: true,
                                             label: `'MyTable' table`
@@ -1044,6 +1047,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             enabled: true,
                                             'label': `'MyTable' table`
@@ -1057,6 +1061,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             enabled: true,
                                             'label': `'MyTable' table`
@@ -1492,6 +1497,7 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: true,
                                             label: `'MyTable' table`
@@ -1501,6 +1507,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             enabled: true,
                                             'label': `'MyTable' table`
@@ -1683,12 +1690,14 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: testCase.metadataReadErrorMsg ? false : true,
                                             label: `Add Annotation File for ''{0}''`,
                                             tooltip: testCase.metadataReadErrorMsg
                                         },
                                         {
+                                            path: '1',
                                             children: [],
                                             enabled: testCase.metadataReadErrorMsg ? false : true,
                                             label: testCase.metadataReadErrorMsg
@@ -2441,8 +2450,11 @@ describe('FE V2 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             enabled: true,
-                                            children: [{ enabled: true, children: [], label: `'MyTable' table` }],
+                                            children: [
+                                                { path: '0/0', enabled: true, children: [], label: `'MyTable' table` }
+                                            ],
                                             label: `'section 01' section`
                                         }
                                     ]
@@ -2450,8 +2462,16 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             enabled: true,
-                                            'children': [{ enabled: true, 'children': [], 'label': `'MyTable' table` }],
+                                            'children': [
+                                                {
+                                                    path: '0/0',
+                                                    enabled: true,
+                                                    'children': [],
+                                                    'label': `'MyTable' table`
+                                                }
+                                            ],
                                             'label': `'section 01' section`
                                         }
                                     ],
@@ -2630,9 +2650,11 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             enabled: true,
                                             'children': [
                                                 {
+                                                    path: '0/0',
                                                     'children': [],
                                                     enabled: true,
                                                     'label': `'MyTable' table`
@@ -3038,8 +3060,10 @@ describe('FE V2 quick actions', () => {
                                           title: 'Enable Empty Row Mode for Tables',
                                           children: [
                                               {
+                                                  path: '0',
                                                   'children': [
                                                       {
+                                                          path: '0/0',
                                                           'children': [],
                                                           'enabled': !testCase.expectDisabledReason,
                                                           'label': `'MyTable' table`,
@@ -3303,8 +3327,10 @@ describe('FE V2 quick actions', () => {
                                           title: 'Enable Variant Management in Tables',
                                           children: [
                                               {
+                                                  path: '0',
                                                   'children': [
                                                       {
+                                                          path: '0/0',
                                                           'children': [],
                                                           'enabled':
                                                               testCase.isEnabled || testCase.isCustomTable
@@ -3449,6 +3475,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             enabled: true,
                                             'label': `'MyTable' table`
@@ -3463,6 +3490,7 @@ describe('FE V2 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             'enabled': true,
                                             'label': `'MyTable' table`
@@ -4205,6 +4233,7 @@ describe('FE V2 quick actions', () => {
                                 enabled: true,
                                 children: [
                                     {
+                                        path: '0',
                                         children: [],
                                         enabled: !!testCase.expect.isEnabled,
                                         label: testCase.isWithIconTabBar ? `'Tab 1' table` : `'MyTable' table`,

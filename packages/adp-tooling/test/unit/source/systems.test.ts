@@ -51,14 +51,14 @@ const destinations: { [name: string]: Destination } = {
     SystemA: {
         Name: 'SystemA',
         'sap-client': '010',
-        Host: 'http://systema.com',
+        Host: 'urlA',
         Authentication: 'Basic',
         WebIDEUsage: 'dev_abap'
     } as Destination,
     SystemB: {
         Name: 'SystemB',
         'sap-client': '200',
-        Host: 'http://systemb.com',
+        Host: 'urlB',
         Authentication: 'NoAuthentication',
         WebIDEUsage: 'dev_abap'
     } as Destination
@@ -141,7 +141,7 @@ describe('SystemLookup', () => {
 
             expect(system).toEqual({
                 Authentication: 'Basic',
-                Host: 'http://systema.com',
+                Host: 'urlA',
                 Name: 'SystemA',
                 WebIDEUsage: 'dev_abap',
                 'sap-client': '010'
