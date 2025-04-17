@@ -6,8 +6,8 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
   "layer": "CUSTOMER_BASE",
   "fileType": "appdescr_variant",
   "reference": "sap.ui.demoapps.f1",
-  "id": "customer.app.variant1",
-  "namespace": "apps/sap.ui.demoapps.f1/appVariants/customer.app.variant1/",
+  "id": "customer.app.variant",
+  "namespace": "apps/sap.ui.demoapps.f1/appVariants/customer.app.variant/",
   "version": "0.1.0",
   "content": [
     {
@@ -34,12 +34,12 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
 `;
 
 exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 2`] = `
-"# This is the resource bundle for customer.app.variant1
+"# This is the resource bundle for customer.app.variant
 
 #Texts for manifest.json
 
 #XTIT: Application name
-customer.app.variant1_sap.app.title=
+customer.app.variant_sap.app.title=App Title
 "
 `;
 
@@ -48,7 +48,7 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
 
 specVersion: "3.0"
 metadata:
-  name: customer-app-variant1
+  name: customer-app-variant
 type: application
 resources:
   configuration:
@@ -73,7 +73,7 @@ server:
         adp:
           target:
             client: '010'
-            url: http://systema.com
+            url: urlA
           ignoreCertErrors: false
     - name: fiori-tools-proxy
       afterMiddleware: fiori-tools-preview
@@ -81,13 +81,13 @@ server:
         ignoreCertError: false # If set to true, certificate errors will be ignored. E.g. self-signed certificates will be accepted
         backend:
           - client: '010'
-            url: http://systema.com
+            url: urlA
             path: /sap
         ui5:
           path:
             - /resources
             - /test-resources
           url: https://ui5.sap.com
-          version: 1.135.0
+          version: 1.134.1
 "
 `;

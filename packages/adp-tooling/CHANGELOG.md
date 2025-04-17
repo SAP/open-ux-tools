@@ -1,5 +1,13 @@
 # @sap-ux/adp-tooling
 
+## 0.13.30
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
 ## 0.13.29
 
 ### Patch Changes

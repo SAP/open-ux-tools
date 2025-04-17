@@ -1,5 +1,11 @@
 # @sap-ux/project-input-validator
 
+## 0.5.1
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+
 ## 0.5.0
 
 ### Minor Changes
