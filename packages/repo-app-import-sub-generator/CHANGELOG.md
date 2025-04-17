@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.1.4
+
+### Patch Changes
+
+-   98e0172: fix to enable local preview for adt downloaded app
+
 ## 0.1.3
 
 ### Patch Changes
