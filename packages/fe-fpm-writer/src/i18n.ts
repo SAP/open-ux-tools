@@ -1,9 +1,6 @@
-import type { i18n, TOptions, TOptionsBase } from 'i18next';
+import type { TOptions, TOptionsBase } from 'i18next';
 import i18next from 'i18next';
-import FilesystemBackend from 'i18next-fs-backend';
-import { join } from 'path';
-
-const i18nInstance: i18n = i18next.createInstance();
+import translations from './prompts/translations/i18n';
 const namespacePrefix = 'fe-fpm-writer';
 
 export const i18nNamespaces = {
@@ -11,30 +8,19 @@ export const i18nNamespaces = {
 } as const;
 
 /**
- * Returns the translation file path for the provided language and namespace.
- *
- * @param {string} language the language
- * @param {string} namespace the i18n namespace
- * @returns {string} the translation file path
- */
-function getTranslationFilePath(language: string, namespace: string): string {
-    if (namespace === i18nNamespaces.buildingBlock) {
-        return join(__dirname, `./prompts/translations/i18n.${language}.json`);
-    }
-    return '';
-}
-
-/**
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18nInstance.use(FilesystemBackend).init({
+    await i18next.init({
+        resources: {
+            en: {
+                [i18nNamespaces.buildingBlock]: translations
+            }
+        },
+        lng: 'en',
         fallbackLng: 'en',
-        interpolation: { escapeValue: false },
-        ns: [i18nNamespaces.buildingBlock],
-        backend: {
-            loadPath: getTranslationFilePath
-        }
+        defaultNS: i18nNamespaces.buildingBlock,
+        ns: [i18nNamespaces.buildingBlock]
     });
 }
 
@@ -50,7 +36,9 @@ type $Dictionary<T = unknown> = { [key: string]: T };
 export function translate(
     namespace: string,
     keyPrefix?: string
-): (key: string, options?: string | TOptions<$Dictionary & TOptionsBase>) => string {
-    return (key: string, options?: any): string =>
-        i18nInstance.t(`${namespace}:${keyPrefix ?? ''}${key}`, options) as string;
+): (key: string, options?: string | TOptions<$Dictionary & TOptionsBase>) => string | string[] {
+    return (key: string, options?: any): string | string[] => {
+        const result = i18next.t(`${namespace}:${keyPrefix ?? ''}${key}`, options) as string | string[];
+        return result;
+    };
 }

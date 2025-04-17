@@ -1803,9 +1803,6 @@ importers:
       i18next:
         specifier: 24.2.3
         version: 24.2.3(typescript@5.8.2)
-      i18next-fs-backend:
-        specifier: 2.6.0
-        version: 2.6.0
       mem-fs:
         specifier: 2.1.0
         version: 2.1.0
@@ -16314,10 +16311,6 @@ packages:
 
   /i18next-fs-backend@1.2.0:
     resolution: {integrity: sha512-pUx3AcgXCbur0jpFA7U67Z2RJflAcIi698Y8VL+phdOqUchahxriV3Cs+M6UkPNQSS/zPEzWLfdJ8EgjB7HVxg==}
-    dev: false
-
-  /i18next-fs-backend@2.6.0:
-    resolution: {integrity: sha512-3ZlhNoF9yxnM8pa8bWp5120/Ob6t4lVl1l/tbLmkml/ei3ud8IWySCHt2lrY5xWRlSU5D9IV2sm5bEbGuTqwTw==}
     dev: false
 
   /i18next@21.10.0:

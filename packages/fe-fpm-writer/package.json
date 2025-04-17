@@ -36,7 +36,6 @@
         "@xmldom/xmldom": "0.8.10",
         "ejs": "3.1.10",
         "i18next": "24.2.3",
-        "i18next-fs-backend": "2.6.0",
         "mem-fs": "2.1.0",
         "mem-fs-editor": "9.4.0",
         "semver": "7.5.4",

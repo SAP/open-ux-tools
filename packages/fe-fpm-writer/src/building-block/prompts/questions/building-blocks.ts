@@ -15,8 +15,8 @@ export const getManifestPromptsGroup = (): PromptsGroup => {
     const t = translate(i18nNamespaces.buildingBlock, 'prompts.super.manifestGroup.');
     return {
         id: 'manifestLibraries',
-        title: t('manifestLibrariesTitle'),
-        description: [t('manifestLibrariesDescription', { returnObjects: true })]
+        title: t('manifestLibrariesTitle') as string,
+        description: t('manifestLibrariesDescription', { returnObjects: true }) as string[]
     };
 };
 
@@ -32,11 +32,11 @@ export async function getBuildingBlockTypePrompts(): Promise<Prompts<BuildingBlo
             {
                 type: 'list',
                 name: 'buildingBlockType',
-                message: t('buildingBlockType.message'),
+                message: t('buildingBlockType.message') as string,
                 choices: [
-                    { name: t('buildingBlockType.choices.chart'), value: BuildingBlockType.Chart },
-                    { name: t('buildingBlockType.choices.filterBar'), value: BuildingBlockType.FilterBar },
-                    { name: t('buildingBlockType.choices.table'), value: BuildingBlockType.Table }
+                    { name: t('buildingBlockType.choices.chart') as string, value: BuildingBlockType.Chart },
+                    { name: t('buildingBlockType.choices.filterBar') as string, value: BuildingBlockType.FilterBar },
+                    { name: t('buildingBlockType.choices.table') as string, value: BuildingBlockType.Table }
                 ]
             }
         ]
