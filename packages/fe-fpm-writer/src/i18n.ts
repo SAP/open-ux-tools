@@ -51,8 +51,6 @@ export function translate(
     namespace: string,
     keyPrefix?: string
 ): (key: string, options?: string | TOptions<$Dictionary & TOptionsBase>) => string {
-    return (key: string, options?: any): string => {
-        const result = i18nInstance.t(`${namespace}:${keyPrefix ?? ''}${key}`, options);
-        return typeof result === 'string' ? result : '';
-    };
+    return (key: string, options?: any): string =>
+        i18nInstance.t(`${namespace}:${keyPrefix ?? ''}${key}`, options) as string;
 }
