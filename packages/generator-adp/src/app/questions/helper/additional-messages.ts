@@ -122,4 +122,6 @@ export const getVersionAdditionalMessages = (isVersionDetected: boolean): IMessa
             severity: Severity.warning
         };
     }
+
+    return undefined;
 };
