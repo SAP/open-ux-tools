@@ -58,7 +58,7 @@
         }
     },
     "readMe": {
-        "appDescription": "This application was converted from a SAP Fiori application that was deployed from ADT using the ADT Quick Fiori Application generator.",
+        "appDescription": "This application was converted from an SAP Fiori application that was deployed from ADT using the ADT Quick Fiori Application generator.",
         "launchText": "To launch the generated application, run the following command from the generated app root folder:\n\n```\n    npm start\n```"
     },
     "info": {
