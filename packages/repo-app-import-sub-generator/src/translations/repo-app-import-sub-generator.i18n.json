@@ -44,7 +44,7 @@
         }
     },
     "warn": {
-        "extractedFileNotFound": "Extracted file not found - {{- extractedFilePath}}."
+        "extractedFileNotFound": "Extracted file not found - {{- extractedFilePath}}. For more information, view the logs."
     },
     "prompts": {
         "appSelection": {
