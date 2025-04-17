@@ -5,7 +5,7 @@
         "replaceWebappFilesError": "An error occurred when replacing files in the downloaded application: {{- error}}. For more information, view the logs.",
         "requiredFieldsMissing": "Required fields are missing for the {{- app }} application. Check if the application is deployed correctly.",
         "applicationListFetchError": "An error occurred when fetching the application list: {{- error}}. Check if your application is available in the system.",
-        "metadataFetchError": "An error occurred when fetching metadata: {{- error}}",
+        "metadataFetchError": "An error occurred when fetching metadata: {{- error}}. For more information, view the logs.",
         "appConfigGenError": "An occurred when generating the application configuration: {{- error}}",
         "endPhase": "An error occurred in the end phase: {{- error}}",
         "errorProcessingJsonFile": "An error occurred when processing the JSON file: {{- error}}. Check the file is valid.",
