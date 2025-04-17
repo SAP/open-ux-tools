@@ -24,7 +24,7 @@
         },
         "appDownloadErrors": {
             "downloadedFileNotBufferError": "Error: The downloaded file is not a buffer. Check the file.",
-            "appDownloadFailure": "An error occurred when downloading the application: {{- error}}.",
+            "appDownloadFailure": "An error occurred when downloading the application: {{- error}}. For more information, view the logs.",
             "zipExtractionError": "An error occurred when extracting the zip file: {{- error}}"
         },
         "eventHookErrors": {
