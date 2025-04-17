@@ -1,5 +1,29 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.10
+
+### Patch Changes
+
+-   Updated dependencies [1bc1cf2]
+    -   @sap-ux/odata-service-inquirer@2.2.34
+
+## 0.0.9
+
+### Patch Changes
+
+-   4b73d5f: Fix for incorrect flp app id during prompt phase only
+    -   @sap-ux/annotation-generator@0.3.24
+    -   @sap-ux/fiori-elements-writer@2.1.40
+    -   @sap-ux/odata-service-inquirer@2.2.33
+
+## 0.0.8
+
+### Patch Changes
+
+-   @sap-ux/annotation-generator@0.3.23
+-   @sap-ux/fiori-elements-writer@2.1.39
+-   @sap-ux/odata-service-inquirer@2.2.33
+
 ## 0.0.7
 
 ### Patch Changes
