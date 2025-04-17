@@ -4,7 +4,7 @@ import type {
     CommonChangeProperties,
     CodeExtChange,
     AnnotationFileChange,
-    CommonExtendedChangeProperties
+    CommonAdditionalChangeInfoProperties
 } from '../types';
 import { ChangeType } from '../types';
 import { basename, join } from 'path';
@@ -217,18 +217,18 @@ export function isAddAnnotationChange(change: CommonChangeProperties): change is
  * @param {AddXMLChange} change - The change data, including the fragment path.
  * @param {Editor} fs - The mem-fs-editor instance.
  * @param {Logger} logger - The logging instance.
- * @param {CommonExtendedChangeProperties} extendedChange - Optional extended change properties.
+ * @param {CommonAdditionalChangeInfoProperties} additionalChangeInfo - Optional extended change properties.
  */
 export function addXmlFragment(
     basePath: string,
     change: AddXMLChange,
     fs: Editor,
     logger: Logger,
-    extendedChange?: CommonExtendedChangeProperties
+    additionalChangeInfo?: CommonAdditionalChangeInfoProperties
 ): void {
     const { fragmentPath } = change.content;
     const fullPath = join(basePath, DirName.Changes, fragmentPath);
-    const templateConfig = fragmentTemplateDefinitions[extendedChange?.templateName ?? ''];
+    const templateConfig = fragmentTemplateDefinitions[additionalChangeInfo?.templateName ?? ''];
     try {
         if (templateConfig) {
             const fragmentTemplatePath = join(__dirname, '../../templates/rta', templateConfig.path);

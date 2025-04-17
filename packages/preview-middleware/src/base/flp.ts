@@ -18,7 +18,7 @@ import {
     type CommonChangeProperties,
     type DescriptorVariant,
     type OperationType,
-    type CommonExtendedChangeProperties
+    type CommonAdditionalChangeInfoProperties
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
@@ -57,7 +57,7 @@ type OnChangeRequestHandler = (
     change: CommonChangeProperties,
     fs: MemFsEditor,
     logger: Logger,
-    extendedChange?: CommonExtendedChangeProperties
+    extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
 
 type Ui5Version = {
@@ -595,7 +595,7 @@ export class FlpSandbox {
         try {
             const body = req.body;
             if (this.onChangeRequest) {
-                await this.onChangeRequest('write', body.change, this.fs, this.logger, body.extendedChange);
+                await this.onChangeRequest('write', body.change, this.fs, this.logger, body.additionalChangeInfo);
             }
             const { success, message } = writeChange(
                 body.change,

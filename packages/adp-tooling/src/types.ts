@@ -209,7 +209,7 @@ export interface CommonChangeProperties {
     texts: Record<string, unknown>;
 }
 
-export interface CommonExtendedChangeProperties {
+export interface CommonAdditionalChangeInfoProperties {
     templateName?: string;
 }
 

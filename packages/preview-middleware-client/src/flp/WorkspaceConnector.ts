@@ -17,7 +17,7 @@ const connector = merge({}, ObjectStorageConnector, {
                 change.support.generator = settings.generator;
             }
 
-            const extendedChange = getAdditionalChangeInforFromSession(change)
+            const additionalChangeInfo = getAdditionalChangeInforFromSession(change)
 
             if (typeof this.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
@@ -29,7 +29,7 @@ const connector = merge({}, ObjectStorageConnector, {
 
             const body = {
                 change,
-                extendedChange
+                additionalChangeInfo
             }
 
             return fetch(CHANGES_API_PATH, {

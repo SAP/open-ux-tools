@@ -14,7 +14,7 @@ import type {
     CommonChangeProperties,
     DescriptorVariant,
     OperationType,
-    CommonExtendedChangeProperties
+    CommonAdditionalChangeInfoProperties
 } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import {
@@ -239,7 +239,7 @@ export class AdpPreview {
      * @param {CommonChangeProperties} change - An object containing properties common to all change types.
      * @param {Editor} fs - An instance of an editor interface for file system operations.
      * @param {Logger} logger - An instance of a logging interface for message logging.
-     * @param {CommonExtendedChangeProperties} [extendedChange] - An optional object containing extended change properties.
+     * @param {CommonAdditionalChangeInfoProperties} [additionalChangeInfo] - An optional object containing extended change properties.
      * @returns {Promise<void>} A promise that resolves when the change request has been processed.
      */
     async onChangeRequest(
@@ -247,7 +247,7 @@ export class AdpPreview {
         change: CommonChangeProperties,
         fs: Editor,
         logger: Logger,
-        extendedChange?: CommonExtendedChangeProperties
+        additionalChangeInfo?: CommonAdditionalChangeInfoProperties
     ): Promise<void> {
         switch (type) {
             case 'read':
@@ -257,7 +257,7 @@ export class AdpPreview {
                 break;
             case 'write':
                 if (isAddXMLChange(change)) {
-                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger, extendedChange);
+                    addXmlFragment(this.util.getProject().getSourcePath(), change, fs, logger, additionalChangeInfo);
                 }
                 if (isAddAnnotationChange(change)) {
                     await addAnnotationFile(
