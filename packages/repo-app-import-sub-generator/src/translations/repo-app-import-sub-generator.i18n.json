@@ -53,7 +53,7 @@
             "noAppsDeployed": "No applications deployed to this system can be downloaded. {{- help}}"
         },
         "targetPath": {
-            "message": "Project folder Path",
+            "message": "Project Folder Path",
             "breadcrumb": "Project Path"
         }
     },
