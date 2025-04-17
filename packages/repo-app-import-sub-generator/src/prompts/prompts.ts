@@ -6,10 +6,7 @@ import { t } from '../utils/i18n';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import { PromptState } from './prompt-state';
 import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
-import { downloadApp } from '../utils/download-utils';
-import { HELP_NODES } from '@sap-ux/guided-answers-helper';
-import type { ValidationLink, FileBrowserQuestion } from '@sap-ux/inquirer-common';
-import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
+import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateAppSelection } from '../utils/validators';
 
 /**
@@ -49,19 +46,6 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
 };
 
 /**
- * Get the validation error link.
- *
- * @returns the validation error link
- */
-export async function getValidationErrorLink(): Promise<ValidationLink> {
-    return ErrorHandler.getHelpLink(
-        HELP_NODES.APP_NOT_FOUND_ERROR,
-        ERROR_TYPE.INTERNAL_SERVER_ERROR,
-        t('error.noAppsDeployed')
-    );
-}
-
-/**
  * Retrieves prompts for selecting a system, app list, and target folder where the app will be generated.
  *
  * @param {string} [appRootPath] - The root path of the application.
@@ -82,7 +66,6 @@ export async function getPrompts(
             },
             false
         );
-
         let appList: AppIndex = [];
         const appSelectionPrompt = [
             {

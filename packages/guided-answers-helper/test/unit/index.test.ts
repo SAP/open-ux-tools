@@ -43,7 +43,8 @@ describe('Guided Answers Helper', () => {
             NO_ADT_SERVICE_AUTH: 57266,
             NO_V4_SERVICES: 57573,
             UI_SERVICE_GENERATOR: 63068,
-            DESTINATION_GATEWAY_TIMEOUT: 57914
+            DESTINATION_GATEWAY_TIMEOUT: 57914,
+            APP_NOT_FOUND_ERROR: 63911
         });
     });
 });
