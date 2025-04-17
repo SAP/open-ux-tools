@@ -1,8 +1,8 @@
 import FlexChange from 'sap/ui/fl/Change';
-import { getAddXMLAdditionalInfo, type AddXMLAdditionalInfo } from '../cpe/additional-change-info/add-xml-additional-info';
+import { getAddXMLAdditionalInfo, type AddXMLAdditionalInfo, type AddXMLChangeContent } from '../cpe/additional-change-info/add-xml-additional-info';
 import { FlexChange as Change } from '../flp/common';
 
-export function setAdditionalChangeInfoInSession(change: FlexChange<any> | undefined): void {
+export function setAdditionalChangeInfoInSession(change: FlexChange<AddXMLChangeContent> | undefined): void {
     if (!change) {
         return;
     }

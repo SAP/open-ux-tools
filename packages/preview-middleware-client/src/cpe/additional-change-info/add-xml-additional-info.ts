@@ -12,8 +12,14 @@ export type AddXMLAdditionalInfo = {
     templateName: string;
 };
 
-export function getAddXMLAdditionalInfo(change: FlexChange<any>): AddXMLAdditionalInfo | undefined {
-    const templateName = getFragmentTemplateName(change.getSelector()?.id, change.getContent()?.targetAggregation);
+export type AddXMLChangeContent = {
+    targetAggregation?: string;
+};
+
+export function getAddXMLAdditionalInfo(change: FlexChange<AddXMLChangeContent>): AddXMLAdditionalInfo | undefined {
+    const selectorId = change.getSelector()?.id ?? '';
+    const targetAggregation = change.getContent()?.targetAggregation ?? '';
+    const templateName = getFragmentTemplateName(selectorId, targetAggregation);
     if (templateName) {
         return { templateName };
     }

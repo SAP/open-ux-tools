@@ -16,12 +16,6 @@ import OverlayRegistry from 'mock/sap/ui/dt/OverlayRegistry';
 import type ManagedObject from 'sap/ui/base/ManagedObject';
 import Core from 'sap/ui/core/Core';
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
-import {
-    ANALYTICAL_TABLE_TYPE,
-    GRID_TABLE_TYPE,
-    MDC_TABLE_TYPE,
-    TREE_TABLE_TYPE
-} from 'open/ux/preview/client/adp/quick-actions/control-types';
 import { AddFragmentData } from '../../../../src/adp/add-fragment';
 
 describe('AddFragment', () => {
