@@ -23,7 +23,7 @@ describe('flp/WorkspaceConnector', () => {
                 expect.anything(),
                 expect.objectContaining({
                     method: 'POST',
-                    body: JSON.stringify(change, null, 2)
+                    body: JSON.stringify({change: {...change}}, null, 2)
                 })
             );
             expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledTimes(0);
@@ -38,7 +38,7 @@ describe('flp/WorkspaceConnector', () => {
                 expect.anything(),
                 expect.objectContaining({
                     method: 'POST',
-                    body: JSON.stringify(change, null, 2)
+                    body: JSON.stringify({change: {...change}}, null, 2)
                 })
             );
             expect(connector.storage.fileChangeRequestNotifier).toHaveBeenCalledWith('dummyFile', 'create', change);
