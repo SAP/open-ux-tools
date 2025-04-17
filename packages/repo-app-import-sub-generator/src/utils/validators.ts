@@ -106,7 +106,7 @@ export const isValidPromptState = (targetFolder: string, appId?: string): boolea
  */
 async function generateAppNotFoundHelpLink(): Promise<ValidationLink> {
     return ErrorHandler.getHelpLink(
-        HELP_NODES.APP_NOT_FOUND_ERROR,
+        HELP_NODES.ADT_APP_NOT_FOUND_ERROR,
         ERROR_TYPE.INTERNAL_SERVER_ERROR,
         t('error.noAppsDeployed')
     );
