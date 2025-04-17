@@ -1,5 +1,15 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.1.3
+
+### Patch Changes
+
+-   e5f4915: Added GA link and moved validate logic to a function
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+    -   @sap-ux/inquirer-common@0.6.36
+    -   @sap-ux/odata-service-inquirer@2.2.36
+
 ## 0.1.2
 
 ### Patch Changes

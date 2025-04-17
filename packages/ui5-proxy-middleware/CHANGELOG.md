@@ -1,5 +1,11 @@
 # @sap-ux/ui5-proxy-middleware
 
+## 1.4.23
+
+### Patch Changes
+
+-   a4cb2f6: chore(deps): update dependency http-proxy-middleware to v2.0.9
+
 ## 1.4.22
 
 ### Patch Changes
