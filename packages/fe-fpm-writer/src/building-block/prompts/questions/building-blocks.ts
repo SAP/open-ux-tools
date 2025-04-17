@@ -1,7 +1,6 @@
 import { i18nNamespaces, translate } from '../../../i18n';
 import { BuildingBlockType } from '../../types';
 import type { Answers, Prompts, PromptsGroup, PromptsType } from '../../../prompts/types';
-import type { TFunction } from 'i18next';
 
 export interface BuildingBlockTypePromptsAnswer extends Answers {
     buildingBlockType: PromptsType;
@@ -13,11 +12,11 @@ export interface BuildingBlockTypePromptsAnswer extends Answers {
  * @returns The manifest prompts group.
  */
 export const getManifestPromptsGroup = (): PromptsGroup => {
-    const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.super.manifestGroup.');
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.super.manifestGroup.');
     return {
         id: 'manifestLibraries',
         title: t('manifestLibrariesTitle'),
-        description: t('manifestLibrariesDescription', { returnObjects: true })
+        description: [t('manifestLibrariesDescription', { returnObjects: true })]
     };
 };
 

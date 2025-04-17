@@ -1,5 +1,4 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
 import { i18nNamespaces, translate } from '../../../i18n';
 import {
@@ -41,22 +40,22 @@ const groupIds = {
  */
 export async function getChartBuildingBlockPrompts(context: PromptContext): Promise<Prompts<ChartPromptsAnswer>> {
     const { project } = context;
-    const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.chart.');
     const groups: PromptsGroup[] = [
         {
             id: groupIds.commonChartBuildingBlockProperties,
             title: t('chartBuildingBlockPropertiesTitle'),
-            description: t('chartBuildingBlockPropertiesDescription', { returnObjects: true })
+            description: [t('chartBuildingBlockPropertiesDescription', { returnObjects: true })]
         },
         {
             id: groupIds.chartVisualizationProperties,
             title: t('chartVisualizationPropertiesTitle'),
-            description: t('chartVisualizationPropertiesDescription', { returnObjects: true })
+            description: [t('chartVisualizationPropertiesDescription', { returnObjects: true })]
         },
         {
             id: groupIds.chartConfigureEvents,
             title: t('chartConfigureEventsTitle'),
-            description: t('chartConfigureEventsDescription', { returnObjects: true })
+            description: [t('chartConfigureEventsDescription', { returnObjects: true })]
         },
         MANIFEST_LIBRARIES_GROUP
     ];

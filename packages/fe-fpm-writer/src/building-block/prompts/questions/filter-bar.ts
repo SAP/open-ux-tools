@@ -14,7 +14,6 @@ import {
 import type { Prompts, PromptContext, PromptsGroup } from '../../../prompts/types';
 import { BuildingBlockType } from '../../types';
 import type { BuildingBlockConfig, FilterBar } from '../../types';
-import type { TFunction } from 'i18next';
 import { getManifestPromptsGroup } from './building-blocks';
 
 const MANIFEST_LIBRARIES_GROUP = getManifestPromptsGroup();
@@ -41,17 +40,17 @@ export async function getFilterBarBuildingBlockPrompts(
     context: PromptContext
 ): Promise<Prompts<FilterBarPromptsAnswer>> {
     const { project } = context;
-    const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.filterBar.');
     const groups: PromptsGroup[] = [
         {
             id: groupIds.commonFilterBarBuildingBlockProperties,
             title: t('filterBarBuildingBlockPropertiesTitle'),
-            description: t('filterBarBuildingBlockPropertiesDescription', { returnObjects: true })
+            description: [t('filterBarBuildingBlockPropertiesDescription', { returnObjects: true })]
         },
         {
             id: groupIds.filterConfigureEvents,
             title: t('filterBarConfigureEventsTitle'),
-            description: t('filterBarConfigureEventsDescription', { returnObjects: true })
+            description: [t('filterBarConfigureEventsDescription', { returnObjects: true })]
         },
         MANIFEST_LIBRARIES_GROUP
     ];

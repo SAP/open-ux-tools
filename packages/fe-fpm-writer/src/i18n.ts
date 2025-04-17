@@ -38,7 +38,7 @@ export async function initI18n(): Promise<void> {
     });
 }
 
-type StringMap = Record<string, unknown>;
+type $Dictionary<T = unknown> = { [key: string]: T };
 
 /**
  * Wraps the i18next module's translate function to bind the provided namespace and a key prefix.
@@ -50,7 +50,7 @@ type StringMap = Record<string, unknown>;
 export function translate(
     namespace: string,
     keyPrefix?: string
-): (key: string, options?: string | TOptions<StringMap & TOptionsBase>) => string {
+): (key: string, options?: string | TOptions<$Dictionary & TOptionsBase>) => string {
     return (key: string, options?: any): string => {
         const result = i18nInstance.t(`${namespace}:${keyPrefix ?? ''}${key}`, options);
         return typeof result === 'string' ? result : '';

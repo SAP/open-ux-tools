@@ -1,5 +1,4 @@
 import { UIAnnotationTerms } from '@sap-ux/vocabularies-types/vocabularies/UI';
-import type { TFunction } from 'i18next';
 import type { Answers } from 'inquirer';
 import { i18nNamespaces, translate } from '../../../i18n';
 import {
@@ -52,17 +51,17 @@ const defaultAnswers = {
  */
 export async function getTableBuildingBlockPrompts(context: PromptContext): Promise<Prompts<TablePromptsAnswer>> {
     const { project } = context;
-    const t: TFunction = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
+    const t = translate(i18nNamespaces.buildingBlock, 'prompts.table.');
     const groups: PromptsGroup[] = [
         {
             id: groupIds.commonTableBuildingBlockProperties,
             title: t('tableBuildingBlockPropertiesTitle'),
-            description: t('tableBuildingBlockPropertiesDescription', { returnObjects: true })
+            description: [t('tableBuildingBlockPropertiesDescription', { returnObjects: true })]
         },
         {
             id: groupIds.visualisationProperties,
             title: t('tableVisualizationPropertiesTitle'),
-            description: t('tableVisualizationPropertiesDescription', { returnObjects: true })
+            description: [t('tableVisualizationPropertiesDescription', { returnObjects: true })]
         },
         MANIFEST_LIBRARIES_GROUP
     ];
