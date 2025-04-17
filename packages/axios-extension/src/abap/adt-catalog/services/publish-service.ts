@@ -63,7 +63,7 @@ export class PublishService extends AdtService {
         const { serviceDefinitionName, serviceName, serviceVersion } = technicalDetails;
         const response = await this.get(`/${serviceName}`, {
             headers: {
-                Accept: 'application/vnd.sap.adt.businessservices.odatav4.v1+xml'
+                Accept: 'application/vnd.sap.adt.businessservices.odatav4.v2+xml'
             },
             params: {
                 servicename: serviceName,
