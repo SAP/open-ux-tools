@@ -117,7 +117,7 @@ export default class extends Generator {
         switch (template) {
             case TemplateType.OverviewPage:
                 this.template.settings = {
-                    filterEntityType: entity
+                    filterEntitySet: entity
                 } as OVPSettings;
                 break;
             case TemplateType.ListReportObjectPage:

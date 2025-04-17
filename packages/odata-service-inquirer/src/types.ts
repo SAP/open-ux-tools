@@ -157,7 +157,7 @@ export enum promptNames {
 export const EntityPromptNames = {
     mainEntity: 'mainEntity',
     navigationEntity: 'navigationEntity',
-    filterEntityType: 'filterEntityType',
+    filterEntitySet: 'filterEntitySet',
     tableType: 'tableType',
     hierarchyQualifier: 'hierarchyQualifier',
     addFEOPAnnotations: 'addFEOPAnnotations',
@@ -173,7 +173,7 @@ export type EntityPromptNames = (typeof EntityPromptNames)[keyof typeof EntityPr
 export interface EntitySelectionAnswers {
     [EntityPromptNames.mainEntity]?: EntityAnswer;
     [EntityPromptNames.navigationEntity]?: NavigationEntityAnswer;
-    [EntityPromptNames.filterEntityType]?: EntityAnswer;
+    [EntityPromptNames.filterEntitySet]?: EntityAnswer;
 }
 
 export interface TableConfigAnswers {

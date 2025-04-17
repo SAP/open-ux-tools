@@ -87,14 +87,13 @@ describe('Test entity prompts', () => {
         let questions = getEntitySelectionQuestions(metadataV2, 'ovp');
         expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV2, {
             defaultMainEntityName: undefined,
-            entitySetFilter: undefined,
-            useEntityTypeAsName: true
+            entitySetFilter: undefined
         });
         expect(questions).toEqual(
-            expect.arrayContaining([expect.objectContaining({ name: EntityPromptNames.filterEntityType })])
+            expect.arrayContaining([expect.objectContaining({ name: EntityPromptNames.filterEntitySet })])
         );
         const filterEntityPrompt = questions.find(
-            (question) => question.name === EntityPromptNames.filterEntityType
+            (question) => question.name === EntityPromptNames.filterEntitySet
         ) as ListQuestion;
         // Specific entity choices should be tested by the entity helper tests
         expect((filterEntityPrompt.choices as []).length).toBe(25);
@@ -110,9 +109,9 @@ describe('Test entity prompts', () => {
         });
         questions = getEntitySelectionQuestions(metadataV2, 'ovp');
         validateResult = (
-            questions.find((question) => question.name === EntityPromptNames.filterEntityType)!.validate as Function
+            questions.find((question) => question.name === EntityPromptNames.filterEntitySet)!.validate as Function
         )();
-        expect(validateResult).toEqual(t('prompts.filterEntityType.noEntitiesError'));
+        expect(validateResult).toEqual(t('prompts.filterEntitySet.noEntitiesError'));
     });
 
     test('getEntityQuestions should return the correct questions: `lrop`', async () => {
@@ -123,8 +122,7 @@ describe('Test entity prompts', () => {
         });
         expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: 'Customer',
-            entitySetFilter: undefined,
-            useEntityTypeAsName: false
+            entitySetFilter: undefined
         });
         expect(questions).toEqual(
             expect.arrayContaining([
@@ -262,8 +260,7 @@ describe('Test entity prompts', () => {
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'feop');
         expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: undefined,
-            entitySetFilter: undefined,
-            useEntityTypeAsName: false
+            entitySetFilter: undefined
         });
         expect(questions).toEqual(
             expect.arrayContaining([
@@ -275,8 +272,7 @@ describe('Test entity prompts', () => {
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'feop', true);
         expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: undefined,
-            entitySetFilter: 'filterDraftEnabled',
-            useEntityTypeAsName: false
+            entitySetFilter: 'filterDraftEnabled'
         });
         getEntityChoicesSpy.mockClear();
 
@@ -284,8 +280,7 @@ describe('Test entity prompts', () => {
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'worklist', true);
         expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: undefined,
-            entitySetFilter: undefined,
-            useEntityTypeAsName: false
+            entitySetFilter: undefined
         });
         expect(questions).toEqual(
             expect.arrayContaining([
@@ -299,8 +294,7 @@ describe('Test entity prompts', () => {
         questions = getEntitySelectionQuestions(metadataV4WithAggregateTransforms, 'fpm');
         expect(getEntityChoicesSpy).toHaveBeenCalledWith(metadataV4WithAggregateTransforms, {
             defaultMainEntityName: undefined,
-            entitySetFilter: undefined,
-            useEntityTypeAsName: false
+            entitySetFilter: undefined
         });
         // Note, no navigation entity for FPM
         expect(questions).toEqual(
