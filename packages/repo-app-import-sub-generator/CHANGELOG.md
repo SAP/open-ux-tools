@@ -1,5 +1,40 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+    -   @sap-ux/odata-service-inquirer@2.2.35
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [1bc1cf2]
+    -   @sap-ux/odata-service-inquirer@2.2.34
+
+## 0.1.0
+
+### Minor Changes
+
+-   770f90b: Removed Jest timeout from test and mocked \_runNpmInstall method when skipInstall is false
+
+## 0.0.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.1.40
+-   @sap-ux/odata-service-inquirer@2.2.33
+
+## 0.0.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.1.39
+-   @sap-ux/odata-service-inquirer@2.2.33
+
 ## 0.0.1
 
 ### Patch Changes
