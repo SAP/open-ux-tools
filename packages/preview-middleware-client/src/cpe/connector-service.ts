@@ -1,6 +1,9 @@
 import { ExternalAction, reloadApplication, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
+import { getAdditionalChangeInforFromSession } from '../utils/additional-change-info';
+import { FlexChange } from '../flp/common';
+
 
 /**
  * A Class of WorkspaceConnectorService
@@ -39,7 +42,6 @@ export class WorkspaceConnectorService {
         const { changeType, content } = change as {
             changeType?: string;
             content?: {
-                templateName?: string;
                 fragmentPath?: string;
             };
         };
@@ -53,11 +55,14 @@ export class WorkspaceConnectorService {
         ) {
             this.sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
         }
-        if (changeType === 'addXML' && content?.templateName !== undefined && content?.fragmentPath !== undefined) {
+        if (changeType === 'addXML' && content?.fragmentPath !== undefined) {
+            const additionalChangeInfo = getAdditionalChangeInforFromSession(change as FlexChange);
             // If there is template available, then we save and reload right away,
             // so we should ignore the first file change event that comes for the fragment.
             // (We don't want to show "Reload" button)
-            this.sendAction(storageFileChanged(content.fragmentPath));
+            if (additionalChangeInfo?.templateName) {
+                this.sendAction(storageFileChanged(content.fragmentPath));
+            }
         }
     }
 }
