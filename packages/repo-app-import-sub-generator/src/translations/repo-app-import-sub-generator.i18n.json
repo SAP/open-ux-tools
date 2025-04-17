@@ -9,6 +9,7 @@
         "appConfigGenError": "An occurred when generating the application configuration: {{- error}}",
         "endPhase": "An error occurred in the end phase: {{- error}}",
         "errorProcessingJsonFile": "An error occurred when processing the JSON file: {{- error}}. Check the file is valid.",
+        "noAppsDeployed": "No applications deployed to this system can be downloaded.",
         "validationErrors": {
             "invalidMetadataPackage": "Invalid or missing package in the metadata. Check the metadata.",
             "invalidServiceName": "Invalid or missing `serviceName` in `serviceBindingDetails`. Check the `serviceName`.",
