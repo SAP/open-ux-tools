@@ -1,12 +1,11 @@
 import { t } from '../utils/i18n';
-import type { QfaJsonConfig } from '../app/types';
 import RepoAppDownloadLogger from '../utils/logger';
 import { PromptState } from '../prompts/prompt-state';
 import type { AppIndex } from '@sap-ux/axios-extension';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
 import type { ValidationLink } from '@sap-ux/inquirer-common';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
-import type { AppInfo, QuickDeployedAppConfig } from '../app/types';
+import type { AppInfo, QuickDeployedAppConfig, QfaJsonConfig } from '../app/types';
 import { downloadApp } from '../utils/download-utils';
 
 /**
