@@ -4,7 +4,7 @@
         "qfaJsonNotFound": "{{- jsonFileName }} not found in the downloaded application. Check the file exists.",
         "replaceWebappFilesError": "An error occurred when replacing files in the downloaded application: {{- error}}. For more information, view the logs.",
         "requiredFieldsMissing": "Required fields are missing for the {{- app }} application. Check if the application is deployed correctly.",
-        "applicationListFetchError": "An error occurred when fetching the application list: {{- error}}",
+        "applicationListFetchError": "An error occurred when fetching the application list: {{- error}}. Check if your application is available in the system.",
         "metadataFetchError": "An error occurred when fetching metadata: {{- error}}",
         "appConfigGenError": "An occurred when generating the application configuration: {{- error}}",
         "endPhase": "An error occurred in the end phase: {{- error}}",
