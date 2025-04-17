@@ -80,6 +80,20 @@ declare module 'sap/ui/rta/plugin/AddXMLAtExtensionPoint' {
     }
 }
 
+declare module 'sap/ui/rta/plugin/ExtendControllerPlugin' {
+    import type CommandFactory from 'sap/ui/rta/command/CommandFactory';
+
+    interface Arguments {
+        commandFactory: CommandFactory;
+        handlerFunction: (overlay: UI5Element) => Promise<void | object>;
+    }
+
+    export default class ExtendControllerPlugin {
+        constructor(_: Arguments) {}
+    }
+}
+
+
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
     import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';
@@ -277,6 +291,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
+        getPlugins: () => { [key: string]: unknown; contextMenu: ContextMenu };
         setPlugins: (defaultPlugins: object) => void;
         getRootControlInstance: () => {
             getManifest(): Manifest;

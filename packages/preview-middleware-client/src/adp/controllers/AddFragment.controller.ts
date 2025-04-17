@@ -248,8 +248,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             this.runtimeControl,
             'addXML',
             modifiedValue,
-            designMetadata,
-            flexSettings
+            flexSettings,
+            designMetadata
         );
 
         const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);

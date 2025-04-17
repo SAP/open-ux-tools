@@ -29,8 +29,18 @@
             visible="false"
             singleContainerFullSize="false">
             <f:content>
-                <Label text="An existing controller extension has been found. Please use the previously created extension controller" />
+                <Label text="{i18n>ADP_CONTROLLER_EXTENSION_EXISTS}" />
                 <Text text="{/controllerPathFromRoot}" />
+            </f:content>
+        </f:SimpleForm>
+        <f:SimpleForm
+            editable="true"
+            layout="ResponsiveGridLayout"
+            labelSpanS="12"
+            visible="false"
+            singleContainerFullSize="false">
+            <f:content>
+                <Text text="{i18n>ADP_CONTROLLER_PENDING_CHANGE_EXISTS}" />
             </f:content>
         </f:SimpleForm>
     </content>

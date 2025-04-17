@@ -55,6 +55,7 @@ describe('adp', () => {
                 addMenuItem: addMenuItemSpy
             }
         });
+        rtaMock.getPlugins.mockReturnValue({});
     });
 
     afterEach(() => {
@@ -70,7 +71,7 @@ describe('adp', () => {
 
         expect(initOutlineSpy).toBeCalledTimes(1);
         expect(addMenuItemSpy).toBeCalledTimes(2);
-        expect(setPluginsSpy).toBeCalledTimes(1);
+        expect(setPluginsSpy).toBeCalledTimes(2);
         expect(enableTelemetry).toBeCalledTimes(2);
 
         const callBackFn = spyPostMessage.mock.calls[0][0];

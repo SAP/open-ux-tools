@@ -285,8 +285,8 @@ export default class AddTableColumnFragments extends BaseDialog<AddTableColumnsF
                 targetObject,
                 'addXML',
                 modifiedValue,
-                designMetadata,
-                flexSettings
+                flexSettings,
+                designMetadata
             );
 
             const templateName =
