@@ -1,10 +1,7 @@
 import { ExternalAction, reloadApplication, storageFileChanged } from '@sap-ux-private/control-property-editor-common';
 import { ActionSenderFunction, SubscribeFunction } from './types';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../utils/version';
-import { getAdditionalChangeInforFromSession } from '../utils/additional-change-info';
-import { FlexChange } from '../flp/common';
-
-
+import { AdditionalChangeInfo } from '../utils/additional-change-info';
 /**
  * A Class of WorkspaceConnectorService
  */
@@ -38,7 +35,12 @@ export class WorkspaceConnectorService {
         }
     }
 
-    private onChangeSaved(fileName: string, kind: 'delete' | 'create', change: unknown = {}) {
+    private onChangeSaved(
+        fileName: string,
+        kind: 'delete' | 'create',
+        change: unknown = {},
+        additionalChangeInfo: unknown = {}
+    ): void {
         const { changeType, content } = change as {
             changeType?: string;
             content?: {
@@ -55,14 +57,11 @@ export class WorkspaceConnectorService {
         ) {
             this.sendAction(storageFileChanged(fileName?.replace('sap.ui.fl.', '')));
         }
-        if (changeType === 'addXML' && content?.fragmentPath !== undefined) {
-            const additionalChangeInfo = getAdditionalChangeInforFromSession(change as FlexChange);
+        if (changeType === 'addXML' && (additionalChangeInfo as AdditionalChangeInfo )?.templateName && content?.fragmentPath) {
             // If there is template available, then we save and reload right away,
             // so we should ignore the first file change event that comes for the fragment.
             // (We don't want to show "Reload" button)
-            if (additionalChangeInfo?.templateName) {
-                this.sendAction(storageFileChanged(content.fragmentPath));
-            }
+            this.sendAction(storageFileChanged(content.fragmentPath));
         }
     }
 }

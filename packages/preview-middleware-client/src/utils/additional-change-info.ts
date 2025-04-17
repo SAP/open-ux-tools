@@ -1,8 +1,16 @@
 import FlexChange from 'sap/ui/fl/Change';
-import { getAddXMLAdditionalInfo, type AddXMLAdditionalInfo, type AddXMLChangeContent } from '../cpe/additional-change-info/add-xml-additional-info';
+import {
+    getAddXMLAdditionalInfo,
+    type AddXMLAdditionalInfo,
+    type AddXMLChangeContent
+} from '../cpe/additional-change-info/add-xml-additional-info';
 import { FlexChange as Change } from '../flp/common';
 
-export function setAdditionalChangeInfoInSession(change: FlexChange<AddXMLChangeContent> | undefined): void {
+const additionalChangeInfoMap = new Map<string, AddXMLAdditionalInfo>();
+
+export type AdditionalChangeInfo = AddXMLAdditionalInfo | undefined
+
+export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> | undefined): void {
     if (!change) {
         return;
     }
@@ -15,16 +23,14 @@ export function setAdditionalChangeInfoInSession(change: FlexChange<AddXMLChange
     }
 
     if (additionalChangeInfo) {
-        // eslint-disable-next-line fiori-custom/sap-no-sessionstorage
-        sessionStorage.setItem(change.getDefinition().fileName, JSON.stringify(additionalChangeInfo));
+        additionalChangeInfoMap.set(change.getDefinition().fileName, additionalChangeInfo);
     }
 }
 
-export function getAdditionalChangeInforFromSession(change: Change): AddXMLAdditionalInfo | undefined {
-    // eslint-disable-next-line fiori-custom/sap-no-sessionstorage
-    const additionalChangeInfo = sessionStorage.getItem(change.fileName);
+export function getAdditionalChangeInfo(change: Change): AdditionalChangeInfo {
+    const additionalChangeInfo = additionalChangeInfoMap.get(change.fileName);
     if (additionalChangeInfo) {
-        return JSON.parse(additionalChangeInfo);
+        return additionalChangeInfo;
     }
 
     return undefined;
