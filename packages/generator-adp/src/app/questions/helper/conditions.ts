@@ -1,4 +1,5 @@
-import type { ConfigAnswers } from '@sap-ux/adp-tooling';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import type { ConfigAnswers, FlexUISupportedSystem } from '@sap-ux/adp-tooling';
 
 /**
  * Determines if a credential question should be shown.
@@ -28,4 +29,60 @@ export function showApplicationQuestion(
     isLoginSuccessful: boolean
 ): boolean {
     return !!answers.system && appsLoaded && (isAuthRequired ? isLoginSuccessful : true);
+}
+
+/**
+ * Determines if an application error question will be shown based on the answers and specific conditions.
+ *
+ * @param {ConfigurationInfoAnswers} answers - The user-provided answers containing application details.
+ * @param {FlexUISupportedSystem} flexUISystem - The system type info (e.g., onPremise/UIFlex).
+ * @param {boolean} isApplicationSupported - Whether the selected application is supported.
+ * @returns {boolean | undefined} True if an application error will be shown, otherwise false or undefined based on the conditions evaluated.
+ */
+export function showApplicationErrorQuestion(
+    answers: ConfigAnswers,
+    flexUISystem: FlexUISupportedSystem | undefined,
+    isApplicationSupported: boolean
+): boolean {
+    return (
+        answers.application &&
+        isAppStudio() &&
+        !isApplicationSupported &&
+        !!flexUISystem?.isOnPremise &&
+        flexUISystem?.isUIFlex
+    );
+}
+
+/**
+ * Determines if an extension project is allowed based on the system and application conditions.
+ *
+ * @param {ConfigAnswers} answers - The user-provided answers containing application details.
+ * @param {FlexUISupportedSystem} flexUISystem - The system type info (e.g., onPremise/UIFlex).
+ * @param {boolean} isCloudProject - Whether the system is a cloud-based system.
+ * @param {boolean} isApplicationSupported - Whether the selected application is supported.
+ * @param {boolean} hasSyncViews - Whether synchronized views exist for the app.
+ * @returns {boolean | undefined} True if an extension project is allowed, otherwise false or undefined.
+ */
+export function showExtensionProjectQuestion(
+    answers: ConfigAnswers,
+    flexUISystem: FlexUISupportedSystem | undefined,
+    isCloudProject: boolean | undefined,
+    isApplicationSupported: boolean,
+    hasSyncViews: boolean
+): boolean {
+    if (!answers.application) {
+        return false;
+    }
+
+    if (isCloudProject) {
+        return false;
+    }
+
+    const isOnPremiseAppStudio = !!flexUISystem?.isOnPremise && isAppStudio();
+    const nonFlexOrNonOnPremise = flexUISystem && (!flexUISystem?.isOnPremise || !flexUISystem?.isUIFlex);
+
+    return (
+        isOnPremiseAppStudio &&
+        (!isApplicationSupported || (isApplicationSupported && (nonFlexOrNonOnPremise || hasSyncViews)))
+    );
 }
