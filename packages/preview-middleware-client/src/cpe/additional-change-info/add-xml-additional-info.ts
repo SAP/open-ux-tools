@@ -12,7 +12,7 @@ export type AddXMLAdditionalInfo = {
     templateName: string;
 };
 
-export function getAddXMLAdditionalInfo(change: FlexChange<any>): { templateName: string } | undefined {
+export function getAddXMLAdditionalInfo(change: FlexChange<any>): AddXMLAdditionalInfo | undefined {
     const templateName = getFragmentTemplateName(change.getSelector()?.id, change.getContent()?.targetAggregation);
     if (templateName) {
         return { templateName };
