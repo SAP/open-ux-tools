@@ -50,8 +50,7 @@
         "appSelection": {
             "message": "Application",
             "hint": "Select the application to download.",
-            "breadcrumb": "Application",
-            "noAppsDeployed": "No applications deployed to this system can be downloaded. {{- help}}"
+            "breadcrumb": "Application"
         },
         "targetPath": {
             "message": "Project Folder Path",
