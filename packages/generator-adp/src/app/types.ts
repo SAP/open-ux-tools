@@ -37,7 +37,9 @@ export enum configPromptNames {
     username = 'username',
     password = 'password',
     application = 'application',
-    appValidationCli = 'appValidationCli'
+    appValidationCli = 'appValidationCli',
+    appInfoError = 'appInfoError',
+    shouldCreateExtProject = 'shouldCreateExtProject'
 }
 
 /**
@@ -70,6 +72,14 @@ export interface ApplicationPromptOptions {
     hide?: boolean;
 }
 
+export interface ApplicationInfoErrorPromptOptions {
+    hide?: boolean;
+}
+
+export interface ShouldCreateExtProjectPromptOptions {
+    hide?: boolean;
+}
+
 /**
  * Options for the configuration inquirer & the prompts.
  */
@@ -80,6 +90,8 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.password]: PasswordPromptOptions;
     [configPromptNames.application]: ApplicationPromptOptions;
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
+    [configPromptNames.appInfoError]: ApplicationInfoErrorPromptOptions;
+    [configPromptNames.shouldCreateExtProject]: ShouldCreateExtProjectPromptOptions;
 }>;
 
 export enum attributePromptNames {

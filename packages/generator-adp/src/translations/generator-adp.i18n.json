@@ -14,6 +14,11 @@
         "passwordTooltip": "Enter the password for the back-end system.",
         "applicationListLabel": "Application",
         "applicationListTooltip": "Select the application for which you want to create an app variant.",
+        "adpNotSupported": "NOTE: The selected application is not supported by Adaptation Project",
+        "applicationErrorMoreInfo": "https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/adaptation-project-for-on-premise-system",
+        "createExtProjectLabel": "Do you want to create an Extension Project instead?",
+        "createExtProjectWithSyncViewsLabel": "Do you want to create an Extension Project instead? It will give you the ability to create controller extensions for the synchronous views as well as the asynchronous.",
+        "createExtProjectContinueLabel": "Please select whether you want to continue",
         "projectTypeLabel": "Project Type",
         "projectNameLabel": "Project Name",
         "projectNameTooltip": "Enter the project name for your app variant.",
@@ -44,6 +49,7 @@
         "notDeployableSystemError": "The system that you have selected is not an ABAP On-Premise system which supports DTA_FOLDER deployment. Adaptation projects are only supported on those systems. Please choose an ABAP On-Premise system which supports DTA_FOLDER deployment.",
         "notFlexEnabledError": "The system that you have selected is not an ABAP On-Premise system which supports flexibility. Adaptation projects are only supported on those systems. Please choose an ABAP On-Premise system which supports flexibility. If you continue, you will only be able to create an extension project.",
         "manifestCouldNotBeValidated": "The manifest.json file of the selected application could not be validated. Please select a different application.",
-        "appDoesNotSupportAdaptation": "The application that you have selected does not support flexibility. Adaptation projects are only supported with those applications. Please choose an application which supports flexibility."
+        "appDoesNotSupportAdaptation": "The application that you have selected does not support flexibility. Adaptation projects are only supported with those applications. Please choose an application which supports flexibility.",
+        "extensibilityGenNotFound": "Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension."
     }
 }

@@ -18,7 +18,13 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
 import { validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { InputQuestion, ListQuestion, PasswordQuestion, YUIQuestion } from '@sap-ux/inquirer-common';
+import type {
+    ConfirmQuestion,
+    InputQuestion,
+    ListQuestion,
+    PasswordQuestion,
+    YUIQuestion
+} from '@sap-ux/inquirer-common';
 import type {
     ConfigAnswers,
     FlexUISupportedSystem,
@@ -28,18 +34,27 @@ import type {
 } from '@sap-ux/adp-tooling';
 
 import type {
+    ApplicationInfoErrorPromptOptions,
     ApplicationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
     PasswordPromptOptions,
+    ShouldCreateExtProjectPromptOptions,
     SystemPromptOptions,
     UsernamePromptOptions
 } from '../types';
 import { t } from '../../utils/i18n';
 import { configPromptNames } from '../types';
+import { getExtProjectMessage } from './helper/message';
 import { getApplicationChoices } from './helper/choices';
-import { showApplicationQuestion, showCredentialQuestion } from './helper/conditions';
+import { validateExtensibilityGenerator } from './helper/validators';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
+import {
+    showApplicationErrorQuestion,
+    showApplicationQuestion,
+    showCredentialQuestion,
+    showExtensionProjectQuestion
+} from './helper/conditions';
 
 /**
  * A stateful prompter class that creates configuration questions.
@@ -187,7 +202,9 @@ export class ConfigPrompter {
             [configPromptNames.application]: this.getApplicationListPrompt(
                 promptOptions?.[configPromptNames.application]
             ),
-            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli()
+            [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli(),
+            [configPromptNames.appInfoError]: this.getAppInfoErrorPrompt(),
+            [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt()
         };
 
         const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
@@ -355,6 +372,59 @@ export class ConfigPrompter {
                 return false;
             }
         } as YUIQuestion;
+    }
+
+    /**
+     * Generates an input label type prompt that serves as an informational message indicating that the adaptation project is not supported.
+     *
+     * @param {ApplicationInfoErrorPromptOptions} _ - Optional configuration for the application info error prompt.
+     * @returns {InputQuestion<ConfigAnswers>} An input label type prompt configured as a label with a link to more information.
+     */
+    private getAppInfoErrorPrompt(_?: ApplicationInfoErrorPromptOptions): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: configPromptNames.appInfoError,
+            message: t('prompts.adpNotSupported'),
+            when: (answers: ConfigAnswers) =>
+                showApplicationErrorQuestion(answers, this.flexUISystem, this.isApplicationSupported),
+            // store: false,
+            guiOptions: {
+                type: 'label',
+                link: {
+                    text: '(more)',
+                    url: t('info.applicationErrorMoreInfo')
+                }
+            }
+        };
+    }
+
+    /**
+     * Generates a confirmation prompt to decide whether to create an extension project based on the application's
+     * sync capabilities and support status.
+     *
+     * @param {ShouldCreateExtProjectPromptOptions} _ - Optional configuration for the confirm extension project prompt.
+     * @returns The confirm extension project prompt as a {@link ConfigQuestion}.
+     */
+    private getShouldCreateExtProjectPrompt(_?: ShouldCreateExtProjectPromptOptions): ConfirmQuestion<ConfigAnswers> {
+        return {
+            type: 'confirm',
+            name: configPromptNames.shouldCreateExtProject,
+            message: () => getExtProjectMessage(this.isApplicationSupported, this.containsSyncViews),
+            default: false,
+            guiOptions: {
+                applyDefaultWhenDirty: true
+            },
+            when: (answers: ConfigAnswers) =>
+                showExtensionProjectQuestion(
+                    answers,
+                    this.flexUISystem,
+                    this.isCloudProject,
+                    this.isApplicationSupported,
+                    this.containsSyncViews
+                ),
+            validate: (value: boolean) =>
+                validateExtensibilityGenerator(value, this.isApplicationSupported, this.containsSyncViews)
+        };
     }
 
     /**
