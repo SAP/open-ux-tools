@@ -107,6 +107,8 @@ export const getAppAdditionalMessages = (
             severity: Severity.warning
         };
     }
+
+    return undefined;
 };
 
 /**
