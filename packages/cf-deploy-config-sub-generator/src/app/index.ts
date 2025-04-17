@@ -258,9 +258,13 @@ export default class extends DeploymentGenerator {
         const isDestinationFullUrl =
             this.options.isFullUrlDest ?? (destination && isFullUrlDestination(destination)) ?? false;
         const addManagedAppRouter =
-            this.options.addManagedAppRouter ?? this.answers.routerType === RouterModuleType.Managed;
+            this.options.addManagedAppRouter ??
+            (this.options.routerType === RouterModuleType.Managed ||
+                this.answers.routerType === RouterModuleType.Managed);
         const addAppFrontendRouter =
-            this.options.addAppFrontendRouter ?? this.answers.routerType === RouterModuleType.AppFront;
+            this.options.addAppFrontendRouter ??
+            (this.options.routerType === RouterModuleType.AppFront ||
+                this.answers.routerType === RouterModuleType.AppFront);
         const destinationAuthentication =
             this.options.destinationAuthType ?? destination?.Authentication ?? DESTINATION_AUTHTYPE_NOTFOUND;
         const overwrite = this.options.overwrite ?? this.answers.overwrite;

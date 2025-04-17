@@ -628,13 +628,7 @@ describe('FE V4 quick actions', () => {
                                     id: 'listReport0-change-table-columns',
                                     title: 'Change Table Columns',
                                     enabled: true,
-                                    children: [
-                                        {
-                                            children: [],
-                                            enabled: true,
-                                            label: `'MyTable' table`
-                                        }
-                                    ]
+                                    children: [{ path: '0', children: [], enabled: true, label: `'MyTable' table` }]
                                 }
                             ]
                         }
@@ -759,6 +753,7 @@ describe('FE V4 quick actions', () => {
                                     enabled: true,
                                     children: [
                                         {
+                                            path: '0',
                                             children: [],
                                             enabled: true,
                                             label: `'MyTable' table`
@@ -868,6 +863,7 @@ describe('FE V4 quick actions', () => {
                                 {
                                     'children': [
                                         {
+                                            path: '0',
                                             'children': [],
                                             'enabled': true,
                                             'label': `'MyTable' table`
@@ -1030,6 +1026,7 @@ describe('FE V4 quick actions', () => {
                                           {
                                               'children': [
                                                   {
+                                                      path: '0',
                                                       'children': [],
                                                       'enabled': testCase.expectedIsEnabled,
                                                       'label': `'MyTable' table`,
@@ -1832,9 +1829,11 @@ describe('FE V4 quick actions', () => {
                                     {
                                         'children': [
                                             {
+                                                path: '0',
                                                 enabled: true,
                                                 'children': [
                                                     {
+                                                        path: '0/0',
                                                         'children': [],
                                                         enabled: true,
                                                         'label': `'MyTable' table`
@@ -2120,8 +2119,10 @@ describe('FE V4 quick actions', () => {
                                                   title: 'Enable Empty Row Mode for Tables',
                                                   children: [
                                                       {
+                                                          path: '0',
                                                           children: [
                                                               {
+                                                                  path: '0/0',
                                                                   label: testCase.isWithHeader
                                                                       ? `'MyTable' table`
                                                                       : `Unnamed table`,
@@ -3064,6 +3065,7 @@ describe('FE V4 quick actions', () => {
                                 enabled: true,
                                 children: [
                                     {
+                                        path: '0',
                                         children: [],
                                         enabled: testCase.expect.isEnabled,
                                         label: `'MyTable' table`,
