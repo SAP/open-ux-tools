@@ -7,11 +7,17 @@ import { exec } from 'child_process';
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SourceApplication } from '@sap-ux/adp-tooling';
+import type { SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
-import { SystemLookup, UI5VersionInfo, getProviderConfig, getConfiguredProvider, loadApps } from '@sap-ux/adp-tooling';
+import {
+    SystemLookup,
+    getProviderConfig,
+    getConfiguredProvider,
+    loadApps,
+    validateUI5VersionExists
+} from '@sap-ux/adp-tooling';
 
 import adpGenerator from '../src/app';
 import { initI18n, t } from '../src/utils/i18n';
@@ -49,7 +55,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     ...jest.requireActual('@sap-ux/adp-tooling'),
     getConfiguredProvider: jest.fn(),
     loadApps: jest.fn(),
-    getProviderConfig: jest.fn()
+    getProviderConfig: jest.fn(),
+    validateUI5VersionExists: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -69,7 +76,8 @@ jest.mock('@sap-ux/fiori-generator-shared', () => ({
     },
     isExtensionInstalled: jest.fn().mockReturnValue(true),
     getHostEnvironment: jest.fn(),
-    isCli: jest.fn().mockReturnValue(false)
+    isCli: jest.fn().mockReturnValue(false),
+    getDefaultTargetFolder: jest.fn().mockReturnValue(undefined)
 }));
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -85,7 +93,7 @@ const originalCwd = process.cwd();
 const testOutputDir = join(__dirname, 'test-output');
 const generatorPath = join(__dirname, '../src/app/index.ts');
 
-const endpoints = [{ Name: 'SystemA', Client: '010', Url: 'http://systema.com' }];
+const endpoints = [{ Name: 'SystemA', Client: '010', Url: 'urlA' }];
 const apps: SourceApplication[] = [
     {
         ach: '',
@@ -97,6 +105,19 @@ const apps: SourceApplication[] = [
         title: 'App One'
     }
 ];
+
+const answers = {
+    system: 'urlA',
+    username: 'user1',
+    password: 'pass1',
+    application: { id: 'sap.ui.demoapps.f1', title: 'App One' },
+    projectName: 'app.variant',
+    namespace: 'customer.app.variant',
+    title: 'App Title',
+    ui5Version: '1.134.1',
+    targetFolder: testOutputDir,
+    enableTypeScript: false
+};
 
 const isAbapCloudMock = jest.fn();
 const getAtoInfoMock = jest.fn();
@@ -127,6 +148,7 @@ const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
 const getConfiguredProviderMock = getConfiguredProvider as jest.Mock;
 const getCredentialsFromStoreMock = getCredentialsFromStore as jest.Mock;
+const validateUI5VersionExistsMock = validateUI5VersionExists as jest.Mock;
 
 describe('Adaptation Project Generator Integration Test', () => {
     jest.setTimeout(60000);
@@ -136,18 +158,23 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         loadAppsMock.mockResolvedValue(apps);
         jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
+        jest.spyOn(ConfigPrompter.prototype, 'ui5', 'get').mockReturnValue({
+            publicVersions: {
+                latest: { version: '1.134.1' } as VersionDetail,
+                '1.134.0': { version: '1.134.0' } as VersionDetail
+            },
+            ui5Versions: ['1.134.1 (latest)', '1.134.0'],
+            systemVersion: '1.136.0.204546979753'
+        });
+        validateUI5VersionExistsMock.mockReturnValue(true);
         jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
         jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);
         getConfiguredProviderMock.mockResolvedValue(dummyProvider);
         execMock.mockImplementation((_: string, callback: Function) => {
             callback(null, { stdout: 'ok', stderr: '' });
         });
-        jest.spyOn(UI5VersionInfo, 'getInstance').mockReturnValue({
-            latestVersion: '1.135.0',
-            getVersionToBeUsed: jest.fn().mockReturnValue('1.135.0')
-        } as unknown as UI5VersionInfo);
         getHostEnvironmentMock.mockReturnValue(hostEnvironment.vscode);
-        getProviderConfigMock.mockResolvedValue({ url: 'http://systema.com', client: '010' });
+        getProviderConfigMock.mockResolvedValue({ url: 'urlA', client: '010' });
         isAbapCloudMock.mockResolvedValue(false);
         getAtoInfoMock.mockResolvedValue({ operationsType: 'P' });
 
@@ -173,13 +200,6 @@ describe('Adaptation Project Generator Integration Test', () => {
         mockIsAppStudio.mockReturnValue(false);
         getAtoInfoMock.mockRejectedValueOnce(error);
 
-        const answers = {
-            system: 'http://systema.com',
-            username: 'user1',
-            password: 'pass1',
-            application: { id: 'sap.ui.demoapps.f1', title: 'App One' }
-        };
-
         const runContext = yeomanTest
             .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
             .withOptions({ shouldInstallDeps: false } as AdpGeneratorOptions)
@@ -190,13 +210,6 @@ describe('Adaptation Project Generator Integration Test', () => {
 
     it('should generate an onPremise adaptation project successfully', async () => {
         mockIsAppStudio.mockReturnValue(false);
-
-        const answers = {
-            system: 'http://systema.com',
-            username: 'user1',
-            password: 'pass1',
-            application: { id: 'sap.ui.demoapps.f1', title: 'App One' }
-        };
 
         const runContext = yeomanTest
             .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })

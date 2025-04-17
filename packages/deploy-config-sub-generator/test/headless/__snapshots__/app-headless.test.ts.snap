@@ -439,6 +439,7 @@ exports[`Test headless generator Test: Headless deploy-config - addMTADestinatio
   },
   "devDependencies": {
     "sqlite3": "^5.0.2",
+    "@sap/cds-dk": "^5",
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
   },
@@ -973,6 +974,7 @@ exports[`Test headless generator Test: Headless deploy-config - addToManagedAppR
   },
   "devDependencies": {
     "sqlite3": "^5.0.2",
+    "@sap/cds-dk": "^5",
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
   },

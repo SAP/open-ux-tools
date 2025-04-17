@@ -567,6 +567,33 @@ describe('ConnectionValidator', () => {
         );
     });
 
+    test('should validate destination system connection and show basic auth prompts when v2 returns 401 (even if v4 returns 404)', async () => {
+        jest.spyOn(axiosExtension.V2CatalogService.prototype, 'listServices').mockRejectedValueOnce(
+            newAxiosErrorWithStatus(401)
+        );
+        jest.spyOn(axiosExtension.V4CatalogService.prototype, 'listServices').mockRejectedValueOnce(
+            newAxiosErrorWithStatus(404)
+        );
+
+        const connectValidator = new ConnectionValidator();
+        expect(
+            await connectValidator.validateDestination({
+                Name: 'dest1',
+                Host: 'https://system:12345',
+                Type: 'HTTP',
+                Authentication: 'NoAuthentication',
+                ProxyType: 'Internet',
+                Description: 'desc',
+                WebIDEUsage: 'odata_abap',
+                'HTML5.DynamicDestination': 'true'
+            })
+        ).toEqual({ valResult: 'Authentication incorrect. 401', errorType: 'AUTH' });
+
+        expect(connectValidator.validity.reachable).toBe(true);
+        expect(connectValidator.validity.authRequired).toBe(true);
+        expect(connectValidator.validity.authenticated).toBe(false);
+    });
+
     test('should validate destination service (full and partial url) connection', async () => {
         jest.spyOn(ODataService.prototype, 'get').mockResolvedValueOnce({ status: 200 });
         const connectValidator = new ConnectionValidator();
