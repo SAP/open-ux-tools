@@ -486,7 +486,13 @@ describe('AdaptationProject', () => {
         it('should add an XML fragment if type is "write" and change is AddXMLChange', async () => {
             await adp.onChangeRequest('write', addXMLChange, mockFs, mockLogger);
 
-            expect(addXmlFragmentMock).toHaveBeenCalledWith('/adp.project/webapp', addXMLChange, mockFs, mockLogger);
+            expect(addXmlFragmentMock).toHaveBeenCalledWith(
+                '/adp.project/webapp',
+                addXMLChange,
+                mockFs,
+                mockLogger,
+                undefined
+            );
         });
 
         it('should not perform any action if type is "delete"', async () => {
