@@ -27,7 +27,9 @@ import {
     HTML5RepoHost,
     UI5AppfrontDestinationParameter,
     ManagedAppFront,
-    CAPAppfrontDestination
+    CAPAppfrontDestination,
+    deployMode,
+    enableParallelDeployments
 } from '../constants';
 import { t } from '../i18n';
 import type { Logger } from '@sap-ux/logger';
@@ -591,6 +593,7 @@ export class MtaConfig {
             this.log?.debug(t('debug.html5AppAdded', { appName }));
         }
         await this.syncHtml5Apps();
+        await this.addMtaDeployParameters();
     }
 
     private async syncHtml5Apps(): Promise<void> {
@@ -680,6 +683,7 @@ export class MtaConfig {
             }
             await this.cleanupModules();
         }
+        await this.addMtaDeployParameters();
     }
 
     /**
@@ -909,11 +913,25 @@ export class MtaConfig {
     }
 
     /**
+     * Add a destination to the approuter.
+     *
+     * @param cfDestination The name of the destination to be appended
+     */
+    public async addDestinationToAppRouter(cfDestination: string | undefined) {
+        if (this.hasAppFrontendRouter()) {
+            // Append destination directly to app frontend
+            await this.appendAppfrontCAPDestination(cfDestination);
+        } else {
+            await this.appendInstanceBasedDestination(cfDestination);
+        }
+    }
+
+    /**
      *  Add destination to App Frontend router.
      *
      * @param cfDestination Then name of the destination to be appended
      */
-    public async appendAppfrontCAPDestination(cfDestination: string | undefined): Promise<void> {
+    private async appendAppfrontCAPDestination(cfDestination: string | undefined): Promise<void> {
         const module = this.modules.get('com.sap.application.content:appfront');
         if (module) {
             // If the destination provided is `fiori-default-srv-api` then use the default destination name
@@ -938,13 +956,14 @@ export class MtaConfig {
             }
         }
     }
+
     /**
      * Append a destination instance to the mta.yaml file, required by consumers of CAP services when using Standalone or Managed approuter.
      *
      * @param {string} cfDestination The new destination instance name
      * @returns {Promise<void>} A promise that resolves when the change request has been processed
      */
-    public async appendInstanceBasedDestination(cfDestination: string | undefined): Promise<void> {
+    private async appendInstanceBasedDestination(cfDestination: string | undefined): Promise<void> {
         // Part 1. Update the destination service with the new instance based destination
         const destinationResource = this.resources.get('destination');
         if (destinationResource) {
@@ -1139,7 +1158,7 @@ export class MtaConfig {
      * @param {boolean} checkWebIDEUsage - check if the destination contains WebIDEUsage property odata_gen or odata_abap
      * @returns {string[]} Return a list of destination names read from the mta.yaml
      */
-    public getExposedDestinations(checkWebIDEUsage = false): string[] {
+    public getExposedDestinations(checkWebIDEUsage: boolean = false): string[] {
         const exposedDestinations: string[] = [];
         // Pull destinations from two places:
         // 1. Resources
@@ -1179,7 +1198,7 @@ export class MtaConfig {
     }
 
     /**
-     * Retrieve the app-content module, different types can be found.
+     * Retrieve the app-content module, different types can be found depending on the router type configuration.
      *
      * @returns {mta.Module} return the app-content module
      */
@@ -1189,6 +1208,31 @@ export class MtaConfig {
             this.modules.get('com.sap.application.content:resource') ??
             this.modules.get('com.sap.application.content:appfront')
         );
+    }
+
+    /**
+     *  Add the build parameters to the MTA configuration.
+     *
+     */
+    public async addMtaBuildParameters(): Promise<void> {
+        let params = await this.getBuildParameters();
+        params = { ...(params || {}), ...{} } as mta.ProjectBuildParameters;
+        params['before-all'] ||= [];
+        const buildParams: mta.BuildParameters = { builder: 'custom', commands: ['npm install'] };
+        params['before-all'].push(buildParams);
+        await this.updateBuildParams(params);
+    }
+
+    /**
+     * Add the deployment parameters to the MTA configuration.
+     *
+     */
+    public async addMtaDeployParameters(): Promise<void> {
+        let params = await this.getParameters();
+        params = { ...(params || {}), ...{} } as mta.Parameters;
+        params[deployMode] = 'html5-repo';
+        params[enableParallelDeployments] = true;
+        await this.updateParameters(params);
     }
 }
 
@@ -1214,7 +1258,7 @@ export function isMTAFound(dir: string): boolean {
 export async function useAbapDirectServiceBinding(
     appPath: string,
     findMtaPath: boolean,
-    mtaPath = '',
+    mtaPath: string = '',
     logger?: Logger
 ): Promise<boolean> {
     try {

@@ -302,7 +302,7 @@ describe('Validate common flows', () => {
         const params = { ...parameters, ...{} } as mta.Parameters;
         params[deployMode] = 'html5-repo';
         await mtaConfig.updateParameters(params);
-        await mtaConfig.appendInstanceBasedDestination(mtaConfig.getFormattedPrefix(ResourceMTADestination));
+        await mtaConfig.addDestinationToAppRouter(mtaConfig.getFormattedPrefix(ResourceMTADestination));
         expect(mtaConfig.cloudServiceName).toEqual('managedAppCAPProject');
         expect(mtaConfig.hasManagedXsuaaResource()).toBeTruthy();
         await mtaConfig.save();

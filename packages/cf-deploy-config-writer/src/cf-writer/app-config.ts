@@ -1,6 +1,7 @@
 import { dirname, join, relative } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
+import { type Logger } from '@sap-ux/logger';
 import { type FioriToolsProxyConfig, type UI5Config, UI5Config as UI5ConfigInstance } from '@sap-ux/ui5-config';
 import {
     addPackageDevDependency,
@@ -39,7 +40,6 @@ import {
     updateRootPackage
 } from '../utils';
 import {
-    addMtaDeployParameters,
     createMTA,
     doesCDSBinaryExist,
     doesMTABinaryExist,
@@ -51,7 +51,6 @@ import {
 } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import { t } from '../i18n';
-import { type Logger } from '@sap-ux/logger';
 import { type XSAppDocument, ApiHubType, type CFAppConfig, type CFConfig, type MTABaseConfig } from '../types';
 
 /**
@@ -229,8 +228,6 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
     // Generate MTA Config, LCAP will generate the mta.yaml on the fly so we don't care about it!
     if (!config.lcapMode) {
         await generateMTAFile(config, fs);
-        await generateSupportingConfig(config, fs);
-        await updateMtaConfig(config, fs);
     }
     // Generate HTML5 config
     await appendCloudFoundryConfigurations(config, fs);
@@ -248,6 +245,7 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
  * @param fs reference to a mem-fs editor
  */
 export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<void> {
+    // Step1. Create mta.yaml
     if (!cfConfig.mtaId) {
         if (cfConfig.isCap) {
             await generateCAPMTA({ ...cfConfig, mtaPath: cfConfig.rootPath }, fs);
@@ -257,15 +255,19 @@ export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<v
         cfConfig.mtaId = cfConfig.appId;
         cfConfig.mtaPath = cfConfig.rootPath;
     }
+    // Step2. Append the approuter and destination to mta.yaml
+    await appendAppRouter(cfConfig, fs);
+    // Step3. Create any missing resources like package.json / xs-security.json / .gitignore
+    await generateSupportingConfig(cfConfig, fs, cfConfig.addManagedAppRouter);
 }
 
 /**
- * Updates the MTA configuration file.
+ * Updates the MTA configuration file with the app router and destination.
  *
  * @param cfConfig writer configuration
  * @param fs reference to a mem-fs editor
  */
-async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
+async function appendAppRouter(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (mtaInstance) {
         await mtaInstance.addRoutingModules({
@@ -277,22 +279,13 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
-        if (mtaInstance.hasAppFrontendRouter()) {
-            cfConfig.addAppFrontendRouter = true;
-        }
-        await addMtaDeployParameters(mtaInstance);
         if ((cfConfig.addMtaDestination && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance
             cfConfig.destinationName =
                 cfConfig.destinationName === DefaultMTADestination
                     ? mtaInstance.getFormattedPrefix(ResourceMTADestination)
                     : cfConfig.destinationName;
-            if (cfConfig.addAppFrontendRouter) {
-                // Append destination directly to app frontend
-                await mtaInstance.appendAppfrontCAPDestination(cfConfig.destinationName);
-            } else {
-                await mtaInstance.appendInstanceBasedDestination(cfConfig.destinationName);
-            }
+            await mtaInstance.addDestinationToAppRouter(cfConfig.destinationName);
             // This is required where a managed or standalone router hasn't been added yet to mta.yaml
             if (!mtaInstance.hasManagedXsuaaResource()) {
                 cfConfig.destinationAuthentication = Authentication.NO_AUTHENTICATION;
@@ -300,7 +293,9 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
         }
         cleanupStandaloneRoutes(cfConfig, mtaInstance, fs);
         await saveMta(cfConfig, mtaInstance);
+        // Modify existing config, required in later steps
         cfConfig.cloudServiceName = mtaInstance.cloudServiceName;
+        cfConfig.addAppFrontendRouter = mtaInstance.hasAppFrontendRouter();
     }
 }
 

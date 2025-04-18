@@ -178,7 +178,7 @@ describe('CF Writer App', () => {
         const appPath = join(outputDir, 'supportingconfig');
         fsExtra.mkdirSync(outputDir, { recursive: true });
         fsExtra.mkdirSync(appPath);
-        await generateSupportingConfig({ appPath, mtaId: 'testMtaId', rootPath: appPath } as unknown as CFConfig, fs);
+        await generateSupportingConfig({ appPath, mtaId: 'testMtaId', mtaPath: appPath } as unknown as CFConfig, fs);
         expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(appPath, '.gitignore'))).toMatchSnapshot();
     });
@@ -190,7 +190,7 @@ describe('CF Writer App', () => {
         fsExtra.mkdirSync(appPath);
         fsExtra.copySync(join(__dirname, 'fixtures/mta-types/cdsmta'), appPath);
         await generateSupportingConfig(
-            { appPath, rootPath: appPath, addManagedAppRouter: true, mtaId: 'captestproject' } as unknown as CFConfig,
+            { appPath, mtaPath: appPath, addManagedAppRouter: true, mtaId: 'captestproject' } as unknown as CFConfig,
             fs
         );
         expect(fs.read(join(appPath, 'package.json'))).toMatchSnapshot();
