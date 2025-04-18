@@ -1,5 +1,28 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.2.0
+
+### Minor Changes
+
+-   b49f8d5: Export handleWorkspaceConfig from launch-config and use in adt app download sub generator
+
+### Patch Changes
+
+-   Updated dependencies [b49f8d5]
+    -   @sap-ux/launch-config@0.9.0
+
+## 0.1.5
+
+### Patch Changes
+
+-   f220e1e: ADT Quick Deploy UI Text Review
+
+## 0.1.4
+
+### Patch Changes
+
+-   98e0172: fix to enable local preview for adt downloaded app
+
 ## 0.1.3
 
 ### Patch Changes
