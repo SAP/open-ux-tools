@@ -1120,18 +1120,12 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
-      '@sap-ux/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/ui5-config':
-        specifier: workspace:*
-        version: link:../ui5-config
       hasbin:
         specifier: 1.2.3
         version: 1.2.3
@@ -1142,9 +1136,6 @@ importers:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
-      '@jest/types':
-        specifier: 29.6.3
-        version: 29.6.3
       '@sap-ux/logger':
         specifier: workspace:*
         version: link:../logger
@@ -1160,15 +1151,9 @@ importers:
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
-      '@types/yeoman-environment':
-        specifier: 2.10.11
-        version: 2.10.11
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1269,6 +1254,9 @@ importers:
       memfs:
         specifier: 3.4.13
         version: 3.4.13
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
 
   packages/control-property-editor:
     devDependencies:
@@ -1529,9 +1517,6 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/vscode':
-        specifier: 1.73.1
-        version: 1.73.1
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
@@ -1544,9 +1529,6 @@ importers:
       '@sap-ux/abap-deploy-config-sub-generator':
         specifier: workspace:*
         version: link:../abap-deploy-config-sub-generator
-      '@sap-ux/axios-extension':
-        specifier: workspace:*
-        version: link:../axios-extension
       '@sap-ux/btp-utils':
         specifier: workspace:*
         version: link:../btp-utils
@@ -1559,24 +1541,15 @@ importers:
       '@sap-ux/fiori-generator-shared':
         specifier: workspace:*
         version: link:../fiori-generator-shared
-      '@sap-ux/i18n':
-        specifier: workspace:*
-        version: link:../i18n
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
-      '@sap-ux/nodejs-utils':
-        specifier: workspace:*
-        version: link:../nodejs-utils
       '@sap-ux/odata-service-inquirer':
         specifier: workspace:*
         version: link:../odata-service-inquirer
       '@sap-ux/project-access':
         specifier: workspace:*
         version: link:../project-access
-      '@sap-ux/store':
-        specifier: workspace:*
-        version: link:../store
       '@sap-ux/ui5-config':
         specifier: workspace:*
         version: link:../ui5-config
@@ -1589,16 +1562,10 @@ importers:
       i18next:
         specifier: 23.5.1
         version: 23.5.1
-      inquirer-autocomplete-prompt:
-        specifier: 2.0.1
-        version: 2.0.1(inquirer@8.2.6)
       yeoman-generator:
         specifier: 5.10.0
         version: 5.10.0(mem-fs@2.1.0)(yeoman-environment@3.19.3)
     devDependencies:
-      '@jest/types':
-        specifier: 29.6.3
-        version: 29.6.3
       '@sap-ux/cf-deploy-config-inquirer':
         specifier: workspace:*
         version: link:../cf-deploy-config-inquirer
@@ -1611,9 +1578,6 @@ importers:
       '@sap-ux/jest-file-matchers':
         specifier: workspace:*
         version: link:../jest-file-matchers
-      '@sap-ux/logger':
-        specifier: workspace:*
-        version: link:../logger
       '@sap/mta-lib':
         specifier: 1.7.4
         version: 1.7.4
@@ -1626,21 +1590,12 @@ importers:
       '@types/inquirer':
         specifier: 8.2.6
         version: 8.2.6
-      '@types/inquirer-autocomplete-prompt':
-        specifier: 2.0.1
-        version: 2.0.1
       '@types/js-yaml':
         specifier: 4.0.9
         version: 4.0.9
-      '@types/mem-fs':
-        specifier: 1.1.2
-        version: 1.1.2
       '@types/mem-fs-editor':
         specifier: 7.0.1
         version: 7.0.1
-      '@types/yeoman-environment':
-        specifier: 2.10.11
-        version: 2.10.11
       '@types/yeoman-generator':
         specifier: 5.2.11
         version: 5.2.11
