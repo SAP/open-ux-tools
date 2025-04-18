@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.1.5
+
+### Patch Changes
+
+-   f220e1e: ADT Quick Deploy UI Text Review
+
 ## 0.1.4
 
 ### Patch Changes
