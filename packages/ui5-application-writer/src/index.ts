@@ -9,6 +9,8 @@ import { mergeWithDefaults } from './data';
 import { ui5TSSupport } from './data/ui5Libs';
 import { applyOptionalFeatures, enableTypescript as enableTypescriptOption, getTemplateOptions } from './options';
 import { Ui5App } from './types';
+import { getFilesFromTemplates } from './inline-templates';
+import { render } from 'ejs';
 
 /**
  * Writes the template to the memfs editor instance.
@@ -25,7 +27,6 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     const ui5App: { app: App; appOptions: Partial<AppOptions>; ui5: UI5; package: Package } =
         mergeWithDefaults(ui5AppConfig);
 
-    const tmplPath = join(__dirname, '..', 'templates');
     const ignore = [ui5AppConfig.appOptions?.typescript ? '**/*.js' : '**/*.ts'];
 
     if (ui5AppConfig.appOptions?.generateIndex === false) {
@@ -35,8 +36,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
     if (!isEdmxProjectType) {
         // ignore the ui5-local.yaml file for CAP applications
         ignore.push('**/ui5-local.yaml');
-        // ignore the .gitignore.tmpl file for CAP applications
-        ignore.push('**/gitignore.tmpl');
+        // ignore the .gitignore file for CAP applications
+        ignore.push('**/.gitignore');
     }
     // Determine the UI5 resource URL based on project type and UI5 framework details
     const ui5ResourceUrl = getTemplateOptions(isEdmxProjectType, ui5App.ui5?.frameworkUrl, ui5App.ui5?.version);
@@ -44,9 +45,8 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         ...ui5App,
         ui5ResourceUrl
     };
-    fs.copyTpl(join(tmplPath, 'core', '**/*.*'), join(basePath), templateOptions, undefined, {
-        globOptions: { dot: true, ignore },
-        processDestinationPath: (filePath: string) => filePath.replace(/gitignore.tmpl/g, '.gitignore')
+    getFilesFromTemplates('core', undefined, ignore).forEach((content, filepath) => {
+        fs.write(join(basePath, filepath), render(content, templateOptions));
     });
 
     // ui5.yaml
@@ -72,14 +72,14 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         );
         ui5LocalConfig.addFioriToolsAppReloadMiddleware();
         // Add optional features
-        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config, ui5LocalConfig]);
+        await applyOptionalFeatures(ui5App, fs, basePath, [ui5Config, ui5LocalConfig]);
         // add preview middleware to ui5LocalConfig
         ui5LocalConfig.addFioriToolsPreviewMiddleware(ui5App.app.id, ui5App.ui5?.ui5Theme);
         // write ui5 local yaml
         fs.write(ui5LocalConfigPath, ui5LocalConfig.toString());
     } else {
         // Add optional features
-        await applyOptionalFeatures(ui5App, fs, basePath, tmplPath, [ui5Config]);
+        await applyOptionalFeatures(ui5App, fs, basePath, [ui5Config]);
     }
     // write ui5 yaml
     fs.write(ui5ConfigPath, ui5Config.toString());
@@ -133,7 +133,6 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
     const manifest = fs.readJSON(manifestPath) as any as Manifest;
     const ui5Config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
 
-    const tmplPath = join(__dirname, '..', 'templates');
     //By chosing getMinimumUI5Version we assume that the esm type is compatible if there are multiple versions.
     const typesVersion = getEsmTypesVersion(getMinimumUI5Version(manifest));
     const typesPackage = getTypesPackage(typesVersion);
@@ -144,7 +143,7 @@ async function enableTypescript(basePath: string, fs?: Editor): Promise<Editor> 
             typesVersion
         }
     };
-    await enableTypescriptOption({ basePath, fs, ui5Configs: [ui5Config], tmplPath, ui5App }, true);
+    await enableTypescriptOption({ basePath, fs, ui5Configs: [ui5Config], ui5App }, true);
 
     fs.write(ui5ConfigPath, ui5Config.toString());
 

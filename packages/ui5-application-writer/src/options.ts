@@ -2,12 +2,12 @@ import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
 import type { UI5, Ui5App } from './types';
-import { getFilePaths } from '@sap-ux/project-access';
 import type { UI5Config } from '@sap-ux/ui5-config';
 import { ui5NPMSupport, ui5TSSupport } from './data/ui5Libs';
 import { mergeObjects, UI5_DEFAULT } from '@sap-ux/ui5-config';
 import type { ProjectType } from '@sap-ux/project-access';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
+import { getFilesFromTemplates } from './inline-templates';
 
 /**
  * Input required to enable optional features.
@@ -16,7 +16,6 @@ export interface FeatureInput {
     ui5App: { app: { id: string; baseComponent?: string; projectType?: ProjectType }; ui5?: Partial<UI5> };
     fs: Editor;
     basePath: string;
-    tmplPath: string;
     ui5Configs: UI5Config[];
 }
 
@@ -28,26 +27,22 @@ export interface FeatureInput {
  * @param input.ui5App ui5 app config
  * @param input.fs reference to the mem-fs instance
  * @param input.basePath project base path
- * @param input.tmplPath template basepath
  */
-async function copyTemplates(name: string, { ui5App, fs, basePath, tmplPath }: FeatureInput) {
-    let optTmplDirPath = join(tmplPath, 'optional', `${name}`);
+function copyTemplates(name: string, { ui5App, fs, basePath }: FeatureInput): void {
+    let optTmplDirPath = join('optional', `${name}`);
     const optionPath = getTemplateVersionPath(ui5App.ui5 as UI5);
     if (name === 'loadReuseLibs') {
         optTmplDirPath = join(optTmplDirPath, optionPath);
     }
-    const optTmplFilePaths = await getFilePaths(optTmplDirPath);
-    optTmplFilePaths.forEach((optTmplFilePath) => {
-        const relPath = optTmplFilePath.replace(optTmplDirPath, '');
-        const outPath = join(basePath, relPath);
+    // const optTmplFilePaths = await getFilePaths(optTmplDirPath);
+    getFilesFromTemplates(optTmplDirPath).forEach((content, filepath) => {
+        // const relPath = optTmplFilePath.replace(optTmplDirPath, '');
+        const outPath = join(basePath, filepath);
         // Extend or add
         if (!fs.exists(outPath)) {
-            fs.copyTpl(optTmplFilePath, outPath, ui5App, undefined, {
-                globOptions: { dot: true },
-                processDestinationPath: processDestinationPath
-            });
+            fs.write(processDestinationPath(outPath), render(content, ui5App, {}));
         } else {
-            const add = JSON.parse(render(fs.read(optTmplFilePath), ui5App, {}));
+            const add = JSON.parse(render(content, ui5App, {}));
             const existingFile = JSON.parse(fs.read(outPath));
             const merged = mergeObjects(existingFile, add);
             fs.writeJSON(outPath, merged);
@@ -111,20 +106,18 @@ export async function enableNpmPackageConsumption(input: FeatureInput) {
  * @param ui5App ui5 app config
  * @param fs reference to the mem-fs instance
  * @param basePath project base path
- * @param tmplPath template basepath
  * @param ui5Configs available UI5 configs
  */
 export async function applyOptionalFeatures(
     ui5App: Ui5App,
     fs: Editor,
     basePath: string,
-    tmplPath: string,
     ui5Configs: UI5Config[]
 ): Promise<void> {
     if (ui5App.appOptions) {
         for (const [key, value] of Object.entries(ui5App.appOptions)) {
             if (value === true) {
-                await factories[key]?.({ ui5App, fs, basePath, tmplPath, ui5Configs });
+                await factories[key]?.({ ui5App, fs, basePath, ui5Configs });
             }
         }
     }
