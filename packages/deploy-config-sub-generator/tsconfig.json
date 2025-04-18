@@ -13,9 +13,6 @@
       "path": "../abap-deploy-config-sub-generator"
     },
     {
-      "path": "../axios-extension"
-    },
-    {
       "path": "../btp-utils"
     },
     {
@@ -37,19 +34,10 @@
       "path": "../fiori-generator-shared"
     },
     {
-      "path": "../i18n"
-    },
-    {
       "path": "../inquirer-common"
     },
     {
       "path": "../jest-file-matchers"
-    },
-    {
-      "path": "../logger"
-    },
-    {
-      "path": "../nodejs-utils"
     },
     {
       "path": "../odata-service-inquirer"

@@ -28,9 +28,6 @@
       "path": "../fiori-generator-shared"
     },
     {
-      "path": "../i18n"
-    },
-    {
       "path": "../inquirer-common"
     },
     {
@@ -38,9 +35,6 @@
     },
     {
       "path": "../project-access"
-    },
-    {
-      "path": "../ui5-config"
     }
   ]
 }
