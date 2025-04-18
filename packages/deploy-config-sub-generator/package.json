@@ -39,6 +39,7 @@
         "@sap-ux/inquirer-common": "workspace:*",
         "@sap-ux/odata-service-inquirer": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
+        "@sap-ux/store": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
         "dotenv": "16.3.1",
         "hasbin": "1.2.3",
