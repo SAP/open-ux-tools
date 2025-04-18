@@ -1,15 +1,15 @@
+import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { addSupportingConfig } from '../utils';
+import { type Logger } from '@sap-ux/logger';
+import { generateSupportingConfig } from '../utils';
 import LoggerHelper from '../logger-helper';
 import { createMTA, validateMtaConfig, addRoutingConfig } from '../mta-config';
-import { type Logger } from '@sap-ux/logger';
 import { type CFBaseConfig, type MTABaseConfig } from '../types';
-import { join } from 'path';
 import { t } from '../i18n';
 
 /**
- * Add a standalone | managed | app frontend approuter to an empty target folder.
+ * Add a standalone | managed | frontend app router to an empty target folder.
  *
  * @param config writer configuration
  * @param fs an optional reference to a mem-fs editor
@@ -30,7 +30,7 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     }
     createMTA(config as MTABaseConfig);
     await addRoutingConfig(config, fs);
-    addSupportingConfig(config, fs);
+    await generateSupportingConfig(config as MTABaseConfig, fs);
     LoggerHelper.logger?.debug(`CF Config ${JSON.stringify(config, null, 2)}`);
     return fs;
 }
