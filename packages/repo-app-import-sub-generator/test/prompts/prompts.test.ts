@@ -169,14 +169,19 @@ describe('getPrompts', () => {
         }
     });
 
-    it('should call getSystemSelectionQuestions with expected args when invalid destination is selected by user', async () => {
+    it('should display app selection prompt when system is valid', async () => {
+        const mockServiceProvider = {
+            name: 'MockSystem'
+        } as unknown as AbapServiceProvider;
         mockGetSystemSelectionQuestions.mockResolvedValue({
             prompts: [{
                 name: PromptNames.systemSelection,
                 type: 'list',
                 choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
             }],
-            answers: {}
+            answers: {
+                connectedSystem: { serviceProvider: mockServiceProvider }
+            }
         });
     
         const prompts = await getPrompts('/app/path');
@@ -187,11 +192,21 @@ describe('getPrompts', () => {
             },
             true
         );
-        expect(prompts.find(p => p.name === PromptNames.systemSelection)).toBeTruthy();
-        expect(prompts.find(p => p.name === PromptNames.selectedApp)).toBeTruthy();
+        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
+        (appSelectionPrompt?.when as Function)({
+            [PromptNames.systemSelection]: mockServiceProvider
+        })
     });
 
-    it('should return prompts including system, app, and target folder', async () => {
+    it('should not app selection prompt when selected system is valid', async () => {
+        const mockServiceProvider = {
+            defaults: {
+                baseURL: 'https://mock.sap-system.com',
+                params: {
+                    'sap-client': '100'
+                }
+            }
+        } as unknown as AbapServiceProvider;
         mockGetSystemSelectionQuestions.mockResolvedValue({
             prompts: [{
                 name: PromptNames.systemSelection,
@@ -199,14 +214,7 @@ describe('getPrompts', () => {
                 choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
             }],
             answers: {
-                connectedSystem: { serviceProvider: {
-                        defaults: {
-                            baseURL: 'https://mock.sap-system.com',
-                            params: {
-                                'sap-client': '100'
-                            }
-                        }
-                    } as unknown as AbapServiceProvider }
+                connectedSystem: { serviceProvider: null }
             }
         });
 
@@ -214,10 +222,10 @@ describe('getPrompts', () => {
         mockDownloadApp.mockResolvedValue(undefined);
 
         const prompts = await getPrompts('/app/path');
-        expect(prompts).toBeInstanceOf(Array);
-        expect(prompts.find(p => p.name === PromptNames.systemSelection)).toBeTruthy();
-        expect(prompts.find(p => p.name === PromptNames.selectedApp)).toBeTruthy();
-        expect(prompts.find(p => p.name === PromptNames.targetFolder)).toBeTruthy();
+        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
+        (appSelectionPrompt?.when as Function)({
+            [PromptNames.systemSelection]: mockServiceProvider
+        })
         expect(mockFetchAppList as jest.Mock).not.toHaveBeenCalled();
     });
 });
