@@ -1,6 +1,6 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { addSupportingConfig } from '../utils';
+import { addSupportingConfig, fileExists } from '../utils';
 import LoggerHelper from '../logger-helper';
 import { createMTA, validateMtaConfig, addRoutingConfig } from '../mta-config';
 import { type Logger } from '@sap-ux/logger';
@@ -25,7 +25,7 @@ export async function generateBaseConfig(config: CFBaseConfig, fs?: Editor, logg
     }
     logger?.debug(`Generate base configuration using: \n ${JSON.stringify(config)}`);
     validateMtaConfig(config);
-    if (fs.exists(join(config.mtaPath, config.mtaId))) {
+    if (fileExists(fs, join(config.mtaPath, config.mtaId))) {
         throw new Error(t('error.mtaFolderAlreadyExists'));
     }
     createMTA(config as MTABaseConfig);
