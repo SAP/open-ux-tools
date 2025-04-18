@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.4
+
+### Patch Changes
+
+-   ce3fd7a: Handle duplicate app-content for app frontend router
+
 ## 0.2.3
 
 ### Patch Changes

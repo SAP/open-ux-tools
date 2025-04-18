@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.11.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
 ## 0.11.5
 
 ### Patch Changes
