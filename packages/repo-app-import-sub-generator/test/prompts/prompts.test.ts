@@ -76,6 +76,28 @@ describe('getPrompts', () => {
         expect(prompts.find(p => p.name === PromptNames.targetFolder)).toBeTruthy();
     });
 
+    it('should return prompts including system, app, and target folder', async () => {
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
+            }],
+            answers: {
+                connectedSystem: { serviceProvider: {} }
+            }
+        });
+
+        mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
+        mockDownloadApp.mockResolvedValue(undefined);
+
+        const prompts = await getPrompts('/app/path');
+        expect(prompts).toBeInstanceOf(Array);
+        expect(prompts.find(p => p.name === PromptNames.systemSelection)).toBeTruthy();
+        expect(prompts.find(p => p.name === PromptNames.selectedApp)).toBeTruthy();
+        expect(prompts.find(p => p.name === PromptNames.targetFolder)).toBeTruthy();
+    });
+
     it('should preselect default system if quickDeployedAppConfig is provided', async () => {
         const quickDeployedAppConfig = {
             appId: 'app1',
@@ -166,6 +188,27 @@ describe('getPrompts', () => {
         if (targetFolderPrompt) {
             expect(targetFolderPrompt.when).toBeTruthy();
         }
+    });
+
+    it('should call getSystemSelectionQuestions with expected args when invalid destination is selecte by user', async () => {
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
+            }],
+            answers: {}
+        });
+    
+        const prompts = await getPrompts('/app/path');
+        expect(mockGetSystemSelectionQuestions).toHaveBeenCalledWith(
+            {
+                serviceSelection: { hide: true },
+                systemSelection: { defaultChoice: undefined }
+            },
+            true
+        );
+        expect(prompts.find(p => p.name === PromptNames.systemSelection)).toBeTruthy();
     });
 });
 
