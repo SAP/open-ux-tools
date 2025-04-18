@@ -1,5 +1,11 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.2.1
+
+### Patch Changes
+
+-   d729875: Handle adt app download generator crash due to invalid destinations
+
 ## 0.2.0
 
 ### Minor Changes
