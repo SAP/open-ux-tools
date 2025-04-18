@@ -6,6 +6,7 @@ import { PromptState } from '../../src/prompts/prompt-state';
 import * as helpers from '../../src/prompts/prompt-helpers';
 import * as downloadUtils from '../../src/utils/download-utils';
 import RepoAppDownloadLogger from '../../src/utils/logger';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
     getSystemSelectionQuestions: jest.fn().mockResolvedValue({
@@ -168,7 +169,7 @@ describe('getPrompts', () => {
         }
     });
 
-    it('should call getSystemSelectionQuestions with expected args when invalid destination is selecte by user', async () => {
+    it('should call getSystemSelectionQuestions with expected args when invalid destination is selected by user', async () => {
         mockGetSystemSelectionQuestions.mockResolvedValue({
             prompts: [{
                 name: PromptNames.systemSelection,
@@ -187,6 +188,37 @@ describe('getPrompts', () => {
             true
         );
         expect(prompts.find(p => p.name === PromptNames.systemSelection)).toBeTruthy();
+        expect(prompts.find(p => p.name === PromptNames.selectedApp)).toBeTruthy();
+    });
+
+    it('should return prompts including system, app, and target folder', async () => {
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
+            }],
+            answers: {
+                connectedSystem: { serviceProvider: {
+                        defaults: {
+                            baseURL: 'https://mock.sap-system.com',
+                            params: {
+                                'sap-client': '100'
+                            }
+                        }
+                    } as unknown as AbapServiceProvider }
+            }
+        });
+
+        mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
+        mockDownloadApp.mockResolvedValue(undefined);
+
+        const prompts = await getPrompts('/app/path');
+        expect(prompts).toBeInstanceOf(Array);
+        expect(prompts.find(p => p.name === PromptNames.systemSelection)).toBeTruthy();
+        expect(prompts.find(p => p.name === PromptNames.selectedApp)).toBeTruthy();
+        expect(prompts.find(p => p.name === PromptNames.targetFolder)).toBeTruthy();
+        expect(mockFetchAppList as jest.Mock).not.toHaveBeenCalled();
     });
 });
 
