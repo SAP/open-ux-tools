@@ -13,8 +13,8 @@ import { t } from '../i18n';
  *                     returns a warning message. Otherwise, returns a `fiori run` command with the
  *                     appropriate parameters.
  */
-function buildStartNoFLPCommand(localOnly: boolean, searchParams: URLSearchParams): string {
-    const searchParamString = searchParams.toString();
+function buildStartNoFLPCommand(localOnly: boolean, searchParams?: URLSearchParams): string {
+    const searchParamString = searchParams?.toString();
     const searchParam = searchParamString ? `?${searchParamString}` : '';
     if (localOnly) {
         return `echo \\"${t('info.mockOnlyWarning')}\\"`;
@@ -23,37 +23,23 @@ function buildStartNoFLPCommand(localOnly: boolean, searchParams: URLSearchParam
 }
 
 /**
- * Constructs a `URLSearchParams` object with the specified query parameters.
- *
- * This function creates a `URLSearchParams` instance and appends the `sap-client` parameter if provided,
- * along with a default `sap-ui-xx-viewCache` parameter set to `false`.
- *
- * @param {string} [sapClient] - The SAP client value to be included as a query parameter.
- * @returns {URLSearchParams} - The `URLSearchParams` object containing the specified query parameters.
- */
-function buildSearchParams(sapClient?: string): URLSearchParams {
-    const params = new URLSearchParams();
-    if (sapClient) {
-        params.append('sap-client', sapClient);
-    }
-    params.append('sap-ui-xx-viewCache', 'false');
-    return params;
-}
-
-/**
  * Constructs a URL parameter string from search parameters and an optional FLP app ID.
  *
+ * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command URL.
  * @param {URLSearchParams} searchParams - The search parameters to include in the query string.
  * @param {string} [flpAppId] - The FLP app ID to be included as a fragment identifier.
  *                               If not provided, the fragment identifier will be omitted.
  * @returns {string} - A string representing the combined query parameters and fragment identifier.
  *                      If `searchParams` is empty, only the fragment identifier will be included.
  */
-function buildParams(searchParams: URLSearchParams, flpAppId: string): string {
-    const searchParamString = searchParams.toString();
-    const searchParam = searchParamString ? `?${searchParamString}` : '';
+function buildParams(addSearchParams: boolean, searchParams: URLSearchParams, flpAppId: string): string {
     const hashFragment = flpAppId ? `#${flpAppId}` : '';
-    return `${searchParam}${hashFragment}`;
+    if (!addSearchParams) {
+        return hashFragment;
+    } else {
+        const searchParam = `?${searchParams.toString()}`;
+        return `${searchParam}${hashFragment}`;
+    }
 }
 
 /**
@@ -77,21 +63,20 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
 /**
  * Generates a variant management script in preview mode.
  *
- * @param {string} sapClient - The SAP client parameter to include in the URL. If not provided, the URL will not include the `sap-client` parameter.
+ * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command URL.
+ * @param {URLSearchParams} flpAppId - The FLP app ID to be used in the URL.
  * @returns {string} A variant management script to run the application in preview mode.
  */
-function getVariantPreviewAppScript(sapClient?: string): string {
-    const previewAppAnchor = '#preview-app';
-    const disableCacheParam = 'sap-ui-xx-viewCache=false';
-    const sapClientParam = sapClient ? `&sap-client=${sapClient}` : '';
-    const urlParam = `?${[
-        sapClientParam,
-        disableCacheParam,
-        'fiori-tools-rta-mode=true',
-        'sap-ui-rta-skip-flex-validation=true'
-    ]
-        .filter(Boolean)
-        .join('&')}`;
+function getVariantPreviewAppScript(addSearchParams: boolean, flpAppId: string): string {
+    let previewAppAnchor = `#${flpAppId}`;
+    let urlParam = '';
+    if (addSearchParams) {
+        previewAppAnchor = '#preview-app'; // if search params are added we will use the default
+        const disableCacheParam = 'sap-ui-xx-viewCache=false';
+        urlParam = `?${[disableCacheParam, 'fiori-tools-rta-mode=true', 'sap-ui-rta-skip-flex-validation=true']
+            .filter(Boolean)
+            .join('&')}`;
+    }
     // Please keep the special characters in the below command
     // as removing them may cause the browser to misinterpret the URI components without the necessary escaping and quotes.
     // eslint-disable-next-line no-useless-escape
@@ -105,26 +90,25 @@ function getVariantPreviewAppScript(sapClient?: string): string {
  * @param options.localOnly no server available
  * @param options.addMock add a script for using the mockserver
  * @param options.addTest add a script for executing OPA tests
- * @param options.sapClient SAP client required for connecting to the backend
  * @param options.flpAppId local FLP id
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be opend with the start-local script
  * @param options.generateIndex exclude the start-noflp script
+ * @param options.addSearchParams boolean to determine whether to add search params to the start command
  * @returns package.json scripts
  */
 export function getPackageScripts({
     localOnly,
     addMock = true,
     addTest = false,
-    sapClient,
     flpAppId = '',
     startFile,
     localStartFile,
-    generateIndex = true
+    generateIndex = true,
+    addSearchParams = true
 }: PackageScriptsOptions): PackageJsonScripts {
-    const searchParams = buildSearchParams(sapClient);
-    const params = buildParams(searchParams, flpAppId);
-
+    const viewCacheSearchParams = new URLSearchParams([['sap-ui-xx-viewCache', 'false']]);
+    const params = buildParams(addSearchParams, viewCacheSearchParams, flpAppId);
     const scripts: PackageJsonScripts = {
         start: buildStartCommand(localOnly, params, startFile),
         'start-local': `fiori run --config ./ui5-local.yaml --open "${
@@ -133,11 +117,13 @@ export function getPackageScripts({
     };
 
     if (generateIndex) {
-        scripts['start-noflp'] = buildStartNoFLPCommand(localOnly, searchParams);
+        scripts['start-noflp'] = buildStartNoFLPCommand(localOnly, viewCacheSearchParams);
     }
 
     if (addMock) {
-        scripts['start-mock'] = `fiori run --config ./ui5-mock.yaml --open "test/flpSandbox.html${params}"`;
+        scripts['start-mock'] = `fiori run --config ./ui5-mock.yaml --open "${
+            localStartFile ?? 'test/flpSandbox.html'
+        }${params}"`;
     }
 
     if (addTest) {
@@ -146,7 +132,7 @@ export function getPackageScripts({
 
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : getVariantPreviewAppScript(sapClient);
+        : getVariantPreviewAppScript(addSearchParams, flpAppId);
 
     return scripts;
 }

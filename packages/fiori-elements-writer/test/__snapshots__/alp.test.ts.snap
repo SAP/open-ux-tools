@@ -77,8 +77,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp2
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -131,8 +131,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp2
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -178,8 +178,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp2
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },
@@ -6054,8 +6054,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6106,8 +6106,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -6151,8 +6151,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: alp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },

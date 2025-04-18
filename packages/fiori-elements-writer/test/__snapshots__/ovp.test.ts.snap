@@ -80,8 +80,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -134,8 +134,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -181,8 +181,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },
@@ -1828,8 +1828,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -1890,8 +1890,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -1953,8 +1953,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -3339,8 +3339,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp2
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -3391,8 +3391,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp2
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -3436,8 +3436,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp2
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
 ",
     "state": "modified",
   },
@@ -9322,8 +9322,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp2
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -9382,8 +9382,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp2
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -9443,8 +9443,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: feovp2
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:

@@ -3,6 +3,9 @@ import type { BasicAppSettings, FioriApp, FreestyleApp } from './types';
 import { TemplateType } from './types';
 import { compareUI5VersionGte, ui5LtsVersion_1_120 } from './utils';
 
+const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name
+const defaultIntent = 'app-preview';
+
 /**
  * Set defaults for missing parameters on the given Fiori/UI5 app instance.
  *
@@ -20,6 +23,17 @@ function setAppDefaults(app: FioriApp): void {
  */
 function setBasicTemplateDefaults(settings: BasicAppSettings): void {
     settings.viewName = settings.viewName || 'View1';
+}
+
+/**
+ * Sets defaults for relevant parameters (`flpAppId`, `startFile`, `localStartFile`,  ) when virtual endpoints are used.
+ *
+ * @param ffApp - Fiori freestyle application config
+ */
+export function setVirtualEndpointDefaults(ffApp: FreestyleApp<unknown>): void {
+    ffApp.app.flpAppId = defaultIntent;
+    ffApp.app.localStartFile = defaultVirtualPreviewFile;
+    ffApp.app.startFile = defaultVirtualPreviewFile;
 }
 
 /**
