@@ -71,7 +71,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean, flpAppId: string):
     let previewAppAnchor = `#${flpAppId}`;
     let urlParam = '';
     if (addSearchParams) {
-        previewAppAnchor = '#preview-app'; // if search params are added we will use the default
+        previewAppAnchor = '#app-preview'; // if search params are added we will use the default
         const disableCacheParam = 'sap-ui-xx-viewCache=false';
         urlParam = `?${[disableCacheParam, 'fiori-tools-rta-mode=true', 'sap-ui-rta-skip-flex-validation=true']
             .filter(Boolean)
