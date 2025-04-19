@@ -1,20 +1,20 @@
 import { join } from 'path';
-import type { Editor } from 'mem-fs-editor';
 import { render } from 'ejs';
-import type { Package } from '@sap-ux/ui5-application-writer';
 import { generate as generateUi5Project } from '@sap-ux/ui5-application-writer';
 import { generate as addOdataService } from '@sap-ux/odata-service-writer';
 import cloneDeep from 'lodash/cloneDeep';
-import type { BasicAppSettings } from './types';
 import { FreestyleApp, TemplateType } from './types';
-import { setDefaults, escapeFLPText } from './defaults';
+import { setDefaults, escapeFLPText, setVirtualEndpointDefaults } from './defaults';
 import { UI5Config } from '@sap-ux/ui5-config';
 import { initI18n } from './i18n';
 import { getBootstrapResourceUrls, getPackageScripts } from '@sap-ux/fiori-generator-shared';
 import { getTemplateVersionPath, processDestinationPath } from './utils';
 import { applyCAPUpdates, type CapProjectSettings } from '@sap-ux/cap-config-writer';
-import type { Logger } from '@sap-ux/logger';
 import { generateOPATests } from './generateOPATests';
+import type { Logger } from '@sap-ux/logger';
+import type { Package } from '@sap-ux/ui5-application-writer';
+import type { Editor } from 'mem-fs-editor';
+import type { BasicAppSettings } from './types';
 
 /**
  * Generate a UI5 application based on the specified Fiori Freestyle floorplan template.
@@ -39,7 +39,12 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
 
     // add new and overwrite files from templates e.g.
     const tmplPath = join(__dirname, '..', 'templates');
-    const ignore = [isTypeScriptEnabled ? '**/*.js' : '**/*.ts'];
+    const ignore = [
+        isTypeScriptEnabled ? '**/*.js' : '**/*.ts',
+        // if using virtual endpoints for preview, do not add the flpSandbox.html file
+        ...(ffApp.appOptions?.useVirtualPreviewEndpoints ? ['**/webapp/test/flpSandbox.html'] : [])
+    ];
+
     // Determine if the project type is 'EDMXBackend'.
     const isEdmxProjectType = ffApp.app.projectType === 'EDMXBackend';
     // Get the resource URLs for the UShell bootstrap and UI bootstrap based on the project type and UI5 framework details
@@ -139,6 +144,10 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
     const addTests = ffApp.appOptions?.addTests;
     const packageJson: Package = JSON.parse(fs.read(packagePath));
 
+    if (ffApp.appOptions?.useVirtualPreviewEndpoints) {
+        setVirtualEndpointDefaults(ffApp);
+    }
+
     if (isEdmxProjectType) {
         const addMock = !!ffApp.service?.metadata;
         // Add scripts for non-CAP applications
@@ -149,10 +158,11 @@ async function generate<T>(basePath: string, data: FreestyleApp<T>, fs?: Editor,
                 addMock,
                 sapClient: ffApp.service?.client,
                 flpAppId: ffApp.app.flpAppId,
-                startFile: data?.app?.startFile,
-                localStartFile: data?.app?.localStartFile,
+                startFile: ffApp.app?.startFile,
+                localStartFile: ffApp.app?.localStartFile,
                 generateIndex: ffApp.appOptions?.generateIndex,
-                addTest: addTests && ffApp.template.type === TemplateType.Basic
+                addTest: addTests && ffApp.template.type === TemplateType.Basic,
+                addSearchParams: !ffApp.appOptions?.useVirtualPreviewEndpoints // no need for search params if virtual endpoints are used
             })
         };
         if (addTests) {

@@ -28,5 +28,5 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: testNameSpace.lropv2sapsystem
-        ui5Theme: sap_fiori_3
+        flp:
+          theme: sap_fiori_3

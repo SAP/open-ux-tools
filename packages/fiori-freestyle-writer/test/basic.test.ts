@@ -90,10 +90,10 @@ describe(`Fiori freestyle template: ${TEST_NAME}`, () => {
             }
         },
         {
-            name: 'basic_without_reuse_libs',
+            name: 'basic_without_reuse_libs_use_virtual_endpoints',
             config: {
                 ...commonConfig,
-                appOptions: { loadReuseLibs: false }
+                appOptions: { loadReuseLibs: false, useVirtualPreviewEndpoints: true }
             },
             settings: {}
         },

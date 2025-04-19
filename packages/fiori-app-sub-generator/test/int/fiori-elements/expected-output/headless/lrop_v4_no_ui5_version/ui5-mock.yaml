@@ -27,8 +27,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: testnamepsace.lropv4noui5version
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:

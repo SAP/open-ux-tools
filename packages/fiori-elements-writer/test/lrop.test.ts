@@ -213,7 +213,7 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
             } as FioriElementsApp<LROPSettings>
         },
         {
-            name: 'lropV2_omit_reuse_libs',
+            name: 'lropV2_omit_reuse_libs_use_virtual_endpoints',
             config: {
                 ...Object.assign(feBaseConfig('felrop4'), {
                     template: {
@@ -225,7 +225,8 @@ describe(`Fiori Elements template: ${TEST_NAME}`, () => {
                         version: '1.77.2' // flex changes preview should be included with this version
                     },
                     appOptions: {
-                        loadReuseLibs: false
+                        loadReuseLibs: false,
+                        useVirtualPreviewEndpoints: true
                     }
                 }),
                 service: v2Service
