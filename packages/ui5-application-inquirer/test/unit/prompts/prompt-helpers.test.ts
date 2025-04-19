@@ -104,15 +104,18 @@ describe('prompt-helpers', () => {
             [promptNames.enableTypeScript]: {
                 name: promptNames.enableTypeScript
             },
+            [promptNames.useVirtualEndpoints]: {
+                name: promptNames.useVirtualEndpoints
+            },
             [promptNames.showAdvanced]: {
                 name: promptNames.showAdvanced
             }
         };
         // All prompts returned
-        expect(hidePrompts(prompts).length).toEqual(14);
+        expect(hidePrompts(prompts).length).toEqual(15);
         // Hide prompts that are not applicable for CAP projects
         let filteredPrompts = hidePrompts(prompts, {}, true);
-        expect(filteredPrompts.length).toEqual(12);
+        expect(filteredPrompts.length).toEqual(13);
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.targetFolder });
         expect(filteredPrompts).not.toContainEqual({ name: promptNames.enableEslint });
 
@@ -129,7 +132,7 @@ describe('prompt-helpers', () => {
             }
         };
         filteredPrompts = hidePrompts(prompts, promptOpts);
-        expect(filteredPrompts.length).toEqual(11);
+        expect(filteredPrompts.length).toEqual(12);
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.addDeployConfig }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.skipAnnotations }]));
         expect(filteredPrompts).toEqual(expect.not.arrayContaining([{ name: promptNames.ui5Version }]));
