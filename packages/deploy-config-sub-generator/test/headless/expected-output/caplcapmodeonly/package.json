@@ -12,6 +12,7 @@
   },
   "devDependencies": {
     "sqlite3": "^5.0.2",
+    "@sap/cds-dk": "^5",
     "rimraf": "^5.0.5",
     "mbt": "^1.2.29"
   },

@@ -39,12 +39,14 @@ export class ChangeTableColumnsQuickAction
             const actions = await this.context.actionService.get(smartTable.getId());
             const changeColumnAction = actions.find((action) => action.id === ACTION_ID);
             if (changeColumnAction) {
+                const path = this.children.length.toString();
                 this.children.push({
+                    path,
                     label: `'${(smartTable as Table).getHeader()}' table`,
                     enabled: true,
                     children: []
                 });
-                this.tableMap[`${this.children.length - 1}`] = {
+                this.tableMap[path] = {
                     table: smartTable,
                     tableUpdateEventAttachedOnce: false
                 };

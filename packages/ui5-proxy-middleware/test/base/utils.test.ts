@@ -8,7 +8,7 @@ import {
     injectUI5Url,
     proxyRequestHandler,
     proxyResponseHandler,
-    setHtmlResponse,
+    sendResponse,
     proxyErrorHandler,
     updateProxyEnv
 } from '../../src/base/utils';
@@ -297,7 +297,7 @@ describe('utils', () => {
         });
     });
 
-    describe('setHtmlResponse', () => {
+    describe('sendResponse', () => {
         test('use livereload write if present', () => {
             const mockWrite = jest.fn();
             const mockEnd = jest.fn();
@@ -307,7 +307,7 @@ describe('utils', () => {
                 _livereload: true
             } as unknown as any;
             const html = '<html></html>';
-            setHtmlResponse(res, html);
+            sendResponse(res, html);
             expect(mockWrite).toHaveBeenCalledTimes(1);
             expect(mockWrite).toHaveBeenCalledWith(html);
             expect(mockEnd).toHaveBeenCalledTimes(1);
@@ -320,7 +320,7 @@ describe('utils', () => {
                 end: jest.fn()
             } as unknown as any;
             const html = '<html></html>';
-            setHtmlResponse(res, html);
+            sendResponse(res, html);
             expect(res.writeHead).toBeCalledTimes(1);
             expect(res.writeHead).toBeCalledWith(200, {
                 'Content-Type': 'text/html'

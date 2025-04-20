@@ -26,7 +26,7 @@ describe('Ui5AbapRepositoryService', () => {
     const validAppInfo: AppInfo = {
         Name: validApp,
         Package: 'my_package',
-        ZipArchive: 'EncodeZippedDataHere'
+        ZipArchive: 'EncodeZippedDataHere@!#'
     };
     const updateParams = `CodePage='UTF8'&CondenseMessagesInHttpResponseHeader=X&format=json`;
     const sapMessageHeader = JSON.stringify({

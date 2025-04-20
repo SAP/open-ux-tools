@@ -1,10 +1,10 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 import { updateRootPackage } from '../utils';
-import { createCAPMTA, validateMtaConfig, isMTAFound, createCAPMTAAppFrontend, addRoutingConfig } from '../mta-config';
+import { validateMtaConfig, isMTAFound, addRoutingConfig, generateCAPMTA } from '../mta-config';
 import LoggerHelper from '../logger-helper';
 import type { Logger } from '@sap-ux/logger';
-import { type CAPConfig, type CFBaseConfig, RouterModuleType } from '../types';
+import { type CAPConfig, type CFBaseConfig } from '../types';
 import { t } from '../i18n';
 import { getCapProjectType } from '@sap-ux/project-access';
 
@@ -25,11 +25,7 @@ export async function generateCAPConfig(config: CAPConfig, fs?: Editor, logger?:
     }
     logger?.debug(`Generate CAP configuration using: \n ${JSON.stringify(config)}`);
     await validateConfig(config);
-    if (config.routerType === RouterModuleType.AppFront) {
-        await createCAPMTAAppFrontend(config, fs);
-    } else {
-        await createCAPMTA(config.mtaPath, [], config.routerType);
-    }
+    await generateCAPMTA(config, fs);
     // Delay, known issues with loading mta yaml after generation!
     await new Promise((resolve) => setTimeout(resolve, 1000));
     await addRoutingConfig(config, fs);

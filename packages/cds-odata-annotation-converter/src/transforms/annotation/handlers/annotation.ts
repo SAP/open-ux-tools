@@ -1,5 +1,11 @@
 import type { Annotation, AnnotationNode, Identifier } from '@sap-ux/cds-annotation-parser';
-import { copyRange, ANNOTATION_TYPE, nodeRange, EMPTY_VALUE_TYPE } from '@sap-ux/cds-annotation-parser';
+import {
+    copyRange,
+    ANNOTATION_TYPE,
+    nodeRange,
+    EMPTY_VALUE_TYPE,
+    ReservedProperties
+} from '@sap-ux/cds-annotation-parser';
 
 import type { Element } from '@sap-ux/odata-annotation-core-types';
 import { Range, createElementNode, Edm, Position } from '@sap-ux/odata-annotation-core-types';
@@ -14,7 +20,7 @@ export const annotationHandler: NodeHandler<Annotation> = {
     type: ANNOTATION_TYPE,
     convert,
     getChildren(state: VisitorState, annotation: Annotation): AnnotationNode[] {
-        if (annotation.value) {
+        if (!annotation.term.segments.find((item) => item.value === ReservedProperties.Type) && annotation.value) {
             return [annotation.value];
         } else {
             return [];
@@ -161,7 +167,6 @@ function handleFlattenedStructure(state: VisitorState, annotation: Annotation, e
     // Build nested structures for CDS flattened syntax
     // e.g UI.Chart.AxisScaling.ScaleBehavior : #AutoScale, @Common.Text.@UI.TextArrangement : #TextFirst
     const flattenedSegments = getFlattenedSegments(state, annotation);
-
     if (flattenedSegments.length) {
         const subtree = convertFlattenedPath(state, flattenedSegments, annotation.value);
         if (subtree) {

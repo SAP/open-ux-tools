@@ -48,6 +48,10 @@ jest.mock('@sap/mta-lib', () => {
     };
 });
 
+jest.mock('os-name', () => {
+    return () => 'mocked-os';
+});
+
 jest.mock('child_process');
 let spawnMock: jest.SpyInstance;
 

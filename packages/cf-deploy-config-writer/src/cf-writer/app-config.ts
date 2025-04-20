@@ -40,10 +40,10 @@ import {
 } from '../utils';
 import {
     addMtaDeployParameters,
-    createCAPMTA,
     createMTA,
     doesCDSBinaryExist,
     doesMTABinaryExist,
+    generateCAPMTA,
     getMtaConfig,
     getMtaId,
     type MtaConfig,
@@ -215,6 +215,7 @@ async function processManifest(
 }
 
 /**
+ * Generates the deployment configuration for the HTML5 application.
  *
  * @param cfAppConfig writer configuration
  * @param fs reference to a mem-fs editor
@@ -227,7 +228,7 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
 
     // Generate MTA Config, LCAP will generate the mta.yaml on the fly so we don't care about it!
     if (!config.lcapMode) {
-        await generateMTAFile(config);
+        await generateMTAFile(config, fs);
         await generateSupportingConfig(config, fs);
         await updateMtaConfig(config, fs);
     }
@@ -244,11 +245,12 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
  * Creates the MTA configuration file.
  *
  * @param cfConfig writer configuration
+ * @param fs reference to a mem-fs editor
  */
-export async function generateMTAFile(cfConfig: CFConfig): Promise<void> {
+export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<void> {
     if (!cfConfig.mtaId) {
         if (cfConfig.isCap) {
-            await createCAPMTA(cfConfig.rootPath);
+            await generateCAPMTA({ ...cfConfig, mtaPath: cfConfig.rootPath }, fs);
         } else {
             createMTA({ mtaId: cfConfig.appId, mtaPath: cfConfig.mtaPath ?? cfConfig.rootPath } as MTABaseConfig);
         }
@@ -275,6 +277,9 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
+        if (mtaInstance.hasAppFrontendRouter()) {
+            cfConfig.addAppFrontendRouter = true;
+        }
         await addMtaDeployParameters(mtaInstance);
         if ((cfConfig.addMtaDestination && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance
