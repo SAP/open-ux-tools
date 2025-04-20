@@ -106,6 +106,17 @@ describe('FlpSandbox', () => {
             expect(flp.templateConfig).toMatchSnapshot();
         });
 
+        test('Card generator is enabled for the application', async () => {
+            const flp = new FlpSandbox({
+                enableCardGenerator: true,
+            }, mockProject, mockUtils, logger);
+            const manifest = {
+                'sap.app': { id: 'my.id' }
+            } as Manifest;
+            await flp.init(manifest);
+            expect(flp.templateConfig).toMatchSnapshot();
+        });
+
         test('i18n manifest w/o bundle', async () => {
             const flp = new FlpSandbox({}, mockProject, mockUtils, logger);
             const manifest = {

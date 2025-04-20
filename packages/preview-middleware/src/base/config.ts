@@ -77,6 +77,7 @@ export interface TemplateConfig {
     features?: { feature: string; isEnabled: boolean }[];
     locateReuseLibsScript?: boolean;
     enhancedHomePage?: boolean;
+    enableCardGenerator?: boolean;
 }
 
 /**
@@ -91,6 +92,12 @@ export const PREVIEW_URL = {
     },
     api: '/preview/api'
 } as const;
+
+export const CARD_GENERATOR_API = {
+    previewGeneratorSandbox : '/test/flpGeneratorSandbox.html',
+    cardsStore : '/cards/store',
+    i18nStore : '/editor/i18n'
+};
 
 /**
  * Default theme
@@ -362,7 +369,8 @@ export function createFlpTemplateConfig(
             bootstrapOptions: ''
         },
         locateReuseLibsScript: config.libs,
-        enhancedHomePage: config.enhancedHomePage
+        enhancedHomePage: config.enhancedHomePage,
+        enableCardGenerator: false
     } satisfies TemplateConfig;
 }
 

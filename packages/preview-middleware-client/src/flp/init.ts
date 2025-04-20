@@ -5,7 +5,7 @@ import { SCENARIO, showMessage, type Scenario } from '@sap-ux-private/control-pr
 import type { FlexSettings, RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 import IconPool from 'sap/ui/core/IconPool';
 import ResourceBundle from 'sap/base/i18n/ResourceBundle';
-import AppState from 'sap/ushell/services/AppState';
+import type AppState from 'sap/ushell/services/AppState';
 import { getManifestAppdescr } from '../adp/api-handler';
 import { getError } from '../utils/error';
 import initCdm from './initCdm';
@@ -13,6 +13,9 @@ import initConnectors from './initConnectors';
 import { getUi5Version, isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
 import { CommunicationService } from '../cpe/communication-service';
 import { getTextBundle } from '../i18n';
+import type Component from 'sap/ui/core/Component';
+import type Extension from 'sap/ushell/services/Extension';
+import type Event from 'sap/ui/base/Event';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -252,6 +255,37 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 }
 
 /**
+ * Adds a user action to generate a card in the SAP Fiori Launchpad.
+ * 
+ * @param {Component} componentInstance - The instance of the component for which the card generation action is being added.
+ */
+function addCardGenerationUserAction(componentInstance : Component) {
+    sap.ui.require([
+        "sap/cards/ap/generator/CardGenerator"
+    ], async (CardGenerator) => {
+        const container = sap?.ushell?.Container ??
+        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
+        container.getServiceAsync("Extension").then(function(extensionService: Extension) {
+            var oControlProperties = {
+                icon: "sap-icon://add",
+                id: "generate_card",
+                text: "Generate Card",
+                tooltip: "Generate Card",
+                press: function () {
+                    CardGenerator.initializeAsync(componentInstance);
+                }
+            }
+            var oParameters = {
+                controlType: "sap.ushell.ui.launchpad.ActionItem"
+            };
+            extensionService.createUserAction(oControlProperties, oParameters).then(function(generateCardAction){
+                generateCardAction.showForCurrentApp();
+            });
+        });
+    });
+}
+
+/**
  * Apply additional configuration and initialize sandbox.
  *
  * @param params init parameters read from the script tag
@@ -265,12 +299,14 @@ export async function init({
     appUrls,
     flex,
     customInit,
-    enhancedHomePage
+    enhancedHomePage,
+    enableCardGenerator
 }: {
     appUrls?: string | null;
     flex?: string | null;
     customInit?: string | null;
     enhancedHomePage?: boolean | null;
+    enableCardGenerator?: boolean | false
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ??
@@ -283,7 +319,7 @@ export async function init({
         scenario = flexSettings.scenario;
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-            lifecycleService.attachAppLoaded((event) => {
+            lifecycleService.attachAppLoaded((event : Event) => {
                 const view = event.getParameter('componentInstance');
                 const pluginScript = flexSettings.pluginScript ?? '';
 
@@ -317,6 +353,15 @@ export async function init({
                         }
                     }
                 );
+            });
+        });
+    }
+    if (enableCardGenerator && !isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 121 })) {
+        container.attachRendererCreatedEvent(async function () {
+            const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
+            lifecycleService.attachAppLoaded((event : Event) => {
+                const componentInstance = event.getParameter('componentInstance');
+                addCardGenerationUserAction(componentInstance);
             });
         });
     }
@@ -362,7 +407,8 @@ if (bootstrapConfig) {
         appUrls: bootstrapConfig.getAttribute('data-open-ux-preview-libs-manifests'),
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
-        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage')
+        enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
+        enableCardGenerator: bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator') === "true"
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);

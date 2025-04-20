@@ -130,6 +130,7 @@ export interface MiddlewareConfig {
     };
     adp?: AdpPreviewConfig;
     debug?: boolean;
+    enableCardGenerator?: boolean;
 }
 
 export type DefaultFlpPath = '/test/flp.html';

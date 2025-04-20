@@ -1,3 +1,5 @@
+import type Component from 'sap/ui/core/Component';
+
 declare namespace sap.ushell {
     import type ComponentContainer from 'sap/ui/core/ComponentContainer';
 
@@ -18,6 +20,7 @@ declare module 'sap/ushell/services/AppLifeCycle' {
 
     interface AppLifeCycle {
         attachAppLoaded(callback: (event: UI5Event<{ componentInstance: Control }>) => void): void;
+        componentInstance: Component
     }
 
     export default AppLifeCycle;

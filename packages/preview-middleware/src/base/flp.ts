@@ -7,11 +7,11 @@ import { render } from 'ejs';
 import type http from 'http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
-import type connect from 'connect';
-import { dirname, join, posix } from 'path';
+import connect from 'connect';
+import path, { dirname, join, posix } from 'path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import { getWebappPath, type Manifest } from '@sap-ux/project-access';
+import { getWebappPath, type Manifest, type Package, FileName } from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
@@ -33,11 +33,60 @@ import {
     createTestTemplateConfig,
     addApp,
     getAppName,
-    sanitizeRtaConfig
+    sanitizeRtaConfig,
+    CARD_GENERATOR_API
 } from './config';
 import { generateCdm } from './cdm';
+import { promises } from 'fs';
+import * as utils from './utilities';
+import os from 'os';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
+
+export const DEFAULT_THEME = 'sap_horizon';
+const UI5_LIBS = [
+    'sap.apf',
+    'sap.base',
+    'sap.chart',
+    'sap.collaboration',
+    'sap.f',
+    'sap.fe',
+    'sap.fileviewer',
+    'sap.gantt',
+    'sap.landvisz',
+    'sap.m',
+    'sap.ndc',
+    'sap.ovp',
+    'sap.rules',
+    'sap.suite',
+    'sap.tnt',
+    'sap.ui',
+    'sap.uiext',
+    'sap.ushell',
+    'sap.uxap',
+    'sap.viz',
+    'sap.webanalytics',
+    'sap.zen'
+];
+
+/**
+ * Check if a file exists.
+ *
+ * @param path - The path to the file
+ * @returns - true if the file exists, false otherwise
+ */
+async function pathExists(path: string) {
+    try {
+        await promises.access(path);
+        return true;
+    } catch (error) {
+        if (error.code === 'ENOENT') {
+            return false; // File does not exist
+        } else {
+            throw error; // Other errors
+        }
+    }
+}
 
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
@@ -81,6 +130,7 @@ export class FlpSandbox {
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
+    private readonly enableCardGenerator: boolean;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -99,6 +149,7 @@ export class FlpSandbox {
         this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
+        this.enableCardGenerator = config.enableCardGenerator ?? false;
     }
 
     /**
@@ -143,6 +194,13 @@ export class FlpSandbox {
             this.logger
         );
         this.addStandardRoutes();
+
+        if (this.enableCardGenerator) {
+            this.addCardGeneratorMiddlewareRoute();
+            await this.addStoreCardManifestRoute();
+            await this.addStoreI18nKeysRoute();
+        }
+
         if (this.rta) {
             this.rta.options ??= {};
             this.rta.options.baseId = componentId ?? id;
@@ -161,6 +219,7 @@ export class FlpSandbox {
             this.addCDMRoute();
         }
         await this.addRoutesForAdditionalApps();
+
         this.logger.info(`Initialized for app ${id}`);
         this.logger.debug(`Configured apps: ${JSON.stringify(this.templateConfig.apps)}`);
     }
@@ -427,6 +486,39 @@ export class FlpSandbox {
                 await this.flpGetHandler(req, res, next);
             }
         );
+    }
+
+    /**
+     * Adds a middleware route for the Card Generator in the FLP sandbox.
+     * 
+     * This route dynamically updates the `templateConfig` with the Card Generator application details
+     * and serves the FLP sandbox HTML using the `flpGetHandler`.
+     * 
+     * @private
+     */
+    private addCardGeneratorMiddlewareRoute(): void { 
+        this.logger.debug(`Add route for ${CARD_GENERATOR_API.previewGeneratorSandbox}`);
+        this.router.get(
+            CARD_GENERATOR_API.previewGeneratorSandbox,
+            async (
+                req: EnhancedRequest | connect.IncomingMessage,
+                res: Response | http.ServerResponse,
+                next: NextFunction
+            ) => {
+                this.templateConfig.enableCardGenerator = this.enableCardGenerator;
+                const {title, id} = this.manifest['sap.app'];
+
+                this.templateConfig.apps['Cards-generator'] = {
+                    title: title ?? 'Card Generator',
+                    description: "",
+                    additionalInformation: `SAPUI5.Component=${id}`,
+                    applicationType: "URL",
+                    url: "../"
+                };
+
+                await this.flpGetHandler(req, res, next);
+            }
+        )
     }
 
     /**
@@ -876,6 +968,110 @@ export class FlpSandbox {
                 }
             );
         }
+    }
+
+     /**
+     * Route to store card manifest files, the files are stored in the webapp folder of the project
+     * and the application manifest.json file is updated with the new card manifests information within the sap.cards.ap.embeds
+     */
+    async addStoreCardManifestRoute(): Promise<void> {
+        this.router.use(CARD_GENERATOR_API.cardsStore, json());
+        this.logger.debug(`Add route for ${CARD_GENERATOR_API.cardsStore}`);
+        this.router.post(CARD_GENERATOR_API.cardsStore, async (req: Request, res: Response) => {
+            try {
+                const { floorplan, localPath, fileName = FileName.Manifest, manifests } = req.body;
+                const webappPath = await getWebappPath(path.resolve());
+                const fullPath = path.resolve(webappPath, localPath);
+
+                if (!fullPath.startsWith(webappPath)) {
+                    throw new Error('Invalid path');
+                }
+
+                const file = utils.prepareFileName(fullPath + '/' + fileName);
+                if (!(await pathExists(fullPath))) {
+                    try {
+                        await promises.mkdir(fullPath, { recursive: true });
+                    } catch (err) {
+                        res.status(403).send(`Files could not be created/updated.`);
+                    }
+                }
+
+                const multipleCards = utils.prepareCardTypesForSaving(manifests);
+
+                await promises.writeFile(join(fullPath, file), multipleCards.integration);
+
+                const appManifest = this.manifest;
+
+                if (!appManifest['sap.cards.ap']) {
+                    appManifest['sap.cards.ap'] = {};
+                }
+                const integrationCard = manifests.find((card: any) => card.type === 'integration');
+                const entitySet = integrationCard.entitySet;
+                appManifest['sap.cards.ap'].embeds ??= {};
+                appManifest['sap.cards.ap'].embeds[floorplan] ??= {
+                    default: entitySet,
+                    manifests: {}
+                };
+                (appManifest['sap.cards.ap'].embeds as Record<string, any>)[floorplan]['default'] ??= entitySet;
+                (appManifest['sap.cards.ap'].embeds as Record<string, any>)[floorplan]['manifests'] ??= {};
+                (appManifest['sap.cards.ap'].embeds as Record<string, any>)[floorplan]['manifests'][entitySet] ??= [
+                    {
+                        'localUri': localPath
+                    }
+                ];
+
+                const manifestPath = join(webappPath, FileName.Manifest);
+                await promises.writeFile(manifestPath, JSON.stringify(appManifest, null, 2));
+                res.status(201).send(`Files were updated/created`);
+            } catch (err) {
+                res.status(500).send(`Files could not be created/updated.`);
+            }
+        });
+    }
+
+    /**
+     * Route to store i18n properties
+     * All the new properties are added at the end of the i18n file
+     */
+    async addStoreI18nKeysRoute(): Promise<void> {
+        this.router.use(CARD_GENERATOR_API.i18nStore, json());
+        this.logger.debug(`Add route for ${CARD_GENERATOR_API.i18nStore}`);
+        this.router.post(CARD_GENERATOR_API.i18nStore, async (req: Request, res: Response) => {
+            try {
+                const appManifest = this.manifest;
+                const webappPath = await getWebappPath(path.resolve());
+                let filePath: string;
+
+                if (appManifest['sap.app'].i18n) {
+                    filePath = join(webappPath, appManifest['sap.app'].i18n as string);
+                } else {
+                    filePath = join(webappPath, 'i18n', 'i18n.properties');
+                }
+
+                const entries = req.body || [];
+                const { lines, updatedEntries, output } = await utils.traverseI18nProperties(filePath, entries);
+
+                // Add a new line if file is not empty and last line is not empty and there are new entries
+                if (lines?.length > 0 && lines[lines?.length - 1].trim() && entries?.length) {
+                    output.push('');
+                }
+
+                for (const index in entries) {
+                    const ikey = index as any;
+                    if (!updatedEntries[ikey]) {
+                        const { comment, key, value } = entries[ikey];
+                        if (comment) {
+                            output.push(`#${comment}`); // Add comment only for a new entry
+                        }
+                        output.push(`${key}=${value}${os.EOL}`);
+                    }
+                }
+                await promises.writeFile(filePath, output.join(os.EOL), { encoding: 'utf8' });
+                res.status(201).send(`i18n file updated.`);
+            } catch (err) {
+                res.status(500).send(`File could not be updated.`);
+            }
+        });
     }
 }
 
