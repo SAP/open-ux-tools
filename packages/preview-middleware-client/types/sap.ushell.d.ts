@@ -20,7 +20,6 @@ declare module 'sap/ushell/services/AppLifeCycle' {
 
     interface AppLifeCycle {
         attachAppLoaded(callback: (event: UI5Event<{ componentInstance: Control }>) => void): void;
-        componentInstance: Component
     }
 
     export default AppLifeCycle;

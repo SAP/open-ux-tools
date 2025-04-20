@@ -1,5 +1,5 @@
 import type { ReaderCollection } from '@ui5/fs';
-import type { TemplateConfig } from '../../../src/base/config';
+import { type TemplateConfig, CARD_GENERATOR_API } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
@@ -15,8 +15,13 @@ import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
+import * as utils from '../../../src/base/utilities'
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
+import { promises } from 'fs';
+import { getWebappPath } from '@sap-ux/project-access';
+import path from 'path';
+import os from 'os';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 
@@ -25,6 +30,12 @@ jest.mock('@sap-ux/adp-tooling', () => {
         __esModule: true,
         ...jest.requireActual('@sap-ux/adp-tooling')
     };
+});
+
+jest.spyOn(utils, 'traverseI18nProperties').mockResolvedValue({
+    lines: ['appTitle=Sales Order'],
+    updatedEntries: [],
+    output: ['appTitle=Sales Order']
 });
 
 class FlpSandbox extends FlpSandboxUnderTest {
@@ -726,6 +737,119 @@ describe('FlpSandbox', () => {
                 )
                 .expect(200);
             expect(response.text).toMatchSnapshot();
+        });
+    });
+
+    describe('router with enableCardGenerator', () => {
+        let server!: SuperTest<Test>;
+        const mockConfig = {
+            enableCardGenerator: true
+        };
+
+        let mockFsPromisesWriteFile: jest.Mock;
+
+        beforeEach(() => {
+            mockFsPromisesWriteFile = jest.fn();//promises.writeFile as jest.Mock;
+            promises.writeFile = mockFsPromisesWriteFile;
+        });
+
+        afterEach(() => {
+            fetchMock.mockRestore();
+        });
+
+        const setupMiddleware = async (mockConfig: Partial<MiddlewareConfig>) => {
+            const flp = new FlpSandbox(mockConfig, mockProject, mockUtils, logger);
+            const manifest = JSON.parse(readFileSync(join(fixtures, 'simple-app/webapp/manifest.json'), 'utf-8'));
+            await flp.init(manifest);
+
+            const app = express();
+            app.use(flp.router);
+
+            server = supertest(app);
+        };
+
+        beforeAll(() => {
+            setupMiddleware(mockConfig as MiddlewareConfig);
+        });
+
+        test('GET /test/flpGeneratorSandbox.html', async () => {
+            const response = await server.get(`${CARD_GENERATOR_API.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`);
+            expect(response.status).toBe(200);
+            expect(response.type).toBe('text/html');
+        });
+
+        test('POST /cards/store', async () => {
+            const payload = {
+                floorplan: 'ObjectPage',
+                localPath: 'cards/op/op1',
+                fileName: 'manifest.json',
+                manifests: [
+                    {
+                        type: 'integration',
+                        manifest: {
+                            '_version': '1.15.0',
+                            'sap.card': {
+                                'type': 'Object',
+                                'header': {
+                                    'type': 'Numeric',
+                                    'title': 'Card title'
+                                }
+                            },
+                            'sap.insights': {
+                                'versions': {
+                                    'ui5': '1.120.1-202403281300'
+                                },
+                                'templateName': 'ObjectPage',
+                                'parentAppId': 'sales.order.wd20',
+                                'cardType': 'DT'
+                            }
+                        },
+                        default: true,
+                        entitySet: 'op1'
+                    },
+                    {
+                        type: 'adaptive',
+                        manifest: {
+                            'type': 'AdaptiveCard',
+                            'body': [
+                                {
+                                    'type': 'TextBlock',
+                                    'wrap': true,
+                                    'weight': 'Bolder',
+                                    'text': 'Card Title'
+                                }
+                            ]
+                        },
+                        default: true,
+                        entitySet: 'op1'
+                    }
+                ]
+            };
+
+            const response = await server.post(CARD_GENERATOR_API.cardsStore).send(payload);
+            expect(response.status).toBe(201);
+            expect(response.text).toBe("Files were updated/created");
+            expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(2);
+        });
+
+        test('POST /editor/i18n', async () => {
+            const response = await server.post(CARD_GENERATOR_API.i18nStore).send([
+                {
+                    'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
+                    'value': 'new Entry'
+                }
+            ]);
+            const webappPath = await getWebappPath(path.resolve());
+            const filePath = join(webappPath, 'i18n', 'i18n.properties');
+            const text1 = `appTitle=Sales Order${os.EOL}`;
+            const text2 = `CardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry${os.EOL}`;
+            const lines = [text1, text2];
+
+            expect(response.status).toBe(201);
+            expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(1);
+            expect(mockFsPromisesWriteFile.mock.calls[0][0]).toBe(filePath);
+            expect(mockFsPromisesWriteFile.mock.calls[0][1]).toBe(lines.join(os.EOL));
+
         });
     });
 

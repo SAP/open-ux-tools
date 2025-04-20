@@ -977,6 +977,10 @@ export class FlpSandbox {
     async addStoreCardManifestRoute(): Promise<void> {
         this.router.use(CARD_GENERATOR_API.cardsStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_API.cardsStore}`);
+
+        var limiter = getRateLimiter();
+        this.router.use(limiter);
+
         this.router.post(CARD_GENERATOR_API.cardsStore, async (req: Request, res: Response) => {
             try {
                 const { floorplan, localPath, fileName = FileName.Manifest, manifests } = req.body;
@@ -1036,6 +1040,10 @@ export class FlpSandbox {
     async addStoreI18nKeysRoute(): Promise<void> {
         this.router.use(CARD_GENERATOR_API.i18nStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_API.i18nStore}`);
+
+        var limiter = getRateLimiter();
+        this.router.use(limiter);
+
         this.router.post(CARD_GENERATOR_API.i18nStore, async (req: Request, res: Response) => {
             try {
                 const appManifest = this.manifest;
@@ -1073,6 +1081,14 @@ export class FlpSandbox {
             }
         });
     }
+}
+
+function getRateLimiter() {
+    var RateLimit = require('express-rate-limit');
+    return RateLimit({
+        windowMs: 15 * 60 * 1000,
+        max: 100,
+    });
 }
 
 /**

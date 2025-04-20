@@ -3,7 +3,6 @@ import packageJson from '../../package.json';
 import { type Package, getWebappPath } from '@sap-ux/project-access';
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
-import { create } from 'mem-fs-editor';
 import { readFileSync } from 'fs';
 
 interface MultiCardsPayload {
@@ -112,12 +111,12 @@ export async function traverseI18nProperties(path: string, entries: Array<I18nEn
     return { lines, updatedEntries, output };
 }
 
-export async function updatePackageJSON(basePath: string): Promise<void> {
-    const fs = create(createStorage());
-    const webappPath = await getWebappPath(basePath, fs);
-    const packageJsonPath = join(webappPath, 'package.json');
-    const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as Package;
-    packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `fiori run --open 'test/flpGeneratorSandbox.html#Cards-generator'`;
-    fs.writeJSON(packageJsonPath, packageJson);
-}
+// export async function updatePackageJSON(basePath: string): Promise<void> {
+//     const fs = create(createStorage());
+//     const webappPath = await getWebappPath(basePath, fs);
+//     const packageJsonPath = join(webappPath, 'package.json');
+//     const packageJson = JSON.parse(readFileSync(packageJsonPath, 'utf-8')) as Package;
+//     packageJson.scripts ??= {};
+//     packageJson.scripts['start-cards-generator'] = `fiori run --open 'test/flpGeneratorSandbox.html#Cards-generator'`;
+//     fs.writeJSON(packageJsonPath, packageJson);
+// }
