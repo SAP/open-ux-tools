@@ -18,7 +18,7 @@
         "selectServiceMessage": "ABAP Environment for direct service binding",
         "routerTypeMessage": "Add Router Module",
         "routerType": {
-            "managedAppRouter": "Add application to managed application router",
+            "managedAppRouter": "Add Application to Managed Application Router",
             "appFrontAppService": "Add application to application Frontend service",
             "none": "None"
         }
