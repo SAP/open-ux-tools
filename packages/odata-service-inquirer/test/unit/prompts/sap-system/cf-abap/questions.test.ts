@@ -77,7 +77,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                   "applyDefaultWhenDirty": true,
                   "breadcrumb": true,
                 },
-                "message": "prompts.cloudFoundryAbapSystem.message",
+                "message": "ABAP environment",
                 "name": "cfAbapBas:cloudFoundryAbapSystem",
                 "type": "list",
                 "validate": [Function],
@@ -92,7 +92,7 @@ describe('tests cf abap service dicovery prompts for BAS', () => {
                 "default": [Function],
                 "guiOptions": {
                   "applyDefaultWhenDirty": true,
-                  "breadcrumb": "prompts.systemService.breadcrumb",
+                  "breadcrumb": "Service",
                   "mandatory": true,
                 },
                 "message": [Function],
