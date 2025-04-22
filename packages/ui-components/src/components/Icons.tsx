@@ -134,6 +134,7 @@ export enum UiIcons {
     SettingsHierarchy = 'SettingsHierarchy',
     SettingsWithChevron = 'SettingsWithChevron',
     Shape = 'Shape',
+    Shift = 'Shift',
     SidePanelRight = 'SidePanelRight',
     Sparkles = 'Sparkles',
     Sort = 'Sort',
@@ -1814,6 +1815,14 @@ export function initIcons(): void {
                     <path
                         fill={COLORS.default}
                         d="M15,0 C15.5522847,0 16,0.44771525 16,1 L16,15 C16,15.5522847 15.5522847,16 15,16 L1,16 C0.44771525,16 0,15.5522847 0,15 L0,1 C0,0.44771525 0.44771525,0 1,0 L15,0 Z M15,1 L1,1 L1,15 L15,15 L15,1 Z"
+                    />
+                </svg>
+            ),
+            [UiIcons.Shift]: (
+                <svg xmlns="http://www.w3.org/2000/svg" width="11" height="8" viewBox="0 0 11 8" fill="none">
+                    <path
+                        d="M2.31446 4.00003H3.9C3.95523 4.00003 4 4.0448 4 4.10003V6.90003C4 6.95525 4.04478 7.00003 4.1 7.00003H6.9C6.95523 7.00003 7 6.95525 7 6.90003V4.10003C7 4.0448 7.04478 4.00003 7.1 4.00003H8.68555L5.5 1.16799L2.31446 4.00003ZM8 7.29983C8 7.68643 7.68641 8.00003 7.29981 8.00003H3.7002C3.3136 8.00003 3 7.68643 3 7.29983V5.00003H1.2627C0.711214 4.99976 0.451988 4.31766 0.864262 3.9512L5.10157 0.185572L5.19141 0.119166C5.3809 0.00536273 5.61911 0.00536247 5.8086 0.119166L5.89844 0.185572L10.1357 3.9512C10.548 4.31766 10.2888 4.99976 9.73731 5.00003H8V7.29983Z"
+                        fill={COLORS.default}
                     />
                 </svg>
             ),
