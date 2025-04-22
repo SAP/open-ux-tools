@@ -408,6 +408,7 @@ export class FioriAppGenerator extends Generator {
                     enableCodeAssist: this.state.project?.enableCodeAssist ?? false,
                     // Assumption that npm workspaces will be enabled if cds ui5 plugin is a depenedency
                     useNpmWorkspaces: !!(
+                        this.state.project.enableTypeScript || // If typescript is enabled, it is required that the CAP project will be updated to use NPM workspaces
                         this.state.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled ||
                         this.state.service.capService?.cdsUi5PluginInfo?.hasCdsUi5Plugin ||
                         this.state.service.capService?.cdsUi5PluginInfo?.isWorkspaceEnabled
