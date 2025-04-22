@@ -28,7 +28,7 @@ describe('UI5 templates', () => {
 
     const ui5AppConfig = {
         app: {
-            id: 'testAppId',
+            id: 'testappid',
             title: 'Test App Title',
             description: 'Test App Description',
             sourceTemplate: {
