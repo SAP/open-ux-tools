@@ -258,7 +258,7 @@ export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<v
     // Step2. Append the approuter and destination to mta.yaml
     await appendAppRouter(cfConfig, fs);
     // Step3. Create any missing resources like package.json / xs-security.json / .gitignore
-    await generateSupportingConfig(cfConfig, fs, cfConfig.addManagedAppRouter);
+    await generateSupportingConfig(cfConfig, fs);
 }
 
 /**
