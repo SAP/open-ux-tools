@@ -282,6 +282,9 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
+        if (mtaInstance.hasAppFrontendRouter()) {
+            cfConfig.addAppFrontendRouter = true;
+        }
         await addMtaDeployParameters(mtaInstance);
         if ((cfConfig.addMtaDestination && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance

@@ -861,8 +861,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 2.0.7
-        version: 2.0.7(@types/express@4.17.21)
+        specifier: 2.0.9
+        version: 2.0.9(@types/express@4.17.21)
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -1339,8 +1339,8 @@ importers:
         specifier: 7.33.2
         version: 7.33.2(eslint@8.57.0)
       http-proxy-middleware:
-        specifier: 2.0.7
-        version: 2.0.7(@types/express@4.17.21)
+        specifier: 2.0.9
+        version: 2.0.9(@types/express@4.17.21)
       i18next:
         specifier: 20.6.1
         version: 20.6.1
@@ -3310,6 +3310,9 @@ importers:
       '@sap-ux/fiori-tools-settings':
         specifier: workspace:*
         version: link:../fiori-tools-settings
+      '@sap-ux/guided-answers-helper':
+        specifier: workspace:*
+        version: link:../guided-answers-helper
       '@sap-ux/inquirer-common':
         specifier: workspace:*
         version: link:../inquirer-common
@@ -4414,8 +4417,8 @@ importers:
         specifier: 16.3.1
         version: 16.3.1
       http-proxy-middleware:
-        specifier: 2.0.7
-        version: 2.0.7(@types/express@4.17.21)
+        specifier: 2.0.9
+        version: 2.0.9(@types/express@4.17.21)
       https-proxy-agent:
         specifier: 5.0.1
         version: 5.0.1
@@ -16964,8 +16967,8 @@ packages:
     transitivePeerDependencies:
       - supports-color
 
-  /http-proxy-middleware@2.0.7(@types/express@4.17.21):
-    resolution: {integrity: sha512-fgVY8AV7qU7z/MmXJ/rxwbrtQH4jBQ9m7kp3llF0liB7glmFeVZFBepQb32T3y8n8k2+AEYuMPCpinYW+/CuRA==}
+  /http-proxy-middleware@2.0.9(@types/express@4.17.21):
+    resolution: {integrity: sha512-c1IyJYLYppU574+YI7R4QyX2ystMtVXZwIdzazUIPIJsHuWNd+mho2j+bKoHftndicGj9yh+xjd+l0yj7VeT1Q==}
     engines: {node: '>=12.0.0'}
     peerDependencies:
       '@types/express': ^4.17.13

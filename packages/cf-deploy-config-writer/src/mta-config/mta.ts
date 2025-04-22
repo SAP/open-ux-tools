@@ -403,17 +403,19 @@ export class MtaConfig {
      */
     private async cleanupMissingResources(): Promise<void> {
         this.log?.debug(t('debug.addMissingModules'));
-        if (!this.modules.has('com.sap.application.content:resource')) {
-            await this.addAppContent();
-        }
+        if (!this.modules.has('com.sap.application.content:appfront')) {
+            if (!this.modules.has('com.sap.application.content:resource')) {
+                await this.addAppContent();
+            }
 
-        // For Approuter Configuration generators, the destination resource is missing for both Standalone | Managed
-        if (this.resources.get('destination')) {
-            // Ensure the resource is added
-            await this.updateDestinationResource(this.modules.has('com.sap.application.content:destination'));
-        } else {
-            // No destination resource found, add it, more common for standalone
-            await this.addDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            // For Approuter Configuration generators, the destination resource is missing for both Standalone | Managed
+            if (this.resources.get('destination')) {
+                // Ensure the resource is added
+                await this.updateDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            } else {
+                // No destination resource found, add it, more common for standalone
+                await this.addDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            }
         }
     }
 
@@ -486,6 +488,15 @@ export class MtaConfig {
             }
         });
         return cloudServiceName;
+    }
+
+    /**
+     * Returns true if the MTA contains an approuter module of type App Frontend Service.
+     *
+     * @returns {boolean} true if the mta contains an App Frontend Service
+     */
+    public hasAppFrontendRouter(): boolean {
+        return this.modules.has('com.sap.application.content:appfront');
     }
 
     /**
