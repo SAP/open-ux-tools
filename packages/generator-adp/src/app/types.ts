@@ -141,3 +141,19 @@ export type AttributePromptOptions = Partial<{
     [attributePromptNames.ui5ValidationCli]: CliValidationPromptOptions;
     [attributePromptNames.enableTypeScript]: EnableTypeScriptPromptOptions;
 }>;
+
+export interface ExtensionProjectData {
+    destination: {
+        name: string;
+        basUsage: string | undefined;
+        host: string | undefined;
+        sapClient: string | undefined;
+    };
+    username: string;
+    password: string;
+    applicationNS: string;
+    applicationName: string;
+    userUI5Ver: string;
+    BSPUrl: string;
+    namespace: string;
+}

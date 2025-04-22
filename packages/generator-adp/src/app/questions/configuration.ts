@@ -177,6 +177,15 @@ export class ConfigPrompter {
     }
 
     /**
+     * Indicates whether the application is supported by Adaptation Project.
+     *
+     * @returns {boolean} True if the application is supported.
+     */
+    public get isAppSupported(): boolean {
+        return this.isApplicationSupported;
+    }
+
+    /**
      * Creates an instance of ConfigPrompter.
      *
      * @param {SystemLookup} systemLookup - The source system class to retrieve system endpoints.

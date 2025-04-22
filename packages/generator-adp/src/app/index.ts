@@ -1,6 +1,6 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
 import {
     TelemetryHelper,
@@ -23,6 +23,7 @@ import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { getPackageInfo, installDependencies } from '../utils/deps';
 import type { AdpGeneratorOptions, AttributePromptOptions } from './types';
+import { getExtensionProjectData, resolveNodeModuleGenerator } from './extension-project';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -145,6 +146,11 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
+            if (!this.prompter.isAppSupported) {
+                await this._generateExtensionProject();
+                return;
+            }
+
             const packageJson = getPackageInfo();
             const config = await getConfig({
                 provider: this.prompter.provider,
@@ -185,6 +191,32 @@ export default class extends Generator {
                     this.logger.error(t('error.telemetry', { error }));
                 }
             );
+        }
+
+        try {
+            this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: this._getProjectPath() });
+        } catch (e) {
+            this.appWizard.showError(e.message, MessageType.notification);
+        }
+    }
+
+    /**
+     * Generates an extension project if the application is not supported by Adaptation Project.
+     */
+    private async _generateExtensionProject(): Promise<void> {
+        try {
+            const data = getExtensionProjectData(this.configAnswers, this.attributeAnswers, this.systemLookup);
+
+            const generator = resolveNodeModuleGenerator();
+            this.composeWith(generator!, {
+                arguments: [JSON.stringify(data)],
+                appWizard: this.appWizard
+            });
+            this.logger.info(`'@bas-dev/generator-extensibility-sub' was called.`);
+        } catch (e) {
+            this.logger.info('Creating Extension Project failed!');
+            this.logger.error(e.message);
+            this.appWizard.showError(e.message, MessageType.notification);
         }
     }
 

@@ -1,5 +1,5 @@
 import { t } from '../../../utils/i18n';
-import { resolveNodeModuleGenerator } from '../../extension/generator-resolver';
+import { resolveNodeModuleGenerator } from '../../extension-project';
 
 /**
  * Validates whether the extensibility sub-generator is available and sets it up if necessary.
