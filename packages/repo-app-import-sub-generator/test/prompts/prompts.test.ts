@@ -6,6 +6,7 @@ import { PromptState } from '../../src/prompts/prompt-state';
 import * as helpers from '../../src/prompts/prompt-helpers';
 import * as downloadUtils from '../../src/utils/download-utils';
 import RepoAppDownloadLogger from '../../src/utils/logger';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 jest.mock('@sap-ux/odata-service-inquirer', () => ({
     getSystemSelectionQuestions: jest.fn().mockResolvedValue({
@@ -166,6 +167,66 @@ describe('getPrompts', () => {
         if (targetFolderPrompt) {
             expect(targetFolderPrompt.when).toBeTruthy();
         }
+    });
+
+    it('should display app selection prompt when system is valid', async () => {
+        const mockServiceProvider = {
+            name: 'MockSystem'
+        } as unknown as AbapServiceProvider;
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
+            }],
+            answers: {
+                connectedSystem: { serviceProvider: mockServiceProvider }
+            }
+        });
+    
+        const prompts = await getPrompts('/app/path');
+        expect(mockGetSystemSelectionQuestions).toHaveBeenCalledWith(
+            {
+                serviceSelection: { hide: true },
+                systemSelection: { defaultChoice: undefined }
+            },
+            true
+        );
+        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
+        (appSelectionPrompt?.when as Function)({
+            [PromptNames.systemSelection]: mockServiceProvider
+        })
+    });
+
+    it('should not app selection prompt when selected system is valid', async () => {
+        const mockServiceProvider = {
+            defaults: {
+                baseURL: 'https://mock.sap-system.com',
+                params: {
+                    'sap-client': '100'
+                }
+            }
+        } as unknown as AbapServiceProvider;
+        mockGetSystemSelectionQuestions.mockResolvedValue({
+            prompts: [{
+                name: PromptNames.systemSelection,
+                type: 'list',
+                choices: [{ name: 'System 1', value: { system: { name: 'MockSystem' } } }]
+            }],
+            answers: {
+                connectedSystem: { serviceProvider: null }
+            }
+        });
+
+        mockFetchAppList.mockResolvedValue([{ appId: 'app1', repoName: 'repo1' }]);
+        mockDownloadApp.mockResolvedValue(undefined);
+
+        const prompts = await getPrompts('/app/path');
+        const appSelectionPrompt = prompts.find(p => p.name === PromptNames.selectedApp);
+        (appSelectionPrompt?.when as Function)({
+            [PromptNames.systemSelection]: mockServiceProvider
+        })
+        expect(mockFetchAppList as jest.Mock).not.toHaveBeenCalled();
     });
 });
 

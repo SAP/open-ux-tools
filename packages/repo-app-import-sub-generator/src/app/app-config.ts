@@ -11,6 +11,7 @@ import type { AbapDeployConfig } from '@sap-ux/ui5-config';
 import RepoAppDownloadLogger from '../utils/logger';
 import { FileName } from '@sap-ux/project-access';
 import { join } from 'path';
+import { getUI5Versions, type UI5Version } from '@sap-ux/ui5-info';
 
 /**
  * Generates the deployment configuration for an ABAP application.
@@ -84,6 +85,11 @@ export async function getAppConfig(
             serviceProvider,
             manifest?.['sap.app']?.dataSources?.mainService.uri ?? ''
         );
+
+        // Fetch latest UI5 versions from npm
+        const ui5Versions: UI5Version[] = await getUI5Versions({ onlyNpmVersion: true });
+        const localVersion = ui5Versions[0]?.version;
+
         const appConfig: FioriElementsApp<LROPSettings> = {
             app: {
                 id: app.appId,
@@ -119,6 +125,9 @@ export async function getAppConfig(
             appOptions: {
                 addAnnotations: odataVersion === OdataVersion.v4,
                 addTests: true
+            },
+            ui5: {
+                localVersion
             }
         };
         return appConfig;

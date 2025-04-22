@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.1
+
+### Patch Changes
+
+-   698b7e3: Fixes space between empty table and Add button.
+
 ## 1.26.0
 
 ### Minor Changes

@@ -23,7 +23,7 @@ import { platform } from 'os';
 import { runPostAppGenHook } from '../utils/event-hook';
 import { getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
-import { createLaunchConfig, updateWorkspaceFoldersIfNeeded } from '@sap-ux/launch-config';
+import { createLaunchConfig, updateWorkspaceFoldersIfNeeded, handleWorkspaceConfig } from '@sap-ux/launch-config';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
@@ -51,6 +51,7 @@ export default class extends Generator {
     public options: RepoAppDownloadOptions;
     private projectPath: string;
     private extractedProjectPath: string;
+    private debugOptions: DebugOptions;
     setPromptsCallback: (fn: object) => void;
 
     /**
@@ -224,6 +225,7 @@ export default class extends Generator {
             isAppStudio: isAppStudio(),
             odataVersion: config.service.version === OdataVersion.v2 ? '2.0' : '4.0'
         };
+        this.debugOptions = debugOptions;
         const fioriOptions: FioriOptions = {
             name: config.app.id,
             projectRoot: this.projectPath,
@@ -293,11 +295,16 @@ export default class extends Generator {
          *    the app generation process.
          */
         if (this.vscode) {
-            const updateWorkspaceFolders = {
-                uri: this.vscode?.Uri?.file(join(this.projectPath)),
-                projectName: basename(this.projectPath),
-                vscode: this.vscode
-            };
+            const rootFolder = this.projectPath;
+            // Create workspace folder URI
+            const { workspaceFolderUri } = handleWorkspaceConfig(rootFolder, this.debugOptions);
+            const updateWorkspaceFolders = workspaceFolderUri
+                ? {
+                      uri: workspaceFolderUri,
+                      projectName: basename(rootFolder),
+                      vscode: this.debugOptions.vscode
+                  }
+                : undefined;
             updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
         }
         if (this.options.data?.postGenCommand) {

@@ -1,5 +1,12 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.13
+
+### Patch Changes
+
+-   Updated dependencies [b49f8d5]
+    -   @sap-ux/launch-config@0.9.0
+
 ## 0.0.12
 
 ### Patch Changes

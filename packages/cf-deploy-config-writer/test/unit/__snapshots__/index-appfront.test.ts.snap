@@ -149,6 +149,137 @@ parameters:
 "
 `;
 
+exports[`CF Writer App - Application Frontend Generate deployment configs - Append HTML5 to an existing app frontend router 1`] = `
+"{
+  \\"welcomeFile\\": \\"/index.html\\",
+  \\"authenticationMethod\\": \\"route\\",
+  \\"routes\\": [
+    {
+      \\"source\\": \\"^/sap/(.*)$\\",
+      \\"target\\": \\"/sap/$1\\",
+      \\"destination\\": \\"TestDestination\\",
+      \\"authenticationType\\": \\"ias\\",
+      \\"csrfProtection\\": false
+    },
+    {
+      \\"source\\": \\"^/resources/(.*)$\\",
+      \\"target\\": \\"/resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/test-resources/(.*)$\\",
+      \\"target\\": \\"/test-resources/$1\\",
+      \\"authenticationType\\": \\"none\\",
+      \\"destination\\": \\"ui5\\"
+    },
+    {
+      \\"source\\": \\"^/logout-page.html$\\",
+      \\"service\\": \\"app-front\\",
+      \\"authenticationType\\": \\"none\\"
+    },
+    {
+      \\"source\\": \\"^/index.html$\\",
+      \\"service\\": \\"app-front\\",
+      \\"cacheControl\\": \\"no-cache, no-store, must-revalidate\\"
+    },
+    {
+      \\"source\\": \\"^(.*)$\\",
+      \\"target\\": \\"$1\\",
+      \\"service\\": \\"app-front\\",
+      \\"authenticationType\\": \\"ias\\"
+    }
+  ]
+}
+"
+`;
+
+exports[`CF Writer App - Application Frontend Generate deployment configs - Append HTML5 to an existing app frontend router 2`] = `
+"{
+  \\"xsappname\\": \\"standalone\\",
+  \\"tenant-mode\\": \\"dedicated\\",
+  \\"description\\": \\"Security profile of called application\\",
+  \\"scopes\\": [],
+  \\"role-templates\\": []
+}
+"
+`;
+
+exports[`CF Writer App - Application Frontend Generate deployment configs - Append HTML5 to an existing app frontend router 3`] = `
+"{
+  \\"name\\": \\"mta-project\\",
+  \\"version\\": \\"0.0.1\\",
+  \\"description\\": \\"Build and deployment scripts\\",
+  \\"scripts\\": {
+    \\"clean\\": \\"rimraf resources mta_archives mta-op*\\",
+    \\"build\\": \\"rimraf resources mta_archives && mbt build --mtar archive\\",
+    \\"deploy\\": \\"cf deploy mta_archives/archive.mtar --retries 1\\",
+    \\"undeploy\\": \\"cf undeploy rootmta --delete-services --delete-service-keys --delete-service-brokers\\"
+  },
+  \\"devDependencies\\": {
+    \\"mbt\\": \\"^1.2.29\\",
+    \\"rimraf\\": \\"^5.0.5\\"
+  }
+}
+"
+`;
+
+exports[`CF Writer App - Application Frontend Generate deployment configs - Append HTML5 to an existing app frontend router 4`] = `
+"_schema-version: '3.1'
+ID: rootmta
+description: Fiori elements app
+version: 0.0.1
+modules:
+  - name: rootmta-app-content
+    type: com.sap.application.content
+    path: .
+    requires:
+      - name: rootmta-app-front
+        parameters:
+          content-target: true
+      - name: rootmta-uaa
+    parameters:
+      config:
+        destinations:
+          - name: ui5
+            url: 'https://ui5.sap.com'
+    build-parameters:
+      build-result: resources
+      requires:
+        - name: basicapp
+          artifacts:
+            - basicapp.zip
+          target-path: resources/
+  - name: basicapp
+    type: html5
+    path: basicapp
+    build-parameters:
+      builder: custom
+      build-result: dist
+      commands:
+        - npm install
+        - 'npm run build:cf'
+      supported-platforms: []
+resources:
+  - name: rootmta-uaa
+    type: org.cloudfoundry.managed-service
+    parameters:
+      path: ./xs-security.json
+      service: xsuaa
+      service-name: rootmta-xsuaa-service
+      service-plan: application
+  - name: rootmta-app-front
+    type: org.cloudfoundry.managed-service
+    parameters:
+      service: app-front
+      service-name: rootmta-app-front-service
+      service-plan: developer
+parameters:
+  deploy_mode: html5-repo
+  enable-parallel-deployments: true
+"
+`;
+
 exports[`CF Writer App - Application Frontend Generate deployment configs - HTML5 App with app frontend service attached with no destination available 1`] = `
 "_schema-version: '3.2'
 ID: comfioritoolslrop
