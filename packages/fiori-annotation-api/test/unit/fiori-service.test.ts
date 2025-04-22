@@ -2103,42 +2103,6 @@ rating : Rating;
             });
         });
 
-        createEditTestCase({
-            name: 'SideEffects annotation with empty target',
-            projectTestModels: TEST_TARGETS.filter((target) => target === PROJECTS.V4_CDS_START),
-            getInitialChanges: (files) => [],
-            getChanges: (files) => [
-                {
-                    kind: ChangeType.InsertAnnotation,
-                    uri: files.annotations,
-                    content: {
-                        type: 'annotation',
-                        target: TARGET_INCIDENTS,
-                        value: {
-                            term: `${COMMON}.SideEffects`,
-                            record: {
-                                type: `${COMMON}.SideEffectsType`,
-                                propertyValues: [
-                                    {
-                                        name: 'TargetEntities',
-                                        value: {
-                                            type: 'Collection',
-                                            Collection: [
-                                                {
-                                                    type: 'NavigationPropertyPath',
-                                                    NavigationPropertyPath: ''
-                                                }
-                                            ]
-                                        }
-                                    }
-                                ]
-                            }
-                        }
-                    }
-                }
-            ]
-        });
-
         describe('SAP annotations for CDS projects', () => {
             const dataField = createDataField();
             dataField.propertyValues.push({

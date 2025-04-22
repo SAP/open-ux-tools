@@ -672,7 +672,6 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
  * @param {PackagePromptOptions} [promptOption] - Optional settings for additional package validation.
  * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional for ui5AbapRepo.
  * @param {BackendTarget} [backendTarget] - The backend target for validation context.
- * @param {boolean} [useStandalone] - indicates if the package prompts are being ran in standalone.
  * @returns {Promise<boolean | string>} - Resolves to `true` if the package is valid,
  *                                        a `string` with an error message if validation fails,
  *                                        or the result of additional cloud package validation if applicable.
@@ -682,8 +681,7 @@ export async function validatePackageExtended(
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
     ui5AbapPromptOptions?: UI5AbapRepoPromptOptions,
-    backendTarget?: BackendTarget,
-    useStandalone?: boolean
+    backendTarget?: BackendTarget
 ): Promise<boolean | string> {
     const baseValidation = await validatePackage(input);
     if (typeof baseValidation === 'string') {
@@ -700,15 +698,8 @@ export async function validatePackageExtended(
         }
     }
 
-    if (
-        useStandalone ||
-        !PromptState.abapDeployConfig.scp ||
-        // we need to verify cloud systems are connected before checking the package to avoid multiple browser windows opening
-        (PromptState.abapDeployConfig.scp && AbapServiceProviderManager.isConnected())
-    ) {
-        // checks if package is a local package and will update prompt state accordingly
-        await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
-    }
+    // checks if package is a local package and will update prompt state accordingly
+    await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
 
     if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions)) {
         const startingPrefix = getPackageStartingPrefix(input);

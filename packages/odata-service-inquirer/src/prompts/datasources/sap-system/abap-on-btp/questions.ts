@@ -16,17 +16,12 @@ import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-too
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
 import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
-import {
-    getDefaultChoiceIndex,
-    getPromptHostEnvironment,
-    PromptState,
-    removeCircularFromServiceProvider
-} from '../../../../utils';
+import { getDefaultChoiceIndex, getPromptHostEnvironment, PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import type { ValidationResult } from '../../../types';
-import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames } from '../new-system/types';
 import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
 import { connectWithDestination } from '../system-selection/prompt-helpers';
@@ -200,7 +195,7 @@ async function validateCFServiceInfo(
         // Connected system name is only used for VSCode as a default stored system name
         connectionValidator.connectedSystemName = await generateABAPCloudDestinationName(cfAbapServiceName);
         PromptState.odataService.connectedSystem = {
-            serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider)
+            serviceProvider: connectionValidator.serviceProvider
         };
     }
     return true;
@@ -306,7 +301,7 @@ function getServiceKeyPrompt(connectionValidator: ConnectionValidator): FileBrow
 
             if (connectValResult === true && connectionValidator.serviceProvider) {
                 PromptState.odataService.connectedSystem = {
-                    serviceProvider: removeCircularFromServiceProvider(connectionValidator.serviceProvider)
+                    serviceProvider: connectionValidator.serviceProvider
                 };
             }
             return connectValResult;

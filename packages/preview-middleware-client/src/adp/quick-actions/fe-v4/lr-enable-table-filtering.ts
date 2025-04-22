@@ -48,15 +48,13 @@ export class EnableTableFilteringQuickAction
                 'personalization'
             ) as Personalization;
             const isFilterEnabled = value?.filter === undefined ? personalizationData.includes('Filter') : value.filter;
-            const path = this.children.length.toString();
             this.children.push({
-                path,
                 label: `'${(smartTable as Table).getHeader()}' table`,
                 enabled: !isFilterEnabled,
                 tooltip: isFilterEnabled ? tooltipText : undefined,
                 children: []
             });
-            this.tableMap[path] = {
+            this.tableMap[`${this.children.length - 1}`] = {
                 table: smartTable,
                 tableUpdateEventAttachedOnce: false
             };

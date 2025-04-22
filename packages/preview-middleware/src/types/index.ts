@@ -65,35 +65,29 @@ export interface FlpConfig {
     enhancedHomePage?: boolean;
 }
 
-/**
- * Configration for the virtual test pages endpoints.
- */
-export interface TestConfig {
-    framework: 'OPA5' | 'QUnit' | 'Testsuite';
+interface OptionalTestConfig {
     /**
-     * Path hosting the main test page
+     * Optional: path hosting the main test page
      */
-    path?: string;
+    path: string;
 
     /**
-     * Path to the init script
+     * Optional: path to the init script
      */
-    init?: string;
+    init: string;
 
     /**
-     * Pattern to match the test files
+     * Optional: pattern to match the test files
      */
-    pattern?: string;
+    pattern: string;
 }
 
-/**
- * Test configuration that has been enriched with the defaults in case of missing values.
- */
-export type CompleteTestConfig = Required<TestConfig>;
+export interface TestConfig extends Partial<OptionalTestConfig> {
+    framework: 'OPA5' | 'QUnit' | 'Testsuite';
+}
 
-/**
- * Test configuration defaults.
- */
+export type InternalTestConfig = TestConfig & OptionalTestConfig;
+
 export type TestConfigDefaults = {
     qunit: {
         path: '/test/unitTests.qunit.html';

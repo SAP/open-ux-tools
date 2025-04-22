@@ -498,10 +498,10 @@ describe('Cloud foundry generator tests', () => {
                     skipInstall: true,
                     appRootPath: join(appDir, projectName),
                     launchDeployConfigAsSubGenerator: false,
-                    destinationAuthType: 'NoAuthentication', // Validating SH4
-                    routerType: cfConfigWriter.RouterModuleType.Managed
+                    destinationAuthType: 'NoAuthentication' // Validating SH4
                 })
                 .withPrompts({
+                    addManagedAppRouter: true,
                     destinationName: 'testDestination'
                 })
                 .run()

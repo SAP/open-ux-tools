@@ -1,5 +1,6 @@
 import { UI5_DEFAULT } from '@sap-ux/ui5-config';
 import { t } from './i18n';
+
 export const WelcomeFile = 'welcomeFile';
 export const XSAppFile = 'xs-app.json';
 export const XSSecurityFile = 'xs-security.json';
@@ -8,8 +9,6 @@ export const MTABuildParams = 'build-parameters';
 export const MTAFileExtension = 'mta-ext.mtaext';
 export const DefaultServiceURL = '${default-url}';
 export const ManagedXSUAA = 'managed:xsuaa';
-export const ManagedAppFront = 'managed:app-front';
-export const ManagedDestination = 'destination';
 export const HTML5RepoHost = 'html5-apps-repo:app-host';
 export const SRV_API = 'srv-api';
 export const DefaultMTADestination = 'fiori-default-srv-api';
@@ -22,8 +21,7 @@ export const CloudFoundry = 'cf';
 export const deployMode = 'deploy_mode';
 export const enableParallelDeployments = 'enable-parallel-deployments';
 export const CDSExecutable = 'cds';
-export const CDSDKPackage = '@sap/cds-dk';
-export const CDSPackage = '@sap/cds';
+export const CDSPackage = '@sap/cds-dk';
 export const MTAExecutable = 'mta';
 export const MTAPackage = 'mta';
 export const MTAPackageVersion = '^1.2.27';
@@ -58,15 +56,6 @@ export const UI5Destination = {
     URL: UI5_DEFAULT.SAPUI5_CDN,
     ProxyType: 'Internet',
     Authentication: 'NoAuthentication'
-};
-export const UI5AppfrontDestinationParameter = {
-    name: 'ui5',
-    url: UI5_DEFAULT.SAPUI5_CDN
-};
-export const CAPAppfrontDestination = {
-    name: ResourceMTADestination,
-    url: '~{srv-api/srv-url}',
-    forwardAuthToken: true
 };
 export const UI5ResourceDestination = {
     'init_data': {
@@ -128,5 +117,5 @@ export const rootDeployMTAScript = (args: string[]): string => {
 export const undeployMTAScript = (mtaId: string): string =>
     `cf undeploy ${mtaId} --delete-services --delete-service-keys --delete-service-brokers`;
 const cannotFindBinary = (bin: string, pkg: string): string => t('error.cannotFindBinary', { bin, pkg });
-export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSDKPackage);
+export const CDSBinNotFound = cannotFindBinary(CDSExecutable, CDSPackage);
 export const MTABinNotFound = cannotFindBinary(MTAExecutable, MTAPackage);

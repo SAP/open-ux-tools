@@ -12,7 +12,7 @@ import {
 import { PromptState } from '../../../../utils';
 import { ConnectionValidator } from '../../../connectionValidator';
 import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
-import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../new-system/questions';
 import { newSystemPromptNames } from '../new-system/types';
 import { getSystemServiceQuestion, type ServiceAnswer } from '../service-selection';
 

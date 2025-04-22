@@ -161,7 +161,9 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'uri')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('/sap/opu /odata4/')).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
+        expect(validation?.('/sap/opu /odata4/')).toBe(
+            "Invalid URI. Should start and end with '/' and contain no spaces"
+        );
     });
 
     it('should return default value for odata version when uri answer is present', () => {
@@ -385,7 +387,9 @@ describe('getPrompts', () => {
         const validation = prompts.find((p) => p.name === 'dataSourceURI')?.validate;
 
         expect(typeof validation).toBe('function');
-        expect(validation?.('/sap/opu /odata4Ann/')).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
+        expect(validation?.('/sap/opu /odata4Ann/')).toBe(
+            "Invalid URI. Should start and end with '/' and contain no spaces"
+        );
     });
 
     it('should return true when validating annotation settings prompt', () => {

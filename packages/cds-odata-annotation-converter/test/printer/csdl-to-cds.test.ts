@@ -2152,12 +2152,6 @@ describe('csdlToCds', () => {
             primitiveValueTest('Bool', 'true');
             primitiveValueTest('Bool', 'false');
             primitiveValueTest('EnumMember', 'Alias.Type/Value');
-            primitiveValueTest(Edm.Path, '');
-            primitiveValueTest(Edm.Path, '    ');
-            primitiveValueTest(Edm.PropertyPath, '');
-            primitiveValueTest(Edm.NavigationPropertyPath, '');
-            primitiveValueTest(Edm.AnnotationPath, '');
-            primitiveValueTest(Edm.ModelElementPath, '');
         });
 
         describe('Default boolean true value:', () => {

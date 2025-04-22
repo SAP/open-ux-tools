@@ -2,7 +2,7 @@ import { join } from 'path';
 import { readFileSync } from 'fs';
 import { v4 as uuidv4 } from 'uuid';
 import type { Editor } from 'mem-fs-editor';
-import type { CloudApp, AdpWriterConfig, CustomConfig } from '../types';
+import type { CloudApp, AdpWriterConfig, CustomConfig, PackageJson } from '../types';
 import {
     enhanceUI5DeployYaml,
     enhanceUI5Yaml,
@@ -12,16 +12,15 @@ import {
     enhanceUI5YamlWithTranspileMiddleware
 } from './options';
 
-import type { Package } from '@sap-ux/project-access';
-import type { OperationsType } from '@sap-ux/axios-extension';
 import { UI5Config, getEsmTypesVersion, getTypesPackage } from '@sap-ux/ui5-config';
+import type { OperationsType } from '@sap-ux/axios-extension';
 
 /**
  * Retrieves the package name and version from the package.json file located two levels up the directory tree.
  *
- * @returns {Package} An object containing the `name` and `version` of the package.
+ * @returns {PackageJson} An object containing the `name` and `version` of the package.
  */
-export function getPackageJSONInfo(): Package {
+export function getPackageJSONInfo(): PackageJson {
     const defaultPackage = {
         name: '@sap-ux/adp-tooling',
         version: 'NO_VERSION_FOUND'
@@ -43,13 +42,13 @@ export function getPackageJSONInfo(): Package {
  * @param {string} pkg.version - The version of the tool generating the config.
  * @returns {CustomConfig} The generated ADP custom configuration object.
  */
-export function getCustomConfig(environment: OperationsType, { name: id, version }: Package): CustomConfig {
+export function getCustomConfig(environment: OperationsType, { name: id, version }: PackageJson): CustomConfig {
     return {
         adp: {
             environment,
             support: {
-                id: id ?? '',
-                version: version ?? '',
+                id,
+                version,
                 toolsId: uuidv4()
             }
         }

@@ -265,33 +265,6 @@ describe('ast to generic format', () => {
             });
         });
     });
-
-    describe('flatten nested record', () => {
-        testConversion('flattened-nested-record');
-
-        describe('pointer', () => {
-            describe('HeaderInfo Title $Type', () => {
-                test('Add HeaderInfo Title property', async () => {
-                    const ast = await getAst('flattened-nested-record');
-                    const { pointer, nodeRange } = toTerms(ast as Assignment, {
-                        vocabularyService,
-                        position: Position.create(1, 21)
-                    });
-                    expect(pointer).toStrictEqual('/0/content/0/content/0/content/0/attributes/Type/name');
-                    expect(nodeRange).toEqual(Range.create(1, 21, 1, 26));
-                });
-                test('Assigning $Type value', async () => {
-                    const ast = await getAst('flattened-nested-record');
-                    const { pointer, nodeRange } = toTerms(ast as Assignment, {
-                        vocabularyService,
-                        position: Position.create(1, 30)
-                    });
-                    expect(pointer).toStrictEqual('/0/content/0/content/0/content/0/attributes/Type/value');
-                    expect(nodeRange).toEqual(Range.create(1, 30, 1, 55));
-                });
-            });
-        });
-    });
     describe('chart', () => {
         testConversion('chart');
         describe('pointer', () => {

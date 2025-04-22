@@ -46,11 +46,4 @@ describe('index', () => {
         // Ensure autocomplete plugin is registered
         expect(adapterRegisterPromptSpy).toHaveBeenCalledWith('autocomplete', AutocompletePrompt);
     });
-
-    it('should return prompts from getPrompts with router options enabled', async () => {
-        const getQuestionsSpy = jest.spyOn(cfPrompts, 'getQuestions');
-        const prompts = await getPrompts({ ...promptOptions, routerType: true, addManagedAppRouter: false }, mockLog);
-        expect(prompts.length).toBe(3);
-        expect(getQuestionsSpy).toHaveBeenCalledWith(promptOptions, mockLog);
-    });
 });

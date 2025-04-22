@@ -89,7 +89,6 @@ export class VisitorState {
     pushContext(context: Context) {
         this._contextStack.push(Object.seal({ ...context }));
     }
-
     popContext() {
         this._contextStack.splice(-1);
     }

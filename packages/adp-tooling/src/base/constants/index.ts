@@ -1,13 +1,3 @@
-export const UI5_CDN_URL = 'https://ui5.sap.com';
-export const UI5_VERSIONS_CDN_URL = 'https://sapui5.hana.ondemand.com/version.json';
-export const UI5_VERSIONS_NEO_CDN_URL = 'https://ui5.sap.com/neo-app.json';
-export const SNAPSHOT_CDN_URL = 'https://sapui5preview-sapui5.dispatcher.int.sap.eu2.hana.ondemand.com:443';
-
-export const CURRENT_SYSTEM_VERSION = '(system version)';
-export const LATEST_VERSION = '(latest)';
-export const SNAPSHOT_VERSION = 'snapshot';
-export const SNAPSHOT_UNTESTED_VERSION = 'snapshot-untested';
-
 export const S4HANA_APPS_PARAMS = {
     'sap.app/type': 'application',
     'sap.fiori/cloudDevAdaptationStatus': 'released',

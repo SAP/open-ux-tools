@@ -6,7 +6,7 @@ import { t } from '../../../../i18n';
 import { promptNames } from '../../../../types';
 import { PromptState } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
-import type { SystemSelectionAnswerType } from '../system-selection/prompt-helpers';
+import type { SystemSelectionAnswerType } from '../system-selection';
 
 export enum BasicCredentialsPromptNames {
     systemUsername = 'systemUsername',

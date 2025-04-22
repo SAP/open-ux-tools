@@ -4,7 +4,6 @@ import { EventHeader } from '../types/event-header';
 import { SampleRate } from '../types/sample-rate';
 import { configAzureTelemetryClient } from '../utils/azure-client-config';
 import { TelemetrySettings } from '../config-state';
-import type { TelemetryMeasurements, TelemetryProperties } from '../types';
 
 /**
  *
@@ -49,8 +48,8 @@ class ApplicationInsightClient extends Client {
      */
     public reportBlocking(
         eventName: string,
-        properties: TelemetryProperties,
-        measurements: TelemetryMeasurements,
+        properties: { [key: string]: string | boolean },
+        measurements: { [key: string]: number },
         sampleRate: SampleRate | undefined,
         ignoreSettings: boolean = false
     ): Promise<void> {
@@ -75,8 +74,8 @@ class ApplicationInsightClient extends Client {
      */
     public async report(
         eventName: string,
-        properties: TelemetryProperties,
-        measurements: TelemetryMeasurements,
+        properties: { [key: string]: string | boolean },
+        measurements: { [key: string]: number },
         sampleRate: SampleRate | undefined,
         telemetryHelperProperties?: { [key: string]: string },
         ignoreSettings?: boolean
@@ -99,8 +98,8 @@ class ApplicationInsightClient extends Client {
      */
     private prepareClientAndEvent(
         eventName: string,
-        properties: TelemetryProperties,
-        measurements: TelemetryMeasurements,
+        properties: { [key: string]: string | boolean },
+        measurements: { [key: string]: number },
         sampleRate = SampleRate.NoSampling
     ): { client: appInsights.TelemetryClient; event: appInsights.Contracts.EventTelemetry } {
         const client = this.clients.get(sampleRate) as appInsights.TelemetryClient;

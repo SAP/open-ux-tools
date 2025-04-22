@@ -1,11 +1,5 @@
 # @sap-ux/guided-answers-helper
 
-## 0.2.2
-
-### Patch Changes
-
--   e5f4915: Added GA link and moved validate logic to a function
-
 ## 0.2.1
 
 ### Patch Changes

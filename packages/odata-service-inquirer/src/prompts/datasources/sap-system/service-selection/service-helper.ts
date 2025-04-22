@@ -1,9 +1,7 @@
 import { type IMessageSeverity, Severity } from '@sap-devx/yeoman-ui-types';
 import {
     type Annotations,
-    type AxiosRequestConfig,
     type CatalogService,
-    createForAbap,
     type ODataService,
     type ODataServiceInfo,
     ODataVersion,
@@ -157,57 +155,20 @@ export function sendDestinationServiceSuccessTelemetryEvent(destination: Destina
 }
 
 /**
- * Gets the service metadata and annotations for the specified service path. Validate that the service metadata is of the required OData version.
- * If a catalog service is provided, it will be used to get the annotations for the specified service path.
- * If the catalog service is not provided and the metadata is OData version 2, a catalog service will be created using the axios config to get the annotations.
- * Note this is a best effort attempt to get the annotations and may fail if the catalog service cannot be created.
+ * Gets the service metadata and annotations for the specified service path.
  *
  * @param servicePath service path
  * @param odataService the odata service used to get the metadata for the specified service path
  * @param catalog the catalog service used to get the annotations for the specified service path
- * @param axiosConfig the axios config which may be used to create the catalog service, if not provided (for v2 services),
- * @param requiredOdataVersion the required OData version used to validate the service
- * @returns the service metadata and annotations
+ * @returns Promise<string | boolean>, string error message or true if successful
  */
-async function getServiceMetadataAndValidate(
+async function getServiceMetadata(
     servicePath: string,
     odataService: ODataService,
-    catalog?: CatalogService,
-    axiosConfig?: AxiosRequestConfig,
-    requiredOdataVersion?: OdataVersion
-): Promise<{
-    annotations?: Annotations[];
-    metadata?: string;
-    validationMsg?: string;
-    version?: OdataVersion;
-    convertedMetadata?: ConvertedMetadata;
-}> {
+    catalog?: CatalogService
+): Promise<{ annotations: Annotations[]; metadata: string } | string> {
     let annotations: Annotations[] = [];
     try {
-        const metadata = await odataService.metadata();
-
-        const { validationMsg, version, convertedMetadata } = validateODataVersion(metadata, requiredOdataVersion);
-
-        if (validationMsg) {
-            return { validationMsg };
-        }
-
-        // For non `odata_abap` (full/partial v2 urls) destinations we wont have a catalog defined, but the annotations may be available so we need to try or warn.
-        // Creation of the catalog service is a best effort and makes no assumptions about the existence of a real catalog service. The annotation call does not rely on it.
-        if (!catalog && version === OdataVersion.v2 && axiosConfig) {
-            try {
-                // Create an abap provider instance to get the annotations using the same request config
-                LoggerHelper.logger.debug(
-                    'Creating a catalog service object for v2 service path to request annotations.'
-                );
-                const abapProvider = createForAbap(axiosConfig);
-                catalog = abapProvider.catalog(ODataVersion.v2);
-                LoggerHelper.attachAxiosLogger(catalog.interceptors);
-            } catch (err) {
-                LoggerHelper.logger.warn(t('error.v2CatalogServiceNoAnnotations', err));
-            }
-        }
-
         if (catalog) {
             try {
                 annotations = await catalog.getAnnotations({ path: servicePath });
@@ -216,17 +177,14 @@ async function getServiceMetadataAndValidate(
             }
         }
 
+        const metadata = await odataService.metadata();
         return {
             annotations,
-            metadata,
-            version,
-            convertedMetadata
+            metadata
         };
     } catch (error) {
         LoggerHelper.logger.error(t('errors.serviceMetadataErrorLog', { servicePath, error }));
-        return {
-            validationMsg: t('errors.serviceMetadataErrorUI', { servicePath })
-        };
+        return t('errors.serviceMetadataErrorUI', { servicePath });
     }
 }
 
@@ -261,12 +219,6 @@ type ValidateServiceResult = {
 };
 
 /**
- * If we are validating a v2 service and do not have a catalog connection, we may still attempt to get the annotations but need a catalog.
- * This scenario occurs for full/partial url destinations.
- *
- */
-
-/**
  * Requests and sets the service details to the PromptState.odataService properties.
  * If an error occurs, the error message is returned for use in validators.
  *
@@ -292,11 +244,13 @@ export async function validateService(
         odataService = connectionValidator.serviceProvider.service<ODataService>(service.servicePath);
     }
 
-    const { validationMsg, version, convertedMetadata, annotations, metadata } = await getServiceMetadataAndValidate(
-        service.servicePath,
-        odataService,
-        serviceCatalog,
-        connectionValidator.axiosConfig,
+    const serviceResult = await getServiceMetadata(service.servicePath, odataService, serviceCatalog);
+    if (typeof serviceResult === 'string') {
+        return { validationResult: serviceResult };
+    }
+
+    const { validationMsg, version, convertedMetadata } = validateODataVersion(
+        serviceResult.metadata,
         requiredOdataVersion
     );
     if (validationMsg) {
@@ -309,8 +263,8 @@ export async function validateService(
     if (url) {
         origin = new URL(url).origin;
     }
-    PromptState.odataService.annotations = annotations;
-    PromptState.odataService.metadata = metadata;
+    PromptState.odataService.annotations = serviceResult?.annotations;
+    PromptState.odataService.metadata = serviceResult?.metadata;
     PromptState.odataService.odataVersion =
         version ?? (service.serviceODataVersion === ODataVersion.v2 ? OdataVersion.v2 : OdataVersion.v4);
     PromptState.odataService.servicePath = service.servicePath;

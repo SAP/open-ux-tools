@@ -49,15 +49,6 @@ export class AbapServiceProviderManager {
     }
 
     /**
-     * Checks if the service provider has a valid connection.
-     *
-     * @returns true if the system is cloud and the service provider is connected
-     */
-    public static isConnected(): boolean {
-        return !!AbapServiceProviderManager.abapServiceProvider?.cookies;
-    }
-
-    /**
      * Returns the system config from the prompt state or the backend target.
      *
      * @param backendTarget - backend target from prompt options

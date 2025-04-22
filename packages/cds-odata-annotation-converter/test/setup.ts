@@ -34,8 +34,7 @@ export type TestCaseName =
     | 'side-effects-flat'
     | 'array-spread-operator'
     | 'nested-record-type'
-    | 'expression'
-    | 'flattened-nested-record';
+    | 'expression';
 
 const { readFile } = promises;
 

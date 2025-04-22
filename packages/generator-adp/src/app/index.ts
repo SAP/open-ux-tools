@@ -1,28 +1,22 @@
-import { join } from 'path';
 import Generator from 'yeoman-generator';
 import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
-import {
-    TelemetryHelper,
-    sendTelemetry,
-    type ILogWrapper,
-    getHostEnvironment,
-    hostEnvironment,
-    getDefaultTargetFolder
-} from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
-import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
+import type { ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
+import { TargetSystems, generate, getConfig, getConfiguredProvider } from '@sap-ux/adp-tooling';
+import { TelemetryHelper, sendTelemetry, type ILogWrapper } from '@sap-ux/fiori-generator-shared';
 
 import { getFlexLayer } from './layer';
 import { t, initI18n } from '../utils/i18n';
 import { EventName } from '../telemetryEvents';
 import AdpFlpConfigLogger from '../utils/logger';
-import { getPrompts } from './questions/attributes';
+import type { AdpGeneratorOptions } from './types';
+import { installDependencies } from '../utils/deps';
 import { ConfigPrompter } from './questions/configuration';
-import { getPackageInfo, installDependencies } from '../utils/deps';
-import type { AdpGeneratorOptions, AttributePromptOptions } from './types';
+import { generateValidNamespace, getDefaultProjectName } from './questions/helper/default-values';
+import { readFileSync } from 'fs';
+import { join } from 'path';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -56,17 +50,13 @@ export default class extends Generator {
      */
     private configAnswers: ConfigAnswers;
     /**
-     * Project attribute answers.
+     * Target folder for the generated project.
      */
-    private attributeAnswers: AttributesAnswers;
+    private targetFolder: string;
     /**
-     * SystemLookup instance for managing system endpoints.
+     * EndpointsManager instance for managing system endpoints.
      */
-    private systemLookup: SystemLookup;
-    /**
-     * Instance of the configuration prompter class.
-     */
-    private prompter: ConfigPrompter;
+    private targetSystems: TargetSystems;
 
     /**
      * Creates an instance of the generator.
@@ -89,16 +79,12 @@ export default class extends Generator {
     async initializing(): Promise<void> {
         await initI18n();
 
-        const pages = [
-            { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') },
-            { name: t('yuiNavSteps.projectAttributesName'), description: t('yuiNavSteps.projectAttributesDescr') }
-        ];
+        const pages = [{ name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') }];
         this.prompts.splice(0, 0, pages);
 
         this.layer = await getFlexLayer();
 
-        this.systemLookup = new SystemLookup(this.toolsLogger);
-        this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+        this.targetSystems = new TargetSystems(this.toolsLogger);
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -111,51 +97,34 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
-        const isCLI = getHostEnvironment() === hostEnvironment.cli;
+        const prompter = new ConfigPrompter(this.targetSystems, this.layer, this.toolsLogger);
 
-        const configQuestions = this.prompter.getPrompts({
-            appValidationCli: { hide: !isCLI },
-            systemValidationCli: { hide: !isCLI }
-        });
+        const configQuestions = prompter.getPrompts();
 
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);
 
         this.logger.info(`System: ${this.configAnswers.system}`);
         this.logger.info(`Application: ${JSON.stringify(this.configAnswers.application, null, 2)}`);
-
-        const { ui5Versions, systemVersion } = this.prompter.ui5;
-        const promptConfig = {
-            ui5Versions,
-            isVersionDetected: !!systemVersion,
-            isCloudProject: this.prompter.isCloud,
-            layer: this.layer
-        };
-        const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
-        const options: AttributePromptOptions = {
-            targetFolder: { default: defaultFolder },
-            ui5ValidationCli: { hide: !isCLI }
-        };
-        const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
-
-        this.attributeAnswers = await this.prompt(attributesQuestions);
-
-        this.logger.info(`Project Attributes: ${JSON.stringify(this.attributeAnswers, null, 2)}`);
     }
 
     async writing(): Promise<void> {
         try {
-            const packageJson = getPackageInfo();
+            const provider = await getConfiguredProvider(this.configAnswers, this.toolsLogger);
+            const projectName = getDefaultProjectName(this.destinationPath());
+            const namespace = generateValidNamespace(projectName, this.layer);
+            this.targetFolder = this.destinationPath(projectName);
+
+            const packageJson = JSON.parse(readFileSync(join(__dirname, '../../package.json'), 'utf-8'));
             const config = await getConfig({
-                provider: this.prompter.provider,
+                provider,
                 configAnswers: this.configAnswers,
-                attributeAnswers: this.attributeAnswers,
-                publicVersions: this.prompter?.ui5?.publicVersions,
                 layer: this.layer,
+                defaults: { namespace },
                 packageJson,
                 logger: this.toolsLogger
             });
 
-            await generate(this._getProjectPath(), config, this.fs);
+            await generate(this.targetFolder, config, this.fs);
         } catch (e) {
             this.logger.error(`Writing phase failed: ${e}`);
             throw new Error(t('error.updatingApp'));
@@ -165,7 +134,7 @@ export default class extends Generator {
     async install(): Promise<void> {
         try {
             if (this.shouldInstallDeps) {
-                await installDependencies(this._getProjectPath());
+                await installDependencies(this.targetFolder);
             }
         } catch (e) {
             this.logger.error(`Installation of dependencies failed: ${e.message}`);
@@ -179,21 +148,10 @@ export default class extends Generator {
                 ...this.options.telemetryData
             }) ?? {};
         if (telemetryData) {
-            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this._getProjectPath()).catch(
-                (error) => {
-                    this.logger.error(t('error.telemetry', { error }));
-                }
-            );
+            sendTelemetry(EventName.ADAPTATION_PROJECT_CREATED, telemetryData, this.targetFolder).catch((error) => {
+                this.logger.error(t('error.telemetry', { error }));
+            });
         }
-    }
-
-    /**
-     * Combines the target folder and project name.
-     *
-     * @returns {string} The project path from the answers.
-     */
-    private _getProjectPath(): string {
-        return join(this.attributeAnswers.targetFolder, this.attributeAnswers.projectName);
     }
 
     /**

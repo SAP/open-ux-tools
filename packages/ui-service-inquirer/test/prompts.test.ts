@@ -91,24 +91,6 @@ const answersMock = {
     packageInputChoice: 'manualInput'
 };
 
-const getContentMock = jest.fn().mockImplementation((pckg) => {
-    const serviceName = pckg === '' ? '' : 'serviceName';
-    return Promise.resolve(
-        JSON.stringify({
-            businessService: {
-                serviceBinding: {
-                    serviceBindingName: serviceName
-                }
-            },
-            businessObject: {
-                projectionBehavior: {
-                    withDraft: undefined
-                }
-            }
-        })
-    );
-});
-
 describe('getSystemQuestions', () => {
     beforeAll(() => {
         nock.disableNetConnect();
@@ -120,7 +102,7 @@ describe('getSystemQuestions', () => {
     });
 
     let questions;
-    let q: { [key: string]: Question } = {};
+    const q: { [key: string]: Question } = {};
 
     test('getSystemQuestions', async () => {
         const businessObjectMockResp = {
@@ -185,6 +167,23 @@ describe('getSystemQuestions', () => {
     });
 
     test('getServiceConfigQuestions', async () => {
+        const getContentMock = jest.fn().mockImplementation((pckg) => {
+            const serviceName = pckg === '' ? '' : 'serviceName';
+            return Promise.resolve(
+                JSON.stringify({
+                    businessService: {
+                        serviceBinding: {
+                            serviceBindingName: serviceName
+                        }
+                    },
+                    businessObject: {
+                        projectionBehavior: {
+                            withDraft: undefined
+                        }
+                    }
+                })
+            );
+        });
         const genMock = {
             getContent: getContentMock,
             validateContent: jest.fn().mockResolvedValue({
@@ -207,10 +206,7 @@ describe('getSystemQuestions', () => {
             objectGenerator: genMock
         } as any;
 
-        questions = getConfigPrompts(systemSelectionAnswers, {
-            useDraftEnabled: undefined,
-            useLaunchGen: undefined
-        }).prompts;
+        questions = getConfigPrompts(systemSelectionAnswers).prompts;
         questions.forEach((question) => {
             q[question.name] = question as Question;
         });
@@ -227,8 +223,7 @@ describe('getSystemQuestions', () => {
             message: 'info.appGenLaunch',
             severity: 2
         });
-    });
-    test('getServiceConfigQuestions with error', async () => {
+
         const genMockValidateContent1 = {
             getContent: getContentMock,
             validateContent: jest.fn().mockResolvedValue({
@@ -252,38 +247,19 @@ describe('getSystemQuestions', () => {
         } as any;
 
         PromptState.resetConnectedSystem();
-        q = {};
-        questions = getConfigPrompts(systemSelectionAnswers1, {
-            useDraftEnabled: false,
-            useLaunchGen: false
-        }).prompts;
+        questions = getConfigPrompts(systemSelectionAnswers1).prompts;
         questions.forEach((question) => {
             q[question.name] = question as Question;
         });
         expect(await q.serviceName.when!({ packageManual: 'package' })).toEqual(true);
         expect(await q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(await q.serviceName.validate!('testPackage')).toMatchSnapshot();
-        expect(q.draftEnabled).toBeUndefined();
-        expect(q.launchAppGen).toBeUndefined();
+        expect(await q.draftEnabled.validate!(false)).toEqual('error.validatingContent');
         PromptState.resetServiceConfig();
         expect(await q.serviceName.when!({ packageManual: '', packageAutocomplete: '' })).toEqual(false);
         PromptState.resetServiceConfig();
         expect(await q.serviceName.when!({ packageManual: undefined, packageAutocomplete: undefined })).toEqual(false);
 
-        PromptState.resetConnectedSystem();
-        q = {};
-        questions = getConfigPrompts(systemSelectionAnswers1, {
-            useDraftEnabled: true,
-            useLaunchGen: false
-        }).prompts;
-        questions.forEach((question) => {
-            q[question.name] = question as Question;
-        });
-        expect(await q.serviceName.when!({ packageManual: 'package' })).toEqual(true);
-        expect(await q.draftEnabled.validate!(false)).toEqual('error.validatingContent');
-    });
-
-    test('getServiceConfigQuestions with error in validateContent', async () => {
         const genMockValidateContent2 = {
             getContent: getContentMock,
             validateContent: jest.fn().mockImplementation(() => {

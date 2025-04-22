@@ -57,7 +57,7 @@ export function getMockCmdArgs(
  * const urlParam = getEnvUrlParams('');
  * // Returns 'sap-ui-xx-viewCache=false'
  */
-function getEnvUrlParams(sapClientParam?: string): string {
+function getEnvUrlParams(sapClientParam: string): string {
     const disableCacheParam = 'sap-ui-xx-viewCache=false';
     return sapClientParam ? `${sapClientParam}&${disableCacheParam}` : disableCacheParam;
 }

@@ -17,8 +17,8 @@
     {
       "source": "^(.*)$",
       "target": "$1",
-      "service": "<%- service %>",
-      "authenticationType": "<%- authenticationType %>"
+      "service": "html5-apps-repo-rt",
+      "authenticationType": "xsuaa"
     }
   ]
 }

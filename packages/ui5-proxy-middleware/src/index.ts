@@ -1,1 +1,1 @@
-export { ui5Proxy, directLoadProxy } from './base';
+export { ui5Proxy } from './base';

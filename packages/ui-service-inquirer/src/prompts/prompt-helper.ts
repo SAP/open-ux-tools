@@ -85,23 +85,3 @@ export async function getValidationErrorLink(): Promise<ValidationLink> {
         t('error.validatingContent')
     );
 }
-
-/**
- * Determines if the draft enabled prompt is shown.
- *
- * @param useDraftEnabled - user provided value for draft enabled
- * @returns boolean
- */
-export function defaultOrShowDraftQuestion(useDraftEnabled?: boolean): boolean {
-    return useDraftEnabled ?? true;
-}
-
-/**
- * Determines if the app gen launch prompt is shown.
- *
- * @param useLaunchGen - user provided value for app gen launch
- * @returns boolean
- */
-export function defaultOrShowAppGenLaunchQuestion(useLaunchGen?: boolean): boolean {
-    return useLaunchGen ?? true;
-}

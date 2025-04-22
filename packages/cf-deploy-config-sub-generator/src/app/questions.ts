@@ -5,8 +5,8 @@ import {
     appRouterPromptNames,
     type CfAppRouterDeployConfigPromptOptions,
     type CfAppRouterDeployConfigQuestions,
-    type CfDeployConfigQuestions,
     type CfDeployConfigPromptOptions,
+    type CfDeployConfigQuestions,
     getAppRouterPrompts,
     getPrompts,
     promptNames
@@ -17,7 +17,6 @@ import { t } from '../utils';
 import type { ApiHubConfig } from '@sap-ux/cf-deploy-config-writer';
 import type { Answers, Question } from 'inquirer';
 import { withCondition } from '@sap-ux/inquirer-common';
-import type { Logger } from '@sap-ux/logger';
 
 /**
  * Fetches the Cloud Foundry deployment configuration questions.
@@ -64,12 +63,12 @@ export async function getCFQuestions({
             addBTPDestinationList: isBAS ? !isAbapDirectServiceBinding : false,
             additionalChoiceList: cfChoices
         },
-        [promptNames.routerType]: !mtaYamlExists && !isCap,
+        [promptNames.addManagedAppRouter]: !mtaYamlExists && !isCap,
         [promptNames.overwrite]: addOverwrite
     };
 
     DeploymentGenerator.logger?.debug(t('cfGen.debug.promptOptions', { options: JSON.stringify(options) }));
-    return getPrompts(options, DeploymentGenerator.logger as unknown as Logger);
+    return getPrompts(options);
 }
 
 /**

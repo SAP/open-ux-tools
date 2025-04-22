@@ -1,11 +1,11 @@
-import type { SourceApplication } from '@sap-ux/adp-tooling';
+import type { TargetApplication } from '@sap-ux/adp-tooling';
 
 import { getApplicationChoices } from '../../../../src/app/questions/helper/choices';
 
 describe('choices', () => {
     describe('getApplicationChoices', () => {
         it('should transform an application with a title', () => {
-            const apps: SourceApplication[] = [
+            const apps: TargetApplication[] = [
                 {
                     id: '1',
                     title: 'Test App',
@@ -26,7 +26,7 @@ describe('choices', () => {
         });
 
         it('should transform an application without a title', () => {
-            const apps: SourceApplication[] = [
+            const apps: TargetApplication[] = [
                 {
                     id: '2',
                     title: '',
@@ -47,7 +47,7 @@ describe('choices', () => {
         });
 
         it('should clean up extra punctuation when registrationIds and ach are empty', () => {
-            const apps: SourceApplication[] = [
+            const apps: TargetApplication[] = [
                 {
                     id: '3',
                     title: 'Empty Fields',

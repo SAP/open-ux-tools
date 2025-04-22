@@ -1,13 +1,4 @@
 import type { Destination, Authentication } from '@sap-ux/btp-utils';
-import {
-    type CDSDestinationService,
-    type CDSHTML5RepoService,
-    type HTML5RepoHost,
-    type ManagedAppFront,
-    type ManagedDestination,
-    type ManagedXSUAA,
-    type CDSXSUAAService
-} from '../constants';
 
 export type ResourceType =
     | 'xsuaa'
@@ -38,8 +29,7 @@ export type MTADestinationType = Destination & {
 };
 export const RouterModuleType = {
     Standard: 'standard',
-    Managed: 'managed',
-    AppFront: 'appFront'
+    Managed: 'managed'
 } as const;
 
 export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];
@@ -60,7 +50,6 @@ export interface CFBaseConfig extends MTABaseConfig {
 export interface CFAppConfig {
     appPath: string;
     addManagedAppRouter?: boolean; // Enabled by default
-    addAppFrontendRouter?: boolean;
     destinationName?: string;
     apiHubConfig?: ApiHubConfig;
     serviceHost?: string; // Data service host
@@ -117,11 +106,3 @@ export interface HTML5App {
     name: string;
     type: string;
 }
-
-export type SupportedResources =
-    | typeof ManagedAppFront
-    | typeof HTML5RepoHost
-    | typeof ManagedXSUAA
-    | typeof ManagedDestination;
-
-export type CDSServiceType = typeof CDSXSUAAService | typeof CDSDestinationService | typeof CDSHTML5RepoService;

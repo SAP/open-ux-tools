@@ -152,19 +152,19 @@ describe('getPrompts', () => {
             test('should return error message for URI with whitespaces', () => {
                 const uri = 'sap/test /odata/';
                 const result = (getPrompts({})[1].validate as Function)(uri);
-                expect(result).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
             });
 
             test('should return error message for URI without "/" at the end', () => {
                 const uri = '/sap/test';
                 const result = (getPrompts({})[1].validate as Function)(uri);
-                expect(result).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
             });
 
             test('should return error message for URI without "/" at the beginning', () => {
                 const uri = 'sap/test/';
                 const result = (getPrompts({})[1].validate as Function)(uri);
-                expect(result).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
             });
         });
 
@@ -184,19 +184,19 @@ describe('getPrompts', () => {
             test('should return error message for URI with whitespaces', () => {
                 const uri = 'sap/test /odata/';
                 const result = (getPrompts({})[3].validate as Function)(uri);
-                expect(result).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
             });
 
             test('should return error message for URI without "/" at the end', () => {
                 const uri = '/sap/test';
                 const result = (getPrompts({})[3].validate as Function)(uri);
-                expect(result).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
             });
 
             test('should return error message for URI without "/" at the beginning', () => {
                 const uri = 'sap/test/';
                 const result = (getPrompts({})[3].validate as Function)(uri);
-                expect(result).toBe(i18n.t('validators.errorInvalidDataSourceURI'));
+                expect(result).toBe("Invalid URI. Should start and end with '/' and contain no spaces");
             });
         });
     });

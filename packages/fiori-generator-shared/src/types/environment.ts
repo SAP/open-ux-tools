@@ -42,3 +42,8 @@ export const hostEnvironment: {
         technical: 'CLI'
     }
 };
+
+export enum ApiHubType {
+    apiHub = 'API_HUB',
+    apiHubEnterprise = 'API_HUB_ENTERPRISE'
+}

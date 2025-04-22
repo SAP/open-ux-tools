@@ -1,12 +1,8 @@
 import { t } from '../src/i18n';
-import {
-    type CfAppRouterDeployConfigQuestions,
-    type CfAppRouterDeployConfigPromptOptions,
-    RouterModuleType,
-    appRouterPromptNames
-} from '../src';
+import type { CfAppRouterDeployConfigQuestions, CfAppRouterDeployConfigPromptOptions } from '../src/types';
+import { RouterModuleType, appRouterPromptNames } from '../src/types';
 import { type ListQuestion } from '@sap-ux/inquirer-common';
-import { getAppRouterQuestions } from '../src/prompts';
+import { getAppRouterQuestions } from '../src/prompts/app-router-prompts';
 
 let cfAbapServices: any[] = [];
 
@@ -126,7 +122,6 @@ describe('App Router Prompt Generation Tests', () => {
             expect((routerTypePrompt?.default as Function)()).toBe(RouterModuleType.Managed);
             expect((routerTypePrompt as ListQuestion)?.choices).toEqual([
                 { name: t('routerType.managedAppRouter'), value: RouterModuleType.Managed },
-                { name: t('routerType.appFrontAppService'), value: RouterModuleType.AppFront },
                 { name: t('routerType.standaloneAppRouter'), value: RouterModuleType.Standard }
             ]);
         });

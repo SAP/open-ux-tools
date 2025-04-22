@@ -9,12 +9,12 @@ import { getQuestions } from './prompts';
 import type { ServiceAnswer } from './prompts/datasources/sap-system/service-selection';
 import {
     type SystemSelectionAnswers,
-    getSystemSelectionQuestions as getSystemSelectionQuestionsBase
+    getSystemSelectionQuestions as getSystemSelectionQuestionsBase,
+    SystemSelectionAnswerType
 } from './prompts/datasources/sap-system/system-selection';
 import type {
     CfAbapEnvServiceChoice,
-    NewSystemChoice,
-    SystemSelectionAnswerType
+    NewSystemChoice
 } from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
 import type { Annotations } from '@sap-ux/axios-extension';

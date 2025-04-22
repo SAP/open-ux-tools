@@ -113,7 +113,6 @@ await exampleWriter();
 ## Example: Generate a CAP `Managed` | `Standalone` Approuter Configuration
 Calling the `generateCAPConfig` function to generate a `new` Cloud Foundry configuration, supporting `managed` | `standalone` configurations;
 - Generate a CAP `mta.yaml` with `destination`, `HTML5-Repo` and `XSUAA` services added by default
-- To align the `package.json` and `package-lock.json` to support the mta prebuild script `npm ci`, you need to execute the `npm install`
 - New configuration will include destination instances to expose `UI5` and `CAP` endpoints, consumed by SAP Fiori applications when deployed to Cloud Foundry
 
 ```Typescript

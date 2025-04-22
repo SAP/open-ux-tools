@@ -1,9 +1,8 @@
 {
     "prompts": {
-        "destinationNameMessage": "Destination Name",
+        "destinationNameMessage": "Destination name",
         "addApplicationRouterBreadcrumbMessage": "Add to Router",
         "generateManagedApplicationToRouterMessage": "Add application to managed application router?",
-        "generateDeploymentRouterOptionsMessage": "Add Router Module",
         "directBindingDestinationHint": "Destination name - The app router is configured to use direct service binding",
         "overwriteMessage": "Editing the deployment configuration will overwrite existing configuration, are you sure you want to continue?",
         "overwriteHintMessage": "Deployment configuration will abort if you choose no. Click Finish to abort.",
@@ -16,17 +15,11 @@
         "serviceAdvancedOptionMessage": "Configure advanced options",
         "abapEnvBindingBreadcrumbMessage": "ABAP Env. Binding",
         "selectServiceMessage": "ABAP Environment for direct service binding",
-        "routerTypeMessage": "Add Router Module",
-        "routerType": {
-            "managedAppRouter": "Add application to managed application router",
-            "appFrontAppService": "Add application to application front-end service",
-            "none": "None"
-        }
+        "routerTypeMessage": "Add router module"
     },
     "routerType": {
         "standaloneAppRouter": "Standalone Approuter",
-        "managedAppRouter": "Managed Approuter",
-        "appFrontAppService": "Application Front-End Service"
+        "managedAppRouter": "Managed Approuter"
     },
     "errors": {
         "emptyDestinationNameError": "You must provide a destination name in order to continue.",
@@ -40,14 +33,12 @@
         "errorScpAbapSourceDiscoveryCheckLog": "Check the Application Wizard console output view for details."
     },
     "warning": {
-        "btpDestinationListWarning": "BTP destinations are only retrieved on BAS.",
-        "appFrontendServiceRouterChoice": "You need to have the Application Front-End service enabled for your subaccount."
+        "btpDestinationListWarning": "BTP destinations are only retrieved on BAS"
     },
     "info": {
         "addManagedAppRouter": "Add managed application router is enabled",
         "overwriteDestination": "Overwriting destination is enabled",
-        "routerOptions": "Router options is enabled",
-        "addConnectivityService": "Add connectivity service is enabled in CF application router",
-        "addABAPServiceBinding": "Abap service binding is enabled in CF application router"
+        "addConnectivityService": "Add connectivity service is enabled in cf application router",
+        "addABAPServiceBinding": "Abap service binding is enabled in cf application router"
     }
 }

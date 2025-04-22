@@ -13,6 +13,8 @@ export interface DescriptorVariant {
     content: DescriptorVariantContent[];
 }
 
+export type PackageJson = { name: string; version: string };
+
 export interface DescriptorVariantContent {
     changeType: string;
     content: Record<string, unknown>;
@@ -100,19 +102,10 @@ export interface ConfigAnswers {
     system: string;
     username: string;
     password: string;
-    application: SourceApplication;
+    application: TargetApplication;
 }
 
-export interface AttributesAnswers {
-    projectName: string;
-    title: string;
-    namespace: string;
-    targetFolder: string;
-    ui5Version: string;
-    enableTypeScript: boolean;
-}
-
-export interface SourceApplication {
+export interface TargetApplication {
     id: string;
     title: string;
     ach: string;
@@ -120,22 +113,6 @@ export interface SourceApplication {
     fileType: string;
     bspUrl: string;
     bspName: string;
-}
-
-export interface FlexUISupportedSystem {
-    isUIFlex: boolean;
-    isOnPremise: boolean;
-}
-
-export interface UI5Version {
-    latest: VersionDetail;
-    [key: string]: VersionDetail;
-}
-
-export interface VersionDetail {
-    version: string;
-    support: string;
-    lts: boolean;
 }
 
 export interface Endpoint extends Partial<Destination> {

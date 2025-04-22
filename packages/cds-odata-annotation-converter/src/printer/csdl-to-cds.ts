@@ -453,11 +453,7 @@ export const printPrimitiveValue = (expressionName: ElementName | AttributeName,
         case Edm.PropertyPath:
         case Edm.Path:
             // other paths: use quotation mark only if @ is contained
-            if (expressionValue.trim() === '') {
-                result = stringLiteral(expressionValue);
-            } else {
-                result = printPathValue(expressionValue);
-            }
+            result = printPathValue(expressionValue);
             break;
         default:
             return '';

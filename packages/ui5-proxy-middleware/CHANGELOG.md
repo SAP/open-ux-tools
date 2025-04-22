@@ -1,23 +1,5 @@
 # @sap-ux/ui5-proxy-middleware
 
-## 1.4.23
-
-### Patch Changes
-
--   a4cb2f6: chore(deps): update dependency http-proxy-middleware to v2.0.9
-
-## 1.4.22
-
-### Patch Changes
-
--   a3da9a3: fix: adjust response type
-
-## 1.4.21
-
-### Patch Changes
-
--   2260ad5: export directLoadProxy for reuse
-
 ## 1.4.20
 
 ### Patch Changes

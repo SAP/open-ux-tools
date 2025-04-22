@@ -1,21 +1,17 @@
-import { type ConfirmQuestion, type InputQuestion, type ListQuestion, searchChoices } from '@sap-ux/inquirer-common';
+import { type ConfirmQuestion, type InputQuestion, searchChoices } from '@sap-ux/inquirer-common';
 import { t } from '../i18n';
-import {
-    type CfDeployConfigPromptOptions,
-    type CfDeployConfigQuestions,
-    type CfDeployConfigAnswers,
-    type DestinationNamePromptOptions,
-    type CfSystemChoice,
-    type CfDeployConfigRouterAnswers,
-    type CfDeployConfigRouterQuestions,
-    RouterModuleType,
-    promptNames
+import type {
+    CfDeployConfigPromptOptions,
+    CfDeployConfigQuestions,
+    CfDeployConfigAnswers,
+    DestinationNamePromptOptions,
+    CfSystemChoice
 } from '../types';
+import { promptNames } from '../types';
 import * as validators from './validators';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { getCfSystemChoices, fetchBTPDestinations } from './prompt-helpers';
 import type { Logger } from '@sap-ux/logger';
-import { Severity } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Retrieves the prompt configuration for selecting a Cloud Foundry destination name.
@@ -118,39 +114,6 @@ function getOverwritePrompt(): CfDeployConfigQuestions {
 }
 
 /**
- *
- * @returns A list question object with the available router options, defaulting to `None`.
- */
-function getRouterOptionsPrompt(): CfDeployConfigRouterQuestions {
-    return {
-        type: 'list',
-        name: promptNames.routerType,
-        guiOptions: {
-            mandatory: true,
-            breadcrumb: t('prompts.generateDeploymentRouterOptionsMessage')
-        },
-        default: () => RouterModuleType.None, // Should always be the preferred choice
-        message: () => t('prompts.generateDeploymentRouterOptionsMessage'),
-        additionalMessages: (selectedRouter: RouterModuleType) => {
-            let additionalMessage;
-            if (selectedRouter && selectedRouter === RouterModuleType.AppFront) {
-                additionalMessage = {
-                    message: t('warning.appFrontendServiceRouterChoice'),
-                    severity: Severity.warning
-                };
-            }
-            return additionalMessage;
-        },
-
-        choices: [
-            { name: t('prompts.routerType.none'), value: RouterModuleType.None },
-            { name: t('prompts.routerType.managedAppRouter'), value: RouterModuleType.Managed },
-            { name: t('prompts.routerType.appFrontAppService'), value: RouterModuleType.AppFront }
-        ]
-    } as ListQuestion<CfDeployConfigRouterAnswers>;
-}
-
-/**
  * Retrieves a list of deployment questions based on the application root and prompt options.
  *
  * @param {CfDeployConfigPromptOptions} promptOptions - The configuration options for prompting during cf target deployment.
@@ -164,7 +127,6 @@ export async function getQuestions(
     const destinationOptions = promptOptions[promptNames.destinationName] as DestinationNamePromptOptions;
     const addOverwriteQuestion = promptOptions[promptNames.overwrite] ?? false;
     const addManagedAppRouter = promptOptions[promptNames.addManagedAppRouter] ?? false;
-    const routerType = promptOptions[promptNames.routerType] ?? false;
 
     const questions: CfDeployConfigQuestions[] = [];
     // Collect questions into an array
@@ -178,11 +140,6 @@ export async function getQuestions(
     if (addOverwriteQuestion) {
         log?.info(t('info.overwriteDestination'));
         questions.push(getOverwritePrompt());
-    }
-
-    if (routerType) {
-        log?.info(t('info.routerOptions'));
-        questions.push(getRouterOptionsPrompt());
     }
 
     return questions;

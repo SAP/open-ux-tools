@@ -21,16 +21,16 @@ export interface ReadMe {
     appNamespace: string;
     /** The description of the application. */
     appDescription: string;
+    /** The UI5 theme used in the application. */
+    ui5Theme: string;
     /** The name of generator used. */
     generatorName: string;
     /** The version of the generator used. */
     generatorVersion: string;
+    /** The ui5 version used in the application. */
+    ui5Version: string;
     /** The floorplan template name used to generate the application. */
     template: string;
-    /** The ui5 version used in the application. */
-    ui5Version?: string;
-    /** The UI5 theme used in the application. */
-    ui5Theme?: string;
     /** The date when the generator was run. */
     generationDate?: string;
     /** The service URL of the application */

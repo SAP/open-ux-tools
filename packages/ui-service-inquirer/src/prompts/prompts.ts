@@ -1,13 +1,7 @@
 import type { Logger } from '@sap-ux/logger';
 import type { Question } from 'inquirer';
 import LoggerHelper from '../logger-helper';
-import type {
-    ServiceConfig,
-    ServiceConfigOptions,
-    ServiceConfigQuestion,
-    SystemSelectionAnswers,
-    UiServiceAnswers
-} from '../types';
+import type { ServiceConfig, ServiceConfigQuestion, SystemSelectionAnswers, UiServiceAnswers } from '../types';
 import { getConfigQuestions } from './configuration/questions';
 import { PromptState } from './prompt-state';
 import { getSystemQuestions } from './system-selection/questions';
@@ -41,13 +35,11 @@ export async function getSystemSelectionPrompts(
  * Get the configuration prompts.
  *
  * @param systemSelectionAnswers - the system selection answers to use if system selection prompting was skipped
- * @param options - configuration options for prompts
  * @param logger - optional logger instance to use for logging
  * @returns the configuration prompts
  */
 export function getConfigPrompts(
     systemSelectionAnswers: SystemSelectionAnswers,
-    options?: ServiceConfigOptions,
     logger?: Logger
 ): { prompts: ServiceConfigQuestion[]; answers: Partial<ServiceConfig> } {
     if (logger) {
@@ -57,7 +49,7 @@ export function getConfigPrompts(
         Object.assign(PromptState.systemSelection, systemSelectionAnswers);
     }
     return {
-        prompts: getConfigQuestions(LoggerHelper.logger, options),
+        prompts: getConfigQuestions(LoggerHelper.logger),
         answers: PromptState.serviceConfig
     };
 }

@@ -12,9 +12,11 @@ import type { ValidationResult } from '../../../../../src/prompts/types';
 import { ConnectionValidator } from '../../../../../src/prompts/connectionValidator';
 import { newSystemPromptNames } from '../../../../../src/prompts/datasources/sap-system/new-system/types';
 import * as promptHelpers from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { SystemSelectionAnswerType } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
 import { NewSystemChoice } from '../../../../../src/prompts/datasources/sap-system/system-selection/prompt-helpers';
-import type { SystemSelectionAnswers } from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
+import type {
+    SystemSelectionAnswers,
+    SystemSelectionAnswerType
+} from '../../../../../src/prompts/datasources/sap-system/system-selection/questions';
 import {
     getSystemConnectionQuestions,
     getSystemSelectionQuestions

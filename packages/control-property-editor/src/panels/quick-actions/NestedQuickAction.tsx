@@ -43,8 +43,6 @@ export function NestedQuickActionListItem({
         null
     );
 
-    const flattened = flattenAction(action);
-
     /**
      * Build menu items for nested quick actions.
      *
@@ -57,12 +55,13 @@ export function NestedQuickActionListItem({
         nestedLevel: number[] = []
     ): UIContextualMenuItem[] {
         return children.map((child, index) => {
-            const hasChildren = child.children.length > 1;
+            const hasChildren = child?.children?.length > 1;
+            const value = child?.children?.length === 1 ? `${child.label}-${child.children[0].label}` : child.label;
             return {
-                key: `${child.label}-${index}`,
-                text: child.label,
+                key: `${value}-${index}`,
+                text: value,
                 disabled: !child.enabled,
-                title: child.tooltip ?? child.label,
+                title: child?.tooltip ?? value,
                 subMenuProps: hasChildren
                     ? {
                           directionalHint: UIDirectionalHint.leftTopEdge,
@@ -73,7 +72,7 @@ export function NestedQuickActionListItem({
                     dispatch(
                         executeQuickAction({
                             kind: action.kind,
-                            path: child.path,
+                            path: nestedLevel.length ? `${nestedLevel.join('/')}/${index}` : index.toString(),
                             id: action.id
                         })
                     );
@@ -85,28 +84,26 @@ export function NestedQuickActionListItem({
     const buttonId = `quick-action-children-button-${groupIndex}-${actionIndex}`;
     return (
         <div className="quick-action-item">
-            {flattened.children.length === 1 && (
+            {action.children.length === 1 && (
                 <UILink
                     underline={false}
-                    disabled={isDisabled || !flattened.children[0].enabled}
+                    disabled={isDisabled || !action.children[0].enabled}
                     title={
-                        flattened.children[0].tooltip ??
-                        action.tooltip ??
-                        `${action.title} - ${flattened.children[0].label}`
+                        action.children[0].tooltip ?? action.tooltip ?? `${action.title} - ${action.children[0].label}`
                     }
                     onClick={(): void => {
                         dispatch(
                             executeQuickAction({
                                 kind: action.kind,
                                 id: action.id,
-                                path: flattened.children[0].path
+                                path: [0].join('/')
                             })
                         );
                     }}>
                     <span className="link-text">{action.title}</span>
                 </UILink>
             )}
-            {flattened.children.length > 1 && (
+            {action.children.length > 1 && (
                 <>
                     <UILink
                         title={action.tooltip ?? action.title}
@@ -135,7 +132,7 @@ export function NestedQuickActionListItem({
                             showSubmenuBeneath={true}
                             target={target}
                             isBeakVisible={true}
-                            items={buildMenuItems(flattened.children)}
+                            items={buildMenuItems(action.children)}
                             directionalHint={UIDirectionalHint.bottomRightEdge}
                             onDismiss={() => setShowContextualMenu(false)}
                             iconToLeft={true}
@@ -145,75 +142,4 @@ export function NestedQuickActionListItem({
             )}
         </div>
     );
-}
-
-/**
- * Flatten nested quick action children.
- *
- * @param action - Nested quick action.
- * @returns Quick action with flattened children.
- */
-function flattenAction(action: NestedQuickAction): NestedQuickAction {
-    const result = structuredClone(action);
-    const stack: { node: NestedQuickActionChild; parent?: NestedQuickActionChild }[] = result.children.map((child) => ({
-        node: child,
-        parent: undefined
-    }));
-    const mergeTuples: [string | undefined, string, string][] = [];
-    const lookup = new Map<string, NestedQuickActionChild>();
-
-    while (stack.length > 0) {
-        const current = stack.pop();
-        if (!current) {
-            continue;
-        }
-        const { node, parent } = current;
-        lookup.set(node.path, node);
-        if (node.children.length === 1) {
-            const child = node.children[0];
-            mergeTuples.push([parent?.path ?? '', node.path, child.path]);
-        }
-        for (const child of node.children) {
-            stack.push({ node: child, parent: node });
-        }
-    }
-
-    mergeNodes(result, mergeTuples, lookup);
-
-    if (result.children.length === 1 && result.children[0].children.length > 0) {
-        const parent = result.children[0];
-        result.children = parent.children.map((child) => ({
-            ...child,
-            label: `${parent.label}-${child.label}`
-        }));
-    }
-
-    return result;
-}
-
-/**
- * Merge nodes in the nested quick action.
- *
- * @param result - Nested quick action.
- * @param mergeTuples - Array of tuples containing parent, start and end node paths.
- * @param lookup - Lookup map of node paths to nested quick action children.
- */
-function mergeNodes(
-    result: NestedQuickAction,
-    mergeTuples: [string | undefined, string, string][],
-    lookup: Map<string, NestedQuickActionChild>
-): void {
-    for (const [parent, start, end] of mergeTuples) {
-        const parentNode = parent ? lookup.get(parent) : result;
-        const startNode = lookup.get(start);
-        const endNode = lookup.get(end);
-        if (!parentNode || !startNode || !endNode) {
-            continue;
-        }
-        endNode.label = `${startNode.label}-${endNode.label}`;
-        const index = parentNode.children.findIndex((parentChild) => parentChild === startNode);
-        if (index !== -1) {
-            parentNode.children[index] = endNode;
-        }
-    }
 }

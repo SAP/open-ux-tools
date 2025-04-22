@@ -649,21 +649,6 @@ annotate IncidentService.Incidents with {
 "
 `;
 
-exports[`fiori annotation service insert SideEffects annotation with empty target CAPNodejs cap-start v4 1`] = `
-"using IncidentService as service from '../../srv/incidentservice';
-
-annotate service.Incidents with @(
-    Common.SideEffects : {
-        $Type : 'Common.SideEffectsType',
-        TargetEntities : [
-            '',
-        ],
-    }
-);
-
-"
-`;
-
 exports[`fiori annotation service insert collection empty collection CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 

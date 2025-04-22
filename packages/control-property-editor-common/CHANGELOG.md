@@ -1,17 +1,5 @@
 # @sap-ux-private/control-property-editor-common
 
-## 0.6.3
-
-### Patch Changes
-
--   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
-
-## 0.6.2
-
-### Patch Changes
-
--   8fe1ab6: fix: added telemetry tracking for context menu
-
 ## 0.6.1
 
 ### Patch Changes

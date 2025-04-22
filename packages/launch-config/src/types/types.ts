@@ -77,7 +77,7 @@ export interface LaunchConfigInfo {
  */
 export interface DebugOptions {
     /** SAP client parameter for the connection. */
-    sapClientParam?: string;
+    sapClientParam: string;
     /** FLP application ID. */
     flpAppId: string;
     /** Indicates if the FLP sandbox environment is available. */

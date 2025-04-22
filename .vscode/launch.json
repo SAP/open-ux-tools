@@ -429,20 +429,6 @@
                 "program": "${workspaceFolder}/node_modules/jest/bin/jest"
             },
             "cwd": "${workspaceFolder}/packages/system-access"
-        },
-        {
-            "type": "node",
-            "request": "launch",
-            "name": "repo-app-import-sub-generator: Launch Yeoman generators/app",
-            "program": "${workspaceFolder}/packages/repo-app-import-sub-generator/node_modules/yo/lib/cli.js",
-            "args": [
-              "${workspaceFolder}/packages/repo-app-import-sub-generator/generators/app/index.js"
-            ],
-            "env": {
-            },
-            "stopOnEntry": true,
-            "console": "integratedTerminal",
-            "internalConsoleOptions": "neverOpen"
         }
     ]
 }
