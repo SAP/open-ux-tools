@@ -1,10 +1,13 @@
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { getAbapTarget } from '../client';
+import { FlexLayer } from '../types';
+import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
+import type { AdpWriterConfig, AttributesAnswers, ConfigAnswers, UI5Version } from '../types';
 import { getNewModelEnhanceWithChange } from './descriptor-content';
-import type { AdpWriterConfig, ConfigAnswers, FlexLayer, PackageJson } from '../types';
+import { getFormattedVersion, getLatestVersion, getOfficialBaseUI5VersionUrl, getVersionToBeUsed } from '../ui5';
 
 interface ConfigOptions {
     /**
@@ -16,22 +19,21 @@ interface ConfigOptions {
      */
     configAnswers: ConfigAnswers;
     /**
+     * User-provided project attribute answers.
+     */
+    attributeAnswers: AttributesAnswers;
+    /**
      * The FlexLayer indicating the deployment layer (e.g., CUSTOMER_BASE or VENDOR).
      */
     layer: FlexLayer;
     /**
-     * Default project parameters.
-     */
-    defaults: {
-        /**
-         * The default namespace for the project.
-         */
-        namespace: string;
-    };
-    /**
      * The package.json information used to generate custom configuration.
      */
-    packageJson: PackageJson;
+    packageJson: Package;
+    /**
+     * Public UI5 Versions.
+     */
+    publicVersions: UI5Version;
     /**
      * Logger instance for debugging and error reporting.
      */
@@ -47,31 +49,49 @@ interface ConfigOptions {
  * @param {FlexLayer} options.layer - The FlexLayer indicating the deployment layer.
  * @param {object} options.defaults - Default project parameters.
  * @param {string} options.defaults.namespace - The default namespace to be used.
- * @param {PackageJson} options.packageJson - The package.json information for generating custom configuration.
+ * @param {Package} options.packageJson - The package.json information for generating custom configuration.
  * @param {ToolsLogger} options.logger - The logger for debugging and error logging.
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
 export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig> {
-    const { configAnswers, defaults, layer, logger, packageJson, provider } = options;
+    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider, publicVersions } = options;
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
-    const target = await getAbapTarget(configAnswers.system, logger);
+    const target = await getProviderConfig(configAnswers.system, logger);
     const customConfig = getCustomConfig(operationsType, packageJson);
+
+    const isCloudProject = await provider.isAbapCloud();
+    const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
+
+    const ui5Version = isCloudProject
+        ? getLatestVersion(publicVersions)
+        : getVersionToBeUsed(attributeAnswers.ui5Version, isCustomerBase, publicVersions);
+
+    const { namespace, title, enableTypeScript } = attributeAnswers;
+    const {
+        application: { id, bspName }
+    } = configAnswers;
 
     return {
         app: {
-            id: defaults.namespace,
-            reference: configAnswers.application.id,
+            id: namespace,
+            reference: id,
             layer,
-            title: '',
+            title,
+            bspName,
             content: [getNewModelEnhanceWithChange()]
+        },
+        ui5: {
+            minVersion: ui5Version?.split(' ')[0],
+            version: getFormattedVersion(ui5Version),
+            frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version)
         },
         customConfig,
         target,
         options: {
             fioriTools: true,
-            enableTypeScript: false
+            enableTypeScript
         }
     };
 }

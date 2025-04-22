@@ -265,6 +265,50 @@ describe('App router generator tests', () => {
         expect(mtaConfig).toEqual(expectMtaConfig);
     });
 
+    it('Generate app router project with app frontend service', async () => {
+        hasbinSyncMock.mockReturnValue(true);
+        const targetFolder = (cwd = OUTPUT_DIR_PREFIX);
+        await expect(
+            yeomanTest
+                .create(
+                    AppRouterGenerator,
+                    {
+                        resolved: appRouterGenPath
+                    },
+                    {
+                        cwd: targetFolder
+                    }
+                )
+                .withOptions({ skipInstall: true })
+                .withPrompts({
+                    mtaPath: targetFolder,
+                    mtaId: sapUxTest,
+                    mtaDescription: 'Main MTA configuration for router',
+                    mtaVersion: '0.0.1',
+                    routerType: RouterModuleType.AppFront
+                })
+                .run()
+        ).resolves.not.toThrow();
+
+        const appRouterDir = join(`${targetFolder}/${sapUxTest}`);
+
+        const mtaContent = fs.readFileSync(`${appRouterDir}/mta.yaml`, 'utf-8');
+        const mtaConfig = yaml.load(mtaContent);
+        const expectMtaContent = testFixture.getContents('sap-ux-test/mta.appfront.yaml');
+        const expectMtaConfig = yaml.load(expectMtaContent);
+        expect(mtaConfig).toEqual(expectMtaConfig);
+        expect(fs.readFileSync(`${appRouterDir}/xs-security.json`, 'utf-8')).toMatchInlineSnapshot(`
+            "{
+              "xsappname": "sap-ux-test",
+              "tenant-mode": "dedicated",
+              "description": "Security profile of called application",
+              "scopes": [],
+              "role-templates": []
+            }
+            "
+        `);
+    });
+
     it('Generate throws error when no mta exe found (CLI)', async () => {
         hasbinSyncMock.mockReturnValue(false);
         // mocking cli behaviour

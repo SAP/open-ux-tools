@@ -1,5 +1,104 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.47
+
+### Patch Changes
+
+-   Updated dependencies [ce3fd7a]
+    -   @sap-ux/cf-deploy-config-writer@0.2.4
+
+## 0.1.46
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+-   @sap-ux/cf-deploy-config-inquirer@0.2.29
+-   @sap-ux/deploy-config-generator-shared@0.0.42
+
+## 0.1.45
+
+### Patch Changes
+
+-   d809536: update text label and handle options
+-   Updated dependencies [d809536]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.28
+
+## 0.1.44
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.2
+-   @sap-ux/inquirer-common@0.6.35
+-   @sap-ux/deploy-config-generator-shared@0.0.42
+-   @sap-ux/cf-deploy-config-inquirer@0.2.27
+
+## 0.1.43
+
+### Patch Changes
+
+-   0cdc387: Expose App Frontend Service from cf-sub-generator, with minor code cleanup
+-   Updated dependencies [0cdc387]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.26
+    -   @sap-ux/cf-deploy-config-writer@0.2.3
+
+## 0.1.42
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.25
+    -   @sap-ux/cf-deploy-config-writer@0.2.2
+    -   @sap-ux/deploy-config-generator-shared@0.0.41
+    -   @sap-ux/fiori-generator-shared@0.10.1
+    -   @sap-ux/inquirer-common@0.6.34
+
+## 0.1.41
+
+### Patch Changes
+
+-   77b7ab1: Introduce improvements to handle known issues with CAP
+-   Updated dependencies [77b7ab1]
+    -   @sap-ux/cf-deploy-config-writer@0.2.1
+
+## 0.1.40
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+    -   @sap-ux/deploy-config-generator-shared@0.0.40
+    -   @sap-ux/inquirer-common@0.6.33
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.24
+
+## 0.1.39
+
+### Patch Changes
+
+-   Updated dependencies [4d3fe73]
+    -   @sap-ux/cf-deploy-config-writer@0.2.0
+
+## 0.1.38
+
+### Patch Changes
+
+-   Updated dependencies [88d2a71]
+    -   @sap-ux/cf-deploy-config-inquirer@0.2.23
+
+## 0.1.37
+
+### Patch Changes
+
+-   Updated dependencies [37c2e00]
+    -   @sap-ux/cf-deploy-config-writer@0.1.29
+
+## 0.1.36
+
+### Patch Changes
+
+-   Updated dependencies [a8cbdcf]
+    -   @sap-ux/cf-deploy-config-writer@0.1.28
+
 ## 0.1.35
 
 ### Patch Changes

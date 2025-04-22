@@ -1,0 +1,2065 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="4.0"
+xmlns:edmx="http://docs.oasis-open.org/odata/ns/edmx">
+<edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMON',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.Common.v1" Alias="Common" />
+</edmx:Reference>
+<edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_UI',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.UI.v1" Alias="UI" />
+</edmx:Reference>
+<edmx:Reference Uri="../../catalogservice;v=2/Vocabularies(TechnicalName='%2FIWBEP%2FVOC_COMMUNICATION',Version='0001',SAP__Origin='LOCAL')/$value">
+    <edmx:Include Namespace="com.sap.vocabularies.Communication.v1" Alias="Communication" />
+</edmx:Reference>
+<edmx:Reference Uri="../../../sap/sepmra_alp_so_ana_srv/$metadata">
+    <edmx:Include Namespace="SEPMRA_ALP_SO_ANA_SRV" Alias="SAP" />
+</edmx:Reference>
+<edmx:DataServices>
+    <Schema Namespace="sepmra_alp_so_ana_anno_mdl.v1"
+    xmlns="http://docs.oasis-open.org/odata/ns/edm">
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CalendarMonthVHType/CalendarMonth">
+        <Annotation Term="Common.IsCalendarMonth" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CalendarMonthVHType/CalendarMonthT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CalendarMonthVHType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Month" />
+                <PropertyValue Property="TypeNamePlural" String="Months" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://appointment-2" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="CalendarMonth" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CalendarQuarterVHType/CalendarQuarterT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CalendarQuarterVHType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Quarter" />
+                <PropertyValue Property="TypeNamePlural" String="Quarters" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://appointment-2" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="CalendarQuarter" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CountryVHType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Country" />
+                <PropertyValue Property="TypeNamePlural" String="Countries" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://map" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="Country" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CustomerType/EmailAddress">
+        <Annotation Term="Communication.IsEmailAddress" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CustomerType/FaxNumber">
+        <Annotation Term="Communication.IsPhoneNumber" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CustomerType/PhoneNumber">
+        <Annotation Term="Communication.IsPhoneNumber" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CustomerType">
+        <Annotation Term="Communication.Contact">
+            <Record>
+                <PropertyValue Property="fn" Path="CompanyName" />
+                <PropertyValue Property="tel">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.PhoneType/fax" />
+                            <PropertyValue Property="uri" Path="FaxNumber" />
+                        </Record>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.PhoneType/preferred Communication.PhoneType/work" />
+                            <PropertyValue Property="uri" Path="PhoneNumber" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="email">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/work Communication.ContactInformationType/preferred" />
+                            <PropertyValue Property="address" Path="EmailAddress" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_CustomerVHType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Customer" />
+                <PropertyValue Property="TypeNamePlural" String="Customers" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://customer" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="CompanyName" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Communication.Contact">
+            <Record>
+                <PropertyValue Property="adr">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/preferred" />
+                            <PropertyValue Property="country" Path="Country" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Communication.Address">
+            <Record>
+                <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/preferred" />
+                <PropertyValue Property="country" Path="Country" />
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductType/ProductPictureURL">
+        <Annotation Term="UI.IsImageURL" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductType/ProductDescription">
+        <Annotation Term="UI.MultiLineText" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductType/Product">
+        <Annotation Term="Common.SemanticObject" String="EPMProduct" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductType/Supplier">
+        <Annotation Term="Common.SemanticObject" String="EPMSupplier" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductType">
+        <Annotation Term="UI.DataPoint" Qualifier="AverageRatingValue">
+            <Record>
+                <PropertyValue Property="Value" Path="AverageRatingValue" />
+                <PropertyValue Property="Title" String="Average Rating" />
+                <PropertyValue Property="MinimumValue" Decimal="0" />
+                <PropertyValue Property="MaximumValue" Decimal="5" />
+                <PropertyValue Property="Visualization" EnumMember="UI.VisualizationType/Rating" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.QuickViewFacets">
+            <Collection>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#ProductDetails" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="ProductDetails">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Product" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ProductDescription" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="MainProductCategory" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ProductCategory" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Price" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#AverageRatingValue" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Product Details" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Product" />
+                <PropertyValue Property="TypeNamePlural" String="Products" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://product" />
+                <PropertyValue Property="ImageUrl" Path="ProductPictureURL" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="Product" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="Description">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="ProductName" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductCatVHType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Sub-Category" />
+                <PropertyValue Property="TypeNamePlural" String="Sub-Categories" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://group-2" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="ProductCategory" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="Description">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="MainProductCategory" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductMainCatVHType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Category" />
+                <PropertyValue Property="TypeNamePlural" String="Categories" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://group-2" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="MainProductCategory" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductVHType/Product">
+        <Annotation Term="Common.SemanticObject" String="EPMProduct" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductVHType/Supplier">
+        <Annotation Term="Common.SemanticObject" String="EPMSupplier" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_ProductVHType">
+        <Annotation Term="UI.FieldGroup" Qualifier="Product">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Product" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ProductName" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ProductDescription" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Product" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="ProductCategory">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="MainProductCategory" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ProductCategory" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Product Category" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="Supplier">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Supplier" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Supplier" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Product" />
+                <PropertyValue Property="TypeNamePlural" String="Products" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://product" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="ProductName" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="Description">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="Product" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="Product" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SalesOrderType/SalesOrder">
+        <Annotation Term="Common.SemanticObject" String="EPMSalesOrder" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SalesOrderType/SalesOrderOverallStatus">
+        <Annotation Term="Common.Text" Path="SalesOrderOverallStatus_T">
+            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly" />
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SalesOrderType">
+        <Annotation Term="UI.FilterFacets">
+            <Collection>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#Details" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.QuickViewFacets">
+            <Collection>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.FieldGroup#QuickView" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="AdminData">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="CreationDateTime" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium" />
+                        </Record>
+                        <Record Type="UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Label" String="Created By" />
+                            <PropertyValue Property="Target" AnnotationPath="to_CreatedByUser/@Communication.Contact" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="LastChangedDateTime" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium" />
+                        </Record>
+                        <Record Type="UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Label" String="Last Changed By" />
+                            <PropertyValue Property="Target" AnnotationPath="to_LastChangedByUser/@Communication.Contact" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="Details">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataFieldWithIntentBasedNavigation">
+                            <PropertyValue Property="SemanticObject" String="EPMSalesOrder" />
+                            <PropertyValue Property="Action" String="manage_st" />
+                            <PropertyValue Property="Value" Path="SalesOrder" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataFieldForAnnotation">
+                            <PropertyValue Property="Label" String="Customer" />
+                            <PropertyValue Property="Target" AnnotationPath="to_Customer/@Communication.Contact" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="NetAmountInTransactionCurrency" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="SalesOrderOverallStatus" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="QuickView">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="SalesOrder" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Customer" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="NetAmountInTransactionCurrency" />
+                            <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/Medium" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Sales Order" />
+                <PropertyValue Property="TypeNamePlural" String="Sales Orders" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://sales-order" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="SalesOrder" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="Description">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="to_Customer/CompanyName" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Identification">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="SalesOrder" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SalesOrderItemType/Product">
+        <Annotation Term="Common.SemanticObject" String="EPMProduct" />
+        <Annotation Term="Common.SemanticObjectMapping">
+            <Collection>
+                <Record>
+                    <PropertyValue Property="LocalProperty" PropertyPath="Product" />
+                    <PropertyValue Property="SemanticObjectProperty" String="Product" />
+                </Record>
+            </Collection>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SalesOrderItemType">
+        <Annotation Term="UI.DataPoint" Qualifier="DeliveryDate">
+            <Record>
+                <PropertyValue Property="Value" Path="DeliveryDate" />
+                <PropertyValue Property="Title" String="Delivery Date" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="NetAmountInTransactionCurrency">
+            <Record>
+                <PropertyValue Property="Value" Path="NetAmountInTransactionCurrency" />
+                <PropertyValue Property="Title" String="Total Net Amount" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="Quantity">
+            <Record>
+                <PropertyValue Property="Value" Path="Quantity" />
+                <PropertyValue Property="Title" String="Quantity" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="Details">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Quantity" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="NetAmountInTransactionCurrency" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DeliveryDate" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Product" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Sales Order Item Details" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Sales Order Item" />
+                <PropertyValue Property="TypeNamePlural" String="Sales Order Items" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://sales-order" />
+                <PropertyValue Property="ImageUrl" Path="to_Product/ProductPictureURL" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="SalesOrder" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="Description">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="to_Product/ProductName" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/DeliveryCalendarDate">
+        <Annotation Term="Common.IsCalendarYearMonth" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/DeliveryCalendarYear">
+        <Annotation Term="Common.IsCalendarYear" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/DeliveryCalendarQuarter">
+        <Annotation Term="Common.IsCalendarQuarter" />
+        <Annotation Term="Common.Text" Path="DeliveryCalendarQuarterT">
+            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly" />
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/DeliveryCalendarMonth">
+        <Annotation Term="Common.IsCalendarMonth" />
+        <Annotation Term="Common.Text" Path="DeliveryCalendarMonthT">
+            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly" />
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/SalesOrder">
+        <Annotation Term="UI.HiddenFilter" />
+        <Annotation Term="Common.SemanticObject" String="EPMSalesOrder" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/SalesOrderItem">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations />
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/DeliveryCalendarQuarterT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/DeliveryCalendarMonthT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/ProductName">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/SalesOrderOverallStatusT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/SoldToPartyCompanyName">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/SoldToPartyCountryName">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/SupplierCompanyName">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/CurrencyT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/QuantityUnit">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/QuantityUnitT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/NumberOfSalesOrders">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/to_Product">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/to_SalesOrder">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/to_SalesOrderItem">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/P_DisplayCurrency">
+        <Annotation Term="UI.Hidden" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/CompanyCode">
+        <Annotation Term="UI.Hidden" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/ID">
+        <Annotation Term="UI.Hidden" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/Product">
+        <Annotation Term="Common.SemanticObject" String="EPMProduct" />
+        <Annotation Term="Common.SemanticObjectMapping">
+            <Collection>
+                <Record>
+                    <PropertyValue Property="LocalProperty" PropertyPath="Product" />
+                    <PropertyValue Property="SemanticObjectProperty" String="Product" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="Common.Text" Path="ProductName">
+            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextFirst" />
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/Supplier">
+        <Annotation Term="Common.SemanticObject" String="EPMSupplier" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/MainProductCategory" />
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult/SoldToParty">
+        <Annotation Term="Common.Text" Path="SoldToPartyCompanyName">
+            <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly" />
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdItemCubeALPResult">
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueByCustomer">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Customer" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>SoldToParty</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="SoldToParty" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterNumberOfSalesOrdersByStatus">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Sales Orders by Status" />
+                <PropertyValue Property="Description" String="Number of Sales Orders by Status" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>SalesOrderOverallStatus</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="SalesOrderOverallStatus" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NumberOfSalesOrders</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NumberOfSalesOrders" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NumberOfSalesOrders" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterQuantityByMainProductCategory">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Quantity by Category" />
+                <PropertyValue Property="Description" String="Sold Quantity by Product Category" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>MainProductCategory</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="MainProductCategory" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>Quantity</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="Quantity" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#Quantity" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueByMainProductCategory">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Category" />
+                <PropertyValue Property="Description" String="Revenue by Product Category" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>MainProductCategory</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="MainProductCategory" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterQuantityByProductCategory">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Quantity by Sub-Category" />
+                <PropertyValue Property="Description" String="Sold Quantity by Product Sub-Category" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>ProductCategory</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="ProductCategory" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>Quantity</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="Quantity" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#Quantity" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueByProductCategory">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Sub-Category" />
+                <PropertyValue Property="Description" String="Revenue by Product Sub-Category" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Donut" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>ProductCategory</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="ProductCategory" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterQuantityByProduct">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Quantity by Product" />
+                <PropertyValue Property="Description" String="Sold Quantity by Product" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>Product</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="Product" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>Quantity</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="Quantity" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#Quantity" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueByProduct">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Product" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>Product</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="Product" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueByCalendarMonth">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Month" />
+                <PropertyValue Property="Description" String="Revenue by Calendar Month" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>DeliveryCalendarMonth</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="DeliveryCalendarMonth" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueByCalendarQuarter">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Quarter" />
+                <PropertyValue Property="Description" String="Revenue by Calendar Quarter" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>DeliveryCalendarQuarter</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="DeliveryCalendarQuarter" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueByCalendarYear">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Year" />
+                <PropertyValue Property="Description" String="Revenue by Calendar Year" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>DeliveryCalendarYear</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="DeliveryCalendarYear" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueBySupplier">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Supplier" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>Supplier</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="Supplier" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="FilterRevenueByCustomerCountry">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Customer Country" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Bar" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>SoldToPartyCountry</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="SoldToPartyCountry" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Chart" Qualifier="Default">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Revenue by Customer" />
+                <PropertyValue Property="Description" String="Net Revenue by Customer" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Column" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>SoldToParty</PropertyPath>
+                        <PropertyPath>DeliveryCalendarYear</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="SoldToParty" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="DeliveryCalendarYear" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Series" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>NetAmount</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#NetAmount" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="DeliveryCalendarDate">
+            <Record>
+                <PropertyValue Property="Value" Path="DeliveryCalendarDate" />
+                <PropertyValue Property="Title" String="Delivery Date" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="NetAmount">
+            <Record>
+                <PropertyValue Property="Value" Path="NetAmount" />
+                <PropertyValue Property="Title" String="Total Net Amount" />
+                <PropertyValue Property="CriticalityCalculation">
+                    <Record>
+                        <PropertyValue Property="ImprovementDirection" EnumMember="UI.ImprovementDirectionType/Maximize" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="Quantity">
+            <Record>
+                <PropertyValue Property="Value" Path="Quantity" />
+                <PropertyValue Property="Title" String="Quantity" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="SalesOrderOverallStatus">
+            <Record>
+                <PropertyValue Property="Value" Path="SalesOrderOverallStatus" />
+                <PropertyValue Property="Title" String="Status" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderFacets">
+            <Collection>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#Quantity" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#NetAmount" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="Target" AnnotationPath="@UI.DataPoint#DeliveryCalendarDate" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.Facets">
+            <Collection>
+                <Record Type="UI.CollectionFacet">
+                    <PropertyValue Property="Label" String="Sales Order Item" />
+                    <PropertyValue Property="ID" String="SalesOrderItemFacet" />
+                    <PropertyValue Property="Facets">
+                        <Collection>
+                            <Record Type="UI.ReferenceFacet">
+                                <PropertyValue Property="Label" String="Details" />
+                                <PropertyValue Property="Target" AnnotationPath="to_SalesOrderItem/@UI.FieldGroup#Details" />
+                                <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                            </Record>
+                            <Record Type="UI.ReferenceFacet">
+                                <PropertyValue Property="Label" String="Product" />
+                                <PropertyValue Property="Target" AnnotationPath="to_Product/@UI.FieldGroup#ProductDetails" />
+                                <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                            </Record>
+                        </Collection>
+                    </PropertyValue>
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.CollectionFacet">
+                    <PropertyValue Property="Label" String="Sales Order" />
+                    <PropertyValue Property="ID" String="SalesOrderFacet" />
+                    <PropertyValue Property="Facets">
+                        <Collection>
+                            <Record Type="UI.ReferenceFacet">
+                                <PropertyValue Property="Label" String="Sales Order" />
+                                <PropertyValue Property="Target" AnnotationPath="to_SalesOrder/@UI.FieldGroup#Details" />
+                                <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                                <Annotation Term="UI.IsSummary" />
+                                <Annotation Term="UI.PartOfPreview" />
+                            </Record>
+                            <Record Type="UI.ReferenceFacet">
+                                <PropertyValue Property="Label" String="Administrative Information" />
+                                <PropertyValue Property="Target" AnnotationPath="to_SalesOrder/@UI.FieldGroup#AdminData" />
+                                <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                            </Record>
+                        </Collection>
+                    </PropertyValue>
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="FilterGroupDate">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DeliveryCalendarYear" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DeliveryCalendarQuarter" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DeliveryCalendarMonth" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="DeliveryCalendarDate" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Date" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="FilterGroupProduct">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Product" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="ProductCategory" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="MainProductCategory" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="Supplier" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Product" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="FilterGroupSalesOrder">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="SalesOrderOverallStatus" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="SoldToParty" />
+                        </Record>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="SoldToPartyCountry" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Sales Order" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.FieldGroup" Qualifier="Product">
+            <Record>
+                <PropertyValue Property="Data">
+                    <Collection>
+                        <Record Type="UI.DataField">
+                            <PropertyValue Property="Value" Path="to_Product/ProductDescription" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Label" String="Product" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Sales Order Item" />
+                <PropertyValue Property="TypeNamePlural" String="Sales Order Items" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://sales-order" />
+                <PropertyValue Property="ImageUrl" Path="to_Product/ProductPictureURL" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="SalesOrder" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="Description">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="ProductName" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Identification">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="SalesOrder" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="SalesOrderItem" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem" Qualifier="Default">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="DeliveryCalendarYear" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="DeliveryCalendarMonth" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="SalesOrder" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Label" String="Item" />
+                    <PropertyValue Property="Value" Path="SalesOrderItem" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="Product" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataFieldWithIntentBasedNavigation">
+                    <PropertyValue Property="SemanticObject" String="EPMProduct" />
+                    <PropertyValue Property="Action" String="manage_st" />
+                    <PropertyValue Property="Value" Path="Product" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="MainProductCategory" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="SoldToParty" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="Quantity" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="NetAmount" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueByCustomer">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Customer" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueByCustomer</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterNumberOfSalesOrdersByStatus">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Number of Sales Ordery by Status" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NumberOfSalesOrders" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterNumberOfSalesOrdersByStatus</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterQuantityByMainProductCategory">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Quantity by Product Category" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterQuantityByMainProductCategory</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueByMainProductCategory">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Product Category" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueByMainProductCategory</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterQuantityByProductCategory">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Quantity by Product Sub-Category" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterQuantityByProductCategory</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueByProductCategory">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Product Sub-Category" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueByProductCategory</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterQuantityByProduct">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Sold Quantity by Product" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterQuantityByProduct</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueByProduct">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Product" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueByProduct</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueByCalendarMonth">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Month" />
+                <PropertyValue Property="MaxItems" Int="6" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="DeliveryCalendarMonth" />
+                            <PropertyValue Property="Descending" Bool="false" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueByCalendarMonth</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueByCalendarQuarter">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Quarter" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="DeliveryCalendarQuarter" />
+                            <PropertyValue Property="Descending" Bool="false" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueByCalendarQuarter</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueByCalendarYear">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Year" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="DeliveryCalendarYear" />
+                            <PropertyValue Property="Descending" Bool="false" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueByCalendarYear</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueBySupplier">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Supplier" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueBySupplier</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="FilterRevenueByCustomerCountry">
+            <Record>
+                <PropertyValue Property="Text" String="Filter: Revenue by Customer Country" />
+                <PropertyValue Property="MaxItems" Int="3" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#FilterRevenueByCustomerCountry</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="DefaultPresentationVariant">
+            <Record>
+                <PropertyValue Property="Text" String="Default" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="NetAmount" />
+                            <PropertyValue Property="Descending" Bool="true" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.LineItem#Default</AnnotationPath>
+                        <AnnotationPath>@UI.Chart#Default</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionFields">
+            <Collection>
+                <PropertyPath>DeliveryCalendarYear</PropertyPath>
+                <PropertyPath>SoldToParty</PropertyPath>
+                <PropertyPath>Product</PropertyPath>
+                <PropertyPath>MainProductCategory</PropertyPath>
+                <PropertyPath>DeliveryCalendarQuarter</PropertyPath>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="DefaultVariant">
+            <Record>
+                <PropertyValue Property="Text" String="Product Financial Analysis" />
+                <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#DefaultSelectionVariant" />
+                <PropertyValue Property="PresentationVariant" Path="@UI.PresentationVariant#DefaultPresentationVariant" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionVariant" Qualifier="DefaultSelectionVariant">
+            <Record>
+                <PropertyValue Property="Text" String="Default" />
+                <PropertyValue Property="SelectOptions">
+                    <Collection>
+                        <Record Type="UI.SelectOptionType">
+                            <PropertyValue Property="PropertyName" PropertyPath="DeliveryCalendarYear" />
+                            <PropertyValue Property="Ranges">
+                                <Collection>
+                                    <Record Type="UI.SelectionRangeType">
+                                        <PropertyValue Property="Sign" EnumMember="UI.SelectionRangeSignType/I" />
+                                        <PropertyValue Property="Option" EnumMember="UI.SelectionRangeOptionType/EQ" />
+                                        <PropertyValue Property="Low" String="2017" />
+                                    </Record>
+                                </Collection>
+                            </PropertyValue>
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Communication.Contact">
+            <Record>
+                <PropertyValue Property="fn" Path="SupplierCompanyName" />
+                <PropertyValue Property="adr">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/preferred" />
+                            <PropertyValue Property="country" Path="SoldToPartyCountry" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Communication.Address">
+            <Record>
+                <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/preferred" />
+                <PropertyValue Property="country" Path="SoldToPartyCountry" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.TextArrangement" EnumMember="UI.TextArrangementType/TextOnly" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SlsOrdStatusVHType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Status" />
+                <PropertyValue Property="TypeNamePlural" String="Status" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://order-status" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="SalesOrderOverallStatus" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SupplierVHType/Supplier">
+        <Annotation Term="Common.SemanticObject" String="EPMSupplier" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_SupplierVHType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Supplier" />
+                <PropertyValue Property="TypeNamePlural" String="Suppliers" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://supplier" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="CompanyName" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Identification">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="Supplier" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.LineItem">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Value" Path="Supplier" />
+                    <Annotation Term="UI.Importance" EnumMember="UI.ImportanceType/High" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="Communication.Contact">
+            <Record>
+                <PropertyValue Property="fn" Path="CompanyName" />
+                <PropertyValue Property="adr">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/preferred" />
+                            <PropertyValue Property="country" Path="Country" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Communication.Address">
+            <Record>
+                <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/preferred" />
+                <PropertyValue Property="country" Path="Country" />
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_TotalSalesKPIType/CalendarMonth">
+        <Annotation Term="Common.IsCalendarMonth" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_TotalSalesKPIType/CalendarMonthT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_TotalSalesKPIType/Currency">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_TotalSalesKPIType/CurrencyT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_TotalSalesKPIType/ID">
+        <Annotation Term="UI.Hidden" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_TotalSalesKPIType">
+        <Annotation Term="UI.Chart" Qualifier="KPIRevenue">
+            <Record Type="UI.ChartDefinitionType">
+                <PropertyValue Property="Title" String="Sales per Month, Current Year" />
+                <PropertyValue Property="Description" String="Net Sales per Calendar Month" />
+                <PropertyValue Property="ChartType" EnumMember="UI.ChartType/Line" />
+                <PropertyValue Property="Dimensions">
+                    <Collection>
+                        <PropertyPath>CalendarMonth</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="DimensionAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartDimensionAttributeType">
+                            <PropertyValue Property="Dimension" PropertyPath="CalendarMonth" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartDimensionRoleType/Category" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Measures">
+                    <Collection>
+                        <PropertyPath>KPIValue</PropertyPath>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="MeasureAttributes">
+                    <Collection>
+                        <Record Type="UI.ChartMeasureAttributeType">
+                            <PropertyValue Property="Measure" PropertyPath="KPIValue" />
+                            <PropertyValue Property="Role" EnumMember="UI.ChartMeasureRoleType/Axis1" />
+                            <PropertyValue Property="DataPoint" AnnotationPath="@UI.DataPoint#KPIValue" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="KPIValue">
+            <Record>
+                <PropertyValue Property="Value" Path="KPIValue" />
+                <PropertyValue Property="Title" String="Sales Revenue" />
+                <PropertyValue Property="Description" String="Total Sales (YTD)" />
+                <PropertyValue Property="TargetValue" Path="KPITargetValue" />
+                <PropertyValue Property="Visualization" EnumMember="UI.VisualizationType/Number" />
+                <PropertyValue Property="ValueFormat">
+                    <Record>
+                        <PropertyValue Property="ScaleFactor" Decimal="1000000" />
+                        <PropertyValue Property="NumberOfFractionalDigits" Int="2" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="CriticalityCalculation">
+                    <Record>
+                        <PropertyValue Property="ImprovementDirection" EnumMember="UI.ImprovementDirectionType/Maximize" />
+                        <PropertyValue Property="DeviationRangeLowValue" Path="KPIDeviationRangeLowValue" />
+                        <PropertyValue Property="ToleranceRangeLowValue" Path="KPIToleranceRangeLowValue" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="TrendCalculation">
+                    <Record>
+                        <PropertyValue Property="ReferenceValue" Path="KPITargetValue" />
+                        <PropertyValue Property="IsRelativeDifference" Bool="true" />
+                        <PropertyValue Property="UpDifference" Decimal="0.1" />
+                        <PropertyValue Property="StrongUpDifference" Decimal="1" />
+                        <PropertyValue Property="DownDifference" Decimal="0.1" />
+                        <PropertyValue Property="StrongDownDifference" Decimal="1" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="ReferenceValue">
+            <Record>
+                <PropertyValue Property="Value" Path="ReferenceValue" />
+                <PropertyValue Property="Title" String="Revenue" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Company Earnings" />
+                <PropertyValue Property="TypeNamePlural" String="Company Earnings" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.Identification">
+            <Collection>
+                <Record Type="UI.DataField">
+                    <PropertyValue Property="Label" String="Month" />
+                    <PropertyValue Property="Value" Path="CalendarMonth" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPIRevenue">
+            <Record>
+                <PropertyValue Property="Text" String="KPI: Net Sales per Calendar Month" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="CalendarMonth" />
+                            <PropertyValue Property="Descending" Bool="false" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#KPIRevenue</AnnotationPath>
+                        <AnnotationPath>@UI.DataPoint#KPIValue</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="KPIRevenue">
+            <Record>
+                <PropertyValue Property="Text" String="KPI: Net Sales by Calendar Month" />
+                <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KPIRevenue" />
+                <PropertyValue Property="PresentationVariant" Path="@UI.PresentationVariant#KPIRevenue" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionVariant" Qualifier="KPIRevenue">
+            <Record>
+                <PropertyValue Property="Text" String="Default" />
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_UserType/EmailAddress">
+        <Annotation Term="Communication.IsEmailAddress" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_UserType/MobilePhoneNumber">
+        <Annotation Term="Communication.IsPhoneNumber" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_UserType/PhoneNumber">
+        <Annotation Term="Communication.IsPhoneNumber" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_C_ALP_UserType">
+        <Annotation Term="UI.QuickViewFacets">
+            <Collection>
+                <Record Type="UI.ReferenceFacet">
+                    <PropertyValue Property="Target" AnnotationPath="@Communication.Contact" />
+                </Record>
+            </Collection>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="User" />
+                <PropertyValue Property="TypeNamePlural" String="Userss" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://employee" />
+                <PropertyValue Property="ImageUrl" Path="PictureURL" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="UserId" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="Description">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="FullName" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="Communication.Contact">
+            <Record>
+                <PropertyValue Property="fn" Path="FullName" />
+                <PropertyValue Property="n">
+                    <Record>
+                        <PropertyValue Property="given" Path="FirstName" />
+                        <PropertyValue Property="additional" Path="MiddleName" />
+                        <PropertyValue Property="surname" Path="LastName" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="tel">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.PhoneType/cell" />
+                            <PropertyValue Property="uri" Path="MobilePhoneNumber" />
+                        </Record>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.PhoneType/work Communication.PhoneType/preferred" />
+                            <PropertyValue Property="uri" Path="PhoneNumber" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="email">
+                    <Collection>
+                        <Record>
+                            <PropertyValue Property="type" EnumMember="Communication.ContactInformationType/work Communication.ContactInformationType/preferred" />
+                            <PropertyValue Property="address" Path="EmailAddress" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_I_ProductCategoryType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Category" />
+                <PropertyValue Property="TypeNamePlural" String="Categories" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://folder" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="ProductCategory" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.SEPMRA_I_ProductMainCategoryType">
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Main Category" />
+                <PropertyValue Property="TypeNamePlural" String="Main Categories" />
+                <PropertyValue Property="TypeImageUrl" String="sap-icon://folder" />
+                <PropertyValue Property="Title">
+                    <Record Type="UI.DataField">
+                        <PropertyValue Property="Value" Path="MainProductCategory" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.Z_SEPMRA_SO_ALP_TOTALSalesKPIType/DeliveryCalendarMonth">
+        <Annotation Term="Common.IsCalendarMonth" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.Z_SEPMRA_SO_ALP_TOTALSalesKPIType/CalendarMonthT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.Z_SEPMRA_SO_ALP_TOTALSalesKPIType/Currency">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.Z_SEPMRA_SO_ALP_TOTALSalesKPIType/CurrencyT">
+        <Annotation Term="UI.HiddenFilter" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.Z_SEPMRA_SO_ALP_TOTALSalesKPIType/ID">
+        <Annotation Term="UI.Hidden" />
+    </Annotations>
+    <Annotations Target="SEPMRA_ALP_SO_ANA_SRV.Z_SEPMRA_SO_ALP_TOTALSalesKPIType">
+        <Annotation Term="UI.Chart" Qualifier="KPIRevenue">
+            <Annotation Term="Core.Messages">
+                <Collection>
+                    <Record>
+                        <PropertyValue Property="message" String="Property 'CalendarMonth' of annotation 'UI.CHART$1$.DIMENSIONS$1$' in proj./view 'Z_SEPMRA_SO_ALP_TOTALSalesKPI' not found" />
+                        <PropertyValue Property="severity" String="error" />
+                    </Record>
+                </Collection>
+            </Annotation>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="KPIValue">
+            <Record>
+                <PropertyValue Property="Value" Path="KPIValue" />
+                <PropertyValue Property="Title" String="Sales Revenue" />
+                <PropertyValue Property="Description" String="Total Sales (YTD)" />
+                <PropertyValue Property="TargetValue" Path="KPITargetValue" />
+                <PropertyValue Property="Visualization" EnumMember="UI.VisualizationType/Number" />
+                <PropertyValue Property="ValueFormat">
+                    <Record>
+                        <PropertyValue Property="ScaleFactor" Decimal="1000000" />
+                        <PropertyValue Property="NumberOfFractionalDigits" Int="2" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="CriticalityCalculation">
+                    <Record>
+                        <PropertyValue Property="ImprovementDirection" EnumMember="UI.ImprovementDirectionType/Maximize" />
+                        <PropertyValue Property="DeviationRangeLowValue" Path="KPIDeviationRangeLowValue" />
+                        <PropertyValue Property="ToleranceRangeLowValue" Path="KPIToleranceRangeLowValue" />
+                    </Record>
+                </PropertyValue>
+                <PropertyValue Property="TrendCalculation">
+                    <Record>
+                        <PropertyValue Property="ReferenceValue" Path="KPITargetValue" />
+                        <PropertyValue Property="IsRelativeDifference" Bool="true" />
+                        <PropertyValue Property="UpDifference" Decimal="0.1" />
+                        <PropertyValue Property="StrongUpDifference" Decimal="1" />
+                        <PropertyValue Property="DownDifference" Decimal="0.1" />
+                        <PropertyValue Property="StrongDownDifference" Decimal="1" />
+                    </Record>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.DataPoint" Qualifier="ReferenceValue">
+            <Record>
+                <PropertyValue Property="Value" Path="ReferenceValue" />
+                <PropertyValue Property="Title" String="Revenue" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.HeaderInfo">
+            <Record>
+                <PropertyValue Property="TypeName" String="Company Earnings" />
+                <PropertyValue Property="TypeNamePlural" String="Company Earnings" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.PresentationVariant" Qualifier="KPIRevenue">
+            <Record>
+                <PropertyValue Property="Text" String="KPI: Net Sales per Calendar Month" />
+                <PropertyValue Property="SortOrder">
+                    <Collection>
+                        <Record Type="Common.SortOrderType">
+                            <PropertyValue Property="Property" PropertyPath="" />
+                            <PropertyValue Property="Descending" Bool="false" />
+                        </Record>
+                    </Collection>
+                </PropertyValue>
+                <PropertyValue Property="Visualizations">
+                    <Collection>
+                        <AnnotationPath>@UI.Chart#KPIRevenue</AnnotationPath>
+                        <AnnotationPath>@UI.DataPoint#KPIValue</AnnotationPath>
+                    </Collection>
+                </PropertyValue>
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionPresentationVariant" Qualifier="KPIRevenue">
+            <Record>
+                <PropertyValue Property="Text" String="KPI: Net Sales by Calendar Month" />
+                <PropertyValue Property="SelectionVariant" Path="@UI.SelectionVariant#KPIRevenue" />
+                <PropertyValue Property="PresentationVariant" Path="@UI.PresentationVariant#KPIRevenue" />
+            </Record>
+        </Annotation>
+        <Annotation Term="UI.SelectionVariant" Qualifier="KPIRevenue">
+            <Record>
+                <PropertyValue Property="Text" String="Default" />
+            </Record>
+        </Annotation>
+    </Annotations>
+</Schema>
+</edmx:DataServices>
+</edmx:Edmx>

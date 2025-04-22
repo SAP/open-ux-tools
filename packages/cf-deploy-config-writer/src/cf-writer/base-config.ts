@@ -1,15 +1,15 @@
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import { addSupportingConfig, addRoutingConfig } from '../utils';
+import { addSupportingConfig } from '../utils';
 import LoggerHelper from '../logger-helper';
-import { createMTA, validateMtaConfig } from '../mta-config';
+import { createMTA, validateMtaConfig, addRoutingConfig } from '../mta-config';
 import { type Logger } from '@sap-ux/logger';
 import { type CFBaseConfig, type MTABaseConfig } from '../types';
 import { join } from 'path';
 import { t } from '../i18n';
 
 /**
- * Add a standalone | managed approuter to an empty target folder.
+ * Add a standalone | managed | app frontend approuter to an empty target folder.
  *
  * @param config writer configuration
  * @param fs an optional reference to a mem-fs editor

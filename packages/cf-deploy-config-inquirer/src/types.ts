@@ -10,7 +10,9 @@ export enum promptNames {
     /** The prompt to specify if a managed app router should be added to the deployment. */
     addManagedAppRouter = 'addManagedAppRouter',
     /** The prompt for confirming destination overwrite. */
-    overwrite = 'overwriteDestinationName'
+    overwrite = 'overwriteDestinationName',
+    /** The prompt for confirming the router type. */
+    routerType = 'routerType'
 }
 
 /**
@@ -63,6 +65,17 @@ export type DestinationNamePromptOptions = {
 };
 
 /**
+ * Configuration options for the 'destinationName' prompt used in deployment settings.
+ */
+export type DestinationRouterPromptOptions = {
+    /** Default value */
+    defaultValue: string;
+    /** Flag to indicate if a hint message should be shown to indicate the app router is configured.*/
+    hint?: boolean;
+    routerType?: RouterModuleType[];
+};
+
+/**
  * Defines options for boolean-type prompts in CF deployment configuration.
  */
 export type booleanPromptOptions = Partial<
@@ -82,17 +95,17 @@ export type booleanPromptOptions = Partial<
 /**
  * Defines options for string-type prompts in CF deployment configuration.
  */
-type stringPromptOptions = Partial<Record<promptNames.destinationName, DestinationNamePromptOptions>>;
+type destinationNamePromptOptions = Partial<Record<promptNames.destinationName, DestinationNamePromptOptions>>;
 
 /**
  * Configuration options for CF deployment prompts.
  */
-export type CfDeployConfigPromptOptions = Partial<stringPromptOptions & booleanPromptOptions>;
+export type CfDeployConfigPromptOptions = Partial<destinationNamePromptOptions & booleanPromptOptions>;
 
 /**
  * Configuration options for CF App Router deployment prompts.
  */
-export type CfAppRouterDeployConfigPromptOptions = Partial<stringPromptOptions & booleanPromptOptions> &
+export type CfAppRouterDeployConfigPromptOptions = Partial<destinationNamePromptOptions & booleanPromptOptions> &
     Record<appRouterPromptNames.mtaPath, string>;
 
 /**
@@ -100,6 +113,13 @@ export type CfAppRouterDeployConfigPromptOptions = Partial<stringPromptOptions &
  * Extends `YUIQuestion` with optional autocomplete functionality.
  */
 export type CfDeployConfigQuestions = YUIQuestion<CfDeployConfigAnswers> &
+    Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
+
+/**
+ * Represents a question in the CF deployment configuration.
+ * Extends `YUIQuestion` with optional autocomplete functionality.
+ */
+export type CfDeployConfigRouterQuestions = YUIQuestion<CfDeployConfigRouterAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>;
 
 export type CfAppRouterDeployConfigQuestions = YUIQuestion<CfAppRouterDeployConfigAnswers>;
@@ -114,6 +134,15 @@ export interface CfDeployConfigAnswers {
     addManagedAppRouter?: boolean;
     /** Indicates whether the user opted to overwrite the destination. */
     overwrite?: boolean;
+    /** Indicates whether the user opted to include the router type. */
+    routerType?: RouterModuleType;
+}
+
+/**
+ * User responses for CF deployment configuration with Router type.
+ */
+export interface CfDeployConfigRouterAnswers extends Omit<CfDeployConfigAnswers, 'addManagedAppRouter'> {
+    routerType?: RouterModuleType;
 }
 
 /**
@@ -121,7 +150,9 @@ export interface CfDeployConfigAnswers {
  */
 export const RouterModuleType = {
     Standard: 'standard',
-    Managed: 'managed'
+    Managed: 'managed',
+    AppFront: 'appFront',
+    None: 'none'
 } as const;
 
 export type RouterModuleType = (typeof RouterModuleType)[keyof typeof RouterModuleType];

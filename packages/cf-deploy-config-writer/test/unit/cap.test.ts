@@ -1,4 +1,3 @@
-import * as childProcess from 'child_process';
 import * as projectAccess from '@sap-ux/project-access';
 import { join } from 'path';
 import fsExtra from 'fs-extra';
@@ -9,6 +8,7 @@ import { generateAppConfig } from '../../src';
 import type { Editor } from 'mem-fs-editor';
 import { DefaultMTADestination, MTABinNotFound } from '../../src/constants';
 import { isAppStudio } from '@sap-ux/btp-utils';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 
 jest.mock('@sap/mta-lib', () => {
     return {
@@ -23,10 +23,8 @@ jest.mock('@sap-ux/btp-utils', () => ({
 }));
 const isAppStudioMock = isAppStudio as jest.Mock;
 
-jest.mock('child_process');
-
 let hasSyncMock: jest.SpyInstance;
-let spawnMock: jest.SpyInstance;
+let commandRunnerMock: jest.SpyInstance;
 let unitTestFs: Editor;
 
 describe('CF Writer', () => {
@@ -36,7 +34,7 @@ describe('CF Writer', () => {
         jest.resetAllMocks();
         jest.restoreAllMocks();
         unitTestFs = create(createStorage());
-        spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ status: 0 } as any));
+        commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockImplementation(() => ({ status: 0 } as any));
         isAppStudioMock.mockReturnValue(false);
         hasSyncMock = jest.spyOn(hasbin, 'sync').mockImplementation(() => true);
     });
@@ -76,7 +74,7 @@ describe('CF Writer', () => {
             expect(getMtaPathMock).toBeCalledWith(expect.stringContaining(capPath));
             expect(findCapProjectRootMock).toHaveBeenCalledTimes(1);
             expect(findCapProjectRootMock).toBeCalledWith(expect.stringContaining(capPath));
-            expect(spawnMock).not.toHaveBeenCalled();
+            expect(commandRunnerMock).not.toHaveBeenCalled();
             expect(unitTestFs.dump(capPath)).toMatchSnapshot();
             expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
         });
@@ -84,11 +82,13 @@ describe('CF Writer', () => {
         test('Validate dependency on MTA binary', async () => {
             hasSyncMock.mockReturnValue(false);
             const capPath = join(outputDir, 'cap');
-            await expect(generateAppConfig({ appPath: capPath }, unitTestFs)).rejects.toThrowError(MTABinNotFound);
+            await expect(generateAppConfig({ appPath: capPath }, unitTestFs, undefined)).rejects.toThrowError(
+                MTABinNotFound
+            );
         });
 
         test('Validate error is thrown if cds fails', async () => {
-            spawnMock = jest.spyOn(childProcess, 'spawnSync').mockImplementation(() => ({ error: 1 } as any));
+            commandRunnerMock = jest.spyOn(CommandRunner.prototype, 'run').mockRejectedValue(new Error('Fault'));
             const capPath = join(outputDir, 'capcds');
             fsExtra.mkdirSync(outputDir, { recursive: true });
             fsExtra.mkdirSync(capPath);
@@ -100,10 +100,11 @@ describe('CF Writer', () => {
                         destinationName: DefaultMTADestination,
                         addManagedAppRouter: true
                     },
-                    unitTestFs
+                    unitTestFs,
+                    undefined
                 )
-            ).rejects.toThrowError(/Something went wrong creating mta.yaml!/);
-            expect(spawnMock).not.toHaveBeenCalledWith('');
+            ).rejects.toThrowError(/An error occurred when creating the mta.yaml file/);
+            expect(commandRunnerMock).toHaveBeenCalledTimes(1);
         });
     });
 
@@ -119,10 +120,10 @@ describe('CF Writer', () => {
                 appPath: join(capPath, 'app/project1'),
                 destinationName: DefaultMTADestination
             },
-            unitTestFs
+            unitTestFs,
+            undefined
         );
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
-        expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
     });
 
     test('Validate HTML5 is added without a managed approuter to a CAP project', async () => {
@@ -138,10 +139,10 @@ describe('CF Writer', () => {
                 destinationName: DefaultMTADestination,
                 addManagedAppRouter: false
             },
-            unitTestFs
+            unitTestFs,
+            undefined
         );
         expect(unitTestFs.dump(capPath)).toMatchSnapshot();
-        expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
     });
 
     test('Validate a 2nd HTML5 app is added', async () => {
@@ -150,7 +151,7 @@ describe('CF Writer', () => {
         fsExtra.mkdirSync(capPath);
         fsExtra.copySync(join(__dirname, '../sample/capcdsmulti'), capPath);
         // Copy over sample mta.yaml generated, when using the command `cds add mta xsuaa destination html5-repo`
-        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmta'), capPath);
+        fsExtra.copySync(join(__dirname, './fixtures/mta-types/cdsmulti'), capPath);
         // Step1. Add existing app with managed approuter
         await generateAppConfig(
             {
@@ -158,18 +159,10 @@ describe('CF Writer', () => {
                 destinationName: DefaultMTADestination,
                 addManagedAppRouter: true
             },
-            unitTestFs
+            unitTestFs,
+            undefined
         );
-        // Step2. Add a 2nd app to the mta
-        await generateAppConfig(
-            {
-                appPath: join(capPath, 'app/project2'),
-                destinationName: DefaultMTADestination,
-                addManagedAppRouter: false
-            },
-            unitTestFs
-        );
-        unitTestFs.dump(capPath);
+        expect(unitTestFs.dump(capPath)).toMatchSnapshot();
         expect(unitTestFs.read(join(capPath, 'mta.yaml'))).toMatchSnapshot();
     });
 });

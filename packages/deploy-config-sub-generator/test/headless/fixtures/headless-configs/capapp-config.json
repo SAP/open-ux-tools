@@ -1,0 +1,12 @@
+{
+  "version": "0.2",
+  "project": {
+    "targetFolder": "./test-output",
+    "name": "feproject-ui"
+  },
+  "deployConfig": {
+    "deployTarget": "CF",
+    "destinationName": "SOME_DEST_NAME",
+    "addToManagedAppRouter": true
+  }
+}

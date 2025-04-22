@@ -30,6 +30,7 @@ import {
 } from '../constants';
 import {
     addCommonPackageDependencies,
+    enforceValidRouterConfig,
     generateSupportingConfig,
     getDestinationProperties,
     getTemplatePath,
@@ -39,10 +40,10 @@ import {
 } from '../utils';
 import {
     addMtaDeployParameters,
-    createCAPMTA,
     createMTA,
     doesCDSBinaryExist,
     doesMTABinaryExist,
+    generateCAPMTA,
     getMtaConfig,
     getMtaId,
     type MtaConfig,
@@ -97,10 +98,13 @@ async function getUpdatedConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<C
         cfAppConfig.destinationName ?? destination
     );
 
+    enforceValidRouterConfig(cfAppConfig);
+
     const config = {
         appPath: cfAppConfig.appPath.replace(/\/$/, ''),
         destinationName: cfAppConfig.destinationName || destination,
-        addManagedAppRouter: cfAppConfig.addManagedAppRouter ?? true,
+        addManagedAppRouter: cfAppConfig.addManagedAppRouter,
+        addAppFrontendRouter: cfAppConfig.addAppFrontendRouter,
         addMtaDestination: cfAppConfig.addMtaDestination ?? false,
         cloudServiceName: cfAppConfig.cloudServiceName,
         lcapMode: !isCap ? false : isLCAP, // Restricting local changes is only applicable for CAP flows
@@ -183,7 +187,7 @@ async function processUI5Config(
             firstServicePathSegmentUI5Config = toolsConfig?.configuration?.backend[0].path;
         }
     } catch (error) {
-        LoggerHelper.logger?.debug(t('debug.ui5YamlDoesNotExist'));
+        LoggerHelper.logger?.debug(t('debug.ui5YamlDoesNotExist', { error: error.message }));
     }
     return { destination, serviceHost, firstServicePathSegmentUI5Config };
 }
@@ -211,18 +215,20 @@ async function processManifest(
 }
 
 /**
+ * Generates the deployment configuration for the HTML5 application.
  *
  * @param cfAppConfig writer configuration
  * @param fs reference to a mem-fs editor
  */
 async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promise<void> {
-    const config = await getUpdatedConfig(cfAppConfig, fs);
+    LoggerHelper?.logger?.debug(`Generate HTML5 app deployment configuration with: \n ${JSON.stringify(cfAppConfig)}`);
 
-    LoggerHelper?.logger?.debug(`Generate app configuration using: \n ${JSON.stringify(config)}`);
+    const config = await getUpdatedConfig(cfAppConfig, fs);
+    LoggerHelper?.logger?.debug(`Deployment configuration updated: \n ${JSON.stringify(config)}`);
 
     // Generate MTA Config, LCAP will generate the mta.yaml on the fly so we don't care about it!
     if (!config.lcapMode) {
-        generateMTAFile(config);
+        await generateMTAFile(config, fs);
         await generateSupportingConfig(config, fs);
         await updateMtaConfig(config, fs);
     }
@@ -239,11 +245,12 @@ async function generateDeployConfig(cfAppConfig: CFAppConfig, fs: Editor): Promi
  * Creates the MTA configuration file.
  *
  * @param cfConfig writer configuration
+ * @param fs reference to a mem-fs editor
  */
-export function generateMTAFile(cfConfig: CFConfig): void {
+export async function generateMTAFile(cfConfig: CFConfig, fs: Editor): Promise<void> {
     if (!cfConfig.mtaId) {
         if (cfConfig.isCap) {
-            createCAPMTA(cfConfig.rootPath);
+            await generateCAPMTA({ ...cfConfig, mtaPath: cfConfig.rootPath }, fs);
         } else {
             createMTA({ mtaId: cfConfig.appId, mtaPath: cfConfig.mtaPath ?? cfConfig.rootPath } as MTABaseConfig);
         }
@@ -261,10 +268,18 @@ export function generateMTAFile(cfConfig: CFConfig): void {
 async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
     const mtaInstance = await getMtaConfig(cfConfig.rootPath);
     if (mtaInstance) {
-        await mtaInstance.addRoutingModules({ isManagedApp: cfConfig.addManagedAppRouter });
+        await mtaInstance.addRoutingModules({
+            isManagedApp: cfConfig.addManagedAppRouter,
+            isAppFrontApp: cfConfig.addAppFrontendRouter,
+            addMissingModules: !cfConfig.addAppFrontendRouter
+        });
+
         const appModule = cfConfig.appId;
         const appRelativePath = toPosixPath(relative(cfConfig.rootPath, cfConfig.appPath));
         await mtaInstance.addApp(appModule, appRelativePath ?? '.');
+        if (mtaInstance.hasAppFrontendRouter()) {
+            cfConfig.addAppFrontendRouter = true;
+        }
         await addMtaDeployParameters(mtaInstance);
         if ((cfConfig.addMtaDestination && cfConfig.isCap) || cfConfig.destinationName === DefaultMTADestination) {
             // If the destination instance identifier is passed, create a destination instance
@@ -272,7 +287,12 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
                 cfConfig.destinationName === DefaultMTADestination
                     ? mtaInstance.getFormattedPrefix(ResourceMTADestination)
                     : cfConfig.destinationName;
-            await mtaInstance.appendInstanceBasedDestination(cfConfig.destinationName);
+            if (cfConfig.addAppFrontendRouter) {
+                // Append destination directly to app frontend
+                await mtaInstance.appendAppfrontCAPDestination(cfConfig.destinationName);
+            } else {
+                await mtaInstance.appendInstanceBasedDestination(cfConfig.destinationName);
+            }
             // This is required where a managed or standalone router hasn't been added yet to mta.yaml
             if (!mtaInstance.hasManagedXsuaaResource()) {
                 cfConfig.destinationAuthentication = Authentication.NO_AUTHENTICATION;
@@ -285,12 +305,14 @@ async function updateMtaConfig(cfConfig: CFConfig, fs: Editor): Promise<void> {
 }
 
 /**
+ * Cleans up standalone routes in a Cloud Foundry application configuration.
  *
- * @param root0
- * @param root0.rootPath
- * @param root0.appId
- * @param mtaInstance
- * @param fs
+ * @param {object} cfConfig - The Cloud Foundry configuration object
+ * @param {string} cfConfig.rootPath - The root path of the application
+ * @param {string} cfConfig.appId - The application identifier
+ * @param {MtaConfig} mtaInstance - The MTA configuration instance
+ * @param {Editor} fs - The file system editor for performing cleanup operations
+ * @returns {void} - This function does not return a value
  */
 function cleanupStandaloneRoutes({ rootPath, appId }: CFConfig, mtaInstance: MtaConfig, fs: Editor): void {
     // Cleanup standalone xs-app.json to reflect new application
@@ -345,15 +367,28 @@ async function saveMta(cfConfig: CFConfig, mtaInstance: MtaConfig): Promise<void
  */
 async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor): Promise<void> {
     // When data source is none in app generator, it is not required to provide destination
+    const defaultProperties = {
+        service: cfConfig.addAppFrontendRouter ? 'app-front' : 'html5-apps-repo-rt',
+        authenticationType: cfConfig.addAppFrontendRouter ? 'ias' : 'xsuaa',
+        addAppFrontendRoutes: cfConfig.addAppFrontendRouter ?? false
+    };
     if (cfConfig.destinationName && cfConfig.destinationName !== EmptyDestination) {
         fs.copyTpl(getTemplatePath('app/xs-app-destination.json'), join(cfConfig.appPath, XSAppFile), {
+            ...defaultProperties,
             destination: cfConfig.destinationName,
             servicePathSegment: `${cfConfig.firstServicePathSegment}${cfConfig.isDestinationFullUrl ? '/.*' : ''}`, // For service URL's, pull out everything after the last slash
             targetPath: `${cfConfig.isDestinationFullUrl ? '' : cfConfig.firstServicePathSegment}/$1`, // Pull group 1 from the regex
-            authentication: cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION ? 'none' : 'xsuaa'
+            authentication:
+                cfConfig.destinationAuthentication === Authentication.NO_AUTHENTICATION
+                    ? 'none'
+                    : defaultProperties.authenticationType
         });
     } else {
-        fs.copyTpl(getTemplatePath('app/xs-app-no-destination.json'), join(cfConfig.appPath, XSAppFile));
+        fs.copyTpl(
+            getTemplatePath('app/xs-app-no-destination.json'),
+            join(cfConfig.appPath, XSAppFile),
+            defaultProperties
+        );
     }
     await generateUI5DeployConfig(cfConfig, fs);
 }
