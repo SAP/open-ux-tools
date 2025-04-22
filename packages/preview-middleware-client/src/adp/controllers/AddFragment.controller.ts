@@ -51,7 +51,7 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
-    public readonly data?: AddFragmentData;
+    private readonly data?: AddFragmentData;
 
     constructor(
         name: string,
