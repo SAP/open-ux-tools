@@ -354,7 +354,7 @@ server:
         flp:
           theme: sap_fiori_3
           intent:
-            object: app.with.namespace
+            object: appwithnamespace
             action: display
 ",
     "state": "modified",
@@ -389,7 +389,7 @@ server:
         flp:
           theme: sap_fiori_3
           intent:
-            object: app.with.namespace
+            object: appwithnamespace
             action: display
 ",
     "state": "modified",
