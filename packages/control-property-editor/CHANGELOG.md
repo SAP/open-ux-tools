@@ -1,5 +1,11 @@
 # @sap-ux/control-property-editor
 
+## 0.6.4
+
+### Patch Changes
+
+-   a4cb2f6: chore(deps): update dependency http-proxy-middleware to v2.0.9
+
 ## 0.6.3
 
 ### Patch Changes

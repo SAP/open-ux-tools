@@ -64,13 +64,16 @@ export async function getPrompts(
                 serviceSelection: { hide: true },
                 systemSelection: { defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name }
             },
-            false
+            true
         );
         let appList: AppIndex = [];
         const appSelectionPrompt = [
             {
                 when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
-                    if (answers[PromptNames.systemSelection]) {
+                    if (
+                        answers[PromptNames.systemSelection] &&
+                        systemQuestions.answers.connectedSystem?.serviceProvider
+                    ) {
                         appList = await fetchAppListForSelectedSystem(
                             systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
                             quickDeployedAppConfig?.appId
