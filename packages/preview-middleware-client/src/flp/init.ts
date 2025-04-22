@@ -15,7 +15,7 @@ import { CommunicationService } from '../cpe/communication-service';
 import { getTextBundle } from '../i18n';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
-import type Event from 'sap/ui/base/Event';
+import type { CardGeneratorType } from "sap/cards/ap/generator";
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -262,10 +262,10 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 function addCardGenerationUserAction(componentInstance : Component) {
     sap.ui.require([
         "sap/cards/ap/generator/CardGenerator"
-    ], async (CardGenerator) => {
+    ], async (CardGenerator : CardGeneratorType) => {
         const container = sap?.ushell?.Container ??
         (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
-        container.getServiceAsync("Extension").then(function(extensionService: Extension) {
+        container.getServiceAsync("Extension").then(function(extensionService) {
             var oControlProperties = {
                 icon: "sap-icon://add",
                 id: "generate_card",
@@ -274,11 +274,11 @@ function addCardGenerationUserAction(componentInstance : Component) {
                 press: function () {
                     CardGenerator.initializeAsync(componentInstance);
                 }
-            }
+            };
             var oParameters = {
                 controlType: "sap.ushell.ui.launchpad.ActionItem"
             };
-            extensionService.createUserAction(oControlProperties, oParameters).then(function(generateCardAction){
+            (extensionService as Extension).createUserAction(oControlProperties, oParameters).then(function(generateCardAction){
                 generateCardAction.showForCurrentApp();
             });
         });
@@ -319,7 +319,7 @@ export async function init({
         scenario = flexSettings.scenario;
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-            lifecycleService.attachAppLoaded((event : Event) => {
+            lifecycleService.attachAppLoaded((event) => {
                 const view = event.getParameter('componentInstance');
                 const pluginScript = flexSettings.pluginScript ?? '';
 
@@ -359,9 +359,9 @@ export async function init({
     if (enableCardGenerator && !isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 121 })) {
         container.attachRendererCreatedEvent(async function () {
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
-            lifecycleService.attachAppLoaded((event : Event) => {
+            lifecycleService.attachAppLoaded((event) => {
                 const componentInstance = event.getParameter('componentInstance');
-                addCardGenerationUserAction(componentInstance);
+                addCardGenerationUserAction(componentInstance as unknown as Component);
             });
         });
     }

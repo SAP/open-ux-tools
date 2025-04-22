@@ -1,5 +1,3 @@
-import type Component from 'sap/ui/core/Component';
-
 declare namespace sap.ushell {
     import type ComponentContainer from 'sap/ui/core/ComponentContainer';
 
