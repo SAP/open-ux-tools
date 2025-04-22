@@ -388,7 +388,6 @@ export class ConfigPrompter {
             message: t('prompts.adpNotSupported'),
             when: (answers: ConfigAnswers) =>
                 showApplicationErrorQuestion(answers, this.flexUISystem, this.isApplicationSupported),
-            // store: false,
             guiOptions: {
                 type: 'label',
                 link: {

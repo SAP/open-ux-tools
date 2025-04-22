@@ -5,7 +5,7 @@ import { resolveNodeModuleGenerator } from '../../extension/generator-resolver';
  * Validates whether the extensibility sub-generator is available and sets it up if necessary.
  * If the generator is not found, an error message is returned advising on the necessary action.
  *
- * @param value
+ * @param {boolean} value - A confirm flag indicating whether user wants to continue creating an extension project.
  * @param {boolean} isApplicationSupported - Whether the selected application is supported.
  * @param {boolean} hasSyncViews - Whether synchronized views exist for the app.
  * @returns {boolean | string} Returns true if app is supported and contains sync views, or an error message if not.
