@@ -230,7 +230,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
     it('should call composeWith to generate an extension project in case the application is not supported', async () => {
         mockIsAppStudio.mockReturnValue(false);
-        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith').mockReturnValue([]);
 
         const runContext = yeomanTest
             .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
@@ -239,7 +239,6 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         await expect(runContext.run()).resolves.not.toThrow();
 
-        // TODO: Fix failing composeWith
         expect(composeWithSpy).toHaveBeenCalledWith(
             expect.stringMatching(''),
             expect.objectContaining({
