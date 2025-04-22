@@ -7,7 +7,7 @@ import {
     type SystemLookup
 } from '@sap-ux/adp-tooling';
 
-import { ExtensionProjectData } from '../types';
+import type { ExtensionProjectData } from '../types';
 
 export const EXTENSIBILITY_GENERATOR_NS = '@bas-dev/generator-extensibility-sub/generators/app';
 
