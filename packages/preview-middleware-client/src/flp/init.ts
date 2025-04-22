@@ -15,7 +15,7 @@ import { CommunicationService } from '../cpe/communication-service';
 import { getTextBundle } from '../i18n';
 import type Component from 'sap/ui/core/Component';
 import type Extension from 'sap/ushell/services/Extension';
-import type { CardGeneratorType } from "sap/cards/ap/generator";
+import type { CardGeneratorType } from 'sap/cards/ap/generator';
 
 /**
  * SAPUI5 delivered namespaces from https://ui5.sap.com/#/api/sap
@@ -261,27 +261,25 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
  */
 function addCardGenerationUserAction(componentInstance : Component) {
     sap.ui.require([
-        "sap/cards/ap/generator/CardGenerator"
+        'sap/cards/ap/generator/CardGenerator'
     ], async (CardGenerator : CardGeneratorType) => {
         const container = sap?.ushell?.Container ??
         (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
-        container.getServiceAsync("Extension").then(function(extensionService) {
-            var oControlProperties = {
-                icon: "sap-icon://add",
-                id: "generate_card",
-                text: "Generate Card",
-                tooltip: "Generate Card",
-                press: function () {
-                    CardGenerator.initializeAsync(componentInstance);
-                }
-            };
-            var oParameters = {
-                controlType: "sap.ushell.ui.launchpad.ActionItem"
-            };
-            (extensionService as Extension).createUserAction(oControlProperties, oParameters).then(function(generateCardAction){
-                generateCardAction.showForCurrentApp();
-            });
-        });
+        const extensionService = await container.getServiceAsync<Extension>('Extension');
+        const oControlProperties = {
+            icon: 'sap-icon://add',
+            id: 'generate_card',
+            text: 'Generate Card',
+            tooltip: 'Generate Card',
+            press: function () {
+                CardGenerator.initializeAsync(componentInstance);
+            }
+        };
+        const oParameters = {
+            controlType: 'sap.ushell.ui.launchpad.ActionItem'
+        };
+        const generateCardAction = await extensionService.createUserAction(oControlProperties, oParameters);
+        generateCardAction.showForCurrentApp();
     });
 }
 
@@ -306,7 +304,7 @@ export async function init({
     flex?: string | null;
     customInit?: string | null;
     enhancedHomePage?: boolean | null;
-    enableCardGenerator?: boolean | false
+    enableCardGenerator?: boolean
 }): Promise<void> {
     const urlParams = new URLSearchParams(window.location.search);
     const container = sap?.ushell?.Container ??
@@ -408,7 +406,7 @@ if (bootstrapConfig) {
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
         enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
-        enableCardGenerator: bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator') === "true"
+        enableCardGenerator: bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator') === 'true'
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);

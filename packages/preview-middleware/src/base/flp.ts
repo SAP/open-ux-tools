@@ -2,16 +2,15 @@ import type { ReaderCollection } from '@ui5/fs';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import type { Editor as MemFsEditor } from 'mem-fs-editor';
-import { readFileSync } from 'fs';
 import { render } from 'ejs';
 import type http from 'http';
 import type { Request, Response, Router, NextFunction } from 'express';
 import { Router as createRouter, static as serveStatic, json } from 'express';
-import connect from 'connect';
+import type connect from 'connect';
 import path, { dirname, join, posix } from 'path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import { getWebappPath, type Manifest, type Package, FileName } from '@sap-ux/project-access';
+import { getWebappPath, type Manifest, FileName } from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
@@ -37,37 +36,14 @@ import {
     CARD_GENERATOR_API
 } from './config';
 import { generateCdm } from './cdm';
-import { promises } from 'fs';
+import { promises, readFileSync } from 'fs';
 import * as utils from './utilities';
 import os from 'os';
+import RateLimit from 'express-rate-limit';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
 export const DEFAULT_THEME = 'sap_horizon';
-const UI5_LIBS = [
-    'sap.apf',
-    'sap.base',
-    'sap.chart',
-    'sap.collaboration',
-    'sap.f',
-    'sap.fe',
-    'sap.fileviewer',
-    'sap.gantt',
-    'sap.landvisz',
-    'sap.m',
-    'sap.ndc',
-    'sap.ovp',
-    'sap.rules',
-    'sap.suite',
-    'sap.tnt',
-    'sap.ui',
-    'sap.uiext',
-    'sap.ushell',
-    'sap.uxap',
-    'sap.viz',
-    'sap.webanalytics',
-    'sap.zen'
-];
 
 /**
  * Check if a file exists.
@@ -490,13 +466,13 @@ export class FlpSandbox {
 
     /**
      * Adds a middleware route for the Card Generator in the FLP sandbox.
-     * 
+     *
      * This route dynamically updates the `templateConfig` with the Card Generator application details
      * and serves the FLP sandbox HTML using the `flpGetHandler`.
-     * 
+     *
      * @private
      */
-    private addCardGeneratorMiddlewareRoute(): void { 
+    private addCardGeneratorMiddlewareRoute(): void {
         this.logger.debug(`Add route for ${CARD_GENERATOR_API.previewGeneratorSandbox}`);
         this.router.get(
             CARD_GENERATOR_API.previewGeneratorSandbox,
@@ -506,19 +482,19 @@ export class FlpSandbox {
                 next: NextFunction
             ) => {
                 this.templateConfig.enableCardGenerator = this.enableCardGenerator;
-                const {title, id} = this.manifest['sap.app'];
+                const { title, id } = this.manifest['sap.app'];
 
                 this.templateConfig.apps['Cards-generator'] = {
                     title: title ?? 'Card Generator',
-                    description: "",
+                    description: '',
                     additionalInformation: `SAPUI5.Component=${id}`,
-                    applicationType: "URL",
-                    url: "../"
+                    applicationType: 'URL',
+                    url: '../'
                 };
 
                 await this.flpGetHandler(req, res, next);
             }
-        )
+        );
     }
 
     /**
@@ -970,15 +946,17 @@ export class FlpSandbox {
         }
     }
 
-     /**
-     * Route to store card manifest files, the files are stored in the webapp folder of the project
-     * and the application manifest.json file is updated with the new card manifests information within the sap.cards.ap.embeds
+    /**
+     * Adds a route to store card manifest files, the files are stored in the webapp folder of the project.
+     * The application manifest.json file is updated with the new card manifests information within the sap.cards.ap.embeds.
+     *
+     * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
         this.router.use(CARD_GENERATOR_API.cardsStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_API.cardsStore}`);
 
-        var limiter = getRateLimiter();
+        const limiter = getRateLimiter();
         this.router.use(limiter);
 
         this.router.post(CARD_GENERATOR_API.cardsStore, async (req: Request, res: Response) => {
@@ -1034,14 +1012,16 @@ export class FlpSandbox {
     }
 
     /**
-     * Route to store i18n properties
-     * All the new properties are added at the end of the i18n file
+     * Adds a route to store i18n properties in the i18n file.
+     * This function updates the i18n file with new properties provided in the request body.
+     *
+     * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
         this.router.use(CARD_GENERATOR_API.i18nStore, json());
         this.logger.debug(`Add route for ${CARD_GENERATOR_API.i18nStore}`);
 
-        var limiter = getRateLimiter();
+        const limiter = getRateLimiter();
         this.router.use(limiter);
 
         this.router.post(CARD_GENERATOR_API.i18nStore, async (req: Request, res: Response) => {
@@ -1083,11 +1063,16 @@ export class FlpSandbox {
     }
 }
 
+/**
+ * Creates and returns a rate limiter middleware for Express.
+ * The rate limiter restricts the number of requests a client can make within a specified time window.
+ *
+ * @returns {RateLimit} An instance of the rate limiter middleware.
+ */
 function getRateLimiter() {
-    var RateLimit = require('express-rate-limit');
     return RateLimit({
         windowMs: 15 * 60 * 1000,
-        max: 100,
+        max: 100
     });
 }
 

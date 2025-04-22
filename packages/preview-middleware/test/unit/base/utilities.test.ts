@@ -1,4 +1,9 @@
-import { prepareFileName, prepareCardTypesForSaving, traverseI18nProperties, I18nEntry } from '../../../src/base/utilities';
+import {
+    prepareFileName,
+    prepareCardTypesForSaving,
+    traverseI18nProperties,
+    type I18nEntry
+} from '../../../src/base/utilities';
 import { promises } from 'fs';
 import packageJson from '../../../package.json';
 

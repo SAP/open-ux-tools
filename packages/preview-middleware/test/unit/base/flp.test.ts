@@ -15,7 +15,7 @@ import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
-import * as utils from '../../../src/base/utilities'
+import * as utils from '../../../src/base/utilities';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
 import { promises } from 'fs';
@@ -118,9 +118,14 @@ describe('FlpSandbox', () => {
         });
 
         test('Card generator is enabled for the application', async () => {
-            const flp = new FlpSandbox({
-                enableCardGenerator: true,
-            }, mockProject, mockUtils, logger);
+            const flp = new FlpSandbox(
+                {
+                    enableCardGenerator: true
+                },
+                mockProject,
+                mockUtils,
+                logger
+            );
             const manifest = {
                 'sap.app': { id: 'my.id' }
             } as Manifest;
@@ -749,7 +754,7 @@ describe('FlpSandbox', () => {
         let mockFsPromisesWriteFile: jest.Mock;
 
         beforeEach(() => {
-            mockFsPromisesWriteFile = jest.fn();//promises.writeFile as jest.Mock;
+            mockFsPromisesWriteFile = jest.fn();
             promises.writeFile = mockFsPromisesWriteFile;
         });
 
@@ -768,17 +773,25 @@ describe('FlpSandbox', () => {
             server = supertest(app);
         };
 
-        beforeAll(() => {
-            setupMiddleware(mockConfig as MiddlewareConfig);
+        beforeAll(async () => {
+            await setupMiddleware(mockConfig as MiddlewareConfig);
         });
 
         test('GET /test/flpGeneratorSandbox.html', async () => {
-            const response = await server.get(`${CARD_GENERATOR_API.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`);
+            const response = await server.get(
+                `${CARD_GENERATOR_API.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
+            );
             expect(response.status).toBe(200);
             expect(response.type).toBe('text/html');
         });
 
-        test('POST /cards/store', async () => {
+        test('POST /cards/store without payload', async () => {
+            const response = await server.post(CARD_GENERATOR_API.cardsStore).send();
+            expect(response.status).toBe(500);
+            expect(response.text).toBe('Files could not be created/updated.');
+        });
+
+        test('POST /cards/store with payload', async () => {
             const payload = {
                 floorplan: 'ObjectPage',
                 localPath: 'cards/op/op1',
@@ -828,11 +841,11 @@ describe('FlpSandbox', () => {
 
             const response = await server.post(CARD_GENERATOR_API.cardsStore).send(payload);
             expect(response.status).toBe(201);
-            expect(response.text).toBe("Files were updated/created");
+            expect(response.text).toBe('Files were updated/created');
             expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(2);
         });
 
-        test('POST /editor/i18n', async () => {
+        test('POST /editor/i18n with payload', async () => {
             const response = await server.post(CARD_GENERATOR_API.i18nStore).send([
                 {
                     'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
@@ -846,10 +859,10 @@ describe('FlpSandbox', () => {
             const lines = [text1, text2];
 
             expect(response.status).toBe(201);
+            expect(response.text).toBe('i18n file updated.');
             expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(1);
             expect(mockFsPromisesWriteFile.mock.calls[0][0]).toBe(filePath);
             expect(mockFsPromisesWriteFile.mock.calls[0][1]).toBe(lines.join(os.EOL));
-
         });
     });
 
