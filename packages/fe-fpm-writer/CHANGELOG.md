@@ -1,5 +1,11 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.33.22
+
+### Patch Changes
+
+-   8b035bd: Method "generateObjectPage": Incorrect 'controlAggregation' applied when a new Object Page is added and FCL is enabled
+
 ## 0.33.21
 
 ### Patch Changes
