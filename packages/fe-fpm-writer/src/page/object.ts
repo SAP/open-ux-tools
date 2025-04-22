@@ -15,9 +15,13 @@ function enhanceData(data: ObjectPage, manifest: Manifest): InternalObjectPage {
     const config: InternalObjectPage = {
         ...data,
         settings: initializeTargetSettings(data, data.settings),
-        name: PageType.ObjectPage,
-        ...getFclConfig(manifest)
+        name: PageType.ObjectPage
     };
+
+    // set FCL configuration
+    const fclConfig = getFclConfig(manifest, config.navigation);
+    config.fcl = fclConfig.fcl;
+    config.controlAggregation = fclConfig.controlAggregation;
 
     // set library dependencies
     config.libraries = getLibraryDependencies(PageType.ObjectPage);
