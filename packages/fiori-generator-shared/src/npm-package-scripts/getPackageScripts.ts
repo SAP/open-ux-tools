@@ -64,14 +64,12 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
  * Generates a variant management script in preview mode.
  *
  * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command URL.
- * @param {URLSearchParams} flpAppId - The FLP app ID to be used in the URL.
  * @returns {string} A variant management script to run the application in preview mode.
  */
-function getVariantPreviewAppScript(addSearchParams: boolean, flpAppId: string): string {
-    let previewAppAnchor = `#${flpAppId}`;
+function getVariantPreviewAppScript(addSearchParams: boolean): string {
+    const previewAppAnchor = '#app-preview';
     let urlParam = '';
     if (addSearchParams) {
-        previewAppAnchor = '#app-preview'; // if search params are added we will use the default
         const disableCacheParam = 'sap-ui-xx-viewCache=false';
         urlParam = `?${[disableCacheParam, 'fiori-tools-rta-mode=true', 'sap-ui-rta-skip-flex-validation=true']
             .filter(Boolean)
@@ -132,7 +130,7 @@ export function getPackageScripts({
 
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : getVariantPreviewAppScript(addSearchParams, flpAppId);
+        : getVariantPreviewAppScript(addSearchParams);
 
     return scripts;
 }
