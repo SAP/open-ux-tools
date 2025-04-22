@@ -47,6 +47,8 @@ exports[`CF Writer App - Application Frontend Generate deployment configs - Add 
 
 exports[`CF Writer App - Application Frontend Generate deployment configs - Add 2nd HTML5 app to app frontend router 2`] = `
 "{
+  \\"xsappname\\": \\"rootmta\\",
+  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
   \\"role-templates\\": []
@@ -366,6 +368,8 @@ exports[`CF Writer App - Application Frontend Generate deployment configs - HTML
 
 exports[`CF Writer App - Application Frontend Generate deployment configs - HTML5 App with app frontend service attached with no destination available 3`] = `
 "{
+  \\"xsappname\\": \\"comfioritoolslrop\\",
+  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
   \\"role-templates\\": []
