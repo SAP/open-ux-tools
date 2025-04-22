@@ -19,14 +19,14 @@
         "routerTypeMessage": "Add Router Module",
         "routerType": {
             "managedAppRouter": "Add application to managed application router",
-            "appFrontAppService": "Add application to application front-end service",
+            "appFrontAppService": "Add application to application frontend service",
             "none": "None"
         }
     },
     "routerType": {
         "standaloneAppRouter": "Standalone Approuter",
         "managedAppRouter": "Managed Approuter",
-        "appFrontAppService": "Application Front-End Service"
+        "appFrontAppService": "Application Frontend Service"
     },
     "errors": {
         "emptyDestinationNameError": "You must provide a destination name in order to continue.",
@@ -41,7 +41,7 @@
     },
     "warning": {
         "btpDestinationListWarning": "BTP destinations are only retrieved on BAS.",
-        "appFrontendServiceRouterChoice": "You need to have the Application Front-End service enabled for your subaccount."
+        "appFrontendServiceRouterChoice": "You need to have the Application Frontend service enabled for your subaccount."
     },
     "info": {
         "addManagedAppRouter": "Add managed application router is enabled",
