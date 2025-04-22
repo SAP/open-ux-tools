@@ -146,7 +146,7 @@ export default class extends Generator {
 
     async writing(): Promise<void> {
         try {
-            if (!this.prompter.isAppSupported) {
+            if (this.configAnswers.shouldCreateExtProject) {
                 await this._generateExtensionProject();
                 return;
             }
@@ -205,7 +205,7 @@ export default class extends Generator {
      */
     private async _generateExtensionProject(): Promise<void> {
         try {
-            const data = getExtensionProjectData(this.configAnswers, this.attributeAnswers, this.systemLookup);
+            const data = await getExtensionProjectData(this.configAnswers, this.attributeAnswers, this.systemLookup);
 
             const generator = resolveNodeModuleGenerator();
             this.composeWith(generator!, {

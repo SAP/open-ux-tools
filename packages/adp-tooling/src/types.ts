@@ -101,6 +101,7 @@ export interface ConfigAnswers {
     username: string;
     password: string;
     application: SourceApplication;
+    shouldCreateExtProject?: boolean;
 }
 
 export interface AttributesAnswers {

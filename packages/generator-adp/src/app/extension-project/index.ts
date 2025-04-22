@@ -9,6 +9,8 @@ import {
 
 import { ExtensionProjectData } from '../types';
 
+export const EXTENSIBILITY_GENERATOR_NS = '@bas-dev/generator-extensibility-sub/generators/app';
+
 /**
  * Prepares data required for generating an extension project.
  *
@@ -68,7 +70,7 @@ export function resolveNodeModuleGenerator(): string | undefined {
     let generator: string | undefined;
     for (const path of nodePaths) {
         try {
-            generator = require.resolve(resolve(path, '@bas-dev/generator-extensibility-sub/generators/app'));
+            generator = require.resolve(resolve(path, EXTENSIBILITY_GENERATOR_NS));
         } catch (e) {
             /**
              * We don't care if there's an error while resolving the module, continue with the next node_module path

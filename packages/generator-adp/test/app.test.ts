@@ -3,13 +3,14 @@ import { join } from 'path';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
 import { exec } from 'child_process';
+import Generator from 'yeoman-generator';
 
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import type { SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     SystemLookup,
@@ -36,9 +37,20 @@ jest.mock('../src/app/questions/helper/default-values.ts', () => ({
     getDefaultProjectName: jest.fn()
 }));
 
+jest.mock('../src/app/questions/helper/validators.ts', () => ({
+    ...jest.requireActual('../src/app/questions/helper/validators.ts'),
+    validateExtensibilityGenerator: jest.fn().mockReturnValue(true)
+}));
+
+jest.mock('../src/app/extension-project/index.ts', () => ({
+    ...jest.requireActual('../src/app/extension-project/index.ts'),
+    resolveNodeModuleGenerator: jest.fn().mockReturnValue('my-generator-path')
+}));
+
 jest.mock('../src/app/questions/helper/conditions', () => ({
     ...jest.requireActual('../src/app/questions/helper/conditions'),
-    showApplicationQuestion: jest.fn().mockReturnValue(true)
+    showApplicationQuestion: jest.fn().mockReturnValue(true),
+    showExtensionProjectQuestion: jest.fn().mockReturnValue(true)
 }));
 
 jest.mock('@sap-ux/system-access', () => ({
@@ -116,7 +128,8 @@ const answers = {
     title: 'App Title',
     ui5Version: '1.134.1',
     targetFolder: testOutputDir,
-    enableTypeScript: false
+    enableTypeScript: false,
+    shouldCreateExtProject: false
 };
 
 const isAbapCloudMock = jest.fn();
@@ -138,6 +151,13 @@ const loggerMock: ToolsLogger = {
     error: toolsLoggerErrorSpy
 } as Partial<ToolsLogger> as ToolsLogger;
 jest.spyOn(Logger, 'ToolsLogger').mockImplementation(() => loggerMock);
+
+const executeCommandSpy = jest.fn();
+const vscodeMock = {
+    commands: {
+        executeCommand: executeCommandSpy
+    }
+};
 
 const loadAppsMock = loadApps as jest.Mock;
 const execMock = exec as unknown as jest.Mock;
@@ -208,15 +228,40 @@ describe('Adaptation Project Generator Integration Test', () => {
         await expect(runContext.run()).rejects.toThrow(t('error.updatingApp'));
     });
 
+    it('should call composeWith to generate an extension project in case the application is not supported', async () => {
+        mockIsAppStudio.mockReturnValue(false);
+        const composeWithSpy = jest.spyOn(Generator.prototype, 'composeWith');
+
+        const runContext = yeomanTest
+            .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+            .withOptions({ shouldInstallDeps: false, vscode: vscodeMock } as AdpGeneratorOptions)
+            .withPrompts({ ...answers, shouldCreateExtProject: true });
+
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        // TODO: Fix failing composeWith
+        expect(composeWithSpy).toHaveBeenCalledWith(
+            expect.stringMatching(''),
+            expect.objectContaining({
+                arguments: [
+                    '{"destination":{"name":"SystemA"},"applicationNS":"customer.app.variant","applicationName":"app.variant","userUI5Ver":"1.134.1","namespace":"sap.ui.demoapps.f1"}'
+                ],
+                appWizard: expect.anything()
+            })
+        );
+    });
+
     it('should generate an onPremise adaptation project successfully', async () => {
         mockIsAppStudio.mockReturnValue(false);
 
         const runContext = yeomanTest
             .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
-            .withOptions({ shouldInstallDeps: true } as AdpGeneratorOptions)
+            .withOptions({ shouldInstallDeps: true, vscode: vscodeMock } as AdpGeneratorOptions)
             .withPrompts(answers);
 
         await expect(runContext.run()).resolves.not.toThrow();
+
+        expect(executeCommandSpy).toHaveBeenCalledTimes(1);
 
         const generatedDirs = fs.readdirSync(testOutputDir);
         expect(generatedDirs.length).toBeGreaterThan(0);
