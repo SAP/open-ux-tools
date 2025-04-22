@@ -7,7 +7,7 @@ import {
     type SystemLookup
 } from '@sap-ux/adp-tooling';
 
-import { ExtensionProjectData } from '../types';
+import type { ExtensionProjectData } from '../types';
 
 /**
  * Prepares data required for generating an extension project.
