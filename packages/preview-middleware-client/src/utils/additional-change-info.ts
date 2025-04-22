@@ -16,10 +16,8 @@ export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> 
     }
 
     let additionalChangeInfo;
-    switch (change?.getChangeType?.()) {
-        case 'addXML':
-            additionalChangeInfo = getAddXMLAdditionalInfo(change);
-            break;
+    if(change?.getChangeType?.() === 'addXML') {
+        additionalChangeInfo = getAddXMLAdditionalInfo(change);
     }
 
     if (additionalChangeInfo) {
