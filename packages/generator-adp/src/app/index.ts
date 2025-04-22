@@ -214,7 +214,7 @@ export default class extends Generator {
             });
             this.logger.info(`'@bas-dev/generator-extensibility-sub' was called.`);
         } catch (e) {
-            this.logger.info('Creating Extension Project failed!');
+            this.logger.info(t('error.creatingExtensionProjectError'));
             this.logger.error(e.message);
             this.appWizard.showError(e.message, MessageType.notification);
         }
