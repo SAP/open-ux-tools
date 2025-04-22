@@ -1476,6 +1476,17 @@ exports[`Test headless generator Test: Headless deploy-config - localAppChanges 
 `;
 
 exports[`Test headless generator Test: Headless deploy-config 1`] = `
+"{
+  "xsappname": "existing-id-deploy",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config 2`] = `
 "_schema-version: '3.1'
 ID: existing-id-deploy
 description: Fiori elements app
@@ -1536,7 +1547,7 @@ parameters:
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 2`] = `
+exports[`Test headless generator Test: Headless deploy-config 3`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: '2.4'
@@ -1566,7 +1577,7 @@ builder:
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 3`] = `
+exports[`Test headless generator Test: Headless deploy-config 4`] = `
 "{
   "welcomeFile": "/index.html",
   "authenticationMethod": "route",
@@ -1601,7 +1612,7 @@ exports[`Test headless generator Test: Headless deploy-config 3`] = `
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 4`] = `
+exports[`Test headless generator Test: Headless deploy-config 5`] = `
 "{
   "scripts": {
     "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
@@ -1620,7 +1631,7 @@ exports[`Test headless generator Test: Headless deploy-config 4`] = `
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 5`] = `
+exports[`Test headless generator Test: Headless deploy-config 6`] = `
 "node_modules/
 dist/
 .scp/
@@ -1633,7 +1644,7 @@ archive.zip
 .*_mta_build_tmp"
 `;
 
-exports[`Test headless generator Test: Headless deploy-config 6`] = `
+exports[`Test headless generator Test: Headless deploy-config 7`] = `
 "{
   "_version": "1.8.0",
   "sap.app": {
@@ -1818,6 +1829,17 @@ exports[`Test headless generator Test: Headless deploy-config 6`] = `
 `;
 
 exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 1`] = `
+"{
+  "xsappname": "existing-id-deploy_ts",
+  "tenant-mode": "dedicated",
+  "description": "Security profile of called application",
+  "scopes": [],
+  "role-templates": []
+}
+"
+`;
+
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 2`] = `
 "_schema-version: '3.1'
 ID: existing-id-deploy_ts
 description: Fiori elements app
@@ -1878,7 +1900,7 @@ parameters:
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 2`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 3`] = `
 "# yaml-language-server: $schema=https://sap.github.io/ui5-tooling/schema/ui5.yaml.json
 
 specVersion: '2.4'
@@ -1918,7 +1940,7 @@ resources:
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 3`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 4`] = `
 "{
   "welcomeFile": "/index.html",
   "authenticationMethod": "route",
@@ -1953,7 +1975,7 @@ exports[`Test headless generator Test: Headless deploy-config TypeScript - Headl
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 4`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 5`] = `
 "{
   "scripts": {
     "build:cf": "ui5 build preload --clean-dest --config ui5-deploy.yaml --include-task=generateCachebusterInfo",
@@ -1972,7 +1994,7 @@ exports[`Test headless generator Test: Headless deploy-config TypeScript - Headl
 "
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 5`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 6`] = `
 "node_modules/
 dist/
 .scp/
@@ -1985,7 +2007,7 @@ archive.zip
 .*_mta_build_tmp"
 `;
 
-exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 6`] = `
+exports[`Test headless generator Test: Headless deploy-config TypeScript - Headless Script 7`] = `
 "{
   "_version": "1.8.0",
   "sap.app": {
