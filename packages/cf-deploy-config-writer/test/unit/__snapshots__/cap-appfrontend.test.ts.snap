@@ -47,6 +47,8 @@ exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 ap
 
 exports[`CF Writer with CAP App Frontend Generate deployment config Add HTML5 app to CAP App Frontend Project 2`] = `
 "{
+  \\"xsappname\\": \\"cappapp\\",
+  \\"tenant-mode\\": \\"dedicated\\",
   \\"description\\": \\"Security profile of called application\\",
   \\"scopes\\": [],
   \\"role-templates\\": []

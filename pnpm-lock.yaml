@@ -1269,6 +1269,9 @@ importers:
       memfs:
         specifier: 3.4.13
         version: 3.4.13
+      unionfs:
+        specifier: 4.4.0
+        version: 4.4.0
 
   packages/control-property-editor:
     devDependencies:

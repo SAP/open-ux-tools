@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.30
+
+### Patch Changes
+
+-   6578d86: text changes
+
 ## 0.2.29
 
 ### Patch Changes
