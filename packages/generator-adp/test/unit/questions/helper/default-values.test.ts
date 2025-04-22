@@ -1,72 +1,34 @@
-import type { Dirent } from 'fs';
-import { readdirSync } from 'fs';
-
-import { FlexLayer } from '@sap-ux/adp-tooling';
+import { existsSync } from 'fs';
 
 import {
-    generateValidNamespace,
-    getProjectNames,
-    getDefaultProjectName
+    getDefaultNamespace,
+    getDefaultProjectName,
+    getDefaultVersion
 } from '../../../../src/app/questions/helper/default-values';
 
 jest.mock('fs', () => ({
     ...jest.requireActual('fs'),
-    readdirSync: jest.fn()
+    readdirSync: jest.fn(),
+    existsSync: jest.fn()
 }));
 
-const readdirSyncMock = readdirSync as jest.Mock;
+jest.mock('@sap-ux/adp-tooling', () => ({
+    ...jest.requireActual('@sap-ux/adp-tooling'),
+    validateUI5VersionExists: jest.fn().mockResolvedValue(true)
+}));
 
-function fakeDirent(name: string, isFile: boolean): Partial<Dirent> {
-    return {
-        name,
-        isFile: () => isFile
-    };
-}
+const existsSyncMock = existsSync as jest.Mock;
 
 describe('generateValidNamespace', () => {
     const projectName = 'app.variant1';
     it('should prepend "customer." when layer is CUSTOMER_BASE', () => {
-        const namespace = generateValidNamespace(projectName, FlexLayer.CUSTOMER_BASE);
+        const namespace = getDefaultNamespace(projectName, true);
         expect(namespace).toBe(`customer.${projectName}`);
     });
 
     it('should return projectName unchanged when layer is not CUSTOMER_BASE', () => {
-        const namespace = generateValidNamespace(projectName, FlexLayer.VENDOR);
+        const namespace = getDefaultNamespace(projectName, false);
         expect(namespace).toBe(projectName);
-    });
-});
-
-describe('getProjectNames', () => {
-    const testPath = 'home/projects';
-
-    afterEach(() => {
-        jest.restoreAllMocks();
-    });
-
-    it('should return project names that match the regex and sort them in reverse order', () => {
-        const fakeDirents = [
-            fakeDirent('app.variant1', false),
-            fakeDirent('app.variant10', false),
-            fakeDirent('app.variant2', false),
-            fakeDirent('otherFolder', false),
-            fakeDirent('app.variant3', false),
-            fakeDirent('somefile.txt', true)
-        ] as Dirent[];
-
-        readdirSyncMock.mockReturnValue(fakeDirents);
-
-        const result = getProjectNames(testPath);
-
-        expect(result).toEqual(['app.variant10', 'app.variant3', 'app.variant2', 'app.variant1']);
-    });
-
-    it('should return an empty array if no directory names match the regex', () => {
-        const fakeDirents = [fakeDirent('folder1', false), fakeDirent('file.txt', true)] as Dirent[];
-        readdirSyncMock.mockReturnValue(fakeDirents);
-
-        const result = getProjectNames(testPath);
-
-        expect(result).toEqual([]);
     });
 });
 
@@ -78,27 +40,28 @@ describe('getDefaultProjectName', () => {
     });
 
     it('should return "app.variant1" if no matching project directories exist', () => {
-        const fakeDirents: Dirent[] = [
-            { name: 'folder', isFile: () => false } as Dirent,
-            { name: 'file.txt', isFile: () => true } as Dirent
-        ];
-        readdirSyncMock.mockReturnValue(fakeDirents);
+        existsSyncMock.mockReturnValueOnce(true).mockReturnValueOnce(false);
 
         const defaultName = getDefaultProjectName(testPath);
 
-        expect(defaultName).toBe('app.variant1');
+        expect(defaultName).toBe('app.variant2');
+    });
+});
+
+describe('getVersionDefaultValue', () => {
+    afterEach(() => {
+        jest.restoreAllMocks();
     });
 
-    it('should increment the highest existing project index', () => {
-        const fakeDirents: Dirent[] = [
-            fakeDirent('app.variant2', false),
-            fakeDirent('app.variant5', false),
-            fakeDirent('app.variant3', false)
-        ] as Dirent[];
-        readdirSyncMock.mockReturnValue(fakeDirents);
+    it('should return empty string if no ui5 versions passed', async () => {
+        const defaultVersion = await getDefaultVersion([]);
 
-        const defaultName = getDefaultProjectName(testPath);
+        expect(defaultVersion).toBe('');
+    });
 
-        expect(defaultName).toBe('app.variant6');
+    it('should return validate the first version passed and return it', async () => {
+        const defaultVersion = await getDefaultVersion(['1.134.1', '1.133.0']);
+
+        expect(defaultVersion).toBe('1.134.1');
     });
 });

@@ -1,5 +1,12 @@
 # @sap-ux/inquirer-common
 
+## 0.6.36
+
+### Patch Changes
+
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+
 ## 0.6.35
 
 ### Patch Changes
