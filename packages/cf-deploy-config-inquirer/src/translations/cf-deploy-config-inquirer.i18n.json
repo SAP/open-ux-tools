@@ -19,7 +19,7 @@
         "routerTypeMessage": "Add Router Module",
         "routerType": {
             "managedAppRouter": "Add Application to Managed Application Router",
-            "appFrontAppService": "Add application to application Frontend service",
+            "appFrontAppService": "Add Application to Application Frontend Service",
             "none": "None"
         }
     },
