@@ -1,7 +1,7 @@
 {
     "error": {
         "telemetry": "Failed to send telemetry data after downloading the application from the SAPUI5 ABAP Repository. {{- error}}",
-        "qfaJsonNotFound": "{{- jsonFileName }} not found in the downloaded application. Check the file exists.",
+        "qfaJsonNotFound": "{{- jsonFileName }} not found in the downloaded application. Ensure the application to be downloaded is properly deployed from ABAP repository.",
         "replaceWebappFilesError": "An error occurred when replacing files in the downloaded application: {{- error}}. For more information, view the logs.",
         "requiredFieldsMissing": "Required fields are missing for the {{- app }} application. Check if the application is deployed correctly.",
         "applicationListFetchError": "An error occurred when fetching the application list: {{- error}}. Check if your application is available in the system.",

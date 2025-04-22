@@ -9,7 +9,7 @@ import { TestFixture } from './fixtures';
 import { getAppConfig } from '../src/app/app-config';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
-import { adtSourceTemplateId, fioriAppSourcetemplateId, extractedFilePath } from '../src/utils/constants';
+import { adtSourceTemplateId, fioriAppSourcetemplateId, extractedFilePath, qfaJsonFileName } from '../src/utils/constants';
 import { removeSync } from 'fs-extra';
 import { isValidPromptState } from '../src/utils/validators';
 import { hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
@@ -17,6 +17,7 @@ import { FileName, DirName, type Manifest } from '@sap-ux/project-access';
 import RepoAppDownloadLogger from '../src/utils/logger';
 import { t } from '../src/utils/i18n';
 import env from 'yeoman-environment';
+import { generate } from '@sap-ux/fiori-elements-writer';
 
 jest.mock('../src/prompts/prompt-helpers', () => ({
 	...jest.requireActual('../src/prompts/prompt-helpers'),
@@ -24,7 +25,6 @@ jest.mock('../src/prompts/prompt-helpers', () => ({
 }));
 
 jest.mock('../src/utils/logger', () => ({
-	...jest.requireActual('../src/utils/logger'),
     logger: {
         error: jest.fn(), 
 		info: jest.fn(),
@@ -129,7 +129,8 @@ function mockPrompts(testOutputDir: string): void {
 
 function copyFilesToExtractedProjectPath(
     testFixtureDir: string,
-    extractedProjectPath: string
+    extractedProjectPath: string,
+	skipQFAJsonCopyAndTriggerError: boolean = false
 ): void {
     if (!fs.existsSync(extractedProjectPath)) {
         fs.mkdirSync(extractedProjectPath, { recursive: true });
@@ -140,7 +141,10 @@ function copyFilesToExtractedProjectPath(
     files.forEach((file) => {
 		const sourceFilePath = join(testFixtureDir, file);
 		const destinationFilePath = join(extractedProjectPath, file);
-		if(file === 'i18n') {
+		if(file === qfaJsonFileName && skipQFAJsonCopyAndTriggerError) {
+			// Skip copying qfa.json and trigger error
+		}
+		else if(file === 'i18n') {
 			// Create the directory if it doesn't exist
 			if (!fs.existsSync(destinationFilePath)) {
 				fs.mkdirSync(destinationFilePath, { recursive: true });
@@ -215,17 +219,15 @@ describe('Repo App Download', () => {
 	const appId = 'test-app-id', repoName = 'app-1-repo';
 	const extractedProjectPath = join(testOutputDir, appId, extractedFilePath);
 	const testFixtureDir = join(__dirname, 'fixtures', 'downloaded-app');
-	copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 	
     afterEach(() => {
 		jest.clearAllMocks();
 		jest.restoreAllMocks();
 		jest.resetModules();
-		removeSync(testOutputDir);
+		//removeSync(testOutputDir);
 	})
 
 	beforeEach(() => {
-		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		appConfig = createAppConfig(appId, metadata);
         mockPrompts(testOutputDir);
 		mockVSCode = {
@@ -243,6 +245,7 @@ describe('Repo App Download', () => {
 	});
 
     it('Should successfully run app download from repository', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
 		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
 		await expect( 
@@ -275,7 +278,48 @@ describe('Repo App Download', () => {
 		expect(RepoAppDownloadLogger.logger.info).toHaveBeenCalledWith(t('info.installationErrors.skippedInstallation'));
     });
 
+	it('Should successfully run app download from repository when Quick Deploy App Config is provided', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
+		(isValidPromptState as jest.Mock).mockReturnValue(true);
+		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
+		await expect( 
+			yeomanTest
+				.run(RepoAppDownloadGenerator, { 
+					resolved: repoAppDownloadGenPath
+				})
+				.cd('.')
+				.withOptions({ 
+					appRootPath: testOutputDir, 
+					appWizard: mockAppWizard,
+					vscode: mockVSCode, 
+					skipInstall: true,
+					data: {
+						quickDeployedAppConfig: {
+							appId: appConfig.app.id,
+							serviceProviderInfo: { name: 'system3' }
+						}
+					}
+				})
+				.withPrompts({
+					systemSelection: 'system3',
+					selectedApp: {
+						appId: appConfig.app.id,
+						title: appConfig.app.title,
+						description: appConfig.app.description,
+						repoName: 'app-1-repo',
+						url: 'url-1'
+					},
+					targetFolder: testOutputDir
+				})
+			)
+		.resolves.not.toThrow();
+		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
+		expect(mockAppWizard.showInformation).toHaveBeenCalledWith(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
+		expect(RepoAppDownloadLogger.logger.info).toHaveBeenCalledWith(t('info.installationErrors.skippedInstallation'));
+    });
+
 	it('Should not throw error in end phase if telemetry fails', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		const errorMsg = 'Telemetry error';
      	mockSendTelemetry.mockRejectedValue(new Error(errorMsg));
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
@@ -310,6 +354,7 @@ describe('Repo App Download', () => {
     });
 
 	it('Should execute post app gen hook event when postGenCommand is provided', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
 		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
         
@@ -321,7 +366,6 @@ describe('Repo App Download', () => {
 				.cd('.')
 				.withOptions({ 
 					appRootPath: testOutputDir, 
-					appWizard: mockAppWizard,
 					vscode: mockVSCode, 
 					data: {
 						postGenCommand: 'test-post-gen-command'
@@ -344,6 +388,7 @@ describe('Repo App Download', () => {
     });
 
 	it('should successfully download a quick deployed app from repository', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		const yeomanEnv = env.createEnv();
 	
 		const generator = new RepoAppDownloadGenerator([], {
@@ -365,5 +410,45 @@ describe('Repo App Download', () => {
 	
 		expect((generator as any)._runNpmInstall).toHaveBeenCalled();
 	});
+
+	it('should report an error if the app to be downloaded dosent include qfa.json', async () => {
+		const yeomanEnv = env.createEnv();
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath, true);
+		(isValidPromptState as jest.Mock).mockReturnValue(true);
+		
+		await expect( 
+			yeomanTest
+				.run(RepoAppDownloadGenerator, { 
+					resolved: repoAppDownloadGenPath
+				})
+				.cd('.')
+				.withOptions({ 
+					appRootPath: testOutputDir, 
+					appWizard: mockAppWizard,
+					vscode: mockVSCode, 
+					logger: {},
+					data: {
+						postGenCommand: 'test-post-gen-command'
+					}
+				})
+				.withPrompts({
+					systemSelection: 'system3',
+					selectedApp: {
+						appId: appConfig.app.id,
+						title: appConfig.app.title,
+						description: appConfig.app.description,
+						repoName: 'app-1-repo',
+						url: 'url-1'
+					},
+					targetFolder: testOutputDir
+				})
+		)
+		.resolves.not.toThrow();
+		
+	});
 });
+
+//index.ts          |   91.26 |    57.57 |   76.92 |   91.26 | 86-87,121-123,185,251,264-266 
+//index.ts          |   94.17 |     60.6 |   76.92 |   94.17 | 86-87,185,251,264-266 
+//index.ts          |   93.33 |    63.63 |   76.92 |   93.33 | 86-87,185-186,252,265-267          
   

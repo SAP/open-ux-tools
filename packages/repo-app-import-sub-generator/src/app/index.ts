@@ -49,6 +49,7 @@ export default class extends Generator {
     private readonly prompts: Prompts;
     private readonly answers: RepoAppDownloadAnswers = defaultAnswers;
     public options: RepoAppDownloadOptions;
+    private abort = false;
     private projectPath: string;
     private extractedProjectPath: string;
     private debugOptions: DebugOptions;
@@ -128,6 +129,8 @@ export default class extends Generator {
         if (isValidPromptState(this.answers.targetFolder, this.answers.selectedApp.appId)) {
             this.projectPath = join(this.answers.targetFolder, this.answers.selectedApp.appId);
             this.extractedProjectPath = join(this.projectPath, extractedFilePath);
+        } else { 
+            this.abort = true;
         }
     }
 
@@ -138,7 +141,6 @@ export default class extends Generator {
         // Extract downloaded app
         const archive = PromptState.downloadedAppPackage;
         await extractZip(this.extractedProjectPath, archive, this.fs);
-
         // Check if the qfa.json file
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
         if (this.fs.exists(qfaJsonFilePath)) {
@@ -178,12 +180,12 @@ export default class extends Generator {
                 join(this.projectPath, DirName.Webapp, FileName.Manifest),
                 this.fs
             );
-
-            // Clean up extracted project files
-            this.fs.delete(this.extractedProjectPath);
         } else {
-            RepoAppDownloadLogger.logger?.error(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }));
+            this.abort = true;  
+            this.appWizard.showError(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }), MessageType.notification);
         }
+        // Clean up extracted project files 
+        this.fs.delete(this.extractedProjectPath);
     }
 
     /**
@@ -244,6 +246,9 @@ export default class extends Generator {
      * Installs npm dependencies for the project.
      */
     public async install(): Promise<void> {
+        if (this.abort) {
+            return;
+        }
         if (!this.options.skipInstall) {
             try {
                 await this._runNpmInstall(this.projectPath);
@@ -321,17 +326,19 @@ export default class extends Generator {
      */
     async end(): Promise<void> {
         try {
-            this.appWizard.showInformation(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
-            await sendTelemetry(
-                EventName.GENERATION_SUCCESS,
-                TelemetryHelper.createTelemetryData({
-                    appType: 'repo-app-import-sub-generator',
-                    ...this.options.telemetryData
-                }) ?? {}
-            ).catch((error) => {
-                RepoAppDownloadLogger.logger?.error(t('error.telemetry', { error: error.message }));
-            });
-            await this._handlePostAppGeneration();
+            if (!this.abort) {
+                this.appWizard.showInformation(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
+                await sendTelemetry(
+                    EventName.GENERATION_SUCCESS,
+                    TelemetryHelper.createTelemetryData({
+                        appType: 'repo-app-import-sub-generator',
+                        ...this.options.telemetryData
+                    }) ?? {}
+                ).catch((error) => {
+                    RepoAppDownloadLogger.logger?.error(t('error.telemetry', { error: error.message }));
+                });
+                await this._handlePostAppGeneration();
+            }
         } catch (error) {
             RepoAppDownloadLogger.logger?.error(t('error.endPhase', { error: error.message }));
         }
