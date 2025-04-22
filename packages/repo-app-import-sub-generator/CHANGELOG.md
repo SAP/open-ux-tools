@@ -1,5 +1,65 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.2.1
+
+### Patch Changes
+
+-   d729875: Handle adt app download generator crash due to invalid destinations
+
+## 0.2.0
+
+### Minor Changes
+
+-   b49f8d5: Export handleWorkspaceConfig from launch-config and use in adt app download sub generator
+
+### Patch Changes
+
+-   Updated dependencies [b49f8d5]
+    -   @sap-ux/launch-config@0.9.0
+
+## 0.1.5
+
+### Patch Changes
+
+-   f220e1e: ADT Quick Deploy UI Text Review
+
+## 0.1.4
+
+### Patch Changes
+
+-   98e0172: fix to enable local preview for adt downloaded app
+
+## 0.1.3
+
+### Patch Changes
+
+-   e5f4915: Added GA link and moved validate logic to a function
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+    -   @sap-ux/inquirer-common@0.6.36
+    -   @sap-ux/odata-service-inquirer@2.2.36
+
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+    -   @sap-ux/odata-service-inquirer@2.2.35
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [1bc1cf2]
+    -   @sap-ux/odata-service-inquirer@2.2.34
+
+## 0.1.0
+
+### Minor Changes
+
+-   770f90b: Removed Jest timeout from test and mocked \_runNpmInstall method when skipInstall is false
+
 ## 0.0.3
 
 ### Patch Changes

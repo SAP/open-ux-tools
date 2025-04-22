@@ -3,11 +3,11 @@ import { getSystemSelectionQuestions } from '@sap-ux/odata-service-inquirer';
 import type { RepoAppDownloadAnswers, RepoAppDownloadQuestions, QuickDeployedAppConfig, AppInfo } from '../app/types';
 import { PromptNames } from '../app/types';
 import { t } from '../utils/i18n';
-import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateFioriAppTargetFolder } from '@sap-ux/project-input-validator';
 import { PromptState } from './prompt-state';
 import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
-import { downloadApp } from '../utils/download-utils';
+import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
+import { validateAppSelection } from '../utils/validators';
 
 /**
  * Gets the target folder selection prompt.
@@ -64,14 +64,16 @@ export async function getPrompts(
                 serviceSelection: { hide: true },
                 systemSelection: { defaultChoice: quickDeployedAppConfig?.serviceProviderInfo?.name }
             },
-            false
+            true
         );
-
         let appList: AppIndex = [];
         const appSelectionPrompt = [
             {
                 when: async (answers: RepoAppDownloadAnswers): Promise<boolean> => {
-                    if (answers[PromptNames.systemSelection]) {
+                    if (
+                        answers[PromptNames.systemSelection] &&
+                        systemQuestions.answers.connectedSystem?.serviceProvider
+                    ) {
                         appList = await fetchAppListForSelectedSystem(
                             systemQuestions.answers.connectedSystem?.serviceProvider as AbapServiceProvider,
                             quickDeployedAppConfig?.appId
@@ -88,30 +90,7 @@ export async function getPrompts(
                 },
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
-                validate: async (answers: AppInfo): Promise<string | boolean> => {
-                    // Quick deploy config exists but no apps found
-                    if (quickDeployedAppConfig?.appId && appList.length === 0) {
-                        return t('error.quickDeployedAppDownloadErrors.noAppsFound', {
-                            appId: quickDeployedAppConfig.appId
-                        });
-                    }
-
-                    // No apps available at all
-                    if (appList.length === 0) {
-                        return t('prompts.appSelection.noAppsDeployed');
-                    }
-
-                    // Valid app selected, try to download
-                    if (answers?.appId) {
-                        try {
-                            await downloadApp(answers.repoName);
-                            return true;
-                        } catch (error) {
-                            return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
-                        }
-                    }
-                    return false;
-                }
+                validate: async (answers: AppInfo) => validateAppSelection(answers, appList, quickDeployedAppConfig)
             }
         ];
 
