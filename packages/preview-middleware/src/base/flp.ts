@@ -22,7 +22,7 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { RtaEditor, FlpConfig, CompleteTestConfig, MiddlewareConfig, RtaConfig, TestConfig } from '../types';
+import type { RtaEditor, FlpConfig, CompleteTestConfig, MiddlewareConfig, RtaConfig, TestConfig, CardGeneratorConfig } from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,
@@ -106,7 +106,7 @@ export class FlpSandbox {
     private readonly logger: Logger;
     private readonly utils: MiddlewareUtils;
     private readonly project: ReaderCollection;
-    private readonly enableCardGenerator: boolean;
+    private readonly cardGenerator?: CardGeneratorConfig;
 
     /**
      * Constructor setting defaults and keeping reference to workspace resources.
@@ -125,7 +125,7 @@ export class FlpSandbox {
         this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
-        this.enableCardGenerator = config.enableCardGenerator ?? false;
+        this.cardGenerator = config.cardGenerator;
     }
 
     /**
@@ -171,7 +171,7 @@ export class FlpSandbox {
         );
         this.addStandardRoutes();
 
-        if (this.enableCardGenerator) {
+        if (this.cardGenerator?.enabled) {
             this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
             await this.addStoreI18nKeysRoute();
@@ -473,15 +473,16 @@ export class FlpSandbox {
      * @private
      */
     private addCardGeneratorMiddlewareRoute(): void {
-        this.logger.debug(`Add route for ${CARD_GENERATOR_API.previewGeneratorSandbox}`);
+        const apiPath = this.cardGenerator?.path ?? CARD_GENERATOR_API.previewGeneratorSandbox;
+        this.logger.debug(`Add route for ${apiPath}`);
         this.router.get(
-            CARD_GENERATOR_API.previewGeneratorSandbox,
+            apiPath,
             async (
                 req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                this.templateConfig.enableCardGenerator = this.enableCardGenerator;
+                this.templateConfig.enableCardGenerator = this.cardGenerator?.enabled;
                 const { title, id } = this.manifest['sap.app'];
 
                 this.templateConfig.apps['Cards-generator'] = {
@@ -957,7 +958,7 @@ export class FlpSandbox {
         this.logger.debug(`Add route for ${CARD_GENERATOR_API.cardsStore}`);
 
         const limiter = getRateLimiter();
-        this.router.use(limiter);
+        this.router.use(CARD_GENERATOR_API.cardsStore, limiter);
 
         this.router.post(CARD_GENERATOR_API.cardsStore, async (req: Request, res: Response) => {
             try {
@@ -1022,7 +1023,7 @@ export class FlpSandbox {
         this.logger.debug(`Add route for ${CARD_GENERATOR_API.i18nStore}`);
 
         const limiter = getRateLimiter();
-        this.router.use(limiter);
+        this.router.use(CARD_GENERATOR_API.i18nStore, limiter);
 
         this.router.post(CARD_GENERATOR_API.i18nStore, async (req: Request, res: Response) => {
             try {

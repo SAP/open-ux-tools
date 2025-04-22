@@ -115,6 +115,11 @@ export type TestConfigDefaults = {
     };
 };
 
+export type CardGeneratorConfig = {
+    path?: string;
+    enabled?: boolean;
+};
+
 /**
  * Middleware configuration.
  */
@@ -130,7 +135,7 @@ export interface MiddlewareConfig {
     };
     adp?: AdpPreviewConfig;
     debug?: boolean;
-    enableCardGenerator?: boolean;
+    cardGenerator?: CardGeneratorConfig;
 }
 
 export type DefaultFlpPath = '/test/flp.html';

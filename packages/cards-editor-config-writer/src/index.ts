@@ -42,19 +42,9 @@ function updatePackageJson(basePath: string, fs: Editor) {
 
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
 
-    packageJson.devDependencies ??= {};
-    packageJson.devDependencies['@sap-ux/cards-editor-middleware'] ??= '0';
-
     packageJson.scripts ??= {};
     packageJson.scripts['start-cards-generator'] = `fiori run --open 'test/flpGeneratorSandbox.html#Cards-generator'`;
 
-    if (!isUi5CliHigherTwo(packageJson.devDependencies)) {
-        packageJson.ui5 ??= {};
-        packageJson.ui5.dependencies ??= [];
-        if (!packageJson.ui5.dependencies.includes('@sap-ux/cards-editor-middleware')) {
-            packageJson.ui5.dependencies.push('@sap-ux/cards-editor-middleware');
-        }
-    }
     fs.writeJSON(packageJsonPath, packageJson);
 }
 

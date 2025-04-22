@@ -120,7 +120,9 @@ describe('FlpSandbox', () => {
         test('Card generator is enabled for the application', async () => {
             const flp = new FlpSandbox(
                 {
-                    enableCardGenerator: true
+                   cardGenerator: {
+                        enabled: true
+                   }
                 },
                 mockProject,
                 mockUtils,
@@ -748,7 +750,9 @@ describe('FlpSandbox', () => {
     describe('router with enableCardGenerator', () => {
         let server!: SuperTest<Test>;
         const mockConfig = {
-            enableCardGenerator: true
+            cardGenerator: {
+                enabled: true
+            }
         };
 
         let mockFsPromisesWriteFile: jest.Mock;
