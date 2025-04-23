@@ -153,10 +153,11 @@ function copyFilesToExtractedProjectPath(
     files.forEach((file) => {
 		const sourceFilePath = join(testFixtureDir, file);
 		const destinationFilePath = join(extractedProjectPath, file);
-		if(file === qfaJsonFileName && skipQFAJsonCopyAndTriggerError) {
+        if (file === qfaJsonFileName && skipQFAJsonCopyAndTriggerError) {
 			// Skip copying qfa.json and trigger error
-		}
-		else if(file === 'i18n') {
+            return;
+        }
+		if(file === 'i18n') {
 			// Create the directory if it doesn't exist
 			if (!fs.existsSync(destinationFilePath)) {
 				fs.mkdirSync(destinationFilePath, { recursive: true });
@@ -169,7 +170,6 @@ function copyFilesToExtractedProjectPath(
 		}
     });
 }
-
 
 function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureDir: string): void {
     const projectPath = join(`${testOutputDir}/${appId}`);
@@ -260,10 +260,10 @@ describe('Repo App Download', () => {
 		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
 		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
-		(handleWorkspaceConfig as jest.Mock).mockResolvedValue({
+		(handleWorkspaceConfig as jest.Mock).mockReturnValue({
 			launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
 			cwd: testOutputDir,
-			workspaceFolderUri: 'uri',
+			workspaceFolderUri: 'testUri',
 			appNotInWorkspace: true
 		});
 		await expect( 
@@ -554,7 +554,6 @@ describe('Repo App Download', () => {
 
 	it('should log an error if installation of a quick deployed app from repository', async () => {
 		const yeomanEnv = env.createEnv();
-
 		const generator = new RepoAppDownloadGenerator([], {
 			env: yeomanEnv,
 			appWizard: mockAppWizard as AppWizard,
@@ -577,5 +576,71 @@ describe('Repo App Download', () => {
 			t('error.installationErrors.npmInstall', { error: 'Error: Installation error' })
 		);
 	});
+
+	it('should set conflicter.force to true and initialize telemetry', async () => {
+		const yeomanEnv = env.createEnv();
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logger: {},
+			vscode: mockVSCode,
+			skipInstall: false,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
+			}
+		});
+		// Mock Yeoman environment with a conflicter object
+		(generator.env as any) = {
+			conflicter: { force: false }
+		};
+
+		await generator.initializing();
+
+		expect((generator.env as any).conflicter.force).toBe(true);
+		expect(TelemetryHelper.initTelemetrySettings).toHaveBeenCalledWith(
+			expect.objectContaining({
+				consumerModule: expect.objectContaining({
+					name: expect.any(String),
+					version: expect.any(String)
+				}),
+				internalFeature: expect.any(Boolean),
+				watchTelemetrySettingStore: false
+			})
+		);
+	});
+
+	it('should set callback function on prompts if prompts exist', () => {
+		const yeomanEnv = env.createEnv();
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logger: {},
+			vscode: mockVSCode,
+			skipInstall: false,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
+			}
+		});
+		Object.defineProperty(generator, 'prompts', {
+			value: {
+				setCallback: jest.fn()
+			},
+			writable: false
+		});
+		const mockFn = jest.fn();
+		generator.setPromptsCallback(mockFn);
+
+		expect(generator['prompts'].setCallback).toHaveBeenCalledWith(mockFn);
+	});
+
 });
+
+//index.ts          |   98.19 |    75.67 |   84.61 |   98.19 | 87-88   
+//index.ts          |     100 |    78.37 |    92.3 |     100 | 70,206-234,275,312,340                    
     
