@@ -20,6 +20,7 @@ export interface App {
     baseComponent?: string; // UI5 Component `required` by Component.js
     startFile?: string;
     localStartFile?: string;
+    flpAction?: string;
 
     /**
      * Defines the template used by the generation tool
@@ -160,6 +161,12 @@ export interface AppOptions {
      * Excludes the index.html from the template and does not add the `start-noflp` script in package.json
      */
     generateIndex?: boolean;
+    /**
+     * Enables the use of virtually serving the endpoints for preview.
+     * Prevents generating `flpSandbox.html`, and if applicable the `changes_loader.js`, `changes_preview.js` & `locate-reuse-libs.js`.
+     * Also updates the configs (e.g. ui5.yaml) and package.json scripts accordingly.
+     */
+    useVirtualPreviewEndpoints?: boolean;
 }
 
 export interface Ui5App {

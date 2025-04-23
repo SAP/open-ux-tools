@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.27.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
 ## 0.26.5
 
 ### Patch Changes
