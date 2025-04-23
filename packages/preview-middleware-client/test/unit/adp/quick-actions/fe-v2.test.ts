@@ -316,6 +316,132 @@ describe('FE V2 quick actions', () => {
                     expect.objectContaining({ actionName: 'add-controller-to-page' })
                 );
             });
+
+            test('initialize and execute action for existing controller change', async () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValueOnce(true);
+                const pageView = new XMLView();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new UIComponentMock();
+                        const view = new XMLView();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getViewName.mockImplementation(
+                            () => 'sap.suite.ui.generic.template.ListReport.view.ListReport'
+                        );
+                        const componentContainer = new ComponentContainer();
+                        const spy = jest.spyOn(componentContainer, 'getComponent');
+                        spy.mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component as unknown as ComponentMock;
+                            }
+                        });
+                        view.getContent.mockImplementation(() => {
+                            return [componentContainer];
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return view;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV2QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-add-controller-to-page',
+                                    title: 'Add Controller to Page',
+                                    enabled: false,
+                                    tooltip: 'This action is disabled because a pending change for controller extension has been found. '
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
+                );
+
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'ControllerExtension',
+                    undefined,
+                    {},
+                    expect.objectContaining({ actionName: 'add-controller-to-page' })
+                );
+            });
         });
 
         describe('change table columns', () => {
@@ -2038,7 +2164,6 @@ describe('FE V2 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
-                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {

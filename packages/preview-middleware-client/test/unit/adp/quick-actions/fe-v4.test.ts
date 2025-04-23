@@ -521,6 +521,133 @@ describe('FE V4 quick actions', () => {
                     { actionName: 'add-controller-to-page', telemetryEventIdentifier }
                 );
             });
+
+            test('initialize and execute action with existing controller change', async () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+                const pageView = new XMLView();
+                mockTelemetryEventIdentifier();
+                FlexUtils.getViewForControl.mockImplementation(() => {
+                    return {
+                        getId: () => 'MyView',
+                        getController: () => {
+                            return {
+                                getMetadata: () => {
+                                    return {
+                                        getName: () => 'MyController'
+                                    };
+                                }
+                            };
+                        }
+                    };
+                });
+                fetchMock.mockResolvedValue({
+                    json: jest
+                        .fn()
+                        .mockReturnValueOnce({
+                            controllerExists: false,
+                            controllerPath: '',
+                            controllerPathFromRoot: '',
+                            isRunningInBAS: false
+                        })
+                        .mockReturnValueOnce({ controllers: [] }),
+                    text: jest.fn(),
+                    ok: true
+                });
+                const appComponent = new AppComponentMock();
+                const component = new TemplateComponentMock();
+                jest.spyOn(component, 'getAppComponent').mockReturnValue(appComponent);
+                jest.spyOn(ComponentMock, 'getOwnerComponentFor').mockImplementation(() => {
+                    return component as unknown as UIComponent;
+                });
+                sapCoreMock.byId.mockImplementation((id) => {
+                    if (id == 'DynamicPage') {
+                        return {
+                            getDomRef: () => ({}),
+                            getParent: () => pageView
+                        };
+                    }
+                    if (id == 'NavContainer') {
+                        const container = new NavContainer();
+                        const component = new TemplateComponentMock();
+                        pageView.getDomRef.mockImplementation(() => {
+                            return {
+                                contains: () => true
+                            };
+                        });
+                        pageView.getId.mockReturnValue('test.app::ProductsList');
+                        pageView.getViewName.mockImplementation(() => 'sap.fe.templates.ListReport.ListReport');
+                        const componentContainer = new ComponentContainer();
+                        jest.spyOn(componentContainer, 'getComponent').mockImplementation(() => {
+                            return 'component-id';
+                        });
+                        jest.spyOn(Component, 'getComponentById').mockImplementation((id: string | undefined) => {
+                            if (id === 'component-id') {
+                                return component as unknown as ComponentMock;
+                            }
+                        });
+                        container.getCurrentPage.mockImplementation(() => {
+                            return componentContainer;
+                        });
+                        component.getRootControl.mockImplementation(() => {
+                            return pageView;
+                        });
+                        return container;
+                    }
+                });
+
+                const rtaMock = new RuntimeAuthoringMock({} as RTAOptions) as unknown as RuntimeAuthoring;
+                const registry = new FEV4QuickActionRegistry();
+                const service = new QuickActionService(
+                    rtaMock,
+                    new OutlineService(rtaMock, mockChangeService),
+                    [registry],
+                    { onStackChange: jest.fn() } as any
+                );
+                await service.init(sendActionMock, subscribeMock);
+
+                await service.reloadQuickActions({
+                    'sap.f.DynamicPage': [
+                        {
+                            controlId: 'DynamicPage'
+                        } as any
+                    ],
+                    'sap.m.NavContainer': [
+                        {
+                            controlId: 'NavContainer'
+                        } as any
+                    ]
+                });
+
+                expect(sendActionMock).toHaveBeenCalledWith(
+                    quickActionListChanged([
+                        {
+                            title: 'LIST REPORT',
+                            actions: [
+                                {
+                                    'kind': 'simple',
+                                    id: 'listReport0-add-controller-to-page',
+                                    title: 'Add Controller to Page',
+                                    enabled: false,
+                                    tooltip: 'This action is disabled because a pending change for controller extension has been found. '
+                                }
+                            ]
+                        }
+                    ])
+                );
+
+                await subscribeMock.mock.calls[0][0](
+                    executeQuickAction({ id: 'listReport0-add-controller-to-page', kind: 'simple' })
+                );
+
+                expect(DialogFactory.createDialog).toHaveBeenCalledWith(
+                    mockOverlay,
+                    rtaMock,
+                    'ControllerExtension',
+                    undefined,
+                    {},
+                    { actionName: 'add-controller-to-page', telemetryEventIdentifier }
+                );
+            });
         });
 
         describe('change table columns', () => {
