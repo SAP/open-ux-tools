@@ -135,7 +135,8 @@ export default class extends Generator {
         const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
         const options: AttributePromptOptions = {
             targetFolder: { default: defaultFolder },
-            ui5ValidationCli: { hide: !isCLI }
+            ui5ValidationCli: { hide: !isCLI },
+            enableTypeScript: { hide: !!this.configAnswers.shouldCreateExtProject }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
