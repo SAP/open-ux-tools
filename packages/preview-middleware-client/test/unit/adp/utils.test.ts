@@ -6,7 +6,7 @@ import isReuseComponentApi from 'mock/sap/ui/rta/util/isReuseComponent';
 import * as Utils from '../../../src/utils/core';
 import Element from 'sap/ui/core/Element';
 
-import { createDeferred, notifyUser, getReuseComponentChecker, resetReuseComponentChecker } from '../../../src/adp/utils';
+import { createDeferred, notifyUser, getReuseComponentChecker, resetReuseComponentChecker, matchesChangeProperty } from '../../../src/adp/utils';
 
 
 describe('utils', () => {
@@ -48,7 +48,7 @@ describe('utils', () => {
         });
     });
 
-    describe('matchesFragmentName', () => {
+    describe('matchesChangeProperty', () => {
         const createMockCommand = (fragmentPath: string | undefined) => ({
             getPreparedChange: () => ({
                 getDefinition: () => ({
@@ -60,31 +60,31 @@ describe('utils', () => {
         });
 
         it('returns true when the fragment path matches the specified fragment name', () => {
-            const fragmentName = 'testFragment';
-            const command = createMockCommand(`${fragmentName}.fragment.xml`) as unknown as FlexCommand;
+            const fragmentPath = 'testFragment.fragment.xml';
+            const command = createMockCommand(fragmentPath) as unknown as FlexCommand;
 
-            // expect(matchesFragmentName(command, fragmentName)).toBe(true);
+            expect(matchesChangeProperty(command, 'content.fragmentPath',fragmentPath)).toBe(true);
         });
 
         it('returns false when the fragment path does not match the specified fragment name', () => {
-            const fragmentName = 'Share';
+            const fragmentPath = 'Share.fragment.xml';
             const command = createMockCommand('Delete.fragment.xml') as unknown as FlexCommand;
 
-            // expect(matchesFragmentName(command, fragmentName)).toBe(false);
+            expect(matchesChangeProperty(command, 'content.fragmentPath',fragmentPath)).toBe(false);
         });
 
         it('returns false when the fragment path is undefined', () => {
-            const fragmentName = 'Share';
+            const fragmentPath = 'Share.fragment.xml';
             const command = createMockCommand(undefined) as unknown as FlexCommand;
 
-            // expect(matchesFragmentName(command, fragmentName)).toBe(false);
+            expect(matchesChangeProperty(command, 'content.fragmentPath',fragmentPath)).toBe(false);
         });
 
         it('returns false when the fragment path is empty', () => {
-            const fragmentName = 'Share';
+            const fragmentPath = 'Share.fragment.xml';
             const command = createMockCommand('') as unknown as FlexCommand;
 
-            // expect(matchesFragmentName(command, fragmentName)).toBe(false);
+            expect(matchesChangeProperty(command, 'content.fragmentPath',fragmentPath)).toBe(false);
         });
     });
 

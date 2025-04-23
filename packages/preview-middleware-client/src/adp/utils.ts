@@ -89,6 +89,20 @@ export function checkForExistingChange(
 }
 
 /**
+ * Retrieves the value of a nested property from an object based on a dot-separated path.
+ *
+ * @param obj - The object from which to retrieve the nested property.
+ * @param path - A dot-separated string representing the path to the desired property.
+ *               For example, "a.b.c" will attempt to access `obj.a.b.c`.
+ * @returns The value of the nested property if it exists, or `undefined` if any part of the path is invalid.
+ */
+export function getNestedProperty(obj: object, path: string): unknown {
+    return path.split('.').reduce((acc: unknown, key) => {
+        return (acc as Record<string, unknown>)?.[key];
+    }, obj);
+}
+
+/**
  * Checks if a specific property in the command's change matches the given value.
  *
  * @param {FlexCommand} command - The command object containing the prepared change to be examined.
@@ -101,25 +115,10 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
         return false;
     }
     const change = command.getPreparedChange()?.getDefinition?.();
-    if (!change) return false;
+    if (!change) {return false;}
 
     const nestedProperty = getNestedProperty(change, propertyPath);
     return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
-}
-
-
-/**
- * Retrieves the value of a nested property from an object based on a dot-separated path.
- *
- * @param obj - The object from which to retrieve the nested property.
- * @param path - A dot-separated string representing the path to the desired property.
- *               For example, "a.b.c" will attempt to access `obj.a.b.c`.
- * @returns The value of the nested property if it exists, or `undefined` if any part of the path is invalid.
- */
-export function getNestedProperty(obj: object, path: string): unknown {
-    return path.split('.').reduce((acc: unknown, key) => {
-        return (acc as Record<string, unknown>)?.[key];
-    }, obj) as unknown;
 }
 
 /**
