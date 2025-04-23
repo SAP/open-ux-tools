@@ -26,7 +26,7 @@ export function getAddXMLAdditionalInfo(change: FlexChange<AddXMLChangeContent>)
     return undefined;
 }
 
-function getFragmentTemplateName(selectorId: string, targetAggregation: string): string {
+export function getFragmentTemplateName(selectorId: string, targetAggregation: string): string {
     const control = getControlById(selectorId);
 
     if (!control) {

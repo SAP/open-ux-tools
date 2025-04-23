@@ -3,8 +3,10 @@ import FakeLrepConnector from 'mock/sap/ui/fl/FakeLrepConnector';
 
 import enableFakeConnector, { loadChanges, create } from '../../../src/flp/enableFakeConnector';
 import LrepConnector from 'mock/sap/ui/fl/LrepConnector';
+import * as additionalChangeInfo from '../../../src/utils/additional-change-info';
 
 describe('flp/FakeLrepConnector', () => {
+    jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue(undefined);
     afterEach(() => {
         jest.restoreAllMocks();
     });

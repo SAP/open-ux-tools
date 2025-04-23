@@ -29,7 +29,10 @@ import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xml-additional-info';
 import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
+import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from '../../cpe/communication-service';
 
 const radix = 10;
 
@@ -148,10 +151,15 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             targetAggregation: targetAggregation ?? 'content'
         };
 
-        if(this.data){
+        if (this.data) {
             this.data.deferred.resolve(modifiedValue);
         } else {
             await this.createFragmentChange(modifiedValue);
+        }
+
+        const templateName = getFragmentTemplateName(this.runtimeControl.getId(), targetAggregation);
+        if (templateName) {
+            CommunicationService.sendAction(setApplicationRequiresReload(true));
         }
 
         const bundle = await getTextBundle();

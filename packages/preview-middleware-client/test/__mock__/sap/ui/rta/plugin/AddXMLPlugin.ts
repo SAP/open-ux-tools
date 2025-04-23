@@ -1,5 +1,8 @@
-export default class AddXMLPlugin {
-    constructor() {}
-    public execute = jest.fn();
-    public add = jest.fn();
-}
+const AddXMLPlugin = jest.fn().mockImplementation(() => {
+    return {
+        execute: jest.fn(),
+        add: jest.fn()
+    };
+});
+
+export default AddXMLPlugin;

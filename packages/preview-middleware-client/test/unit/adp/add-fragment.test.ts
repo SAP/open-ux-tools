@@ -1,13 +1,11 @@
 import { initAddXMLPlugin } from '../../../src/adp/add-fragment';
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 import type UI5Element from 'sap/ui/core/Element';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import AddXMLPlugin from 'sap/ui/rta/plugin/AddXMLPlugin';
+import CommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
+import AddXMLPlugin from 'mock/sap/ui/rta/plugin/AddXMLPlugin';
 import { DialogFactory, DialogNames } from '../../../src/adp/dialog-factory';
 import { createDeferred } from '../../../src/adp/utils';
 
-jest.mock('sap/ui/rta/command/CommandFactory');
-jest.mock('sap/ui/rta/plugin/AddXMLPlugin');
 jest.mock('../../../src/adp/dialog-factory');
 jest.mock('../../../src/adp/utils', () => ({
     createDeferred: jest.fn()
@@ -31,13 +29,10 @@ describe('AddFragmentService', () => {
 
     describe('init', () => {
         it('should initialize the AddXMLPlugin and set it in RTA plugins', async () => {
-            const mockCommandFactory = jest.fn();
-            (CommandFactory as unknown as jest.Mock).mockImplementation(() => mockCommandFactory);
-
             initAddXMLPlugin(mockRta);
 
             expect(AddXMLPlugin).toHaveBeenCalledWith({
-                commandFactory: mockCommandFactory,
+                commandFactory: expect.any(CommandFactory),
                 fragmentHandler: expect.any(Function)
             });
 

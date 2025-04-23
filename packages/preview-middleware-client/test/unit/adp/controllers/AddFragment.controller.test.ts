@@ -17,6 +17,15 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import Core from 'sap/ui/core/Core';
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 import { AddFragmentData } from '../../../../src/adp/add-fragment';
+import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
+import { CommunicationService } from '../../../../src/cpe/communication-service';
+
+jest.mock('@sap-ux-private/control-property-editor-common');
+jest.mock('../../../../src/cpe/communication-service', () => ({
+    CommunicationService: {
+        sendAction: jest.fn()
+    }
+}));
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -624,6 +633,7 @@ describe('AddFragment', () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
         test('creates new fragment and a change', async () => {
+            const mockSendAction = CommunicationService.sendAction as jest.Mock;
             sapMock.ui.version = '1.71.62';
             const executeSpy = jest.fn();
             rtaMock.getCommandStack.mockReturnValue({
@@ -641,8 +651,10 @@ describe('AddFragment', () => {
                     getAllAggregations: jest.fn().mockReturnValue({}),
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
-                })
+                }),
+                getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
+            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('templateName');
 
             const addFragment = new AddFragment(
                 'adp.extension.controllers.AddFragment',
@@ -700,6 +712,7 @@ describe('AddFragment', () => {
                 }
             });
             expect(CommandFactory.getCommandFor.mock.calls[0][4].selector).toBeUndefined();
+            expect(mockSendAction).toHaveBeenCalled();
         });
 
         test('add header field fragment and a change if targetAggregation is items and not a dynamic header', async () => {
@@ -783,8 +796,10 @@ describe('AddFragment', () => {
                     getMetadata: jest.fn().mockReturnValue({
                         getName: jest.fn().mockReturnValue('No.Dynamic.ObjectPageDynamicHeaderContent')
                     })
-                })
+                }),
+                getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
+            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('');
 
             addFragment.handleDialogClose = jest.fn();
 
@@ -890,8 +905,10 @@ describe('AddFragment', () => {
                     getMetadata: jest.fn().mockReturnValue({
                         getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout')
                     })
-                })
+                }),
+                getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
+            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('');
 
             addFragment.handleDialogClose = jest.fn();
 
@@ -931,8 +948,10 @@ describe('AddFragment', () => {
                     getAllAggregations: jest.fn().mockReturnValue({}),
                     getName: jest.fn().mockReturnValue('sap.uxap.ObjectPageLayout'),
                     getDefaultAggregationName: jest.fn().mockReturnValue('content')
-                })
+                }),
+                getId: jest.fn().mockReturnValue('some-id')
             } as unknown as ManagedObject);
+            jest.spyOn(addXMLAdditionalInfo, 'getFragmentTemplateName').mockReturnValue('templateName');
             const event = {
                 getSource: jest.fn().mockReturnValue({
                     setEnabled: jest.fn()
@@ -972,7 +991,7 @@ describe('AddFragment', () => {
                 fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
                 fragmentPath: `fragments/test.fragment.xml`,
                 index: 0,
-                targetAggregation: 'content',
+                targetAggregation: 'content'
             });
         });
     });
