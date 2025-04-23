@@ -13,6 +13,16 @@ import * as apiHandler from '../../../../src/adp/api-handler';
 import ControllerExtension from '../../../../src/adp/controllers/ControllerExtension.controller';
 import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controller';
 import * as adpUtils from 'open/ux/preview/client/adp/utils';
+import * as utils from '../../../../src/utils/version';
+import * as coreUtils from '../../../../src/utils/core';
+
+jest.mock('../../../../src/adp/command-executor', () => {
+    return jest.fn().mockImplementation(() => ({
+        getCommand: jest.fn().mockResolvedValue({}),
+        pushAndExecuteCommand: jest.fn()
+    }));
+});
+
 
 describe('ControllerExtension', () => {
     beforeAll(() => {
@@ -325,6 +335,33 @@ describe('ControllerExtension', () => {
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
         });
 
+        test('sets error when controller with the same named already exists as pending change', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                {} as unknown as UI5Element,
+                {} as unknown as RuntimeAuthoring
+            );
+
+            const valueStateSpy = jest.fn().mockReturnValue({ setValueStateText: jest.fn() });
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    getValue: jest.fn().mockReturnValue('Test'),
+                    setValueState: valueStateSpy
+                })
+            };
+
+            controllerExt.model = testModel;
+
+            controllerExt.dialog = {
+                getBeginButton: jest.fn().mockReturnValue({ setEnabled: jest.fn() })
+            } as unknown as Dialog;
+
+            controllerExt.onControllerNameInputChange(event as unknown as Event);
+
+            expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
+        });
+
         test('sets error when the controller name is empty', () => {
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
@@ -521,6 +558,48 @@ describe('ControllerExtension', () => {
                 creation: '2020-01-01T00:00:00.000Z',
                 fileName: 'something.change'
             });
+        });
+
+
+        test('creates new controller and a change for version >1.135', async () => {
+            const getControlByIdMock = jest.spyOn(coreUtils, 'getControlById').mockReturnValueOnce(undefined);
+            jest.spyOn(utils, 'getUi5Version').mockResolvedValueOnce({major: 1, minor: 136, patch: 0});
+            jest.spyOn(utils, 'isLowerThanMinimalUi5Version').mockReturnValueOnce(false);
+            const controllerExt = new ControllerExtension(
+                'adp.extension.controllers.ControllerExtension',
+                {} as unknown as UI5Element,
+                {
+                    getService: jest.fn(),
+                    getFlexSettings: jest.fn()
+                } as unknown as RuntimeAuthoring
+            );
+
+            const event = {
+                getSource: jest.fn().mockReturnValue({
+                    setEnabled: jest.fn()
+                })
+            };
+
+            controllerExt.model = {
+                getProperty: jest
+                    .fn()
+                    .mockReturnValueOnce(false)
+                    .mockReturnValueOnce('Share')
+                    .mockReturnValueOnce('::Toolbar'),
+                setProperty: jest.fn()
+            } as unknown as JSONModel;
+
+            fetchMock.mockResolvedValue({
+                json: jest.fn().mockReturnValue({ controllers: [], id: 'adp.app' }),
+                text: jest.fn().mockReturnValueOnce('Controller was created!').mockReturnValueOnce('Change created'),
+                ok: true
+            });
+
+            controllerExt.handleDialogClose = jest.fn();
+
+            await controllerExt.onCreateBtnPress(event as unknown as Event);
+
+            expect(getControlByIdMock).toHaveBeenCalledWith('::Toolbar');
         });
 
         test('resolve deffered data promise when passed', async () => {

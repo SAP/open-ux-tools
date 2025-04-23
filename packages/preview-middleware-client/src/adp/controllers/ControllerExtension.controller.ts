@@ -27,11 +27,10 @@ import { getControllerInfo } from '../utils';
 import type { ExtendControllerData, DeferredExtendControllerData } from '../extend-controller';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
 import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
-import { notifyUser } from '../utils';
+import { notifyUser, checkForExistingChange  } from '../utils';
 import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
 import CommandExecutor from '../command-executor';
 import { getControlById } from '../../utils/core';
-import { checkForExistingChange } from '../utils';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
