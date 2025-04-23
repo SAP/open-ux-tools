@@ -1,5 +1,11 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.15
+
+### Patch Changes
+
+-   e691644: check enable typescript answer to determine use of npm workspaces
+
 ## 0.0.14
 
 ### Patch Changes
