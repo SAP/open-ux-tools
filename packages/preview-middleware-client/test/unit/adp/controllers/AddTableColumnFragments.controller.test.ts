@@ -16,6 +16,7 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import AddTableColumnFragments from 'open/ux/preview/client/adp/controllers/AddTableColumnFragments.controller';
 import SimpleForm from 'sap/ui/layout/form';
 import Control from 'sap/ui/core/Control';
+import * as adpUtils from 'open/ux/preview/client/adp/utils';
 
 const mocks = {
     setValueStateMock: jest.fn(),
@@ -231,6 +232,7 @@ describe('AddTableColumnsFragments controller', () => {
 
         describe('duplicate fragment names', () => {
             test('sets error when column and cell fragments have the same name', () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name1');
 
                 createDialog([
@@ -273,6 +275,7 @@ describe('AddTableColumnsFragments controller', () => {
             });
 
             test('clears errors on value change', () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const event = mockInputEvent('Name2');
 
                 createDialog([
@@ -367,6 +370,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('does not crash if composite command exists in command stack', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
             const command = {
@@ -390,6 +394,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets error when the fragment name already exists in command stack', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -419,6 +424,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets error when the fragment name already exists in command stack (command is "composite")', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -452,6 +458,7 @@ describe('AddTableColumnsFragments controller', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             rtaMock.getCommandStack.mockReturnValue({
                 getCommands: jest.fn().mockReturnValue([])

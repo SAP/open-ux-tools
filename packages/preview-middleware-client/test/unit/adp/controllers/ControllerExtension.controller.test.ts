@@ -12,6 +12,7 @@ import * as apiHandler from '../../../../src/adp/api-handler';
 
 import ControllerExtension from '../../../../src/adp/controllers/ControllerExtension.controller';
 import { ExtendControllerData } from 'open/ux/preview/client/adp/extend-controller';
+import * as adpUtils from 'open/ux/preview/client/adp/utils';
 
 describe('ControllerExtension', () => {
     beforeAll(() => {
@@ -49,6 +50,7 @@ describe('ControllerExtension', () => {
         });
 
         test('fills json model with data (controller exists: false)', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
@@ -78,6 +80,7 @@ describe('ControllerExtension', () => {
         });
 
         test('fills json model with data (controller exists: true | env: VS Code)', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
@@ -132,6 +135,7 @@ describe('ControllerExtension', () => {
         });
 
         test('fills json model with data (controller exists: true | env: BAS)', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
             };
@@ -223,6 +227,7 @@ describe('ControllerExtension', () => {
         });
 
         test('throws error when trying to get controllers from the project workspace', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const errorMsg = 'Could not retrieve controllers!';
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')
@@ -294,6 +299,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when controller with the same named already exists', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -346,6 +352,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when the controller name has special characters', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -372,6 +379,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when the controller name contains a whitespace at the end', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -398,6 +406,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets error when the controller name exceeds 64 characters', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -426,6 +435,7 @@ describe('ControllerExtension', () => {
         });
 
         test('sets create button to true when the controller name is valid', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const controllerExt = new ControllerExtension(
                 'adp.extension.controllers.ControllerExtension',
                 {} as unknown as UI5Element,
@@ -514,6 +524,7 @@ describe('ControllerExtension', () => {
         });
 
         test('resolve deffered data promise when passed', async () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const addSpy = jest.fn().mockResolvedValue({ fileName: 'something.change' });
             const overlays = {
                 getId: jest.fn().mockReturnValue('some-id')

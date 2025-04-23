@@ -50,6 +50,7 @@ import * as QCUtils from '../../../../src/cpe/quick-actions/utils';
 import ManagedObject from 'sap/ui/base/ManagedObject';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
 import * as utils from 'open/ux/preview/client/utils/fe-v4';
+import * as adpUtils from 'open/ux/preview/client/adp/utils';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -400,6 +401,7 @@ describe('FE V4 quick actions', () => {
 
         describe('add controller to the page', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const pageView = new XMLView();
                 mockTelemetryEventIdentifier();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -1358,6 +1360,7 @@ describe('FE V4 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const pageView = new XMLView();
                 jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue(
                     testCase.ui5version ?? { major: 1, minor: 131 }
@@ -1504,7 +1507,7 @@ describe('FE V4 quick actions', () => {
                                           'id': 'listReport0-add-controller-to-page',
                                           'kind': 'simple',
                                           'title': 'Add Controller to Page',
-                                          'tooltip': undefined
+                                          tooltip: undefined
                                       },
                                       {
                                           kind: 'simple',
@@ -1520,7 +1523,7 @@ describe('FE V4 quick actions', () => {
                                           'id': 'listReport0-add-controller-to-page',
                                           'kind': 'simple',
                                           'title': 'Add Controller to Page',
-                                          'tooltip': undefined
+                                          tooltip
                                       }
                                   ]
                         }
@@ -1568,6 +1571,7 @@ describe('FE V4 quick actions', () => {
                     }
                 ];
                 test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                    jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                     mockTelemetryEventIdentifier();
                     const pageView = new XMLView();
                     FlexUtils.getViewForControl.mockImplementation(() => {
@@ -2236,6 +2240,7 @@ describe('FE V4 quick actions', () => {
                 );
             });
             describe('enable variant management in tables and charts', () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 const testCases: {
                     supportedVersion: boolean;
                     varianManagmentValue?: string;
@@ -2403,7 +2408,6 @@ describe('FE V4 quick actions', () => {
                             id: 'objectPage0-add-controller-to-page',
                             kind: 'simple',
                             title: 'Add Controller to Page',
-                            tooltip: undefined
                         },
                         {
                             enabled: true,

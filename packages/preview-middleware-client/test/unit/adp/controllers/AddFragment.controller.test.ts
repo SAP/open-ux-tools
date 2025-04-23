@@ -22,6 +22,7 @@ import {
     MDC_TABLE_TYPE,
     TREE_TABLE_TYPE
 } from 'open/ux/preview/client/adp/quick-actions/control-types';
+import * as adpUtils from 'open/ux/preview/client/adp/utils';
 
 describe('AddFragment', () => {
     beforeAll(() => {
@@ -446,6 +447,7 @@ describe('AddFragment', () => {
         });
 
         test('does not crash if composite command exists in command stack', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
             const command = {
@@ -487,6 +489,7 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name already exists in command stack', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -533,6 +536,7 @@ describe('AddFragment', () => {
         });
 
         test('sets error when the fragment name already exists in command stack (command is "composite")', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(true);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             const change = {
                 content: {
@@ -583,6 +587,7 @@ describe('AddFragment', () => {
         });
 
         test('sets create button to true when the fragment name is valid', () => {
+            jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
             const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
             rtaMock.getCommandStack.mockReturnValue({
                 getCommands: jest.fn().mockReturnValue([])

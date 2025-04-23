@@ -2046,6 +2046,7 @@ describe('FE V2 quick actions', () => {
                 }
             ];
             test.each(testCases)('initialize and execute action (%s)', async (testCase) => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -2190,6 +2191,7 @@ describe('FE V2 quick actions', () => {
         });
         describe('add custom section', () => {
             test('initialize and execute action', async () => {
+                jest.spyOn(adpUtils, 'checkForExistingChange').mockReturnValue(false);
                 mockTelemetryEventIdentifier();
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -2298,19 +2300,22 @@ describe('FE V2 quick actions', () => {
                                     kind: 'simple',
                                     id: 'objectPage0-add-controller-to-page',
                                     enabled: true,
-                                    title: 'Add Controller to Page'
+                                    title: 'Add Controller to Page',
+                                    tooltip: undefined
                                 },
                                 {
                                     kind: 'simple',
                                     id: 'objectPage0-op-add-header-field',
                                     title: 'Add Header Field',
-                                    enabled: true
+                                    enabled: true,
+                                    tooltip: undefined
                                 },
                                 {
                                     kind: 'simple',
                                     id: 'objectPage0-op-add-custom-section',
                                     title: 'Add Custom Section',
-                                    enabled: true
+                                    enabled: true,
+                                    tooltip: undefined
                                 }
                             ]
                         }

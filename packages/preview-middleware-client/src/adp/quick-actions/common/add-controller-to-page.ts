@@ -2,7 +2,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { getUi5Version } from '../../../utils/version';
-import { getAllSyncViewsIds, getControllerInfoForControl, getReuseComponentChecker } from '../../utils';
+import { getAllSyncViewsIds, getControllerInfoForControl, getReuseComponentChecker, checkForExistingChange } from '../../utils';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import type {
     QuickActionContext,
@@ -14,7 +14,6 @@ import { getExistingController } from '../../api-handler';
 import { SimpleQuickActionDefinitionBase } from '../simple-quick-action-base';
 import { DIALOG_ENABLEMENT_VALIDATOR } from '../dialog-enablement-validator';
 import type { EnablementValidatorResult } from '../enablement-validator';
-import { checkForExistingChange } from '../../utils';
 import { getTextBundle } from '../../../i18n';
 
 export const ADD_CONTROLLER_TO_PAGE_TYPE = 'add-controller-to-page';
