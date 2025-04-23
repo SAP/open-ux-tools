@@ -122,7 +122,7 @@ export function transformTemplateType(
             entityConfig: _entityConfig
         } as FEOPSettings,
         [TemplateTypeFE.OverviewPage]: {
-            filterEntityType: entityRelatedConfig?.filterEntityType?.entitySetName
+            filterEntitySet: entityRelatedConfig?.filterEntitySet?.entitySetName
         } as OVPSettings,
         [TemplateTypeFE.Worklist]: {
             entityConfig: _entityConfig,

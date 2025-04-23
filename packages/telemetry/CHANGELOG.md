@@ -1,5 +1,34 @@
 # @sap-ux/telemetry
 
+## 0.5.76
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+
+## 0.5.75
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/project-access@1.29.19
+
+## 0.5.74
+
+### Patch Changes
+
+-   9392ebd: fix: types to allow numeric values in the telemetry properties
+
+## 0.5.73
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+
 ## 0.5.72
 
 ### Patch Changes

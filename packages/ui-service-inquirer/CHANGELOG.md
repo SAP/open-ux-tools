@@ -1,5 +1,106 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.24
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/odata-service-inquirer@2.3.2
+-   @sap-ux/telemetry@0.5.76
+-   @sap-ux/abap-deploy-config-inquirer@1.2.44
+-   @sap-ux/inquirer-common@0.6.38
+
+## 0.0.23
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.3.1
+-   @sap-ux/abap-deploy-config-inquirer@1.2.43
+-   @sap-ux/inquirer-common@0.6.37
+-   @sap-ux/telemetry@0.5.75
+-   @sap-ux/axios-extension@1.20.0
+
+## 0.0.22
+
+### Patch Changes
+
+-   Updated dependencies [afd26c8]
+    -   @sap-ux/odata-service-inquirer@2.3.0
+
+## 0.0.21
+
+### Patch Changes
+
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.42
+    -   @sap-ux/inquirer-common@0.6.36
+    -   @sap-ux/odata-service-inquirer@2.2.36
+
+## 0.0.20
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.2.35
+
+## 0.0.19
+
+### Patch Changes
+
+-   Updated dependencies [1bc1cf2]
+    -   @sap-ux/odata-service-inquirer@2.2.34
+
+## 0.0.18
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.41
+    -   @sap-ux/odata-service-inquirer@2.2.33
+
+## 0.0.17
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+    -   @sap-ux/inquirer-common@0.6.35
+    -   @sap-ux/odata-service-inquirer@2.2.32
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.40
+
+## 0.0.16
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.39
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/odata-service-inquirer@2.2.31
+    -   @sap-ux/telemetry@0.5.73
+
+## 0.0.15
+
+### Patch Changes
+
+-   d0b2dc2: remove draftEnabled prompt for ABAP CDS view
+
+## 0.0.14
+
+### Patch Changes
+
+-   Updated dependencies [751cad8]
+    -   @sap-ux/odata-service-inquirer@2.2.30
+
+## 0.0.13
+
+### Patch Changes
+
+-   Updated dependencies [3fc72be]
+    -   @sap-ux/odata-service-inquirer@2.2.29
+
 ## 0.0.12
 
 ### Patch Changes

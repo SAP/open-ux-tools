@@ -23,6 +23,19 @@ import { type TemplateOptions } from './templateAttributes';
 import semVer from 'semver';
 
 const defaultModelName = 'mainModel'; // UI5 default model name is '' but some floorplans require a named default model
+const defaultVirtualPreviewFile = 'test/flp.html'; // Default virtual preview file name
+const defaultIntent = 'app-preview';
+
+/**
+ * Sets defaults for relevant parameters (`flpAppId`, `startFile`, `localStartFile`,  ) when virtual endpoints are used.
+ *
+ * @param feApp - Fiori elements application config
+ */
+export function setVirtualEndpointDefaults(feApp: FioriElementsApp<unknown>): void {
+    feApp.app.flpAppId = defaultIntent;
+    feApp.app.startFile = defaultVirtualPreviewFile;
+    feApp.app.localStartFile = defaultVirtualPreviewFile;
+}
 
 /**
  * Updates the template settings to defaults if not provided.

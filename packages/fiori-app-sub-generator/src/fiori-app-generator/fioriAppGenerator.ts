@@ -258,12 +258,13 @@ export class FioriAppGenerator extends Generator {
                     );
                 this.state.project = Object.assign(this.state.project ?? {}, ui5AppAnswers, {
                     ui5Version: ui5AppAnswers?.ui5Version || localUI5Version,
-                    localUI5Version,
-                    flpAppId: getFlpId(
-                        getAppId(ui5AppAnswers.namespace ?? '', ui5AppAnswers?.name),
-                        this.state.floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile
-                    )
+                    localUI5Version
                 });
+                // Some extensions may reference this before the writing phase where normally the flpAppId is set
+                this.state.project.flpAppId = getFlpId(
+                    getAppId(this.state.project.name, ui5AppAnswers.namespace ?? ''),
+                    this.state.floorplan === FloorplanFF.FF_SIMPLE ? defaultNavActionDisplay : defaultNavActionTile
+                );
             }
 
             if (this.state.project?.addDeployConfig) {
@@ -407,6 +408,7 @@ export class FioriAppGenerator extends Generator {
                     enableCodeAssist: this.state.project?.enableCodeAssist ?? false,
                     // Assumption that npm workspaces will be enabled if cds ui5 plugin is a depenedency
                     useNpmWorkspaces: !!(
+                        this.state.project.enableTypeScript || // If typescript is enabled, it is required that the CAP project will be updated to use NPM workspaces
                         this.state.service.capService?.cdsUi5PluginInfo?.isCdsUi5PluginEnabled ||
                         this.state.service.capService?.cdsUi5PluginInfo?.hasCdsUi5Plugin ||
                         this.state.service.capService?.cdsUi5PluginInfo?.isWorkspaceEnabled

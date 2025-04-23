@@ -1,0 +1,145 @@
+# @sap-ux/repo-app-download-sub-generator
+
+## 0.2.5
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/abap-deploy-config-writer@0.0.105
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/fiori-generator-shared@0.11.1
+    -   @sap-ux/launch-config@0.9.2
+    -   @sap-ux/odata-service-inquirer@2.3.2
+    -   @sap-ux/project-input-validator@0.5.3
+    -   @sap-ux/fiori-elements-writer@2.3.1
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 0.2.4
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/fiori-elements-writer@2.3.0
+    -   @sap-ux/odata-service-inquirer@2.3.1
+    -   @sap-ux/inquirer-common@0.6.37
+    -   @sap-ux/abap-deploy-config-writer@0.0.104
+    -   @sap-ux/launch-config@0.9.1
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/project-input-validator@0.5.2
+
+## 0.2.3
+
+### Patch Changes
+
+-   Updated dependencies [afd26c8]
+    -   @sap-ux/odata-service-inquirer@2.3.0
+    -   @sap-ux/fiori-elements-writer@2.2.0
+
+## 0.2.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.1.41
+-   @sap-ux/odata-service-inquirer@2.2.36
+
+## 0.2.1
+
+### Patch Changes
+
+-   d729875: Handle adt app download generator crash due to invalid destinations
+
+## 0.2.0
+
+### Minor Changes
+
+-   b49f8d5: Export handleWorkspaceConfig from launch-config and use in adt app download sub generator
+
+### Patch Changes
+
+-   Updated dependencies [b49f8d5]
+    -   @sap-ux/launch-config@0.9.0
+
+## 0.1.5
+
+### Patch Changes
+
+-   f220e1e: ADT Quick Deploy UI Text Review
+
+## 0.1.4
+
+### Patch Changes
+
+-   98e0172: fix to enable local preview for adt downloaded app
+
+## 0.1.3
+
+### Patch Changes
+
+-   e5f4915: Added GA link and moved validate logic to a function
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+    -   @sap-ux/inquirer-common@0.6.36
+    -   @sap-ux/odata-service-inquirer@2.2.36
+
+## 0.1.2
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+    -   @sap-ux/odata-service-inquirer@2.2.35
+
+## 0.1.1
+
+### Patch Changes
+
+-   Updated dependencies [1bc1cf2]
+    -   @sap-ux/odata-service-inquirer@2.2.34
+
+## 0.1.0
+
+### Minor Changes
+
+-   770f90b: Removed Jest timeout from test and mocked \_runNpmInstall method when skipInstall is false
+
+## 0.0.3
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.1.40
+-   @sap-ux/odata-service-inquirer@2.2.33
+
+## 0.0.2
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.1.39
+-   @sap-ux/odata-service-inquirer@2.2.33
+
+## 0.0.1
+
+### Patch Changes
+
+-   92726b5: Add new module @sap-ux/repo-app-import-sub-generator
+
+## 0.1.1
+
+### Patch Changes
+
+-   24c8498: Fix unit tests for download utils
+
+## 0.1.0
+
+### Minor Changes
+
+-   28c6594: Added a new sub-generator: `@sap-ux/repo-app-download-sub-generator` to support downloading ABAP deployed Fiori apps from the repository. Enhanced `@sap-ux/axios-extension` to support Base64 download data.
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/odata-service-inquirer@2.2.33
+    -   @sap-ux/abap-deploy-config-writer@0.0.103

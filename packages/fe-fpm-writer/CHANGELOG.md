@@ -1,5 +1,39 @@
 # @sap-ux/fe-fpm-writer
 
+## 0.33.24
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/fiori-annotation-api@0.4.26
+
+## 0.33.23
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/fiori-annotation-api@0.4.25
+
+## 0.33.22
+
+### Patch Changes
+
+-   8b035bd: Method "generateObjectPage": Incorrect 'controlAggregation' applied when a new Object Page is added and FCL is enabled
+
+## 0.33.21
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.4.24
+
+## 0.33.20
+
+### Patch Changes
+
+-   Updated dependencies [7cda000]
+    -   @sap-ux/fiori-annotation-api@0.4.23
+
 ## 0.33.19
 
 ### Patch Changes

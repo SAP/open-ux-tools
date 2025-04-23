@@ -7,6 +7,7 @@ import type { ObjectPage } from '../../../src/page';
 import { generate } from '../../../src/page/object';
 import { detectTabSpacing } from '../../../src/common/file';
 import { tabSizingTestCases } from '../../common';
+import { FCL_ROUTER } from '../../../src/common/defaults';
 
 describe('ObjectPage', () => {
     const testDir = '' + Date.now();
@@ -189,6 +190,57 @@ describe('ObjectPage', () => {
             expect(
                 (fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].dependencies
             ).toMatchSnapshot();
+        });
+    });
+
+    describe('FCL is enabled', () => {
+        const inputWithNavigation: ObjectPage = {
+            entity: 'ChildEntity',
+            navigation: {
+                sourcePage: 'RootEntityObjectPage',
+                navEntity: 'navToChildEntity',
+                navKey: true
+            }
+        };
+        test('Create 2nd level page', async () => {
+            const testManifestWithArray = JSON.parse(testAppManifest);
+            testManifestWithArray['sap.ui5'].routing.config = {
+                routerClass: FCL_ROUTER
+            };
+            testManifestWithArray['sap.ui5'].routing.routes = [
+                {
+                    pattern: 'RootEntity({key}):?query:',
+                    name: 'RootEntityObjectPage',
+                    target: ['RootEntityObjectPage']
+                }
+            ];
+            const target = join(testDir, 'target-as-array');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
+            await generate(target, inputWithNavigation, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
+        });
+
+        test('Create 3rd level page', async () => {
+            const testManifestWithArray = JSON.parse(testAppManifest);
+            testManifestWithArray['sap.ui5'].routing.config = {
+                routerClass: FCL_ROUTER
+            };
+            testManifestWithArray['sap.ui5'].routing.routes = [
+                {
+                    pattern: ':?query:',
+                    name: 'RootEntityListReport',
+                    target: ['TestListReport']
+                },
+                {
+                    pattern: 'RootEntity({RootEntityKey}):?query:',
+                    name: 'RootEntityObjectPage',
+                    target: ['TestListReport', 'RootEntityObjectPage']
+                }
+            ];
+            const target = join(testDir, 'target-as-array');
+            fs.writeJSON(join(target, 'webapp/manifest.json'), testManifestWithArray);
+            await generate(target, inputWithNavigation, fs);
+            expect((fs.readJSON(join(target, 'webapp/manifest.json')) as any)?.['sap.ui5'].routing).toMatchSnapshot();
         });
     });
 });
