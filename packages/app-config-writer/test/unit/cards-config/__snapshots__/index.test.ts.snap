@@ -16,8 +16,7 @@ exports[`enableCardEditor V4 LROP with CLI 3.0 1`] = `
     \\"@ui5/cli\\": \\"3.9.0\\",
     \\"@sap/ux-ui5-tooling\\": \\"1\\",
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2.2.19\\",
-    \\"@sap-ux/preview-middleware\\": \\"0.11.26\\",
-    \\"@sap-ux/cards-editor-middleware\\": \\"0\\"
+    \\"@sap-ux/preview-middleware\\": \\"0.11.26\\"
   }
 }
 "
@@ -57,16 +56,8 @@ server:
 
 exports[`enableCardEditor Valid LROP 1`] = `
 "{
-  \\"devDependencies\\": {
-    \\"@sap-ux/cards-editor-middleware\\": \\"0\\"
-  },
   \\"scripts\\": {
     \\"start-cards-generator\\": \\"fiori run --open 'test/flpGeneratorSandbox.html#Cards-generator'\\"
-  },
-  \\"ui5\\": {
-    \\"dependencies\\": [
-      \\"@sap-ux/cards-editor-middleware\\"
-    ]
   }
 }
 "

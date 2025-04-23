@@ -1,7 +1,7 @@
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
-import * as writer from '@sap-ux/cards-editor-config-writer';
-import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-editor';
+import * as writer from '@sap-ux/app-config-writer';
+import { addCardsGeneratorConfigCommand } from '../../../../src/cli/add/cards-generator';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
@@ -25,7 +25,7 @@ const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 describe('add/cards-editor', () => {
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
     const npmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
-    const generateSpy = jest.spyOn(writer, 'enableCardsEditor');
+    const generateSpy = jest.spyOn(writer, 'enableCardGeneratorConfig');
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -34,7 +34,7 @@ describe('add/cards-editor', () => {
     test('add cards-editor', async () => {
         // Test execution
         const command = new Command('add');
-        addCardsEditorConfigCommand(command);
+        addCardsGeneratorConfigCommand(command);
         await command.parseAsync(testArgv([]));
 
         // Flow check
@@ -46,7 +46,7 @@ describe('add/cards-editor', () => {
     test('add cards-editor --simulate', async () => {
         // Test execution
         const command = new Command('add');
-        addCardsEditorConfigCommand(command);
+        addCardsGeneratorConfigCommand(command);
         await command.parseAsync(testArgv(['--simulate']));
 
         // Flow check
@@ -58,7 +58,7 @@ describe('add/cards-editor', () => {
     test('add cards-editor --skip-install', async () => {
         // Test execution
         const command = new Command('add');
-        addCardsEditorConfigCommand(command);
+        addCardsGeneratorConfigCommand(command);
         await command.parseAsync(testArgv(['--skip-install']));
 
         // Flow check

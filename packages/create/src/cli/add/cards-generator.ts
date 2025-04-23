@@ -1,5 +1,5 @@
 import type { Command } from 'commander';
-import { enableCardsEditor } from '@sap-ux/cards-editor-config-writer';
+import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { runNpmInstallCommand } from '../../common';
@@ -9,7 +9,7 @@ import { runNpmInstallCommand } from '../../common';
  *
  * @param cmd - commander command for adding navigation inbounds config command
  */
-export function addCardsEditorConfigCommand(cmd: Command): void {
+export function addCardsGeneratorConfigCommand(cmd: Command): void {
     cmd.command('cards-editor [path]')
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
@@ -18,7 +18,7 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            await addCardsEditorConfig(path || process.cwd(), !!options.simulate, !!options.skipInstall);
+            await addCardsGeneratorConfig(path || process.cwd(), !!options.simulate, !!options.skipInstall);
         });
 }
 
@@ -29,13 +29,13 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
  * @param skipInstall - if true, do not run npm install
  */
-async function addCardsEditorConfig(basePath: string, simulate: boolean, skipInstall: boolean): Promise<void> {
+async function addCardsGeneratorConfig(basePath: string, simulate: boolean, skipInstall: boolean): Promise<void> {
     const logger = getLogger();
     try {
         logger.debug(`Called add cards-editor-config for path '${basePath}', simulate is '${simulate}'`);
         await validateBasePath(basePath);
 
-        const fs = await enableCardsEditor(basePath);
+        const fs = await enableCardGeneratorConfig(basePath);
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
             if (!skipInstall) {
