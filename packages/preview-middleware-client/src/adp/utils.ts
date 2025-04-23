@@ -116,10 +116,10 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
  *               For example, "a.b.c" will attempt to access `obj.a.b.c`.
  * @returns The value of the nested property if it exists, or `undefined` if any part of the path is invalid.
  */
-export function getNestedProperty(obj: object, path: string): string | undefined {
+export function getNestedProperty(obj: object, path: string): unknown {
     return path.split('.').reduce((acc: unknown, key) => {
         return (acc as Record<string, unknown>)?.[key];
-    }, obj) as string | undefined;
+    }, obj) as unknown;
 }
 
 /**
