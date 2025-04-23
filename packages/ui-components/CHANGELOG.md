@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.2
+
+### Patch Changes
+
+-   077eae5: feat(ui-components): UIIcons. Add new icon "Shift"
+
 ## 1.26.1
 
 ### Patch Changes
