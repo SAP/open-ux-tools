@@ -1,5 +1,23 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.3.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/ui5-application-writer@1.4.0
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/cap-config-writer@0.9.26
+    -   @sap-ux/ui5-test-writer@0.6.4
+    -   @sap-ux/odata-service-writer@0.26.14
+    -   @sap-ux/annotation-generator@0.3.25
+    -   @sap-ux/fe-fpm-writer@0.33.23
+
 ## 2.2.0
 
 ### Minor Changes
