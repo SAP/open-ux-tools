@@ -57,7 +57,7 @@ export function getManifestContent(layer: FlexLayer, minUI5Version: string, fior
         fillSupportData(content, fioriId, ach);
     }
 
-    if (!!minUI5Version) {
+    if (minUI5Version) {
         content.push({
             changeType: 'appdescr_ui5_setMinUI5Version',
             content: {
