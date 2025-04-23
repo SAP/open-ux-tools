@@ -10,12 +10,12 @@ import {
 import {
     addPackageDevDependency,
     FileName,
-    DirName,
     findCapProjectRoot,
     getMtaPath,
     type Manifest,
     readUi5Yaml,
-    updatePackageScript
+    updatePackageScript,
+    getWebappPath
 } from '@sap-ux/project-access';
 import { Authentication } from '@sap-ux/btp-utils';
 import {
@@ -212,7 +212,7 @@ async function processManifest(
     firstServicePathSegment: string | undefined;
     appId: string | undefined;
 }> {
-    const manifest = await readManifest(join(appPath, DirName.Webapp, FileName.Manifest), fs);
+    const manifest = await readManifest(join(await getWebappPath(appPath), FileName.Manifest), fs);
     const appId = manifest?.['sap.app']?.id ? toMtaModuleName(manifest?.['sap.app']?.id) : undefined;
     const servicePath = manifest?.['sap.app']?.dataSources?.mainService?.uri;
     const firstServicePathSegment = servicePath?.substring(0, servicePath?.indexOf('/', 1));
@@ -405,14 +405,15 @@ async function appendCloudFoundryConfigurations(cfConfig: CFConfig, fs: Editor):
  * @param fs reference to a mem-fs editor
  */
 async function updateManifest(cfConfig: CFConfig, fs: Editor): Promise<void> {
-    const manifest = await readManifest(join(cfConfig.appPath, DirName.Webapp, FileName.Manifest), fs);
+    const webappPath = await getWebappPath(cfConfig.appPath, fs);
+    const manifest = await readManifest(join(webappPath, FileName.Manifest), fs);
     if (manifest && cfConfig.cloudServiceName) {
         const sapCloud = {
             ...(manifest['sap.cloud'] || {}),
             public: true,
             service: cfConfig.cloudServiceName
         } as Manifest['sap.cloud'];
-        fs.extendJSON(join(cfConfig.appPath, DirName.Webapp, FileName.Manifest), {
+        fs.extendJSON(join(webappPath, FileName.Manifest), {
             'sap.cloud': sapCloud
         });
     }
