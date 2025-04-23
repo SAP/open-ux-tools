@@ -4099,9 +4099,6 @@ importers:
       fs-extra:
         specifier: 10.0.0
         version: 10.0.0
-      jest-text-transformer:
-        specifier: 1.0.4
-        version: 1.0.4
 
   packages/ui5-config:
     dependencies:
@@ -18381,13 +18378,6 @@ packages:
       strip-ansi: 6.0.1
     dev: true
 
-  /jest-text-transformer@1.0.4:
-    resolution: {integrity: sha512-Qi3FpWP6EFxZimSD05Zlmd/WER8l/3agVG7e5voHgdnM2vTs45sxS/i8qMWMO/dBkoxajndrGXfJTvhEENnjqw==}
-    engines: {node: '>=9.5.0', npm: '>=5.8.0'}
-    dependencies:
-      uuid: 3.4.0
-    dev: true
-
   /jest-util@29.7.0:
     resolution: {integrity: sha512-z6EbKajIpqGKU56y5KBUgy1dt1ihhQJgWzUlZHArA/+X2ad7Cb5iF+AK1EWVL/Bo7Rz9uurpqw6SiBCefUbCGA==}
     engines: {node: ^14.15.0 || ^16.10.0 || >=18.0.0}
@@ -24915,6 +24905,7 @@ packages:
 
   /uuid@3.4.0:
     resolution: {integrity: sha512-HjSDRw6gZE5JMggctHBcjVak08+KEVhSIiDzFnT9S9aegmp85S/bReBVTb4QTFaRNptJ9kuYaNhnbNEOkbKb/A==}
+    dev: false
 
   /uuid@8.3.2:
     resolution: {integrity: sha512-+NYs2QeMWy+GWFOEm9xnn6HCDp0l7QBD7ml8zLUmJ+93Q5NF0NocErnwkTkXVFNiX3/fpC6afS8Dhb/gz7R7eg==}

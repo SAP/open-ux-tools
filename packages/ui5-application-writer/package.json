@@ -13,7 +13,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build",
+        "build": "node esbuild.js && tsc --emitDeclarationOnly",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
@@ -52,8 +52,7 @@
         "@types/mem-fs-editor": "7.0.1",
         "@types/minimatch": "5.1.2",
         "@types/semver": "7.5.2",
-        "fs-extra": "10.0.0",
-        "jest-text-transformer": "1.0.4"
+        "fs-extra": "10.0.0"
     },
     "engines": {
         "node": ">=18.x"

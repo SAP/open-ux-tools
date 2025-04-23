@@ -51,7 +51,7 @@ const templates = {
 };
 
 /**
- * Recursively retrieves all files and their content from the templates JSON object.
+ * Retrieves all files and their content from the templates object.
  *
  * @param {string} basePath - The base path in the templates object to start from (e.g., 'core' or 'optional/eslint').
  * @param {Function} [processDestinationPath] - Optional callback to process destination paths.
