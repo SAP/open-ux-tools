@@ -3332,7 +3332,7 @@ rating : Rating;
         });
         describe('annotation value', () => {
             // failing as new cds-compiler facade fix required
-            test.failing('in complex type', async () => {
+            test('in complex type', async () => {
                 const project = PROJECTS.V4_CDS_START;
                 const root = project.root;
                 const fsEditor = await createFsEditorForProject(root);
