@@ -1,7 +1,7 @@
 // converted to ts file to support i18next "returnObjects" option
 // see https://www.i18next.com/misc/migration-guide#more-information-features-and-breaking-changes
-// t function will now infer interpolation values, but it'll only work if the translation files (resources) 
-// are placed in a ts file and using as const (like this) or an interface in a d.ts file (can be generated like this), 
+// t function will now infer interpolation values, but it'll only work if the translation files (resources)
+// are placed in a ts file and using as const (like this) or an interface in a d.ts file (can be generated like this),
 // JSON files don't support as const to convert objects to be type literals (yet).
 const ns1 = {
     'prompts': {

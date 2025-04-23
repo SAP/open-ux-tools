@@ -133,7 +133,7 @@ export function getViewOrFragmentPathPrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('viewOrFragmentPath.defaultPlaceholder') as string
+            placeholder: guiOptions?.placeholder ?? (t('viewOrFragmentPath.defaultPlaceholder') as string)
         }
     };
 }
@@ -163,7 +163,7 @@ export async function getCAPServicePrompt(
         guiOptions: {
             ...guiOptions,
             selectType: 'dynamic',
-            placeholder: guiOptions?.placeholder ?? t('service.defaultPlaceholder')  as string
+            placeholder: guiOptions?.placeholder ?? (t('service.defaultPlaceholder') as string)
         }
     };
 }
