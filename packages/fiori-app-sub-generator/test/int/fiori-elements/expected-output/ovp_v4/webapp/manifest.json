@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:ovp",
-      "version": "2.1.8",
-      "toolsId": "39f4c343-1d20-4f26-9883-0ebfa79061bf"
+      "version": "2.1.40",
+      "toolsId": "d05552fe-534f-439e-8eed-45f3fd85128a"
     },
     "dataSources": {
       "annotation": {
@@ -102,7 +102,7 @@
   },
   "sap.ovp": {
     "globalFilterModel": "mainModel",
-    "globalFilterEntityType": "Travel",
+    "globalFilterEntitySet": "Travel",
     "containerLayout": "resizable",
     "enableLiveFilter": true,
     "considerAnalyticalParameters": false,
