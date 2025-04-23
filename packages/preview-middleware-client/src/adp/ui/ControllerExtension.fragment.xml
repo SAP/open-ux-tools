@@ -11,7 +11,8 @@
             editable="true"
             layout="ResponsiveGridLayout"
             labelSpanS="4"
-            singleContainerFullSize="false">
+            singleContainerFullSize="false"
+            visible="{/inputFormVisibility}">
             <f:content>
                 <Label text="Controller Name" />
                 <Input 
@@ -26,7 +27,7 @@
             editable="true"
             layout="ResponsiveGridLayout"
             labelSpanS="12"
-            visible="false"
+            visible="{/existingControllerFormVisibility}"
             singleContainerFullSize="false">
             <f:content>
                 <Label text="{i18n>ADP_CONTROLLER_EXTENSION_EXISTS}" />
@@ -37,7 +38,7 @@
             editable="true"
             layout="ResponsiveGridLayout"
             labelSpanS="12"
-            visible="false"
+            visible="{/pendingChangeFormVisibility}"
             singleContainerFullSize="false">
             <f:content>
                 <Text text="{i18n>ADP_CONTROLLER_PENDING_CHANGE_EXISTS}" />

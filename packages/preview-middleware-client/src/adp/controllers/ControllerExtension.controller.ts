@@ -17,9 +17,6 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-/** sap.ui.layout */
-import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
-
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
@@ -234,16 +231,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         this.model.setProperty('/controllerExists', controllerExists);
         this.model.setProperty('/controllerPath', controllerPath);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
-
-        const content = this.dialog.getContent();
-
-        const form0 = content[0] as SimpleForm;
-        form0.setVisible(false);
-        const form2 = content[2] as SimpleForm;
-        form2.setVisible(false);
-
-        const messageForm = content[1] as SimpleForm;
-        messageForm.setVisible(true);
+        this.model.setProperty('/inputFormVisibility', false);
+        this.model.setProperty('/pendingChangeFormVisibility', false);
+        this.model.setProperty('/existingControllerFormVisibility', true);
 
         if (isRunningInBAS) {
             this.dialog.getBeginButton().setVisible(false);
@@ -257,15 +247,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * Updates the model properties for an existing controller in a pending change.
      */
     private updateModelForExistingPendingChange(): void {
-        const content = this.dialog.getContent();
-
-        const form0 = content[0] as SimpleForm;
-        form0.setVisible(false);
-        const form1 = content[1] as SimpleForm;
-        form1.setVisible(false);
-
-        const messageForm = content[2] as SimpleForm;
-        messageForm.setVisible(true);
+        this.model.setProperty('/inputFormVisibility', false);
+        this.model.setProperty('/existingControllerFormVisibility', false);
+        this.model.setProperty('/pendingChangeFormVisibility', true);
 
         this.dialog.getBeginButton().setVisible(false);
         this.dialog.getEndButton().setText('Close');
@@ -280,6 +264,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
     private updateModelForNewController(viewId: string, isTsSupported: boolean): void {
         this.model.setProperty('/viewId', viewId);
         this.model.setProperty('/controllerExtension', isTsSupported ? '.ts' : '.js');
+        this.model.setProperty('/existingControllerFormVisibility', false);
+        this.model.setProperty('/pendingChangeFormVisibility', false);
+        this.model.setProperty('/inputFormVisibility', true);
     }
 
     /**

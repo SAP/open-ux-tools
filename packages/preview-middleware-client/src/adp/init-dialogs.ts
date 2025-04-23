@@ -38,7 +38,7 @@ export function isControllerExtensionEnabledForControl(
     const viewId = FlUtils.getViewForControl(control).getId();
     const isControlInSyncView = syncViewsIds.includes(viewId);
 
-    if(isCloud) {
+    if (isCloud) {
         const isClickedControlReuseComponent = isReuseComponent(control.getId());
         return !isControlInSyncView && !isClickedControlReuseComponent;
     }
@@ -75,7 +75,11 @@ export const isControllerExtensionEnabled = (
  * @param {boolean} isCloud - Whether the application is running in the cloud.
  * @returns {boolean} True if the fragment command is enabled, false otherwise.
  */
-export const isFragmentCommandEnabled = (overlays: ElementOverlay[], isReuseComponent: IsReuseComponentApi, isCloud: boolean): boolean => {
+export const isFragmentCommandEnabled = (
+    overlays: ElementOverlay[],
+    isReuseComponent: IsReuseComponentApi,
+    isCloud: boolean
+): boolean => {
     if (overlays.length === 0 || overlays.length > 1) {
         return false;
     }
@@ -98,7 +102,12 @@ export const isFragmentCommandEnabled = (overlays: ElementOverlay[], isReuseComp
  * @param {TextBundle} resources - The text bundle.
  * @returns {string} The text of the Add Fragment context menu item.
  */
-export const getAddFragmentItemText = (overlay: ElementOverlay, isReuseComponentChecker: IsReuseComponentApi, isCloud: boolean, resources: TextBundle) => {
+export const getAddFragmentItemText = (
+    overlay: ElementOverlay,
+    isReuseComponentChecker: IsReuseComponentApi,
+    isCloud: boolean,
+    resources: TextBundle
+) => {
     if (isCloud && isReuseComponentChecker(overlay.getElement().getId())) {
         return resources.getText('ADP_ADD_FRAGMENT_MENU_ITEM_REUSE_COMPONENT');
     }
@@ -118,7 +127,12 @@ export const getAddFragmentItemText = (overlay: ElementOverlay, isReuseComponent
  * @param {TextBundle} resources - The text bundle.
  * @returns {string} The text of the Add Fragment context menu item.
  */
-export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComponentChecker: IsReuseComponentApi, isCloud: boolean, resources: TextBundle) => {
+export const getExtendControllerItemText = (
+    overlay: ElementOverlay,
+    isReuseComponentChecker: IsReuseComponentApi,
+    isCloud: boolean,
+    resources: TextBundle
+) => {
     if (isCloud && isReuseComponentChecker(overlay.getElement().getId())) {
         return resources.getText('ADP_ADD_CONTROLLER_EXTENSION_MENU_ITEM_REUSE_COMPONENT');
     }
@@ -133,7 +147,11 @@ export const getExtendControllerItemText = (overlay: ElementOverlay, isReuseComp
  * @param syncViewsIds Ids of all application sync views
  * @param ui5VersionInfo UI5 version information
  */
-export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[], ui5VersionInfo: Ui5VersionInfo): Promise<Promise<void>> => {
+export const initDialogs = async (
+    rta: RuntimeAuthoring,
+    syncViewsIds: string[],
+    ui5VersionInfo: Ui5VersionInfo
+): Promise<void> => {
     const contextMenu = rta.getDefaultPlugins().contextMenu;
     const isCloud = rta.getFlexSettings().isCloud;
     const resources = await getTextBundle();
@@ -148,15 +166,16 @@ export const initDialogs = async (rta: RuntimeAuthoring, syncViewsIds: string[],
         enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, isReuseComponentChecker, isCloud)
     });
 
-
-    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 135 })) {
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 136 })) {
         contextMenu.addMenuItem({
             id: 'EXTEND_CONTROLLER',
-            text: (overlay: ElementOverlay) => getExtendControllerItemText(overlay, isReuseComponentChecker, isCloud, resources),
+            text: (overlay: ElementOverlay) =>
+                getExtendControllerItemText(overlay, isReuseComponentChecker, isCloud, resources),
             handler: async (overlays: UI5Element[]) =>
                 await DialogFactory.createDialog(overlays[0], rta, DialogNames.CONTROLLER_EXTENSION),
             icon: 'sap-icon://create-form',
-            enabled: (overlays: ElementOverlay[]) => isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentChecker, isCloud)
+            enabled: (overlays: ElementOverlay[]) =>
+                isControllerExtensionEnabled(overlays, syncViewsIds, isReuseComponentChecker, isCloud)
         });
     } else {
         (await import('open/ux/preview/client/adp/extend-controller')).initExtendControllerPlugin(rta);

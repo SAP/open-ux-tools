@@ -218,7 +218,7 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, '', ValueState.Success)
             ] as unknown as Control[]);
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
+            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
             addFragment.onCellFragmentNameInputChange(event as unknown as Event);
@@ -238,7 +238,7 @@ describe('AddTableColumnsFragments controller', () => {
                     mockFormInput(true, 'Name1', [ValueState.Success, ValueState.Error])
                 ] as unknown as Control[]);
 
-                addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
+                // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -263,7 +263,7 @@ describe('AddTableColumnsFragments controller', () => {
                     mockFormInput(true, 'Delete', ValueState.Error, errorMsg)
                 ] as unknown as Control[]);
 
-                addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
+                // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -280,7 +280,7 @@ describe('AddTableColumnsFragments controller', () => {
                     mockFormInput(true, 'Delete', [ValueState.Error, ValueState.Success], ['Duplicate name', ''])
                 ] as unknown as Control[]);
 
-                addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
+                // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
                 addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -299,7 +299,7 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
+            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -315,7 +315,7 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
+            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -334,7 +334,7 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
+            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 
@@ -355,7 +355,7 @@ describe('AddTableColumnsFragments controller', () => {
                 mockFormInput(true, 'Name2', ValueState.Success)
             ] as unknown as Control[]);
 
-            addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
+            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onColumnFragmentNameInputChange(event as unknown as Event);
 

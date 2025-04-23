@@ -10,7 +10,6 @@ import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
 import { getControlById } from '../utils/core';
 import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
-import type { ChangeDefinition } from 'sap/ui/fl/Change';
 
 import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
@@ -101,16 +100,26 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
     if (typeof command.getPreparedChange !== 'function') {
         return false;
     }
-    const change = command.getPreparedChange().getDefinition();
-
-    function getNestedProperty(obj: ChangeDefinition, path: string): string | undefined {
-        return path.split('.').reduce((acc: unknown, key) => {
-            return (acc as Record<string, unknown>)?.[key];
-        }, obj) as string | undefined;
-    }
+    const change = command.getPreparedChange()?.getDefinition?.();
+    if (!change) return false;
 
     const nestedProperty = getNestedProperty(change, propertyPath);
     return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
+}
+
+
+/**
+ * Retrieves the value of a nested property from an object based on a dot-separated path.
+ *
+ * @param obj - The object from which to retrieve the nested property.
+ * @param path - A dot-separated string representing the path to the desired property.
+ *               For example, "a.b.c" will attempt to access `obj.a.b.c`.
+ * @returns The value of the nested property if it exists, or `undefined` if any part of the path is invalid.
+ */
+export function getNestedProperty(obj: object, path: string): string | undefined {
+    return path.split('.').reduce((acc: unknown, key) => {
+        return (acc as Record<string, unknown>)?.[key];
+    }, obj) as string | undefined;
 }
 
 /**
