@@ -1,5 +1,19 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.16
+
+### Patch Changes
+
+-   Updated dependencies [afd26c8]
+    -   @sap-ux/odata-service-inquirer@2.3.0
+    -   @sap-ux/fiori-elements-writer@2.2.0
+
+## 0.0.15
+
+### Patch Changes
+
+-   e691644: check enable typescript answer to determine use of npm workspaces
+
 ## 0.0.14
 
 ### Patch Changes
