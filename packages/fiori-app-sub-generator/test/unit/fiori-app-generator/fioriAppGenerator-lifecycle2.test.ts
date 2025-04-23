@@ -10,7 +10,7 @@ import {
 } from '@sap-ux/fiori-freestyle-writer';
 import type { BasicAppSettings } from '@sap-ux/fiori-freestyle-writer/dist/types';
 import { DefaultLogger, TelemetryHelper, sendTelemetry } from '@sap-ux/fiori-generator-shared';
-import { DatasourceType } from '@sap-ux/odata-service-inquirer';
+import { type CapService, DatasourceType } from '@sap-ux/odata-service-inquirer';
 import { ServiceType } from '@sap-ux/odata-service-writer';
 import { join } from 'path';
 import Generator from 'yeoman-generator';
@@ -354,6 +354,35 @@ describe('Test FioriAppGenerator', () => {
             expect.objectContaining({ debug: expect.any(Function) }) // Logger
         );
         (installDependencies as jest.Mock).mockClear();
+
+        // Should call installDependencies with useNpmWorkspaces as enableTypescript is true
+        fioriAppGen['state'] = {
+            ...mockState,
+            project: {
+                ...mockState.project,
+                enableTypeScript: true
+            },
+            service: {
+                ...mockState.service,
+                capService: {
+                    ...mockState.service.capService,
+                    cdsUi5PluginInfo: {
+                        isCdsUi5PluginEnabled: false,
+                        hasCdsUi5Plugin: false,
+                        hasMinCdsVersion: true,
+                        isWorkspaceEnabled: false
+                    }
+                } as CapService
+            }
+        };
+
+        await fioriAppGen.install();
+        expect(installDependencies).toHaveBeenCalledWith(
+            expect.objectContaining({ useNpmWorkspaces: true }),
+            expect.objectContaining({ debug: expect.any(Function) }) // Logger
+        );
+        (installDependencies as jest.Mock).mockClear();
+
         // Should skip installation if option specified
         fioriAppGen = new FioriAppGenerator([], { ...options, skipInstall: true });
         await fioriAppGen.install();

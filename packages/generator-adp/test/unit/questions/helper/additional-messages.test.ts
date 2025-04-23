@@ -5,7 +5,8 @@ import { AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import {
     getAppAdditionalMessages,
-    getSystemAdditionalMessages
+    getSystemAdditionalMessages,
+    getVersionAdditionalMessages
 } from '../../../../src/app/questions/helper/additional-messages';
 import { t } from '../../../../src/utils/i18n';
 
@@ -119,6 +120,17 @@ describe('additional-messages', () => {
                 false
             );
             expect(result).toBeUndefined();
+        });
+    });
+
+    describe('getVersionAdditionalMessages', () => {
+        it('should return warning message if version is not detected', () => {
+            const result = getVersionAdditionalMessages(false);
+
+            expect(result).toEqual({
+                message: t('validators.ui5VersionNotDetectedError'),
+                severity: Severity.warning
+            });
         });
     });
 });

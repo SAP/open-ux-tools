@@ -1,4 +1,5 @@
 import { Severity } from '@sap-devx/yeoman-ui-types';
+import type { IMessageSeverity } from '@sap-devx/yeoman-ui-types';
 
 import { AdaptationProjectType } from '@sap-ux/axios-extension';
 import type { FlexUISupportedSystem, SourceApplication } from '@sap-ux/adp-tooling';
@@ -17,13 +18,13 @@ interface SupportFlags {
  *
  * @param {FlexUISupportedSystem | undefined} flexUISystem - An optional object containing flags indicating if the system
  *                                                           is on-premise and whether UI Flex is enabled.
- * @param isCloudProject
- * @returns {{message: string, severity: Severity} | undefined} An object containing a message and its severity level.
+ * @param {boolean} isCloudProject - Whether the project is for a cloud-based system.
+ * @returns {IMessageSeverity | undefined} An object containing a message and its severity level.
  */
 export const getSystemAdditionalMessages = (
     flexUISystem: FlexUISupportedSystem | undefined,
     isCloudProject: boolean
-): { message: string; severity: Severity } | undefined => {
+): IMessageSeverity | undefined => {
     const isOnPremise = flexUISystem?.isOnPremise;
     const isUIFlex = flexUISystem?.isUIFlex;
 
@@ -68,13 +69,13 @@ export const getSystemAdditionalMessages = (
  * @param {SourceApplication} app - The selected application object.
  * @param {SupportFlags} flags - Flags indicating support for sync views, Adp-over-Adp, and V4 internal apps.
  * @param {boolean} isApplicationSupported - Indicates whether the application is supported at all.
- * @returns {{ message: string; severity: Severity } | undefined} Message object or undefined if no message is applicable.
+ * @returns {IMessageSeverity | undefined} Message object or undefined if no message is applicable.
  */
 export const getAppAdditionalMessages = (
     app: SourceApplication,
     { hasSyncViews, isSupported, isPartiallySupported, isV4AppInternalMode }: SupportFlags,
     isApplicationSupported: boolean
-): { message: string; severity: Severity } | undefined => {
+): IMessageSeverity | undefined => {
     if (!app) {
         return undefined;
     }
@@ -106,4 +107,23 @@ export const getAppAdditionalMessages = (
             severity: Severity.warning
         };
     }
+
+    return undefined;
+};
+
+/**
+ * Provides additional messages related to UI5 version detection based on system and authentication conditions.
+ *
+ * @param {boolean} isVersionDetected - Flag indicating that the system ui5 version was detected.
+ * @returns {object | undefined} An object containing a message and its severity level if conditions are met; otherwise, undefined.
+ */
+export const getVersionAdditionalMessages = (isVersionDetected: boolean): IMessageSeverity | undefined => {
+    if (!isVersionDetected) {
+        return {
+            message: t('validators.ui5VersionNotDetectedError'),
+            severity: Severity.warning
+        };
+    }
+
+    return undefined;
 };

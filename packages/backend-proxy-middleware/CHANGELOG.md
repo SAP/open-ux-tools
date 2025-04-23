@@ -1,5 +1,11 @@
 # @sap-ux/backend-proxy-middleware
 
+## 0.8.41
+
+### Patch Changes
+
+-   a4cb2f6: chore(deps): update dependency http-proxy-middleware to v2.0.9
+
 ## 0.8.40
 
 ### Patch Changes
