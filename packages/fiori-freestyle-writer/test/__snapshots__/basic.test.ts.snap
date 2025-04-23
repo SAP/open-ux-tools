@@ -1433,7 +1433,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -1470,8 +1470,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -1506,8 +1506,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },
@@ -2182,7 +2182,7 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\",
     \\"unit-test\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/unit/unitTests.qunit.html'\\"
   }
 }
@@ -2264,8 +2264,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -2324,8 +2324,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -2385,8 +2385,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -3057,7 +3057,7 @@ archive.zip
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
     \\"int-test\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/integration/opaTests.qunit.html'\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\",
     \\"unit-test\\": \\"fiori run --config ./ui5-mock.yaml --open 'test/unit/unitTests.qunit.html'\\"
   }
 }
@@ -3134,8 +3134,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -3194,8 +3194,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -3255,8 +3255,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -3920,7 +3920,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -3989,8 +3989,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -4049,8 +4049,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -4110,8 +4110,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -4552,7 +4552,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -4621,8 +4621,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -4681,8 +4681,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -4742,8 +4742,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: ui5-tooling-transpile-middleware
       afterMiddleware: compression
       configuration:
@@ -5160,7 +5160,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -5192,8 +5192,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -5244,8 +5244,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -5289,8 +5289,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
 ",
     "state": "modified",
   },
@@ -5712,7 +5712,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -5744,8 +5744,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -5796,8 +5796,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -5841,8 +5841,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_horizon
+        flp:
+          theme: sap_horizon
 ",
     "state": "modified",
   },
@@ -6519,7 +6519,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -6556,8 +6556,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -6608,8 +6608,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -6653,8 +6653,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },
@@ -7367,8 +7367,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -7419,8 +7419,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -7464,8 +7464,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },
@@ -8141,7 +8141,7 @@ archive.zip
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -8178,8 +8178,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -8230,8 +8230,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -8275,8 +8275,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },
@@ -8913,7 +8913,7 @@ sap.registerComponentDependencyPaths(manifestUri)
 }
 `;
 
-exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_without_reuse_libs 1`] = `
+exports[`Fiori freestyle template: basicTemplate Generate files for template: basic_without_reuse_libs_use_virtual_endpoints 1`] = `
 Object {
   ".gitignore": Object {
     "contents": "node_modules/
@@ -8946,14 +8946,14 @@ archive.zip
     \\"@sap-ux/ui5-middleware-fe-mockserver\\": \\"2\\"
   },
   \\"scripts\\": {
-    \\"start\\": \\"fiori run --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
+    \\"start\\": \\"fiori run --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
+    \\"start-local\\": \\"fiori run --config ./ui5-local.yaml --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
     \\"build\\": \\"ui5 build --config=ui5.yaml --clean-dest --dest dist\\",
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-noflp\\": \\"fiori run --open \\\\\\"index.html?sap-ui-xx-viewCache=false\\\\\\"\\",
-    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flp.html#app-preview\\\\\\"\\",
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -8990,8 +8990,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -9042,8 +9042,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -9087,8 +9087,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },
@@ -9370,94 +9370,6 @@ function (JSONModel, Device) {
 });",
     "state": "modified",
   },
-  "webapp/test/flpSandbox.html": Object {
-    "contents": "<!DOCTYPE HTML>
-<html lang=\\"en\\">
-<!-- Copyright (c) 2015 SAP AG, All Rights Reserved -->
-<head>
-    <meta http-equiv=\\"X-UA-Compatible\\" content=\\"IE=edge\\">
-    <meta charset=\\"UTF-8\\">
-    <meta name=\\"viewport\\" content=\\"width=device-width, initial-scale=1.0\\">
-    <title>{{appTitle}}</title>
-
-    <!-- Bootstrap the unified shell in sandbox mode for standalone usage.
-
-         The renderer is specified in the global Unified Shell configuration object \\"sap-ushell-config\\".
-
-         The fiori2 renderer will render the shell header allowing, for instance,
-         testing of additional application setting buttons.
-
-         The navigation target resolution service is configured in a way that the empty URL hash is
-         resolved to our own application.
-
-         This example uses relative path references for the SAPUI5 resources and test-resources;
-         it might be necessary to adapt them depending on the target runtime platform.
-         The sandbox platform is restricted to development or demo use cases and must NOT be used
-         for productive scenarios.
-    -->
-    <script type=\\"text/javascript\\">
-        window[\\"sap-ushell-config\\"] = {
-            defaultRenderer: \\"fiori2\\",
-            bootstrapPlugins: {
-                \\"RuntimeAuthoringPlugin\\": {
-                    component: \\"sap.ushell.plugins.rta\\",
-                    config: {
-                        validateAppVersion: false
-                    }
-                }
-            },
-            renderers: {
-                fiori2: {
-                    componentData: {
-                        config: {
-                            search: \\"hidden\\",
-                            enableSearch: false
-                        }
-                    }
-                }
-            },
-            applications: {
-                \\"nods1-tile\\": {
-                    title: \\"App Title\\",
-                    description: \\"A Fiori application.\\",
-                    additionalInformation: \\"SAPUI5.Component=nods1\\",
-                    applicationType: \\"URL\\",
-                    url: \\"../\\"
-                }
-            }
-        };
-    </script>
-
-    <script src=\\"../test-resources/sap/ushell/bootstrap/sandbox.js\\" id=\\"sap-ushell-bootstrap\\"></script>
-    <!-- Bootstrap the UI5 core library. 'data-sap-ui-frameOptions=\\"allow\\"'' is a NON-SECURE setting for test environments -->
-    <script id=\\"sap-ui-bootstrap\\"
-        src=\\"../resources/sap-ui-core.js\\"
-        data-sap-ui-libs=\\"sap.m,sap.ui.core,sap.f,sap.suite.ui.generic.template,sap.ui.comp,sap.ui.generic.app,sap.ui.table,sap.ushell\\"
-        data-sap-ui-async=\\"true\\"
-        data-sap-ui-preload=\\"async\\"
-        data-sap-ui-theme=\\"sap_belize\\"
-        data-sap-ui-compatVersion=\\"edge\\"
-        data-sap-ui-language=\\"en\\"
-        data-sap-ui-resourceroots='{\\"nods1\\": \\"../\\"}'
-        data-sap-ui-frameOptions=\\"allow\\"
-        data-sap-ui-flexibilityServices='[{\\"connector\\": \\"LocalStorageConnector\\"}]'>
-    </script>
-    <script>
-        sap.ui.getCore().attachInit(function () {
-            sap.ushell.Container.createRenderer().placeAt(\\"content\\");
-        });
-    </script>
-</head>
-
-<!-- UI Content -->
-
-<body class=\\"sapUiBody\\" id=\\"content\\">
-</body>
-
-</html>
-",
-    "state": "modified",
-  },
   "webapp/view/App.view.xml": Object {
     "contents": "<mvc:View controllerName=\\"nods1.controller.App\\"
     xmlns:html=\\"http://www.w3.org/1999/xhtml\\"
@@ -9522,7 +9434,7 @@ archive.zip
     \\"deploy\\": \\"fiori verify\\",
     \\"deploy-config\\": \\"fiori add deploy-config\\",
     \\"start-mock\\": \\"fiori run --config ./ui5-mock.yaml --open \\\\\\"test/flpSandbox.html?sap-ui-xx-viewCache=false#nods1-tile\\\\\\"\\",
-    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#preview-app\\\\\\"\\"
+    \\"start-variants-management\\": \\"fiori run --open \\\\\\"preview.html?sap-ui-xx-viewCache=false&fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true#app-preview\\\\\\"\\"
   }
 }
 ",
@@ -9559,8 +9471,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: fiori-tools-proxy
       afterMiddleware: compression
       configuration:
@@ -9611,8 +9523,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
     - name: sap-fe-mockserver
       beforeMiddleware: csp
       configuration:
@@ -9656,8 +9568,8 @@ server:
     - name: fiori-tools-preview
       afterMiddleware: fiori-tools-appreload
       configuration:
-        component: nods1
-        ui5Theme: sap_belize
+        flp:
+          theme: sap_belize
 ",
     "state": "modified",
   },

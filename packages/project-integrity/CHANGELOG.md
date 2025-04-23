@@ -1,5 +1,11 @@
 # @sap-ux/project-integrity
 
+## 0.1.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+
 ## 0.1.17
 
 ### Patch Changes
