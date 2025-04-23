@@ -239,6 +239,7 @@ describe('getSystemQuestions', () => {
         expect(q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(q.serviceName.default()).toEqual(0);
         expect(await q.serviceName.validate!('testPackage')).toEqual(true);
+        expect(q.draftEnabled.when!({})).toEqual(true);
         expect(await q.draftEnabled.validate!(true)).toEqual(true);
         expect(await q.draftEnabled.validate!(false)).toEqual(true);
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(false)).toBeUndefined();
