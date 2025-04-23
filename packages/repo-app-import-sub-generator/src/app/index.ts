@@ -129,7 +129,7 @@ export default class extends Generator {
         if (isValidPromptState(this.answers.targetFolder, this.answers.selectedApp.appId)) {
             this.projectPath = join(this.answers.targetFolder, this.answers.selectedApp.appId);
             this.extractedProjectPath = join(this.projectPath, extractedFilePath);
-        } else { 
+        } else {
             this.abort = true;
         }
     }
@@ -138,6 +138,9 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
+        if (this.abort) {
+            return;
+        }
         // Extract downloaded app
         const archive = PromptState.downloadedAppPackage;
         await extractZip(this.extractedProjectPath, archive, this.fs);
@@ -181,10 +184,13 @@ export default class extends Generator {
                 this.fs
             );
         } else {
-            this.abort = true;  
-            this.appWizard.showError(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }), MessageType.notification);
+            this.abort = true;
+            this.appWizard.showError(
+                t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }),
+                MessageType.notification
+            );
         }
-        // Clean up extracted project files 
+        // Clean up extracted project files
         this.fs.delete(this.extractedProjectPath);
     }
 
@@ -328,6 +334,7 @@ export default class extends Generator {
         try {
             if (!this.abort) {
                 this.appWizard.showInformation(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
+                await this._handlePostAppGeneration();
                 await sendTelemetry(
                     EventName.GENERATION_SUCCESS,
                     TelemetryHelper.createTelemetryData({
@@ -337,7 +344,6 @@ export default class extends Generator {
                 ).catch((error) => {
                     RepoAppDownloadLogger.logger?.error(t('error.telemetry', { error: error.message }));
                 });
-                await this._handlePostAppGeneration();
             }
         } catch (error) {
             RepoAppDownloadLogger.logger?.error(t('error.endPhase', { error: error.message }));

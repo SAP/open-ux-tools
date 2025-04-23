@@ -8,16 +8,18 @@ import fs from 'fs';
 import { TestFixture } from './fixtures';
 import { getAppConfig } from '../src/app/app-config';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
+import { TemplateType, type FioriElementsApp, type LROPSettings, generate } from '@sap-ux/fiori-elements-writer';
 import { adtSourceTemplateId, fioriAppSourcetemplateId, extractedFilePath, qfaJsonFileName } from '../src/utils/constants';
 import { removeSync } from 'fs-extra';
 import { isValidPromptState } from '../src/utils/validators';
-import { hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import { hostEnvironment, sendTelemetry, TelemetryHelper, generateReadMe } from '@sap-ux/fiori-generator-shared';
 import { FileName, DirName, type Manifest } from '@sap-ux/project-access';
 import RepoAppDownloadLogger from '../src/utils/logger';
 import { t } from '../src/utils/i18n';
 import env from 'yeoman-environment';
-import { generate } from '@sap-ux/fiori-elements-writer';
+import { createLaunchConfig, updateWorkspaceFoldersIfNeeded, handleWorkspaceConfig } from '@sap-ux/launch-config';
+import { extractZip } from '../src/utils/download-utils';
+import { EventName } from '../src/telemetryEvents';
 
 jest.mock('../src/prompts/prompt-helpers', () => ({
 	...jest.requireActual('../src/prompts/prompt-helpers'),
@@ -33,7 +35,17 @@ jest.mock('../src/utils/logger', () => ({
 	configureLogging: jest.fn()
 }));
 
-jest.mock('../src/utils/download-utils');
+jest.mock('@sap-ux/launch-config', () => ({
+	...jest.requireActual('@sap-ux/launch-config'),
+	createLaunchConfig: jest.fn(),
+	updateWorkspaceFoldersIfNeeded: jest.fn(),
+	handleWorkspaceConfig: jest.fn()
+}));
+
+jest.mock('../src/utils/download-utils', () => ({
+	extractZip: jest.fn()
+}));
+
 jest.mock('../src/app/app-config', () => ({
     ...jest.requireActual('../src/app/app-config'),
 	getAppConfig: jest.fn()
@@ -224,7 +236,7 @@ describe('Repo App Download', () => {
 		jest.clearAllMocks();
 		jest.restoreAllMocks();
 		jest.resetModules();
-		//removeSync(testOutputDir);
+		removeSync(testOutputDir);
 	})
 
 	beforeEach(() => {
@@ -248,6 +260,12 @@ describe('Repo App Download', () => {
 		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
 		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
+		(handleWorkspaceConfig as jest.Mock).mockResolvedValue({
+			launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+			cwd: testOutputDir,
+			workspaceFolderUri: 'uri',
+			appNotInWorkspace: true
+		});
 		await expect( 
 			yeomanTest
 				.run(RepoAppDownloadGenerator, { 
@@ -275,6 +293,12 @@ describe('Repo App Download', () => {
 		.resolves.not.toThrow();
 		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
 		expect(mockAppWizard.showInformation).toHaveBeenCalledWith(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
+		expect(mockSendTelemetry).toHaveBeenCalledWith(
+			EventName.GENERATION_SUCCESS,
+			TelemetryHelper.createTelemetryData({
+				appType: 'repo-app-import-sub-generator'
+			}
+		));
 		expect(RepoAppDownloadLogger.logger.info).toHaveBeenCalledWith(t('info.installationErrors.skippedInstallation'));
     });
 
@@ -357,6 +381,12 @@ describe('Repo App Download', () => {
 		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
 		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
+		(handleWorkspaceConfig as jest.Mock).mockResolvedValue({
+			launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+			cwd: testOutputDir,
+			workspaceFolderUri: undefined,
+			appNotInWorkspace: false
+		});
         
         await expect( 
 			yeomanTest
@@ -384,6 +414,13 @@ describe('Repo App Download', () => {
 				})
 		)
 		.resolves.not.toThrow();
+		expect(mockSendTelemetry).toHaveBeenCalledWith(
+			EventName.GENERATION_SUCCESS,
+			TelemetryHelper.createTelemetryData({
+				appType: 'repo-app-import-sub-generator'
+			}
+		));
+		expect(handleWorkspaceConfig).toHaveBeenCalled();
 		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
 
@@ -411,7 +448,7 @@ describe('Repo App Download', () => {
 		expect((generator as any)._runNpmInstall).toHaveBeenCalled();
 	});
 
-	it('should report an error if the app to be downloaded dosent include qfa.json', async () => {
+	it('should abort the sub generator if the app to be downloaded dosent include qfa.json', async () => {
 		const yeomanEnv = env.createEnv();
 		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath, true);
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
@@ -444,11 +481,101 @@ describe('Repo App Download', () => {
 				})
 		)
 		.resolves.not.toThrow();
+		expect(getAppConfig as jest.Mock).not.toHaveBeenCalled();
+		expect(createLaunchConfig as jest.Mock).not.toHaveBeenCalled();
+		expect(handleWorkspaceConfig as jest.Mock).not.toHaveBeenCalled();
+		expect(updateWorkspaceFoldersIfNeeded as jest.Mock).not.toHaveBeenCalled();
+		expect(mockAppWizard.showError).toHaveBeenCalledWith(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }), MessageType.notification);
+		expect(mockAppWizard.showInformation).not.toHaveBeenCalledWith();
+	});
+
+	it('should abort the sub generator if the prompting is invalid', async () => {
+		const yeomanEnv = env.createEnv();
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath, true);
+		(isValidPromptState as jest.Mock).mockReturnValue(false);
 		
+		await expect( 
+			yeomanTest
+				.run(RepoAppDownloadGenerator, { 
+					resolved: repoAppDownloadGenPath
+				})
+				.cd('.')
+				.withOptions({ 
+					appRootPath: testOutputDir, 
+					appWizard: mockAppWizard,
+					vscode: mockVSCode, 
+					logger: {},
+					data: {
+						postGenCommand: 'test-post-gen-command'
+					}
+				})
+				.withPrompts({
+					systemSelection: 'system3',
+					selectedApp: {
+						appId: appConfig.app.id,
+						title: appConfig.app.title,
+						description: appConfig.app.description,
+						repoName: 'app-1-repo',
+						url: 'url-1'
+					},
+					targetFolder: testOutputDir
+				})
+		)
+		.resolves.not.toThrow();
+		expect(extractZip as jest.Mock).not.toHaveBeenCalled();
+		expect(getAppConfig as jest.Mock).not.toHaveBeenCalled();
+		expect(createLaunchConfig as jest.Mock).not.toHaveBeenCalled();
+		expect(handleWorkspaceConfig as jest.Mock).not.toHaveBeenCalled();
+		expect(updateWorkspaceFoldersIfNeeded as jest.Mock).not.toHaveBeenCalled();
+		expect(mockAppWizard.showInformation).not.toHaveBeenCalledWith();
+	});
+
+	it('should successfully download a quick deployed app from repository', async () => {
+		const yeomanEnv = env.createEnv();
+
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logger: {},
+			vscode: mockVSCode,
+			skipInstall: false,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
+			}
+		});
+		// mock installation
+		(generator as any).spawnCommand = jest.fn().mockResolvedValue(undefined);
+		await generator.install();
+		expect((generator as any).spawnCommand).toHaveBeenCalled();
+	});
+
+	it('should log an error if installation of a quick deployed app from repository', async () => {
+		const yeomanEnv = env.createEnv();
+
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logger: {},
+			vscode: mockVSCode,
+			skipInstall: false,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
+			}
+		});
+		// mock installation
+		(generator as any).spawnCommand = jest.fn().mockRejectedValue(
+			new Error('Installation error')
+		);
+		await generator.install();
+		expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+			t('error.installationErrors.npmInstall', { error: 'Error: Installation error' })
+		);
 	});
 });
-
-//index.ts          |   91.26 |    57.57 |   76.92 |   91.26 | 86-87,121-123,185,251,264-266 
-//index.ts          |   94.17 |     60.6 |   76.92 |   94.17 | 86-87,185,251,264-266 
-//index.ts          |   93.33 |    63.63 |   76.92 |   93.33 | 86-87,185-186,252,265-267          
-  
+    
