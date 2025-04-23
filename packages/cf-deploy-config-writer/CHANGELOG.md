@@ -1,5 +1,55 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.5
+
+### Patch Changes
+
+-   e0937db: ensure xs-security is updated
+
+## 0.2.4
+
+### Patch Changes
+
+-   ce3fd7a: Handle duplicate app-content for app frontend router
+
+## 0.2.3
+
+### Patch Changes
+
+-   0cdc387: Expose App Frontend Service from cf-sub-generator, with minor code cleanup
+
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/nodejs-utils@0.1.9
+
+## 0.2.1
+
+### Patch Changes
+
+-   77b7ab1: Introduce improvements to handle known issues with CAP
+
+## 0.2.0
+
+### Minor Changes
+
+-   4d3fe73: Expose new App Frontend server
+
+## 0.1.29
+
+### Patch Changes
+
+-   37c2e00: remove fs, causing issues when cds is updating package.json
+
+## 0.1.28
+
+### Patch Changes
+
+-   a8cbdcf: append install script
+
 ## 0.1.27
 
 ### Patch Changes

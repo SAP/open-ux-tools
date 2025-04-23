@@ -1,5 +1,68 @@
 # @sap-ux/adp-tooling
 
+## 0.13.31
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.13.30
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
+## 0.13.29
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/system-access@0.5.36
+
+## 0.13.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.13.27
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/nodejs-utils@0.1.9
+    -   @sap-ux/system-access@0.5.35
+
+## 0.13.26
+
+### Patch Changes
+
+-   c4278fb: Change build and deploy scripts for cloud ready adaptation projects
+
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
+## 0.13.24
+
+### Patch Changes
+
+-   c81864a: fix: ADP Generator integration test mocking
+
+## 0.13.23
+
+### Patch Changes
+
+-   4f0eaae: feat: Enhance system and app prompt validations
+
 ## 0.13.22
 
 ### Patch Changes
