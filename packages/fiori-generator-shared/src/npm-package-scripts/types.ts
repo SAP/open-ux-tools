@@ -42,6 +42,7 @@ export interface PackageScriptsOptions {
      * By default, search parameters are added to the preview scripts.
      * If `supportVirtualEndpoints` is true, the generated scripts will not include the default search parameters.
      * When virtual endpoints are used, the search parameters are injected at runtime.
+     *
      * @default false
      */
     supportVirtualEndpoints?: boolean;
