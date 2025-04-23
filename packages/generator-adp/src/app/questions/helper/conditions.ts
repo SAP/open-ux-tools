@@ -86,3 +86,19 @@ export function showExtensionProjectQuestion(
         (!isApplicationSupported || (isApplicationSupported && (nonFlexOrNonOnPremise || hasSyncViews)))
     );
 }
+
+/**
+ * Determines if an internal question for ACH and FioriId will be shown based on the answers and specific conditions.
+ *
+ * @param {ConfigurationInfoAnswers} answers - The user-provided answers containing application details.
+ * @param {boolean} isCustomerBase - Indicates whether the adaptation layer is CUSTOMER_BASE.
+ * @param {boolean} isApplicationSupported - Whether the selected application is supported.
+ * @returns {boolean | undefined} True if an internal question for ACH and FioriId question will be shown, otherwise false.
+ */
+export function showInternalQuestions(
+    answers: ConfigAnswers,
+    isCustomerBase: boolean,
+    isApplicationSupported: boolean
+): boolean {
+    return !!answers.system && answers.application && !isCustomerBase && isApplicationSupported;
+}

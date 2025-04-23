@@ -115,7 +115,7 @@ describe('ConfigPrompter Integration Tests', () => {
         it('should return four prompts with correct names', () => {
             const prompts = configPrompter.getPrompts();
 
-            expect(prompts).toHaveLength(8);
+            expect(prompts).toHaveLength(10);
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {

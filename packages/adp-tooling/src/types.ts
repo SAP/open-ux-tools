@@ -101,6 +101,8 @@ export interface ConfigAnswers {
     username: string;
     password: string;
     application: SourceApplication;
+    fioriId?: string;
+    ach?: string;
     shouldCreateExtProject?: boolean;
 }
 

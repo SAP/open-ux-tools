@@ -12,11 +12,13 @@ import {
     isV4Application,
     getRelevantVersions,
     fetchPublicVersions,
-    checkSystemVersionPattern
+    checkSystemVersionPattern,
+    getAch,
+    getFioriId
 } from '@sap-ux/adp-tooling';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest } from '@sap-ux/project-access';
-import { validateEmptyString } from '@sap-ux/project-input-validator';
+import { validateAch, validateEmptyString } from '@sap-ux/project-input-validator';
 import { isAxiosError, type AbapServiceProvider } from '@sap-ux/axios-extension';
 import type {
     ConfirmQuestion,
@@ -35,10 +37,12 @@ import type {
 import { isAppStudio } from '@sap-ux/btp-utils';
 
 import type {
+    AchPromptOptions,
     ApplicationInfoErrorPromptOptions,
     ApplicationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
+    FioriIdPromptOptions,
     PasswordPromptOptions,
     ShouldCreateExtProjectPromptOptions,
     SystemPromptOptions,
@@ -54,7 +58,8 @@ import {
     showApplicationErrorQuestion,
     showApplicationQuestion,
     showCredentialQuestion,
-    showExtensionProjectQuestion
+    showExtensionProjectQuestion,
+    showInternalQuestions
 } from './helper/conditions';
 
 /**
@@ -213,8 +218,14 @@ export class ConfigPrompter {
                 promptOptions?.[configPromptNames.application]
             ),
             [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli(),
-            [configPromptNames.appInfoError]: this.getAppInfoErrorPrompt(),
-            [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt()
+            [configPromptNames.fioriId]: this.getFioriIdPrompt(),
+            [configPromptNames.ach]: this.getAchPrompt(),
+            [configPromptNames.appInfoError]: this.getAppInfoErrorPrompt(
+                promptOptions?.[configPromptNames.appInfoError]
+            ),
+            [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt(
+                promptOptions?.[configPromptNames.shouldCreateExtProject]
+            )
         };
 
         const questions: ConfigQuestion[] = Object.entries(keyedPrompts)
@@ -382,6 +393,50 @@ export class ConfigPrompter {
                 return false;
             }
         } as YUIQuestion;
+    }
+
+    /**
+     * Creates an input prompt for entering the Fiori ID.
+     *
+     * @param {FioriIdPromptOptions} _ - Optional configuration for Fiori ID prompt.
+     * @returns {InputQuestion<ConfigAnswers>} An input prompt for the Fiori ID.
+     */
+    private getFioriIdPrompt(_?: FioriIdPromptOptions): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: 'fioriId',
+            message: t('prompts.fioriIdLabel'),
+            guiOptions: {
+                hint: t('prompts.fioriIdHint'),
+                breadcrumb: true
+            },
+            when: (answers) => showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
+            default: () => getFioriId(this.appManifest),
+            store: false
+        } as InputQuestion<ConfigAnswers>;
+    }
+
+    /**
+     * Generates an input prompt for entering the Application Component Hierarchy code for a project.
+     *
+     * @param {AchPromptOptions} _ - Optional configuration for ACH prompt.
+     * @returns {InputQuestion<ConfigAnswers>} An input prompt for Application Component Hierarchy code.
+     */
+    private getAchPrompt(_?: AchPromptOptions): InputQuestion<ConfigAnswers> {
+        return {
+            type: 'input',
+            name: 'ach',
+            message: t('prompts.achLabel'),
+            guiOptions: {
+                hint: t('prompts.achHint'),
+                breadcrumb: true,
+                mandatory: true
+            },
+            when: (answers) => showInternalQuestions(answers, this.isCustomerBase, this.isApplicationSupported),
+            default: () => getAch(this.appManifest),
+            validate: (value: string) => validateAch(value, this.isCustomerBase),
+            store: false
+        } as InputQuestion<ConfigAnswers>;
     }
 
     /**
