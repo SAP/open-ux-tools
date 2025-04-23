@@ -38,9 +38,11 @@ export interface PackageScriptsOptions {
     localStartFile?: string;
     /** If true, a script for starting the app without flp will be generated. Defaults to true. */
     generateIndex?: boolean;
-    /** If true, the generated scripts will include the default search parameters - the defaults are dependent on the script.
+    /**
+     * If true, the generated scripts will include the default search parameters - the defaults are dependent on the script.
      * These parameters are necessary when virtual endpoints are not used.
      * When virtual endpoints are used, the search parameters are injected at runtime - so the value should be false.
+     *
      * @default true
      */
     addSearchParams?: boolean;
