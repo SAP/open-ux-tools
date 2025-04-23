@@ -65,7 +65,7 @@ export function getPreviewMiddlewareConfig({
 
     if (appId && flpAction) {
         fioriPreviewConfig.configuration.flp.intent = {
-            object: appId.replace(/[\._-]/g, ''),
+            object: appId.replace(/[._-]/g, ''),
             action: flpAction
         };
     }

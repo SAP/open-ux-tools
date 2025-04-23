@@ -25,21 +25,16 @@ function buildStartNoFLPCommand(localOnly: boolean, searchParams?: URLSearchPara
 /**
  * Constructs a URL parameter string from search parameters and an optional FLP app ID.
  *
- * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command URL.
  * @param {URLSearchParams} searchParams - The search parameters to include in the query string.
  * @param {string} [flpAppId] - The FLP app ID to be included as a fragment identifier.
  *                               If not provided, the fragment identifier will be omitted.
  * @returns {string} - A string representing the combined query parameters and fragment identifier.
  *                      If `searchParams` is empty, only the fragment identifier will be included.
  */
-function buildParams(addSearchParams: boolean, searchParams: URLSearchParams, flpAppId: string): string {
+function buildParams(searchParams?: URLSearchParams, flpAppId?: string): string {
     const hashFragment = flpAppId ? `#${flpAppId}` : '';
-    if (!addSearchParams) {
-        return hashFragment;
-    } else {
-        const searchParam = `?${searchParams.toString()}`;
-        return `${searchParam}${hashFragment}`;
-    }
+    const searchParam = searchParams ? `?${searchParams.toString()}` : '';
+    return `${searchParam}${hashFragment}`;
 }
 
 /**
@@ -62,8 +57,11 @@ function buildStartCommand(localOnly: boolean, params: string, startFile?: strin
 
 /**
  * Generates a variant management script in preview mode.
+ * Default search parameters are added to the command if `addSearchParams` is `true`.
+ * These parameters are necessary when virtual endpoints are not used.
+ * When virtual endpoints are used, the search parameters are injected at runtime.
  *
- * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command URL.
+ * @param {boolean} addSearchParams - Indicates whether to include search parameters in the command.
  * @returns {string} A variant management script to run the application in preview mode.
  */
 function getVariantPreviewAppScript(addSearchParams: boolean): string {
@@ -92,7 +90,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean): string {
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be opend with the start-local script
  * @param options.generateIndex exclude the start-noflp script
- * @param options.addSearchParams boolean to determine whether to add search params to the start command
+ * @param options.addSearchParams boolean to determine whether to add the default search params to the commands, defaults to true. It is expected to be false when virtual endpoints are used as the search params are injected at runtime
  * @returns package.json scripts
  */
 export function getPackageScripts({
@@ -106,12 +104,13 @@ export function getPackageScripts({
     addSearchParams = true
 }: PackageScriptsOptions): PackageJsonScripts {
     const viewCacheSearchParams = new URLSearchParams([['sap-ui-xx-viewCache', 'false']]);
-    const params = buildParams(addSearchParams, viewCacheSearchParams, flpAppId);
+    const queryParams = buildParams(addSearchParams ? viewCacheSearchParams : undefined, flpAppId);
+
     const scripts: PackageJsonScripts = {
-        start: buildStartCommand(localOnly, params, startFile),
+        start: buildStartCommand(localOnly, queryParams, startFile),
         'start-local': `fiori run --config ./ui5-local.yaml --open "${
             localStartFile ?? 'test/flpSandbox.html'
-        }${params}"`
+        }${queryParams}"`
     };
 
     if (generateIndex) {
@@ -121,7 +120,7 @@ export function getPackageScripts({
     if (addMock) {
         scripts['start-mock'] = `fiori run --config ./ui5-mock.yaml --open "${
             localStartFile ?? 'test/flpSandbox.html'
-        }${params}"`;
+        }${queryParams}"`;
     }
 
     if (addTest) {
