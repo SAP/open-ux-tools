@@ -194,7 +194,7 @@ export async function generateSupportingConfig(config: CFConfig, fs: Editor): Pr
         mtaConfig.mtaId &&
         !fs.exists(join(config.rootPath, XSSecurityFile))
     ) {
-        addXSSecurityConfig(mtaConfig, fs, config.addManagedAppRouter);
+        addXSSecurityConfig(mtaConfig, fs, true);
     }
     // Be a good citizen and add a .gitignore if missing from the existing project root
     if (!fs.exists(join(config.rootPath, '.gitignore'))) {

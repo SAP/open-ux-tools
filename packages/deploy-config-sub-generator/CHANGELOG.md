@@ -1,5 +1,24 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.1.15
+
+### Patch Changes
+
+-   Updated dependencies [afd26c8]
+    -   @sap-ux/odata-service-inquirer@2.3.0
+
+## 0.1.14
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-sub-generator@0.1.49
+
+## 0.1.13
+
+### Patch Changes
+
+-   @sap-ux/cf-deploy-config-sub-generator@0.1.48
+
 ## 0.1.12
 
 ### Patch Changes

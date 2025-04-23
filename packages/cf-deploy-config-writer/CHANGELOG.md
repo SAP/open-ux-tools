@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.5
+
+### Patch Changes
+
+-   e0937db: ensure xs-security is updated
+
 ## 0.2.4
 
 ### Patch Changes

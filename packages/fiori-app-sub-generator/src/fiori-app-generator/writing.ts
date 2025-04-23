@@ -66,10 +66,10 @@ export async function writeReadMe(
             value: entityRelatedConfig.navigationEntity.navigationPropertyName || 'None'
         });
     }
-    if (entityRelatedConfig?.filterEntityType) {
+    if (entityRelatedConfig?.filterEntitySet) {
         readMeCustom.additionalEntries.push({
             label: t('readme.label.filterEntityType'),
-            value: entityRelatedConfig.filterEntityType.entitySetName
+            value: entityRelatedConfig.filterEntitySet.entitySetName
         });
     }
 
