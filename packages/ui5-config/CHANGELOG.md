@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.27.1
+
+### Patch Changes
+
+-   294bbe3: code cleanup with help from copilot
+
 ## 0.27.0
 
 ### Minor Changes

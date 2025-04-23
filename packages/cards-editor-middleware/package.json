@@ -1,6 +1,6 @@
 {
     "name": "@sap-ux/cards-editor-middleware",
-    "version": "0.4.64",
+    "version": "0.4.65",
     "repository": {
         "type": "git",
         "url": "https://github.com/SAP/open-ux-tools.git",
