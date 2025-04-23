@@ -39,11 +39,10 @@ export interface PackageScriptsOptions {
     /** If true, a script for starting the app without flp will be generated. Defaults to true. */
     generateIndex?: boolean;
     /**
-     * If true, the generated scripts will include the default search parameters - the defaults are dependent on the script.
-     * These parameters are necessary when virtual endpoints are not used.
-     * When virtual endpoints are used, the search parameters are injected at runtime - so the value should be false.
-     *
-     * @default true
+     * By default, search parameters are added to the preview scripts.
+     * If `supportVirtualEndpoints` is true, the generated scripts will not include the default search parameters.
+     * When virtual endpoints are used, the search parameters are injected at runtime.
+     * @default false
      */
-    addSearchParams?: boolean;
+    supportVirtualEndpoints?: boolean;
 }

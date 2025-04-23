@@ -205,7 +205,7 @@ async function generate<T extends {}>(
                 startFile: feApp.app?.startFile,
                 localStartFile: feApp.app?.localStartFile,
                 generateIndex: feApp.appOptions?.generateIndex,
-                addSearchParams: !feApp.appOptions?.useVirtualPreviewEndpoints // no need for search params if virtual endpoints are used
+                supportVirtualEndpoints: feApp.appOptions?.useVirtualPreviewEndpoints // no need for search params if virtual endpoints are used
             })
         });
     } else {

@@ -90,7 +90,7 @@ function getVariantPreviewAppScript(addSearchParams: boolean): string {
  * @param options.startFile path that should be opened with the start script
  * @param options.localStartFile path that should be opend with the start-local script
  * @param options.generateIndex exclude the start-noflp script
- * @param options.addSearchParams boolean to determine whether to add the default search params to the commands, defaults to true. It is expected to be false when virtual endpoints are used as the search params are injected at runtime
+ * @param options.supportVirtualEndpoints whether to support virtual endpoints - search params will not be added as they are injected at runtime
  * @returns package.json scripts
  */
 export function getPackageScripts({
@@ -101,10 +101,10 @@ export function getPackageScripts({
     startFile,
     localStartFile,
     generateIndex = true,
-    addSearchParams = true
+    supportVirtualEndpoints = false
 }: PackageScriptsOptions): PackageJsonScripts {
     const viewCacheSearchParams = new URLSearchParams([['sap-ui-xx-viewCache', 'false']]);
-    const queryParams = buildParams(addSearchParams ? viewCacheSearchParams : undefined, flpAppId);
+    const queryParams = buildParams(supportVirtualEndpoints ? undefined : viewCacheSearchParams, flpAppId);
 
     const scripts: PackageJsonScripts = {
         start: buildStartCommand(localOnly, queryParams, startFile),
@@ -129,7 +129,7 @@ export function getPackageScripts({
 
     scripts['start-variants-management'] = localOnly
         ? `echo \\"${t('info.mockOnlyWarning')}\\"`
-        : getVariantPreviewAppScript(addSearchParams);
+        : getVariantPreviewAppScript(!supportVirtualEndpoints);
 
     return scripts;
 }

@@ -49,12 +49,12 @@ describe('package.json task generation', () => {
         `);
     });
 
-    test('addSearchParams: false, correct end-user message generated', () => {
+    test('supportVirtualEndpoints: true, correct end-user message generated', () => {
         expect(
             getPackageScripts({
                 localOnly: false,
                 addMock: true,
-                addSearchParams: false,
+                supportVirtualEndpoints: true,
                 flpAppId: 'app-preview',
                 startFile: 'test/flp.html',
                 localStartFile: 'test/flp.html'
