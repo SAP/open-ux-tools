@@ -45,6 +45,8 @@ export interface OnpremApp {
     /** Reference associated with the ID of the base application. */
     reference: string;
     layer?: UI5FlexLayer;
+    fioriId?: string;
+    ach?: string;
     title?: string;
     /** Optional: Application variant change content. */
     content?: Content[];

@@ -9,8 +9,8 @@ import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import type { SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
+import type { Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
+import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     SystemLookup,
@@ -132,9 +132,12 @@ const answers = {
     shouldCreateExtProject: false
 };
 
+const activeLanguages: Language[] = [{ sap: 'value', i18n: 'DE' }];
+const adaptationProjectTypes: AdaptationProjectType[] = [AdaptationProjectType.CLOUD_READY];
+
 const isAbapCloudMock = jest.fn();
 const getAtoInfoMock = jest.fn();
-const getSystemInfoMock = jest.fn();
+const getSystemInfoMock = jest.fn().mockResolvedValue({ adaptationProjectTypes, activeLanguages });
 const dummyProvider = {
     isAbapCloud: isAbapCloudMock,
     getAtoInfo: getAtoInfoMock,
