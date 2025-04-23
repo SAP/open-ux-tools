@@ -1,5 +1,11 @@
 # @sap-ux/fiori-elements-writer
 
+## 2.2.0
+
+### Minor Changes
+
+-   afd26c8: Use globalFilterEntitySet instead of globalFilterEntityType
+
 ## 2.1.41
 
 ### Patch Changes
