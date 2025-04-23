@@ -1,5 +1,12 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.50
+
+### Patch Changes
+
+-   Updated dependencies [5f18839]
+    -   @sap-ux/cf-deploy-config-writer@0.2.6
+
 ## 0.1.49
 
 ### Patch Changes
