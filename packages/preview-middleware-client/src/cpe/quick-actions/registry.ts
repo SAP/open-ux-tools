@@ -71,7 +71,7 @@ export abstract class QuickActionDefinitionRegistry<T extends string> {
                     view
                 });
             } else if(name.toLowerCase().includes('.listreport.')){
-                // TODO: determine pageName for freestyle app
+                // TODO: determine pageName for freestyle app. Is it needed at all?
                 pages.push({
                     name: 'listReport' as T,
                     view
