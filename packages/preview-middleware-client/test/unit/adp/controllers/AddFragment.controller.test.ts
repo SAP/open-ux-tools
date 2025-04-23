@@ -305,8 +305,6 @@ describe('AddFragment', () => {
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
-            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
@@ -337,8 +335,6 @@ describe('AddFragment', () => {
                     .fn()
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
-
-            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
@@ -371,8 +367,6 @@ describe('AddFragment', () => {
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
 
-            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
-
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
             expect(valueStateSpy).toHaveBeenCalledWith(ValueState.Error);
@@ -403,8 +397,6 @@ describe('AddFragment', () => {
                     .fn()
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
-
-            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
@@ -438,8 +430,6 @@ describe('AddFragment', () => {
                     .fn()
                     .mockReturnValue({ setEnabled: jest.fn().mockReturnValue({ rerender: jest.fn() }) })
             } as unknown as Dialog;
-
-            // addFragment.checkForExistingChange = jest.fn().mockReturnValue(false);
 
             addFragment.onFragmentNameInputChange(event as unknown as Event);
 
