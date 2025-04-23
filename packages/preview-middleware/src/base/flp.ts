@@ -22,7 +22,15 @@ import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
 import { deleteChange, readChanges, writeChange } from './flex';
 import { generateImportList, mergeTestConfigDefaults } from './test';
-import type { RtaEditor, FlpConfig, CompleteTestConfig, MiddlewareConfig, RtaConfig, TestConfig, CardGeneratorConfig } from '../types';
+import type {
+    RtaEditor,
+    FlpConfig,
+    CompleteTestConfig,
+    MiddlewareConfig,
+    RtaConfig,
+    TestConfig,
+    CardGeneratorConfig
+} from '../types';
 import {
     getFlpConfigWithDefaults,
     createFlpTemplateConfig,

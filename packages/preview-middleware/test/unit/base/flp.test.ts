@@ -120,9 +120,9 @@ describe('FlpSandbox', () => {
         test('Card generator is enabled for the application', async () => {
             const flp = new FlpSandbox(
                 {
-                   cardGenerator: {
+                    cardGenerator: {
                         enabled: true
-                   }
+                    }
                 },
                 mockProject,
                 mockUtils,
