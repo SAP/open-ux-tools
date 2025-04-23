@@ -356,6 +356,16 @@ exports[`CF Writer App - Application Frontend Generate deployment configs - HTML
       \\"destination\\": \\"ui5\\"
     },
     {
+      \\"source\\": \\"^/logout-page.html$\\",
+      \\"service\\": \\"app-front\\",
+      \\"authenticationType\\": \\"none\\"
+    },
+    {
+      \\"source\\": \\"^/index.html$\\",
+      \\"service\\": \\"app-front\\",
+      \\"cacheControl\\": \\"no-cache, no-store, must-revalidate\\"
+    },
+    {
       \\"source\\": \\"^(.*)$\\",
       \\"target\\": \\"$1\\",
       \\"service\\": \\"app-front\\",
