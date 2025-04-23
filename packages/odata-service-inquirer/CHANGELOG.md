@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.0
+
+### Minor Changes
+
+-   afd26c8: Use globalFilterEntitySet instead of globalFilterEntityType
+
 ## 2.2.36
 
 ### Patch Changes
