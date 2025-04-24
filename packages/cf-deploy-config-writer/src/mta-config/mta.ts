@@ -9,12 +9,10 @@ import { FileName, getMtaPath, hasDependency, type Package } from '@sap-ux/proje
 import {
     CloudFoundry,
     RouterModule,
-    MTAYamlFile,
     ResourceMTADestination,
     DefaultMTADestination,
     SRV_API,
     ManagedXSUAA,
-    MTAFileExtension,
     MTABuildParams,
     MTABuildResult,
     DestinationServiceConfig,
@@ -405,17 +403,19 @@ export class MtaConfig {
      */
     private async cleanupMissingResources(): Promise<void> {
         this.log?.debug(t('debug.addMissingModules'));
-        if (!this.modules.has('com.sap.application.content:resource')) {
-            await this.addAppContent();
-        }
+        if (!this.modules.has('com.sap.application.content:appfront')) {
+            if (!this.modules.has('com.sap.application.content:resource')) {
+                await this.addAppContent();
+            }
 
-        // For Approuter Configuration generators, the destination resource is missing for both Standalone | Managed
-        if (this.resources.get('destination')) {
-            // Ensure the resource is added
-            await this.updateDestinationResource(this.modules.has('com.sap.application.content:destination'));
-        } else {
-            // No destination resource found, add it, more common for standalone
-            await this.addDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            // For Approuter Configuration generators, the destination resource is missing for both Standalone | Managed
+            if (this.resources.get('destination')) {
+                // Ensure the resource is added
+                await this.updateDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            } else {
+                // No destination resource found, add it, more common for standalone
+                await this.addDestinationResource(this.modules.has('com.sap.application.content:destination'));
+            }
         }
     }
 
@@ -488,6 +488,15 @@ export class MtaConfig {
             }
         });
         return cloudServiceName;
+    }
+
+    /**
+     * Returns true if the MTA contains an approuter module of type App Frontend Service.
+     *
+     * @returns {boolean} true if the mta contains an App Frontend Service
+     */
+    public hasAppFrontendRouter(): boolean {
+        return this.modules.has('com.sap.application.content:appfront');
     }
 
     /**
@@ -844,7 +853,7 @@ export class MtaConfig {
         }
 
         const appMtaId = this.mtaId;
-        const mtaExtFilePath = join(this.mta.mtaDirPath, MTAFileExtension);
+        const mtaExtFilePath = join(this.mta.mtaDirPath, FileName.MtaExtYaml);
         let mtaExtensionYamlFile;
 
         try {
@@ -867,9 +876,9 @@ export class MtaConfig {
                 destinationServiceName: destinationServiceName,
                 mtaVersion: '1.0.0'
             };
-            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${MTAFileExtension}`), 'utf-8');
+            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${FileName.MtaExtYaml}`), 'utf-8');
             writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
-            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: MTAFileExtension }));
+            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
         } else {
             // Create an entry in an existing mta extension file
             const resources: YAMLSeq = mtaExtensionYamlFile.getSequence({ path: 'resources' });
@@ -890,7 +899,7 @@ export class MtaConfig {
                     value: nodeToInsert
                 });
                 writeFileSync(mtaExtFilePath, mtaExtensionYamlFile.toString());
-                this.log?.info(t('info.mtaExtensionUpdated', { mtaExtFile: MTAFileExtension }));
+                this.log?.info(t('info.mtaExtensionUpdated', { mtaExtFile: FileName.MtaExtYaml }));
             } else {
                 this.log?.error(t('error.updatingMTAExtensionFailed', { mtaExtFilePath }));
             }
@@ -1188,7 +1197,7 @@ export class MtaConfig {
  * @returns {boolean} true | false if MTA configuration file is found
  */
 export function isMTAFound(dir: string): boolean {
-    return existsSync(join(dir, MTAYamlFile));
+    return existsSync(join(dir, FileName.MtaYaml));
 }
 
 /**
