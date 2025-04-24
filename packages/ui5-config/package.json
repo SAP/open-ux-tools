@@ -13,7 +13,7 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "tsc --build && node ../ui5-config/scripts/download-ui5yaml-schema.js",
+        "build": "node ../ui5-config/scripts/download-ui5yaml-schema.js && tsc --build",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",

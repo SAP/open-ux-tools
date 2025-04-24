@@ -43,6 +43,7 @@
         "semver": "7.5.4"
     },
     "devDependencies": {
+        "@esbuild-plugins/node-modules-polyfill": "0.1.4",
         "@sap-ux/eslint-plugin-fiori-tools": "workspace:*",
         "@sap-ux/project-access": "workspace:*",
         "@types/ejs": "3.1.2",

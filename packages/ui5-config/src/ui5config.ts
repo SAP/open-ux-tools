@@ -29,7 +29,7 @@ import { fioriToolsProxy, serveStatic } from './constants';
 import Ajv, { type ValidateFunction } from 'ajv';
 import type { SomeJSONSchema } from 'ajv/dist/types/json-schema';
 import { join, posix, relative, sep } from 'path';
-import { readFile } from 'fs/promises';
+import schemaJson from './schema/ui5.yaml.json';
 import yaml from 'js-yaml';
 
 /**
@@ -48,8 +48,7 @@ export class UI5Config {
      */
     async validateSchema(): Promise<boolean> {
         if (!UI5Config.validate) {
-            const path = join(__dirname, '..', 'dist', 'schema', 'ui5.yaml.json');
-            const schema = JSON.parse(await readFile(path, 'utf8')) as SomeJSONSchema | null;
+            const schema = schemaJson as SomeJSONSchema | null;
             if (!schema) {
                 throw Error('The schema file was not found. Validation is not possible.');
             }
