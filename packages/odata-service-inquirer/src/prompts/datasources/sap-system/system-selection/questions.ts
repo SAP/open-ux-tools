@@ -7,17 +7,16 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { ConnectedSystem } from '../../../../types';
-import { type OdataServicePromptOptions, promptNames } from '../../../../types';
+import { type ConnectedSystem, type OdataServicePromptOptions, promptNames } from '../../../../types';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils';
-import type { ValidationResult } from '../../../types';
 import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
+import type { ValidationResult } from '../../../types';
+import { getCfAbapBASQuestions } from '../cf-abap/questions';
 import { BasicCredentialsPromptNames, getCredentialsPrompts } from '../credentials/questions';
 import { getNewSystemQuestions } from '../new-system/questions';
 import type { ServiceAnswer } from '../service-selection';
 import { getSystemServiceQuestion } from '../service-selection/questions';
-import { getCfAbapBASQuestions } from '../cf-abap/questions';
 import { validateServiceUrl } from '../validators';
 import {
     type SystemSelectionAnswerType,

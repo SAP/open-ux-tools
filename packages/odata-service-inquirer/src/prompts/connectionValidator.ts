@@ -285,7 +285,6 @@ export class ConnectionValidator {
      * @throws an error if the connection attempt fails and the error is a 500 on App Studio or a non-axios error is caught
      */
     private async checkUrl(
-        // todo: rename connectWithUrl?
         url: URL,
         username?: string,
         password?: string,

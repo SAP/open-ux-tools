@@ -8,14 +8,13 @@ import {
     isPartialUrlDestination,
     listDestinations
 } from '@sap-ux/btp-utils';
+import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import { SystemService } from '@sap-ux/store';
 import type { ListChoiceOptions } from 'inquirer';
-import { ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { t } from '../../../../i18n';
-import type { ConnectedSystem } from '../../../../types';
-import { type DestinationFilters } from '../../../../types';
+import type { ConnectedSystem, DestinationFilters } from '../../../../types';
 import { convertODataVersionType, PromptState, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';

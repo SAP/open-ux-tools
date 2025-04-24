@@ -1,10 +1,10 @@
 import { withCondition, type YUIQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import { t } from '../i18n';
-import type { ConnectedSystem } from '../types';
 import {
     DatasourceType,
     promptNames,
+    type ConnectedSystem,
     type DatasourceTypePromptOptions,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
