@@ -20,13 +20,6 @@ import { AddFragmentData } from '../../../../src/adp/add-fragment';
 import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
 import { CommunicationService } from '../../../../src/cpe/communication-service';
 
-jest.mock('@sap-ux-private/control-property-editor-common');
-jest.mock('../../../../src/cpe/communication-service', () => ({
-    CommunicationService: {
-        sendAction: jest.fn()
-    }
-}));
-
 describe('AddFragment', () => {
     beforeAll(() => {
         fetchMock.mockResolvedValue({
