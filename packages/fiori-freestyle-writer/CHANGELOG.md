@@ -1,5 +1,33 @@
 # @sap-ux/fiori-freestyle-writer
 
+## 2.3.1
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/cap-config-writer@0.9.27
+    -   @sap-ux/fiori-generator-shared@0.11.1
+    -   @sap-ux/odata-service-writer@0.26.15
+    -   @sap-ux/ui5-application-writer@1.4.1
+    -   @sap-ux/ui5-test-writer@0.6.5
+
+## 2.3.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/ui5-application-writer@1.4.0
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/cap-config-writer@0.9.26
+    -   @sap-ux/ui5-test-writer@0.6.4
+    -   @sap-ux/odata-service-writer@0.26.14
+
 ## 2.2.8
 
 ### Patch Changes
