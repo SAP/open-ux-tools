@@ -255,30 +255,29 @@ export function setI18nTitle(resourceBundle: ResourceBundle, i18nKey = 'appTitle
 }
 
 /**
- * Adds a user action to generate a card in the SAP Fiori Launchpad.
+ * This function dynamically adds a "Generate Card" action to the SAP Fiori Launchpad for the given component instance.
  * 
- * @param {Component} componentInstance - The instance of the component for which the card generation action is being added.
+ * @param componentInstance - The instance of the component for which the card generation action is being added.
+ * @param container - The SAP Fiori Launchpad container instance used to access services.
  */
-function addCardGenerationUserAction(componentInstance : Component) {
+function addCardGenerationUserAction(componentInstance : Component, container : typeof sap.ushell.Container) {
     sap.ui.require([
         'sap/cards/ap/generator/CardGenerator'
     ], async (CardGenerator : CardGeneratorType) => {
-        const container = sap?.ushell?.Container ??
-        (await import('sap/ushell/Container')).default as unknown as typeof sap.ushell.Container;
         const extensionService = await container.getServiceAsync<Extension>('Extension');
-        const oControlProperties = {
+        const controlProperties = {
             icon: 'sap-icon://add',
             id: 'generate_card',
             text: 'Generate Card',
             tooltip: 'Generate Card',
-            press: function () {
+            press: () => {
                 CardGenerator.initializeAsync(componentInstance);
             }
         };
-        const oParameters = {
+        const parameters = {
             controlType: 'sap.ushell.ui.launchpad.ActionItem'
         };
-        const generateCardAction = await extensionService.createUserAction(oControlProperties, oParameters);
+        const generateCardAction = await extensionService.createUserAction(controlProperties, parameters);
         generateCardAction.showForCurrentApp();
     });
 }
@@ -359,10 +358,12 @@ export async function init({
             const lifecycleService = await container.getServiceAsync<AppLifeCycle>('AppLifeCycle');
             lifecycleService.attachAppLoaded((event) => {
                 const componentInstance = event.getParameter('componentInstance');
-                addCardGenerationUserAction(componentInstance as unknown as Component);
+                addCardGenerationUserAction(componentInstance as unknown as Component, container);
             });
         });
-    }
+    } else {  
+        Log.warning('Card generator is not supported for the current UI5 version.');
+    } 
 
     // reset app state if requested
     if (urlParams.get('fiori-tools-iapp-state')?.toLocaleLowerCase() !== 'true') {
@@ -406,7 +407,7 @@ if (bootstrapConfig) {
         flex: bootstrapConfig.getAttribute('data-open-ux-preview-flex-settings'),
         customInit: bootstrapConfig.getAttribute('data-open-ux-preview-customInit'),
         enhancedHomePage: !!bootstrapConfig.getAttribute('data-open-ux-preview-enhanced-homepage'),
-        enableCardGenerator: bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator') === 'true'
+        enableCardGenerator: !!bootstrapConfig.getAttribute('data-open-ux-preview-enable-card-generator')
     }).catch((e) => {
         const error = getError(e);
         Log.error('Sandbox initialization failed: ' + error.message);

@@ -117,7 +117,6 @@ export type TestConfigDefaults = {
 
 export type CardGeneratorConfig = {
     path?: string;
-    enabled?: boolean;
 };
 
 /**
@@ -132,10 +131,10 @@ export interface MiddlewareConfig {
     rta?: InternalRtaConfig;
     editors?: {
         rta?: RtaConfig;
+        cardGenerator?: CardGeneratorConfig;
     };
     adp?: AdpPreviewConfig;
     debug?: boolean;
-    cardGenerator?: CardGeneratorConfig;
 }
 
 export type DefaultFlpPath = '/test/flp.html';
@@ -255,3 +254,9 @@ export const FLPHomePageDefaults = {
     catalogId: 'homeCatalog',
     sectionId: 'homeAppsSection'
 };
+
+export interface MultiCardsPayload {
+    type: string;
+    manifest: object;
+    entitySet?: string;
+}

@@ -1,11 +1,6 @@
-import {
-    prepareFileName,
-    prepareCardTypesForSaving,
-    traverseI18nProperties,
-    type I18nEntry
-} from '../../../src/base/utilities';
+import { prepareCardTypesForSaving, traverseI18nProperties, type I18nEntry } from '../../../../src/base/utils/cards';
 import { promises } from 'fs';
-import packageJson from '../../../package.json';
+import packageJson from '../../../../package.json';
 
 jest.mock('fs', () => ({
     promises: {
@@ -20,11 +15,6 @@ describe('Common utilities', () => {
     const mockFsPromisesReadFile = promises.readFile as jest.Mock;
     beforeEach(() => {
         jest.resetAllMocks();
-    });
-
-    test('prepareFileName', () => {
-        expect(prepareFileName('path/to/file.json')).toBe('file.json');
-        expect(prepareFileName('path/to/file')).toBe('file.json');
     });
 
     test('prepareCardTypesForSaving', () => {

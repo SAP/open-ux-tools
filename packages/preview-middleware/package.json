@@ -49,8 +49,7 @@
         "@sap-ux/system-access": "workspace:*",
         "ejs": "3.1.10",
         "mem-fs": "2.1.0",
-        "mem-fs-editor": "9.4.0",
-        "express-rate-limit": "^7.5.0"
+        "mem-fs-editor": "9.4.0"
     },
     "devDependencies": {
         "@private/preview-middleware-client": "workspace:@sap-ux-private/preview-middleware-client@*",

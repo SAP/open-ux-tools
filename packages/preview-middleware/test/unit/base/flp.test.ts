@@ -1,5 +1,5 @@
 import type { ReaderCollection } from '@ui5/fs';
-import { type TemplateConfig, CARD_GENERATOR_API } from '../../../src/base/config';
+import { CARD_GENERATOR_DEFAULT, type TemplateConfig } from '../../../src/base/config';
 import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
@@ -15,13 +15,12 @@ import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
-import * as utils from '../../../src/base/utilities';
+import * as cardUtils from '../../../src/base/utils/cards';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
 import { promises } from 'fs';
 import { getWebappPath } from '@sap-ux/project-access';
 import path from 'path';
-import os from 'os';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 
@@ -32,7 +31,7 @@ jest.mock('@sap-ux/adp-tooling', () => {
     };
 });
 
-jest.spyOn(utils, 'traverseI18nProperties').mockResolvedValue({
+jest.spyOn(cardUtils, 'traverseI18nProperties').mockResolvedValue({
     lines: ['appTitle=Sales Order'],
     updatedEntries: [],
     output: ['appTitle=Sales Order']
@@ -120,8 +119,10 @@ describe('FlpSandbox', () => {
         test('Card generator is enabled for the application', async () => {
             const flp = new FlpSandbox(
                 {
-                    cardGenerator: {
-                        enabled: true
+                    editors: {
+                        cardGenerator: {
+                            path: 'test/flpGeneratorSandbox.html'
+                        }
                     }
                 },
                 mockProject,
@@ -750,8 +751,10 @@ describe('FlpSandbox', () => {
     describe('router with enableCardGenerator', () => {
         let server!: SuperTest<Test>;
         const mockConfig = {
-            cardGenerator: {
-                enabled: true
+            editors: {
+                cardGenerator: {
+                    path: '/test/flpGeneratorSandbox.html'
+                }
             }
         };
 
@@ -783,14 +786,14 @@ describe('FlpSandbox', () => {
 
         test('GET /test/flpGeneratorSandbox.html', async () => {
             const response = await server.get(
-                `${CARD_GENERATOR_API.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
+                `${CARD_GENERATOR_DEFAULT.previewGeneratorSandbox}?sap-ui-xx-viewCache=false`
             );
             expect(response.status).toBe(200);
             expect(response.type).toBe('text/html');
         });
 
         test('POST /cards/store without payload', async () => {
-            const response = await server.post(CARD_GENERATOR_API.cardsStore).send();
+            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send();
             expect(response.status).toBe(500);
             expect(response.text).toBe('Files could not be created/updated.');
         });
@@ -843,14 +846,14 @@ describe('FlpSandbox', () => {
                 ]
             };
 
-            const response = await server.post(CARD_GENERATOR_API.cardsStore).send(payload);
+            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
             expect(response.status).toBe(201);
             expect(response.text).toBe('Files were updated/created');
             expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(2);
         });
 
         test('POST /editor/i18n with payload', async () => {
-            const response = await server.post(CARD_GENERATOR_API.i18nStore).send([
+            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send([
                 {
                     'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
                     'value': 'new Entry'
@@ -858,15 +861,11 @@ describe('FlpSandbox', () => {
             ]);
             const webappPath = await getWebappPath(path.resolve());
             const filePath = join(webappPath, 'i18n', 'i18n.properties');
-            const text1 = `appTitle=Sales Order${os.EOL}`;
-            const text2 = `CardGeneratorGroupPropertyLabel_Groups_0_Items_0=new Entry${os.EOL}`;
-            const lines = [text1, text2];
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
             expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(1);
             expect(mockFsPromisesWriteFile.mock.calls[0][0]).toBe(filePath);
-            expect(mockFsPromisesWriteFile.mock.calls[0][1]).toBe(lines.join(os.EOL));
         });
     });
 

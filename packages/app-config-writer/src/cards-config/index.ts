@@ -2,11 +2,10 @@ import { join } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import type { Package } from '@sap-ux/project-access';
-import { UI5Config } from '@sap-ux/ui5-config';
+import { type Package } from '@sap-ux/project-access';
 
 /**
- * Updates the package.json file to include the cards editor middleware and the start-cards-generator script.
+ * Updates the package.json file to include the start-cards-generator script.
  *
  * @param basePath - The path to the project root
  * @param fs - Mem-fs editor instance
@@ -25,31 +24,6 @@ function updatePackageJson(basePath: string, fs: Editor) {
 }
 
 /**
- * Updates the ui5.yaml file to include the cards editor middleware.
- *
- * @param basePath - The path to the project root
- * @param fs - Mem-fs editor instance
- * @param middlewares - The middlewares to add to the ui5.yaml file
- */
-async function updateYaml(basePath: string, fs: Editor, middlewares: string[]) {
-    const ui5ConfigPath = join(basePath, 'ui5.yaml');
-    if (!fs.exists(ui5ConfigPath)) {
-        throw new Error('ui5.yaml not found');
-    }
-    const config = await UI5Config.newInstance(fs.read(ui5ConfigPath));
-    config.addCustomMiddleware(
-        middlewares
-            .filter((name) => !config.findCustomMiddleware(name))
-            .map((name) => ({
-                name,
-                afterMiddleware: 'compression',
-                configuration: undefined
-            }))
-    );
-    fs.write(ui5ConfigPath, config.toString());
-}
-
-/**
  * Enables the card generator for the given application.
  *
  * @param basePath - path to the project root
@@ -62,7 +36,5 @@ export async function enableCardGeneratorConfig(basePath: string, fs?: Editor): 
     }
 
     updatePackageJson(basePath, fs);
-    await updateYaml(basePath, fs, ['sap-cards-generator']);
-
     return fs;
 }

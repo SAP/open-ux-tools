@@ -1,10 +1,6 @@
 import { promises } from 'fs';
-import packageJson from '../../package.json';
-
-interface MultiCardsPayload {
-    type: string;
-    manifest: object;
-}
+import packageJson from '../../../package.json';
+import type { MultiCardsPayload } from '../../types';
 
 interface MultiCardsStringManifest {
     integration: string;
@@ -20,18 +16,7 @@ export interface I18nEntry {
 export const CARD_TYPES = {
     INTERGATION: 'integration',
     ADAPTIVE: 'adaptive'
-};
-
-/**
- * Prepare the file name by adding .json extension if it is missing.
- *
- * @param path Path to the file
- * @returns returns the file name
- */
-export function prepareFileName(path: string): string {
-    const fileName = path.split('/')[path.split('/').length - 1];
-    return fileName.endsWith('.json') ? fileName : `${fileName}.json`;
-}
+} as const;
 
 /**
  * Prepare card for saving by adding dtMiddleware parameter to the card manifest.
@@ -78,9 +63,12 @@ export function prepareCardTypesForSaving(aMultipleCards: MultiCardsPayload[]): 
  *
  * @param path {string} - Path to the i18n properties file
  * @param entries {Array<I18nEntry>} - Array of entries to be updated
- * @returns {object} - Object containing the lines, updated entries and the output
+ * @returns {Promise<{ lines: string[]; updatedEntries: { [key: number]: boolean }; output: string[] }>} - Object containing the lines, updated entries and the output
  */
-export async function traverseI18nProperties(path: string, entries: Array<I18nEntry>) {
+export async function traverseI18nProperties(
+    path: string,
+    entries: Array<I18nEntry>
+): Promise<{ lines: string[]; updatedEntries: { [key: number]: boolean }; output: string[] }> {
     const i18nFile: string = await promises.readFile(path, 'utf8');
     const lines = i18nFile.split(/\r\n|\n/);
     const updatedEntries: { [key: number]: boolean } = {};

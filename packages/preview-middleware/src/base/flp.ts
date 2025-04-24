@@ -10,7 +10,7 @@ import type connect from 'connect';
 import path, { dirname, join, posix } from 'path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import { getWebappPath, type Manifest, FileName } from '@sap-ux/project-access';
+import { getWebappPath, type Manifest, FileName, type ManifestNamespace } from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
@@ -29,7 +29,8 @@ import type {
     MiddlewareConfig,
     RtaConfig,
     TestConfig,
-    CardGeneratorConfig
+    CardGeneratorConfig,
+    MultiCardsPayload
 } from '../types';
 import {
     getFlpConfigWithDefaults,
@@ -41,36 +42,14 @@ import {
     addApp,
     getAppName,
     sanitizeRtaConfig,
-    CARD_GENERATOR_API
+    CARD_GENERATOR_DEFAULT
 } from './config';
 import { generateCdm } from './cdm';
-import { promises, readFileSync } from 'fs';
-import * as utils from './utilities';
+import { readFileSync } from 'fs';
+import * as cardUtils from './utils/cards';
 import os from 'os';
-import RateLimit from 'express-rate-limit';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
-
-export const DEFAULT_THEME = 'sap_horizon';
-
-/**
- * Check if a file exists.
- *
- * @param path - The path to the file
- * @returns - true if the file exists, false otherwise
- */
-async function pathExists(path: string) {
-    try {
-        await promises.access(path);
-        return true;
-    } catch (error) {
-        if (error.code === 'ENOENT') {
-            return false; // File does not exist
-        } else {
-            throw error; // Other errors
-        }
-    }
-}
 
 /**
  * Enhanced request handler that exposes a list of endpoints for the cds-plugin-ui5.
@@ -133,7 +112,7 @@ export class FlpSandbox {
         this.rta = config.editors?.rta ?? sanitizeRtaConfig(config.rta, logger); //NOSONAR
         logger.debug(`Config: ${JSON.stringify({ flp: this.flpConfig, rta: this.rta, test: this.test })}`);
         this.router = createRouter();
-        this.cardGenerator = config.cardGenerator;
+        this.cardGenerator = config.editors?.cardGenerator;
     }
 
     /**
@@ -179,7 +158,7 @@ export class FlpSandbox {
         );
         this.addStandardRoutes();
 
-        if (this.cardGenerator?.enabled) {
+        if (this.cardGenerator?.path) {
             this.addCardGeneratorMiddlewareRoute();
             await this.addStoreCardManifestRoute();
             await this.addStoreI18nKeysRoute();
@@ -481,16 +460,16 @@ export class FlpSandbox {
      * @private
      */
     private addCardGeneratorMiddlewareRoute(): void {
-        const apiPath = this.cardGenerator?.path ?? CARD_GENERATOR_API.previewGeneratorSandbox;
-        this.logger.debug(`Add route for ${apiPath}`);
+        const previewGeneratorPath = this.cardGenerator?.path ?? CARD_GENERATOR_DEFAULT.previewGeneratorSandbox;
+        this.logger.debug(`Add route for ${previewGeneratorPath}`);
         this.router.get(
-            apiPath,
+            previewGeneratorPath,
             async (
                 req: EnhancedRequest | connect.IncomingMessage,
                 res: Response | http.ServerResponse,
                 next: NextFunction
             ) => {
-                this.templateConfig.enableCardGenerator = this.cardGenerator?.enabled;
+                this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
                 const { title, id } = this.manifest['sap.app'];
 
                 this.templateConfig.apps['Cards-generator'] = {
@@ -956,68 +935,107 @@ export class FlpSandbox {
     }
 
     /**
+     * Stores the card manifest files in the webapp folder of the project and updates the application manifest.
+     *
+     * @param {Request} req - The HTTP request object containing the card manifest data in the body.
+     * @param {Response} res - The HTTP response object used to send the response back to the client.
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     */
+    private async storeCardManifestHandler(req: Request, res: Response): Promise<void> {
+        try {
+            const {
+                floorplan,
+                localPath,
+                fileName = FileName.Manifest,
+                manifests
+            } = req.body as {
+                floorplan: string;
+                localPath: string;
+                fileName?: string;
+                manifests: MultiCardsPayload[];
+            };
+            this.fs = this.fs ?? create(createStorage());
+            const webappPath = await getWebappPath(path.resolve());
+            const fullPath = join(webappPath, localPath);
+            const file = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
+            const multipleCards = cardUtils.prepareCardTypesForSaving(manifests);
+
+            this.fs.write(join(fullPath, file), multipleCards.integration);
+
+            const integrationCard = manifests.find((card) => card.type === 'integration');
+            const entitySet = integrationCard?.entitySet ?? '';
+            const sapCardsAp = (this.manifest['sap.cards.ap'] ??= {});
+            sapCardsAp.embeds ??= {};
+            const floorplanEmbeds = (sapCardsAp.embeds[floorplan] ??= {
+                default: entitySet,
+                manifests: {}
+            }) as ManifestNamespace.EmbedsSettings;
+            floorplanEmbeds.default ??= entitySet;
+            floorplanEmbeds.manifests ??= {};
+            floorplanEmbeds.manifests.entitySet ??= [
+                {
+                    'localUri': localPath
+                }
+            ];
+            const manifestPath = join(webappPath, FileName.Manifest);
+            this.fs.write(manifestPath, JSON.stringify(this.manifest, null, 2));
+            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
+        } catch (err) {
+            this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
+        }
+    }
+
+    /**
      * Adds a route to store card manifest files, the files are stored in the webapp folder of the project.
      * The application manifest.json file is updated with the new card manifests information within the sap.cards.ap.embeds.
      *
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreCardManifestRoute(): Promise<void> {
-        this.router.use(CARD_GENERATOR_API.cardsStore, json());
-        this.logger.debug(`Add route for ${CARD_GENERATOR_API.cardsStore}`);
+        this.router.use(CARD_GENERATOR_DEFAULT.cardsStore, json());
+        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.cardsStore}`);
 
-        const limiter = getRateLimiter();
-        this.router.use(CARD_GENERATOR_API.cardsStore, limiter);
-
-        this.router.post(CARD_GENERATOR_API.cardsStore, async (req: Request, res: Response) => {
-            try {
-                const { floorplan, localPath, fileName = FileName.Manifest, manifests } = req.body;
-                const webappPath = await getWebappPath(path.resolve());
-                const fullPath = path.resolve(webappPath, localPath);
-
-                if (!fullPath.startsWith(webappPath)) {
-                    throw new Error('Invalid path');
-                }
-
-                const file = utils.prepareFileName(fullPath + '/' + fileName);
-                if (!(await pathExists(fullPath))) {
-                    try {
-                        await promises.mkdir(fullPath, { recursive: true });
-                    } catch (err) {
-                        res.status(403).send(`Files could not be created/updated.`);
-                    }
-                }
-
-                const multipleCards = utils.prepareCardTypesForSaving(manifests);
-
-                await promises.writeFile(join(fullPath, file), multipleCards.integration);
-
-                const appManifest = this.manifest;
-
-                if (!appManifest['sap.cards.ap']) {
-                    appManifest['sap.cards.ap'] = {};
-                }
-                const integrationCard = manifests.find((card: any) => card.type === 'integration');
-                const entitySet = integrationCard.entitySet;
-                appManifest['sap.cards.ap'].embeds ??= {};
-                appManifest['sap.cards.ap'].embeds[floorplan] ??= {
-                    default: entitySet,
-                    manifests: {}
-                };
-                (appManifest['sap.cards.ap'].embeds as Record<string, any>)[floorplan]['default'] ??= entitySet;
-                (appManifest['sap.cards.ap'].embeds as Record<string, any>)[floorplan]['manifests'] ??= {};
-                (appManifest['sap.cards.ap'].embeds as Record<string, any>)[floorplan]['manifests'][entitySet] ??= [
-                    {
-                        'localUri': localPath
-                    }
-                ];
-
-                const manifestPath = join(webappPath, FileName.Manifest);
-                await promises.writeFile(manifestPath, JSON.stringify(appManifest, null, 2));
-                res.status(201).send(`Files were updated/created`);
-            } catch (err) {
-                res.status(500).send(`Files could not be created/updated.`);
-            }
+        this.router.post(CARD_GENERATOR_DEFAULT.cardsStore, async (req: Request, res: Response) => {
+            await this.storeCardManifestHandler(req, res);
         });
+    }
+
+    /**
+     * Handles the storage of i18n keys in the i18n file.
+     *
+     * @param {Request} req - The HTTP request object containing the i18n key-value pairs in the body.
+     * @param {Response} res - The HTTP response object used to send the response back to the client.
+     * @returns {Promise<void>} A promise that resolves when the operation is complete.
+     */
+    private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
+        try {
+            this.fs = this.fs ?? create(createStorage());
+            const webappPath = await getWebappPath(path.resolve());
+            const i18nPath = this.manifest['sap.app'].i18n as string;
+            const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
+            const entries = req.body || [];
+            const { lines, updatedEntries, output } = await cardUtils.traverseI18nProperties(filePath, entries);
+
+            // Add a new line if file is not empty and last line is not empty and there are new entries
+            if (lines?.length > 0 && lines[lines?.length - 1].trim() && entries?.length) {
+                output.push('');
+            }
+
+            for (const index in entries) {
+                const ikey = index as any;
+                if (!updatedEntries[ikey]) {
+                    const { comment, key, value } = entries[ikey];
+                    if (comment) {
+                        output.push(`#${comment}`); // Add comment only for a new entry
+                    }
+                    output.push(`${key}=${value}${os.EOL}`);
+                }
+            }
+            this.fs.write(filePath, output.join(os.EOL));
+            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
+        } catch (err) {
+            this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');
+        }
     }
 
     /**
@@ -1027,62 +1045,13 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the route is added.
      */
     async addStoreI18nKeysRoute(): Promise<void> {
-        this.router.use(CARD_GENERATOR_API.i18nStore, json());
-        this.logger.debug(`Add route for ${CARD_GENERATOR_API.i18nStore}`);
+        this.router.use(CARD_GENERATOR_DEFAULT.i18nStore, json());
+        this.logger.debug(`Add route for ${CARD_GENERATOR_DEFAULT.i18nStore}`);
 
-        const limiter = getRateLimiter();
-        this.router.use(CARD_GENERATOR_API.i18nStore, limiter);
-
-        this.router.post(CARD_GENERATOR_API.i18nStore, async (req: Request, res: Response) => {
-            try {
-                const appManifest = this.manifest;
-                const webappPath = await getWebappPath(path.resolve());
-                let filePath: string;
-
-                if (appManifest['sap.app'].i18n) {
-                    filePath = join(webappPath, appManifest['sap.app'].i18n as string);
-                } else {
-                    filePath = join(webappPath, 'i18n', 'i18n.properties');
-                }
-
-                const entries = req.body || [];
-                const { lines, updatedEntries, output } = await utils.traverseI18nProperties(filePath, entries);
-
-                // Add a new line if file is not empty and last line is not empty and there are new entries
-                if (lines?.length > 0 && lines[lines?.length - 1].trim() && entries?.length) {
-                    output.push('');
-                }
-
-                for (const index in entries) {
-                    const ikey = index as any;
-                    if (!updatedEntries[ikey]) {
-                        const { comment, key, value } = entries[ikey];
-                        if (comment) {
-                            output.push(`#${comment}`); // Add comment only for a new entry
-                        }
-                        output.push(`${key}=${value}${os.EOL}`);
-                    }
-                }
-                await promises.writeFile(filePath, output.join(os.EOL), { encoding: 'utf8' });
-                res.status(201).send(`i18n file updated.`);
-            } catch (err) {
-                res.status(500).send(`File could not be updated.`);
-            }
+        this.router.post(CARD_GENERATOR_DEFAULT.i18nStore, async (req: Request, res: Response) => {
+            await this.storeI18nKeysHandler(req, res);
         });
     }
-}
-
-/**
- * Creates and returns a rate limiter middleware for Express.
- * The rate limiter restricts the number of requests a client can make within a specified time window.
- *
- * @returns {RateLimit} An instance of the rate limiter middleware.
- */
-function getRateLimiter() {
-    return RateLimit({
-        windowMs: 15 * 60 * 1000,
-        max: 100
-    });
 }
 
 /**

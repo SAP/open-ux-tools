@@ -1,6 +1,6 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`enableCardEditor V4 LROP with CLI 3.0 1`] = `
+exports[`enableCardGenerator V4 LROP with CLI 3.0 1`] = `
 "{
   \\"name\\": \\"apps.v4.example\\",
   \\"version\\": \\"0.0.1\\",
@@ -22,39 +22,40 @@ exports[`enableCardEditor V4 LROP with CLI 3.0 1`] = `
 "
 `;
 
-exports[`enableCardEditor V4 LROP with CLI 3.0 2`] = `
+exports[`enableCardGenerator V4 LROP with CLI 3.0 2`] = `
 "specVersion: \\"2.4\\"
 metadata:
   name: apps.v4.example
 type: application
 server:
   customMiddleware:
-    - name: preview-middleware
-      afterMiddleware: compression
-      configuration:
-        flp:
-          path: test/flpSandbox.html
-    - name: sap-fe-mockserver
-      afterMiddleware: compression
-      configuration:
-        services:
-          - urlPath: '/sap/opu/odata4/mock'
-            metadataPath: './webapp/localService/metadata.xml'
-            generateMockData: true
-    - name: fiori-tools-proxy
-      afterMiddleware: sap-fe-mockserver
-      configuration:
-        ui5:
-          path:
-            - /resources
-            - /test-resources
-          url: https://ui5.sap.com
-    - name: sap-cards-generator
-      afterMiddleware: compression
+  - name: preview-middleware
+    afterMiddleware: compression
+    configuration:
+      flp:
+        path: test/flpSandbox.html
+      editors:
+        cardGenerator:
+          path: test/flpGeneratorSandbox.html
+  - name: sap-fe-mockserver
+    afterMiddleware: compression
+    configuration:
+      services:
+      - urlPath: '/sap/opu/odata4/mock'
+        metadataPath: './webapp/localService/metadata.xml'
+        generateMockData: true
+  - name: fiori-tools-proxy
+    afterMiddleware: sap-fe-mockserver
+    configuration:
+      ui5:
+        path:
+        - /resources
+        - /test-resources
+        url: https://ui5.sap.com
 "
 `;
 
-exports[`enableCardEditor Valid LROP 1`] = `
+exports[`enableCardGenerator Valid LROP 1`] = `
 "{
   \\"scripts\\": {
     \\"start-cards-generator\\": \\"fiori run --open 'test/flpGeneratorSandbox.html#Cards-generator'\\"
@@ -63,10 +64,4 @@ exports[`enableCardEditor Valid LROP 1`] = `
 "
 `;
 
-exports[`enableCardEditor Valid LROP 2`] = `
-"server:
-  customMiddleware:
-    - name: sap-cards-generator
-      afterMiddleware: compression
-"
-`;
+exports[`enableCardGenerator Valid LROP 2`] = `""`;
