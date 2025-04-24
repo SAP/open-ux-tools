@@ -108,7 +108,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
     "default": true,
     "guiOptions": {
       "breadcrumb": "Virtual Endpoints",
-      "hint": "Using virtual endpoints allows the generated application to use the latest features of Fiori tools.",
+      "hint": "Using virtual endpoints allows the generated application to use the latest features of SAP Fiori tools.",
     },
     "message": [Function],
     "name": "enableVirtualEndpoints",
