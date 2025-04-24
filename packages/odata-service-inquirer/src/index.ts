@@ -22,13 +22,13 @@ import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { getEntitySelectionQuestions } from './prompts/edmx/questions';
 import LoggerHelper from './prompts/logger-helper';
-import type { ConnectedSystem } from './types';
 import {
     type EntityPromptOptions,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
     type SapSystemType,
+    type ConnectedSystem,
     DatasourceType,
     EntityRelatedAnswers,
     promptNames
@@ -52,7 +52,7 @@ async function getPrompts(
     enableGuidedAnswers = false,
     telemetryClient?: ToolsSuiteTelemetryClient,
     isYUI = false,
-    connectedSystem?: OdataServiceAnswers['connectedSystem']
+    connectedSystem?: ConnectedSystem
 ): Promise<{ prompts: OdataServiceQuestion[]; answers: Partial<OdataServiceAnswers> }> {
     // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
     await initI18nOdataServiceInquirer();

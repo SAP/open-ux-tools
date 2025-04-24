@@ -32,6 +32,7 @@ import {
     t,
     updateDependentStep
 } from '../../../src/utils';
+import type { ServiceProvider } from '@sap-ux/axios-extension';
 
 /**
  * Tests the FioriAppGenerator generator lifecycle methods call what they should with the correct parameters.
@@ -219,7 +220,7 @@ describe('Test FioriAppGenerator', () => {
             },
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             expect.anything(), // Adapter
-            undefined // cached connected system            
+            undefined // cached connected system
         );
 
         // Should assign the odata service answers to the state
@@ -320,32 +321,6 @@ describe('Test FioriAppGenerator', () => {
             },
             source: 'capProject'
         });
-    });
-
-
-    test('Should pass cached connected system to odata service inquirer if available', async () => {
-        const fioriAppGen = new FioriAppGenerator([], options);
-        await fioriAppGen.initializing();
-        await fioriAppGen.prompting();
-
-        // Should prompt for OData service answers with the expected options
-        expect(promptOdataServiceAnswers).toHaveBeenCalledWith(
-            {
-                allowNoDatasource: true,
-                capService: undefined,
-                promptOptions: {
-                    systemSelection: {
-                        defaultChoice: 'system1'
-                    }
-                },
-                requiredOdataVersion: undefined,
-                showCollabDraftWarning: true,
-                workspaceFolders: ['folder1', 'folder2']
-            },
-            expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            expect.anything(), // Adapter
-            undefined // cached connected system
-        );
     });
 
     test('Should prompt for entity related answers', async () => {
@@ -719,7 +694,7 @@ describe('Test FioriAppGenerator', () => {
         expect(promptUI5ApplicationAnswers).not.toHaveBeenCalled();
     });
 
-    test('Tests back nav in YUI reloads from cache', async () => {
+    test('Tests back nav in YUI reloads from cache (includes cached connected system)', async () => {
         // Force cache usage, YUI only
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
         jest.spyOn(FioriAppGenerator.prototype, 'prompt').mockResolvedValue({
@@ -727,8 +702,8 @@ describe('Test FioriAppGenerator', () => {
         });
         options.floorplan = FloorplanFE.FE_WORKLIST;
         odataServiceAnswers = {
-            source: DatasourceType.odataServiceUrl,
-            host: 'http://mockservice:1234',
+            source: DatasourceType.sapSystem,
+            host: 'http:/s4hsystem:1234',
             servicePath: 'some/service/path',
             annotations: [
                 {
@@ -738,7 +713,15 @@ describe('Test FioriAppGenerator', () => {
                     Uri: 'testUri'
                 }
             ],
-            edmx: '<edmx></edmx>'
+            edmx: '<edmx></edmx>',
+            connectedSystem: {
+                serviceProvider: {} as ServiceProvider,
+                backendSystem: {
+                    name: 'testSystemName',
+                    url: 'http:/s4hsystem:1234',
+                    authenticationType: 'reentranceTicket'
+                }
+            }
         };
         // We dont mock the cache as its simpler to test with the real cache
         const getFromCacheSpy = jest.spyOn(commonUtils, 'getFromCache');
@@ -763,9 +746,17 @@ describe('Test FioriAppGenerator', () => {
                         }
                     ],
                     edmx: '<edmx></edmx>',
-                    host: 'http://mockservice:1234',
+                    host: 'http:/s4hsystem:1234',
                     servicePath: 'some/service/path',
-                    source: 'odataServiceUrl'
+                    source: 'sapSystem',
+                    connectedSystem: {
+                        backendSystem: {
+                            authenticationType: 'reentranceTicket',
+                            name: 'testSystemName',
+                            url: 'http:/s4hsystem:1234'
+                        },
+                        serviceProvider: {} as ServiceProvider
+                    }
                 }
             },
             expect.objectContaining({ debug: expect.any(Function) }) // Logger

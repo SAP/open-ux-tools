@@ -9,6 +9,7 @@ import type { AppConfig, FEAppConfig, FFAppConfig, Project, Service, State } fro
 import { ApiHubType, FloorplanFE, FloorplanFF, capTypeConversion, defaultPromptValues } from '../types';
 import { join } from 'path';
 import { t, getODataVersion } from '../utils';
+import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
 
 const APP_CONFIG_CURRENT_VERSION = '0.2';
 /**
@@ -156,7 +157,7 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
             destination: {
                 Name: service?.destination
             } as Destination
-        } as Service['connectedSystem'];
+        } as ConnectedSystem;
         serviceDefaults.source = DatasourceType.sapSystem;
         return serviceDefaults;
     }

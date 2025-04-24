@@ -22,6 +22,7 @@ import { ApiHubType, SapSystemSourceType } from '../types';
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
 import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
 import { t } from './i18n';
+import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
 
 /**
  * Parse the specified edmx string for validitiy and return the ODataVersion of the specified edmx string.
@@ -172,7 +173,7 @@ export async function getCdsAnnotations(
  * @param connectedSystem - The connected system object.
  * @returns {boolean} `true` if the connected system is hosted on BTP, otherwise `false`.
  */
-export function isBTPHosted(connectedSystem?: Service['connectedSystem']): boolean {
+export function isBTPHosted(connectedSystem?: ConnectedSystem): boolean {
     return (
         !!connectedSystem?.backendSystem?.serviceKeys ||
         (connectedSystem?.destination ? isAbapEnvironmentOnBtp(connectedSystem.destination) : false)

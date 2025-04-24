@@ -33,6 +33,7 @@ import type {
 } from '../types';
 import { Features, defaultPromptValues } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
+import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
 
 /**
  * Validates the view name.
@@ -179,7 +180,7 @@ export async function promptOdataServiceAnswers(
     options: OdataServiceInquirerOptions,
     logger: Logger,
     adapter: Adapter,
-    connectedSystem?: Service['connectedSystem']
+    connectedSystem?: ConnectedSystem
 ): Promise<Service> {
     let inquirerAdapter;
     // type `any` will be replaced when we can import ESM modules

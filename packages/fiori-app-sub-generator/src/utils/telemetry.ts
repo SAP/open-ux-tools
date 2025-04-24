@@ -1,6 +1,7 @@
 import { isOnPremiseDestination } from '@sap-ux/btp-utils';
-import { ApiHubType, type TelemetryBusinessHubType, type Service, type TelemetrySapSystemType } from '../types';
+import { ApiHubType, type TelemetryBusinessHubType, type TelemetrySapSystemType } from '../types';
 import { isBTPHosted } from './common';
+import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
 
 /**
  * Get the SAP system type as reported in telemetry events.
@@ -8,9 +9,7 @@ import { isBTPHosted } from './common';
  * @param connectedSystem
  * @returns
  */
-export function getTelemetrySapSystemType(
-    connectedSystem: Service['connectedSystem']
-): TelemetrySapSystemType | undefined {
+export function getTelemetrySapSystemType(connectedSystem: ConnectedSystem): TelemetrySapSystemType | undefined {
     if (isBTPHosted(connectedSystem)) {
         return 'SCP';
     }
