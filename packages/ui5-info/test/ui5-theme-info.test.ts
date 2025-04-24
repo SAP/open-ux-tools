@@ -6,7 +6,8 @@ describe('getUi5Themes', () => {
     const allExpectedThemes = [
         {
             'id': 'sap_belize',
-            'label': 'Belize'
+            'label': 'Belize (deprecated)',
+            'themeSupportedUntilVersion': '1.136.0'
         },
         {
             'id': 'sap_fiori_3',
@@ -36,6 +37,12 @@ describe('getUi5Themes', () => {
         expect(getUi5Themes('1.72')).toEqual(allExpectedThemes.slice(0, 3));
         expect(getUi5Themes('1.101')).toEqual(allExpectedThemes.slice(0, 3));
         expect(getUi5Themes('1.102')).toEqual(allExpectedThemes);
+        expect(getUi5Themes('1.135.0')).toEqual(allExpectedThemes);
+        // Filter out sap_belize from allExpectedThemes
+        const allExpectedThemesExcludingBelize = allExpectedThemes.filter((theme) => theme.id !== 'sap_belize');
+        // expect sap_belize theme to be excluded when ui5 version is above 1.136.0
+        expect(getUi5Themes('1.136.0')).toEqual(allExpectedThemesExcludingBelize);
+        expect(getUi5Themes('1.155.0')).toEqual(allExpectedThemesExcludingBelize);
     });
 
     test.each([

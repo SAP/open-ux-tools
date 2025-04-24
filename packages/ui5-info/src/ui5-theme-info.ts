@@ -4,6 +4,7 @@ import { coerce, gte, lt } from 'semver';
 
 const MIN_UI5_VER_DARK_THEME = '1.72.0';
 const MIN_UI5_VER_HORIZON_THEME = '1.102.0';
+const MAX_UI5_VER_BELIZE_THEME = '1.136.0';
 
 export const enum ui5ThemeIds {
     SAP_BELIZE = 'sap_belize',
@@ -16,7 +17,8 @@ export const enum ui5ThemeIds {
 const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
     [ui5ThemeIds.SAP_BELIZE]: {
         id: ui5ThemeIds.SAP_BELIZE,
-        label: 'Belize'
+        label: 'Belize (deprecated)',
+        themeSupportedUntilVersion: MAX_UI5_VER_BELIZE_THEME
     },
     [ui5ThemeIds.SAP_FIORI_3]: {
         id: ui5ThemeIds.SAP_FIORI_3,
@@ -65,11 +67,19 @@ export function getDefaultUI5Theme(ui5Version?: string): string {
 export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
     const ui5VersionSince = ui5Version.replace('snapshot-', '');
     const cleanSemVer = coerce(ui5VersionSince);
-    // If the ui5 version is a valid semver use it to filter themes
     if (cleanSemVer) {
-        return Object.values(ui5Themes).filter((ui5Theme) =>
-            ui5Theme.sinceVersion ? gte(cleanSemVer, ui5Theme.sinceVersion) : ui5Theme
-        );
+        return Object.values(ui5Themes).filter((ui5Theme) => {
+            // Exclude themes if the version exceeds the maximum supported version
+            if (ui5Theme.themeSupportedUntilVersion && gte(cleanSemVer, ui5Theme.themeSupportedUntilVersion)) {
+                return false;
+            }
+            // Include themes if the version is less than the maximum supported version
+            if (ui5Theme.themeSupportedUntilVersion && lt(cleanSemVer, ui5Theme.themeSupportedUntilVersion)) {
+                return true;
+            }
+            // Include themes if the version is greater than or equal to the minimum supported version
+            return ui5Theme.sinceVersion ? gte(cleanSemVer, ui5Theme.sinceVersion) : ui5Theme;
+        });
     }
     // Return all themes if ui5 version is not a valid semver
     return Object.values(ui5Themes);
