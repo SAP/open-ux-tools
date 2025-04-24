@@ -346,7 +346,7 @@ function getBaseAppConfig(
             eslint: project.enableEslint,
             typescript: project.enableTypeScript,
             sapux: project.sapux,
-            loadReuseLibs: !service.capService,
+            loadReuseLibs: !service.capService && !project.useVirtualEndpoints,
             // Striclty speaking we should not need to guard here. If a template is not supported for OPA test generation then nothing should be generated.
             addTests: canGenerateTests(template.type),
             generateIndex: generateIndexHtml,
