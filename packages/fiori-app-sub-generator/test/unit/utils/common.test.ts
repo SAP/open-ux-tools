@@ -91,7 +91,7 @@ describe('Test utils', () => {
         expect(getODataVersion(validMetadataV4)).toEqual(OdataVersion.v4);
 
         expect(() => getODataVersion('<?xml version="1.0" encoding="utf-8"?>')).toThrowError(
-            'Application config property edmx cannot be parsed'
+            t('error.appConfigUnparseableEdmx')
         );
     });
 
@@ -230,7 +230,7 @@ describe('Test utils', () => {
     test('should return the correct datasource label', () => {
         const source = DatasourceType.none;
         const result = getReadMeDataSourceLabel(source);
-        expect(result).toEqual('None');
+        expect(result).toBe(t('readme.label.datasourceType.none'));
     });
 
     it('should return the correct annotations', async () => {
