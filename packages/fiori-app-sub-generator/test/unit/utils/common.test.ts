@@ -11,7 +11,12 @@ import memFsEditor from 'mem-fs-editor';
 import { join } from 'path';
 import { FloorplanFE, FloorplanFF } from '../../../src/types';
 import { ApiHubType, SapSystemSourceType } from '../../../src/types/constants';
-import { convertCapRuntimeToCapProjectType, getCdsUi5PluginInfo, t } from '../../../src/utils';
+import {
+    convertCapRuntimeToCapProjectType,
+    getCdsUi5PluginInfo,
+    initI18nFioriAppSubGenerator,
+    t
+} from '../../../src/utils';
 import {
     buildSapClientParam,
     generateLaunchConfig,
@@ -80,6 +85,9 @@ const vscodeMock = {
     }
 };
 describe('Test utils', () => {
+    beforeAll(async () => {
+        await initI18nFioriAppSubGenerator();
+    });
     test('getODataVersion ', async () => {
         const validMetadataV2 =
             '<?xml version="1.0" encoding="utf-8"?><edmx:Edmx Version="1.0" xmlns:edmx="http://schemas.microsoft.com/ado/2007/06/edmx">' +
@@ -91,7 +99,7 @@ describe('Test utils', () => {
         expect(getODataVersion(validMetadataV4)).toEqual(OdataVersion.v4);
 
         expect(() => getODataVersion('<?xml version="1.0" encoding="utf-8"?>')).toThrowError(
-            t('error.appConfigUnparseableEdmx')
+            'Application config property edmx cannot be parsed'
         );
     });
 
@@ -230,7 +238,7 @@ describe('Test utils', () => {
     test('should return the correct datasource label', () => {
         const source = DatasourceType.none;
         const result = getReadMeDataSourceLabel(source);
-        expect(result).toBe(t('readme.label.datasourceType.none'));
+        expect(result).toEqual('None');
     });
 
     it('should return the correct annotations', async () => {

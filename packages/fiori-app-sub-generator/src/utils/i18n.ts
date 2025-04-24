@@ -18,6 +18,7 @@ export async function initI18nFioriAppSubGenerator(): Promise<void> {
         },
         lng: 'en',
         fallbackLng: 'en',
+       // preload: ['en'],
         defaultNS: fioriAppSubGeneratorNs,
         ns: [fioriAppSubGeneratorNs],
         interpolation: {
@@ -42,6 +43,12 @@ export async function initI18nFioriAppSubGenerator(): Promise<void> {
 export function t(key: string, options?: TOptions): string {
     if (!options?.ns) {
         options = Object.assign(options ?? {}, { ns: fioriAppSubGeneratorNs });
+    }
+    // TODO: discuss this approach
+    if (!i18next.exists(key, options)) {
+        return Promise.resolve(initI18nFioriAppSubGenerator()).then(() => {
+            return i18next.t(key, options);
+        }) as unknown as string;
     }
     return i18next.t(key, options);
 }

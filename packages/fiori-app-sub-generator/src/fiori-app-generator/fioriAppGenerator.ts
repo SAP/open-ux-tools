@@ -329,6 +329,7 @@ export class FioriAppGenerator extends Generator {
     }
 
     async writing(): Promise<void> {
+        await initI18nFioriAppSubGenerator();
         try {
             this.generationTime0 = performance.now();
             TelemetryHelper.markAppGenStartTime();
