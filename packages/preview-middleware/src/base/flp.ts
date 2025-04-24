@@ -957,10 +957,9 @@ export class FlpSandbox {
             this.fs = this.fs ?? create(createStorage());
             const webappPath = await getWebappPath(path.resolve());
             const fullPath = join(webappPath, localPath);
-            const file = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
+            const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
             const multipleCards = cardUtils.prepareCardTypesForSaving(manifests);
-
-            this.fs.write(join(fullPath, file), multipleCards.integration);
+            this.fs.write(filePath, multipleCards.integration);
 
             const integrationCard = manifests.find((card) => card.type === 'integration');
             const entitySet = integrationCard?.entitySet ?? '';
