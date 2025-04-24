@@ -48,7 +48,7 @@
         "@sap-ux/store": "workspace:*",
         "@sap-ux/guided-answers-helper": "workspace:*",
         "adm-zip": "0.5.10",
-        "i18next": "23.5.1",
+        "i18next": "24.2.3",
         "inquirer": "8.2.6",
         "yeoman-generator": "5.10.0"
     },

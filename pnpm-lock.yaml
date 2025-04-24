@@ -2004,8 +2004,8 @@ importers:
         specifier: 2.1.5
         version: 2.1.5
       i18next:
-        specifier: 23.11.2
-        version: 23.11.2
+        specifier: 24.2.3
+        version: 24.2.3(typescript@5.8.2)
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
@@ -3332,8 +3332,8 @@ importers:
         specifier: 0.5.10
         version: 0.5.10
       i18next:
-        specifier: 23.5.1
-        version: 23.5.1
+        specifier: 24.2.3
+        version: 24.2.3(typescript@5.3.3)
       inquirer:
         specifier: 8.2.6
         version: 8.2.6
@@ -17239,18 +17239,6 @@ packages:
     dependencies:
       '@babel/runtime': 7.27.0
     dev: true
-
-  /i18next@23.11.2:
-    resolution: {integrity: sha512-qMBm7+qT8jdpmmDw/kQD16VpmkL9BdL+XNAK5MNbNFaf1iQQq35ZbPrSlqmnNPOSUY4m342+c0t0evinF5l7sA==}
-    dependencies:
-      '@babel/runtime': 7.27.0
-    dev: false
-
-  /i18next@23.5.1:
-    resolution: {integrity: sha512-JelYzcaCoFDaa+Ysbfz2JsGAKkrHiMG6S61+HLBUEIPaF40WMwW9hCPymlQGrP+wWawKxKPuSuD71WZscCsWHg==}
-    dependencies:
-      '@babel/runtime': 7.27.0
-    dev: false
 
   /i18next@24.2.3(typescript@5.3.3):
     resolution: {integrity: sha512-lfbf80OzkocvX7nmZtu7nSTNbrTYR52sLWxPtlXX1zAhVw8WEnFk4puUkCR4B1dNQwbSpEHHHemcZu//7EcB7A==}
