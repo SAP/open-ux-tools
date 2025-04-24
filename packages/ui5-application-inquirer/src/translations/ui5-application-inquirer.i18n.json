@@ -43,7 +43,7 @@
         },
         "enableVirtualEndpoints": {
             "message": "Use virtual endpoints for local preview",
-            "tooltip": "Using virtual endpoints allows the generated application to use the latest features of Fiori tools.",
+            "tooltip": "Using virtual endpoints allows the generated application to use the latest features of SAP Fiori tools.",
             "breadcrumb": "Virtual Endpoints"
         },
         "showAdvanced": {
