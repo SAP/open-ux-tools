@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.12.0
+
+### Minor Changes
+
+-   398e4da: adds new virtual endpoint prompt
+
 ## 0.11.9
 
 ### Patch Changes
