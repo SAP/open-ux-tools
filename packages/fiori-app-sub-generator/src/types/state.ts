@@ -20,6 +20,7 @@ export interface Project {
     namespace?: string;
     title: string;
     description: string;
+    enableVirtualEndpoints?: boolean; // whether to use virtual endpoints for preview
     ui5Theme: string;
     ui5Version: string;
     ui5FrameworkUrl?: string; // URL providing ui5 libraries, set to default if not provided
