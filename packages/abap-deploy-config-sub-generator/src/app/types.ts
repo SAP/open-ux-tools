@@ -77,6 +77,7 @@ type TargetSystemPromptOptions = {
 type PackageAdditionalValidationPrompOptions = {
     shouldValidatePackageType?: boolean;
     shouldValidatePackageForStartingPrefix?: boolean;
+    shouldValidateFormatAndSpecialCharacters?: boolean;
 };
 
 export type AbapDeployConfigPromptOptions = Partial<
