@@ -1,4 +1,5 @@
 import type { SystemSelectionAnswers } from '../app/types';
+import AdmZip from 'adm-zip';
 
 /**
  * Much of the values returned by the app downloader prompting are derived from prompt answers and are not direct answer values.
@@ -9,6 +10,7 @@ import type { SystemSelectionAnswers } from '../app/types';
 export class PromptState {
     private static _systemSelection: SystemSelectionAnswers = {};
     private static _downloadedAppPackage?: Buffer;
+    private static _admZipInstance?: AdmZip;
 
     /**
      * Returns the current state of the service config.
@@ -33,6 +35,7 @@ export class PromptState {
      */
     public static set downloadedAppPackage(archive: Buffer) {
         this._downloadedAppPackage = archive;
+        this._admZipInstance = new AdmZip(archive);
     }
 
     /**
@@ -42,6 +45,15 @@ export class PromptState {
      */
     public static get downloadedAppPackage(): Buffer {
         return this._downloadedAppPackage ?? Buffer.alloc(0);
+    }
+
+    /**
+     * Returns the AdmZip instance created from the downloaded archive.
+     *
+     * @returns {admZip | undefined} admZip instance
+     */
+    public static get admZip(): AdmZip | undefined {
+        return this._admZipInstance;
     }
 
     /**
@@ -65,5 +77,6 @@ export class PromptState {
     static reset(): void {
         PromptState.systemSelection = {};
         PromptState._downloadedAppPackage = undefined;
+        PromptState._admZipInstance = undefined;
     }
 }

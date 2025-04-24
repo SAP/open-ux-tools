@@ -18,7 +18,7 @@ import RepoAppDownloadLogger from '../src/utils/logger';
 import { t } from '../src/utils/i18n';
 import env from 'yeoman-environment';
 import { createLaunchConfig, updateWorkspaceFoldersIfNeeded, handleWorkspaceConfig } from '@sap-ux/launch-config';
-import { extractZip } from '../src/utils/download-utils';
+import { extractZip, hasQfaJson } from '../src/utils/download-utils';
 import { EventName } from '../src/telemetryEvents';
 
 jest.mock('../src/prompts/prompt-helpers', () => ({
@@ -43,7 +43,8 @@ jest.mock('@sap-ux/launch-config', () => ({
 }));
 
 jest.mock('../src/utils/download-utils', () => ({
-	extractZip: jest.fn()
+	extractZip: jest.fn(),
+	hasQfaJson: jest.fn()
 }));
 
 jest.mock('../src/app/app-config', () => ({
@@ -448,47 +449,6 @@ describe('Repo App Download', () => {
 		expect((generator as any)._runNpmInstall).toHaveBeenCalled();
 	});
 
-	it('should abort the sub generator if the app to be downloaded dosent include qfa.json', async () => {
-		const yeomanEnv = env.createEnv();
-		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath, true);
-		(isValidPromptState as jest.Mock).mockReturnValue(true);
-		
-		await expect( 
-			yeomanTest
-				.run(RepoAppDownloadGenerator, { 
-					resolved: repoAppDownloadGenPath
-				})
-				.cd('.')
-				.withOptions({ 
-					appRootPath: testOutputDir, 
-					appWizard: mockAppWizard,
-					vscode: mockVSCode, 
-					logger: {},
-					data: {
-						postGenCommand: 'test-post-gen-command'
-					}
-				})
-				.withPrompts({
-					systemSelection: 'system3',
-					selectedApp: {
-						appId: appConfig.app.id,
-						title: appConfig.app.title,
-						description: appConfig.app.description,
-						repoName: 'app-1-repo',
-						url: 'url-1'
-					},
-					targetFolder: testOutputDir
-				})
-		)
-		.resolves.not.toThrow();
-		expect(getAppConfig as jest.Mock).not.toHaveBeenCalled();
-		expect(createLaunchConfig as jest.Mock).not.toHaveBeenCalled();
-		expect(handleWorkspaceConfig as jest.Mock).not.toHaveBeenCalled();
-		expect(updateWorkspaceFoldersIfNeeded as jest.Mock).not.toHaveBeenCalled();
-		expect(mockAppWizard.showError).toHaveBeenCalledWith(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }), MessageType.notification);
-		expect(mockAppWizard.showInformation).not.toHaveBeenCalledWith();
-	});
-
 	it('should abort the sub generator if the prompting is invalid', async () => {
 		const yeomanEnv = env.createEnv();
 		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath, true);
@@ -638,5 +598,4 @@ describe('Repo App Download', () => {
 
 		expect(generator['prompts'].setCallback).toHaveBeenCalledWith(mockFn);
 	});
-
 });

@@ -113,7 +113,11 @@ export default class extends Generator {
      */
     public async prompting(): Promise<void> {
         const quickDeployedAppConfig = this.options?.data?.quickDeployedAppConfig;
-        const questions: RepoAppDownloadQuestions[] = await getPrompts(this.appRootPath, quickDeployedAppConfig);
+        const questions: RepoAppDownloadQuestions[] = await getPrompts(
+            this.appRootPath,
+            quickDeployedAppConfig,
+            this.appWizard
+        );
         const answers: RepoAppDownloadAnswers = await this.prompt(questions);
         const { targetFolder } = answers;
         if (quickDeployedAppConfig?.appId) {
@@ -146,50 +150,39 @@ export default class extends Generator {
         await extractZip(this.extractedProjectPath, archive, this.fs);
         // Check if the qfa.json file
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
-        if (this.fs.exists(qfaJsonFilePath)) {
-            const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
-            // Generate project files
-            validateQfaJsonFile(qfaJson);
+        const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
+        // Generate project files
+        validateQfaJsonFile(qfaJson);
 
-            // Generate app config
-            const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, qfaJson, this.fs);
-            await generate(this.projectPath, config, this.fs);
+        // Generate app config
+        const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, qfaJson, this.fs);
+        await generate(this.projectPath, config, this.fs);
 
-            // Generate deploy config
-            const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, qfaJson);
-            await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
+        // Generate deploy config
+        const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, qfaJson);
+        await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
 
-            if (this.vscode) {
-                // Generate Fiori launch config
-                const fioriOptions = this._getLaunchConfig(config);
-                // Create launch configuration
-                await createLaunchConfig(
-                    this.projectPath,
-                    fioriOptions,
-                    this.fs,
-                    RepoAppDownloadLogger.logger as unknown as Logger
-                );
-                writeApplicationInfoSettings(this.projectPath);
-            }
-
-            // Generate README
-            const readMeConfig = this._getReadMeConfig(config);
-            generateReadMe(this.projectPath, readMeConfig, this.fs);
-
-            // Replace webapp files with downloaded app files
-            await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
-
-            await validateAndUpdateManifestUI5Version(
-                join(this.projectPath, DirName.Webapp, FileName.Manifest),
-                this.fs
+        if (this.vscode) {
+            // Generate Fiori launch config
+            const fioriOptions = this._getLaunchConfig(config);
+            // Create launch configuration
+            await createLaunchConfig(
+                this.projectPath,
+                fioriOptions,
+                this.fs,
+                RepoAppDownloadLogger.logger as unknown as Logger
             );
-        } else {
-            this.abort = true;
-            this.appWizard.showError(
-                t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }),
-                MessageType.notification
-            );
+            writeApplicationInfoSettings(this.projectPath);
         }
+
+        // Generate README
+        const readMeConfig = this._getReadMeConfig(config);
+        generateReadMe(this.projectPath, readMeConfig, this.fs);
+
+        // Replace webapp files with downloaded app files
+        await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+
+        await validateAndUpdateManifestUI5Version(join(this.projectPath, DirName.Webapp, FileName.Manifest), this.fs);
         // Clean up extracted project files
         this.fs.delete(this.extractedProjectPath);
     }

@@ -8,6 +8,7 @@ import { PromptState } from './prompt-state';
 import { fetchAppListForSelectedSystem, formatAppChoices } from './prompt-helpers';
 import type { FileBrowserQuestion } from '@sap-ux/inquirer-common';
 import { validateAppSelection } from '../utils/validators';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
 
 /**
  * Gets the target folder selection prompt.
@@ -50,11 +51,13 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
  *
  * @param {string} [appRootPath] - The root path of the application.
  * @param {QuickDeployedAppConfig} [quickDeployedAppConfig] - The quick deployed app configuration.
+ * @param appWizard
  * @returns {Promise<RepoAppDownloadQuestions[]>} A list of prompts for user interaction.
  */
 export async function getPrompts(
     appRootPath?: string,
-    quickDeployedAppConfig?: QuickDeployedAppConfig
+    quickDeployedAppConfig?: QuickDeployedAppConfig,
+    appWizard?: AppWizard
 ): Promise<RepoAppDownloadQuestions[]> {
     try {
         PromptState.reset();
@@ -90,7 +93,8 @@ export async function getPrompts(
                 },
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
-                validate: async (answers: AppInfo) => validateAppSelection(answers, appList, quickDeployedAppConfig)
+                validate: async (answers: AppInfo) =>
+                    validateAppSelection(answers, appList, quickDeployedAppConfig, appWizard)
             }
         ];
 

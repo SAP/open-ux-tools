@@ -6,7 +6,10 @@ import { HELP_NODES } from '@sap-ux/guided-answers-helper';
 import type { ValidationLink } from '@sap-ux/inquirer-common';
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import type { AppInfo, QuickDeployedAppConfig, QfaJsonConfig } from '../app/types';
-import { downloadApp } from '../utils/download-utils';
+import { downloadApp, hasQfaJson } from '../utils/download-utils';
+import type { AppWizard } from '@sap-devx/yeoman-ui-types';
+import { MessageType } from '@sap-devx/yeoman-ui-types';
+import { qfaJsonFileName } from '../utils/constants';
 
 /**
  * Validates the metadata section of the app configuration.
@@ -117,12 +120,14 @@ async function generateAppNotFoundHelpLink(): Promise<ValidationLink> {
  * @param answers - The selected app information.
  * @param appList - The list of available apps.
  * @param quickDeployedAppConfig - The quick deployed app configuration.
+ * @param appWizard
  * @returns A promise resolving to a boolean or a validation error message.
  */
 export async function validateAppSelection(
     answers: AppInfo,
     appList: AppIndex,
-    quickDeployedAppConfig?: QuickDeployedAppConfig
+    quickDeployedAppConfig?: QuickDeployedAppConfig,
+    appWizard?: AppWizard
 ): Promise<string | boolean | ValidationLink> {
     // Quick deploy config exists but no apps found
     if (quickDeployedAppConfig?.appId && appList.length === 0) {
@@ -138,7 +143,14 @@ export async function validateAppSelection(
     if (answers?.appId) {
         try {
             await downloadApp(answers.repoName);
-            return true;
+            const isQfaJsonPresent: boolean = hasQfaJson();
+            if (!isQfaJsonPresent) {
+                appWizard?.showError(
+                    t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }),
+                    MessageType.notification
+                );
+            }
+            return isQfaJsonPresent;
         } catch (error) {
             return t('error.appDownloadErrors.appDownloadFailure', { error: error.message });
         }

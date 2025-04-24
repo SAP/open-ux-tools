@@ -2,6 +2,7 @@ import { PromptState } from '../../src/prompts/prompt-state';
 import type { SystemSelectionAnswers } from '../../src/app/types';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
+jest.mock('adm-zip');
 describe('PromptState', () => {
     const mockServiceProvider = {
         defaults: {
