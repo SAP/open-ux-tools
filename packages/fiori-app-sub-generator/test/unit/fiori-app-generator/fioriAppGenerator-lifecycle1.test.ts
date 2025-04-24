@@ -218,7 +218,8 @@ describe('Test FioriAppGenerator', () => {
                 workspaceFolders: undefined
             },
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            expect.anything() // Adapter
+            expect.anything(), // Adapter
+            undefined // cached connected system            
         );
 
         // Should assign the odata service answers to the state
@@ -291,7 +292,8 @@ describe('Test FioriAppGenerator', () => {
                 workspaceFolders: ['folder1', 'folder2']
             },
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            expect.anything() // Adapter
+            expect.anything(), // Adapter
+            undefined // cached connected system
         );
         console.log(`cds mock:` + getCdsUi5PluginInfo.toString());
         // Since a CAP project was pre-selected cds ui5 plugin info should be loaded
@@ -318,6 +320,32 @@ describe('Test FioriAppGenerator', () => {
             },
             source: 'capProject'
         });
+    });
+
+
+    test('Should pass cached connected system to odata service inquirer if available', async () => {
+        const fioriAppGen = new FioriAppGenerator([], options);
+        await fioriAppGen.initializing();
+        await fioriAppGen.prompting();
+
+        // Should prompt for OData service answers with the expected options
+        expect(promptOdataServiceAnswers).toHaveBeenCalledWith(
+            {
+                allowNoDatasource: true,
+                capService: undefined,
+                promptOptions: {
+                    systemSelection: {
+                        defaultChoice: 'system1'
+                    }
+                },
+                requiredOdataVersion: undefined,
+                showCollabDraftWarning: true,
+                workspaceFolders: ['folder1', 'folder2']
+            },
+            expect.objectContaining({ debug: expect.any(Function) }), // Logger
+            expect.anything(), // Adapter
+            undefined // cached connected system
+        );
     });
 
     test('Should prompt for entity related answers', async () => {

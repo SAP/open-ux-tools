@@ -172,12 +172,14 @@ export async function promptUI5ApplicationAnswers(
  * @param options
  * @param logger
  * @param adapter
+ * @param connectedSystem
  * @returns {Promise<Service>}
  */
 export async function promptOdataServiceAnswers(
     options: OdataServiceInquirerOptions,
     logger: Logger,
-    adapter: Adapter
+    adapter: Adapter,
+    connectedSystem?: Service['connectedSystem']
 ): Promise<Service> {
     let inquirerAdapter;
     // type `any` will be replaced when we can import ESM modules
@@ -196,7 +198,8 @@ export async function promptOdataServiceAnswers(
         logger,
         isFeatureEnabled(Features.enableGAIntegration),
         ClientFactory.getTelemetryClient(),
-        getHostEnvironment() !== hostEnvironment.cli
+        getHostEnvironment() !== hostEnvironment.cli,
+        connectedSystem
     );
 
     const service: Service = {

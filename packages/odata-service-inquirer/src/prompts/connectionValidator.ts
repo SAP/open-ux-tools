@@ -27,6 +27,7 @@ import {
 import { ERROR_TYPE, ErrorHandler } from '@sap-ux/inquirer-common';
 import https from 'https';
 import { t } from '../i18n';
+import type { ConnectedSystem } from '../types';
 import { SAP_CLIENT_KEY } from '../types';
 import LoggerHelper from './logger-helper';
 import { errorHandler } from './prompt-helpers';
@@ -238,6 +239,38 @@ export class ConnectionValidator {
     }
 
     /**
+     * Setting an existing connected system will prevent re-authentication.
+     * This should be used where the user has previously authenticated to prevent re-authentication (e.g. via browser) and the previous
+     * connected system is still valid. Only backend systems are currently supported.
+     *
+     * @param connectedSystem A connected system object containing the service provider and backend system information. Not relevant for destination connections.
+     * @param connectedSystem.serviceProvider
+     * @param connectedSystem.backendSystem
+     */
+    public setConnectedSystem({ serviceProvider, backendSystem }: ConnectedSystem): void {
+        // Set the state using the provided ConnectedSystem to prevent re-authentication
+        this._serviceProvider = serviceProvider;
+        this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
+        this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
+        this._validatedUrl = (backendSystem?.serviceKeys as ServiceInfo)?.url ?? backendSystem?.url;
+        this._connectedUserName = backendSystem?.userDisplayName;
+        this._validatedClient = backendSystem?.client;
+        this._refreshToken = backendSystem?.refreshToken;
+        this.validity.authenticated = true;
+        this.validity.reachable = true;
+        this.validity.urlFormat = true;
+        this.validity.authRequired = true;
+
+        if (backendSystem?.authenticationType === 'reentranceTicket') {
+            this.systemAuthType = 'reentranceTicket';
+        } else if (backendSystem?.serviceKeys) {
+            this.systemAuthType = 'serviceKey';
+        } else {
+            this.systemAuthType = 'basic';
+        }
+    }
+
+    /**
      * Calls a given service or system url to test its reachability and authentication requirements.
      * If the url is a system url, it will attempt to use the catalog service to get the service info.
      *
@@ -252,6 +285,7 @@ export class ConnectionValidator {
      * @throws an error if the connection attempt fails and the error is a 500 on App Studio or a non-axios error is caught
      */
     private async checkUrl(
+        // todo: rename connectWithUrl?
         url: URL,
         username?: string,
         password?: string,
@@ -538,6 +572,10 @@ export class ConnectionValidator {
     ): Promise<ValidationResult> {
         if (!serviceInfo) {
             return false;
+        }
+        // If we are already authenticated and the url is the same, no need to re-authenticate as this may result in a browser based authentication
+        if (serviceInfo.url === this.validatedUrl) {
+            return this.getValidationResultFromStatusCode(200);
         }
         try {
             this.systemAuthType = 'serviceKey';

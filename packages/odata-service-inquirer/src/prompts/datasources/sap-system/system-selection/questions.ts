@@ -7,6 +7,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import type { BackendSystem } from '@sap-ux/store';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
+import type { ConnectedSystem } from '../../../../types';
 import { type OdataServicePromptOptions, promptNames } from '../../../../types';
 import { getPromptHostEnvironment, PromptState } from '../../../../utils';
 import type { ValidationResult } from '../../../types';
@@ -51,12 +52,14 @@ export interface SystemSelectionAnswers extends SystemSelectionCredentialsAnswer
  * @param systemSelection the selected system to validate
  * @param connectionValidator the active connection validator to use for the connection attempt
  * @param requiredOdataVersion the required OData version for the selected system, only the specified version will be used to request a service catalog
+ * @param cachedConnectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns the validation result of the selected system connection attempt
  */
 async function validateSystemSelection(
     systemSelection: SystemSelectionAnswerType,
     connectionValidator: ConnectionValidator,
-    requiredOdataVersion?: OdataVersion
+    requiredOdataVersion?: OdataVersion,
+    cachedConnectedSystem?: ConnectedSystem
 ): Promise<ValidationResult> {
     PromptState.reset();
     if (systemSelection.type === 'newSystemChoice' || systemSelection.type === 'cfAbapEnvService') {
@@ -70,7 +73,8 @@ async function validateSystemSelection(
         connectValResult = await connectWithBackendSystem(
             systemSelection.system as BackendSystem,
             connectionValidator,
-            requiredOdataVersion
+            requiredOdataVersion,
+            cachedConnectedSystem
         );
     } else if (systemSelection.type === 'destination') {
         // Partial URL destinations will require additional service path prompt input, so we skip the connection validation here by returning true
@@ -93,17 +97,20 @@ async function validateSystemSelection(
  * Returns a list of questions for creating a new system configuration or selecting an existing stored system.
  *
  * @param promptOptions prompt options that may be used to customize the questions
+ * @param connectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns a list of questions for creating a new system configuration or selecting an existing stored system
  */
 export async function getSystemSelectionQuestions(
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: OdataServicePromptOptions,
+    connectedSystem?: ConnectedSystem
 ): Promise<Question<SystemSelectionAnswers & ServiceAnswer>[]> {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
 
     const questions: Question<SystemSelectionAnswers & ServiceAnswer>[] = await getSystemConnectionQuestions(
         connectValidator,
-        promptOptions
+        promptOptions,
+        connectedSystem
     );
 
     // Existing system (BackendSystem or Destination) selected,
@@ -147,11 +154,13 @@ export async function getSystemSelectionQuestions(
  *
  * @param connectionValidator A reference to the active connection validator, used to validate the service selection and retrieve service details.
  * @param promptOptions prompt options that may be used to customize the questions
+ * @param cachedConnectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns a list of existing systems
  */
 export async function getSystemConnectionQuestions(
     connectionValidator: ConnectionValidator,
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: OdataServicePromptOptions,
+    cachedConnectedSystem?: ConnectedSystem
 ): Promise<Question<SystemSelectionAnswers>[]> {
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
@@ -191,7 +200,12 @@ export async function getSystemConnectionQuestions(
                     selectedSystemAnswer = (selectedSystem as ListChoiceOptions).value;
                 }
                 return (
-                    validateSystemSelection(selectedSystemAnswer, connectionValidator, requiredOdataVersion) ?? false
+                    validateSystemSelection(
+                        selectedSystemAnswer,
+                        connectionValidator,
+                        requiredOdataVersion,
+                        cachedConnectedSystem
+                    ) ?? false
                 );
             },
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {

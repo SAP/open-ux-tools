@@ -41,10 +41,10 @@ export interface Credentials {
 }
 
 /**
- * To be replaced with `@sap-ux/odata-service-inquirer`'s `OdataService` type once all data source flows are migrated ro open-ux-tools
+ * Fiori sub app generators internal representation of a service.
+ * May be possible to replace this type with `@sap-ux/odata-service-inquirer` `service` type in future.
  *
  */
-
 export interface Service {
     host?: string;
     client?: string;
