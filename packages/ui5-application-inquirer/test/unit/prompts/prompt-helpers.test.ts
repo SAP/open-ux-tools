@@ -104,8 +104,8 @@ describe('prompt-helpers', () => {
             [promptNames.enableTypeScript]: {
                 name: promptNames.enableTypeScript
             },
-            [promptNames.useVirtualEndpoints]: {
-                name: promptNames.useVirtualEndpoints
+            [promptNames.enableVirtualEndpoints]: {
+                name: promptNames.enableVirtualEndpoints
             },
             [promptNames.showAdvanced]: {
                 name: promptNames.showAdvanced

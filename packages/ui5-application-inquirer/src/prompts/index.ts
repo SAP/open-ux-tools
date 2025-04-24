@@ -11,7 +11,7 @@ import {
     getEnableTypeScriptPrompt,
     getAddDeployConfigPrompt,
     getAddFlpConfigPrompt,
-    getUseVirtualEndpoints
+    getEnableVirtualEndpoints
 } from './prompts1';
 import {
     getShowAdvancedPrompt,
@@ -69,7 +69,7 @@ export function getQuestions(
             isCapProject
         ),
         [promptNames.addFlpConfig]: getAddFlpConfigPrompt(promptOptions?.addFlpConfig),
-        [promptNames.useVirtualEndpoints]: getUseVirtualEndpoints(),
+        [promptNames.enableVirtualEndpoints]: getEnableVirtualEndpoints(),
         [promptNames.showAdvanced]: getShowAdvancedPrompt(),
         [promptNames.ui5Theme]: getUI5ThemePrompt(),
         [promptNames.enableEslint]: getEnableEsLintPrompt(),

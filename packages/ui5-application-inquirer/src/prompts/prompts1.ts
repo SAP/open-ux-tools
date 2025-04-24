@@ -279,19 +279,19 @@ export function getAddFlpConfigPrompt(
 }
 
 /**
- * Get the `useVirtualEndpoints` prompt.
+ * Get the `enableVirtualEndpoints` prompt.
  *
- * @returns the `useVirtualEndpoints` prompt
+ * @returns the `enableVirtualEndpoints` prompt
  */
-export function getUseVirtualEndpoints(): UI5ApplicationQuestion {
+export function getEnableVirtualEndpoints(): UI5ApplicationQuestion {
     return {
         type: 'confirm',
-        name: promptNames.useVirtualEndpoints,
+        name: promptNames.enableVirtualEndpoints,
         guiOptions: {
-            hint: t('prompts.useVirtualEndpoints.tooltip'),
-            breadcrumb: t('prompts.useVirtualEndpoints.breadcrumb')
+            hint: t('prompts.enableVirtualEndpoints.tooltip'),
+            breadcrumb: t('prompts.enableVirtualEndpoints.breadcrumb')
         },
-        message: (): string => t('prompts.useVirtualEndpoints.message'),
+        message: (): string => t('prompts.enableVirtualEndpoints.message'),
         default: true
     };
 }

@@ -16,7 +16,7 @@ export interface UI5ApplicationAnswers {
     enableCodeAssist?: boolean;
     skipAnnotations?: boolean;
     enableTypeScript?: boolean;
-    useVirtualEndpoints?: boolean;
+    enableVirtualEndpoints?: boolean;
     showAdvanced?: boolean;
 }
 
@@ -56,7 +56,7 @@ export enum promptNames {
     enableCodeAssist = 'enableCodeAssist',
     skipAnnotations = 'skipAnnotations',
     enableTypeScript = 'enableTypeScript',
-    useVirtualEndpoints = 'useVirtualEndpoints',
+    enableVirtualEndpoints = 'enableVirtualEndpoints',
     showAdvanced = 'showAdvanced'
 }
 

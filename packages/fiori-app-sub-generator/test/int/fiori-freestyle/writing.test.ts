@@ -114,7 +114,7 @@ describe('Freestyle generation', () => {
                 skipAnnotations: false,
                 namespace: '',
                 targetFolder: testDir,
-                useVirtualEndpoints: true
+                enableVirtualEndpoints: true
             },
             service: {
                 host: 'http://localhost',

@@ -41,7 +41,7 @@
             "message": "Add FLP configuration",
             "breadcrumb": "FLP Config"
         },
-        "useVirtualEndpoints": {
+        "enableVirtualEndpoints": {
             "message": "Use virtual endpoints for local preview",
             "tooltip": "Using virtual endpoints allows the generated application to use the latest features of Fiori tools.",
             "breadcrumb": "Virtual Endpoints"

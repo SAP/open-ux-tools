@@ -405,16 +405,16 @@ describe('getQuestions', () => {
         expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addFlpConfig);
     });
 
-    test('getQuestions, prompt: `useVirtualEndpoints`', async () => {
+    test('getQuestions, prompt: `enableVirtualEndpoints`', async () => {
         const questions = getQuestions([]);
-        const useVirtualEndpointsQuestion = questions.find(
-            (question) => question.name === promptNames.useVirtualEndpoints
+        const enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
         );
 
         expect(questions).toEqual(
-            expect.arrayContaining([expect.objectContaining({ name: promptNames.useVirtualEndpoints })])
+            expect.arrayContaining([expect.objectContaining({ name: promptNames.enableVirtualEndpoints })])
         );
-        expect((useVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
+        expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
             `"Use virtual endpoints for local preview"`
         );
     });

@@ -111,7 +111,7 @@ exports[`getQuestions getQuestions, no options 1`] = `
       "hint": "Using virtual endpoints allows the generated application to use the latest features of Fiori tools.",
     },
     "message": [Function],
-    "name": "useVirtualEndpoints",
+    "name": "enableVirtualEndpoints",
     "type": "confirm",
   },
   {
