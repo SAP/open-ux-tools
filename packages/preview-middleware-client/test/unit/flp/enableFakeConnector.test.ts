@@ -55,6 +55,7 @@ describe('flp/FakeLrepConnector', () => {
         });
 
         test('calls the API to save changes', async () => {
+            jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValueOnce({ templateName: 'templateName' });
             const change = {
                 changeType: 'propertyChange',
                 fileName: 'dummyFileName',
@@ -70,6 +71,12 @@ describe('flp/FakeLrepConnector', () => {
             await create([change]);
 
             expect(fetchMock).toBeCalledTimes(1);
+            expect(FakeLrepConnector.fileChangeRequestNotifier).toHaveBeenCalledWith(
+                'dummyFileName',
+                'create',
+                change,
+                { templateName: 'templateName' }
+            );
         });
 
         test('calls the API to save a single change', async () => {

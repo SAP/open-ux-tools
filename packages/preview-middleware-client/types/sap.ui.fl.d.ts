@@ -102,7 +102,6 @@ declare module 'sap/ui/fl/Utils' {
 
 declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
     import type { Layer } from 'sap/ui/fl';
-    import { AdditionalChangeInfo } from '../src/utils/additional-change-info';
     interface Features {
         isCondensingEnabled?: boolean;
         isContextSharingEnabled?: boolean;
@@ -119,7 +118,7 @@ declare module 'sap/ui/fl/write/api/connectors/ObjectStorageConnector' {
         getItem(key: string): unknown;
         getItems(): Promise<unknown[]>;
         fileChangeRequestNotifier:
-            | (<T extends object>(fileName: string, kind: 'create' | 'delete', change?: T, additionalChangeInfo?: AdditionalChangeInfo) => void)
+            | (<T extends object, U extends object>(fileName: string, kind: 'create' | 'delete', change?: T, additionalChangeInfo?: U) => void)
             | undefined;
     }
 

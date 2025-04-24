@@ -13,7 +13,7 @@ export type AdditionalChangeInfo = AddXMLAdditionalInfo | undefined
 /**
 * This function is used to set additional change information for a given change.
 * 
-* @param {FlexChange<AddXMLChangeContent>} change - The change object for which additional information is to be set.
+* @param change - The change object for which additional information is to be set.
 */
 export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> | undefined): void {
     if (!change) {
@@ -33,7 +33,7 @@ export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> 
 /**
  * Retrieves additional change information for a given change.
  *
- * @param {Change}change - The change object containing details about a file modification.
+ * @param change - The change object containing details about a file modification.
  * @returns The additional change information associated with the file name of the change,
  *          or `undefined` if no additional information is available.
  */

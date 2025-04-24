@@ -2,17 +2,12 @@ import {
     setAdditionalChangeInfo,
     getAdditionalChangeInfo,
 } from '../../../src/utils/additional-change-info';
-import FlexChange from 'sap/ui/fl/Change';
+import FlexChange from 'mock/sap/ui/fl/Change';
 import * as xmlAdditionalInfo from '../../../src/cpe/additional-change-info/add-xml-additional-info';
-import { FlexChange as Change } from '../../../src/flp/common';
+import type { FlexChange as Change } from '../../../src/flp/common';
 
 describe('additional-change-info.ts', () => {
-    const mockChange = {
-        getChangeType: jest.fn(),
-        getDefinition: jest.fn(),
-        fileName: 'mockFileName'
-    } as unknown as FlexChange<xmlAdditionalInfo.AddXMLChangeContent> & { fileName: string };
-
+    const mockChange = new FlexChange({selector: { id: 'mockSelectorId', idIsLocal: false }, changeType: 'addXML', layer: 'CUSTOMER_BASE'}) as FlexChange<any> & { fileName: string };
     const mockAdditionalInfo = {
         someKey: 'someValue'
     } as unknown as xmlAdditionalInfo.AddXMLAdditionalInfo;
@@ -25,8 +20,7 @@ describe('additional-change-info.ts', () => {
     describe('setAdditionalChangeInfo', () => {
         const getAddXMLAdditionalInfoSpy = jest.spyOn(xmlAdditionalInfo, 'getAddXMLAdditionalInfo').mockReturnValue(undefined);
         it('should set additional change info for addXML change type', () => {
-            (mockChange.getChangeType as jest.Mock).mockReturnValueOnce('addXML');
-            (mockChange.getDefinition as jest.Mock).mockReturnValueOnce({ fileName: 'mockFileName' });
+            mockChange.getDefinition.mockReturnValueOnce({ fileName: 'mockFileName' });
             const getAddXMLAdditionalInfoSpy = jest.spyOn(xmlAdditionalInfo, 'getAddXMLAdditionalInfo').mockReturnValueOnce(mockAdditionalInfo);
 
             setAdditionalChangeInfo(mockChange);
@@ -38,8 +32,8 @@ describe('additional-change-info.ts', () => {
 
         it('should not set additional change info for unsupported change type', () => {
             mockChange.fileName = 'mockFileName1';
-            (mockChange.getChangeType as jest.Mock).mockReturnValueOnce('unsupportedType');
-            (mockChange.getDefinition as jest.Mock).mockReturnValueOnce({ fileName: 'mockFileName' });
+            mockChange.getChangeType.mockReturnValueOnce('unsupportedType');
+            mockChange.getDefinition.mockReturnValueOnce({ fileName: 'mockFileName' });
 
             setAdditionalChangeInfo(mockChange);
 

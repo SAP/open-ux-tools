@@ -2,23 +2,18 @@ import { getAddXMLAdditionalInfo } from '../../../../src/cpe/additional-change-i
 import * as utilsCore from '../../../../src/utils/core';
 import ElementMetadata from 'sap/ui/core/ElementMetadata';
 import Element from 'sap/ui/core/Element';
-import FlexChange from 'sap/ui/fl/Change';
+import FlexChange from 'mock/sap/ui/fl/Change';
 
-describe('add-xml-additional-info.ts', () => {
-    const mockChange = {
-        getSelector: jest.fn(),
-        getContent: jest.fn()
-    } as unknown as FlexChange<any>;
+describe('add-xml-additional-info.ts', () => { 
+    const mockChange = new FlexChange({selector: { id: 'mockSelectorId', idIsLocal: false }, changeType: 'testType', layer: 'CUSTOMER_BASE'});
     jest.spyOn(utilsCore, 'getControlById');
-
     beforeEach(() => {
         jest.clearAllMocks();
     });
 
     describe('getAddXMLAdditionalInfo', () => {
         it('should return templateName for OBJECT_PAGE_CUSTOM_SECTION', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'sections' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'sections' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () =>
                     ({
@@ -32,8 +27,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for CUSTOM_ACTION', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'actions' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'actions' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.f.DynamicPageTitle'
@@ -46,8 +40,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for CUSTOM_ACTION - sap.m.OverflowToolbar', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'content' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'content' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.m.OverflowToolbar'
@@ -60,8 +53,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD - sap.m.FlexBox, sap.uxap.ObjectPageDynamicHeaderContent', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'items' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'items' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getParent: () => ({
                     getMetadata: () => ({
@@ -80,8 +72,7 @@ describe('add-xml-additional-info.ts', () => {
         });
         
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD - sap.m.FlexBox, sap.uxap.ObjectPageLayout', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'items' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'items' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getParent: () => ({
                     getMetadata: () => ({
@@ -100,8 +91,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for OBJECT_PAGE_HEADER_FIELD', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'headerContent' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'headerContent' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.uxap.ObjectPageLayout'
@@ -114,8 +104,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for V4_MDC_TABLE_COLUMN', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'columns' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.ui.mdc.Table'
@@ -128,8 +117,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for GRID_TREE_TABLE_COLUMN - sap.ui.table.Table', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'columns' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.ui.table.Table'
@@ -142,8 +130,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for GRID_TREE_TABLE_COLUMN - sap.ui.table.TreeTable', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'columns' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.ui.table.TreeTable'
@@ -156,8 +143,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for ANALYTICAL_TABLE_COLUMN', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'columns' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.ui.table.AnalyticalTable'
@@ -170,8 +156,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return templateName for TABLE_ACTION', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'actions' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'actions' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.ui.mdc.Table'
@@ -184,8 +169,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return undefined for templateName', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'columns' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'columns' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.ui.test.TestControl'
@@ -198,8 +182,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return undefined if no matching templateName is found', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'unknownAggregation' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'unknownAggregation' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue({
                 getMetadata: () => ({
                     getName: () => 'sap.uxap.ObjectPageLayout'
@@ -212,8 +195,7 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return undefined if control is not found', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue({ id: 'mockSelectorId' });
-            (mockChange.getContent as jest.Mock).mockReturnValue({ targetAggregation: 'sections' });
+            mockChange.getContent.mockReturnValue({ targetAggregation: 'sections' });
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue(undefined);
 
             const result = getAddXMLAdditionalInfo(mockChange);
@@ -222,8 +204,8 @@ describe('add-xml-additional-info.ts', () => {
         });
 
         it('should return undefined if missing selectorId and targetAggregation', () => {
-            (mockChange.getSelector as jest.Mock).mockReturnValue(undefined);
-            (mockChange.getContent as jest.Mock).mockReturnValue(undefined);
+            mockChange.getSelector.mockReturnValue(undefined);
+            mockChange.getContent.mockReturnValue(undefined);
             jest.spyOn(utilsCore, 'getControlById').mockReturnValue(undefined);
 
             const result = getAddXMLAdditionalInfo(mockChange);

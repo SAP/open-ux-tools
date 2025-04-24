@@ -153,13 +153,12 @@ declare module 'sap/ui/rta/command/OutlineService' {
 }
 
 declare module 'sap/ui/fl/FakeLrepConnector' {
-    import { AdditionalChangeInfo } from '../src/utils/additional-change-info';
     export default class FakeLrepConnector {
-        static fileChangeRequestNotifier?: <T extends object>(
+        static fileChangeRequestNotifier?: <T extends object, U extends object>(
             fileName: string,
             kind: 'delete' | 'create',
             change?: T,
-            additionalChangeInfo?: AdditionalChangeInfo,
+            additionalChangeInfo?: U,
         ) => void;
         static enableFakeConnector: () => void;
     }
