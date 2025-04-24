@@ -633,7 +633,7 @@ describe('AddFragment', () => {
         const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
 
         test('creates new fragment and a change', async () => {
-            const mockSendAction = CommunicationService.sendAction as jest.Mock;
+            const mockSendAction = jest.spyOn(CommunicationService, 'sendAction');
             sapMock.ui.version = '1.71.62';
             const executeSpy = jest.fn();
             rtaMock.getCommandStack.mockReturnValue({
