@@ -113,7 +113,8 @@ describe('Freestyle generation', () => {
                 localUI5Version: '1.82.2',
                 skipAnnotations: false,
                 namespace: '',
-                targetFolder: testDir
+                targetFolder: testDir,
+                useVirtualEndpoints: true
             },
             service: {
                 host: 'http://localhost',

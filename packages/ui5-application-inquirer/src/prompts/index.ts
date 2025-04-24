@@ -11,13 +11,15 @@ import {
     getEnableTypeScriptPrompt,
     getAddDeployConfigPrompt,
     getAddFlpConfigPrompt,
-    getUseVirtualEndpoints,
+    getUseVirtualEndpoints
+} from './prompts1';
+import {
     getShowAdvancedPrompt,
     getUI5ThemePrompt,
     getEnableEsLintPrompt,
     getEnableCodeAssistPrompt,
     getSkipAnnotationsPrompt
-} from './prompts';
+} from './prompts2';
 import { promptNames } from '../types';
 import { hidePrompts } from './prompt-helpers';
 import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';

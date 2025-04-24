@@ -350,7 +350,8 @@ function getBaseAppConfig(
             // Striclty speaking we should not need to guard here. If a template is not supported for OPA test generation then nothing should be generated.
             addTests: canGenerateTests(template.type),
             generateIndex: generateIndexHtml,
-            addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations
+            addAnnotations: entityRelatedConfig?.addFEOPAnnotations || entityRelatedConfig?.addLineItemAnnotations,
+            useVirtualPreviewEndpoints: project.useVirtualEndpoints
         },
         template: template as templateSetting extends BasicAppSettings
             ? TemplateSettingsFF<BasicAppSettings>
