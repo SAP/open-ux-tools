@@ -219,7 +219,7 @@ describe('Test FioriAppGenerator', () => {
             },
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
             expect.anything(), // Adapter
-            undefined // cached connected system            
+            undefined // cached connected system
         );
 
         // Should assign the odata service answers to the state
@@ -321,7 +321,6 @@ describe('Test FioriAppGenerator', () => {
             source: 'capProject'
         });
     });
-
 
     test('Should pass cached connected system to odata service inquirer if available', async () => {
         const fioriAppGen = new FioriAppGenerator([], options);
