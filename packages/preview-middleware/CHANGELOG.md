@@ -1,5 +1,11 @@
 # @sap-ux/preview-middleware
 
+## 0.19.29
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
 ## 0.19.28
 
 ### Patch Changes
