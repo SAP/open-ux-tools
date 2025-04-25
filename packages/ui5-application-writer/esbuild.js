@@ -7,13 +7,14 @@ require('esbuild').build({
     outdir: './dist',
     entryPoints: ['src/index.ts'],
     external: [
-        'mem-fs',
-        'mem-fs-editor',
+        // 'mem-fs',
+        // 'mem-fs-editor',
         'binaryextensions',
         'textextensions',
+        '@sap-ux/project-access'
         // ...Object.keys(pkg.dependencies || {}),
         // ...Object.keys(pkg.peerDependencies || {}),
-        ...Object.keys(pkg.devDependencies || {})
+        // ...Object.keys(pkg.devDependencies || {})
     ],
     mainFields: ['browser', 'module', 'main'],
     target: 'es2020',

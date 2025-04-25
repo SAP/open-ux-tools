@@ -13,7 +13,8 @@
     "license": "Apache-2.0",
     "main": "dist/index.js",
     "scripts": {
-        "build": "node esbuild.js && tsc --emitDeclarationOnly",
+        "build": "node esbuild.js",
+        "build2": "node esbuild.js && tsc --emitDeclarationOnly",
         "watch": "tsc --watch",
         "clean": "rimraf --glob dist test/test-output coverage *.tsbuildinfo",
         "format": "prettier --write '**/*.{js,json,ts,yaml,yml}' --ignore-path ../../.prettierignore",
