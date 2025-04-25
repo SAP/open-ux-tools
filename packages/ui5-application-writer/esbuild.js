@@ -1,5 +1,7 @@
+const path = require('path');
 const pkg = require('./package.json');
 const NodeModulesPolyfills = require('@esbuild-plugins/node-modules-polyfill');
+// const NodeModulesPolyfills = require('esbuild-plugins-node-modules-polyfill');
 
 require('esbuild').build({
     bundle: true,
@@ -20,6 +22,24 @@ require('esbuild').build({
     target: 'es2020',
     platform: 'browser',
     format: 'iife',
-    sourcemap: true,
+    sourcemap: false,
     plugins: [NodeModulesPolyfills.NodeModulesPolyfillPlugin()]
+    // plugins: [
+    //     NodeModulesPolyfills.nodeModulesPolyfillPlugin({
+    //         globals: {
+    //             process: true,
+    //             Buffer: true
+    //         },
+    //         modules: {
+    //             fs: true,
+    //             path: true,
+    //             stream: true,
+    //             util: true,
+    //             assert: true,
+    //             os: true,
+    //             buffer: true,
+    //             'node:process': true
+    //         }
+    //     })
+    // ]
 });
