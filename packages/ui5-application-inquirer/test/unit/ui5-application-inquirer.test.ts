@@ -234,3 +234,37 @@ describe('ui5-application-inquirer API', () => {
         expect(getQuestionsSpy).toHaveBeenCalledWith(ui5Vers, promptOpts, mockCdsInfo, true);
     });
 });
+
+describe('Filtering UI5 themes based on UI5 version', () => {
+    const versionsToTest = ['1.136.0', '1.133.0'];
+
+    test.each(versionsToTest)('should call getUi5Themes with correct ui5Version: %s', async (version) => {
+        const getUi5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes');
+        const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([{ version }]);
+
+        const promptOpts: UI5ApplicationPromptOptions = {
+            [promptNames.ui5Version]: {
+                validate: (answers: UI5ApplicationAnswers) => answers.name === version,
+                default: version
+            },
+            [promptNames.skipAnnotations]: {
+                advancedOption: true
+            },
+            [promptNames.description]: {
+                hide: true
+            },
+            [promptNames.ui5Theme]: {
+                additionalMessages: () => ({
+                    message: 'You must enter something',
+                    severity: Severity.warning
+                })
+            }
+        };
+
+        const questions = await getPrompts(promptOpts);
+        const ui5ThemeQuestion = questions.find((q) => q.name === promptNames.ui5Theme);
+        const choices = (ui5ThemeQuestion as any)?.choices({ ui5Version: version });
+        expect(getUi5ThemesSpy).toHaveBeenCalledWith(version);
+        expect(choices.length).toBeGreaterThan(0);
+    });
+});
