@@ -2,7 +2,7 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 import FlexCommand from 'sap/ui/rta/command/FlexCommand';
 
 import { getUi5Version } from '../../../utils/version';
-import { getAllSyncViewsIds, getControllerInfoForControl } from '../../utils';
+import { getAllSyncViewsIds, getControllerInfoForControl, getReuseComponentChecker } from '../../utils';
 import { getRelevantControlFromActivePage } from '../../../cpe/quick-actions/utils';
 import type {
     QuickActionContext,
@@ -31,17 +31,19 @@ export class AddControllerToPageQuickAction
     private controllerExists = false;
 
     async initialize(): Promise<void> {
+        const version = await getUi5Version();
+        const isReuseComponent = await getReuseComponentChecker(version);
+
         for (const control of getRelevantControlFromActivePage(
             this.context.controlIndex,
             this.context.view,
             CONTROL_TYPES
         )) {
-            const version = await getUi5Version();
             const syncViewsIds = await getAllSyncViewsIds(version);
             const controlInfo = getControllerInfoForControl(control);
             const data = await getExistingController(controlInfo.controllerName);
             this.controllerExists = data?.controllerExists;
-            const isActiveAction = isControllerExtensionEnabledForControl(control, syncViewsIds, version, this.context.flexSettings.isCloud);
+            const isActiveAction = isControllerExtensionEnabledForControl(control, syncViewsIds, isReuseComponent, this.context.flexSettings.isCloud);
             this.control = isActiveAction ? control : undefined;
             break;
         }
@@ -54,7 +56,14 @@ export class AddControllerToPageQuickAction
     async execute(): Promise<FlexCommand[]> {
         if (this.control) {
             const overlay = OverlayRegistry.getOverlay(this.control) || [];
-            await DialogFactory.createDialog(overlay, this.context.rta, DialogNames.CONTROLLER_EXTENSION);
+            await DialogFactory.createDialog(
+                overlay,
+                this.context.rta,
+                DialogNames.CONTROLLER_EXTENSION,
+                undefined,
+                {},
+                { actionName: this.type, telemetryEventIdentifier: this.getTelemetryIdentifier() }
+            );
         }
         return [];
     }

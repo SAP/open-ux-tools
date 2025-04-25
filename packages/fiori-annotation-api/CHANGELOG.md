@@ -1,5 +1,66 @@
 # @sap-ux/fiori-annotation-api
 
+## 0.4.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.26
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.24
+
+### Patch Changes
+
+-   Updated dependencies [fb49882]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.5
+
+## 0.4.23
+
+### Patch Changes
+
+-   7cda000: fix: writing empty path values results in a compile error in CDS projects
+-   Updated dependencies [7cda000]
+    -   @sap-ux/cds-odata-annotation-converter@0.5.4
+
+## 0.4.22
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+-   Updated dependencies [d873cbd]
+    -   @sap-ux/cds-annotation-parser@0.2.8
+    -   @sap-ux/cds-odata-annotation-converter@0.5.3
+
+## 0.4.21
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/cds-odata-annotation-converter@0.5.2
+
+## 0.4.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/cds-odata-annotation-converter@0.5.2
+
 ## 0.4.19
 
 ### Patch Changes

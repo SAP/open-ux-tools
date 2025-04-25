@@ -1,5 +1,24 @@
 # @sap-ux/axios-extension
 
+## 1.20.0
+
+### Minor Changes
+
+-   28c6594: Added a new sub-generator: `@sap-ux/repo-app-download-sub-generator` to support downloading ABAP deployed Fiori apps from the repository. Enhanced `@sap-ux/axios-extension` to support Base64 download data.
+
+## 1.19.3
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+
+## 1.19.2
+
+### Patch Changes
+
+-   ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
+
 ## 1.19.1
 
 ### Patch Changes

@@ -17,6 +17,8 @@ import { ToggleSemanticDateRangeFilterBar } from './lr-enable-semantic-date-rang
 import { EnableTableEmptyRowModeQuickAction } from './op-enable-empty-row-mode';
 import { AddNewAnnotationFile } from '../common/add-new-annotation-file';
 import { EnableVariantManagementQuickAction } from './enable-variant-management';
+import { AddNewSubpage } from '../fe-v4/add-new-subpage';
+import { ChangeTableActionsQuickAction } from '../fe-v4/change-table-actions';
 
 type PageName = 'listReport' | 'objectPage';
 
@@ -46,11 +48,13 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         ToggleClearFilterBarQuickAction,
                         ToggleSemanticDateRangeFilterBar,
                         EnableVariantManagementQuickAction,
+                        ChangeTableActionsQuickAction,
                         ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
                         EnableTableFilteringQuickAction,
-                        AddNewAnnotationFile
+                        AddNewAnnotationFile,
+                        AddNewSubpage
                     ],
                     view,
                     key: name + index
@@ -63,12 +67,14 @@ export default class FEV4QuickActionRegistry extends QuickActionDefinitionRegist
                         AddPageActionQuickAction,
                         AddHeaderFieldQuickAction,
                         AddCustomSectionQuickAction,
-                        ChangeTableColumnsQuickAction,
                         EnableVariantManagementQuickAction,
+                        ChangeTableActionsQuickAction,
+                        ChangeTableColumnsQuickAction,
                         AddTableActionQuickAction,
                         AddTableCustomColumnQuickAction,
                         EnableTableEmptyRowModeQuickAction,
-                        AddNewAnnotationFile
+                        AddNewAnnotationFile,
+                        AddNewSubpage
                     ],
                     view,
                     key: name + index

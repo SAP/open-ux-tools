@@ -1,5 +1,43 @@
 # @sap-ux/project-integrity
 
+## 0.1.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+
+## 0.1.18
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+
+## 0.1.17
+
+### Patch Changes
+
+-   3005a27: fix: make integrity check format free
+
+## 0.1.16
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+
+## 0.1.15
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+
 ## 0.1.14
 
 ### Patch Changes

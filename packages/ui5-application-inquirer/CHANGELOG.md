@@ -1,5 +1,119 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.12.1
+
+### Patch Changes
+
+-   7a87b92: cap checks for virtual endpoints prompt
+
+## 0.12.0
+
+### Minor Changes
+
+-   398e4da: adds new virtual endpoint prompt
+
+## 0.11.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/project-input-validator@0.5.4
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/project-input-validator@0.5.3
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 0.11.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.37
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/project-input-validator@0.5.2
+
+## 0.11.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.11.5
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
+## 0.11.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.11.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.34
+
+## 0.11.2
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+    -   @sap-ux/inquirer-common@0.6.33
+
+## 0.11.1
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/inquirer-common@0.6.32
+
+## 0.11.0
+
+### Minor Changes
+
+-   ab81490: Rename validateTargetFolderForFioriApp to validateFioriAppTargetFolder for clarity and improve ts docs
+
+### Patch Changes
+
+-   Updated dependencies [ab81490]
+    -   @sap-ux/project-input-validator@0.5.0
+
+## 0.10.0
+
+### Minor Changes
+
+-   c69752b: Move validate target project path logic from ui5-application-inquirer to project-input-validator for improved reuse
+
+### Patch Changes
+
+-   Updated dependencies [c69752b]
+    -   @sap-ux/project-input-validator@0.4.0
+
+## 0.9.31
+
+### Patch Changes
+
+-   c3ebc82: fix: wrong convert preview-config prerequisites check for usage of cds-plugin-ui5
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/inquirer-common@0.6.31
+
+## 0.9.30
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/inquirer-common@0.6.30
+
 ## 0.9.29
 
 ### Patch Changes

@@ -1,0 +1,682 @@
+{
+    "type": "annotation-group",
+    "name": {
+        "type": "identifier",
+        "value": "UI",
+        "range": "[(0,0)..(0,2)]",
+        "quoted": false
+    },
+    "items": {
+        "type": "annotation-group-items",
+        "items": [
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "HeaderInfo.Title.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "HeaderInfo",
+                            "range": "[(1,4)..(1,14)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Title",
+                            "range": "[(1,15)..(1,20)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(1,21)..(1,26)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(1,14)..(1,15)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(1,20)..(1,21)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(1,4)..(1,26)]"
+                },
+                "range": "[(1,4)..(1,56)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(1,27)..(1,28)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "UI.DataFieldForAnnotation",
+                    "range": "[(1,29)..(1,56)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(1,29)..(1,30)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(1,55)..(1,56)]"
+                    }
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "HeaderInfo.Title.Target",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "HeaderInfo",
+                            "range": "[(2,4)..(2,14)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Title",
+                            "range": "[(2,15)..(2,20)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Target",
+                            "range": "[(2,21)..(2,27)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(2,14)..(2,15)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(2,20)..(2,21)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(2,4)..(2,27)]"
+                },
+                "range": "[(2,4)..(2,54)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(2,28)..(2,29)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "@Communication.Contact",
+                    "range": "[(2,30)..(2,54)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(2,30)..(2,31)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(2,53)..(2,54)]"
+                    }
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Chart.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Chart",
+                            "range": "[(3,4)..(3,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(3,10)..(3,15)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(3,9)..(3,10)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(3,4)..(3,15)]"
+                },
+                "range": "[(3,4)..(3,42)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(3,16)..(3,17)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "UI.ChartDefinitionType",
+                    "range": "[(3,18)..(3,42)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(3,18)..(3,19)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(3,41)..(3,42)]"
+                    }
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "PresentationVariant.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "PresentationVariant",
+                            "range": "[(4,4)..(4,23)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(4,24)..(4,29)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(4,23)..(4,24)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(4,4)..(4,29)]"
+                },
+                "range": "[(4,4)..(4,32)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(4,29)..(4,30)]"
+                },
+                "value": {
+                    "type": "number",
+                    "value": 12,
+                    "range": "[(4,30)..(4,32)]"
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "SelectionVariant.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "SelectionVariant",
+                            "range": "[(5,4)..(5,20)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(5,21)..(5,26)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(5,20)..(5,21)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(5,4)..(5,26)]"
+                },
+                "range": "[(5,4)..(5,26)]"
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Badge.$Type.Title.Value",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Badge",
+                            "range": "[(6,4)..(6,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(6,10)..(6,15)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Title",
+                            "range": "[(6,16)..(6,21)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Value",
+                            "range": "[(6,22)..(6,27)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(6,9)..(6,10)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(6,15)..(6,16)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(6,21)..(6,22)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(6,4)..(6,27)]"
+                },
+                "range": "[(6,4)..(6,35)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(6,27)..(6,28)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "test",
+                    "range": "[(6,29)..(6,35)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(6,29)..(6,30)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(6,34)..(6,35)]"
+                    }
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Badge#test.$Type.Title.Value",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Badge",
+                            "range": "[(7,6)..(7,11)]",
+                            "quoted": true
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(7,18)..(7,23)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Title",
+                            "range": "[(7,24)..(7,29)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "Value",
+                            "range": "[(7,30)..(7,35)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(7,17)..(7,18)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(7,23)..(7,24)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(7,29)..(7,30)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(7,4)..(7,35)]"
+                },
+                "range": "[(7,4)..(7,35)]",
+                "qualifier": {
+                    "type": "qualifier",
+                    "value": "test",
+                    "range": "[(7,12)..(7,16)]"
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Chart.$Type.ChartType",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Chart",
+                            "range": "[(8,4)..(8,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(8,10)..(8,15)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "ChartType",
+                            "range": "[(8,16)..(8,25)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(8,9)..(8,10)]",
+                            "escaped": false
+                        },
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(8,15)..(8,16)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(8,4)..(8,25)]"
+                },
+                "range": "[(8,4)..(8,52)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(8,26)..(8,27)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "UI.ChartDefinitionType",
+                    "range": "[(8,28)..(8,52)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(8,28)..(8,29)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(8,51)..(8,52)]"
+                    }
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Chart#test.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Chart",
+                            "range": "[(9,6)..(9,11)]",
+                            "quoted": true
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(9,18)..(9,23)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(9,17)..(9,18)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(9,4)..(9,23)]"
+                },
+                "range": "[(9,4)..(9,26)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(9,24)..(9,25)]"
+                },
+                "qualifier": {
+                    "type": "qualifier",
+                    "value": "test",
+                    "range": "[(9,12)..(9,16)]"
+                },
+                "value": {
+                    "type": "empty-value",
+                    "range": "[(9,25)..(9,26)]"
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Chart#qualifier2.$Type",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Chart",
+                            "range": "[(10,6)..(10,11)]",
+                            "quoted": true
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$Type",
+                            "range": "[(10,24)..(10,29)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(10,23)..(10,24)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(10,4)..(10,29)]"
+                },
+                "range": "[(10,4)..(10,34)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(10,30)..(10,31)]"
+                },
+                "qualifier": {
+                    "type": "qualifier",
+                    "value": "qualifier2",
+                    "range": "[(10,12)..(10,22)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "",
+                    "range": "[(10,32)..(10,34)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(10,32)..(10,33)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(10,33)..(10,34)]"
+                    }
+                }
+            },
+            {
+                "type": "annotation",
+                "term": {
+                    "type": "path",
+                    "value": "Badge.$MyType",
+                    "segments": [
+                        {
+                            "type": "identifier",
+                            "value": "Badge",
+                            "range": "[(11,4)..(11,9)]",
+                            "quoted": false
+                        },
+                        {
+                            "type": "identifier",
+                            "value": "$MyType",
+                            "range": "[(11,10)..(11,17)]",
+                            "quoted": false
+                        }
+                    ],
+                    "separators": [
+                        {
+                            "type": "separator",
+                            "value": ".",
+                            "range": "[(11,9)..(11,10)]",
+                            "escaped": false
+                        }
+                    ],
+                    "range": "[(11,4)..(11,17)]"
+                },
+                "range": "[(11,4)..(11,25)]",
+                "colon": {
+                    "type": "token",
+                    "value": ":",
+                    "range": "[(11,17)..(11,18)]"
+                },
+                "value": {
+                    "type": "string",
+                    "value": "test",
+                    "range": "[(11,19)..(11,25)]",
+                    "openToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(11,19)..(11,20)]"
+                    },
+                    "closeToken": {
+                        "type": "token",
+                        "value": "'",
+                        "range": "[(11,24)..(11,25)]"
+                    }
+                }
+            }
+        ],
+        "range": "[(0,5)..(12,1)]",
+        "commas": [
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(1,56)..(1,57)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(2,54)..(2,55)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(3,42)..(3,43)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(4,32)..(4,33)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(5,26)..(5,27)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(6,35)..(6,36)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(7,35)..(7,36)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(8,52)..(8,53)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(9,26)..(9,27)]"
+            },
+            {
+                "type": "token",
+                "value": ",",
+                "range": "[(10,34)..(10,35)]"
+            }
+        ],
+        "openToken": {
+            "type": "token",
+            "value": "{",
+            "range": "[(0,5)..(0,6)]"
+        },
+        "closeToken": {
+            "type": "token",
+            "value": "}",
+            "range": "[(12,0)..(12,1)]"
+        }
+    },
+    "range": "[(0,0)..(12,1)]",
+    "colon": {
+        "type": "token",
+        "value": ":",
+        "range": "[(0,3)..(0,4)]"
+    }
+}

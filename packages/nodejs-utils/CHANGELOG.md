@@ -1,5 +1,12 @@
 # @sap-ux/nodejs-utils
 
+## 0.1.9
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+
 ## 0.1.8
 
 ### Patch Changes

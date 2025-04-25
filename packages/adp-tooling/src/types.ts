@@ -3,6 +3,7 @@ import type { DestinationAbapTarget, UrlAbapTarget } from '@sap-ux/system-access
 import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
+import type { Destination } from '@sap-ux/btp-utils';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -90,6 +91,60 @@ export interface AdpWriterConfig {
          */
         enableTypeScript?: boolean;
     };
+}
+
+/**
+ * Interface representing the answers collected from the configuration prompts of Adaptation Project generator.
+ */
+export interface ConfigAnswers {
+    system: string;
+    username: string;
+    password: string;
+    application: SourceApplication;
+}
+
+export interface AttributesAnswers {
+    projectName: string;
+    title: string;
+    namespace: string;
+    targetFolder: string;
+    ui5Version: string;
+    enableTypeScript: boolean;
+}
+
+export interface SourceApplication {
+    id: string;
+    title: string;
+    ach: string;
+    registrationIds: string[];
+    fileType: string;
+    bspUrl: string;
+    bspName: string;
+}
+
+export interface FlexUISupportedSystem {
+    isUIFlex: boolean;
+    isOnPremise: boolean;
+}
+
+export interface UI5Version {
+    latest: VersionDetail;
+    [key: string]: VersionDetail;
+}
+
+export interface VersionDetail {
+    version: string;
+    support: string;
+    lts: boolean;
+}
+
+export interface Endpoint extends Partial<Destination> {
+    Name: string;
+    Url?: string;
+    Client?: string;
+    Credentials?: { username?: string; password?: string };
+    UserDisplayName?: string;
+    Scp?: boolean;
 }
 
 export interface ChangeInboundNavigation {

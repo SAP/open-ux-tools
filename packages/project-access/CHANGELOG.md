@@ -1,5 +1,40 @@
 # @sap-ux/project-access
 
+## 1.29.21
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+
+## 1.29.20
+
+### Patch Changes
+
+-   294bbe3: code cleanup with help from copilot
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/ui5-config@0.27.1
+
+## 1.29.19
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+
+## 1.29.18
+
+### Patch Changes
+
+-   c3ebc82: fix: wrong convert preview-config prerequisites check for usage of cds-plugin-ui5
+
+## 1.29.17
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/ui5-config@0.26.5
+
 ## 1.29.16
 
 ### Patch Changes

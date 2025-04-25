@@ -40,7 +40,10 @@
         "nameContainsSpecialCharacters": "Module name cannot contain special characters (\"~'!()*)",
         "nameNotUrlFriendly": "Module name can only contain URL-friendly characters",
         "invalidModuleName": "Invalid module name",
-        "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path"
+        "moduleAlreadyExists": "The module folder named: {{folderName}} already exists at the specified path",
+        "appFolderExistsAtPath": "A module with this name already exists in the folder: {{-path}}",
+        "folderContainsFioriApp": "The project folder path already contains an SAP Fiori application in the folder: {{-path}}. Please choose a different folder and try again.",
+        "folderContainsCapApp": "The selected project folder is part of an existing CAP project. This application must therefore use the local CAP project as the data source."
     },
     "general": {
         "invalidUrl": "Invalid URL: [{{-input}}]",
@@ -51,5 +54,17 @@
         "invalidValueForSpecialChars": "Input must contain only Latin alphanumeric characters or the following symbols: '-','_','$' and '.'",
         "maxLength": "Maximum length: {{maxLength}} characters",
         "supportedFormats": "Only alphanumeric and '{{allowedCharacters}}' characters are allowed"
+    },
+    "adp": {
+        "projectNameUppercaseError": "The name cannot contain uppercase letters.",
+        "projectNameLengthErrorExt": "The name cannot contain more than 61 characters or end with the word 'component'.",
+        "projectNameValidationErrorExt": "The name must contain only latin alphanumeric characters. Different parts can be separated by a period and every part must start with a letter.",
+        "projectNameLengthErrorInt": "The name cannot start with the word 'customer', or contain more than 61 characters, or end with the word 'component'.",
+        "projectNameValidationErrorInt": "The name must contain only latin alphanumeric characters and it must have at least two parts. The different parts must be separated by a period and every part must start with a letter.",
+        "duplicatedProjectName": "A project with this name already exists in your workspace. Please choose another name.",
+        "differentNamespaceThanProjectName": "The namespace must be the same as the project name.",
+        "namespaceSameAsProjectNameError": "The namespace must be the same as the project name.",
+        "namespaceLengthError": "The namespace cannot contain more than 61 characters or end with the word 'component'.",
+        "namespaceValidationError": "The namespace must contain only latin alphanumeric characters. Different parts can be separated by a period and every part must start with a letter."
     }
 }

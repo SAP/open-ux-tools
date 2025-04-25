@@ -41,7 +41,8 @@ import { CfDeployConfigOptions } from './types';
 import {
     type CfAppRouterDeployConfigAnswers,
     type CfDeployConfigQuestions,
-    CfDeployConfigAnswers
+    CfDeployConfigAnswers,
+    RouterModuleType
 } from '@sap-ux/cf-deploy-config-inquirer';
 import type { YeomanEnvironment } from '@sap-ux/fiori-generator-shared';
 import type { Answers } from 'inquirer';
@@ -254,9 +255,16 @@ export default class extends DeploymentGenerator {
     private async _reconcileAnswersWithOptions(): Promise<void> {
         const destinationName = this.destinationName || this.answers.destinationName;
         const destination = await getDestination(destinationName);
-        const addManagedAppRouter = this.options.addManagedAppRouter ?? this.answers.addManagedAppRouter ?? false;
         const isDestinationFullUrl =
             this.options.isFullUrlDest ?? (destination && isFullUrlDestination(destination)) ?? false;
+        const addManagedAppRouter =
+            this.options.addManagedAppRouter ??
+            (this.options.routerType === RouterModuleType.Managed ||
+                this.answers.routerType === RouterModuleType.Managed);
+        const addAppFrontendRouter =
+            this.options.addAppFrontendRouter ??
+            (this.options.routerType === RouterModuleType.AppFront ||
+                this.answers.routerType === RouterModuleType.AppFront);
         const destinationAuthentication =
             this.options.destinationAuthType ?? destination?.Authentication ?? DESTINATION_AUTHTYPE_NOTFOUND;
         const overwrite = this.options.overwrite ?? this.answers.overwrite;
@@ -266,7 +274,8 @@ export default class extends DeploymentGenerator {
             addManagedAppRouter,
             isDestinationFullUrl,
             destinationAuthentication,
-            overwrite
+            overwrite,
+            addAppFrontendRouter
         };
     }
 
@@ -311,6 +320,7 @@ export default class extends DeploymentGenerator {
         return {
             appPath: this.appPath,
             addManagedAppRouter: this.answers.addManagedAppRouter,
+            addAppFrontendRouter: this.answers.addAppFrontendRouter,
             destinationName: this.answers.destinationName,
             destinationAuthentication: this.answers.destinationAuthentication,
             isDestinationFullUrl: this.answers.isDestinationFullUrl,
@@ -338,7 +348,7 @@ export default class extends DeploymentGenerator {
                     await this._runNpmInstall(this.appPath);
                 }
             } catch (error) {
-                handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error }) });
+                handleErrorMessage(this.appWizard, { errorMsg: t('cfGen.error.install', { error: error.message }) });
             }
         } else {
             DeploymentGenerator.logger?.info(t('cfGen.info.skippedInstallation'));
@@ -366,7 +376,8 @@ export default class extends DeploymentGenerator {
     public async end(): Promise<void> {
         try {
             if (
-                this.options.launchStandaloneFromYui &&
+                (this.options.launchStandaloneFromYui || !this.launchDeployConfigAsSubGenerator) &&
+                !this.abort &&
                 isExtensionInstalled(this.vscode, YUI_EXTENSION_ID, YUI_MIN_VER_FILES_GENERATED_MSG)
             ) {
                 this.appWizard?.showInformation(t('cfGen.info.filesGenerated'), MessageType.notification);
@@ -382,6 +393,7 @@ export default class extends DeploymentGenerator {
             TelemetryHelper.createTelemetryData({
                 DeployTarget: 'CF',
                 ManagedApprouter: this.answers.addManagedAppRouter,
+                AppFrontendRouter: this.answers.addAppFrontendRouter,
                 MTA: this.mtaPath ? 'true' : 'false',
                 ...this.options.telemetryData
             }) ?? {};

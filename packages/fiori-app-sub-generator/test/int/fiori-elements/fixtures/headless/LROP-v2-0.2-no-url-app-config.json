@@ -1,0 +1,21 @@
+{
+  "version": "0.2",
+  "floorplan":  "FE_LROP",
+  "project": {
+    "title": "Project's \"Title\"",
+    "description": "Test 'Project' \"Description\"",
+    "namespace": "testNameSpace",
+    "ui5Version": "1.71.0",
+    "localUI5Version": "1.82.2",
+    "targetFolder": "./test-output",
+    "name": "lrop_v2_no_url",
+    "sapux": true
+  },
+  "service": {
+    "edmx": "<Set in tests to avoid replication: add from ../sepmra_prod_man_v2/metadata.xml>"
+  },
+  "entityConfig": {
+    "mainEntity": { "entityName": "SEPMRA_C_PD_Product" },
+    "navigationEntity": { "EntitySet": "SEPMRA_C_PD_ProductSalesData", "Name": "to_ProductSalesData" }
+  }
+}

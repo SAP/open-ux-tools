@@ -1,5 +1,92 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.33
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.2.32
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.38
+
+## 0.2.31
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.37
+
+## 0.2.30
+
+### Patch Changes
+
+-   6578d86: text changes
+
+## 0.2.29
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.2.28
+
+### Patch Changes
+
+-   d809536: update text label and handle options
+
+## 0.2.27
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.2.26
+
+### Patch Changes
+
+-   0cdc387: Expose App Frontend Service from cf-sub-generator, with minor code cleanup
+
+## 0.2.25
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/inquirer-common@0.6.34
+
+## 0.2.24
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
+## 0.2.23
+
+### Patch Changes
+
+-   88d2a71: expose new UI prompting to support app frontend service
+
+## 0.2.22
+
+### Patch Changes
+
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/inquirer-common@0.6.32
+
+## 0.2.21
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.31
+
+## 0.2.20
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.30
+
 ## 0.2.19
 
 ### Patch Changes

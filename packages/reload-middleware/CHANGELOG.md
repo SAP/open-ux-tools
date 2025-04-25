@@ -1,5 +1,18 @@
 # @sap-ux/reload-middleware
 
+## 0.2.21
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+
+## 0.2.20
+
+### Patch Changes
+
+-   59ab22b: feat: Add Subpage CPE quick action added for ADP projects with OData V4.
+
 ## 0.2.19
 
 ### Patch Changes

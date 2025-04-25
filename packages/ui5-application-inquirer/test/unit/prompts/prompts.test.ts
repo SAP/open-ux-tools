@@ -216,7 +216,9 @@ describe('getQuestions', () => {
 
         await expect(targetFolderPrompt?.validate!(undefined, {})).resolves.toEqual(false);
 
-        const validateTargetFolderSpy = jest.spyOn(promptHelpers, 'validateTargetFolder').mockResolvedValueOnce(true);
+        const validateTargetFolderSpy = jest
+            .spyOn(projectValidators, 'validateFioriAppTargetFolder')
+            .mockResolvedValueOnce(true);
         const args = ['/some/target/path', { name: 'project1' }] as const;
         await expect(targetFolderPrompt?.validate!(...args)).resolves.toEqual(true);
         expect(validateTargetFolderSpy).toHaveBeenCalledWith(...[args[0]], args[1].name, undefined);
@@ -401,6 +403,43 @@ describe('getQuestions', () => {
         expect(validatorCbSpy).toHaveBeenCalledWith(false, promptNames.addFlpConfig);
         expect((addFlpConfigQuestion?.validate as Function)(true)).toBe(true);
         expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addFlpConfig);
+    });
+
+    test('getQuestions, prompt: `enableVirtualEndpoints`', async () => {
+        // Edmx project
+        let questions = getQuestions([]);
+        let enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+
+        expect(questions).toEqual(
+            expect.arrayContaining([expect.objectContaining({ name: promptNames.enableVirtualEndpoints })])
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)({})).toBe(true);
+        expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
+            `"Use virtual endpoints for local preview"`
+        );
+
+        // CAP project with cds-ui5 plugin enabled
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: true });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(true);
+
+        // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is no
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(false);
+
+        // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is yes
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
     });
 
     test('getQuestions, prompt: `ui5Theme`', async () => {

@@ -1,5 +1,42 @@
 # @sap-ux/project-input-validator
 
+## 0.5.4
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+
+## 0.5.3
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+
+## 0.5.2
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+
+## 0.5.1
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+
+## 0.5.0
+
+### Minor Changes
+
+-   ab81490: Rename validateTargetFolderForFioriApp to validateFioriAppTargetFolder for clarity and improve ts docs
+
+## 0.4.0
+
+### Minor Changes
+
+-   c69752b: Move validate target project path logic from ui5-application-inquirer to project-input-validator for improved reuse
+
 ## 0.3.4
 
 ### Patch Changes

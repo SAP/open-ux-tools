@@ -1,5 +1,6 @@
 import { isAppStudio, isOnPremiseDestination } from '@sap-ux/btp-utils';
-import { promptNames, AbapDeployConfigPromptOptions, ClientChoiceValue, TargetSystemType } from '../../../src/types';
+import type { AbapDeployConfigPromptOptions } from '../../../src/types';
+import { promptNames, ClientChoiceValue, TargetSystemType } from '../../../src/types';
 import { getAbapTargetPrompts } from '../../../src/prompts/questions';
 import { getAbapSystems } from '../../../src/utils';
 import { mockDestinations } from '../../fixtures/destinations';
@@ -9,7 +10,7 @@ import * as validators from '../../../src/prompts/validators';
 import * as conditions from '../../../src/prompts/conditions';
 import { initI18n, t } from '../../../src/i18n';
 import { Severity } from '@sap-devx/yeoman-ui-types';
-import { UrlAbapTarget } from '@sap-ux/system-access';
+import type { UrlAbapTarget } from '@sap-ux/system-access';
 import { PromptState } from '../../../src/prompts/prompt-state';
 
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -131,7 +132,7 @@ describe('getAbapTargetPrompts', () => {
             backendSystems: undefined
         });
         mockIsOnPremiseDestination.mockReturnValueOnce(true);
-        jest.spyOn(validators, 'validateDestinationQuestion').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateDestinationQuestion').mockResolvedValueOnce(true);
 
         const abapDeployConfigPromptOptions = {
             backendTarget: {
@@ -149,7 +150,7 @@ describe('getAbapTargetPrompts', () => {
             expect(destPrompt.message).toBe(t('prompts.target.destination.message'));
             expect((destPrompt.default as Function)()).toEqual('mockDest1');
             expect((destPrompt.filter as Function)('mockDest1 ')).toEqual('mockDest1');
-            expect((destPrompt.validate as Function)()).toEqual(true);
+            expect(await (destPrompt.validate as Function)()).toEqual(true);
             expect(((destPrompt as ListQuestion).additionalMessages as Function)('mockDestination')).toStrictEqual({
                 message: t('warnings.virtualHost'),
                 severity: Severity.warning
@@ -187,14 +188,18 @@ describe('getAbapTargetPrompts', () => {
         const destinationCliSetterPrompt = abapTargetPrompts.find(
             (prompt) => prompt.name === promptNames.destinationCliSetter
         );
-
         if (destinationCliSetterPrompt) {
             expect(
-                ((await destinationCliSetterPrompt.when) as Function)({
+                await (destinationCliSetterPrompt.when as Function)({
                     destination: 'mockDest1'
                 })
             ).toBe(false);
-            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith('mockDest1', mockDestinations);
+            expect(updateDestinationPromptStateSpy).toHaveBeenCalledWith(
+                'mockDest1',
+                mockDestinations,
+                undefined,
+                undefined
+            );
         } else {
             throw new Error('Destination setter prompt not found');
         }
@@ -206,7 +211,7 @@ describe('getAbapTargetPrompts', () => {
             destinations: undefined,
             backendSystems: mockTargetSystems
         });
-        jest.spyOn(validators, 'validateTargetSystem').mockReturnValueOnce(true);
+        jest.spyOn(validators, 'validateTargetSystem').mockResolvedValueOnce(true);
 
         const abapTargetPrompts = await getAbapTargetPrompts({});
         const targetSystemPrompt = abapTargetPrompts.find((prompt) => prompt.name === promptNames.targetSystem);
@@ -215,7 +220,7 @@ describe('getAbapTargetPrompts', () => {
             expect((targetSystemPrompt.when as Function)()).toBe(true);
             expect(targetSystemPrompt.message).toBe(t('prompts.target.targetSystem.message'));
             expect((targetSystemPrompt.default as Function)()).toEqual(undefined);
-            expect((targetSystemPrompt.validate as Function)()).toEqual(true);
+            expect(await (targetSystemPrompt.validate as Function)()).toEqual(true);
             expect(((targetSystemPrompt as ListQuestion).choices as Function)()).toMatchInlineSnapshot(`
                 Array [
                   Object {
@@ -302,7 +307,7 @@ describe('getAbapTargetPrompts', () => {
             expect(urlPrompt.message).toBe(t('prompts.target.url.message'));
             expect((urlPrompt.default as Function)({ targetSystem: TargetSystemType.Url })).toEqual('');
             expect((urlPrompt.filter as Function)('target system 1 ')).toEqual('target system 1');
-            expect((urlPrompt.validate as Function)()).toEqual(true);
+            expect(await (urlPrompt.validate as Function)()).toEqual(true);
         } else {
             throw new Error('Url prompt not found');
         }

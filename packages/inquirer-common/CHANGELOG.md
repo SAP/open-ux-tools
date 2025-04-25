@@ -1,5 +1,78 @@
 # @sap-ux/inquirer-common
 
+## 0.6.39
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.77
+-   @sap-ux/fiori-generator-shared@0.11.2
+
+## 0.6.38
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.11.1
+-   @sap-ux/telemetry@0.5.76
+
+## 0.6.37
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/telemetry@0.5.75
+
+## 0.6.36
+
+### Patch Changes
+
+-   Updated dependencies [e5f4915]
+    -   @sap-ux/guided-answers-helper@0.2.2
+
+## 0.6.35
+
+### Patch Changes
+
+-   Updated dependencies [9392ebd]
+    -   @sap-ux/telemetry@0.5.74
+    -   @sap-ux/fiori-generator-shared@0.10.2
+
+## 0.6.34
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/fiori-generator-shared@0.10.1
+    -   @sap-ux/telemetry@0.5.73
+
+## 0.6.33
+
+### Patch Changes
+
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+
+## 0.6.32
+
+### Patch Changes
+
+-   ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
+
+## 0.6.31
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.9.11
+-   @sap-ux/telemetry@0.5.72
+
+## 0.6.30
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.71
+-   @sap-ux/fiori-generator-shared@0.9.10
+
 ## 0.6.29
 
 ### Patch Changes

@@ -31,19 +31,46 @@ export function getAppReloadMiddlewareConfig(): CustomMiddleware<FioriAppReloadC
 /**
  * Generates the configuration for a Fiori preview middleware.
  *
- * @param {string} appId - The ID of the application for which the preview middleware is being configured.
- * @param {string} ui5Theme - The theme to be used for the application.
+ * @param previewConfigOpts - The options for configuring the preview middleware.
+ * @param {string} previewConfigOpts.ui5Theme - The theme to be used for the application.dedededdedeededededededdededdeddedededededed
+ * @param {string} previewConfigOpts.appId - The ID of the application for which the preview middleware is being configured.
+ * @param {string} previewConfigOpts.flpAction - The action to be used for the Fiori launchpad.
+ * @param {string} previewConfigOpts.localStartFile - The local start file to be used for the application.
  * @returns {CustomMiddleware<FioriPreviewConfig>} The configuration object for the middleware.
  */
-export function getPreviewMiddlewareConfig(appId: string, ui5Theme: string): CustomMiddleware<FioriPreviewConfig> {
-    return {
+export function getPreviewMiddlewareConfig({
+    ui5Theme,
+    appId,
+    flpAction,
+    localStartFile
+}: {
+    ui5Theme: string;
+    appId?: string;
+    flpAction?: string;
+    localStartFile?: string;
+}): CustomMiddleware<FioriPreviewConfig> {
+    const fioriPreviewConfig: CustomMiddleware<FioriPreviewConfig> = {
         name: 'fiori-tools-preview',
         afterMiddleware: 'fiori-tools-appreload',
         configuration: {
-            component: appId,
-            ui5Theme: ui5Theme
+            flp: {
+                theme: ui5Theme
+            }
         }
     };
+
+    if (localStartFile) {
+        fioriPreviewConfig.configuration.flp.path = localStartFile;
+    }
+
+    if (appId && flpAction) {
+        fioriPreviewConfig.configuration.flp.intent = {
+            object: appId.replace(/[._-]/g, ''),
+            action: flpAction
+        };
+    }
+
+    return fioriPreviewConfig;
 }
 
 /**

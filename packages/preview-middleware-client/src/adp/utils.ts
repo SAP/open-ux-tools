@@ -6,6 +6,9 @@ import type ManagedObject from 'sap/ui/base/ManagedObject';
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 import Log from 'sap/base/Log';
 import FlexUtils from 'sap/ui/fl/Utils';
+import IsReuseComponentApi from 'sap/ui/rta/util/isReuseComponent';
+import { getControlById } from '../utils/core';
+import type { Manifest } from 'sap/ui/rta/RuntimeAuthoring';
 
 import { getError } from '../utils/error';
 import { isLowerThanMinimalUi5Version, Ui5VersionInfo } from '../utils/version';
@@ -20,6 +23,17 @@ export interface FragmentChange {
     content: {
         fragmentPath: string;
     };
+}
+
+export type ReuseComponentChecker = (controlId: string) => boolean;
+
+let reuseComponentChecker: ReuseComponentChecker | undefined;
+
+/**
+ * Resets the reuse component checker.
+ */
+export function resetReuseComponentChecker(): void {
+    reuseComponentChecker = undefined;
 }
 
 /**
@@ -145,4 +159,55 @@ export function getControllerInfoForControl(control: ManagedObject): ControllerI
 export function getControllerInfo(overlayControl: ElementOverlay): ControllerInfo {
     const control = overlayControl.getElement();
     return getControllerInfoForControl(control);
+}
+
+/**
+ * Gets the reuse component checker function.
+ *
+ * @param ui5VersionInfo UI5 version information.
+ * @returns The reuse component checker function.
+ */
+export async function getReuseComponentChecker(ui5VersionInfo: Ui5VersionInfo): Promise<ReuseComponentChecker> {
+    if (reuseComponentChecker) {
+        return reuseComponentChecker;
+    }
+
+    let reuseComponentApi: typeof IsReuseComponentApi;
+    if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 134 })) {
+        reuseComponentApi = (await import('sap/ui/rta/util/isReuseComponent')).default;
+    }
+
+    reuseComponentChecker = function isReuseComponent(controlId: string): boolean {
+        const ui5Control = getControlById(controlId);
+        if (!ui5Control) {
+            return false;
+        }
+
+        const component = FlexUtils.getComponentForControl(ui5Control);
+
+        if (reuseComponentApi) {
+            return reuseComponentApi(component);
+        }
+
+        if (!component) {
+            return false;
+        }
+
+        const appComponent = FlexUtils.getAppComponentForControl(component);
+        if (!appComponent) {
+            return false;
+        }
+
+        const manifest = component.getManifest() as Manifest;
+        const appManifest = appComponent.getManifest() as Manifest;
+        const componentName = manifest?.['sap.app']?.id;
+
+        // Look for component name in component usages of app component manifest
+        const componentUsages = appManifest?.['sap.ui5']?.componentUsages;
+        return Object.values(componentUsages || {}).some((componentUsage) => {
+            return componentUsage.name === componentName;
+        });
+    };
+
+    return reuseComponentChecker;
 }

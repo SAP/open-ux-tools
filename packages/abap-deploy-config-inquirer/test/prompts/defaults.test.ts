@@ -8,7 +8,8 @@ import {
 import { getAbapSystemChoices } from '../../src/prompts/helpers';
 import { mockTargetSystems } from '../fixtures/targets';
 import { PromptState } from '../../src/prompts/prompt-state';
-import { PackageInputChoices, TargetSystemType, TransportChoices, TransportConfig } from '../../src/types';
+import type { TransportConfig } from '../../src/types';
+import { PackageInputChoices, TargetSystemType, TransportChoices } from '../../src/types';
 
 describe('defaults', () => {
     beforeEach(() => {
@@ -65,6 +66,9 @@ describe('defaults', () => {
 
         defaultPkg = defaultPackage();
         expect(defaultPkg).toBe('$TMP');
+
+        defaultPkg = defaultPackage('', { additionalValidation: { shouldValidatePackageType: true } });
+        expect(defaultPkg).toBe('');
     });
 
     it('should return default transport request choice', () => {

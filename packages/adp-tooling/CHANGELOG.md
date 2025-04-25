@@ -1,5 +1,172 @@
 # @sap-ux/adp-tooling
 
+## 0.13.34
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/odata-service-writer@0.26.16
+    -   @sap-ux/project-access@1.29.21
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/project-input-validator@0.5.4
+    -   @sap-ux/system-access@0.5.36
+    -   @sap-ux/inquirer-common@0.6.39
+
+## 0.13.33
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/odata-service-writer@0.26.15
+    -   @sap-ux/project-input-validator@0.5.3
+    -   @sap-ux/system-access@0.5.36
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 0.13.32
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/inquirer-common@0.6.37
+    -   @sap-ux/odata-service-writer@0.26.14
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/project-input-validator@0.5.2
+    -   @sap-ux/system-access@0.5.36
+
+## 0.13.31
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.13.30
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
+## 0.13.29
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/system-access@0.5.36
+
+## 0.13.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.13.27
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/nodejs-utils@0.1.9
+    -   @sap-ux/system-access@0.5.35
+
+## 0.13.26
+
+### Patch Changes
+
+-   c4278fb: Change build and deploy scripts for cloud ready adaptation projects
+
+## 0.13.25
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.33
+
+## 0.13.24
+
+### Patch Changes
+
+-   c81864a: fix: ADP Generator integration test mocking
+
+## 0.13.23
+
+### Patch Changes
+
+-   4f0eaae: feat: Enhance system and app prompt validations
+
+## 0.13.22
+
+### Patch Changes
+
+-   fbdf2d0: fix(generator-adp): Generator running in the CLI context
+
+## 0.13.21
+
+### Patch Changes
+
+-   ced5edf: feat(generator-adp): Create a yeoman package for Adaptation Project generator
+-   Updated dependencies [ced5edf]
+    -   @sap-ux/axios-extension@1.19.2
+    -   @sap-ux/inquirer-common@0.6.32
+    -   @sap-ux/system-access@0.5.34
+
+## 0.13.20
+
+### Patch Changes
+
+-   Updated dependencies [ab81490]
+    -   @sap-ux/project-input-validator@0.5.0
+
+## 0.13.19
+
+### Patch Changes
+
+-   93f07bc: fix: Adaptation Editor opens multiple re-entrance ticket tabs for Cloud systems
+
+## 0.13.18
+
+### Patch Changes
+
+-   Updated dependencies [c69752b]
+    -   @sap-ux/project-input-validator@0.4.0
+
+## 0.13.17
+
+### Patch Changes
+
+-   e754cb0: fix: disable "Add New Annotation File" Quick Action with tooltip, when 'metadata' is not loaded
+
+## 0.13.16
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/odata-service-writer@0.26.13
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/inquirer-common@0.6.31
+
+## 0.13.15
+
+### Patch Changes
+
+-   Updated dependencies [224494c]
+    -   @sap-ux/odata-service-writer@0.26.12
+    -   @sap-ux/ui5-config@0.26.5
+    -   @sap-ux/project-access@1.29.17
+    -   @sap-ux/axios-extension@1.19.1
+    -   @sap-ux/system-access@0.5.33
+    -   @sap-ux/inquirer-common@0.6.30
+
 ## 0.13.14
 
 ### Patch Changes

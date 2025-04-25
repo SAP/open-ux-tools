@@ -1,4 +1,4 @@
-import type { CdsUi5PluginInfo } from '@sap-ux/cap-config-writer';
+import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { CommonPromptOptions, PromptDefaultValue, UI5VersionChoice, YUIQuestion } from '@sap-ux/inquirer-common';
 import type { AutocompleteQuestionOptions } from 'inquirer-autocomplete-prompt';
 
@@ -16,6 +16,7 @@ export interface UI5ApplicationAnswers {
     enableCodeAssist?: boolean;
     skipAnnotations?: boolean;
     enableTypeScript?: boolean;
+    enableVirtualEndpoints?: boolean;
     showAdvanced?: boolean;
 }
 
@@ -55,6 +56,7 @@ export enum promptNames {
     enableCodeAssist = 'enableCodeAssist',
     skipAnnotations = 'skipAnnotations',
     enableTypeScript = 'enableTypeScript',
+    enableVirtualEndpoints = 'enableVirtualEndpoints',
     showAdvanced = 'showAdvanced'
 }
 

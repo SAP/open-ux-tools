@@ -1,5 +1,63 @@
 # @sap-ux/cap-config-writer
 
+## 0.9.28
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/fiori-generator-shared@0.11.2
+
+## 0.9.27
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/fiori-generator-shared@0.11.1
+
+## 0.9.26
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/project-access@1.29.19
+
+## 0.9.25
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.2
+
+## 0.9.24
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.10.1
+
+## 0.9.23
+
+### Patch Changes
+
+-   23e055a: Adds new module @sap-ux/fiori-app-sub-generator
+-   Updated dependencies [23e055a]
+    -   @sap-ux/fiori-generator-shared@0.10.0
+
+## 0.9.22
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/fiori-generator-shared@0.9.11
+
+## 0.9.21
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/fiori-generator-shared@0.9.10
+
 ## 0.9.20
 
 ### Patch Changes

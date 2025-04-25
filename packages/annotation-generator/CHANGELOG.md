@@ -1,5 +1,63 @@
 # @sap-ux/annotation-generator
 
+## 0.3.27
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/fiori-annotation-api@0.4.27
+
+## 0.3.26
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/fiori-annotation-api@0.4.26
+
+## 0.3.25
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/fiori-annotation-api@0.4.25
+
+## 0.3.24
+
+### Patch Changes
+
+-   @sap-ux/fiori-annotation-api@0.4.24
+
+## 0.3.23
+
+### Patch Changes
+
+-   Updated dependencies [7cda000]
+    -   @sap-ux/fiori-annotation-api@0.4.23
+
+## 0.3.22
+
+### Patch Changes
+
+-   d873cbd: chore - Add repository metadata in package.json
+-   Updated dependencies [d873cbd]
+    -   @sap-ux/fiori-annotation-api@0.4.22
+
+## 0.3.21
+
+### Patch Changes
+
+-   Updated dependencies [c3ebc82]
+    -   @sap-ux/project-access@1.29.18
+    -   @sap-ux/fiori-annotation-api@0.4.21
+
+## 0.3.20
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.17
+-   @sap-ux/fiori-annotation-api@0.4.20
+
 ## 0.3.19
 
 ### Patch Changes
