@@ -1,6 +1,6 @@
-import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
     type Destination,
+    type ServiceInfo,
     createOAuth2UserTokenExchangeDest,
     generateABAPCloudDestinationName
 } from '@sap-ux/btp-utils';
@@ -16,8 +16,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { ConnectedSystem } from '../../../../types';
-import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
+import type { ConnectedSystem, OdataServiceAnswers, OdataServicePromptOptions } from '../../../../types';
 import {
     getDefaultChoiceIndex,
     getPromptHostEnvironment,
@@ -28,9 +27,9 @@ import { ConnectionValidator } from '../../../connectionValidator';
 import LoggerHelper from '../../../logger-helper';
 import { errorHandler } from '../../../prompt-helpers';
 import type { ValidationResult } from '../../../types';
-import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
 import { newSystemPromptNames } from '../new-system/types';
 import { type ServiceAnswer, getSystemServiceQuestion } from '../service-selection';
+import { getSystemUrlQuestion, getUserSystemNameQuestion } from '../shared-prompts/shared-prompts';
 import { connectWithDestination } from '../system-selection/prompt-helpers';
 import { validateServiceKey } from '../validators';
 
