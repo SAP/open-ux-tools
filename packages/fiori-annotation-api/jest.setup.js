@@ -40,6 +40,6 @@ module.exports = function () {
     }
 
     for (const projectPath of CDS_PROJECTS) {
-        // npmInstall(projectPath);
+        npmInstall(projectPath);
     }
 };
