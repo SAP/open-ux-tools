@@ -49,7 +49,6 @@ export default class extends Generator {
     private readonly prompts: Prompts;
     private readonly answers: RepoAppDownloadAnswers = defaultAnswers;
     public options: RepoAppDownloadOptions;
-    private abort = false;
     private projectPath: string;
     private extractedProjectPath: string;
     private debugOptions: DebugOptions;
@@ -238,9 +237,6 @@ export default class extends Generator {
      * Installs npm dependencies for the project.
      */
     public async install(): Promise<void> {
-        if (this.abort) {
-            return;
-        }
         if (!this.options.skipInstall) {
             try {
                 await this._runNpmInstall(this.projectPath);
@@ -318,19 +314,17 @@ export default class extends Generator {
      */
     async end(): Promise<void> {
         try {
-            if (!this.abort) {
-                this.appWizard.showInformation(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
-                await this._handlePostAppGeneration();
-                await sendTelemetry(
-                    EventName.GENERATION_SUCCESS,
-                    TelemetryHelper.createTelemetryData({
-                        appType: 'repo-app-import-sub-generator',
-                        ...this.options.telemetryData
-                    }) ?? {}
-                ).catch((error) => {
-                    RepoAppDownloadLogger.logger?.error(t('error.telemetry', { error: error.message }));
-                });
-            }
+            this.appWizard.showInformation(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
+            await this._handlePostAppGeneration();
+            await sendTelemetry(
+                EventName.GENERATION_SUCCESS,
+                TelemetryHelper.createTelemetryData({
+                    appType: 'repo-app-import-sub-generator',
+                    ...this.options.telemetryData
+                }) ?? {}
+            ).catch((error) => {
+                RepoAppDownloadLogger.logger?.error(t('error.telemetry', { error: error.message }));
+            });
         } catch (error) {
             RepoAppDownloadLogger.logger?.error(t('error.endPhase', { error: error.message }));
         }
