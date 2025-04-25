@@ -1,5 +1,4 @@
-import type { promptNames } from '../../../../types';
-import { type SapSystemType } from '../../../../types';
+import { type SapSystemType, promptNames } from '../../../../types';
 
 export const newSystemPromptNames = {
     newSystemType: 'newSystemType',
