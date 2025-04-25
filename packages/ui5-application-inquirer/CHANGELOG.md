@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.12.1
+
+### Patch Changes
+
+-   7a87b92: cap checks for virtual endpoints prompt
+
 ## 0.12.0
 
 ### Minor Changes
