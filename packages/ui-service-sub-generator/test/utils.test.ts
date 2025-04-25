@@ -256,7 +256,8 @@ describe('test helper functions', () => {
         };
         const serviceConfig = {
             content: state.content,
-            serviceName: state.suggestedServiceName
+            serviceName: state.suggestedServiceName,
+            showDraftEnabled: false
         };
         await utils.writeBASMetadata(serviceConfig, memFs, appWizardMock, inputData, providerMock);
         const serviceMetadata = memFs.readJSON(join(testOutputDir, '.service.metadata'));

@@ -1,5 +1,13 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.0.26
+
+### Patch Changes
+
+-   10f1d60: show draft enabled prompt for compatible business objects
+-   Updated dependencies [10f1d60]
+    -   @sap-ux/ui-service-inquirer@0.0.26
+
 ## 0.0.25
 
 ### Patch Changes
