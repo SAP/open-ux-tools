@@ -10,10 +10,9 @@ import type { ConnectedSystem } from '../../../../types';
 import { promptNames } from '../../../../types';
 import { PromptState, convertODataVersionType, removeCircularFromServiceProvider } from '../../../../utils';
 import type { ConnectionValidator, SystemAuthType } from '../../../connectionValidator';
-import { newSystemPromptNames } from '../new-system/types';
+import { type NewSystemAnswers, newSystemPromptNames } from '../new-system/types';
 import { suggestSystemName } from '../prompt-helpers';
 import { validateSystemName } from '../validators';
-import type { NewSystemAnswers } from '../new-system/questions';
 
 /**
  * Convert the system connection scheme (Service Key, Rentrance Ticket, etc) to the store specific authentication type.
