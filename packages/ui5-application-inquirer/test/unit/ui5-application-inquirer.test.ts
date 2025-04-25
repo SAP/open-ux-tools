@@ -6,6 +6,7 @@ import AutocompletePrompt from 'inquirer-autocomplete-prompt';
 import type { InquirerAdapter, UI5ApplicationAnswers, UI5ApplicationPromptOptions } from '../../src';
 import { getPrompts, prompt, promptNames } from '../../src';
 import * as ui5AppPrompts from '../../src/prompts';
+import { gte, lt } from 'semver';
 
 /**
  * Workaround to allow spyOn
@@ -236,7 +237,7 @@ describe('ui5-application-inquirer API', () => {
 });
 
 describe('Filtering UI5 themes based on UI5 version', () => {
-    const versionsToTest = ['1.136.0', '1.133.0'];
+    const versionsToTest = ['1.146.0', '1.136.0', '1.135.0', '1.133.0'];
 
     // Helper function to return the expected choices for each version
     function getExpectedChoices(version: string) {
@@ -247,14 +248,12 @@ describe('Filtering UI5 themes based on UI5 version', () => {
             { name: 'Evening Horizon', value: 'sap_horizon_dark' }
         ];
 
-        if (version === '1.136.0') {
+        if (gte(version, '1.136.0')) {
             return commonChoices;
         }
-
-        if (version === '1.133.0') {
+        if (lt(version, '1.136.0')) {
             return [{ name: 'Belize (deprecated)', value: 'sap_belize' }, ...commonChoices];
         }
-
         return [];
     }
 
