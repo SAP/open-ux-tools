@@ -677,7 +677,7 @@ export class ChangeService extends EventTarget {
         const { fileName } = changeDefinition;
         if (GENERIC_CHANGE_HANDLER?.[changeType]) {
             const { genericProps, changeTitle, controlId } = GENERIC_CHANGE_HANDLER[changeType](
-                changeDefinition as GenericChange
+                changeDefinition as unknown as GenericChange
             );
             return {
                 kind: GENERIC_CHANGE_KIND,

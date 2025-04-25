@@ -1,16 +1,14 @@
+import type { ChangeDefinition } from 'sap/ui/fl/Change';
+
 export const ADD_NEW_ANNOTATION_FILE_CHANGE = 'appdescr_app_addAnnotationsToOData';
 export const RENAME_CHANGE = 'rename';
 export const MOVE_CHANGE = 'moveControls';
 export type GenericChange = NewAnnotationFileChange | RenameChange | MoveControlsChange;
-interface BaseChange {
-    fileName: string;
+interface BaseChange extends ChangeDefinition {
     creation: string;
 }
-interface RenameChange extends BaseChange {
+export interface RenameChange  extends BaseChange {
     changeType: typeof RENAME_CHANGE;
-    selector: {
-        id: string;
-    };
     texts: {
         newText: {
             value: string;
@@ -19,7 +17,7 @@ interface RenameChange extends BaseChange {
     };
 }
 
-interface NewAnnotationFileChange extends BaseChange {
+export interface NewAnnotationFileChange extends BaseChange {
     changeType: typeof ADD_NEW_ANNOTATION_FILE_CHANGE;
     content: {
         dataSourceId: string;
@@ -31,7 +29,7 @@ interface NewAnnotationFileChange extends BaseChange {
     };
 }
 
-interface MoveControlsChange extends BaseChange {
+export interface MoveControlsChange extends BaseChange {
     changeType: typeof MOVE_CHANGE;
     content: {
         movedElements: {

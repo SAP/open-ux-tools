@@ -3,12 +3,13 @@ import {
     RENAME_CHANGE,
     MOVE_CHANGE,
     GENERIC_CHANGE_HANDLER,
-    GenericChange
+    GenericChange,
+    NewAnnotationFileChange
 } from '../../../../src/cpe/changes/generic-change';
 
 describe('GENERIC_CHANGE_HANDLER', () => {
     it('should handle ADD_NEW_ANNOTATION_FILE_CHANGE', () => {
-        const change = {
+        const change: NewAnnotationFileChange = {
             changeType: ADD_NEW_ANNOTATION_FILE_CHANGE,
             fileName: 'file1',
             creation: '2025-03-17T12:00:00Z',
@@ -19,10 +20,20 @@ describe('GENERIC_CHANGE_HANDLER', () => {
                         uri: 'annotations/annotation1.xml'
                     }
                 }
-            }
+            },
+            layer: 'VENDOR',
+            packageName: 'package1',
+            support: {
+                generator: 'generator1'
+            },
+            selector: {
+                id: 'selector1',
+                idIsLocal: true
+            },
+            service: 'service1'
         };
 
-        const result = GENERIC_CHANGE_HANDLER[ADD_NEW_ANNOTATION_FILE_CHANGE](change as GenericChange);
+        const result = GENERIC_CHANGE_HANDLER[ADD_NEW_ANNOTATION_FILE_CHANGE](change);
 
         expect(result).toEqual({
             changeTitle: 'ADD_NEW_ANNOTATION_FILE',
