@@ -1,7 +1,7 @@
 import { isOnPremiseDestination } from '@sap-ux/btp-utils';
 import { ApiHubType, type TelemetryBusinessHubType, type TelemetrySapSystemType } from '../types';
 import { isBTPHosted } from './common';
-import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
+import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 
 /**
  * Get the SAP system type as reported in telemetry events.

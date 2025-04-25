@@ -4,6 +4,7 @@ import type { InputQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 import {
     type CapService,
+    type ConnectedSystem,
     DatasourceType,
     type OdataServicePromptOptions,
     OdataVersion,
@@ -33,7 +34,6 @@ import type {
 } from '../types';
 import { Features, defaultPromptValues } from '../types';
 import { getMinSupportedUI5Version, t, validateNextStep } from '../utils';
-import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
 
 /**
  * Validates the view name.

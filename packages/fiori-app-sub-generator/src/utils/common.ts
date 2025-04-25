@@ -10,7 +10,7 @@ import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
 import type { Logger } from '@sap-ux/logger';
-import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, OdataVersion, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 import type { CdsAnnotationsInfo, EdmxAnnotationsInfo } from '@sap-ux/odata-service-writer';
 import type { CapProjectType, CdsUi5PluginInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
@@ -22,7 +22,6 @@ import { ApiHubType, SapSystemSourceType } from '../types';
 import { minSupportedUi5Version, minSupportedUi5VersionV4 } from '../types/constants';
 import { type Floorplan, FloorplanAttributes, FloorplanFF } from '../types/external';
 import { t } from './i18n';
-import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
 
 /**
  * Parse the specified edmx string for validitiy and return the ODataVersion of the specified edmx string.

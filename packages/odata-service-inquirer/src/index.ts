@@ -183,5 +183,6 @@ export {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     // @deprecated - temp export to support to support open source migration
-    type SapSystemType
+    type SapSystemType,
+    type ConnectedSystem
 };
