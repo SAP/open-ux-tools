@@ -4,7 +4,7 @@
 import { withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { OdataServicePromptOptions, SapSystemType, promptNames } from '../../../../types';
+import type { ConnectedSystem, OdataServicePromptOptions, SapSystemType, promptNames } from '../../../../types';
 import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
 import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
 import { newSystemPromptNames } from './types';
@@ -21,9 +21,13 @@ export interface NewSystemAnswers {
  * Provides prompts that allow the creation of a new system connection.
  *
  * @param promptOptions options for the new system prompts see {@link OdataServicePromptOptions}
+ * @param connectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns questions for creating a new system connection
  */
-export function getNewSystemQuestions(promptOptions?: OdataServicePromptOptions): Question<NewSystemAnswers>[] {
+export function getNewSystemQuestions(
+    promptOptions?: OdataServicePromptOptions,
+    connectedSystem?: ConnectedSystem
+): Question<NewSystemAnswers>[] {
     const questions: Question<NewSystemAnswers>[] = [
         {
             type: 'list',
@@ -43,7 +47,7 @@ export function getNewSystemQuestions(promptOptions?: OdataServicePromptOptions)
     );
     questions.push(
         ...withCondition(
-            getAbapOnBTPSystemQuestions(promptOptions) as Question[],
+            getAbapOnBTPSystemQuestions(promptOptions, connectedSystem) as Question[],
             (answers: Answers) => (answers as NewSystemAnswers).newSystemType === 'abapOnBtp'
         )
     );

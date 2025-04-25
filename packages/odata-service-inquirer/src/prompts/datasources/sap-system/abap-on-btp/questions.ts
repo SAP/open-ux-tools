@@ -1,3 +1,4 @@
+import type { ServiceInfo } from '@sap-ux/btp-utils';
 import {
     type Destination,
     createOAuth2UserTokenExchangeDest,
@@ -15,6 +16,7 @@ import type { OdataVersion } from '@sap-ux/odata-service-writer';
 import { type ServiceInstanceInfo, apiGetInstanceCredentials } from '@sap/cf-tools';
 import type { Answers, ListChoiceOptions, Question } from 'inquirer';
 import { t } from '../../../../i18n';
+import type { ConnectedSystem } from '../../../../types';
 import { type OdataServiceAnswers, type OdataServicePromptOptions } from '../../../../types';
 import {
     getDefaultChoiceIndex,
@@ -55,10 +57,12 @@ interface AbapOnBtpAnswers extends Partial<OdataServiceAnswers> {
  * Get the questions for the ABAP on BTP system within the VSCode platform. The questions will prompt the user for the system type (Cloud Foundry, Service Key, Re-entrance Ticket).
  *
  * @param promptOptions The prompt options which control the service selection and system name]
+ * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns The list of questions for the ABAP on BTP system
  */
 export function getAbapOnBTPSystemQuestions(
-    promptOptions?: OdataServicePromptOptions
+    promptOptions?: OdataServicePromptOptions,
+    cachedConnectedSystem?: ConnectedSystem
 ): Question<AbapOnBtpAnswers & ServiceAnswer>[] {
     PromptState.reset();
     const connectValidator = new ConnectionValidator();
@@ -86,7 +90,8 @@ export function getAbapOnBTPSystemQuestions(
                 getSystemUrlQuestion<AbapOnBtpAnswers>(
                     connectValidator,
                     abapOnBtpPromptNamespace,
-                    promptOptions?.serviceSelection?.requiredOdataVersion
+                    promptOptions?.serviceSelection?.requiredOdataVersion,
+                    cachedConnectedSystem
                 )
             ],
             (answers: AbapOnBtpAnswers) => {
@@ -102,14 +107,14 @@ export function getAbapOnBTPSystemQuestions(
     // Service Key file prompt
     questions.push(
         withCondition(
-            [getServiceKeyPrompt(connectValidator)],
+            [getServiceKeyPrompt(connectValidator, cachedConnectedSystem)],
             (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'serviceKey'
         )[0]
     );
 
     questions.push(
         ...withCondition(
-            [...getCFDiscoverPrompts(connectValidator)],
+            [...getCFDiscoverPrompts(connectValidator, undefined, undefined, cachedConnectedSystem)],
             (answers: AbapOnBtpAnswers) => answers?.abapOnBtpAuthType === 'cloudFoundry'
         )
     );
@@ -143,13 +148,15 @@ export function getAbapOnBTPSystemQuestions(
  * @param connectionValidator connection validator instance
  * @param requiredOdataVersion
  * @param isCli validation on CLI ill throw rather than returning a validation message as users cannot change previous answers on CLI
+ * @param cachedConnectedSystem
  * @returns true if the service info is valid, a validation message if the service info is invalid, or a validation link if the service info is not validated but some help is available
  */
 async function validateCFServiceInfo(
     abapService: ServiceInstanceInfo,
     connectionValidator: ConnectionValidator,
     requiredOdataVersion?: OdataVersion,
-    isCli = false
+    isCli = false,
+    cachedConnectedSystem?: ConnectedSystem
 ): Promise<ValidationResult> {
     PromptState.resetConnectedSystem();
     const cfAbapServiceName = abapService.label;
@@ -177,6 +184,16 @@ async function validateCFServiceInfo(
             valResult = error.message;
         }
     } else {
+        // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
+        // In case the user has changed the URL, do not use the cached connection.
+        if (
+            cachedConnectedSystem &&
+            cachedConnectedSystem.backendSystem?.url === (uaaCreds.credentials as ServiceInfo).url &&
+            JSON.stringify((cachedConnectedSystem.backendSystem.serviceKeys as ServiceInfo).uaa) ===
+                JSON.stringify((uaaCreds.credentials as ServiceInfo).uaa)
+        ) {
+            connectionValidator.setConnectedSystem(cachedConnectedSystem);
+        }
         valResult = await connectionValidator.validateServiceInfo(uaaCreds.credentials);
     }
 
@@ -213,12 +230,14 @@ async function validateCFServiceInfo(
  * @param connectionValidator The connection validator
  * @param promptNamespace
  * @param requiredOdataVersion
+ * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns The Cloud Foundry ABAP system discovery prompt
  */
 export function getCFDiscoverPrompts(
     connectionValidator: ConnectionValidator,
     promptNamespace?: string,
-    requiredOdataVersion?: OdataVersion
+    requiredOdataVersion?: OdataVersion,
+    cachedConnectedSystem?: ConnectedSystem
 ): Question[] {
     let choices: ListChoiceOptions<ServiceInstanceInfo>[] = [];
     const promptName = `${promptNamespace ? promptNamespace + ':' : ''}${abapOnBtpPromptNames.cloudFoundryAbapSystem}`;
@@ -249,7 +268,8 @@ export function getCFDiscoverPrompts(
                         abapService,
                         connectionValidator,
                         requiredOdataVersion,
-                        getPromptHostEnvironment() === hostEnvironment.cli
+                        getPromptHostEnvironment() === hostEnvironment.cli,
+                        cachedConnectedSystem
                     );
                 }
                 const errorType = errorHandler.getCurrentErrorType();
@@ -284,9 +304,13 @@ export function getCFDiscoverPrompts(
  * Get the service key prompt for the ABAP on BTP system. This prompt will allow the user to select a service key file from the file system.
  *
  * @param connectionValidator a connection validator instance
+ * @param cachedConnectedSystem if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns The service key prompt
  */
-function getServiceKeyPrompt(connectionValidator: ConnectionValidator): FileBrowserQuestion {
+function getServiceKeyPrompt(
+    connectionValidator: ConnectionValidator,
+    cachedConnectedSystem?: ConnectedSystem
+): FileBrowserQuestion {
     const question = {
         type: 'input',
         name: abapOnBtpPromptNames.serviceKey,
@@ -301,6 +325,16 @@ function getServiceKeyPrompt(connectionValidator: ConnectionValidator): FileBrow
             const serviceKeyValResult = validateServiceKey(keyPath);
             if (typeof serviceKeyValResult === 'string' || typeof serviceKeyValResult === 'boolean') {
                 return serviceKeyValResult;
+            }
+            // Backend systems validation supports using a cached connections from a previous step execution to prevent re-authentication (e.g. re-opening a browser window)
+            // In case the user has changed the URL, do not use the cached connection.
+            if (
+                cachedConnectedSystem &&
+                cachedConnectedSystem.backendSystem?.url === serviceKeyValResult.url &&
+                JSON.stringify((cachedConnectedSystem.backendSystem.serviceKeys as ServiceInfo).uaa) ===
+                    JSON.stringify(serviceKeyValResult.uaa)
+            ) {
+                connectionValidator.setConnectedSystem(cachedConnectedSystem);
             }
             const connectValResult = await connectionValidator.validateServiceInfo(serviceKeyValResult);
 

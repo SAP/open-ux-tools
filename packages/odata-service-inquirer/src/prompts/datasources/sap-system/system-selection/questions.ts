@@ -130,7 +130,7 @@ export async function getSystemSelectionQuestions(
     if (!isAppStudio()) {
         questions.push(
             ...withCondition(
-                getNewSystemQuestions(promptOptions) as Question[],
+                getNewSystemQuestions(promptOptions, connectedSystem) as Question[],
                 (answers: Answers) => (answers as SystemSelectionAnswers).systemSelection?.type === 'newSystemChoice'
             )
         );

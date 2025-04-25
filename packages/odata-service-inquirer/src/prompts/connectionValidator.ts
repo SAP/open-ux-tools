@@ -256,6 +256,7 @@ export class ConnectionValidator {
         this._connectedUserName = backendSystem?.userDisplayName;
         this._validatedClient = backendSystem?.client;
         this._refreshToken = backendSystem?.refreshToken;
+        this._serviceInfo = backendSystem?.serviceKeys as ServiceInfo;
         this.validity.authenticated = true;
         this.validity.reachable = true;
         this.validity.urlFormat = true;
@@ -573,7 +574,10 @@ export class ConnectionValidator {
             return false;
         }
         // If we are already authenticated and the url is the same, no need to re-authenticate as this may result in a browser based authentication
-        if (serviceInfo.url === this.validatedUrl) {
+        if (
+            serviceInfo.url === this.validatedUrl &&
+            JSON.stringify(serviceInfo.uaa) === JSON.stringify(this.serviceInfo?.uaa)
+        ) {
             return this.getValidationResultFromStatusCode(200);
         }
         try {
