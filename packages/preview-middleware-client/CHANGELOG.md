@@ -1,5 +1,17 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.19
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+
+## 0.13.18
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
 ## 0.13.17
 
 ### Patch Changes
