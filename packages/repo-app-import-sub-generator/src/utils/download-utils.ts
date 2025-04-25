@@ -21,10 +21,9 @@ export function hasQfaJson(): boolean {
  * Extracts a ZIP archive to a temporary directory.
  *
  * @param {string} extractedProjectPath - The path where the archive should be extracted.
- * @param {Buffer} archive - The ZIP archive buffer.
  * @param {Editor} fs - The file system editor.
  */
-export async function extractZip(extractedProjectPath: string, archive: Buffer, fs: Editor): Promise<void> {
+export async function extractZip(extractedProjectPath: string, fs: Editor): Promise<void> {
     try {
         PromptState.admZip?.getEntries().forEach(function (zipEntry) {
             if (!zipEntry.isDirectory) {
@@ -48,5 +47,5 @@ export async function downloadApp(repoName: string): Promise<void> {
     const serviceProvider = PromptState.systemSelection?.connectedSystem?.serviceProvider as AbapServiceProvider;
     const downloadedAppPackage = await serviceProvider.getUi5AbapRepository().downloadFiles(repoName);
     // store downloaded package in prompt state
-    PromptState.downloadedAppPackage = downloadedAppPackage;
+    PromptState.admZip = downloadedAppPackage;
 }

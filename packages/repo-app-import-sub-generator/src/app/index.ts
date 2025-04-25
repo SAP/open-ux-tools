@@ -133,8 +133,6 @@ export default class extends Generator {
         if (isValidPromptState(this.answers.targetFolder, this.answers.selectedApp.appId)) {
             this.projectPath = join(this.answers.targetFolder, this.answers.selectedApp.appId);
             this.extractedProjectPath = join(this.projectPath, extractedFilePath);
-        } else {
-            this.abort = true;
         }
     }
 
@@ -142,12 +140,7 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
-        if (this.abort) {
-            return;
-        }
-        // Extract downloaded app
-        const archive = PromptState.downloadedAppPackage;
-        await extractZip(this.extractedProjectPath, archive, this.fs);
+        await extractZip(this.extractedProjectPath, this.fs);
         // Check if the qfa.json file
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
         const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);

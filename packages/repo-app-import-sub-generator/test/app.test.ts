@@ -449,47 +449,6 @@ describe('Repo App Download', () => {
 		expect((generator as any)._runNpmInstall).toHaveBeenCalled();
 	});
 
-	it('should abort the sub generator if the prompting is invalid', async () => {
-		const yeomanEnv = env.createEnv();
-		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath, true);
-		(isValidPromptState as jest.Mock).mockReturnValue(false);
-		
-		await expect( 
-			yeomanTest
-				.run(RepoAppDownloadGenerator, { 
-					resolved: repoAppDownloadGenPath
-				})
-				.cd('.')
-				.withOptions({ 
-					appRootPath: testOutputDir, 
-					appWizard: mockAppWizard,
-					vscode: mockVSCode, 
-					logger: {},
-					data: {
-						postGenCommand: 'test-post-gen-command'
-					}
-				})
-				.withPrompts({
-					systemSelection: 'system3',
-					selectedApp: {
-						appId: appConfig.app.id,
-						title: appConfig.app.title,
-						description: appConfig.app.description,
-						repoName: 'app-1-repo',
-						url: 'url-1'
-					},
-					targetFolder: testOutputDir
-				})
-		)
-		.resolves.not.toThrow();
-		expect(extractZip as jest.Mock).not.toHaveBeenCalled();
-		expect(getAppConfig as jest.Mock).not.toHaveBeenCalled();
-		expect(createLaunchConfig as jest.Mock).not.toHaveBeenCalled();
-		expect(handleWorkspaceConfig as jest.Mock).not.toHaveBeenCalled();
-		expect(updateWorkspaceFoldersIfNeeded as jest.Mock).not.toHaveBeenCalled();
-		expect(mockAppWizard.showInformation).not.toHaveBeenCalledWith();
-	});
-
 	it('should successfully download a quick deployed app from repository', async () => {
 		const yeomanEnv = env.createEnv();
 

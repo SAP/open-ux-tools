@@ -1,6 +1,7 @@
 import { PromptState } from '../../src/prompts/prompt-state';
 import type { SystemSelectionAnswers } from '../../src/app/types';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import AdmZip from 'adm-zip';
 
 jest.mock('adm-zip');
 describe('PromptState', () => {
@@ -38,14 +39,18 @@ describe('PromptState', () => {
         expect(PromptState.systemSelection).toEqual({});
     });
 
-    it('should set and get downloadedAppPackage correctly', () => {
-        const mockBuffer = Buffer.from('mock zip content');
-        PromptState.downloadedAppPackage = mockBuffer;
-        expect(PromptState.downloadedAppPackage).toBe(mockBuffer);
+    it('should set and get the AdmZip instance correctly', () => {
+        const mockBuffer = Buffer.from('mock-zip-content');
+
+        PromptState.admZip = mockBuffer;
+        const admZipInstance = PromptState.admZip;
+        expect(admZipInstance).toBeDefined();
+        expect(admZipInstance).toBeInstanceOf(AdmZip);
     });
 
-    it('should return undefined for downloadedAppPackage if not set', () => {
-        expect(PromptState.downloadedAppPackage.length).toBe(0);
+    it('should return undefined if admZip is not set', () => {
+        const admZipInstance = PromptState.admZip;
+        expect(admZipInstance).toBeUndefined();
     });
 
     it('should return baseURL from connected system', () => {

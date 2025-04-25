@@ -9,7 +9,6 @@ import AdmZip from 'adm-zip';
  */
 export class PromptState {
     private static _systemSelection: SystemSelectionAnswers = {};
-    private static _downloadedAppPackage?: Buffer;
     private static _admZipInstance?: AdmZip;
 
     /**
@@ -33,18 +32,8 @@ export class PromptState {
     /**
      * Set the downloaded app package.
      */
-    public static set downloadedAppPackage(archive: Buffer) {
-        this._downloadedAppPackage = archive;
+    public static set admZip(archive: Buffer) {
         this._admZipInstance = new AdmZip(archive);
-    }
-
-    /**
-     * Returns the downloaded app package.
-     *
-     * @returns {Buffer} downloaded app package
-     */
-    public static get downloadedAppPackage(): Buffer {
-        return this._downloadedAppPackage ?? Buffer.alloc(0);
     }
 
     /**
@@ -76,7 +65,6 @@ export class PromptState {
 
     static reset(): void {
         PromptState.systemSelection = {};
-        PromptState._downloadedAppPackage = undefined;
         PromptState._admZipInstance = undefined;
     }
 }
