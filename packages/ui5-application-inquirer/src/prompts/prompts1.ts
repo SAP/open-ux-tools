@@ -281,10 +281,21 @@ export function getAddFlpConfigPrompt(
 /**
  * Get the `enableVirtualEndpoints` prompt.
  *
+ * @param isCapProject is this a CAP project - additional checks performed if true
+ * @param capCdsInfo CDS UI5 plugin information
  * @returns the `enableVirtualEndpoints` prompt
  */
-export function getEnableVirtualEndpoints(): UI5ApplicationQuestion {
+export function getEnableVirtualEndpoints(
+    isCapProject: boolean,
+    capCdsInfo?: CdsUi5PluginInfo
+): UI5ApplicationQuestion {
     return {
+        when: (answers: UI5ApplicationAnswers): boolean => {
+            if (isCapProject) {
+                return capCdsInfo?.isCdsUi5PluginEnabled || !!answers.enableTypeScript;
+            }
+            return true;
+        },
         type: 'confirm',
         name: promptNames.enableVirtualEndpoints,
         guiOptions: {
