@@ -308,12 +308,7 @@ declare module 'sap/ui/rta/util/hasStableId' {
 declare module 'sap/ui/rta/util/isReuseComponent' {
     import type Component from 'sap/ui/core/Component';
 
-    interface IsReuseComponentApi {
-        isReuseComponent(component?: Component): boolean;
-    }
-
-    const IsReuseComponentApi: IsReuseComponentApi;
-    export default IsReuseComponentApi;
+    export default function isReuseComponentApi(component: Component): boolean;
 }
 
 declare module 'sap/ui/rta/api/startAdaptation' {

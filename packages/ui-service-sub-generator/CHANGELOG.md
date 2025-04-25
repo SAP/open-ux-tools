@@ -1,5 +1,53 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.0.26
+
+### Patch Changes
+
+-   10f1d60: show draft enabled prompt for compatible business objects
+-   Updated dependencies [10f1d60]
+    -   @sap-ux/ui-service-inquirer@0.0.26
+
+## 0.0.25
+
+### Patch Changes
+
+-   @sap-ux/telemetry@0.5.77
+-   @sap-ux/ui-service-inquirer@0.0.25
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/fiori-generator-shared@0.11.2
+-   @sap-ux/system-access@0.5.36
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.0.24
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/fiori-generator-shared@0.11.1
+-   @sap-ux/system-access@0.5.36
+-   @sap-ux/telemetry@0.5.76
+-   @sap-ux/inquirer-common@0.6.38
+-   @sap-ux/ui-service-inquirer@0.0.24
+
+## 0.0.23
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/inquirer-common@0.6.37
+    -   @sap-ux/telemetry@0.5.75
+    -   @sap-ux/ui-service-inquirer@0.0.23
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/system-access@0.5.36
+
+## 0.0.22
+
+### Patch Changes
+
+-   @sap-ux/ui-service-inquirer@0.0.22
+
 ## 0.0.21
 
 ### Patch Changes

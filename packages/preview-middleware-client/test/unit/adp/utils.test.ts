@@ -198,7 +198,7 @@ describe('utils', () => {
             const checker = await getReuseComponentChecker({major: 1, minor: 134});
             jest.spyOn(Utils, 'getControlById').mockReturnValue(ui5Control);
             FlexUtils.getComponentForControl.mockReturnValue({});
-            const isReuseComponentMock = isReuseComponentApi.isReuseComponent.mockReturnValue(true);
+            const isReuseComponentMock = isReuseComponentApi.mockReturnValue(true);
             expect(checker('controlId')).toBe(true);
             expect(isReuseComponentMock).toHaveBeenCalled();
         });

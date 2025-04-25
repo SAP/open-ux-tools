@@ -18,16 +18,12 @@ import {
 } from '@sap-ux/project-access';
 import {
     MTAVersion,
-    UI5BuilderWebIdePackage,
-    UI5BuilderWebIdePackageVersion,
     UI5Package,
     UI5PackageVersion,
     UI5TaskZipperPackage,
     UI5TaskZipperPackageVersion,
-    XSSecurityFile,
     rootDeployMTAScript,
     undeployMTAScript,
-    MTAFileExtension,
     Rimraf,
     RimrafVersion,
     MbtPackageVersion,
@@ -139,7 +135,7 @@ export function validateVersion(mtaVersion?: string): boolean {
  * @param addTenant If true, append tenant to the xs-security.json file
  */
 export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor, addTenant: boolean = true): void {
-    fs.copyTpl(getTemplatePath(`common/${XSSecurityFile}`), join(mtaPath, XSSecurityFile), {
+    fs.copyTpl(getTemplatePath(`common/${FileName.XSSecurityJson}`), join(mtaPath, FileName.XSSecurityJson), {
         id: mtaId.slice(0, 100),
         addTenant
     });
@@ -152,7 +148,7 @@ export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Edito
  * @param fs reference to a mem-fs editor
  */
 export function addGitIgnore(targetPath: string, fs: Editor): void {
-    fs.copyTpl(getTemplatePath('gitignore.tmpl'), join(targetPath, '.gitignore'), {});
+    fs.copyTpl(getTemplatePath('gitignore.tmpl'), join(targetPath, FileName.DotGitIgnore), {});
 }
 
 /**
@@ -164,7 +160,7 @@ export function addGitIgnore(targetPath: string, fs: Editor): void {
  * @param fs reference to a mem-fs editor
  */
 export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
-    fs.copyTpl(getTemplatePath('package.json'), join(mtaPath, FileName.Package), {
+    fs.copyTpl(getTemplatePath(FileName.Package), join(mtaPath, FileName.Package), {
         mtaId: mtaId
     });
 }
@@ -176,7 +172,6 @@ export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): v
  * @param fs reference to a mem-fs editor
  */
 export async function addCommonPackageDependencies(targetPath: string, fs: Editor): Promise<void> {
-    await addPackageDevDependency(targetPath, UI5BuilderWebIdePackage, UI5BuilderWebIdePackageVersion, fs);
     await addPackageDevDependency(targetPath, UI5TaskZipperPackage, UI5TaskZipperPackageVersion, fs);
     await addPackageDevDependency(targetPath, UI5Package, UI5PackageVersion, fs);
 }
@@ -196,7 +191,7 @@ export async function generateSupportingConfig(
     if (config.mtaId && !fs.exists(join(config.mtaPath, 'package.json'))) {
         addRootPackage(config, fs);
     }
-    if (config.mtaId && !fs.exists(join(config.mtaPath, XSSecurityFile))) {
+    if (config.mtaId && !fs.exists(join(config.mtaPath, FileName.XSSecurityJson))) {
         addXSSecurityConfig(config, fs, addTenant);
     }
     // Be a good citizen and add a .gitignore if missing from the existing project root
@@ -230,7 +225,7 @@ export async function updateRootPackage(
     { mtaId, rootPath }: { mtaId: string; rootPath: string },
     fs: Editor
 ): Promise<void> {
-    const packageExists = fs.exists(join(rootPath, FileName.Package));
+    const packageExists = fileExists(fs, join(rootPath, FileName.Package));
     // Append package.json only if mta.yaml is at a different level to the HTML5 app
     if (packageExists) {
         // Align CDS versions if missing otherwise mta.yaml before-all scripts will fail
@@ -238,8 +233,8 @@ export async function updateRootPackage(
         await addPackageDevDependency(rootPath, Rimraf, RimrafVersion, fs);
         await addPackageDevDependency(rootPath, MbtPackage, MbtPackageVersion, fs);
         let deployArgs: string[] = [];
-        if (fs.exists(join(rootPath, MTAFileExtension))) {
-            deployArgs = ['-e', MTAFileExtension];
+        if (fs?.exists(join(rootPath, FileName.MtaExtYaml))) {
+            deployArgs = ['-e', FileName.MtaExtYaml];
         }
         for (const script of [
             { name: 'undeploy', run: undeployMTAScript(mtaId) },
@@ -307,4 +302,15 @@ export async function runCommand(cwd: string, cmd: string, args: string[], error
     } catch (e) {
         throw new Error(`${errorMsg} ${e.message}`);
     }
+}
+
+/**
+ * Check if a file exists in the file system.
+ *
+ * @param fs reference to a mem-fs editor
+ * @param filePath Path to the file
+ * @returns true if the file exists, false otherwise
+ */
+export function fileExists(fs: Editor, filePath: string): boolean {
+    return fs.exists(filePath);
 }

@@ -4,7 +4,6 @@ import { render } from 'ejs';
 import { MtaConfig } from './mta';
 import { addXSSecurityConfig, getTemplatePath, setMtaDefaults, validateVersion, runCommand } from '../utils';
 import {
-    MTAYamlFile,
     MTAVersion,
     MTADescription,
     CDSAddMtaParams,
@@ -15,8 +14,7 @@ import {
     CDSXSUAAService,
     CDSDestinationService,
     CDSHTML5RepoService,
-    RouterModule,
-    XSAppFile
+    RouterModule
 } from '../constants';
 import { type MTABaseConfig, type CFBaseConfig, type CDSServiceType, type CAPConfig, RouterModuleType } from '../types';
 import LoggerHelper from '../logger-helper';
@@ -75,8 +73,8 @@ export function toMtaModuleName(appId: string): string {
  * @param config writer configuration
  */
 export function createMTA(config: MTABaseConfig): void {
-    const mtaTemplate = readFileSync(getTemplatePath(`app/${MTAYamlFile}`), 'utf-8');
     const mtaId = `${config.mtaId.slice(0, 128)}`;
+    const mtaTemplate = readFileSync(getTemplatePath(`app/${FileName.MtaYaml}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
         id: mtaId,
         mtaDescription: config.mtaDescription ?? MTADescription,
@@ -84,7 +82,7 @@ export function createMTA(config: MTABaseConfig): void {
     });
     config.mtaId = mtaId;
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
-    writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
+    writeFileSync(join(config.mtaPath, FileName.MtaYaml), mtaContents);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
 }
 
@@ -150,14 +148,14 @@ export function validateMtaConfig(config: CFBaseConfig): void {
  * @deprecated this function is deprecated and will be removed in future releases
  */
 async function createCAPMTAAppFrontend(config: CAPConfig, fs: Editor): Promise<void> {
-    const mtaTemplate = readFileSync(getTemplatePath(`frontend/${MTAYamlFile}`), 'utf-8');
+    const mtaTemplate = readFileSync(getTemplatePath(`frontend/${FileName.MtaYaml}`), 'utf-8');
     const mtaContents = render(mtaTemplate, {
         id: `${config.mtaId.slice(0, 128)}`,
         mtaDescription: config.mtaDescription ?? MTADescription,
         mtaVersion: config.mtaVersion ?? MTAVersion
     });
     // Written to disk immediately! Subsequent calls are dependent on it being on the file system i.e mta-lib.
-    writeFileSync(join(config.mtaPath, MTAYamlFile), mtaContents);
+    writeFileSync(join(config.mtaPath, FileName.MtaYaml), mtaContents);
     // Add missing configurations
     addXSSecurityConfig(config, fs, false);
     LoggerHelper.logger?.debug(t('debug.mtaCreated', { mtaPath: config.mtaPath }));
@@ -194,13 +192,13 @@ async function addStandaloneRouter(cfConfig: CFBaseConfig, mtaInstance: MtaConfi
         const service = serviceKey ? serviceKey['sap.cloud.service'] : '';
         fs.copyTpl(
             getTemplatePath('router/xs-app-abapservice.json'),
-            join(cfConfig.mtaPath, `${RouterModule}/${XSAppFile}`),
+            join(cfConfig.mtaPath, `${RouterModule}/${FileName.XSAppJson}`),
             { servicekeyService: service, servicekeyEndpoint: endpoints[0] }
         );
     } else {
         fs.copyTpl(
             getTemplatePath('router/xs-app-server.json'),
-            join(cfConfig.mtaPath, `${RouterModule}/${XSAppFile}`)
+            join(cfConfig.mtaPath, `${RouterModule}/${FileName.XSAppJson}`)
         );
     }
 }

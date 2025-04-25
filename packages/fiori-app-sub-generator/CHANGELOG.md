@@ -1,5 +1,79 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.20
+
+### Patch Changes
+
+-   Updated dependencies [398e4da]
+    -   @sap-ux/ui5-application-inquirer@0.12.0
+
+## 0.0.19
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.3.2
+-   @sap-ux/fiori-freestyle-writer@2.3.2
+-   @sap-ux/launch-config@0.9.3
+-   @sap-ux/odata-service-writer@0.26.16
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/telemetry@0.5.77
+-   @sap-ux/odata-service-inquirer@2.3.3
+-   @sap-ux/annotation-generator@0.3.27
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/cap-config-writer@0.9.28
+-   @sap-ux/fiori-generator-shared@0.11.2
+-   @sap-ux/ui5-application-inquirer@0.11.9
+
+## 0.0.18
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/annotation-generator@0.3.26
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/cap-config-writer@0.9.27
+    -   @sap-ux/fiori-generator-shared@0.11.1
+    -   @sap-ux/launch-config@0.9.2
+    -   @sap-ux/odata-service-inquirer@2.3.2
+    -   @sap-ux/odata-service-writer@0.26.15
+    -   @sap-ux/telemetry@0.5.76
+    -   @sap-ux/ui5-application-inquirer@0.11.8
+    -   @sap-ux/fiori-elements-writer@2.3.1
+    -   @sap-ux/fiori-freestyle-writer@2.3.1
+
+## 0.0.17
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/fiori-freestyle-writer@2.3.0
+    -   @sap-ux/fiori-generator-shared@0.11.0
+    -   @sap-ux/fiori-elements-writer@2.3.0
+    -   @sap-ux/odata-service-inquirer@2.3.1
+    -   @sap-ux/cap-config-writer@0.9.26
+    -   @sap-ux/launch-config@0.9.1
+    -   @sap-ux/odata-service-writer@0.26.14
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/telemetry@0.5.75
+    -   @sap-ux/ui5-application-inquirer@0.11.7
+    -   @sap-ux/annotation-generator@0.3.25
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.0.16
+
+### Patch Changes
+
+-   Updated dependencies [afd26c8]
+    -   @sap-ux/odata-service-inquirer@2.3.0
+    -   @sap-ux/fiori-elements-writer@2.2.0
+
+## 0.0.15
+
+### Patch Changes
+
+-   e691644: check enable typescript answer to determine use of npm workspaces
+
 ## 0.0.14
 
 ### Patch Changes

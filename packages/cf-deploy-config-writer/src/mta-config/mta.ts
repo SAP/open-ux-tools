@@ -9,12 +9,10 @@ import { FileName, getMtaPath, hasDependency, type Package } from '@sap-ux/proje
 import {
     CloudFoundry,
     RouterModule,
-    MTAYamlFile,
     ResourceMTADestination,
     DefaultMTADestination,
     SRV_API,
     ManagedXSUAA,
-    MTAFileExtension,
     MTABuildParams,
     MTABuildResult,
     DestinationServiceConfig,
@@ -859,7 +857,7 @@ export class MtaConfig {
         }
 
         const appMtaId = this.mtaId;
-        const mtaExtFilePath = join(this.mta.mtaDirPath, MTAFileExtension);
+        const mtaExtFilePath = join(this.mta.mtaDirPath, FileName.MtaExtYaml);
         let mtaExtensionYamlFile;
 
         try {
@@ -882,9 +880,9 @@ export class MtaConfig {
                 destinationServiceName: destinationServiceName,
                 mtaVersion: '1.0.0'
             };
-            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${MTAFileExtension}`), 'utf-8');
+            const mtaExtTemplate = readFileSync(join(__dirname, `../../templates/app/${FileName.MtaExtYaml}`), 'utf-8');
             writeFileSync(mtaExtFilePath, render(mtaExtTemplate, mtaExt));
-            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: MTAFileExtension }));
+            this.log?.info(t('info.mtaExtensionCreated', { appMtaId, mtaExtFile: FileName.MtaExtYaml }));
         } else {
             // Create an entry in an existing mta extension file
             const resources: YAMLSeq = mtaExtensionYamlFile.getSequence({ path: 'resources' });
@@ -905,7 +903,7 @@ export class MtaConfig {
                     value: nodeToInsert
                 });
                 writeFileSync(mtaExtFilePath, mtaExtensionYamlFile.toString());
-                this.log?.info(t('info.mtaExtensionUpdated', { mtaExtFile: MTAFileExtension }));
+                this.log?.info(t('info.mtaExtensionUpdated', { mtaExtFile: FileName.MtaExtYaml }));
             } else {
                 this.log?.error(t('error.updatingMTAExtensionFailed', { mtaExtFilePath }));
             }
@@ -1243,7 +1241,7 @@ export class MtaConfig {
  * @returns {boolean} true | false if MTA configuration file is found
  */
 export function isMTAFound(dir: string): boolean {
-    return existsSync(join(dir, MTAYamlFile));
+    return existsSync(join(dir, FileName.MtaYaml));
 }
 
 /**

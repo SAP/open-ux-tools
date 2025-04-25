@@ -2,7 +2,7 @@ import { join } from 'path';
 import fs from 'fs';
 import * as memfs from 'memfs';
 import { MtaConfig } from '../../src/';
-import { MTAFileExtension } from '../../src/constants';
+import { FileName } from '@sap-ux/project-access';
 
 jest.mock('fs', () => {
     const fs1 = jest.requireActual('fs');
@@ -48,7 +48,7 @@ describe('Adding and Updating mta extension configuration', () => {
             key: 'ApiKey',
             value: 'key_value_abcd1234'
         });
-        expect(fs.readFileSync(`${testAppPath}/${MTAFileExtension}`, 'utf-8')).toMatchInlineSnapshot(`
+        expect(fs.readFileSync(`${testAppPath}/${FileName.MtaExtYaml}`, 'utf-8')).toMatchInlineSnapshot(`
             "## SAP UX Tools generated mtaext file
             _schema-version: \\"3.2\\"
             ID: test-mta-ext
@@ -96,7 +96,7 @@ describe('Adding and Updating mta extension configuration', () => {
             key: 'ApiKey',
             value: 'key_value_abcd1234'
         });
-        expect(fs.readFileSync(`${testAppPath}/${MTAFileExtension}`, 'utf-8')).toMatchInlineSnapshot(`
+        expect(fs.readFileSync(`${testAppPath}/${FileName.MtaExtYaml}`, 'utf-8')).toMatchInlineSnapshot(`
             "## SAP UX Tools generated mtaext file
             _schema-version: \\"3.2\\"
             ID: test-mta-ext

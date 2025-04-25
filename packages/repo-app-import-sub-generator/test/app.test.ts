@@ -8,15 +8,18 @@ import fs from 'fs';
 import { TestFixture } from './fixtures';
 import { getAppConfig } from '../src/app/app-config';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { TemplateType, type FioriElementsApp, type LROPSettings } from '@sap-ux/fiori-elements-writer';
-import { adtSourceTemplateId, fioriAppSourcetemplateId, extractedFilePath } from '../src/utils/constants';
+import { TemplateType, type FioriElementsApp, type LROPSettings, generate } from '@sap-ux/fiori-elements-writer';
+import { adtSourceTemplateId, fioriAppSourcetemplateId, extractedFilePath, qfaJsonFileName } from '../src/utils/constants';
 import { removeSync } from 'fs-extra';
 import { isValidPromptState } from '../src/utils/validators';
-import { hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import { hostEnvironment, sendTelemetry, TelemetryHelper, generateReadMe } from '@sap-ux/fiori-generator-shared';
 import { FileName, DirName, type Manifest } from '@sap-ux/project-access';
 import RepoAppDownloadLogger from '../src/utils/logger';
 import { t } from '../src/utils/i18n';
 import env from 'yeoman-environment';
+import { createLaunchConfig, updateWorkspaceFoldersIfNeeded, handleWorkspaceConfig } from '@sap-ux/launch-config';
+import { extractZip, hasQfaJson } from '../src/utils/download-utils';
+import { EventName } from '../src/telemetryEvents';
 
 jest.mock('../src/prompts/prompt-helpers', () => ({
 	...jest.requireActual('../src/prompts/prompt-helpers'),
@@ -24,7 +27,6 @@ jest.mock('../src/prompts/prompt-helpers', () => ({
 }));
 
 jest.mock('../src/utils/logger', () => ({
-	...jest.requireActual('../src/utils/logger'),
     logger: {
         error: jest.fn(), 
 		info: jest.fn(),
@@ -33,7 +35,18 @@ jest.mock('../src/utils/logger', () => ({
 	configureLogging: jest.fn()
 }));
 
-jest.mock('../src/utils/download-utils');
+jest.mock('@sap-ux/launch-config', () => ({
+	...jest.requireActual('@sap-ux/launch-config'),
+	createLaunchConfig: jest.fn(),
+	updateWorkspaceFoldersIfNeeded: jest.fn(),
+	handleWorkspaceConfig: jest.fn()
+}));
+
+jest.mock('../src/utils/download-utils', () => ({
+	extractZip: jest.fn(),
+	hasQfaJson: jest.fn()
+}));
+
 jest.mock('../src/app/app-config', () => ({
     ...jest.requireActual('../src/app/app-config'),
 	getAppConfig: jest.fn()
@@ -129,7 +142,8 @@ function mockPrompts(testOutputDir: string): void {
 
 function copyFilesToExtractedProjectPath(
     testFixtureDir: string,
-    extractedProjectPath: string
+    extractedProjectPath: string,
+	skipQFAJsonCopyAndTriggerError: boolean = false
 ): void {
     if (!fs.existsSync(extractedProjectPath)) {
         fs.mkdirSync(extractedProjectPath, { recursive: true });
@@ -140,6 +154,10 @@ function copyFilesToExtractedProjectPath(
     files.forEach((file) => {
 		const sourceFilePath = join(testFixtureDir, file);
 		const destinationFilePath = join(extractedProjectPath, file);
+        if (file === qfaJsonFileName && skipQFAJsonCopyAndTriggerError) {
+			// Skip copying qfa.json and trigger error
+            return;
+        }
 		if(file === 'i18n') {
 			// Create the directory if it doesn't exist
 			if (!fs.existsSync(destinationFilePath)) {
@@ -153,7 +171,6 @@ function copyFilesToExtractedProjectPath(
 		}
     });
 }
-
 
 function verifyGeneratedFiles(testOutputDir: string, appId: string, testFixtureDir: string): void {
     const projectPath = join(`${testOutputDir}/${appId}`);
@@ -215,7 +232,6 @@ describe('Repo App Download', () => {
 	const appId = 'test-app-id', repoName = 'app-1-repo';
 	const extractedProjectPath = join(testOutputDir, appId, extractedFilePath);
 	const testFixtureDir = join(__dirname, 'fixtures', 'downloaded-app');
-	copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 	
     afterEach(() => {
 		jest.clearAllMocks();
@@ -225,7 +241,6 @@ describe('Repo App Download', () => {
 	})
 
 	beforeEach(() => {
-		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		appConfig = createAppConfig(appId, metadata);
         mockPrompts(testOutputDir);
 		mockVSCode = {
@@ -243,8 +258,15 @@ describe('Repo App Download', () => {
 	});
 
     it('Should successfully run app download from repository', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
 		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
+		(handleWorkspaceConfig as jest.Mock).mockReturnValue({
+			launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+			cwd: testOutputDir,
+			workspaceFolderUri: 'testUri',
+			appNotInWorkspace: true
+		});
 		await expect( 
 			yeomanTest
 				.run(RepoAppDownloadGenerator, { 
@@ -272,10 +294,57 @@ describe('Repo App Download', () => {
 		.resolves.not.toThrow();
 		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
 		expect(mockAppWizard.showInformation).toHaveBeenCalledWith(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
+		expect(mockSendTelemetry).toHaveBeenCalledWith(
+			EventName.GENERATION_SUCCESS,
+			TelemetryHelper.createTelemetryData({
+				appType: 'repo-app-import-sub-generator'
+			}
+		));
+		expect(RepoAppDownloadLogger.logger.info).toHaveBeenCalledWith(t('info.installationErrors.skippedInstallation'));
+    });
+
+	it('Should successfully run app download from repository when Quick Deploy App Config is provided', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
+		(isValidPromptState as jest.Mock).mockReturnValue(true);
+		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
+		await expect( 
+			yeomanTest
+				.run(RepoAppDownloadGenerator, { 
+					resolved: repoAppDownloadGenPath
+				})
+				.cd('.')
+				.withOptions({ 
+					appRootPath: testOutputDir, 
+					appWizard: mockAppWizard,
+					vscode: mockVSCode, 
+					skipInstall: true,
+					data: {
+						quickDeployedAppConfig: {
+							appId: appConfig.app.id,
+							serviceProviderInfo: { name: 'system3' }
+						}
+					}
+				})
+				.withPrompts({
+					systemSelection: 'system3',
+					selectedApp: {
+						appId: appConfig.app.id,
+						title: appConfig.app.title,
+						description: appConfig.app.description,
+						repoName: 'app-1-repo',
+						url: 'url-1'
+					},
+					targetFolder: testOutputDir
+				})
+			)
+		.resolves.not.toThrow();
+		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
+		expect(mockAppWizard.showInformation).toHaveBeenCalledWith(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
 		expect(RepoAppDownloadLogger.logger.info).toHaveBeenCalledWith(t('info.installationErrors.skippedInstallation'));
     });
 
 	it('Should not throw error in end phase if telemetry fails', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		const errorMsg = 'Telemetry error';
      	mockSendTelemetry.mockRejectedValue(new Error(errorMsg));
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
@@ -310,8 +379,15 @@ describe('Repo App Download', () => {
     });
 
 	it('Should execute post app gen hook event when postGenCommand is provided', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		(isValidPromptState as jest.Mock).mockReturnValue(true);
 		(getAppConfig as jest.Mock).mockResolvedValue(appConfig);
+		(handleWorkspaceConfig as jest.Mock).mockResolvedValue({
+			launchJsonPath: join(testOutputDir, '.vscode', 'launch.json'),
+			cwd: testOutputDir,
+			workspaceFolderUri: undefined,
+			appNotInWorkspace: false
+		});
         
         await expect( 
 			yeomanTest
@@ -321,7 +397,6 @@ describe('Repo App Download', () => {
 				.cd('.')
 				.withOptions({ 
 					appRootPath: testOutputDir, 
-					appWizard: mockAppWizard,
 					vscode: mockVSCode, 
 					data: {
 						postGenCommand: 'test-post-gen-command'
@@ -340,10 +415,18 @@ describe('Repo App Download', () => {
 				})
 		)
 		.resolves.not.toThrow();
+		expect(mockSendTelemetry).toHaveBeenCalledWith(
+			EventName.GENERATION_SUCCESS,
+			TelemetryHelper.createTelemetryData({
+				appType: 'repo-app-import-sub-generator'
+			}
+		));
+		expect(handleWorkspaceConfig).toHaveBeenCalled();
 		verifyGeneratedFiles(testOutputDir, appId, testFixtureDir);
     });
 
 	it('should successfully download a quick deployed app from repository', async () => {
+		copyFilesToExtractedProjectPath(testFixtureDir, extractedProjectPath);
 		const yeomanEnv = env.createEnv();
 	
 		const generator = new RepoAppDownloadGenerator([], {
@@ -365,5 +448,113 @@ describe('Repo App Download', () => {
 	
 		expect((generator as any)._runNpmInstall).toHaveBeenCalled();
 	});
+
+	it('should successfully download a quick deployed app from repository', async () => {
+		const yeomanEnv = env.createEnv();
+
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logger: {},
+			vscode: mockVSCode,
+			skipInstall: false,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
+			}
+		});
+		// mock installation
+		(generator as any).spawnCommand = jest.fn().mockResolvedValue(undefined);
+		await generator.install();
+		expect((generator as any).spawnCommand).toHaveBeenCalled();
+	});
+
+	it('should log an error if installation of a quick deployed app from repository', async () => {
+		const yeomanEnv = env.createEnv();
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logger: {},
+			vscode: mockVSCode,
+			skipInstall: false,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
+			}
+		});
+		// mock installation
+		(generator as any).spawnCommand = jest.fn().mockRejectedValue(
+			new Error('Installation error')
+		);
+		await generator.install();
+		expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+			t('error.installationErrors.npmInstall', { error: 'Error: Installation error' })
+		);
+	});
+
+	it('should set conflicter.force to true and initialize telemetry', async () => {
+		const yeomanEnv = env.createEnv();
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logger: {},
+			vscode: mockVSCode,
+			skipInstall: false,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
+			}
+		});
+		// Mock Yeoman environment with a conflicter object
+		(generator.env as any) = {
+			conflicter: { force: false }
+		};
+
+		await generator.initializing();
+
+		expect((generator.env as any).conflicter.force).toBe(true);
+		expect(TelemetryHelper.initTelemetrySettings).toHaveBeenCalledWith(
+			expect.objectContaining({
+				consumerModule: expect.objectContaining({
+					name: expect.any(String),
+					version: expect.any(String)
+				}),
+				internalFeature: expect.any(Boolean),
+				watchTelemetrySettingStore: false
+			})
+		);
+	});
+
+	it('should set callback function on prompts if prompts exist', () => {
+		const yeomanEnv = env.createEnv();
+		const generator = new RepoAppDownloadGenerator([], {
+			env: yeomanEnv,
+			appWizard: mockAppWizard as AppWizard,
+			logger: {},
+			vscode: mockVSCode,
+			skipInstall: false,
+			data: {
+				quickDeployedAppConfig: {
+					appId: appConfig.app.id,
+					serviceProviderInfo: { name: 'system3' }
+				}
+			}
+		});
+		Object.defineProperty(generator, 'prompts', {
+			value: {
+				setCallback: jest.fn()
+			},
+			writable: false
+		});
+		const mockFn = jest.fn();
+		generator.setPromptsCallback(mockFn);
+
+		expect(generator['prompts'].setCallback).toHaveBeenCalledWith(mockFn);
+	});
 });
-  
