@@ -41,7 +41,7 @@ import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
 import { getConfigMapControlIdMap } from '../../utils/fe-v4';
 import { setAdditionalChangeInfo } from '../../utils/additional-change-info';
-import { GENERIC_CHANGE_HANDLER, GenericChange } from './generic-change';
+import { GENERIC_CHANGE_HANDLER, type GenericChange } from './generic-change';
 
 const TITLE_MAP: { [key: string]: string } = {
     appdescr_app_addAnnotationsToOData: 'Add New Annotation File'
@@ -676,7 +676,7 @@ export class ChangeService extends EventTarget {
         const changeDefinition = change.getDefinition ? change.getDefinition() : (change.getJson() as ChangeDefinition);
         const { fileName } = changeDefinition;
         if (GENERIC_CHANGE_HANDLER?.[changeType]) {
-            const { genericProps, changeTitle, controlId } = GENERIC_CHANGE_HANDLER?.[changeType](
+            const { genericProps, changeTitle, controlId } = GENERIC_CHANGE_HANDLER[changeType](
                 changeDefinition as GenericChange
             );
             return {

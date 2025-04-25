@@ -1,10 +1,7 @@
 export const ADD_NEW_ANNOTATION_FILE_CHANGE = 'appdescr_app_addAnnotationsToOData';
 export const RENAME_CHANGE = 'rename';
 export const MOVE_CHANGE = 'moveControls';
-export interface GenericChange {
-    changeType: typeof ADD_NEW_ANNOTATION_FILE_CHANGE | typeof RENAME_CHANGE | typeof MOVE_CHANGE;
-    [key: string]: any;
-}
+export type GenericChange = NewAnnotationFileChange | RenameChange | MoveControlsChange;
 interface BaseChange {
     fileName: string;
     creation: string;
