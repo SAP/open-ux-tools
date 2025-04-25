@@ -3,6 +3,8 @@ import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
 import { type Package } from '@sap-ux/project-access';
+import { getPreviewMiddleware, getRTAIntent } from '../variants-config/utils';
+import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 
 /**
  * Updates the package.json file to include the start-cards-generator script.
@@ -10,16 +12,21 @@ import { type Package } from '@sap-ux/project-access';
  * @param basePath - The path to the project root
  * @param fs - Mem-fs editor instance
  */
-function updatePackageJson(basePath: string, fs: Editor) {
+async function updatePackageJson(basePath: string, fs: Editor) {
     const packageJsonPath = join(basePath, 'package.json');
     if (!fs.exists(packageJsonPath)) {
         throw new Error('package.json not found');
     }
 
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
+    const previewMiddleware = await getPreviewMiddleware(undefined, basePath, undefined, fs);
+    const intent = getRTAIntent(previewMiddleware?.configuration) ?? '#app-preview';
+    const cardGeneratorPath =
+        (previewMiddleware?.configuration as PreviewConfig)?.editors?.cardGenerator?.path ??
+        'test/flpGeneratorSandbox.html';
 
     packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `fiori run --open 'test/flpGeneratorSandbox.html#Cards-generator'`;
+    packageJson.scripts['start-cards-generator'] = `fiori run --open '${cardGeneratorPath}${intent}'`;
     fs.writeJSON(packageJsonPath, packageJson);
 }
 
@@ -35,6 +42,6 @@ export async function enableCardGeneratorConfig(basePath: string, fs?: Editor): 
         fs = create(createStorage());
     }
 
-    updatePackageJson(basePath, fs);
+    await updatePackageJson(basePath, fs);
     return fs;
 }

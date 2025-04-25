@@ -98,7 +98,7 @@ function getRTAMountPoint(previewMiddlewareConfig: PreviewConfigOptions | undefi
  * @param previewMiddlewareConfig - configuration of the preview middleware
  * @returns - preview intent or undefined
  */
-function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
+export function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
     if (isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig)) {
         return undefined;
     }

@@ -11,7 +11,7 @@ server:
         path: test/flpSandbox.html
       editors:
         cardGenerator:
-          path: test/flpGeneratorSandbox.html
+          path: test/flpGeneratorSandboxTest.html
   - name: sap-fe-mockserver
     afterMiddleware: compression
     configuration:
