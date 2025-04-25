@@ -45,7 +45,7 @@
         "notFlexEnabledError": "The system that you have selected is not an ABAP On-Premise system which supports flexibility. Adaptation projects are only supported on those systems. Please choose an ABAP On-Premise system which supports flexibility. If you continue, you will only be able to create an extension project.",
         "manifestCouldNotBeValidated": "The manifest.json file of the selected application could not be validated. Please select a different application.",
         "appDoesNotSupportAdaptation": "The application that you have selected does not support flexibility. Adaptation projects are only supported with those applications. Please choose an application which supports flexibility.",
-        "systemNotFound": "System not found or not supported: {{systemName}}",
-        "applicationNotFound": "Application not found or not supported: {{appName}}"
+        "systemNotFound": "System not found or not supported: {{systemName}}. Please check the system exists.",
+        "applicationNotFound": "Application not found or not supported: {{appName}}. Please check the application exists."
     }
 }
