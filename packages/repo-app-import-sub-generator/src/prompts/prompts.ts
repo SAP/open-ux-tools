@@ -51,7 +51,7 @@ const getTargetFolderPrompt = (appRootPath?: string, appId?: string): FileBrowse
  *
  * @param {string} [appRootPath] - The root path of the application.
  * @param {QuickDeployedAppConfig} [quickDeployedAppConfig] - The quick deployed app configuration.
- * @param appWizard
+ * @param {AppWizard} [appWizard] - The app wizard instance.
  * @returns {Promise<RepoAppDownloadQuestions[]>} A list of prompts for user interaction.
  */
 export async function getPrompts(

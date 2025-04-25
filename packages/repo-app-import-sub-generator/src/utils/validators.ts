@@ -120,7 +120,7 @@ async function generateAppNotFoundHelpLink(): Promise<ValidationLink> {
  * @param answers - The selected app information.
  * @param appList - The list of available apps.
  * @param quickDeployedAppConfig - The quick deployed app configuration.
- * @param appWizard
+ * @param appWizard - The app wizard instance.
  * @returns A promise resolving to a boolean or a validation error message.
  */
 export async function validateAppSelection(
