@@ -427,19 +427,19 @@ describe('getQuestions', () => {
         );
         expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(true);
 
-        // CAP project with cds-ui5 plugin disabled but hasMinCdsVersion is false
-        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false, hasMinCdsVersion: false });
+        // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is no
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
-        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(false);
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(false);
 
-        // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is true
-        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false, hasMinCdsVersion: true });
+        // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is yes
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
         enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
-        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(true);
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
     });
 
     test('getQuestions, prompt: `ui5Theme`', async () => {
