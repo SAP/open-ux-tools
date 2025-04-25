@@ -281,18 +281,15 @@ export function getAddFlpConfigPrompt(
 /**
  * Get the `enableVirtualEndpoints` prompt.
  *
- * @param isCapProject is this a CAP project - additional checks performed if true
  * @param capCdsInfo CDS UI5 plugin information
  * @returns the `enableVirtualEndpoints` prompt
  */
-export function getEnableVirtualEndpoints(
-    isCapProject: boolean,
-    capCdsInfo?: CdsUi5PluginInfo
-): UI5ApplicationQuestion {
+export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
     return {
-        when: (answers: UI5ApplicationAnswers): boolean => {
-            if (isCapProject) {
-                return capCdsInfo?.isCdsUi5PluginEnabled || !!answers.enableTypeScript;
+        when: (): boolean => {
+            if (capCdsInfo) {
+                // show the prompt if cds-ui5 plugin is enabled or the criteria is met, as the CAP project will be updated to use NPM workspaces
+                return capCdsInfo.isCdsUi5PluginEnabled || (capCdsInfo.hasMinCdsVersion && !capCdsInfo.hasCdsUi5Plugin);
             }
             return true;
         },
