@@ -153,7 +153,8 @@ describe('Generate v2 apps', () => {
 
         const testState: Partial<State> = {
             project: Object.assign({}, v2Project, {
-                name: testProjectName
+                name: testProjectName,
+                enableVirtualEndpoints: true
             }) as Project,
             floorplan: FloorplanFE.FE_LROP,
             service: Object.assign({}, v2Service, {

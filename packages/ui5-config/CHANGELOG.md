@@ -1,5 +1,11 @@
 # @sap-ux/ui5-config
 
+## 0.27.2
+
+### Patch Changes
+
+-   7590bc3: Remove legacy CF deploy task
+
 ## 0.27.1
 
 ### Patch Changes
