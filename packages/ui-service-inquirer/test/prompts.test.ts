@@ -109,6 +109,24 @@ const getContentMock = jest.fn().mockImplementation((pckg) => {
     );
 });
 
+const getContentMockDraftTrue = jest.fn().mockImplementation((pckg) => {
+    const serviceName = pckg === '' ? '' : 'serviceName';
+    return Promise.resolve(
+        JSON.stringify({
+            businessService: {
+                serviceBinding: {
+                    serviceBindingName: serviceName
+                }
+            },
+            businessObject: {
+                projectionBehavior: {
+                    withDraft: true
+                }
+            }
+        })
+    );
+});
+
 describe('getSystemQuestions', () => {
     beforeAll(() => {
         nock.disableNetConnect();
@@ -186,7 +204,7 @@ describe('getSystemQuestions', () => {
 
     test('getServiceConfigQuestions', async () => {
         const genMock = {
-            getContent: getContentMock,
+            getContent: getContentMockDraftTrue,
             validateContent: jest.fn().mockResolvedValue({
                 severity: 'OK'
             })
@@ -217,9 +235,11 @@ describe('getSystemQuestions', () => {
         expect(questions).toMatchSnapshot();
         expect(q.transportInputChoice.choices!()).toMatchSnapshot();
         expect(await q.serviceName.when!({ packageManual: '', packageAutocomplete: 'package' })).toEqual(true);
+        expect(PromptState.serviceConfig.showDraftEnabled).toEqual(true);
         expect(q.serviceName.choices!()).toEqual([{ name: 'serviceName', value: 'serviceName' }]);
         expect(q.serviceName.default()).toEqual(0);
         expect(await q.serviceName.validate!('testPackage')).toEqual(true);
+        expect(q.draftEnabled.when!({})).toEqual(true);
         expect(await q.draftEnabled.validate!(true)).toEqual(true);
         expect(await q.draftEnabled.validate!(false)).toEqual(true);
         expect((q.launchAppGen as YUIQuestion).additionalMessages!(false)).toBeUndefined();
