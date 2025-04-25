@@ -18,7 +18,7 @@ const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
     [ui5ThemeIds.SAP_BELIZE]: {
         id: ui5ThemeIds.SAP_BELIZE,
         label: 'Belize (deprecated)',
-        themeSupportedUntilVersion: MAX_UI5_VER_BELIZE_THEME
+        untilVersion: MAX_UI5_VER_BELIZE_THEME
     },
     [ui5ThemeIds.SAP_FIORI_3]: {
         id: ui5ThemeIds.SAP_FIORI_3,
@@ -69,18 +69,19 @@ export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
     const cleanSemVer = coerce(ui5VersionSince);
     if (cleanSemVer) {
         return Object.values(ui5Themes).filter((ui5Theme) => {
-            // Exclude themes if the version exceeds the maximum supported version
-            if (ui5Theme.themeSupportedUntilVersion && gte(cleanSemVer, ui5Theme.themeSupportedUntilVersion)) {
-                return false;
-            }
-            // Include themes if the version is less than the maximum supported version
-            if (ui5Theme.themeSupportedUntilVersion && lt(cleanSemVer, ui5Theme.themeSupportedUntilVersion)) {
+            // Check if the theme is within the valid version range
+            const isValidSinceVersion = ui5Theme.sinceVersion ? gte(cleanSemVer, ui5Theme.sinceVersion) : true;
+            const isValidUntilVersion = ui5Theme.untilVersion ? lt(cleanSemVer, ui5Theme.untilVersion) : true;
+
+            // Include themes that are within their version support range
+            if (isValidSinceVersion && isValidUntilVersion) {
                 return true;
             }
-            // Include themes if the version is greater than or equal to the minimum supported version
-            return ui5Theme.sinceVersion ? gte(cleanSemVer, ui5Theme.sinceVersion) : ui5Theme;
+
+            return false;
         });
     }
-    // Return all themes if ui5 version is not a valid semver
+
+    // If the UI5 version is not valid, return all themes
     return Object.values(ui5Themes);
 }

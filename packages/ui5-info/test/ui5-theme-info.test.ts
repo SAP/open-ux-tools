@@ -7,7 +7,7 @@ describe('getUi5Themes', () => {
         {
             'id': 'sap_belize',
             'label': 'Belize (deprecated)',
-            'themeSupportedUntilVersion': '1.136.0'
+            'untilVersion': '1.136.0'
         },
         {
             'id': 'sap_fiori_3',

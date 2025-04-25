@@ -77,5 +77,5 @@ export interface UI5Theme {
     /**
      * The maximum UI5 version up to which the theme is supported
      */
-    themeSupportedUntilVersion?: string;
+    untilVersion?: string;
 }
