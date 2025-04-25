@@ -4,18 +4,10 @@
 import { withCondition, type ListQuestion } from '@sap-ux/inquirer-common';
 import type { Answers, Question } from 'inquirer';
 import { t } from '../../../../i18n';
-import type { ConnectedSystem, OdataServicePromptOptions, SapSystemType, promptNames } from '../../../../types';
+import type { ConnectedSystem, OdataServicePromptOptions, SapSystemType } from '../../../../types';
 import { getAbapOnBTPSystemQuestions } from '../abap-on-btp/questions';
 import { getAbapOnPremQuestions } from '../abap-on-prem/questions';
-import { newSystemPromptNames } from './types';
-
-/**
- * Internal only answers to service URL prompting not returned with OdataServiceAnswers.
- */
-export interface NewSystemAnswers {
-    [newSystemPromptNames.newSystemType]?: SapSystemType;
-    [promptNames.userSystemName]?: string;
-}
+import { type NewSystemAnswers, newSystemPromptNames } from './types';
 
 /**
  * Provides prompts that allow the creation of a new system connection.
