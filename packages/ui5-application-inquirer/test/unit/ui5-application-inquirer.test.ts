@@ -238,10 +238,29 @@ describe('ui5-application-inquirer API', () => {
 describe('Filtering UI5 themes based on UI5 version', () => {
     const versionsToTest = ['1.136.0', '1.133.0'];
 
+    // Helper function to return the expected choices for each version
+    function getExpectedChoices(version: string) {
+        const commonChoices = [
+            { name: 'Quartz Light', value: 'sap_fiori_3' },
+            { name: 'Quartz Dark', value: 'sap_fiori_3_dark' },
+            { name: 'Morning Horizon', value: 'sap_horizon' },
+            { name: 'Evening Horizon', value: 'sap_horizon_dark' }
+        ];
+
+        if (version === '1.136.0') {
+            return commonChoices;
+        }
+
+        if (version === '1.133.0') {
+            return [{ name: 'Belize (deprecated)', value: 'sap_belize' }, ...commonChoices];
+        }
+
+        return [];
+    }
+
     test.each(versionsToTest)('should call getUi5Themes with correct ui5Version: %s', async (version) => {
         const getUi5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes');
         const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([{ version }]);
-
         const promptOpts: UI5ApplicationPromptOptions = {
             [promptNames.ui5Version]: {
                 validate: (answers: UI5ApplicationAnswers) => answers.name === version,
@@ -264,7 +283,10 @@ describe('Filtering UI5 themes based on UI5 version', () => {
         const questions = await getPrompts(promptOpts);
         const ui5ThemeQuestion = questions.find((q) => q.name === promptNames.ui5Theme);
         const choices = (ui5ThemeQuestion as any)?.choices({ ui5Version: version });
+
         expect(getUi5ThemesSpy).toHaveBeenCalledWith(version);
         expect(choices.length).toBeGreaterThan(0);
+        const expectedChoices = getExpectedChoices(version);
+        expect(choices).toEqual(expectedChoices);
     });
 });
