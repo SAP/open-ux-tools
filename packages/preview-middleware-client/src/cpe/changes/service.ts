@@ -40,6 +40,7 @@ import { getTextBundle } from '../../i18n';
 import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
 import { getConfigMapControlIdMap } from '../../utils/fe-v4';
+import { setAdditionalChangeInfo } from '../../utils/additional-change-info';
 import { GENERIC_CHANGE_HANDLER, GenericChange } from './generic-change';
 
 const TITLE_MAP: { [key: string]: string } = {
@@ -552,6 +553,7 @@ export class ChangeService extends EventTarget {
         index: number,
         pendingChanges: PendingChange[]
     ): Promise<void> {
+        setAdditionalChangeInfo(command?.getPreparedChange?.());
         const pendingChange = await this.prepareChangeType(command, inactiveCommandCount, index);
         if (pendingChange) {
             pendingChanges.push(pendingChange);
