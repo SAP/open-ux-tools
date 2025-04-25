@@ -39,7 +39,8 @@ export default class extends Generator {
     systemSelectionAnswers: SystemSelectionAnswers = {};
     serviceConfigAnswers: ServiceConfig = {
         content: '',
-        serviceName: ''
+        serviceName: '',
+        showDraftEnabled: false
     };
     setPromptsCallback: (fn: any) => void;
 

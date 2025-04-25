@@ -207,7 +207,7 @@ describe('Generate v4 apps', () => {
             floorplan: FloorplanFE.FE_OVP,
             service: v4Service,
             entityRelatedConfig: {
-                filterEntityType: {
+                filterEntitySet: {
                     entitySetName: 'Travel',
                     entitySetType: 'Travel'
                 }

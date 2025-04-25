@@ -405,6 +405,20 @@ describe('getQuestions', () => {
         expect(validatorCbSpy).toHaveBeenCalledWith(true, promptNames.addFlpConfig);
     });
 
+    test('getQuestions, prompt: `enableVirtualEndpoints`', async () => {
+        const questions = getQuestions([]);
+        const enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+
+        expect(questions).toEqual(
+            expect.arrayContaining([expect.objectContaining({ name: promptNames.enableVirtualEndpoints })])
+        );
+        expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
+            `"Use virtual endpoints for local preview"`
+        );
+    });
+
     test('getQuestions, prompt: `ui5Theme`', async () => {
         const getDefaultUI5ThemeSpy = jest.spyOn(ui5Info, 'getDefaultUI5Theme');
         const questions = getQuestions([]);
