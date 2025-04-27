@@ -1,23 +1,19 @@
-import { prepareCardTypesForSaving, traverseI18nProperties, type I18nEntry } from '../../../../src/base/utils/cards';
-import { promises } from 'fs';
+import { getIntegrationCard, traverseI18nProperties } from '../../../../src/base/utils/cards';
 import packageJson from '../../../../package.json';
-
-jest.mock('fs', () => ({
-    promises: {
-        ...jest.requireActual('fs').promises,
-        readFile: jest.fn(),
-        readdir: jest.fn(),
-        stat: jest.fn()
-    }
-}));
+import type { I18nEntry, MultiCardsPayload } from '../../../../src/types';
+import { create as createMemFsEditor } from 'mem-fs-editor';
+import { create as createMemFs } from 'mem-fs';
 
 describe('Common utilities', () => {
-    const mockFsPromisesReadFile = promises.readFile as jest.Mock;
+    let memFsEditor: ReturnType<typeof createMemFsEditor>;
+
     beforeEach(() => {
         jest.resetAllMocks();
+        const memFs = createMemFs();
+        memFsEditor = createMemFsEditor(memFs);
     });
 
-    test('prepareCardTypesForSaving', () => {
+    test('getIntegrationCard', () => {
         const aMultipleCards = [
             {
                 type: 'integration',
@@ -38,21 +34,8 @@ describe('Common utilities', () => {
                         'parentAppId': 'sales.order.wd20',
                         'cardType': 'DT'
                     }
-                }
-            },
-            {
-                type: 'adaptive',
-                manifest: {
-                    'type': 'AdaptiveCard',
-                    'body': [
-                        {
-                            'type': 'TextBlock',
-                            'wrap': true,
-                            'weight': 'Bolder',
-                            'text': 'Card Title'
-                        }
-                    ]
-                }
+                },
+                entitySet: 'salesOrderManage'
             }
         ];
 
@@ -75,15 +58,14 @@ describe('Common utilities', () => {
                 'cardType': 'DT'
             }
         };
-        const preparedCards = prepareCardTypesForSaving(aMultipleCards);
-        const integrationCard = JSON.parse(preparedCards.integration);
-
-        expect(integrationCard).toMatchObject(expectedIntegrationCard);
+        const integrationCard = getIntegrationCard(aMultipleCards as MultiCardsPayload[]);
+        expect(integrationCard.manifest).toMatchObject(expectedIntegrationCard);
     });
 
     test('traverseI18nProperties', async () => {
         const i18nContent = 'appTitle=Sales Order';
-        mockFsPromisesReadFile.mockResolvedValueOnce(i18nContent);
+        const i18nPath = '/webapp/i18n/i18n.properties';
+        memFsEditor.write(i18nPath, i18nContent);
         const entries: I18nEntry[] = [
             {
                 'comment': 'XFLD: GroupPropertyLabel for new Entry - Created by Card Generator',
@@ -91,17 +73,18 @@ describe('Common utilities', () => {
                 'value': 'new Entry'
             }
         ];
-        const { updatedEntries, output } = await traverseI18nProperties('path/to/i18n', entries);
+        const { updatedEntries, output } = await traverseI18nProperties(i18nPath, entries, memFsEditor);
         expect(updatedEntries).toEqual({});
         expect(output).toEqual([i18nContent]);
     });
 
     test('traverseI18nProperties, When new entry matches i18n file content', async () => {
         const i18nContent = 'appTitle=Sales Order';
-        mockFsPromisesReadFile.mockResolvedValueOnce(i18nContent);
+        const i18nPath = '/webapp/i18n/i18n.properties';
+        memFsEditor.write(i18nPath, i18nContent);
         const entries: I18nEntry[] = [{ 'key': 'appTitle', 'value': 'Sales Order' }];
-        const { updatedEntries, output } = await traverseI18nProperties('path/to/i18n', entries);
-        expect(updatedEntries).toEqual({ 0: true });
+        const { updatedEntries, output } = await traverseI18nProperties(i18nPath, entries, memFsEditor);
+        expect(updatedEntries).toEqual({ '0': true });
         expect(output).toEqual([i18nContent]);
     });
 });

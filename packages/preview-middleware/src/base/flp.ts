@@ -30,7 +30,8 @@ import type {
     RtaConfig,
     TestConfig,
     CardGeneratorConfig,
-    MultiCardsPayload
+    MultiCardsPayload,
+    I18nEntry
 } from '../types';
 import {
     getFlpConfigWithDefaults,
@@ -46,7 +47,7 @@ import {
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'fs';
-import * as cardUtils from './utils/cards';
+import { traverseI18nProperties, getIntegrationCard } from './utils/cards';
 import os from 'os';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
@@ -955,27 +956,26 @@ export class FlpSandbox {
                 manifests: MultiCardsPayload[];
             };
             this.fs = this.fs ?? create(createStorage());
-            const webappPath = await getWebappPath(path.resolve());
+            const webappPath = await getWebappPath(path.resolve(), this.fs);
             const fullPath = join(webappPath, localPath);
             const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
-            const multipleCards = cardUtils.prepareCardTypesForSaving(manifests);
-            this.fs.write(filePath, multipleCards.integration);
+            const integrationCard = getIntegrationCard(manifests);
+            this.fs.write(filePath, JSON.stringify(integrationCard.manifest, null, 2));
 
-            const integrationCard = manifests.find((card) => card.type === 'integration');
-            const entitySet = integrationCard?.entitySet ?? '';
+            const entitySet = integrationCard.entitySet;
             const sapCardsAp = (this.manifest['sap.cards.ap'] ??= {});
             sapCardsAp.embeds ??= {};
-            const floorplanEmbeds = (sapCardsAp.embeds[floorplan] ??= {
+            sapCardsAp.embeds[floorplan] = {
                 default: entitySet,
-                manifests: {}
-            }) as ManifestNamespace.EmbedsSettings;
-            floorplanEmbeds.default ??= entitySet;
-            floorplanEmbeds.manifests ??= {};
-            floorplanEmbeds.manifests.entitySet ??= [
-                {
-                    'localUri': localPath
+                manifests: {
+                    [entitySet]: [
+                        {
+                            localUri: localPath
+                        }
+                    ]
                 }
-            ];
+            } satisfies ManifestNamespace.EmbedsSettings;
+
             const manifestPath = join(webappPath, FileName.Manifest);
             this.fs.write(manifestPath, JSON.stringify(this.manifest, null, 2));
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
@@ -1009,27 +1009,29 @@ export class FlpSandbox {
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
         try {
             this.fs = this.fs ?? create(createStorage());
-            const webappPath = await getWebappPath(path.resolve());
+            const webappPath = await getWebappPath(path.resolve(), this.fs);
             const i18nPath = this.manifest['sap.app'].i18n as string;
             const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
-            const entries = req.body || [];
-            const { lines, updatedEntries, output } = await cardUtils.traverseI18nProperties(filePath, entries);
+            const entries = (req.body as Array<I18nEntry>) || [];
+            const { lines, updatedEntries, output } = await traverseI18nProperties(filePath, entries, this.fs);
 
             // Add a new line if file is not empty and last line is not empty and there are new entries
-            if (lines?.length > 0 && lines[lines?.length - 1].trim() && entries?.length) {
+            const hasLine = lines.length > 0;
+            const lastLineNotEmpty = lines.at(-1)?.trim() ?? false;
+            if (hasLine && lastLineNotEmpty && entries.length) {
                 output.push('');
             }
 
-            for (const index in entries) {
-                const ikey = index as any;
-                if (!updatedEntries[ikey]) {
-                    const { comment, key, value } = entries[ikey];
+            entries.forEach((entry, index) => {
+                if (!updatedEntries[index]) {
+                    const { comment, key, value } = entry;
                     if (comment) {
                         output.push(`#${comment}`); // Add comment only for a new entry
                     }
                     output.push(`${key}=${value}${os.EOL}`);
                 }
-            }
+            });
+
             this.fs.write(filePath, output.join(os.EOL));
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
         } catch (err) {

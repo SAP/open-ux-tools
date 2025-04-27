@@ -257,6 +257,20 @@ export const FLPHomePageDefaults = {
 
 export interface MultiCardsPayload {
     type: string;
-    manifest: object;
-    entitySet?: string;
+    manifest: CardManifest;
+    entitySet: string;
+}
+
+export interface I18nEntry {
+    key: string;
+    value: string;
+    comment?: string;
+}
+
+export interface CardManifest {
+    'sap.insights': {
+        versions?: {
+            dtMiddleware?: string;
+        };
+    };
 }
