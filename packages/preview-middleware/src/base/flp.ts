@@ -16,7 +16,8 @@ import {
     type AdpPreviewConfig,
     type CommonChangeProperties,
     type DescriptorVariant,
-    type OperationType
+    type OperationType,
+    type CommonAdditionalChangeInfoProperties
 } from '@sap-ux/adp-tooling';
 import { isAppStudio, exposePort } from '@sap-ux/btp-utils';
 import { FeatureToggleAccess } from '@sap-ux/feature-toggle';
@@ -68,7 +69,8 @@ type OnChangeRequestHandler = (
     type: OperationType,
     change: CommonChangeProperties,
     fs: MemFsEditor,
-    logger: Logger
+    logger: Logger,
+    extendedChange?: CommonAdditionalChangeInfoProperties
 ) => Promise<void>;
 
 type Ui5Version = {
@@ -648,12 +650,12 @@ export class FlpSandbox {
     private async flexPostHandler(req: Request, res: Response): Promise<void> {
         this.fs = this.fs ?? create(createStorage());
         try {
-            const change = req.body as CommonChangeProperties;
+            const body = req.body;
             if (this.onChangeRequest) {
-                await this.onChangeRequest('write', change, this.fs, this.logger);
+                await this.onChangeRequest('write', body.change, this.fs, this.logger, body.additionalChangeInfo);
             }
             const { success, message } = writeChange(
-                change,
+                body.change,
                 this.utils.getProject().getSourcePath(),
                 this.fs,
                 this.logger

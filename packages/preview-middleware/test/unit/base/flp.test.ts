@@ -636,14 +636,14 @@ describe('FlpSandbox', () => {
             const response = await server
                 .post('/preview/api/changes')
                 .set('Content-Type', 'application/json')
-                .send({ fileName: 'id', fileType: 'ctrl_variant' })
+                .send({ change: { fileName: 'id', fileType: 'ctrl_variant' } })
                 .expect(200);
             expect(response.text).toMatchInlineSnapshot(`"FILE_CREATED id.ctrl_variant"`);
 
             await server
                 .post('/preview/api/changes')
                 .set('Content-Type', 'application/json')
-                .send({ hello: 'world' })
+                .send({ change: { hello: 'world' } })
                 .expect(400);
         });
 
