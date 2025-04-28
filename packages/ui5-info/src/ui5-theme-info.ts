@@ -14,7 +14,7 @@ export const enum ui5ThemeIds {
     SAP_HORIZON_DARK = 'sap_horizon_dark'
 }
 
-const defaultUi5Themes: Record<ui5ThemeIds, UI5Theme> = {
+export const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
     [ui5ThemeIds.SAP_BELIZE]: {
         id: ui5ThemeIds.SAP_BELIZE,
         label: 'Belize (deprecated)',
@@ -62,13 +62,9 @@ export function getDefaultUI5Theme(ui5Version?: string): string {
  *
  * @param [ui5Version] - optional, restrict the returned themes to only those supported by specified UI5 version
  * If the passed version is not a valid semantic version all themes will be returned.
- * @param [ui5Themes] - UI5 themes to be filtered
  * @returns UI5 themes array
  */
-export function getUi5Themes(
-    ui5Version: string = defaultVersion,
-    ui5Themes: Record<ui5ThemeIds, UI5Theme> = defaultUi5Themes
-): UI5Theme[] {
+export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
     const ui5VersionSince = ui5Version.replace('snapshot-', '');
     const cleanSemVer = coerce(ui5VersionSince);
     if (cleanSemVer) {

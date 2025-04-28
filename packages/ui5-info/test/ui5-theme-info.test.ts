@@ -1,6 +1,7 @@
 import { getUi5Themes } from '../src';
 import { defaultMinUi5Version } from '../src/constants';
 import { getDefaultUI5Theme, ui5ThemeIds } from '../src/ui5-theme-info';
+import * as themeInfo from '../src/ui5-theme-info';
 
 describe('getUi5Themes', () => {
     const allExpectedThemes = [
@@ -45,27 +46,33 @@ describe('getUi5Themes', () => {
         expect(getUi5Themes('1.155.0')).toEqual(allExpectedThemesExcludingBelize);
     });
 
-    test('getUi5Themes - Edge Case for Theme ABC', () => {
-        // Add a mock theme ABC
-        const mockThemeABC = {
-            id: 'ABC',
-            label: 'Theme ABC',
-            sinceVersion: '1.90.0',
-            untilVersion: '1.100.0'
-        };
-
-        const extendedUi5Themes = {
-            ...allExpectedThemes,
-            ABC: mockThemeABC
-        } as any;
-
-        // Test cases for theme ABC
-        expect(getUi5Themes('1.89', extendedUi5Themes)).not.toContainEqual(mockThemeABC); // Before sinceVersion
-        expect(getUi5Themes('1.90', extendedUi5Themes)).toContainEqual(mockThemeABC); // At sinceVersion
-        expect(getUi5Themes('1.95', extendedUi5Themes)).toContainEqual(mockThemeABC); // Within range
-        expect(getUi5Themes('1.100', extendedUi5Themes)).not.toContainEqual(mockThemeABC); // At untilVersion
-        expect(getUi5Themes('1.101', extendedUi5Themes)).not.toContainEqual(mockThemeABC); // After untilVersion
-    });
+    test.each([
+        { version: '1.95.0', expectedIncluded: true }, // Within the valid range
+        { version: '1.85.0', expectedIncluded: false }, // Before sinceVersion, should exclude ABC
+        { version: '1.100.0', expectedIncluded: false }, // Exactly at the untilVersion, should exclude ABC
+        { version: '1.105.0', expectedIncluded: false }, // After untilVersion, should exclude ABC
+        { version: '1.90.0', expectedIncluded: true }, // Exactly at the sinceVersion, should include ABC
+        { version: '1.89.9', expectedIncluded: false } // Just before sinceVersion, should exclude ABC
+    ])(
+        'getUi5Themes - should exclude themes outside sinceVersion or untilVersion range $version',
+        ({ version, expectedIncluded }) => {
+            Object.defineProperty(themeInfo, 'ui5Themes', {
+                value: {
+                    ['ABC']: {
+                        id: 'ABC',
+                        label: 'Theme ABC',
+                        sinceVersion: '1.90.0',
+                        untilVersion: '1.100.0'
+                    }
+                },
+                configurable: true
+            });
+            const themes = themeInfo.getUi5Themes(version);
+            const hasABC = themes.some((t) => t.id === ('ABC' as themeInfo.ui5ThemeIds));
+            expect(hasABC).toBe(expectedIncluded);
+            jest.restoreAllMocks();
+        }
+    );
 
     test.each([
         { ui5Version: '1.64', expectedTheme: ui5ThemeIds.SAP_FIORI_3 },
