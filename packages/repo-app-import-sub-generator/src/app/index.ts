@@ -23,7 +23,7 @@ import { platform } from 'os';
 import { runPostAppGenHook } from '../utils/event-hook';
 import { getDefaultUI5Theme } from '@sap-ux/ui5-info';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
-import { createLaunchConfig, updateWorkspaceFoldersIfNeeded } from '@sap-ux/launch-config';
+import { createLaunchConfig, updateWorkspaceFoldersIfNeeded, handleWorkspaceConfig } from '@sap-ux/launch-config';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
 import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
@@ -51,6 +51,7 @@ export default class extends Generator {
     public options: RepoAppDownloadOptions;
     private projectPath: string;
     private extractedProjectPath: string;
+    private debugOptions: DebugOptions;
     setPromptsCallback: (fn: object) => void;
 
     /**
@@ -111,7 +112,11 @@ export default class extends Generator {
      */
     public async prompting(): Promise<void> {
         const quickDeployedAppConfig = this.options?.data?.quickDeployedAppConfig;
-        const questions: RepoAppDownloadQuestions[] = await getPrompts(this.appRootPath, quickDeployedAppConfig);
+        const questions: RepoAppDownloadQuestions[] = await getPrompts(
+            this.appRootPath,
+            quickDeployedAppConfig,
+            this.appWizard
+        );
         const answers: RepoAppDownloadAnswers = await this.prompt(questions);
         const { targetFolder } = answers;
         if (quickDeployedAppConfig?.appId) {
@@ -134,55 +139,44 @@ export default class extends Generator {
      * Writes the configuration files for the project, including deployment config, and README.
      */
     public async writing(): Promise<void> {
-        // Extract downloaded app
-        const archive = PromptState.downloadedAppPackage;
-        await extractZip(this.extractedProjectPath, archive, this.fs);
-
+        await extractZip(this.extractedProjectPath, this.fs);
         // Check if the qfa.json file
         const qfaJsonFilePath = join(this.extractedProjectPath, qfaJsonFileName);
-        if (this.fs.exists(qfaJsonFilePath)) {
-            const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
-            // Generate project files
-            validateQfaJsonFile(qfaJson);
+        const qfaJson: QfaJsonConfig = makeValidJson(qfaJsonFilePath, this.fs);
+        // Generate project files
+        validateQfaJsonFile(qfaJson);
 
-            // Generate app config
-            const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, qfaJson, this.fs);
-            await generate(this.projectPath, config, this.fs);
+        // Generate app config
+        const config = await getAppConfig(this.answers.selectedApp, this.extractedProjectPath, qfaJson, this.fs);
+        await generate(this.projectPath, config, this.fs);
 
-            // Generate deploy config
-            const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, qfaJson);
-            await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
+        // Generate deploy config
+        const deployConfig: AbapDeployConfig = getAbapDeployConfig(this.answers.selectedApp, qfaJson);
+        await generateDeployConfig(this.projectPath, deployConfig, undefined, this.fs);
 
-            if (this.vscode) {
-                // Generate Fiori launch config
-                const fioriOptions = this._getLaunchConfig(config);
-                // Create launch configuration
-                await createLaunchConfig(
-                    this.projectPath,
-                    fioriOptions,
-                    this.fs,
-                    RepoAppDownloadLogger.logger as unknown as Logger
-                );
-                writeApplicationInfoSettings(this.projectPath);
-            }
-
-            // Generate README
-            const readMeConfig = this._getReadMeConfig(config);
-            generateReadMe(this.projectPath, readMeConfig, this.fs);
-
-            // Replace webapp files with downloaded app files
-            await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
-
-            await validateAndUpdateManifestUI5Version(
-                join(this.projectPath, DirName.Webapp, FileName.Manifest),
-                this.fs
+        if (this.vscode) {
+            // Generate Fiori launch config
+            const fioriOptions = this._getLaunchConfig(config);
+            // Create launch configuration
+            await createLaunchConfig(
+                this.projectPath,
+                fioriOptions,
+                this.fs,
+                RepoAppDownloadLogger.logger as unknown as Logger
             );
-
-            // Clean up extracted project files
-            this.fs.delete(this.extractedProjectPath);
-        } else {
-            RepoAppDownloadLogger.logger?.error(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }));
+            writeApplicationInfoSettings(this.projectPath);
         }
+
+        // Generate README
+        const readMeConfig = this._getReadMeConfig(config);
+        generateReadMe(this.projectPath, readMeConfig, this.fs);
+
+        // Replace webapp files with downloaded app files
+        await replaceWebappFiles(this.projectPath, this.extractedProjectPath, this.fs);
+
+        await validateAndUpdateManifestUI5Version(join(this.projectPath, DirName.Webapp, FileName.Manifest), this.fs);
+        // Clean up extracted project files
+        this.fs.delete(this.extractedProjectPath);
     }
 
     /**
@@ -224,6 +218,7 @@ export default class extends Generator {
             isAppStudio: isAppStudio(),
             odataVersion: config.service.version === OdataVersion.v2 ? '2.0' : '4.0'
         };
+        this.debugOptions = debugOptions;
         const fioriOptions: FioriOptions = {
             name: config.app.id,
             projectRoot: this.projectPath,
@@ -293,11 +288,16 @@ export default class extends Generator {
          *    the app generation process.
          */
         if (this.vscode) {
-            const updateWorkspaceFolders = {
-                uri: this.vscode?.Uri?.file(join(this.projectPath)),
-                projectName: basename(this.projectPath),
-                vscode: this.vscode
-            };
+            const rootFolder = this.projectPath;
+            // Create workspace folder URI
+            const { workspaceFolderUri } = handleWorkspaceConfig(rootFolder, this.debugOptions);
+            const updateWorkspaceFolders = workspaceFolderUri
+                ? {
+                      uri: workspaceFolderUri,
+                      projectName: basename(rootFolder),
+                      vscode: this.debugOptions.vscode
+                  }
+                : undefined;
             updateWorkspaceFoldersIfNeeded(updateWorkspaceFolders);
         }
         if (this.options.data?.postGenCommand) {
@@ -315,6 +315,7 @@ export default class extends Generator {
     async end(): Promise<void> {
         try {
             this.appWizard.showInformation(t('info.repoAppDownloadCompleteMsg'), MessageType.notification);
+            await this._handlePostAppGeneration();
             await sendTelemetry(
                 EventName.GENERATION_SUCCESS,
                 TelemetryHelper.createTelemetryData({
@@ -324,7 +325,6 @@ export default class extends Generator {
             ).catch((error) => {
                 RepoAppDownloadLogger.logger?.error(t('error.telemetry', { error: error.message }));
             });
-            await this._handlePostAppGeneration();
         } catch (error) {
             RepoAppDownloadLogger.logger?.error(t('error.endPhase', { error: error.message }));
         }

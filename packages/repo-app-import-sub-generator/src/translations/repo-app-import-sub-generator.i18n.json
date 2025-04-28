@@ -1,66 +1,66 @@
 {
     "error": {
-        "telemetry": "Failed to send telemetry data after downloading app from UI5 ABAP Repository. {{- error}}",
-        "qfaJsonNotFound": "{{- jsonFileName }} not found in the downloaded app",
-        "replaceWebappFilesError": "Error replacing files in the downloaded app: {{- error}}", 
-        "requiredFieldsMissing": "Required fields are missing for app: {{- app }}. Check if the app is deployed correctly",
-        "applicationListFetchError": "Error fetching application list: {{- error}}",
-        "metadataFetchError": "Error fetching metadata: {{- error}}",
-        "appConfigGenError": "Error generating application configuration: {{- error}}",
-        "endPhase": "Error in end phase: {{- error}}",
-        "errorProcessingJsonFile": "Error processing JSON file: {{- error}}",
+        "telemetry": "Failed to send telemetry data after downloading the application from the SAPUI5 ABAP Repository. {{- error}}",
+        "qfaJsonNotFound": "{{- jsonFileName }} not found in the downloaded application. Ensure the downloaded application is properly deployed to the ABAP repository.",
+        "replaceWebappFilesError": "An error occurred when replacing files in the downloaded application: {{- error}}. For more information, view the logs.",
+        "requiredFieldsMissing": "Required fields are missing for the {{- app }} application. Check if the application is deployed correctly.",
+        "applicationListFetchError": "An error occurred when fetching the application list: {{- error}}. Check if your application is available in the system.",
+        "metadataFetchError": "An error occurred when fetching metadata: {{- error}}. For more information, view the logs.",
+        "appConfigGenError": "An error occurred when generating the application configuration: {{- error}}. For more information, view the logs.",
+        "endPhase": "An error occurred in the end phase: {{- error}}. For more information, view the logs.",
+        "errorProcessingJsonFile": "An error occurred when processing the JSON file: {{- error}}. Check the file is valid.",
+        "noAppsDeployed": "No applications deployed to this system can be downloaded.",
         "validationErrors": {
-            "invalidMetadataPackage": "Invalid or missing package in metadata",
-            "invalidServiceName": "Invalid or missing serviceName in serviceBindingDetails",
-            "invalidServiceVersion": "Invalid or missing serviceVersion in serviceBindingDetails",
-            "invalidMainEntityName": "Invalid or missing mainEntityName in serviceBindingDetails",
-            "invalidModuleName": "Invalid or missing moduleName in serviceBindingDetails",
-            "invalidRepositoryName": "Invalid or missing repositoryName in serviceBindingDetails"
+            "invalidMetadataPackage": "Invalid or missing package in the metadata. Check the metadata.",
+            "invalidServiceName": "Invalid or missing `serviceName` in `serviceBindingDetails`. Check the `serviceName`.",
+            "invalidServiceVersion": "Invalid or missing `serviceVersion` in `serviceBindingDetails`. Check the `serviceVersion`.",
+            "invalidMainEntityName": "Invalid or missing `mainEntityName` in `serviceBindingDetails`. Check the `mainEntityName`.",
+            "invalidModuleName": "Invalid or missing `moduleName` in serviceBindingDetails. Check the `moduleName`.",
+            "invalidRepositoryName": "Invalid or missing `repositoryName` in `serviceBindingDetails`. Check the `repositoryName`."
         },
         "installationErrors": {
-            "npmInstall": "Error in install phase: {{- error}}",
-            "skippedInstallation": "Option `--skipInstall` was specified. Installation of dependencies will be skipped."
+            "npmInstall": "An error occurred in the install phase: {{- error}}. For more information, view the logs.",
+            "skippedInstallation": "`--skipInstall` option was specified. Installation of dependencies will be skipped."
         },
         "appDownloadErrors": {
-            "downloadedFileNotBufferError": "Error: The downloaded file is not a Buffer.",
-            "appDownloadFailure": "Error downloading app: {{- error}}",
-            "zipExtractionError": "Error extracting zip: {{- error}}"
+            "downloadedFileNotBufferError": "Error: The downloaded file is not a buffer. Check the file.",
+            "appDownloadFailure": "An error occurred when downloading the application: {{- error}}. For more information, view the logs.",
+            "zipExtractionError": "An error occurred when extracting the zip file: {{- error}}. For more information, view the logs."
         },
         "eventHookErrors": {
-            "vscodeInstanceMissing": "Error: Missing VSCode instance in event hook",
-            "postGenCommandMissing": "Error: Missing postGenCommand in event hook",
-            "commandExecutionFailed": "Error executing postGenCommand in event hook: {{- error}}"
+            "vscodeInstanceMissing": "Error: Missing VS Code instance in event hook.",
+            "postGenCommandMissing": "Error: Missing `postGenCommand` in event hook.",
+            "commandExecutionFailed": "Error executing `postGenCommand` in event hook: {{- error}}"
         },
         "readManifestErrors": {
-            "manifestFileNotFound": "Error: Manifest file not found in the downloaded app",
-            "readManifestFailed": "Error: Failed to read manifest file",
-            "sapAppNotDefined": "Error: sap.app not defined in the manifest file",
-            "sourceTemplateNotSupported": "Error: Source template not supported",
-            "invalidManifestStructureError": "Invalid manifest structure: 'sap.ui5' or 'sap.app' are missing."
+            "manifestFileNotFound": "Error: `manifest.json` file not found in the downloaded application. Check the file exists.",
+            "readManifestFailed": "Error: Failed to read the `manifest.json` file. Check the file is valid.",
+            "sapAppNotDefined": "Error: `sap.app` not defined in the `manifest.json` file. Check `sap.app` is defined.",
+            "sourceTemplateNotSupported": "Error: Source template not supported. Use a supported template.",
+            "invalidManifestStructureError": "Invalid `manifest.json file` structure: `sap.ui5` or `sap.app` are missing. Check they exist."
         },
         "quickDeployedAppDownloadErrors": {
             "noAppsFound": "No application with id {{ appId }} found in the system. Please check if the application is deployed correctly or select another app"
         }
     },
     "warn": {
-        "extractedFileNotFound": "Extracted file not found - {{- extractedFilePath}}"
+        "extractedFileNotFound": "Extracted file not found - {{- extractedFilePath}}. For more information, view the logs."
     },
     "prompts": {
         "appSelection": {
-            "message": "App",
-            "hint": "Select the app to download",
-            "breadcrumb": "App",
-            "noAppsDeployed": "No applications deployed to this system can be downloaded. {{- help}}"
+            "message": "Application",
+            "hint": "Select the application to download.",
+            "breadcrumb": "Application"
         },
         "targetPath": {
-            "message": "Project folder path",
+            "message": "Project Folder Path",
             "breadcrumb": "Project Path"
         }
     },
     "readMe": {
-        "appDescription" : "This application was converted from a SAP Fiori app that was deployed from ADT using the ADT Quick Fiori Application generator",
-        "launchText": "In order to launch the generated app, simply run the following from the generated app root folder:\n\n```\n    npm start\n```"
-    }, 
+        "appDescription": "This application was converted from an SAP Fiori application that was deployed from ADT using the ADT Quick Fiori Application generator.",
+        "launchText": "To launch the generated application, run the following command from the generated app root folder:\n\n```\n    npm start\n```"
+    },
     "info": {
         "repoAppDownloadCompleteMsg": "The selected application has been downloaded and updated to support SAP Fiori tools."
     }

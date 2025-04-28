@@ -1,5 +1,55 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.10
+
+### Patch Changes
+
+-   65e178f: align npm modules
+
+## 0.2.9
+
+### Patch Changes
+
+-   7590bc3: Remove legacy CF deploy task
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/project-access@1.29.21
+
+## 0.2.8
+
+### Patch Changes
+
+-   294bbe3: code cleanup with help from copilot
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+
+## 0.2.7
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/project-access@1.29.19
+
+## 0.2.6
+
+### Patch Changes
+
+-   5f18839: cleanup templates
+
+## 0.2.5
+
+### Patch Changes
+
+-   e0937db: ensure xs-security is updated
+
+## 0.2.4
+
+### Patch Changes
+
+-   ce3fd7a: Handle duplicate app-content for app frontend router
+
 ## 0.2.3
 
 ### Patch Changes

@@ -18,20 +18,21 @@ import type {
 } from './prompts/datasources/sap-system/system-selection/prompt-helpers';
 
 import type { Annotations } from '@sap-ux/axios-extension';
+import type { CapRuntime, CapService } from '@sap-ux/cap-config-writer';
 import type { TemplateType } from '@sap-ux/fiori-elements-writer';
 import { getEntitySelectionQuestions } from './prompts/edmx/questions';
 import LoggerHelper from './prompts/logger-helper';
 import {
-    DatasourceType,
-    promptNames,
+    type EntityPromptOptions,
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     type OdataServiceQuestion,
     type SapSystemType,
-    type EntityPromptOptions,
-    EntityRelatedAnswers
+    type ConnectedSystem,
+    DatasourceType,
+    EntityRelatedAnswers,
+    promptNames
 } from './types';
-import type { CapService, CapRuntime } from '@sap-ux/cap-config-writer';
 import { getPromptHostEnvironment, PromptState } from './utils';
 
 /**
@@ -42,6 +43,7 @@ import { getPromptHostEnvironment, PromptState } from './utils';
  * @param enableGuidedAnswers - if true, the prompts will use guided answers to help users with validation errors
  * @param telemetryClient - the telemetry client to use for sending telemetry data
  * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
+ * @param connectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns the prompts used to provide input for odata service generation and a reference to the answers object which will be populated with the user's responses once `inquirer.prompt` returns
  */
 async function getPrompts(
@@ -49,7 +51,8 @@ async function getPrompts(
     logger?: Logger,
     enableGuidedAnswers = false,
     telemetryClient?: ToolsSuiteTelemetryClient,
-    isYUI = false
+    isYUI = false,
+    connectedSystem?: ConnectedSystem
 ): Promise<{ prompts: OdataServiceQuestion[]; answers: Partial<OdataServiceAnswers> }> {
     // prompt texts must be loaded before the prompts are created, wait for the i18n bundle to be initialized
     await initI18nOdataServiceInquirer();
@@ -66,7 +69,7 @@ async function getPrompts(
     setTelemetryClient(telemetryClient);
 
     return {
-        prompts: await getQuestions(promptOptions),
+        prompts: await getQuestions(promptOptions, connectedSystem),
         // Return reference to derived answers object that will be populated with user responses (after prompting is complete)
         answers: PromptState.odataService
     };
@@ -130,6 +133,7 @@ function getEntityRelatedPrompts(
  * @param enableGuidedAnswers - if true, the prompts will use guided answers to help users with validation errors
  * @param telemetryClient - the telemetry client to use for sending telemetry data
  * @param isYUI - if true, the prompt is being called from the Yeoman UI extension host
+ * @param connectedSystem - if available passing an already connected system connection will prevent re-authentication for re-entrance ticket and service keys connection types
  * @returns the prompt answers
  */
 async function prompt(
@@ -138,14 +142,16 @@ async function prompt(
     logger?: Logger,
     enableGuidedAnswers?: boolean,
     telemetryClient?: ToolsSuiteTelemetryClient,
-    isYUI = false
+    isYUI = false,
+    connectedSystem?: ConnectedSystem
 ): Promise<OdataServiceAnswers> {
     if (adapter?.promptModule && promptOptions?.serviceSelection?.useAutoComplete) {
         const pm = adapter.promptModule;
         pm.registerPrompt('autocomplete', autocomplete);
     }
-    const odataServicePrompts = (await getPrompts(promptOptions, logger, enableGuidedAnswers, telemetryClient, isYUI))
-        .prompts;
+    const odataServicePrompts = (
+        await getPrompts(promptOptions, logger, enableGuidedAnswers, telemetryClient, isYUI, connectedSystem)
+    ).prompts;
     const answers = await adapter.prompt<OdataServiceAnswers>(odataServicePrompts);
     // Add dervied service answers to the answers object
     Object.assign(answers, PromptState.odataService);
@@ -177,5 +183,6 @@ export {
     type OdataServiceAnswers,
     type OdataServicePromptOptions,
     // @deprecated - temp export to support to support open source migration
-    type SapSystemType
+    type SapSystemType,
+    type ConnectedSystem
 };

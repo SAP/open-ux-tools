@@ -6,6 +6,7 @@ import { create } from '../../../src/flp/enableFakeConnector';
 import VersionInfo from 'mock/sap/ui/VersionInfo';
 import { fetchMock } from 'mock/window';
 import { ActionHandler } from '../../../src/cpe/types';
+import * as additionalChangeInfo from '../../../src/utils/additional-change-info';
 
 describe('connector-service', () => {
     let sendActionMock: jest.Mock;
@@ -89,6 +90,7 @@ describe('connector-service', () => {
         const wsConnector = new WorkspaceConnectorService();
         const subscribeSpy = jest.fn<void, [ActionHandler]>();
         await wsConnector.init(sendActionMock, subscribeSpy);
+        jest.spyOn(additionalChangeInfo, 'getAdditionalChangeInfo').mockReturnValue({ templateName: 'my-template' });
 
         subscribeSpy.mock.calls[0][0](common.reloadApplication({ save: true }));
         // call notifier
@@ -97,7 +99,6 @@ describe('connector-service', () => {
             fileName: 'sap.ui.fl.testFile',
             support: {},
             content: {
-                templateName: 'my-template',
                 fragmentPath: 'fragments/fragment.xml'
             }
         });
