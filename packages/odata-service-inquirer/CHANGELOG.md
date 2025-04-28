@@ -1,5 +1,22 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.4
+
+### Patch Changes
+
+-   26f9280: Adds connection caching to prevent re-auth via browser
+
+## 2.3.3
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/telemetry@0.5.77
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/fiori-generator-shared@0.11.2
+-   @sap-ux/project-input-validator@0.5.4
+-   @sap-ux/inquirer-common@0.6.39
+
 ## 2.3.2
 
 ### Patch Changes

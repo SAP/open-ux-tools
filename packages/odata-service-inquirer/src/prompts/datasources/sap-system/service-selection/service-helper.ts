@@ -93,19 +93,6 @@ function logServiceCatalogErrorsForHelp(
 }
 
 /**
- * Refines the error type and logs based on the specified options. This should log more precise error messages based on inputs
- * and the platform making the call i.e. VSC | SBAS. Errors are mapped to GA links if the platform is SBAS.
- *
- * @param options Options
- * @param options.system - sap system used
- * @param options.catRequestErrorTypes - all catalog service request error types, used to do further root cause analysis
- * @param options.rootCauseErrorType - the error type as determined by the caller, will be used if a more precise error type cannot be determined by rca
- * @param options.logMsg - the log message that will be used if a better root cause is not determined
- * @param options.error - the original error, used to determine the error log message if otherwise not determined
- * @param option.reqVersion - specific odata version that is required by the template
- */
-
-/**
  * Get the service choices from the specified catalogs.
  *
  * @param catalogs catalogs to get the services from. There should be one per odata version required.
