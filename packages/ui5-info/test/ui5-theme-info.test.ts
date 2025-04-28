@@ -64,8 +64,7 @@ describe('getUi5Themes', () => {
                         sinceVersion: '1.90.0',
                         untilVersion: '1.100.0'
                     }
-                },
-                configurable: true
+                }
             });
             const themes = themeInfo.getUi5Themes(version);
             const hasABC = themes.some((t) => t.id === ('ABC' as themeInfo.ui5ThemeIds));
