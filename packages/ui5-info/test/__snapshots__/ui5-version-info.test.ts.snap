@@ -4110,6 +4110,22 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 [
   {
     "maintained": true,
+    "version": "1.135.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.134.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.133.0",
+  },
+  {
+    "maintained": true,
+    "version": "1.130.0",
+  },
+  {
+    "maintained": true,
     "version": "1.129.0",
   },
   {
@@ -4154,6 +4170,18 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback for specified min UI5 version, if request fails 1`] = `
 [
   {
+    "version": "1.135.0",
+  },
+  {
+    "version": "1.134.0",
+  },
+  {
+    "version": "1.133.0",
+  },
+  {
+    "version": "1.130.0",
+  },
+  {
     "version": "1.129.0",
   },
   {
@@ -4188,6 +4216,18 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback if official is not available  1`] = `
 [
+  {
+    "version": "1.135.0",
+  },
+  {
+    "version": "1.134.0",
+  },
+  {
+    "version": "1.133.0",
+  },
+  {
+    "version": "1.130.0",
+  },
   {
     "version": "1.129.0",
   },
@@ -4224,6 +4264,18 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 versions fallback if snapshot is not available  1`] = `
 [
   {
+    "version": "1.135.0",
+  },
+  {
+    "version": "1.134.0",
+  },
+  {
+    "version": "1.133.0",
+  },
+  {
+    "version": "1.130.0",
+  },
+  {
     "version": "1.129.0",
   },
   {
@@ -4259,6 +4311,18 @@ exports[`getUI5Versions: Handle error cases while getting UI5 versions:  UI5 ver
 exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 versions fallback if official is not available  1`] = `
 [
   {
+    "version": "1.135.0",
+  },
+  {
+    "version": "1.134.0",
+  },
+  {
+    "version": "1.133.0",
+  },
+  {
+    "version": "1.130.0",
+  },
+  {
     "version": "1.129.0",
   },
   {
@@ -4293,6 +4357,18 @@ exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 ver
 
 exports[`getUI5Versions: Handle fatal cases while getting UI5 versions:  UI5 versions fallback if snapshot is not available  1`] = `
 [
+  {
+    "version": "1.135.0",
+  },
+  {
+    "version": "1.134.0",
+  },
+  {
+    "version": "1.133.0",
+  },
+  {
+    "version": "1.130.0",
+  },
   {
     "version": "1.129.0",
   },
