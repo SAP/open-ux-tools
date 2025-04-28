@@ -104,7 +104,9 @@ describe('Test utils', () => {
         // destination
         const destination = mockDestinations.Dest1;
         const abapSystemDest = {
-            destination: 'Dest1'
+            destination: 'Dest1',
+            client: '100', // should be ignored since dest is defined
+            url: 'http://dest.btp.url' // should be ignored since dest is defined
         };
         expect(isSameSystem(abapSystemDest, undefined, undefined, destination.Name)).toBe(true);
     });
