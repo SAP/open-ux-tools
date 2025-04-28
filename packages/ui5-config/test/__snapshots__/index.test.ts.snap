@@ -215,15 +215,11 @@ exports[`UI5Config addCloudFoundryDeployTask add modules task 1`] = `
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: myTestAppId
+        relativePaths: true
         additionalFiles:
           - xs-app.json
     - name: ui5-tooling-modules-task
@@ -239,15 +235,11 @@ exports[`UI5Config addCloudFoundryDeployTask add transpile task 1`] = `
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: myTestAppId
+        relativePaths: true
         additionalFiles:
           - xs-app.json
     - name: ui5-tooling-modules-task
@@ -270,15 +262,11 @@ exports[`UI5Config addCloudFoundryDeployTask minimal settings required 1`] = `
       - /test/**
       - /localService/**
   customTasks:
-    - name: webide-extension-task-updateManifestJson
-      afterTask: replaceVersion
-      configuration:
-        appFolder: webapp
-        destDir: dist
     - name: ui5-task-zipper
       afterTask: generateCachebusterInfo
       configuration:
         archiveName: myTestAppId
+        relativePaths: true
         additionalFiles:
           - xs-app.json
 "

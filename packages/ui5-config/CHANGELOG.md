@@ -1,5 +1,23 @@
 # @sap-ux/ui5-config
 
+## 0.27.2
+
+### Patch Changes
+
+-   7590bc3: Remove legacy CF deploy task
+
+## 0.27.1
+
+### Patch Changes
+
+-   294bbe3: code cleanup with help from copilot
+
+## 0.27.0
+
+### Minor Changes
+
+-   1ca4004: updates for use for fiori tools preview middleware and use of virtual endpoints
+
 ## 0.26.5
 
 ### Patch Changes

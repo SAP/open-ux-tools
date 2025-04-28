@@ -90,23 +90,25 @@ export interface OdataServiceAnswers {
      * The connected system will allow downstream consumers to access the connected system without creating new connections.
      *
      */
-    connectedSystem?: {
-        /**
-         * Convienence property to pass the connected system
-         */
-        serviceProvider: ServiceProvider;
+    connectedSystem?: ConnectedSystem;
+}
 
-        /**
-         * The persistable backend system representation of the connected service provider
-         * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
-         */
-        backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+export interface ConnectedSystem {
+    /**
+     * Convienence property to pass the connected system
+     */
+    serviceProvider: ServiceProvider;
 
-        /**
-         * The destination information for the connected system
-         */
-        destination?: Destination;
-    };
+    /**
+     * The persistable backend system representation of the connected service provider
+     * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
+     */
+    backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+
+    /**
+     * The destination information for the connected system
+     */
+    destination?: Destination;
 }
 
 /**
@@ -157,7 +159,7 @@ export enum promptNames {
 export const EntityPromptNames = {
     mainEntity: 'mainEntity',
     navigationEntity: 'navigationEntity',
-    filterEntityType: 'filterEntityType',
+    filterEntitySet: 'filterEntitySet',
     tableType: 'tableType',
     hierarchyQualifier: 'hierarchyQualifier',
     addFEOPAnnotations: 'addFEOPAnnotations',
@@ -173,7 +175,7 @@ export type EntityPromptNames = (typeof EntityPromptNames)[keyof typeof EntityPr
 export interface EntitySelectionAnswers {
     [EntityPromptNames.mainEntity]?: EntityAnswer;
     [EntityPromptNames.navigationEntity]?: NavigationEntityAnswer;
-    [EntityPromptNames.filterEntityType]?: EntityAnswer;
+    [EntityPromptNames.filterEntitySet]?: EntityAnswer;
 }
 
 export interface TableConfigAnswers {

@@ -1,9 +1,10 @@
-import { downloadApp, extractZip } from '../../src/utils/download-utils';
+import { downloadApp, extractZip, hasQfaJson } from '../../src/utils/download-utils';
 import AdmZip from 'adm-zip';
 import { join } from 'path';
-import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
-import * as PromptState from '../../src/prompts/prompt-state';
+import { PromptState } from '../../src/prompts/prompt-state';
+import { qfaJsonFileName } from '../../src/utils/constants';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 jest.mock('adm-zip');
 jest.mock('../../src/utils/logger', () => ({
@@ -12,100 +13,104 @@ jest.mock('../../src/utils/logger', () => ({
     }
 }));
 
-describe('extractZip', () => {
-    let mockZip: any;
-    let mockEntry1: any;
-    let mockEntry2: any;
-    let mockFs: any;
-
+describe('App Download Utils', () => {
     beforeEach(() => {
+        PromptState.reset();
         jest.clearAllMocks();
-        mockEntry1 = {
-            isDirectory: false,
-            entryName: 'file1.txt',
-            getData: jest.fn(() => Buffer.from('File 1 content'))
-        };
-        mockEntry2 = {
-            isDirectory: false,
-            entryName: 'folder/file2.txt',
-            getData: jest.fn(() => Buffer.from('File 2 content'))
-        };
-        mockZip = {
-            getEntries: jest.fn(() => [mockEntry1, mockEntry2])
-        };
-
-        (AdmZip as jest.Mock).mockImplementation(() => mockZip);
-        mockFs = {
-            write: jest.fn()
-        };
     });
 
-    it('should extract files from zip and write them using fs', async () => {
-        const extractedPath = join('/tmp/project');
-        const dummyBuffer = Buffer.from('fake zip content');
+    describe('hasQfaJson', () => {
+        it('should return true when qfa.json is present in zip', () => {
+            const mockEntry = { entryName: qfaJsonFileName };
+            const mockZip = { getEntries: jest.fn(() => [mockEntry]) };
+            PromptState.admZip = Buffer.from('dummy');
+            (PromptState.admZip as any).getEntries = mockZip.getEntries;
 
-        await extractZip(extractedPath, dummyBuffer, mockFs);
-
-        expect(mockZip.getEntries).toHaveBeenCalled();
-        expect(mockFs.write).toHaveBeenCalledWith(
-            join(extractedPath, 'file1.txt'),
-            'File 1 content'
-        );
-        expect(mockFs.write).toHaveBeenCalledWith(
-            join(extractedPath, 'folder/file2.txt'),
-            'File 2 content'
-        );
-    });
-
-    it('should log an error if zip extraction fails', async () => {
-        const errorMessage = 'Zip corrupted!';
-        (AdmZip as jest.Mock).mockImplementation(() => {
-            throw new Error(errorMessage);
+            const result = hasQfaJson();
+            expect(result).toBe(true);
         });
 
-        const dummyBuffer = Buffer.from('broken zip');
-        await extractZip('/tmp/fail', dummyBuffer, mockFs);
+        it('should return false when qfa.json is not present', () => {
+            const mockZip = { getEntries: jest.fn(() => [{ entryName: 'other.json' }]) };
 
-        expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
-            t('error.appDownloadErrors.zipExtractionError', { error: errorMessage })
-        );
-    });
-});
+            PromptState.admZip = Buffer.from('dummy');
+            (PromptState.admZip as any).getEntries = mockZip.getEntries;
 
-describe('downloadApp', () => {
-    const mockDownloadFiles = jest.fn();
-    const mockGetUi5AbapRepository = jest.fn(() => ({
-        downloadFiles: mockDownloadFiles
-    }));
-    const mockServiceProvider = {
-        getUi5AbapRepository: mockGetUi5AbapRepository
-    };
-
-    beforeEach(() => {
-        jest.clearAllMocks();
-        mockDownloadFiles.mockReset();
-
-        PromptState.PromptState.systemSelection = {
-            connectedSystem: {
-                serviceProvider: mockServiceProvider
-            }
-        } as any;
+            const result = hasQfaJson();
+            expect(result).toBe(false);
+        });
     });
 
-    it('should download app and store it in PromptState', async () => {
-        const mockPackage = { name: 'app-1', files: ['files.js'] };
-        mockDownloadFiles.mockResolvedValue(mockPackage);
+    describe('extractZip', () => {
+        const mockFs = {
+            write: jest.fn()
+        };
 
-        await downloadApp('repo-1');
+        it('should extract files from zip to provided path', async () => {
+            const mockZipEntries = [
+                {
+                    isDirectory: false,
+                    entryName: 'file1.txt',
+                    getData: jest.fn(() => Buffer.from('file content'))
+                },
+                {
+                    isDirectory: true,
+                    entryName: 'folder/',
+                    getData: jest.fn()
+                }
+            ];
 
-        expect(mockServiceProvider.getUi5AbapRepository).toHaveBeenCalled();
-        expect(mockDownloadFiles).toHaveBeenCalledWith('repo-1');
-        expect(PromptState.PromptState.downloadedAppPackage).toEqual(mockPackage);
+            PromptState.admZip = Buffer.from('dummy');
+            (PromptState.admZip as any).getEntries = jest.fn(() => mockZipEntries);
+
+            await extractZip('/tmp/project', mockFs as any);
+
+            expect(mockFs.write).toHaveBeenCalledWith(
+                join('/tmp/project', 'file1.txt'),
+                'file content'
+            );
+            expect(mockFs.write).toHaveBeenCalledTimes(1);
+        });
+
+        it('should log error on exception', async () => {
+            const erroringZip = {
+                getEntries: jest.fn(() => {
+                    throw new Error('zip failed');
+                })
+            };
+
+            PromptState.admZip = Buffer.from('dummy');
+            (PromptState.admZip as any).getEntries = erroringZip.getEntries;
+
+            await extractZip('/tmp/project', mockFs as any);
+
+            expect(RepoAppDownloadLogger.logger.error).toHaveBeenCalledWith(
+                expect.stringContaining('zipExtractionError')
+            );
+        });
     });
 
-    it('should throw if serviceProvider is undefined', async () => {
-        PromptState.PromptState.systemSelection = undefined as any;
+    describe('downloadApp', () => {
+        it('should download and assign zip buffer to PromptState', async () => {
+            const mockZipBuffer = Buffer.from('mock zip content');
 
-        await expect(downloadApp('repo-1')).rejects.toThrow();
+            const mockDownload = jest.fn().mockResolvedValue(mockZipBuffer);
+            const mockServiceProvider = {
+                getUi5AbapRepository: jest.fn(() => ({
+                    downloadFiles: mockDownload
+                }))
+            };
+
+            PromptState.systemSelection = {
+                connectedSystem: {
+                    serviceProvider: mockServiceProvider as unknown as AbapServiceProvider
+                }
+            };
+
+            await downloadApp('Z_TEST_REPO');
+
+            expect(mockDownload).toHaveBeenCalledWith('Z_TEST_REPO');
+            expect(PromptState.admZip).toBeInstanceOf(AdmZip);
+        });
     });
 });

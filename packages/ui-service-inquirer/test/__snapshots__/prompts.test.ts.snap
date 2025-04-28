@@ -117,6 +117,7 @@ exports[`getSystemQuestions getServiceConfigQuestions 1`] = `
     "name": "draftEnabled",
     "type": "confirm",
     "validate": [Function],
+    "when": [Function],
   },
   {
     "additionalMessages": [Function],
