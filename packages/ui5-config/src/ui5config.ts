@@ -646,22 +646,11 @@ export class UI5Config {
         this.document.appendTo({
             path: 'builder.customTasks',
             value: {
-                name: 'webide-extension-task-updateManifestJson',
-                afterTask: 'replaceVersion',
-                configuration: {
-                    appFolder: 'webapp',
-                    destDir: 'dist'
-                }
-            }
-        });
-
-        this.document.appendTo({
-            path: 'builder.customTasks',
-            value: {
                 name: 'ui5-task-zipper',
                 afterTask: 'generateCachebusterInfo',
                 configuration: {
                     archiveName,
+                    relativePaths: true,
                     additionalFiles: ['xs-app.json']
                 }
             }

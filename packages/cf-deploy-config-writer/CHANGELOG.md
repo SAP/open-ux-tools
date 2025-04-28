@@ -1,5 +1,14 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.9
+
+### Patch Changes
+
+-   7590bc3: Remove legacy CF deploy task
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/project-access@1.29.21
+
 ## 0.2.8
 
 ### Patch Changes
