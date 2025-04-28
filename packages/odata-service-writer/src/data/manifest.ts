@@ -241,7 +241,6 @@ function removeUnusedAnnotations(
  */
 function resolveLocalServiceUri(serviceName: string, technicalName: string): string {
     // Remove beginning and end forward slashes
-    serviceName = serviceName.replace(/^\/+|\/+$/g, '');
     technicalName = technicalName.replace(/^\/+|\/+$/g, '');
     return `localService/${serviceName}/${technicalName}.xml`;
 }

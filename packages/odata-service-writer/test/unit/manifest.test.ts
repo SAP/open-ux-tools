@@ -305,6 +305,50 @@ describe('manifest', () => {
             expect(manifestJson).toEqual(expectedEdmxManifestMultipleServices);
         });
 
+        test('Sanitize annotation local uri', async () => {
+            const testManifest = {
+                'sap.app': {
+                    id: 'test.update.manifest',
+                    dataSources: {
+                        'mainService': {
+                            type: 'OData'
+                        }
+                    }
+                },
+                'sap.ui5': {
+                    models: {
+                        '': {
+                            dataSource: 'mainService'
+                        }
+                    }
+                }
+            };
+            const service: OdataService = {
+                version: OdataVersion.v2,
+                client: '123',
+                model: 'amodel',
+                name: 'aname',
+                path: '/a/path',
+                type: ServiceType.EDMX,
+                annotations: [
+                    {
+                        technicalName: '/dummy/myservice/aname/',
+                        xml: 'annotation1xml',
+                        name: 'annotation1'
+                    }
+                ],
+                localAnnotationsName: 'localTest'
+            };
+
+            fs.writeJSON('./webapp/manifest.json', testManifest);
+            // Call updateManifest
+            await updateManifest('./', service, fs);
+            const manifestJson = fs.readJSON('./webapp/manifest.json') as Partial<Manifest>;
+            expect(manifestJson['sap.app']?.dataSources?.annotation1.settings).toEqual({
+                'localUri': 'localService/aname/dummy/myservice/aname.xml'
+            });
+        });
+
         test('Ensure manifest updates are updated as expected as in edmx projects with older services', async () => {
             // Test to basically check whether existing service definitions are updated (localUri attribute is modified)
             const testManifest = {
