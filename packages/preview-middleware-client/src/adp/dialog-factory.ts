@@ -34,7 +34,7 @@ type Controller =
     | FileExistsDialog
     | AddSubpage;
 
-type DialogData = ExtensionPointData | AddFragmentData | ExtendControllerData;;
+type DialogData = ExtensionPointData | AddFragmentData | ExtendControllerData;
 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
