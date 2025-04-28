@@ -13,7 +13,7 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
     {
     "changeType": "appdescr_ui5_setMinUI5Version",
     "content": {
-        "minUI5Version": "1.134.1"
+        "minUI5Version": "1.136.0"
     }
 },
     {

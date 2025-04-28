@@ -36,6 +36,10 @@ interface ConfigOptions {
      */
     publicVersions: UI5Version;
     /**
+     * System UI5 Version.
+     */
+    systemVersion: string | undefined;
+    /**
      * Logger instance for debugging and error reporting.
      */
     logger: ToolsLogger;
@@ -55,7 +59,8 @@ interface ConfigOptions {
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
 export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig> {
-    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider, publicVersions } = options;
+    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider, publicVersions, systemVersion } =
+        options;
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
@@ -76,14 +81,12 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         ach
     } = configAnswers;
 
-    const minVersion = ui5Version?.split(' ')?.[0];
-
     const app: OnpremApp | CloudApp = {
         id: namespace,
         reference: id,
         layer,
         title,
-        content: getManifestContent(layer, minVersion, fioriId, ach),
+        content: getManifestContent(layer, systemVersion, publicVersions, fioriId, ach),
         i18nDescription: getI18nDescription(layer, title)
     };
 
@@ -100,7 +103,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     return {
         app,
         ui5: {
-            minVersion,
+            minVersion: ui5Version?.split(' ')?.[0],
             version: getFormattedVersion(ui5Version),
             frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version)
         },

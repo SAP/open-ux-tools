@@ -59,6 +59,7 @@ describe('getConfig', () => {
             attributeAnswers,
             layer: FlexLayer.CUSTOMER_BASE,
             publicVersions: { latest: { version: '1.135.0' } as VersionDetail },
+            systemVersion: undefined,
             packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
             logger: {} as ToolsLogger
         });
@@ -73,7 +74,6 @@ describe('getConfig', () => {
                 languages: activeLanguages,
                 i18nDescription: expect.stringContaining('SAP Fiori application keys'),
                 content: [
-                    expect.any(Object),
                     {
                         changeType: 'appdescr_ui5_addNewModelEnhanceWith',
                         content: {

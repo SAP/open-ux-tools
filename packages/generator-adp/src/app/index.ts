@@ -158,6 +158,7 @@ export default class extends Generator {
                 configAnswers: this.configAnswers,
                 attributeAnswers: this.attributeAnswers,
                 publicVersions: this.prompter?.ui5?.publicVersions,
+                systemVersion: this.prompter?.ui5?.systemVersion,
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger

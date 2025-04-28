@@ -1,4 +1,5 @@
-import { FlexLayer, type Content } from '../types';
+import { FlexLayer, type Content, type UI5Version } from '../types';
+import { getMinUI5VersionForManifest, shouldSetMinUI5Version } from '../ui5';
 
 /**
  * Returns a model enhancement change configuration.
@@ -44,12 +45,19 @@ export function fillSupportData(content: Content[], fioriId?: string, ach?: stri
  * Generates an array of content objects for a `manifest.appdescr_variant` file based on the application configuration.
  *
  * @param {FlexLayer} layer - The deployment layer of the application (e.g., CUSTOMER_BASE or VENDOR).
- * @param {string} minUI5Version - The minimum required SAPUI5 version for the application.
+ * @param {string | undefined} systemVersion - The minimum required SAPUI5 version for the application.
+ * @param {UI5Version} publicVersions - Publicly available SAPUI5 versions.
  * @param {string} [fioriId] - Optional Fiori ID to be added to support information.
  * @param {string} [ach] - Optional ACH ID used for support analytics.
  * @returns {Content[]} An array of content objects describing descriptor variant changes to be applied to the manifest.
  */
-export function getManifestContent(layer: FlexLayer, minUI5Version: string, fioriId?: string, ach?: string): Content[] {
+export function getManifestContent(
+    layer: FlexLayer,
+    systemVersion: string | undefined,
+    publicVersions: UI5Version,
+    fioriId?: string,
+    ach?: string
+): Content[] {
     const isCustomerBase = layer === FlexLayer.CUSTOMER_BASE;
     const content: Content[] = [];
 
@@ -57,11 +65,11 @@ export function getManifestContent(layer: FlexLayer, minUI5Version: string, fior
         fillSupportData(content, fioriId, ach);
     }
 
-    if (minUI5Version) {
+    if (shouldSetMinUI5Version(systemVersion)) {
         content.push({
             changeType: 'appdescr_ui5_setMinUI5Version',
             content: {
-                minUI5Version
+                minUI5Version: getMinUI5VersionForManifest(publicVersions, systemVersion)
             }
         });
     }

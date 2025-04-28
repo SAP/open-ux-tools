@@ -187,7 +187,7 @@ describe('Adaptation Project Generator Integration Test', () => {
                 '1.134.0': { version: '1.134.0' } as VersionDetail
             },
             ui5Versions: ['1.134.1 (latest)', '1.134.0'],
-            systemVersion: '1.136.0.204546979753'
+            systemVersion: '1.136.0'
         });
         validateUI5VersionExistsMock.mockReturnValue(true);
         jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
