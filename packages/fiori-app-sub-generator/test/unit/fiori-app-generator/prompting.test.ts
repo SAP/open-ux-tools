@@ -498,7 +498,8 @@ describe('prompting.ts', () => {
                 DefaultLogger as unknown as Logger,
                 true, // is GA feature enabled
                 expect.anything(), // telemetry client
-                true // isYUI
+                true, // isYUI
+                undefined // cached connected system
             );
         });
 
@@ -595,7 +596,8 @@ describe('prompting.ts', () => {
                 DefaultLogger as unknown as Logger,
                 true, // is GA feature enabled
                 expect.anything(), // telemetry client
-                false // isYUI
+                false, // isYUI
+                undefined // cached connected system
             );
         });
     });

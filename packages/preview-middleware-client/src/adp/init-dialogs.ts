@@ -157,14 +157,18 @@ export const initDialogs = async (
     const resources = await getTextBundle();
     const isReuseComponentChecker = await getReuseComponentChecker(ui5VersionInfo);
 
-    contextMenu.addMenuItem({
-        id: 'ADD_FRAGMENT',
-        text: (overlay: ElementOverlay) => getAddFragmentItemText(overlay, isReuseComponentChecker, isCloud, resources),
-        handler: async (overlays: UI5Element[]) =>
-            await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
-        icon: 'sap-icon://attachment-html',
-        enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, isReuseComponentChecker, isCloud)
-    });
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 136 })) {
+        contextMenu.addMenuItem({
+            id: 'ADD_FRAGMENT',
+            text: (overlay: ElementOverlay) => getAddFragmentItemText(overlay, isReuseComponentChecker, isCloud, resources),
+            handler: async (overlays: UI5Element[]) =>
+                await DialogFactory.createDialog(overlays[0], rta, DialogNames.ADD_FRAGMENT),
+            icon: 'sap-icon://attachment-html',
+            enabled: (overlays: ElementOverlay[]) => isFragmentCommandEnabled(overlays, isReuseComponentChecker, isCloud)
+        });
+    } else {
+        (await import('open/ux/preview/client/adp/add-fragment')).initAddXMLPlugin(rta);
+    }
 
     if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 136 })) {
         contextMenu.addMenuItem({

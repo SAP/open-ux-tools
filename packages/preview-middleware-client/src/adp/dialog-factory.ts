@@ -10,7 +10,8 @@ import AddTableColumnFragments from './controllers/AddTableColumnFragments.contr
 import ControllerExtension from './controllers/ControllerExtension.controller';
 import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
-import { ExtensionPointData } from './extension-point';
+import type { ExtensionPointData } from './extension-point';
+import { AddFragmentData } from './add-fragment';
 import { ExtendControllerData } from './extend-controller';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
@@ -33,7 +34,7 @@ type Controller =
     | FileExistsDialog
     | AddSubpage;
 
-type DialogData = ExtensionPointData | ExtendControllerData;
+type DialogData = ExtensionPointData | AddFragmentData | ExtendControllerData;;
 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
@@ -85,6 +86,7 @@ export class DialogFactory {
                         }),
                         title: resources.getText(options.title ?? 'ADP_ADD_FRAGMENT_DIALOG_TITLE')
                     },
+                    (data as AddFragmentData),
                     telemetryData
                 );
                 break;

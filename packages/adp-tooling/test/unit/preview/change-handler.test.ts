@@ -192,18 +192,13 @@ describe('change-handler', () => {
             });
             it('should create Object Page custom section fragment', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `OBJECT_PAGE_CUSTOM_SECTION`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.objectPageSection %>"
 id="<%- ids.objectPageSubSection %>"
 id="<%- ids.hBox %>"`);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `OBJECT_PAGE_CUSTOM_SECTION`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -228,17 +223,12 @@ id="<%- ids.hBox %>"`);
 
             it('should create Object Page header field fragment', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `OBJECT_PAGE_HEADER_FIELD`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.vBoxContainer %>"
 id="<%- ids.label %>"`);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `OBJECT_PAGE_HEADER_FIELD`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -262,16 +252,11 @@ id="<%- ids.label %>"`);
 
             it('should create custom action fragment', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `CUSTOM_ACTION`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.toolbarActionButton %>`);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `CUSTOM_ACTION`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -298,7 +283,6 @@ id="<%- ids.toolbarActionButton %>`);
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: `V2_SMART_TABLE_COLUMN`,
                         index: 1
                     }
                 } as unknown as AddXMLChange;
@@ -308,7 +292,9 @@ id="<%- ids.columnTitle %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `V2_SMART_TABLE_COLUMN`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -335,17 +321,12 @@ id="<%- ids.index %>
 
             it('should create custom table cell fragment (V2 smart table)', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `V2_SMART_TABLE_CELL`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `V2_SMART_TABLE_CELL`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -369,18 +350,13 @@ id="<%- ids.text %>
 
             it('should create custom table column fragment (V4 smart table)', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `V4_MDC_TABLE_COLUMN`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.column %>
 id="<%- ids.text %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `V4_MDC_TABLE_COLUMN`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -422,7 +398,6 @@ id="<%- ids.text %>
                     ...change,
                     content: {
                         ...change.content,
-                        templateName: testCase.tableType,
                         index: 1
                     }
                 } as unknown as AddXMLChange;
@@ -433,7 +408,9 @@ id="<%- ids.text %>
 id="<%- ids.customData %>
 id="<%- ids.index %>
 `);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: testCase.tableType
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(
@@ -459,17 +436,12 @@ id="<%- ids.index %>
 
             it('should create custom page action', () => {
                 mockFs.exists.mockReturnValue(false);
-                const updatedChange = {
-                    ...change,
-                    content: {
-                        ...change.content,
-                        templateName: `TABLE_ACTION`
-                    }
-                } as unknown as AddXMLChange;
                 mockFs.read.mockReturnValue(`
 id="<%- ids.customToolbarAction %>"
 id="<%- ids.customActionButton %>"`);
-                addXmlFragment(path, updatedChange, mockFs as unknown as Editor, mockLogger as unknown as Logger);
+                addXmlFragment(path, change, mockFs as unknown as Editor, mockLogger as unknown as Logger, {
+                    templateName: `TABLE_ACTION`
+                });
 
                 expect(mockFs.read).toHaveBeenCalled();
                 expect(

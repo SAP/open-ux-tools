@@ -42,7 +42,7 @@ export interface AnnotationFileDetails {
 }
 
 export interface AnnotationDataSourceMap {
-    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails, metadataReadErrorMsg: string };
+    [key: string]: { serviceUrl: string; annotationDetails: AnnotationFileDetails; metadataReadErrorMsg: string };
 }
 
 export interface AnnotationDataSourceResponse {
@@ -181,5 +181,5 @@ export async function getExistingController(controllerName: string): Promise<Cod
  * @returns Generic Promise<T>
  */
 export async function writeChange<T>(data: T): Promise<T> {
-    return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, data);
+    return request<T>(ApiEndpoints.CHANGES, RequestMethod.POST, { change: data });
 }

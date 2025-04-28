@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.4
+
+### Patch Changes
+
+-   26f9280: Adds connection caching to prevent re-auth via browser
+
 ## 2.3.3
 
 ### Patch Changes

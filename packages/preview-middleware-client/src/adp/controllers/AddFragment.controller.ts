@@ -21,29 +21,18 @@ import OverlayRegistry from 'sap/ui/dt/OverlayRegistry';
 /** sap.ui.fl */
 import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 
-import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
-
 import { getResourceModel, getTextBundle } from '../../i18n';
-import { CommunicationService } from '../../cpe/communication-service';
 
 import ControlUtils from '../control-utils';
 import CommandExecutor from '../command-executor';
 import { getFragments } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
 import { notifyUser } from '../utils';
-import {
-    ANALYTICAL_TABLE_TYPE,
-    GRID_TABLE_TYPE,
-    MDC_TABLE_TYPE,
-    TREE_TABLE_TYPE
-} from '../quick-actions/control-types';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
-
-interface CreateFragmentProps {
-    fragmentName: string;
-    index: string | number;
-    targetAggregation: string;
-}
+import { getFragmentTemplateName } from '../../cpe/additional-change-info/add-xml-additional-info';
+import type { AddFragmentData, DeferredXmlFragmentData } from '../add-fragment';
+import { setApplicationRequiresReload } from '@sap-ux-private/control-property-editor-common';
+import { CommunicationService } from '../../cpe/communication-service';
 
 const radix = 10;
 
@@ -65,11 +54,14 @@ export interface AddFragmentOptions {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class AddFragment extends BaseDialog<AddFragmentModel> {
+    private readonly data?: AddFragmentData;
+
     constructor(
         name: string,
         overlays: UI5Element,
         rta: RuntimeAuthoring,
         readonly options: AddFragmentOptions,
+        data?: AddFragmentData,
         telemetryData?: QuickActionTelemetryData
     ) {
         super(name, telemetryData);
@@ -80,6 +72,7 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             completeView: options.aggregation === undefined
         });
         this.commandExecutor = new CommandExecutor(this.rta);
+        this.data = data;
     }
 
     /**
@@ -149,18 +142,28 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
 
         const fragmentName = this.model.getProperty('/newFragmentName');
         const index = this.model.getProperty('/selectedIndex');
-        const targetAggregation = this.model.getProperty('/selectedAggregation/value');
-        const fragmentData = {
-            index,
-            fragmentName,
-            targetAggregation
+        const targetAggregation = this.model.getProperty('/selectedAggregation/value') ?? 'content';
+
+        const modifiedValue = {
+            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
+            fragmentPath: `fragments/${fragmentName}.fragment.xml`,
+            index: index ?? 0,
+            targetAggregation: targetAggregation ?? 'content'
         };
 
-        const templateName = await this.createFragmentChange(fragmentData);
+        if (this.data) {
+            this.data.deferred.resolve(modifiedValue);
+        } else {
+            await this.createFragmentChange(modifiedValue);
+        }
 
-        const textKey = templateName ? 'ADP_ADD_FRAGMENT_WITH_TEMPLATE_NOTIFICATION' : 'ADP_ADD_FRAGMENT_NOTIFICATION';
+        const templateName = getFragmentTemplateName(this.runtimeControl.getId(), targetAggregation);
+        if (templateName) {
+            CommunicationService.sendAction(setApplicationRequiresReload(true));
+        }
+
         const bundle = await getTextBundle();
-        notifyUser(bundle.getText(textKey, [fragmentName]), 8000);
+        notifyUser(bundle.getText('ADP_ADD_FRAGMENT_NOTIFICATION', [fragmentName]), 8000);
 
         this.handleDialogClose();
     }
@@ -227,22 +230,14 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
     /**
      * Creates an addXML fragment command and pushes it to the command stack
      *
-     * @param fragmentData Fragment Data
+     * @param modifiedValue - modified value
+     * @param templateName - fragment template name
      */
-    private async createFragmentChange(fragmentData: CreateFragmentProps): Promise<string | undefined> {
-        const { fragmentName, index, targetAggregation } = fragmentData;
-
+    private async createFragmentChange(modifiedValue: DeferredXmlFragmentData): Promise<void> {
         const flexSettings = this.rta.getFlexSettings();
 
         const overlay = OverlayRegistry.getOverlay(this.runtimeControl as UI5Element);
         const designMetadata = overlay.getDesignTimeMetadata();
-
-        const modifiedValue = {
-            fragment: `<core:FragmentDefinition xmlns:core='sap.ui.core'></core:FragmentDefinition>`,
-            fragmentPath: `fragments/${fragmentName}.fragment.xml`,
-            index: index ?? 0,
-            targetAggregation: targetAggregation ?? 'content'
-        };
 
         const command = await this.commandExecutor.getCommand<AddFragmentChangeContentType>(
             this.runtimeControl,
@@ -252,85 +247,6 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             designMetadata
         );
 
-        const templateName = this.getFragmentTemplateName(modifiedValue.targetAggregation);
-        if (templateName) {
-            const preparedChange = command.getPreparedChange();
-            const content = preparedChange.getContent();
-            preparedChange.setContent({ ...content, templateName });
-            CommunicationService.sendAction(setApplicationRequiresReload(true));
-        }
         await this.commandExecutor.pushAndExecuteCommand(command);
-        return templateName;
-    }
-
-    /**
-     * Determines fragment template name based on current control name and provided target aggregation
-     * @param targetAggregation - target aggregation name
-     * @returns fragment template name or empty string
-     */
-    private getFragmentTemplateName(targetAggregation: string): string {
-        const currentControlName = this.runtimeControl.getMetadata().getName();
-        if (currentControlName === 'sap.uxap.ObjectPageLayout' && targetAggregation === 'sections') {
-            return 'OBJECT_PAGE_CUSTOM_SECTION';
-        } else if (this.isCustomAction(currentControlName, targetAggregation)) {
-            return 'CUSTOM_ACTION';
-        } else if (this.isObjectPageHeaderField(currentControlName, targetAggregation)) {
-            return 'OBJECT_PAGE_HEADER_FIELD';
-        } else if (targetAggregation === 'columns') {
-            switch (currentControlName) {
-                case MDC_TABLE_TYPE:
-                    return 'V4_MDC_TABLE_COLUMN';
-                case TREE_TABLE_TYPE:
-                case GRID_TABLE_TYPE:
-                    return 'GRID_TREE_TABLE_COLUMN';
-                case ANALYTICAL_TABLE_TYPE:
-                    return 'ANALYTICAL_TABLE_COLUMN';
-                default:
-                    return '';
-            }
-        } else if (currentControlName === 'sap.ui.mdc.Table' && targetAggregation === 'actions') {
-            return 'TABLE_ACTION';
-        }
-        return '';
-    }
-
-    /**
-     * Determines conditions for custom action fragment creation
-     * @param currentControlName - current control name
-     * @param targetAggregation - target aggregation name
-     * @returns true if control and aggregation combination allows to create custom action fragment
-     */
-    private isCustomAction(currentControlName: string, targetAggregation: string): boolean {
-        if (
-            ['sap.f.DynamicPageTitle', 'sap.uxap.ObjectPageHeader', 'sap.uxap.ObjectPageDynamicHeaderTitle'].includes(
-                currentControlName
-            )
-        ) {
-            return targetAggregation === 'actions';
-        } else if (currentControlName === 'sap.m.OverflowToolbar' || currentControlName === 'sap.m.Toolbar') {
-            return targetAggregation === 'content';
-        }
-        return false;
-    }
-
-    /**
-     * Determines conditions for object page header field fragment creation
-     * @param currentControlName - current control name
-     * @param targetAggregation - target aggregation name
-     * @returns true if conditions allow to create object page header field fragment
-     */
-    private isObjectPageHeaderField(currentControlName: string, targetAggregation: string): boolean {
-        if (currentControlName === 'sap.uxap.ObjectPageLayout') {
-            return targetAggregation === 'headerContent';
-        } else if (currentControlName === 'sap.m.FlexBox') {
-            const parentName = this.runtimeControl.getParent()?.getMetadata().getName();
-            if (
-                parentName === 'sap.uxap.ObjectPageDynamicHeaderContent' ||
-                parentName === 'sap.uxap.ObjectPageLayout'
-            ) {
-                return targetAggregation === 'items';
-            }
-        }
-        return false;
     }
 }
