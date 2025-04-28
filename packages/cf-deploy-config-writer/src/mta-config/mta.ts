@@ -1213,8 +1213,8 @@ export class MtaConfig {
      *
      */
     public async addMtaBuildParameters(): Promise<void> {
-        const params = (await this.getBuildParameters()) || {};
-        params['before-all'] ||= [];
+        const params = (await this.getBuildParameters()) ?? {};
+        params['before-all'] ??= [];
         params['before-all'].push({
             builder: 'custom',
             commands: ['npm install']
@@ -1228,7 +1228,7 @@ export class MtaConfig {
      */
     public async addMtaDeployParameters(): Promise<void> {
         let params = await this.getParameters();
-        params = { ...(params || {}), ...{} } as mta.Parameters;
+        params = { ...(params ?? {}), ...{} } as mta.Parameters;
         params[deployMode] = 'html5-repo';
         params[enableParallelDeployments] = true;
         await this.updateParameters(params);
