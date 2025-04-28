@@ -1,5 +1,28 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.27
+
+### Patch Changes
+
+-   Updated dependencies [26f9280]
+    -   @sap-ux/odata-service-inquirer@2.3.4
+
+## 0.0.26
+
+### Patch Changes
+
+-   10f1d60: show draft enabled prompt for compatible business objects
+
+## 0.0.25
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.2.45
+-   @sap-ux/telemetry@0.5.77
+-   @sap-ux/odata-service-inquirer@2.3.3
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/inquirer-common@0.6.39
+
 ## 0.0.24
 
 ### Patch Changes

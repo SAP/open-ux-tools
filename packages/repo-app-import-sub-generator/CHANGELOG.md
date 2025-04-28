@@ -1,5 +1,32 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.2.8
+
+### Patch Changes
+
+-   Updated dependencies [26f9280]
+    -   @sap-ux/odata-service-inquirer@2.3.4
+
+## 0.2.7
+
+### Patch Changes
+
+-   f01b502: Improve test coverage and add App Validation for @sap-ux/repo-app-import-sub-generator
+
+## 0.2.6
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-writer@0.0.106
+-   @sap-ux/fiori-elements-writer@2.3.2
+-   @sap-ux/launch-config@0.9.3
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/odata-service-inquirer@2.3.3
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/fiori-generator-shared@0.11.2
+-   @sap-ux/project-input-validator@0.5.4
+-   @sap-ux/inquirer-common@0.6.39
+
 ## 0.2.5
 
 ### Patch Changes
