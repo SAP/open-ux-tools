@@ -1213,12 +1213,13 @@ export class MtaConfig {
      *
      */
     public async addMtaBuildParameters(): Promise<void> {
-        let params = await this.getBuildParameters();
-        params = { ...(params || {}), ...{} } as mta.ProjectBuildParameters;
+        const params = (await this.getBuildParameters()) || {};
         params['before-all'] ||= [];
-        const buildParams: mta.BuildParameters = { builder: 'custom', commands: ['npm install'] };
-        params['before-all'].push(buildParams);
-        await this.updateBuildParams(params);
+        params['before-all'].push({
+            builder: 'custom',
+            commands: ['npm install']
+        } as mta.BuildParameters);
+        await this.updateBuildParams(params as mta.ProjectBuildParameters);
     }
 
     /**
