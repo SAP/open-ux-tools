@@ -4,6 +4,7 @@ import { coerce, gte, lt } from 'semver';
 
 const MIN_UI5_VER_DARK_THEME = '1.72.0';
 const MIN_UI5_VER_HORIZON_THEME = '1.102.0';
+const MAX_UI5_VER_BELIZE_THEME = '1.136.0';
 
 export const enum ui5ThemeIds {
     SAP_BELIZE = 'sap_belize',
@@ -13,10 +14,11 @@ export const enum ui5ThemeIds {
     SAP_HORIZON_DARK = 'sap_horizon_dark'
 }
 
-const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
+export const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
     [ui5ThemeIds.SAP_BELIZE]: {
         id: ui5ThemeIds.SAP_BELIZE,
-        label: 'Belize'
+        label: 'Belize (deprecated)',
+        untilVersion: MAX_UI5_VER_BELIZE_THEME
     },
     [ui5ThemeIds.SAP_FIORI_3]: {
         id: ui5ThemeIds.SAP_FIORI_3,
@@ -65,12 +67,21 @@ export function getDefaultUI5Theme(ui5Version?: string): string {
 export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
     const ui5VersionSince = ui5Version.replace('snapshot-', '');
     const cleanSemVer = coerce(ui5VersionSince);
-    // If the ui5 version is a valid semver use it to filter themes
     if (cleanSemVer) {
-        return Object.values(ui5Themes).filter((ui5Theme) =>
-            ui5Theme.sinceVersion ? gte(cleanSemVer, ui5Theme.sinceVersion) : ui5Theme
-        );
+        return Object.values(ui5Themes).filter((ui5Theme) => {
+            // Check if the theme is within the valid version range
+            const isValidSinceVersion = ui5Theme.sinceVersion ? gte(cleanSemVer, ui5Theme.sinceVersion) : true;
+            const isValidUntilVersion = ui5Theme.untilVersion ? lt(cleanSemVer, ui5Theme.untilVersion) : true;
+
+            // Include themes that are within their version support range
+            if (isValidSinceVersion && isValidUntilVersion) {
+                return true;
+            }
+
+            return false;
+        });
     }
-    // Return all themes if ui5 version is not a valid semver
+
+    // If the UI5 version is not valid, return all themes
     return Object.values(ui5Themes);
 }
