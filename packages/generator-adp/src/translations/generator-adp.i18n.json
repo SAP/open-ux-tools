@@ -56,6 +56,6 @@
         "appDoesNotSupportAdaptation": "The application that you have selected does not support flexibility. Adaptation projects are only supported with those applications. Please choose an application which supports flexibility.",
         "appDoesNotSupportManifest": "The selected application is not supported by the adaptation project. Please select a different application. For more information, see SAPUI5 Adaptation Project documentation.",
         "extensibilityGenNotFound": "Extensibility Project generator plugin was not found in your dev space, and is required for this action. To proceed, please install the <SAPUI5 Layout Editor & Extensibility> extension.",
-        "creatingExtensionProjectError": "Creating Extension Project failed. To see the error, view the logs."
+        "creatingExtensionProjectError": "Creating the extension project failed. To see the error, view the logs."
     }
 }
