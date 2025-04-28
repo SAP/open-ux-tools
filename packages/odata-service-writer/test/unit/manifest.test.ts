@@ -332,7 +332,7 @@ describe('manifest', () => {
                 type: ServiceType.EDMX,
                 annotations: [
                     {
-                        technicalName: '/dummy/myservice/aname/',
+                        technicalName: '//dummy/myservice/aname//',
                         xml: 'annotation1xml',
                         name: 'annotation1'
                     }

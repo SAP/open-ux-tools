@@ -232,20 +232,6 @@ function removeUnusedAnnotations(
 }
 
 /**
- * Resolves the local service URI by joining the service name and technical name,
- * ensuring that no double slashes appear.
- *
- * @param serviceName - the name of the service (may contain slashes).
- * @param technicalName - the technical name or path of the service (may contain slashes).
- * @returns The resolved local service URI in the format `localService/{serviceName}/{technicalName}.xml`.
- */
-function resolveLocalServiceUri(serviceName: string, technicalName: string): string {
-    // Remove beginning and end forward slashes
-    technicalName = technicalName.replace(/^\/+|\/+$/g, '');
-    return `localService/${serviceName}/${technicalName}.xml`;
-}
-
-/**
  * Adds remote annotations to manifest dataSources and removes unused annotations by the service.
  *
  * @param {Editor} fs - the memfs editor instance
@@ -274,7 +260,7 @@ function addRemoteAnnotationDataSources(
                     )}',Version='0001')/$value/`,
                     type: 'ODataAnnotation',
                     settings: {
-                        localUri: resolveLocalServiceUri(serviceName, remoteAnnotation.technicalName)
+                        localUri: `localService/${serviceName}/${trimSlashes(remoteAnnotation.technicalName)}.xml`
                     }
                 };
                 createdAnnotations.push(remoteAnnotation.name);
@@ -287,7 +273,7 @@ function addRemoteAnnotationDataSources(
             )}',Version='0001')/$value/`,
             type: 'ODataAnnotation',
             settings: {
-                localUri: resolveLocalServiceUri(serviceName, serviceRemoteAnnotations.technicalName)
+                localUri: `localService/${serviceName}/${trimSlashes(serviceRemoteAnnotations.technicalName)}.xml`
             }
         };
         createdAnnotations.push(serviceRemoteAnnotations.name);
@@ -539,4 +525,20 @@ export async function updateManifest(
     // Update manifest.json services
     enhanceManifest(service, convertedManifest, webappPath, fs, forceServiceUpdate);
     fs.writeJSON(manifestPath, convertedManifest);
+}
+
+/**
+ * Trims leading and trailing slashes from the input string.
+ *
+ * @param input - the string from which leading and trailing slashes will be removed.
+ * @returns The input string with leading and trailing slashes removed.
+ */
+function trimSlashes(input: string): string {
+    while (input.startsWith('/')) {
+        input = input.slice(1);
+    }
+    while (input.endsWith('/')) {
+        input = input.slice(0, -1);
+    }
+    return input;
 }
