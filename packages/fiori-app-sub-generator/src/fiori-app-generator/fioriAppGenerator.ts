@@ -178,7 +178,8 @@ export class FioriAppGenerator extends Generator {
                 let serviceAnswers = await promptOdataServiceAnswers(
                     options,
                     FioriAppGenerator.logger as Logger,
-                    this.env.adapter as unknown as Adapter
+                    this.env.adapter as unknown as Adapter,
+                    cachedService?.connectedSystem
                 );
                 /** Back button issue temp fix */
                 // Persist derived state to facilitate backwards navigation

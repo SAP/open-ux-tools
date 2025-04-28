@@ -1,7 +1,8 @@
-import type { BackendSystem } from '@sap-ux/store';
-import { TelemetrySapSystemType, ApiHubType, TelemetryBusinessHubType, type Service } from '../../../src/types';
-import { getTelemetryBusinessHubType, getTelemetrySapSystemType } from '../../../src/utils/telemetry';
 import { DestinationProxyType, WebIDEUsage } from '@sap-ux/btp-utils';
+import type { ConnectedSystem } from '@sap-ux/odata-service-inquirer/src/types';
+import type { BackendSystem } from '@sap-ux/store';
+import { ApiHubType } from '../../../src/types';
+import { getTelemetryBusinessHubType, getTelemetrySapSystemType } from '../../../src/utils/telemetry';
 
 describe('Test utils', () => {
     test('getTelemetrySapSystemType - ABAP', () => {
@@ -10,14 +11,14 @@ describe('Test utils', () => {
                 url: 'http:/on-prem-system:8080',
                 name: 'on-prem-system'
             } as BackendSystem
-        } as Service['connectedSystem']);
+        } as ConnectedSystem);
         expect(sapSystemType).toBe('ABAP');
 
         sapSystemType = getTelemetrySapSystemType({
             destination: {
                 ProxyType: DestinationProxyType.ON_PREMISE
             }
-        } as Service['connectedSystem']);
+        } as ConnectedSystem);
         expect(sapSystemType).toBe('ABAP');
     });
 
@@ -28,19 +29,19 @@ describe('Test utils', () => {
                 name: 'on-prem-system',
                 serviceKeys: 'serviceKeys'
             } as BackendSystem
-        } as Service['connectedSystem']);
+        } as ConnectedSystem);
         expect(sapSystemType).toBe('SCP');
 
         sapSystemType = getTelemetrySapSystemType({
             destination: {
                 WebIDEUsage: WebIDEUsage.ABAP_CLOUD
             }
-        } as Service['connectedSystem']);
+        } as ConnectedSystem);
         expect(sapSystemType).toBe('SCP');
     });
 
     test('getTelemetrySapSystemType - CF', () => {
-        const sapSystemType = getTelemetrySapSystemType({ serviceProvider: {} } as Service['connectedSystem']);
+        const sapSystemType = getTelemetrySapSystemType({ serviceProvider: {} } as ConnectedSystem);
         expect(sapSystemType).toBe('CF');
     });
 

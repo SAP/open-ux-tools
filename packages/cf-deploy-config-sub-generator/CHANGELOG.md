@@ -1,5 +1,14 @@
 # @sap-ux/cf-deploy-config-sub-generator
 
+## 0.1.54
+
+### Patch Changes
+
+-   65e178f: align npm modules
+-   Updated dependencies [65e178f]
+    -   @sap-ux/deploy-config-generator-shared@0.0.46
+    -   @sap-ux/cf-deploy-config-writer@0.2.10
+
 ## 0.1.53
 
 ### Patch Changes
