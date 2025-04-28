@@ -26,7 +26,6 @@ import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
 import { ConfigPrompter } from '../src/app/questions/configuration';
-import { PROJECT_INPUT_VALIDATOR_NS } from '@sap-ux/project-input-validator/src/i18n';
 
 jest.mock('@sap-devx/feature-toggle-node', () => ({
     // Is BAS this will mean that the layer is CUSTOMER_BASE
