@@ -1,5 +1,6 @@
 import LrepConnector from 'sap/ui/fl/LrepConnector';
 import FakeLrepConnector from 'sap/ui/fl/FakeLrepConnector';
+import { getAdditionalChangeInfo } from '../utils/additional-change-info';
 
 import { CHANGES_API_PATH, FlexChange, getFlexSettings } from './common';
 
@@ -37,17 +38,25 @@ export async function create(changes: FlexChange | FlexChange[]): Promise<void> 
                 change.support.generator = settings.generator;
             }
 
+            const additionalChangeInfo = getAdditionalChangeInfo(change);
+
             if (typeof FakeLrepConnector.fileChangeRequestNotifier === 'function' && change.fileName) {
                 try {
-                    FakeLrepConnector.fileChangeRequestNotifier(change.fileName, 'create', change);
+                    FakeLrepConnector.fileChangeRequestNotifier(change.fileName, 'create', change, additionalChangeInfo);
                 } catch (e) {
                     // exceptions in the listener call are ignored
                 }
             }
 
+            const body = {
+                change,
+                additionalChangeInfo
+            };
+
+
             return fetch(CHANGES_API_PATH, {
                 method: 'POST',
-                body: JSON.stringify(change, null, 2),
+                body: JSON.stringify(body, null, 2),
                 headers: {
                     'content-type': 'application/json'
                 }

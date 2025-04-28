@@ -10,7 +10,7 @@ import { writeApplicationInfoSettings } from '@sap-ux/fiori-tools-settings';
 import type { DebugOptions, FioriOptions } from '@sap-ux/launch-config';
 import { createLaunchConfig } from '@sap-ux/launch-config';
 import type { Logger } from '@sap-ux/logger';
-import { DatasourceType, OdataVersion } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, OdataVersion, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 import type { CdsAnnotationsInfo, EdmxAnnotationsInfo } from '@sap-ux/odata-service-writer';
 import type { CapProjectType, CdsUi5PluginInfo, CdsVersionInfo } from '@sap-ux/project-access';
 import { isCapJavaProject, toReferenceUri } from '@sap-ux/project-access';
@@ -172,7 +172,7 @@ export async function getCdsAnnotations(
  * @param connectedSystem - The connected system object.
  * @returns {boolean} `true` if the connected system is hosted on BTP, otherwise `false`.
  */
-export function isBTPHosted(connectedSystem?: Service['connectedSystem']): boolean {
+export function isBTPHosted(connectedSystem?: ConnectedSystem): boolean {
     return (
         !!connectedSystem?.backendSystem?.serviceKeys ||
         (connectedSystem?.destination ? isAbapEnvironmentOnBtp(connectedSystem.destination) : false)

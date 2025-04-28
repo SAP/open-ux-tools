@@ -1,5 +1,20 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.22
+
+### Patch Changes
+
+-   26f9280: Adds connection caching to prevent re-auth via browser
+-   Updated dependencies [26f9280]
+    -   @sap-ux/odata-service-inquirer@2.3.4
+
+## 0.0.21
+
+### Patch Changes
+
+-   Updated dependencies [7a87b92]
+    -   @sap-ux/ui5-application-inquirer@0.12.1
+
 ## 0.0.20
 
 ### Patch Changes
