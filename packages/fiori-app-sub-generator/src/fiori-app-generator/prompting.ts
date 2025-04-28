@@ -4,6 +4,7 @@ import type { InputQuestion } from '@sap-ux/inquirer-common';
 import type { Logger } from '@sap-ux/logger';
 import {
     type CapService,
+    type ConnectedSystem,
     DatasourceType,
     type OdataServicePromptOptions,
     OdataVersion,
@@ -172,12 +173,14 @@ export async function promptUI5ApplicationAnswers(
  * @param options
  * @param logger
  * @param adapter
+ * @param connectedSystem
  * @returns {Promise<Service>}
  */
 export async function promptOdataServiceAnswers(
     options: OdataServiceInquirerOptions,
     logger: Logger,
-    adapter: Adapter
+    adapter: Adapter,
+    connectedSystem?: ConnectedSystem
 ): Promise<Service> {
     let inquirerAdapter;
     // type `any` will be replaced when we can import ESM modules
@@ -196,7 +199,8 @@ export async function promptOdataServiceAnswers(
         logger,
         isFeatureEnabled(Features.enableGAIntegration),
         ClientFactory.getTelemetryClient(),
-        getHostEnvironment() !== hostEnvironment.cli
+        getHostEnvironment() !== hostEnvironment.cli,
+        connectedSystem
     );
 
     const service: Service = {

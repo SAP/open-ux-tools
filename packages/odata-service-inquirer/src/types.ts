@@ -90,23 +90,25 @@ export interface OdataServiceAnswers {
      * The connected system will allow downstream consumers to access the connected system without creating new connections.
      *
      */
-    connectedSystem?: {
-        /**
-         * Convienence property to pass the connected system
-         */
-        serviceProvider: ServiceProvider;
+    connectedSystem?: ConnectedSystem;
+}
 
-        /**
-         * The persistable backend system representation of the connected service provider
-         * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
-         */
-        backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+export interface ConnectedSystem {
+    /**
+     * Convienence property to pass the connected system
+     */
+    serviceProvider: ServiceProvider;
 
-        /**
-         * The destination information for the connected system
-         */
-        destination?: Destination;
-    };
+    /**
+     * The persistable backend system representation of the connected service provider
+     * `newOrUpdated` is set to true if the system was newly created or updated during the connection validation process and should be considered for storage.
+     */
+    backendSystem?: BackendSystem & { newOrUpdated?: boolean };
+
+    /**
+     * The destination information for the connected system
+     */
+    destination?: Destination;
 }
 
 /**
