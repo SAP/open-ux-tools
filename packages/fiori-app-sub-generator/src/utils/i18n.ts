@@ -18,7 +18,7 @@ export async function initI18nFioriAppSubGenerator(): Promise<void> {
         },
         lng: 'en',
         fallbackLng: 'en',
-       // preload: ['en'],
+        // preload: ['en'],
         defaultNS: fioriAppSubGeneratorNs,
         ns: [fioriAppSubGeneratorNs],
         interpolation: {
