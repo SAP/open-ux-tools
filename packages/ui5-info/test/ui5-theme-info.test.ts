@@ -45,6 +45,28 @@ describe('getUi5Themes', () => {
         expect(getUi5Themes('1.155.0')).toEqual(allExpectedThemesExcludingBelize);
     });
 
+    test('getUi5Themes - Edge Case for Theme ABC', () => {
+        // Add a mock theme ABC
+        const mockThemeABC = {
+            id: 'ABC',
+            label: 'Theme ABC',
+            sinceVersion: '1.90.0',
+            untilVersion: '1.100.0'
+        };
+
+        const extendedUi5Themes = {
+            ...allExpectedThemes,
+            ABC: mockThemeABC
+        } as any;
+
+        // Test cases for theme ABC
+        expect(getUi5Themes('1.89', extendedUi5Themes)).not.toContainEqual(mockThemeABC); // Before sinceVersion
+        expect(getUi5Themes('1.90', extendedUi5Themes)).toContainEqual(mockThemeABC); // At sinceVersion
+        expect(getUi5Themes('1.95', extendedUi5Themes)).toContainEqual(mockThemeABC); // Within range
+        expect(getUi5Themes('1.100', extendedUi5Themes)).not.toContainEqual(mockThemeABC); // At untilVersion
+        expect(getUi5Themes('1.101', extendedUi5Themes)).not.toContainEqual(mockThemeABC); // After untilVersion
+    });
+
     test.each([
         { ui5Version: '1.64', expectedTheme: ui5ThemeIds.SAP_FIORI_3 },
         { ui5Version: '1.72.1', expectedTheme: ui5ThemeIds.SAP_FIORI_3 },
