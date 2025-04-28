@@ -1,5 +1,11 @@
 # @sap-ux/ui-components
 
+## 1.26.3
+
+### Patch Changes
+
+-   46c775f: Icons update. Update icons "SwitchOff" and "SwitchOn"
+
 ## 1.26.2
 
 ### Patch Changes

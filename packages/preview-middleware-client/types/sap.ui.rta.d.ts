@@ -80,6 +80,19 @@ declare module 'sap/ui/rta/plugin/AddXMLAtExtensionPoint' {
     }
 }
 
+declare module 'sap/ui/rta/plugin/AddXMLPlugin' {
+    import type CommandFactory from 'sap/ui/rta/command/CommandFactory';
+
+    interface Arguments {
+        commandFactory: CommandFactory;
+        fragmentHandler: (overlay: UI5Element, extensionPointInfo: uknown) => Promise<void | object>;
+    }
+
+    export default class AddXMLPlugin {
+        constructor(_: Arguments) {}
+    }
+}
+
 declare module 'sap/ui/rta/command/CommandFactory' {
     import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
     import type CompositeCommand from 'sap/ui/rta/command/CompositeCommand';
@@ -141,10 +154,11 @@ declare module 'sap/ui/rta/command/OutlineService' {
 
 declare module 'sap/ui/fl/FakeLrepConnector' {
     export default class FakeLrepConnector {
-        static fileChangeRequestNotifier?: <T extends object>(
+        static fileChangeRequestNotifier?: <T extends object, U extends object>(
             fileName: string,
             kind: 'delete' | 'create',
-            change?: T
+            change?: T,
+            additionalChangeInfo?: U,
         ) => void;
         static enableFakeConnector: () => void;
     }
@@ -277,6 +291,7 @@ declare module 'sap/ui/rta/RuntimeAuthoring' {
         getService: <T>(name: 'outline' | 'controllerExtension' | string) => Promise<T>;
         getSelection: () => ElementOverlay[];
         getDefaultPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
+        getPlugins: () => { [key: string]: uknown; contextMenu: ContextMenu };
         setPlugins: (defaultPlugins: object) => void;
         getRootControlInstance: () => {
             getManifest(): Manifest;
