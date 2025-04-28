@@ -1,5 +1,11 @@
 # @sap-ux/odata-annotation-core
 
+## 0.2.3
+
+### Patch Changes
+
+-   2a16531: fix: `toFullyQualifiedPath` replaces unknown namespace or alias with `undefined`.
+
 ## 0.2.2
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.46
+
+### Patch Changes
+
+-   55e7ebd: Fixes re-authentication should not be required
+
 ## 1.2.45
 
 ### Patch Changes

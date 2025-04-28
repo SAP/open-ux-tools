@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.35
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+
 ## 0.13.34
 
 ### Patch Changes
