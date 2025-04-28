@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.10
+
+### Patch Changes
+
+-   65e178f: align npm modules
+
 ## 0.2.9
 
 ### Patch Changes
