@@ -1,5 +1,43 @@
 # @sap-ux/deploy-config-sub-generator
 
+## 0.1.22
+
+### Patch Changes
+
+-   65e178f: align npm modules
+-   Updated dependencies [65e178f]
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.54
+    -   @sap-ux/deploy-config-generator-shared@0.0.46
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.67
+
+## 0.1.21
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-sub-generator@0.0.66
+
+## 0.1.20
+
+### Patch Changes
+
+-   Updated dependencies [26f9280]
+    -   @sap-ux/odata-service-inquirer@2.3.4
+
+## 0.1.19
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/cf-deploy-config-sub-generator@0.1.53
+    -   @sap-ux/abap-deploy-config-sub-generator@0.0.65
+    -   @sap-ux/project-access@1.29.21
+    -   @sap-ux/odata-service-inquirer@2.3.3
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/fiori-generator-shared@0.11.2
+    -   @sap-ux/inquirer-common@0.6.39
+    -   @sap-ux/deploy-config-generator-shared@0.0.45
+
 ## 0.1.18
 
 ### Patch Changes

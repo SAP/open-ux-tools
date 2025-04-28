@@ -223,6 +223,10 @@ export interface CommonChangeProperties {
     texts: Record<string, unknown>;
 }
 
+export interface CommonAdditionalChangeInfoProperties {
+    templateName?: string;
+}
+
 export interface ManifestChangeProperties {
     fileName: string;
     fileType: string;
