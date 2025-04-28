@@ -37,6 +37,7 @@ export function parseAdpJsonInput(jsonString: string): AdpJsonInput | undefined 
 
         return parsed;
     } catch (error) {
+        console.error('Failed to parse adp JSON input:', error.message);
         return undefined;
     }
 }
