@@ -1906,17 +1906,18 @@ export function initIcons(): void {
                 </svg>
             ),
             [UiIcons.SwitchOff]: (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <path d="M4 8H12" stroke={COLORS.default} strokeLinecap="round" />
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path
+                        d="M9 5.5C9.27614 5.5 9.5 5.72386 9.5 6C9.5 6.27614 9.27614 6.5 9 6.5L3 6.5C2.72386 6.5 2.5 6.27614 2.5 6C2.5 5.72386 2.72386 5.5 3 5.5L9 5.5Z"
+                        fill={COLORS.default}
+                    />
                 </svg>
             ),
             [UiIcons.SwitchOn]: (
-                <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path
-                        d="M2 8.5L6 12.5L14 4.5"
-                        stroke={COLORS.default}
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
+                        d="M9.22461 3.08203C9.41869 2.95387 9.68265 2.97562 9.85352 3.14648C10.0244 3.31735 10.0461 3.58131 9.91797 3.77539L9.85352 3.85351L4.85351 8.85352C4.68265 9.02438 4.41869 9.04613 4.22461 8.91797L4.14648 8.85352L2.14648 6.85351L2.08203 6.77539C1.95387 6.58131 1.97562 6.31735 2.14648 6.14648C2.31735 5.97562 2.58131 5.95387 2.77539 6.08203L2.85351 6.14648L4.5 7.79297L9.14648 3.14648L9.22461 3.08203Z"
+                        fill={COLORS.default}
                     />
                 </svg>
             ),
