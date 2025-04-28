@@ -232,6 +232,21 @@ function removeUnusedAnnotations(
 }
 
 /**
+ * Resolves the local service URI by joining the service name and technical name,
+ * ensuring that no double slashes appear.
+ *
+ * @param serviceName - the name of the service (may contain slashes).
+ * @param technicalName - the technical name or path of the service (may contain slashes).
+ * @returns The resolved local service URI in the format `localService/{serviceName}/{technicalName}.xml`.
+ */
+function resolveLocalServiceUri(serviceName: string, technicalName: string): string {
+    // Remove beginning and end forward slashes
+    serviceName = serviceName.replace(/^\/+|\/+$/g, '');
+    technicalName = technicalName.replace(/^\/+|\/+$/g, '');
+    return `localService/${serviceName}/${technicalName}.xml`;
+}
+
+/**
  * Adds remote annotations to manifest dataSources and removes unused annotations by the service.
  *
  * @param {Editor} fs - the memfs editor instance
@@ -260,7 +275,7 @@ function addRemoteAnnotationDataSources(
                     )}',Version='0001')/$value/`,
                     type: 'ODataAnnotation',
                     settings: {
-                        localUri: `localService/${serviceName}/${remoteAnnotation.technicalName}.xml`
+                        localUri: resolveLocalServiceUri(serviceName, remoteAnnotation.technicalName)
                     }
                 };
                 createdAnnotations.push(remoteAnnotation.name);
@@ -273,7 +288,7 @@ function addRemoteAnnotationDataSources(
             )}',Version='0001')/$value/`,
             type: 'ODataAnnotation',
             settings: {
-                localUri: `localService/${serviceName}/${serviceRemoteAnnotations.technicalName}.xml`
+                localUri: resolveLocalServiceUri(serviceName, serviceRemoteAnnotations.technicalName)
             }
         };
         createdAnnotations.push(serviceRemoteAnnotations.name);

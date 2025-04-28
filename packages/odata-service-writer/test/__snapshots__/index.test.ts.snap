@@ -2900,7 +2900,7 @@ Object {
         \\"uri\\": \\"/sap/opu/odata/IWFND/CATALOGSERVICE;v=2/Annotations(TechnicalName='%2FSEPM_XYZ%2FSERVICE',Version='0001')/$value/\\",
         \\"type\\": \\"ODataAnnotation\\",
         \\"settings\\": {
-          \\"localUri\\": \\"localService/mainService//SEPM_XYZ/SERVICE.xml\\"
+          \\"localUri\\": \\"localService/mainService/SEPM_XYZ/SERVICE.xml\\"
         }
       },
       \\"mainService\\": {
