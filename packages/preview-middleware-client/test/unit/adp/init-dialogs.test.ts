@@ -13,16 +13,6 @@ import {
 } from '../../../src/adp/init-dialogs';
 import { getTextBundle } from '../../../src/i18n';
 
-const addFragmentServiceMock = jest.fn();
-jest.mock('open/ux/preview/client/adp/add-fragment', () => ({
-    initAddXMLPlugin: addFragmentServiceMock
-}));
-
-const extendControllerServiceMock = jest.fn();
-jest.mock('open/ux/preview/client/adp/extend-controller', () => ({
-    initExtendControllerPlugin: extendControllerServiceMock
-}));
-
 describe('Dialogs', () => {
     let isReuseComponentMock = jest.fn().mockReturnValue(false);
     describe('initDialogs', () => {
@@ -40,28 +30,6 @@ describe('Dialogs', () => {
             });
             await initDialogs(rtaMock as unknown as RuntimeAuthoring, [], { major: 1, minor: 118 });
             expect(addMenuItemSpy).toHaveBeenCalledTimes(2);
-        });
-
-        test('should use addFragmentService if UI5 version is higher than 1.136', async () => {
-            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
-            rtaMock.getDefaultPlugins.mockReturnValueOnce({
-                contextMenu: {
-                    addMenuItem: jest.fn()
-                }
-            });
-            await initDialogs(rtaMock as unknown as RuntimeAuthoring, [], { major: 1, minor: 137 });
-            expect(addFragmentServiceMock).toHaveBeenCalled();
-        });
-
-        test('should use addFragmentService if UI5 version is higher than 1.136', async () => {
-            const rtaMock = new RuntimeAuthoringMock({} as RTAOptions);
-            rtaMock.getDefaultPlugins.mockReturnValueOnce({
-                contextMenu: {
-                    addMenuItem: jest.fn()
-                }
-            });
-            await initDialogs(rtaMock as unknown as RuntimeAuthoring, [], { major: 1, minor: 137 });
-            expect(extendControllerServiceMock).toHaveBeenCalled();
         });
     });
 

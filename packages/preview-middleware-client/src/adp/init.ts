@@ -28,7 +28,12 @@ export default async function (rta: RuntimeAuthoring) {
     const defaultPlugins = rta.getDefaultPlugins();
     rta.setPlugins(defaultPlugins);
 
-    await initDialogs(rta, syncViewsIds, ui5VersionInfo);
+    if (isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 136 })) {
+        await initDialogs(rta, syncViewsIds, ui5VersionInfo);
+    } else {
+        (await import('open/ux/preview/client/adp/add-fragment')).initAddXMLPlugin(rta);
+        (await import('open/ux/preview/client/adp/extend-controller')).initExtendControllerPlugin(rta);
+    }
 
     if (!isLowerThanMinimalUi5Version(ui5VersionInfo, { major: 1, minor: 78 })) {
         const ExtensionPointService = (await import('open/ux/preview/client/adp/extension-point')).default;
@@ -38,8 +43,6 @@ export default async function (rta: RuntimeAuthoring) {
 
     const applicationType = getApplicationType(rta.getRootControlInstance().getManifest());
     const quickActionRegistries = await loadDefinitions(applicationType);
-
-    
 
     await init(rta, quickActionRegistries);
 

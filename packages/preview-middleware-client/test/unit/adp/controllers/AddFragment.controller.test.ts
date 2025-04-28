@@ -19,6 +19,7 @@ import { type AddFragmentChangeContentType } from 'sap/ui/fl/Change';
 import { AddFragmentData } from '../../../../src/adp/add-fragment';
 import * as addXMLAdditionalInfo from '../../../../src/cpe/additional-change-info/add-xml-additional-info';
 import { CommunicationService } from '../../../../src/cpe/communication-service';
+import * as adpUtils from '../../../../src/adp/utils';
 
 describe('AddFragment', () => {
     beforeAll(() => {
