@@ -1,41 +1,42 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
+import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import {
-    TelemetryHelper,
-    sendTelemetry,
-    type ILogWrapper,
-    getHostEnvironment,
-    hostEnvironment,
-    getDefaultTargetFolder
-} from '@sap-ux/fiori-generator-shared';
-import { ToolsLogger } from '@sap-ux/logger';
-import {
+    FlexLayer,
     SystemLookup,
     fetchPublicVersions,
     generate,
     getConfig,
     getConfiguredProvider,
     loadApps,
+    type AttributesAnswers,
+    type ConfigAnswers,
     type UI5Version
 } from '@sap-ux/adp-tooling';
 import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import { type AttributesAnswers, type ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
+import {
+    TelemetryHelper,
+    getDefaultTargetFolder,
+    getHostEnvironment,
+    hostEnvironment,
+    sendTelemetry,
+    type ILogWrapper
+} from '@sap-ux/fiori-generator-shared';
+import { ToolsLogger } from '@sap-ux/logger';
 
-import { getFlexLayer } from './layer';
-import { t, initI18n } from '../utils/i18n';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { EventName } from '../telemetryEvents';
+import { getPackageInfo, installDependencies } from '../utils/deps';
+import { initI18n, t } from '../utils/i18n';
 import AdpFlpConfigLogger from '../utils/logger';
+import { getFirstArgAsString, parseAdpJsonInput } from '../utils/parse-adp-json-input';
+import { getFlexLayer } from './layer';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
-import { getPackageInfo, installDependencies } from '../utils/deps';
-import type { AdpGeneratorOptions, AttributePromptOptions } from './types';
-import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-arg';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
-import { isString } from '../utils/type-guards';
+import { validateAdpJsonInput } from './questions/helper/validators';
+import type { AdpGeneratorOptions, AdpJsonInput, AttributePromptOptions } from './types';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -84,7 +85,7 @@ export default class extends Generator {
      * JSON object representing the complete adaptation project configuration,
      * passed as a CLI argument.
      */
-    private jsonInput?: Record<string, string>;
+    private readonly jsonInput?: AdpJsonInput;
     /**
      * Instance of AbapServiceProvider.
      */
@@ -94,11 +95,9 @@ export default class extends Generator {
      */
     private publicVersions: UI5Version;
     /**
-     * @returns true if the current layer is based on a customer base.
+     * Indicates if the current layer is based on a customer base.
      */
-    private get isCustomerBase(): boolean {
-        return this.layer === FlexLayer.CUSTOMER_BASE;
-    }
+    private isCustomerBase: boolean;
 
     /**
      * Creates an instance of the generator.
@@ -116,7 +115,7 @@ export default class extends Generator {
 
         this._setupLogging();
         const jsonInputString = getFirstArgAsString(args);
-        this.jsonInput = parseJsonInput(jsonInputString);
+        this.jsonInput = parseAdpJsonInput(jsonInputString);
         if (!this.jsonInput) {
             this._setupPrompts();
         }
@@ -126,6 +125,7 @@ export default class extends Generator {
         await initI18n();
 
         this.layer = await getFlexLayer();
+        this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
 
         this.systemLookup = new SystemLookup(this.toolsLogger);
 
@@ -191,12 +191,15 @@ export default class extends Generator {
         }
 
         try {
+            const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
+            const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
+
             const packageJson = getPackageInfo();
             const config = await getConfig({
-                provider: this._getProvider(),
+                provider,
                 configAnswers: this.configAnswers,
                 attributeAnswers: this.attributeAnswers,
-                publicVersions: this._getPublicVersions(),
+                publicVersions,
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger
@@ -279,21 +282,18 @@ export default class extends Generator {
         }
 
         const {
-            // System config
             system,
             client,
             username,
             password,
-            // Application config
             application: baseApplicationName,
             applicationTitle,
-            applicationComponentHierarchy = '',
             targetFolder = '/home/user/projects',
             projectName = getDefaultProjectName(targetFolder, `${baseApplicationName}.variant`),
             namespace = getDefaultNamespace(projectName, this.isCustomerBase)
         } = this.jsonInput;
 
-        await this._validateJsonInput({
+        await validateAdpJsonInput(this.systemLookup, this.isCustomerBase, {
             projectName,
             targetFolder,
             namespace,
@@ -320,8 +320,7 @@ export default class extends Generator {
             system,
             username,
             password,
-            application,
-            applicationComponentHierarchy
+            application
         };
 
         this.attributeAnswers = {
@@ -333,62 +332,6 @@ export default class extends Generator {
             ui5Version: '',
             enableTypeScript: false
         };
-    }
-
-    /**
-     * Validates the json input containing project configuration.
-     *
-     * @param param Object containing values from the json input being validated.
-     * @param param.projectName The name of the project.
-     * @param param.targetFolder The name of the folder.
-     * @param param.namespace The project namespace.
-     * @param param.system The system name.
-     */
-    private async _validateJsonInput({
-        projectName,
-        targetFolder,
-        namespace,
-        system
-    }: {
-        projectName: string;
-        targetFolder: string;
-        namespace: string;
-        system: string;
-    }): Promise<void> {
-        let validationResult = validateProjectName(projectName, targetFolder, this.isCustomerBase);
-        if (isString(validationResult)) {
-            throw new Error(validationResult);
-        }
-
-        validationResult = validateNamespaceAdp(namespace, projectName, this.isCustomerBase);
-        if (isString(validationResult)) {
-            throw new Error(validationResult);
-        }
-
-        const systemEndpoint = await this.systemLookup.getSystemByName(system);
-        if (!systemEndpoint) {
-            throw new Error(t('error.systemNotFound', { systemName: system }));
-        }
-    }
-
-    /**
-     * @returns The instance of the abap service provider.
-     */
-    private _getProvider(): AbapServiceProvider {
-        if (this.jsonInput) {
-            return this.abapProvider;
-        }
-        return this.prompter.provider;
-    }
-
-    /**
-     * @returns The ui5 public versions info.
-     */
-    private _getPublicVersions(): UI5Version {
-        if (this.jsonInput) {
-            return this.publicVersions;
-        }
-        return this.prompter.ui5.publicVersions;
     }
 }
 

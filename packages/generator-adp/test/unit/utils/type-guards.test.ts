@@ -1,4 +1,4 @@
-import { isRecordOfStrings, isString } from '../../../src/utils/type-guards';
+import { isAdpJsonInput, isString } from '../../../src/utils/type-guards';
 
 describe('isString', () => {
     it('should return true for string literals', () => {
@@ -23,39 +23,65 @@ describe('isString', () => {
     });
 });
 
-describe('isRecordOfStrings', () => {
-    it('should return true for plain objects with only string values', () => {
-        expect(isRecordOfStrings({ a: 'hello', b: 'world' })).toBe(true);
-        expect(isRecordOfStrings({})).toBe(true); // empty object is valid
+describe('isAdpJsonInput', () => {
+    it('should return true when all required fields are passed', () => {
+        const inputWithRequiredFields = {
+            system: 'system',
+            application: 'application',
+            client: 'client',
+            username: 'username',
+            password: 'password',
+            applicationTitle: 'applicationTitle'
+        };
+        expect(isAdpJsonInput(inputWithRequiredFields)).toBe(true);
+        expect(
+            isAdpJsonInput({
+                ...inputWithRequiredFields,
+                targetFolder: 'targetFolder',
+                projectName: 'projectName',
+                namespace: 'namespace'
+            })
+        ).toBe(true);
     });
 
-    it('should return false for plain objects with non-string values', () => {
-        expect(isRecordOfStrings({ a: 123 })).toBe(false);
-        expect(isRecordOfStrings({ a: 'str', b: true })).toBe(false);
-        expect(isRecordOfStrings({ a: undefined })).toBe(false);
-        expect(isRecordOfStrings({ a: null })).toBe(false);
-        expect(isRecordOfStrings({ a: 'valid', b: {} })).toBe(false);
+    it('should return false if some of required fields is missing', () => {
+        expect(
+            isAdpJsonInput({
+                system: 'system'
+            })
+        ).toBe(false);
+        expect(isAdpJsonInput({})).toBe(false);
     });
 
     it('should return false for non-object types', () => {
-        expect(isRecordOfStrings(null)).toBe(false);
-        expect(isRecordOfStrings(undefined)).toBe(false);
-        expect(isRecordOfStrings('string')).toBe(false);
-        expect(isRecordOfStrings(123)).toBe(false);
-        expect(isRecordOfStrings(['a', 'b'])).toBe(false);
-        expect(isRecordOfStrings(() => {})).toBe(false);
+        expect(isAdpJsonInput(null)).toBe(false);
+        expect(isAdpJsonInput(undefined)).toBe(false);
+        expect(isAdpJsonInput('string')).toBe(false);
+        expect(isAdpJsonInput(123)).toBe(false);
+        expect(isAdpJsonInput(['a', 'b'])).toBe(false);
+        expect(isAdpJsonInput(() => {})).toBe(false);
     });
 
-    it('should return false for object with non-plain prototype', () => {
-        const obj = Object.create(null); // not a plain object
-        obj.a = 'value';
-        expect(isRecordOfStrings(obj)).toBe(false);
+    it('should return false for input object with non-plain prototype', () => {
+        const input = Object.create(null); // not a plain object
+        input.system = 'system';
+        input.application = 'application';
+        input.client = 'client';
+        input.username = 'username';
+        input.password = 'password';
+        input.applicationTitle = 'applicationTitle';
+        expect(isAdpJsonInput(input)).toBe(false);
     });
 
-    it('should return false for objects created with custom constructors', () => {
-        class MyClass {
-            a = 'hello';
+    it('should return false for input objects created with custom constructors', () => {
+        class JsonInput {
+            system = 'system';
+            application = 'application';
+            client = 'client';
+            username = 'username';
+            password = 'password';
+            applicationTitle = 'applicationTitle';
         }
-        expect(isRecordOfStrings(new MyClass())).toBe(false);
+        expect(isAdpJsonInput(new JsonInput())).toBe(false);
     });
 });
