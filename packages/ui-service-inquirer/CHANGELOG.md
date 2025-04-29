@@ -1,5 +1,70 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.29
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+-   @sap-ux/abap-deploy-config-inquirer@1.2.47
+-   @sap-ux/odata-service-inquirer@2.3.5
+
+## 0.0.28
+
+### Patch Changes
+
+-   Updated dependencies [55e7ebd]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.46
+
+## 0.0.27
+
+### Patch Changes
+
+-   Updated dependencies [26f9280]
+    -   @sap-ux/odata-service-inquirer@2.3.4
+
+## 0.0.26
+
+### Patch Changes
+
+-   10f1d60: show draft enabled prompt for compatible business objects
+
+## 0.0.25
+
+### Patch Changes
+
+-   @sap-ux/abap-deploy-config-inquirer@1.2.45
+-   @sap-ux/telemetry@0.5.77
+-   @sap-ux/odata-service-inquirer@2.3.3
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.0.24
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.0
+-   @sap-ux/odata-service-inquirer@2.3.2
+-   @sap-ux/telemetry@0.5.76
+-   @sap-ux/abap-deploy-config-inquirer@1.2.44
+-   @sap-ux/inquirer-common@0.6.38
+
+## 0.0.23
+
+### Patch Changes
+
+-   @sap-ux/odata-service-inquirer@2.3.1
+-   @sap-ux/abap-deploy-config-inquirer@1.2.43
+-   @sap-ux/inquirer-common@0.6.37
+-   @sap-ux/telemetry@0.5.75
+-   @sap-ux/axios-extension@1.20.0
+
+## 0.0.22
+
+### Patch Changes
+
+-   Updated dependencies [afd26c8]
+    -   @sap-ux/odata-service-inquirer@2.3.0
+
 ## 0.0.21
 
 ### Patch Changes

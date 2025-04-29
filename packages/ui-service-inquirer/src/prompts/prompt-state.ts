@@ -50,7 +50,8 @@ export class PromptState {
         PromptState.systemSelection = {};
         PromptState.serviceConfig = {
             content: '',
-            serviceName: ''
+            serviceName: '',
+            showDraftEnabled: false
         };
     }
 
@@ -61,7 +62,8 @@ export class PromptState {
     static resetServiceConfig(): void {
         PromptState.serviceConfig = {
             content: '',
-            serviceName: ''
+            serviceName: '',
+            showDraftEnabled: false
         };
     }
 }

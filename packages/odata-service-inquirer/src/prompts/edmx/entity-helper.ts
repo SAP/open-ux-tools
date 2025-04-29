@@ -30,7 +30,6 @@ export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformat
  *
  * @param edmx metadata string
  * @param options
- * @param options.useEntityTypeAsName Choice options will use the non-namepspaced entity set type as the choice name (label) and value property `entitySetName` when true, otherwise the entity set name will be used.
  * @param options.entitySetFilter
  *     `filterDraftEnabled` : Only draft enabled entities wil be returned when true, useful for Form Object Page app generation.
  *     `filterAggregateTransformationsOnly` : Only return entity choices that have an aggregate annotation (Aggregation.ApplySupported) with the `Transformations` property set,
@@ -41,11 +40,9 @@ export type EntitySetFilter = 'filterDraftEnabled' | 'filterAggregateTransformat
 export function getEntityChoices(
     edmx: string,
     {
-        useEntityTypeAsName = false,
         entitySetFilter,
         defaultMainEntityName
     }: {
-        useEntityTypeAsName?: boolean;
         entitySetFilter?: EntitySetFilter;
         defaultMainEntityName?: string;
     } = {}
@@ -78,15 +75,10 @@ export function getEntityChoices(
         }
 
         entitySets.forEach((entitySet, index) => {
-            // Determine whether to use the entity set type name or the entity set name as the choice name.
-            // Note that in the case of the entity type name, the namespace will be removed.
-            const entitySetChoiceName = useEntityTypeAsName
-                ? entitySet.entityTypeName.substring(entitySet.entityTypeName.lastIndexOf('.') + 1)
-                : entitySet.name;
             const choice: ListChoiceOptions<EntityAnswer> = {
-                name: entitySetChoiceName,
+                name: entitySet.name,
                 value: {
-                    entitySetName: entitySetChoiceName,
+                    entitySetName: entitySet.name,
                     entitySetType: entitySet.entityTypeName // Fully qualified entity type name
                 }
             };

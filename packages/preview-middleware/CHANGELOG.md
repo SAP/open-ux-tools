@@ -1,5 +1,50 @@
 # @sap-ux/preview-middleware
 
+## 0.19.31
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.36
+
+## 0.19.30
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+-   Updated dependencies [258ecca]
+    -   @sap-ux/adp-tooling@0.13.35
+
+## 0.19.29
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
+## 0.19.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.34
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.27
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/adp-tooling@0.13.33
+    -   @sap-ux/system-access@0.5.36
+
+## 0.19.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.32
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/system-access@0.5.36
+
 ## 0.19.25
 
 ### Patch Changes
