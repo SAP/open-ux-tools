@@ -277,7 +277,7 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         const generatedDirs = fs.readdirSync(testOutputDir);
         expect(generatedDirs).toContain(jsonInput.projectName);
-        const projectFolder = join(testOutputDir, jsonInput.projectName);
+        const projectFolder = join(testOutputDir, jsonInput.projectName!);
 
         const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
         const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
