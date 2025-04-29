@@ -5,7 +5,7 @@ import type { CustomMiddleware } from '@sap-ux/ui5-config';
 import type { PreviewConfigOptions } from '../types';
 import type { Editor } from 'mem-fs-editor';
 import { satisfies } from 'semver';
-import { getPreviewMiddleware, getRTAIntent, isFioriToolsDeprecatedPreviewConfig } from '../common/utils';
+import { getPreviewMiddleware, getIntentFromPreviewConfig, isFioriToolsDeprecatedPreviewConfig } from '../common/utils';
 
 /**
  * Get the url parameters needed for the UI5 run time adaptation.
@@ -43,7 +43,8 @@ export function getRTAUrlParameters(packageJson: Package): string {
  */
 function getRTAMountPoint(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
     if (!isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig) && previewMiddlewareConfig?.rta?.editors) {
-        const editors = previewMiddlewareConfig.rta.editors;
+        // check if deprecated RTA config is uesed
+        const editors = previewMiddlewareConfig.rta.editors ?? previewMiddlewareConfig?.editors?.rta?.endpoints; //NOSONAR
         for (const editor of editors) {
             if (!('developerMode' in editor)) {
                 return editor.path;
@@ -83,7 +84,7 @@ export async function getRTAUrl(
         return undefined;
     }
     const mountPoint = getRTAMountPoint(previewMiddleware?.configuration) ?? '/preview.html';
-    const intent = getRTAIntent(previewMiddleware?.configuration) ?? '#app-preview';
+    const intent = getIntentFromPreviewConfig(previewMiddleware?.configuration) ?? '#app-preview';
     const queryString = query ? '?' + query : '';
 
     return isFioriToolsDeprecatedPreviewConfig(previewMiddleware?.configuration)
