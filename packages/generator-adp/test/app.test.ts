@@ -1,31 +1,32 @@
+import { exec } from 'child_process';
 import fs from 'fs';
 import { join } from 'path';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
-import { exec } from 'child_process';
 
-import * as Logger from '@sap-ux/logger';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ToolsLogger } from '@sap-ux/logger';
 import type { SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
-import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     SystemLookup,
-    getProviderConfig,
+    fetchPublicVersions,
     getConfiguredProvider,
+    getProviderConfig,
     loadApps,
-    validateUI5VersionExists,
-    fetchPublicVersions
+    validateUI5VersionExists
 } from '@sap-ux/adp-tooling';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+import { getCredentialsFromStore } from '@sap-ux/system-access';
 
-import adpGenerator from '../src/app';
-import { initI18n, t } from '../src/utils/i18n';
-import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
-import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
+import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import type { AdpJsonInput } from '../src/app/types';
+import { EventName } from '../src/telemetryEvents';
+import { initI18n, t } from '../src/utils/i18n';
 
 jest.mock('@sap-devx/feature-toggle-node', () => ({
     // Is BAS this will mean that the layer is CUSTOMER_BASE
@@ -255,7 +256,7 @@ describe('Adaptation Project Generator Integration Test', () => {
     });
 
     it('should create adaptation project from json correctly', async () => {
-        const jsonInput = {
+        const jsonInput: AdpJsonInput = {
             system: 'urlA',
             username: 'user1',
             password: 'pass1',

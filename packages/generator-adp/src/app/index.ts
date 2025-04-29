@@ -115,7 +115,7 @@ export default class extends Generator {
 
         this._setupLogging();
         const jsonInputString = getFirstArgAsString(args);
-        this.jsonInput = parseAdpJsonInput(jsonInputString);
+        this.jsonInput = parseAdpJsonInput(jsonInputString, this.toolsLogger);
         if (!this.jsonInput) {
             this._setupPrompts();
         }

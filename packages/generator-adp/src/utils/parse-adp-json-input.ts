@@ -1,3 +1,4 @@
+import type { ToolsLogger } from '@sap-ux/logger';
 import type { AdpJsonInput } from '../app/types';
 import { isAdpJsonInput, isString } from './type-guards';
 
@@ -24,10 +25,11 @@ export function getFirstArgAsString(args: string | string[]): string {
  * Parse a json string as an object conforming to the {@link AdpJsonInput} interface.
  *
  * @param {string} jsonString - The json string representation.
+ * @param {ToolsLogger} logger - The logger instance.
  * @returns {AdpJsonInput | undefined} The parsed json object, in case of an error or
  * if the object does not match the above interface - returns undefined.
  */
-export function parseAdpJsonInput(jsonString: string): AdpJsonInput | undefined {
+export function parseAdpJsonInput(jsonString: string, logger: ToolsLogger): AdpJsonInput | undefined {
     try {
         const parsed = JSON.parse(jsonString);
 
@@ -37,7 +39,7 @@ export function parseAdpJsonInput(jsonString: string): AdpJsonInput | undefined 
 
         return parsed;
     } catch (error) {
-        console.error('Failed to parse adp JSON input:', error.message);
+        logger.debug(`Failed to parse adp JSON input: ${error.message}`);
         return undefined;
     }
 }

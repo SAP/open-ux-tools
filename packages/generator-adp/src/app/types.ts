@@ -139,7 +139,6 @@ export interface AdpJsonInput {
     client: string;
     username: string;
     password: string;
-
     application: string;
     applicationTitle: string;
     targetFolder?: string;
