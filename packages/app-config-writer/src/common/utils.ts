@@ -49,7 +49,9 @@ export async function getPreviewMiddleware(
  * @param previewMiddlewareConfig - configuration of the preview middleware
  * @returns - preview intent or undefined
  */
-export function getRTAIntent(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
+export function getIntentFromPreviewConfig(
+    previewMiddlewareConfig: PreviewConfigOptions | undefined
+): string | undefined {
     if (isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig)) {
         return undefined;
     }
