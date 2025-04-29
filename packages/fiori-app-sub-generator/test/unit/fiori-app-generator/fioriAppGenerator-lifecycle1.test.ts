@@ -32,6 +32,7 @@ import {
     t,
     updateDependentStep
 } from '../../../src/utils';
+import type { ServiceProvider } from '@sap-ux/axios-extension';
 
 /**
  * Tests the FioriAppGenerator generator lifecycle methods call what they should with the correct parameters.
@@ -218,7 +219,8 @@ describe('Test FioriAppGenerator', () => {
                 workspaceFolders: undefined
             },
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            expect.anything() // Adapter
+            expect.anything(), // Adapter
+            undefined // cached connected system
         );
 
         // Should assign the odata service answers to the state
@@ -291,7 +293,8 @@ describe('Test FioriAppGenerator', () => {
                 workspaceFolders: ['folder1', 'folder2']
             },
             expect.objectContaining({ debug: expect.any(Function) }), // Logger
-            expect.anything() // Adapter
+            expect.anything(), // Adapter
+            undefined // cached connected system
         );
         console.log(`cds mock:` + getCdsUi5PluginInfo.toString());
         // Since a CAP project was pre-selected cds ui5 plugin info should be loaded
@@ -452,7 +455,7 @@ describe('Test FioriAppGenerator', () => {
             namespace: ui5ApplicationAnswers.namespace,
             description: ui5ApplicationAnswers.description,
             localUI5Version: '3.2.1',
-            flpAppId: 'testAppNametestNamespace-display'
+            flpAppId: 'testNamespacetestAppName-display'
         });
     });
 
@@ -522,7 +525,7 @@ describe('Test FioriAppGenerator', () => {
             description: ui5ApplicationAnswers.description,
             enableNpmWorkspaces: undefined,
             localUI5Version: '3.2.1',
-            flpAppId: 'testAppNametestNamespace-display'
+            flpAppId: 'testNamespacetestAppName-display'
         });
     });
 
@@ -563,7 +566,7 @@ describe('Test FioriAppGenerator', () => {
             localUI5Version: '3.2.1',
             addDeployConfig: true,
             addFlpConfig: true,
-            flpAppId: 'testAppNametestNamespace-display'
+            flpAppId: 'testNamespacetestAppName-display'
         });
 
         expect(addDeployGen).toHaveBeenCalledWith(
@@ -691,7 +694,7 @@ describe('Test FioriAppGenerator', () => {
         expect(promptUI5ApplicationAnswers).not.toHaveBeenCalled();
     });
 
-    test('Tests back nav in YUI reloads from cache', async () => {
+    test('Tests back nav in YUI reloads from cache (includes cached connected system)', async () => {
         // Force cache usage, YUI only
         (getHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.vscode);
         jest.spyOn(FioriAppGenerator.prototype, 'prompt').mockResolvedValue({
@@ -699,8 +702,8 @@ describe('Test FioriAppGenerator', () => {
         });
         options.floorplan = FloorplanFE.FE_WORKLIST;
         odataServiceAnswers = {
-            source: DatasourceType.odataServiceUrl,
-            host: 'http://mockservice:1234',
+            source: DatasourceType.sapSystem,
+            host: 'http:/s4hsystem:1234',
             servicePath: 'some/service/path',
             annotations: [
                 {
@@ -710,7 +713,15 @@ describe('Test FioriAppGenerator', () => {
                     Uri: 'testUri'
                 }
             ],
-            edmx: '<edmx></edmx>'
+            edmx: '<edmx></edmx>',
+            connectedSystem: {
+                serviceProvider: {} as ServiceProvider,
+                backendSystem: {
+                    name: 'testSystemName',
+                    url: 'http:/s4hsystem:1234',
+                    authenticationType: 'reentranceTicket'
+                }
+            }
         };
         // We dont mock the cache as its simpler to test with the real cache
         const getFromCacheSpy = jest.spyOn(commonUtils, 'getFromCache');
@@ -735,9 +746,17 @@ describe('Test FioriAppGenerator', () => {
                         }
                     ],
                     edmx: '<edmx></edmx>',
-                    host: 'http://mockservice:1234',
+                    host: 'http:/s4hsystem:1234',
                     servicePath: 'some/service/path',
-                    source: 'odataServiceUrl'
+                    source: 'sapSystem',
+                    connectedSystem: {
+                        backendSystem: {
+                            authenticationType: 'reentranceTicket',
+                            name: 'testSystemName',
+                            url: 'http:/s4hsystem:1234'
+                        },
+                        serviceProvider: {} as ServiceProvider
+                    }
                 }
             },
             expect.objectContaining({ debug: expect.any(Function) }) // Logger

@@ -1,5 +1,97 @@
 # @sap-ux/preview-middleware
 
+## 0.19.31
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.36
+
+## 0.19.30
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+-   Updated dependencies [258ecca]
+    -   @sap-ux/adp-tooling@0.13.35
+
+## 0.19.29
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
+## 0.19.28
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.34
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.27
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/adp-tooling@0.13.33
+    -   @sap-ux/system-access@0.5.36
+
+## 0.19.26
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.32
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.25
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.31
+
+## 0.19.24
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/adp-tooling@0.13.30
+
+## 0.19.23
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
+## 0.19.22
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.29
+-   @sap-ux/system-access@0.5.36
+
+## 0.19.21
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
+## 0.19.20
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.28
+
+## 0.19.19
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/adp-tooling@0.13.27
+    -   @sap-ux/system-access@0.5.35
+
 ## 0.19.18
 
 ### Patch Changes

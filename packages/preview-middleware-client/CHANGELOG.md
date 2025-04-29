@@ -1,5 +1,29 @@
 # @sap-ux-private/preview-middleware-client
 
+## 0.13.19
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+
+## 0.13.18
+
+### Patch Changes
+
+-   091c3e9: fix: reuse component api consumption in Adaptation Editor
+
+## 0.13.17
+
+### Patch Changes
+
+-   838d2de: fix: nested Quick Actions not working if there are sections with only one child (e.g Change Table Columns)
+
+## 0.13.16
+
+### Patch Changes
+
+-   8fe1ab6: fix: added telemetry tracking for context menu
+
 ## 0.13.15
 
 ### Patch Changes

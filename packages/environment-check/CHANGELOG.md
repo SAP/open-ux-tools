@@ -1,5 +1,48 @@
 # @sap-ux/environment-check
 
+## 0.17.99
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/project-access@1.29.21
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.17.98
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.17.97
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.17.96
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+
+## 0.17.95
+
+### Patch Changes
+
+-   d638daa: Update @sap/bas-sdk dependency
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+
 ## 0.17.94
 
 ### Patch Changes

@@ -103,6 +103,15 @@ export interface ConfigAnswers {
     application: SourceApplication;
 }
 
+export interface AttributesAnswers {
+    projectName: string;
+    title: string;
+    namespace: string;
+    targetFolder: string;
+    ui5Version: string;
+    enableTypeScript: boolean;
+}
+
 export interface SourceApplication {
     id: string;
     title: string;
@@ -207,6 +216,10 @@ export interface CommonChangeProperties {
     fileType: string;
     fileName: string;
     texts: Record<string, unknown>;
+}
+
+export interface CommonAdditionalChangeInfoProperties {
+    templateName?: string;
 }
 
 export interface ManifestChangeProperties {

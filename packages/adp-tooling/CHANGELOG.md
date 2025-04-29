@@ -1,5 +1,95 @@
 # @sap-ux/adp-tooling
 
+## 0.13.36
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+
+## 0.13.35
+
+### Patch Changes
+
+-   258ecca: refactor: Enhance XML Fragment context menu control with addXMLPlugin Integration
+
+## 0.13.34
+
+### Patch Changes
+
+-   Updated dependencies [7590bc3]
+    -   @sap-ux/ui5-config@0.27.2
+    -   @sap-ux/odata-service-writer@0.26.16
+    -   @sap-ux/project-access@1.29.21
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/project-input-validator@0.5.4
+    -   @sap-ux/system-access@0.5.36
+    -   @sap-ux/inquirer-common@0.6.39
+
+## 0.13.33
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/ui5-config@0.27.1
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/odata-service-writer@0.26.15
+    -   @sap-ux/project-input-validator@0.5.3
+    -   @sap-ux/system-access@0.5.36
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 0.13.32
+
+### Patch Changes
+
+-   Updated dependencies [1ca4004]
+    -   @sap-ux/ui5-config@0.27.0
+    -   @sap-ux/inquirer-common@0.6.37
+    -   @sap-ux/odata-service-writer@0.26.14
+    -   @sap-ux/project-access@1.29.19
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/project-input-validator@0.5.2
+    -   @sap-ux/system-access@0.5.36
+
+## 0.13.31
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.13.30
+
+### Patch Changes
+
+-   2db2c33: feat(generator-adp): Add Project Attributes page
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
+## 0.13.29
+
+### Patch Changes
+
+-   Updated dependencies [28c6594]
+    -   @sap-ux/axios-extension@1.20.0
+    -   @sap-ux/system-access@0.5.36
+
+## 0.13.28
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.13.27
+
+### Patch Changes
+
+-   Updated dependencies [d638daa]
+    -   @sap-ux/btp-utils@1.0.3
+    -   @sap-ux/axios-extension@1.19.3
+    -   @sap-ux/inquirer-common@0.6.34
+    -   @sap-ux/nodejs-utils@0.1.9
+    -   @sap-ux/system-access@0.5.35
+
 ## 0.13.26
 
 ### Patch Changes

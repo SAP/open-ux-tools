@@ -1,5 +1,75 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [c64de75]
+    -   @sap-ux/ui5-info@0.10.0
+    -   @sap-ux/inquirer-common@0.6.40
+
+## 0.12.1
+
+### Patch Changes
+
+-   7a87b92: cap checks for virtual endpoints prompt
+
+## 0.12.0
+
+### Minor Changes
+
+-   398e4da: adds new virtual endpoint prompt
+
+## 0.11.9
+
+### Patch Changes
+
+-   @sap-ux/project-access@1.29.21
+-   @sap-ux/project-input-validator@0.5.4
+-   @sap-ux/inquirer-common@0.6.39
+
+## 0.11.8
+
+### Patch Changes
+
+-   Updated dependencies [294bbe3]
+    -   @sap-ux/project-access@1.29.20
+    -   @sap-ux/project-input-validator@0.5.3
+    -   @sap-ux/inquirer-common@0.6.38
+
+## 0.11.7
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.37
+-   @sap-ux/project-access@1.29.19
+-   @sap-ux/project-input-validator@0.5.2
+
+## 0.11.6
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.36
+
+## 0.11.5
+
+### Patch Changes
+
+-   Updated dependencies [2db2c33]
+    -   @sap-ux/project-input-validator@0.5.1
+
+## 0.11.4
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.35
+
+## 0.11.3
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.34
+
 ## 0.11.2
 
 ### Patch Changes
