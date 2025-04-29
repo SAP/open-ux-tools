@@ -1,6 +1,6 @@
 import { basename, join } from 'path';
 import { getRTAUrlParameters, getRTAUrl } from './utils';
-import { getRTAServe } from '../common/utils';
+import { getCLIForPreview } from '../common/utils';
 import type { Editor } from 'mem-fs-editor';
 import { FileName, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -36,7 +36,7 @@ export async function addVariantsManagementScript(
     }
 
     const url = await getRTAUrl(basePath, getRTAUrlParameters(packageJson), ui5YamlFileName, fs);
-    const serveCommand = await getRTAServe(basePath, ui5YamlFileName, fs);
+    const serveCommand = await getCLIForPreview(basePath, ui5YamlFileName, fs);
 
     if (!url) {
         throw new Error(`${ERROR_MSG} No RTA editor specified in ui5.yaml.`);

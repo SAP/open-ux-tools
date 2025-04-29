@@ -22,7 +22,7 @@ describe('utils', () => {
         });
     });
 
-    describe('getRTAServe', () => {
+    describe('getCLIForPreview', () => {
         let fs: Editor;
 
         beforeEach(() => {
@@ -31,12 +31,12 @@ describe('utils', () => {
         });
         test('RTA serve for preview middleware', async () => {
             const openSourceConfig = join(basePath, 'open-source-config');
-            expect(await utils.getRTAServe(openSourceConfig, 'ui5.yaml', fs)).toStrictEqual('ui5 serve');
+            expect(await utils.getCLIForPreview(openSourceConfig, 'ui5.yaml', fs)).toStrictEqual('ui5 serve');
         });
 
         test('RTA serve for fiori-tools-preview middleware', async () => {
             const fioriToolsConfig = join(basePath, 'fiori-tools-config');
-            expect(await utils.getRTAServe(fioriToolsConfig, 'ui5.yaml', fs)).toStrictEqual('fiori run');
+            expect(await utils.getCLIForPreview(fioriToolsConfig, 'ui5.yaml', fs)).toStrictEqual('fiori run');
         });
     });
 });

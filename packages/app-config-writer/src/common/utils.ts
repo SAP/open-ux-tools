@@ -69,7 +69,11 @@ export function getIntentFromPreviewConfig(
  * @param fs - the memfs editor instance
  * @returns - preview serve or undefined
  */
-export async function getRTAServe(basePath: string, yamlFileName: string, fs: Editor): Promise<string | undefined> {
+export async function getCLIForPreview(
+    basePath: string,
+    yamlFileName: string,
+    fs: Editor
+): Promise<string | undefined> {
     const previewMiddleware = await getPreviewMiddleware(undefined, basePath, yamlFileName, fs);
     return previewMiddleware?.name === MiddlewareConfigs.PreviewMiddleware ? 'ui5 serve' : 'fiori run';
 }
