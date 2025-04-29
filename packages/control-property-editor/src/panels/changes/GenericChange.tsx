@@ -56,10 +56,11 @@ export function GenericChange(genericChangeProps: Readonly<GenericChangeProps>):
             <Stack key={`${fileName}`} className={styles.item}>
                 <Stack.Item className={styles.property}>
                     <Stack horizontal style={{ opacity }}>
-                        <Stack.Item className={styles.fileLabel} title={name}>
+                        {/* <Stack.Item className={styles.fileLabel} title={name}>
                             {t('FILE')}
                         </Stack.Item>
-                        <Stack.Item className={styles.fileValue}>{fileName}</Stack.Item>
+                        <Stack.Item className={styles.fileValue}>{fileName}</Stack.Item> */}
+                        <LongText longText={fileName} label={t('GENERIC_FILE')} />
                         {change.type === SAVED_CHANGE_TYPE && (
                             <Stack.Item className={styles.actions}>
                                 <UIIconButton

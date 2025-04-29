@@ -48,11 +48,11 @@ const LongText: React.FC<LongTextProps> = ({ longText, label }) => {
                 return { firstLine: text, secondLine: '' };
             }
             virtualDiv1.textContent = '';
-            for (let i = 1, j = text.length - 1; i < midpoint || j > midpoint; i++, j--) {
+            for (let i = 1, j = text.length - 1; i <= midpoint + 1 || j > midpoint + 1; i++, j--) {
                 if (part1done && part2done) {
                     break;
                 }
-                if (i < midpoint && !part1done) {
+                if (i <= midpoint + 1 && !part1done) {
                     virtualDiv1.textContent = text.slice(0, i);
                     if (virtualDiv1.scrollHeight > lineHeight) {
                         part1done = true;
@@ -71,6 +71,12 @@ const LongText: React.FC<LongTextProps> = ({ longText, label }) => {
             document.body.removeChild(virtualDiv1);
             document.body.removeChild(virtualDiv2);
 
+            if (!part1done && !part2done) {
+                return {
+                    firstLine: virtualDiv1.textContent,
+                    secondLine: virtualDiv2.textContent ?? ''
+                };
+            }
             const totalTextLength = text.length - labelLength;
             const totalCharsThatFitInTwoLines = totalCharInLine1 + totalCharInLine2 - labelLength;
             const charsToTruncate = text.length - labelLength - totalCharsThatFitInTwoLines + 3 + 3; // 3 for ellipses and 3 for Math.floor
