@@ -260,7 +260,7 @@ function addRemoteAnnotationDataSources(
                     )}',Version='0001')/$value/`,
                     type: 'ODataAnnotation',
                     settings: {
-                        localUri: `localService/${serviceName}/${remoteAnnotation.technicalName}.xml`
+                        localUri: `localService/${serviceName}/${trimSlashes(remoteAnnotation.technicalName)}.xml`
                     }
                 };
                 createdAnnotations.push(remoteAnnotation.name);
@@ -273,7 +273,7 @@ function addRemoteAnnotationDataSources(
             )}',Version='0001')/$value/`,
             type: 'ODataAnnotation',
             settings: {
-                localUri: `localService/${serviceName}/${serviceRemoteAnnotations.technicalName}.xml`
+                localUri: `localService/${serviceName}/${trimSlashes(serviceRemoteAnnotations.technicalName)}.xml`
             }
         };
         createdAnnotations.push(serviceRemoteAnnotations.name);
@@ -525,4 +525,20 @@ export async function updateManifest(
     // Update manifest.json services
     enhanceManifest(service, convertedManifest, webappPath, fs, forceServiceUpdate);
     fs.writeJSON(manifestPath, convertedManifest);
+}
+
+/**
+ * Trims leading and trailing slashes from the input string.
+ *
+ * @param input - the string from which leading and trailing slashes will be removed.
+ * @returns The input string with leading and trailing slashes removed.
+ */
+function trimSlashes(input: string): string {
+    while (input.startsWith('/')) {
+        input = input.slice(1);
+    }
+    while (input.endsWith('/')) {
+        input = input.slice(0, -1);
+    }
+    return input;
 }
