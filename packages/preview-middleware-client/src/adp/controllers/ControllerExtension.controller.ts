@@ -34,7 +34,7 @@ interface ControllerExtensionService {
 }
 
 type ControllerModel = JSONModel & {
-    getProperty(sPath: '/controllersList'): { controllerName: string }[];
+    getProperty(sPath: '/controllersList'): { controllerName: /** File name without extension */ string }[];
     getProperty(sPath: '/controllerExists'): boolean;
     getProperty(sPath: '/newControllerName'): string;
     getProperty(sPath: '/viewId'): string;
@@ -93,7 +93,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             return;
         }
 
-        const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
+        const fileExists = controllerList.some((f) => f.controllerName === controllerName);
 
         if (fileExists) {
             updateDialogState(

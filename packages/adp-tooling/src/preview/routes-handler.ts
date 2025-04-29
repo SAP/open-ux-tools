@@ -130,11 +130,13 @@ export default class RoutesHandler {
      */
     public handleReadAllControllers = async (_: Request, res: Response, next: NextFunction): Promise<void> => {
         try {
-            const files = await this.readAllFilesByGlob('/**/changes/coding/*.js');
+            const files = await this.readAllFilesByGlob('/**/changes/coding/*.{js,ts}');
 
-            const fileNames = files.map((file) => ({
-                controllerName: file.getName()
-            }));
+            const fileNames = files.map((file) => {
+                const fullName = file.getName();
+                const name = fullName.replace(/\.(js|ts)$/, '');
+                return { controllerName: name };
+            });
 
             this.sendFilesResponse(res, {
                 controllers: fileNames,
@@ -159,8 +161,8 @@ export default class RoutesHandler {
         next: NextFunction
     ): Promise<void> => {
         try {
-            const params = req.params as { controllerName: string };
-            const controllerName = sanitize(params.controllerName);
+            const query = req.query as { name: string };
+            const controllerName = query.name;
             const codeExtFiles = await this.readAllFilesByGlob('/**/changes/*_codeExt.change');
 
             let controllerPathFromRoot = '';
