@@ -12,7 +12,7 @@
 |**Application Title**<br>Project&#39;s &#34;Title&#34;|
 |**Namespace**<br>testnamepsace|
 |**UI5 Theme**<br>sap_horizon|
-|**UI5 Version**<br>1.129.0|
+|**UI5 Version**<br>1.135.0|
 |**Enable Code Assist Libraries**<br>False|
 |**Enable TypeScript**<br>False|
 |**Add Eslint configuration**<br>False|

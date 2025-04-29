@@ -74,4 +74,8 @@ export interface UI5Theme {
      * The UI5 minimum UI5 version that supports this theme
      */
     sinceVersion?: string;
+    /**
+     * The maximum UI5 version up to which the theme is supported
+     */
+    untilVersion?: string;
 }
