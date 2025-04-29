@@ -3322,6 +3322,14 @@ exports[`fiori annotation service update PropertyValue - PropertyPath replace te
 "
 `;
 
+exports[`fiori annotation service update annotation value in complex type 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.Incidents : rating.name with @Common.Text : title;
+
+"
+`;
+
 exports[`fiori annotation service update collection collection in record CAPNodejs cap-start v4 1`] = `
 "using IncidentService as service from '../../srv/incidentservice';
 
