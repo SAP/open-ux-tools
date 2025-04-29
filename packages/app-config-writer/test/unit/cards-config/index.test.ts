@@ -20,7 +20,7 @@ describe('enableCardGenerator', () => {
     test('Valid LROP', async () => {
         const basePath = join(__dirname, 'fixtures/lrop-v4');
         const fs = createTestFs(basePath);
-        await enableCardGeneratorConfig(basePath, fs);
+        await enableCardGeneratorConfig(basePath, 'ui5.yaml', undefined, fs);
 
         expect(fs.read(join(basePath, 'package.json'))).toMatchSnapshot();
         expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
@@ -29,7 +29,7 @@ describe('enableCardGenerator', () => {
     test('V4 LROP with CLI 3.0', async () => {
         const basePath = join(__dirname, 'fixtures/lrop-v4');
         const fs = create(createStorage());
-        await enableCardGeneratorConfig(basePath, fs);
+        await enableCardGeneratorConfig(basePath, 'ui5.yaml', undefined, fs);
 
         if (process.env.UX_DEBUG) {
             fs.commit(() => {});
