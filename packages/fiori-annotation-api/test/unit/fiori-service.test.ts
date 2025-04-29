@@ -25,7 +25,7 @@ import { createFsEditorForProject } from './virtual-fs';
 import type { ProjectTestModel } from './projects';
 import { PROJECTS } from './projects';
 import { getLocalEDMXService } from '../../src/xml';
-import { serialize } from './raw-metadata-serializer';
+import { serialize, serializeAnnotations } from './raw-metadata-serializer';
 
 import { CDSAnnotationServiceAdapter } from '../../src/cds/adapter';
 import type { CompilerMessage } from '@sap-ux/odata-annotation-core-types';
@@ -654,6 +654,113 @@ describe('fiori annotation service', () => {
                         .split(sep)
                         .join(posix.sep)
                 ).toMatchInlineSnapshot(`"webapp/localService/metadata.xml"`);
+            });
+
+            test('missing metadata reference (no alias in metadata)', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const path = pathFromUri(project.files.annotations);
+                const content = fsEditor.read(path);
+                const testData = content.replace(
+                    `    <edmx:Reference Uri="/incident/$metadata">
+        <edmx:Include Namespace="IncidentService"/>
+    </edmx:Reference>`,
+                    ''
+                );
+                fsEditor.write(path, testData);
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
+            });
+
+            test('missing metadata alias', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const metadataPath = pathFromUri(project.files.metadata);
+
+                fsEditor.write(
+                    metadataPath,
+                    fsEditor
+                        .read(metadataPath)
+                        .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
+                );
+
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
+            });
+
+            test('missing metadata reference ', async () => {
+                const project = PROJECTS.V4_XML_START;
+                const root = project.root;
+                const fsEditor = await createFsEditorForProject(root);
+                const metadataPath = pathFromUri(project.files.metadata);
+
+                fsEditor.write(
+                    metadataPath,
+                    fsEditor
+                        .read(metadataPath)
+                        .replace('Namespace="IncidentService"', 'Namespace="IncidentService" Alias="Service"')
+                );
+                const path = pathFromUri(project.files.annotations);
+                const content = fsEditor.read(path);
+                const testData = content.replace(
+                    `    <edmx:Reference Uri="/incident/$metadata">
+        <edmx:Include Namespace="IncidentService"/>
+    </edmx:Reference>`,
+                    ''
+                );
+                fsEditor.write(path, testData);
+                const service = await testRead(
+                    PROJECTS.V4_XML_START.root,
+                    [
+                        createLineItem(project.files.annotations, [], 'a', TARGET_INCIDENTS),
+                        createLineItem(project.files.annotations, [], 'b', 'Service.Incidents')
+                    ],
+                    'mainService',
+                    fsEditor
+                );
+                const metadata = service.getSchema();
+                for (const key of Object.keys(metadata.schema.annotations)) {
+                    // we only need to check that annotations from annotation are there (metadata annotations are not relevant here)
+                    if (!key.endsWith('annotation.xml')) {
+                        delete metadata.schema.annotations[key];
+                    }
+                }
+
+                expect(serializeAnnotations(metadata.schema.annotations, PROJECTS.V4_XML_START.root)).toMatchSnapshot();
             });
         });
 
