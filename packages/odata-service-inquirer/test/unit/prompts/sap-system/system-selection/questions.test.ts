@@ -224,10 +224,6 @@ describe('Test system selection prompts', () => {
         const connectValidator = new ConnectionValidator();
         (getPromptHostEnvironment as jest.Mock).mockReturnValue(hostEnvironment.cli);
         mockIsAppStudio = true;
-        jest.spyOn(promptHelpers, 'createSystemChoices').mockResolvedValueOnce({
-            systemChoices: [],
-            destinationRetrievalError: true
-        });
         const systemConnectionQuestions = await getSystemConnectionQuestions(connectValidator);
         expect(systemConnectionQuestions).toHaveLength(5);
         expect(systemConnectionQuestions[0].name).toBe('systemSelection');
@@ -238,12 +234,6 @@ describe('Test system selection prompts', () => {
 
         const systemSelectionPrompt = systemConnectionQuestions[0] as ListQuestion;
         expect(await systemSelectionPrompt.validate?.('')).toBe(false);
-        expect(await systemSelectionPrompt.additionalMessages?.()).toMatchInlineSnapshot(`
-            {
-              "message": "An error occurred when retrieving the list of destinations. For more information, view the logs.",
-              "severity": 1,
-            }
-        `);
         // valid destination selection
         validateDestinationResultMock = { valResult: true };
         const connectWithDestinationSpy = jest.spyOn(promptHelpers, 'connectWithDestination');

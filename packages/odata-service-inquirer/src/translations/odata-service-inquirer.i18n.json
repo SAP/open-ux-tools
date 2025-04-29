@@ -105,8 +105,7 @@
             "newSystemChoiceLabel": "New system",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials.",
-            "destinationRetrievalError": "An error occurred when retrieving the list of destinations. For more information, view the logs."
+            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",

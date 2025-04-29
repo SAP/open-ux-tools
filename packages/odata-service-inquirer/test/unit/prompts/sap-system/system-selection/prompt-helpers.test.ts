@@ -83,7 +83,7 @@ describe('Test system selection prompt helpers', () => {
         });
 
         test('Should create backend system selection choices', async () => {
-            expect((await createSystemChoices()).systemChoices).toEqual([
+            expect(await createSystemChoices()).toEqual([
                 {
                     name: 'New system',
                     value: {
@@ -109,7 +109,7 @@ describe('Test system selection prompt helpers', () => {
         });
 
         test('Should return index of default', async () => {
-            const { systemChoices: nonBasChoices } = await createSystemChoices();
+            const nonBasChoices = await createSystemChoices();
             expect(findDefaultSystemSelectionIndex(nonBasChoices, 'no such system')).toEqual(-1);
             expect(findDefaultSystemSelectionIndex(nonBasChoices, NewSystemChoice)).toEqual(0);
             expect(findDefaultSystemSelectionIndex(nonBasChoices, backendSystemBasic.name)).toEqual(1);
@@ -127,7 +127,7 @@ describe('Test system selection prompt helpers', () => {
             mockListDestinations.mockImplementation(() => {
                 return baseTestDestinations;
             });
-            expect((await createSystemChoices()).systemChoices).toEqual([
+            expect(await createSystemChoices()).toEqual([
                 {
                     name: 'dest1',
                     value: {
@@ -173,12 +173,10 @@ describe('Test system selection prompt helpers', () => {
                 return { destFull1, destPartial1, destOnPrem, destInternet };
             });
             expect(
-                (
-                    await createSystemChoices({
-                        full_service_url: true,
-                        partial_service_url: true
-                    })
-                ).systemChoices
+                await createSystemChoices({
+                    full_service_url: true,
+                    partial_service_url: true
+                })
             ).toEqual(
                 expect.arrayContaining([
                     { name: destFull1.Name, value: { system: destFull1, type: 'destination' } },
@@ -187,11 +185,9 @@ describe('Test system selection prompt helpers', () => {
             );
 
             expect(
-                (
-                    await createSystemChoices({
-                        odata_abap: true
-                    })
-                ).systemChoices
+                await createSystemChoices({
+                    odata_abap: true
+                })
             ).toEqual(
                 expect.arrayContaining([
                     { name: destOnPrem.Name, value: { system: destOnPrem, type: 'destination' } },
@@ -200,12 +196,10 @@ describe('Test system selection prompt helpers', () => {
             );
 
             expect(
-                (
-                    await createSystemChoices({
-                        odata_generic: true,
-                        odata_abap: true
-                    })
-                ).systemChoices
+                await createSystemChoices({
+                    odata_generic: true,
+                    odata_abap: true
+                })
             ).toEqual(
                 expect.arrayContaining([
                     { name: destOnPrem.Name, value: { system: destOnPrem, type: 'destination' } },
@@ -218,10 +212,10 @@ describe('Test system selection prompt helpers', () => {
 
         test('Should handle 403 error from listDestinations', async () => {
             mockListDestinations.mockRejectedValue(mockAxiosError403);
-            expect((await createSystemChoices()).systemChoices).toEqual([]);
+            expect(await createSystemChoices()).toEqual([]);
 
             // Include CF ABAP env choice
-            const { systemChoices } = await createSystemChoices(undefined, true);
+            const systemChoices = await createSystemChoices(undefined, true);
             expect(systemChoices.length).toEqual(1);
             expect(systemChoices[0].name).toEqual('Cloud Foundry ABAP environment on SAP Business Technology Platform');
             expect(systemChoices[0].value).toEqual({
@@ -234,17 +228,17 @@ describe('Test system selection prompt helpers', () => {
             mockListDestinations.mockImplementation(() => {
                 return baseTestDestinations;
             });
-            const { systemChoices: basChoices } = await createSystemChoices();
+            let basChoices = await createSystemChoices();
             expect(findDefaultSystemSelectionIndex(basChoices, NewSystemChoice)).toEqual(-1);
             expect(findDefaultSystemSelectionIndex(basChoices, CfAbapEnvServiceChoice)).toEqual(-1);
             expect(findDefaultSystemSelectionIndex(basChoices, destination1.Name)).toEqual(0);
             expect(findDefaultSystemSelectionIndex(basChoices, destination2.Name)).toEqual(1);
 
             // Include CF ABAP env choice
-            const { systemChoices: basChoicesCf } = await createSystemChoices(undefined, true);
-            expect(findDefaultSystemSelectionIndex(basChoicesCf, CfAbapEnvServiceChoice)).toEqual(0);
-            expect(findDefaultSystemSelectionIndex(basChoicesCf, destination1.Name)).toEqual(1);
-            expect(findDefaultSystemSelectionIndex(basChoicesCf, destination2.Name)).toEqual(2);
+            basChoices = await createSystemChoices(undefined, true);
+            expect(findDefaultSystemSelectionIndex(basChoices, CfAbapEnvServiceChoice)).toEqual(0);
+            expect(findDefaultSystemSelectionIndex(basChoices, destination1.Name)).toEqual(1);
+            expect(findDefaultSystemSelectionIndex(basChoices, destination2.Name)).toEqual(2);
         });
     });
 });

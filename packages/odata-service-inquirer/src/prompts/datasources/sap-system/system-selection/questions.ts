@@ -163,7 +163,7 @@ export async function getSystemConnectionQuestions(
 ): Promise<Question<SystemSelectionAnswers>[]> {
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
-    const { systemChoices, destinationRetrievalError } = await createSystemChoices(
+    const systemChoices = await createSystemChoices(
         destinationFilters,
         promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice
     );
@@ -210,19 +210,13 @@ export async function getSystemConnectionQuestions(
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
                 // Backend systems credentials may need to be updated
                 if (
-                    selectedSystem?.type === 'backendSystem' &&
+                    selectedSystem.type === 'backendSystem' &&
                     connectionValidator.systemAuthType === 'basic' &&
                     (await connectionValidator.isAuthRequired())
                 ) {
                     return {
                         message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
                         severity: Severity.information
-                    };
-                }
-                if (destinationRetrievalError) {
-                    return {
-                        message: t('prompts.systemSelection.destinationRetrievalError'),
-                        severity: Severity.warning
                     };
                 }
             }
