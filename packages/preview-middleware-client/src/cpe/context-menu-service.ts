@@ -12,6 +12,7 @@ import { getTextBundle } from '../i18n';
 import Log from 'sap/base/Log';
 import { getControlById } from '../utils/core';
 import { getUi5Version } from '../utils/version';
+import { getApplicationType } from '../utils/application';
 
 /**
  * A Class of ContextMenuService
@@ -39,6 +40,7 @@ export class ContextMenuService {
             if (executeContextMenuAction.match(action)) {
                 const { actionName, controlId } = action.payload;
                 await this.actionService.execute(controlId, actionName);
+                const appType = getApplicationType(this.rta.getRootControlInstance().getManifest());
                 try {
                     const controlName = getControlById(controlId)?.getMetadata().getName();
                     const versionInfo = await getUi5Version();
@@ -46,7 +48,8 @@ export class ContextMenuService {
                         category: 'OutlineContextMenu',
                         actionName,
                         controlName,
-                        ui5Version: `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`
+                        ui5Version: `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`,
+                        appType
                     });
                 } catch (err) {
                     Log.error('Error in reporting Telemetry:', err);
