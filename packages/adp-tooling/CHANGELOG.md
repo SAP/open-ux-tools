@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.36
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+
 ## 0.13.35
 
 ### Patch Changes
