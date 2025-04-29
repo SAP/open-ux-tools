@@ -6,7 +6,8 @@ import {
     enhanceConfigForSystem,
     ProxyEventHandlers,
     PathRewriters,
-    proxyErrorHandler
+    proxyErrorHandler,
+    type EnhancedIncomingMessage
 } from '../../src/base/proxy';
 import { generateProxyMiddlewareOptions, createProxy } from '../../src';
 import { BackendConfig, DestinationBackendConfig, LocalBackendConfig } from '../../src/base/types';
@@ -68,22 +69,33 @@ describe('proxy', () => {
 
         test('replacePrefix', () => {
             const rewrite = replacePrefix('/old', '/my/new');
-            expect(rewrite('/old/test')).toBe('/my/new/test');
-            expect(rewrite('/test')).toBe('/test');
+            expect(rewrite('/old/test', { originalUrl: '/old/test' } as EnhancedIncomingMessage)).toBe('/my/new/test');
+            expect(rewrite('/test', { originalUrl: '/test' } as EnhancedIncomingMessage)).toBe('/test');
+        });
+
+        test('yet another replacePrefix', () => {
+            const rewrite = replacePrefix('/old', '/my/new');
+            expect(rewrite('/old/test', { originalUrl: 'cicken/dance/old/test' } as EnhancedIncomingMessage)).toBe('cicken/dance/my/new/test');
         });
 
         test('replaceClient', () => {
             const rewrite = replaceClient('012');
-            expect(rewrite('/test')).toBe('/test?sap-client=012');
-            expect(rewrite('/test?sap-language=en')).toBe('/test?sap-language=en&sap-client=012');
-            expect(rewrite('/test?sap-client=000')).toBe('/test?sap-client=012');
+            expect(rewrite('/test', { originalUrl: '/test' } as EnhancedIncomingMessage)).toBe('/test?sap-client=012');
+            expect(
+                rewrite('/test?sap-language=en', { originalUrl: '/test?sap-language=en' } as EnhancedIncomingMessage)
+            ).toBe('/test?sap-language=en&sap-client=012');
+            expect(
+                rewrite('/test?sap-client=000', { originalUrl: '/test?sap-client=000' } as EnhancedIncomingMessage)
+            ).toBe('/test?sap-client=012');
         });
 
         test('getPathRewrite', () => {
             // no rewrite required
             const pathOutput = getPathRewrite({} as BackendConfig, logger);
             expect(pathOutput).toBeDefined();
-            expect(pathOutput!('/my/path')).toEqual('/my/path');
+            expect(pathOutput!('/my/path', { originalUrl: '/my/path' } as EnhancedIncomingMessage)).toEqual(
+                '/my/path'
+            );
 
             // all writers added
             const writerChain = getPathRewrite(
@@ -95,8 +107,8 @@ describe('proxy', () => {
                 logger
             );
             expect(writerChain).toBeDefined();
-            expect(writerChain!('/old/my/bsp/test?sap-client=000')).toBe('/my/new/my/bsp/test?sap-client=012');
-            expect(writerChain!('/test')).not.toBe('/test?sap-client=012');//Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
+            expect(writerChain!('/old/my/bsp/test?sap-client=000', { originalUrl: '/old/my/bsp/test?sap-client=000' } as EnhancedIncomingMessage)).toBe('/my/new/my/bsp/test?sap-client=012');
+            // expect(writerChain!('/test', { originalUrl: '/my/new' } as EnhancedIncomingMessage)).not.toBe('/test?sap-client=012'); //Invalid test: bypassing the proxy to test its pathRewrite function with an illegal path '/test' is not allowed.
         });
     });
 

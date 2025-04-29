@@ -26,6 +26,9 @@ import type { Url } from 'url';
 import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 import { getProxyForUrl } from 'proxy-from-env';
 import type { Socket } from 'net';
+import type { Request } from 'express';
+
+export type EnhancedIncomingMessage = IncomingMessage & Pick<Request, 'originalUrl'>;
 
 /**
  * Collection of custom event handler for the proxy.
@@ -130,8 +133,11 @@ export const PathRewriters = {
      * @param prefix new path that is used as replacement
      * @returns a path rewrite function
      */
-    replacePrefix(match: string, prefix: string): (path: string) => string {
-        return (path: string) => path.replace(match, prefix.replace(/\/$/, ''));
+    replacePrefix(match: string, prefix: string): (path: string, req: EnhancedIncomingMessage) => string {
+        return (path: string, req: EnhancedIncomingMessage) => {
+            const newPath = req.originalUrl.includes(path) ? req.originalUrl : path;
+            return newPath.replace(match, prefix.replace(/\/$/, ''));
+        };
     },
 
     /**
@@ -140,14 +146,15 @@ export const PathRewriters = {
      * @param client sap-client as string
      * @returns a path rewrite function
      */
-    replaceClient(client: string): (path: string) => string {
+    replaceClient(client: string): (path: string, req: EnhancedIncomingMessage) => string {
         const sapClient = 'sap-client=' + client;
-        return (path: string) => {
-            if (path.match(/sap-client=\d{3}/)) {
-                return path.replace(/sap-client=\d{3}/, sapClient);
+        return (path: string, req: EnhancedIncomingMessage) => {
+            const newPath = req.originalUrl.includes(path) ? req.originalUrl : path;
+            if (newPath.match(/sap-client=\d{3}/)) {
+                return newPath.replace(/sap-client=\d{3}/, sapClient);
             } else {
-                const separator = path.includes('?') ? '&' : '?';
-                return `${path}${separator}${sapClient}`;
+                const separator = newPath?.includes('?') ? '&' : '?';
+                return `${newPath}${separator}${sapClient}`;
             }
         };
     },
@@ -159,13 +166,8 @@ export const PathRewriters = {
      * @param log logger instance
      * @returns a path rewrite function
      */
-    getPathRewrite(config: BackendConfig, log: Logger): ((path: string) => string) | undefined {
-        const functions: ((path: string) => string)[] = [];
-        functions.push((path) => {
-            // ensure that the path starts with the configured path
-            // sometimes it gets lost in the http proxy middleware
-            return path.startsWith(config.path) ? path : (config.path ?? '') + path;
-        });
+    getPathRewrite(config: BackendConfig, log: Logger): (path: string, req: IncomingMessage) => string {
+        const functions: ((path: string, req: EnhancedIncomingMessage) => string)[] = [];
         if (config.pathReplace) {
             functions.push(PathRewriters.replacePrefix(config.path, config.pathReplace));
         }
@@ -173,9 +175,9 @@ export const PathRewriters = {
             functions.push(PathRewriters.replaceClient(config.client));
         }
         if (functions.length > 0) {
-            return (path: string) => {
+            return (path: string, req: IncomingMessage) => {
                 let newPath = path;
-                functions.forEach((func) => (newPath = func(newPath)));
+                functions.forEach((func) => (newPath = func(newPath, req as EnhancedIncomingMessage)));
                 if (newPath !== path) {
                     log.info(`Rewrite path ${path} > ${newPath}`);
                 } else {

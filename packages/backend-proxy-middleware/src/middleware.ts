@@ -4,6 +4,7 @@ import type { RequestHandler } from 'express';
 import { createProxyMiddleware } from 'http-proxy-middleware';
 import type { MiddlewareParameters, BackendMiddlewareConfig } from './base/types';
 import { generateProxyMiddlewareOptions, initI18n } from './base/proxy';
+import express from 'express';
 
 /**
  * Hides the proxy credentials for displaying the proxy configuration in the console.
@@ -38,6 +39,7 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
 
     await initI18n();
     dotenv.config();
+    const router = express.Router();
 
     const backend = options.configuration.backend;
     const configOptions = options.configuration.options ?? {};
@@ -53,13 +55,14 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
             })}\noptions: ${JSON.stringify(configOptions)}'`
         );
 
-        return async (req, res, next) => {
-            if (req.path.startsWith(backend.path)) {
-                await proxyFn(req, res, next);
-            } else {
-                next();
-            }
-        };
+        // return async (req, res, next) => {
+        //     if (req.path.startsWith(backend.path)) {
+        //         await proxyFn(req, res, next);
+        //     } else {
+        //         next();
+        //     }
+        // };
+        return router.use(backend.path, proxyFn);
     } catch (e) {
         const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
         logger.error(message);
