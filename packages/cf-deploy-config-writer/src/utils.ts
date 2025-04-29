@@ -1,5 +1,7 @@
 import { join, normalize, posix } from 'path';
 import { coerce, satisfies } from 'semver';
+import type { Editor } from 'mem-fs-editor';
+import { CommandRunner } from '@sap-ux/nodejs-utils';
 import {
     isAppStudio,
     listDestinations,
@@ -30,9 +32,7 @@ import {
     CDSDKPackage,
     CDSPackage
 } from './constants';
-import type { Editor } from 'mem-fs-editor';
-import { type MTABaseConfig, type CFConfig, type CFBaseConfig, type CFAppConfig } from './types';
-import { CommandRunner } from '@sap-ux/nodejs-utils';
+import { type MTABaseConfig, type CFBaseConfig, type CFAppConfig } from './types';
 
 let cachedDestinationsList: Destinations = {};
 
@@ -181,35 +181,23 @@ export async function addCommonPackageDependencies(targetPath: string, fs: Edito
  *
  * @param config writer configuration
  * @param fs reference to a mem-fs editor
+ * @param addTenant If true, append tenant to the xs-security.json file
  */
-export async function generateSupportingConfig(config: CFConfig, fs: Editor): Promise<void> {
-    const mtaConfig = { mtaId: config.mtaId, mtaPath: config.rootPath } as MTABaseConfig;
-    if (mtaConfig.mtaId && !fileExists(fs, join(config.rootPath, FileName.Package))) {
-        addRootPackage(mtaConfig, fs);
+export async function generateSupportingConfig(
+    config: MTABaseConfig,
+    fs: Editor,
+    addTenant: boolean = true
+): Promise<void> {
+    if (config.mtaId && !fs.exists(join(config.mtaPath, 'package.json'))) {
+        addRootPackage(config, fs);
     }
-    if (
-        (config.addManagedAppRouter || config.addAppFrontendRouter) &&
-        mtaConfig.mtaId &&
-        !fileExists(fs, join(config.rootPath, FileName.XSSecurityJson))
-    ) {
-        addXSSecurityConfig(mtaConfig, fs, true);
+    if (config.mtaId && !fs.exists(join(config.mtaPath, FileName.XSSecurityJson))) {
+        addXSSecurityConfig(config, fs, addTenant);
     }
     // Be a good citizen and add a .gitignore if missing from the existing project root
-    if (!fileExists(fs, join(config.rootPath, FileName.DotGitIgnore))) {
-        addGitIgnore(config.rootPath, fs);
+    if (!fs.exists(join(config.mtaPath, '.gitignore'))) {
+        addGitIgnore(config.mtaPath, fs);
     }
-}
-
-/**
- * Add supporting configuration to the target folder.
- *
- * @param config writer configuration
- * @param fs reference to a mem-fs editor
- */
-export function addSupportingConfig(config: MTABaseConfig, fs: Editor): void {
-    addRootPackage(config, fs);
-    addGitIgnore(config.mtaPath, fs);
-    addXSSecurityConfig(config, fs);
 }
 
 /**
