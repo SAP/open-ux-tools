@@ -1,5 +1,6 @@
 import { basename, join } from 'path';
-import { getRtaUrlParameters, getRTAUrl, getRTAServe } from './utils';
+import { getRTAUrlParameters, getRTAUrl } from './utils';
+import { getRTAServe } from '../common/utils';
 import type { Editor } from 'mem-fs-editor';
 import { FileName, type Package } from '@sap-ux/project-access';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -34,7 +35,7 @@ export async function addVariantsManagementScript(
         packageJson.scripts = {};
     }
 
-    const url = await getRTAUrl(basePath, getRtaUrlParameters(packageJson), ui5YamlFileName, fs);
+    const url = await getRTAUrl(basePath, getRTAUrlParameters(packageJson), ui5YamlFileName, fs);
     const serveCommand = await getRTAServe(basePath, ui5YamlFileName, fs);
 
     if (!url) {

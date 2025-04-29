@@ -5,7 +5,7 @@ import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { PreviewConfigOptions } from '../types';
 import type { CustomMiddleware, FioriAppReloadConfig, UI5Config } from '@sap-ux/ui5-config';
-import { getPreviewMiddleware } from './utils';
+import { getPreviewMiddleware } from '../common/utils';
 
 /**
  * Gets the reload middleware form the provided yamlConfig.

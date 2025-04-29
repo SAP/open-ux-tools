@@ -1,8 +1,5 @@
 import { join } from 'path';
 import * as utils from '../../../src/variants-config/utils';
-import { create as createFS } from 'mem-fs-editor';
-import { create as createStorage } from 'mem-fs';
-import type { Editor } from 'mem-fs-editor';
 
 describe('utils', () => {
     const basePath = join(__dirname, '../../fixtures/variants-config');
@@ -10,26 +7,26 @@ describe('utils', () => {
     describe('getUI5UrlParameters', () => {
         test('parameters for ux-ui5-tooling 1.15.3', () => {
             const packageJson = { devDependencies: { '@sap/ux-ui5-tooling': '1.15.3' } };
-            expect(utils.getRtaUrlParameters(packageJson)).toStrictEqual(
+            expect(utils.getRTAUrlParameters(packageJson)).toStrictEqual(
                 'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false'
             );
         });
 
         test('parameters for ux-ui5-tooling 1.15.3', () => {
             const packageJson = { devDependencies: { '@sap/ux-ui5-tooling': '1.15.4' } };
-            expect(utils.getRtaUrlParameters(packageJson)).toStrictEqual('');
+            expect(utils.getRTAUrlParameters(packageJson)).toStrictEqual('');
         });
 
         test('parameters for preview-middleware 0.16.88', () => {
             const packageJson = { devDependencies: { '@sap-ux/preview-middleware': '0.16.88' } };
-            expect(utils.getRtaUrlParameters(packageJson)).toStrictEqual(
+            expect(utils.getRTAUrlParameters(packageJson)).toStrictEqual(
                 'fiori-tools-rta-mode=true&sap-ui-rta-skip-flex-validation=true&sap-ui-xx-condense-changes=true&sap-ui-xx-viewCache=false'
             );
         });
 
         test('parameters for preview-middleware 0.16.90', () => {
             const packageJson = { devDependencies: { '@sap-ux/preview-middleware': '0.16.90' } };
-            expect(utils.getRtaUrlParameters(packageJson)).toStrictEqual('');
+            expect(utils.getRTAUrlParameters(packageJson)).toStrictEqual('');
         });
     });
 
@@ -76,39 +73,6 @@ describe('utils', () => {
             await expect(utils.getRTAUrl('path/to/chicken', '', 'chicken.yaml')).rejects.toThrowError(
                 `No chicken.yaml file found. Error: File 'chicken.yaml' not found in project 'path/to/chicken'`
             );
-        });
-    });
-
-    describe('getPreviewMiddleware', () => {
-        test('exception handling - parameters not provided', async () => {
-            await expect(utils.getPreviewMiddleware()).rejects.toThrowError(
-                'Either base path or yaml config must be provided'
-            );
-        });
-
-        test('exception handling - file not found', async () => {
-            const basePath = join(__dirname, '../../fixtures/a-folder-that-does-not-exist');
-            await expect(utils.getPreviewMiddleware(undefined, basePath, 'chicken.html')).rejects.toThrowError(
-                `File 'chicken.html' not found in project '${basePath}'`
-            );
-        });
-    });
-
-    describe('getRTAServe', () => {
-        let fs: Editor;
-
-        beforeEach(() => {
-            jest.clearAllMocks();
-            fs = createFS(createStorage());
-        });
-        test('RTA serve for preview middleware', async () => {
-            const openSourceConfig = join(basePath, 'open-source-config');
-            expect(await utils.getRTAServe(openSourceConfig, 'ui5.yaml', fs)).toStrictEqual('ui5 serve');
-        });
-
-        test('RTA serve for fiori-tools-preview middleware', async () => {
-            const fioriToolsConfig = join(basePath, 'fiori-tools-config');
-            expect(await utils.getRTAServe(fioriToolsConfig, 'ui5.yaml', fs)).toStrictEqual('fiori run');
         });
     });
 });
