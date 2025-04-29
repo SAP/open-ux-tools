@@ -275,7 +275,7 @@ Object {
           "_type": "Property",
           "fullyQualifiedName": "IncidentService.Incidents/data",
           "name": "data",
-          "type": "IncidentService.ComplexType",
+          "type": "IncidentService.Incidents.data",
         },
       ],
       "fullyQualifiedName": "IncidentService.Incidents",
