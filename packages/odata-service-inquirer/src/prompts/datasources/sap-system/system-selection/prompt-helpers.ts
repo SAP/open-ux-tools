@@ -208,13 +208,14 @@ function matchesFilters(destination: Destination, filters?: Partial<DestinationF
  *
  * @param destinationFilters the filters to apply to the destination choices
  * @param includeCloudFoundryAbapEnvChoice whether to include the Cloud Foundry ABAP environment choice in the list
- * @returns a list of choices for the system selection prompt
+ * @returns an object containing the system choices and a flag to indicate if there was an error retrieving destinations
  */
 export async function createSystemChoices(
     destinationFilters?: Partial<DestinationFilters>,
     includeCloudFoundryAbapEnvChoice = false
-): Promise<ListChoiceOptions<SystemSelectionAnswerType>[]> {
+): Promise<{ systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[]; destinationRetrievalError: boolean }> {
     let systemChoices: ListChoiceOptions<SystemSelectionAnswerType>[] = [];
+    let destinationRetrievalError = false;
     let newSystemChoice: ListChoiceOptions<SystemSelectionAnswerType> | undefined;
 
     // If this is BAS, return destinations, otherwise return stored backend systems
@@ -223,6 +224,7 @@ export async function createSystemChoices(
         try {
             destinations = await listDestinations({ stripS4HCApiHosts: true });
         } catch (e) {
+            destinationRetrievalError = true;
             LoggerHelper.logger.error(
                 t('errors.destination.listDestinations', {
                     error: e.message
@@ -273,7 +275,7 @@ export async function createSystemChoices(
     if (newSystemChoice) {
         systemChoices.unshift(newSystemChoice);
     }
-    return systemChoices;
+    return { systemChoices, destinationRetrievalError };
 }
 
 /**

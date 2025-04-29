@@ -163,7 +163,7 @@ export async function getSystemConnectionQuestions(
 ): Promise<Question<SystemSelectionAnswers>[]> {
     const requiredOdataVersion = promptOptions?.serviceSelection?.requiredOdataVersion;
     const destinationFilters = promptOptions?.systemSelection?.destinationFilters;
-    const systemChoices = await createSystemChoices(
+    const { systemChoices, destinationRetrievalError } = await createSystemChoices(
         destinationFilters,
         promptOptions?.systemSelection?.includeCloudFoundryAbapEnvChoice
     );
@@ -217,6 +217,12 @@ export async function getSystemConnectionQuestions(
                     return {
                         message: t('prompts.systemSelection.authenticationFailedUpdateCredentials'),
                         severity: Severity.information
+                    };
+                }
+                if (destinationRetrievalError) {
+                    return {
+                        message: t('prompts.systemSelection.destinationRetrievalError'),
+                        severity: Severity.warning
                     };
                 }
             }

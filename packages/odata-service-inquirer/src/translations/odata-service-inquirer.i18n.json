@@ -105,7 +105,8 @@
             "newSystemChoiceLabel": "New system",
             "hint": "Select a system configuration.",
             "message": "System",
-            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials."
+            "authenticationFailedUpdateCredentials": "Authentication failed. Please try updating the credentials.",
+            "destinationRetrievalError": "An error occurred when retrieving the list of destinations. For more information, view the logs."
         },
         "abapOnBTPType": {
             "message": "ABAP environment definition source",
@@ -195,8 +196,8 @@
     },
     "errors": {
         "destination": {
-            "authError": "The selected system is returning an authentication error. System name: {{systemName}}, error: {{- error}}",
-            "listDestinations": "An error occurred while retrieving the list of destinations. {{- error}}"
+            "authError": "The selected system returned an authentication error. System name: {{systemName}}. Error: {{- error}}.",
+            "listDestinations": "An error occurred when retrieving the list of destinations: {{- error}}."
         },
         "cannotReadCapServiceMetadata": "An error occurred reading CAP service metadata: {{serviceName}}. $t(texts.seeLogForDetails)",
         "capModelAndServicesLoadError": "An error occurred loading the CAP model and services{{- error, addMsgWithColonFormatter}}",
