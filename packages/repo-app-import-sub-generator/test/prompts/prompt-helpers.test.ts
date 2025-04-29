@@ -8,7 +8,8 @@ import RepoAppDownloadLogger from '../../src/utils/logger';
 
 jest.mock('../../src/utils/logger', () => ({
     logger: {
-        error: jest.fn()
+        error: jest.fn(),
+        warn: jest.fn()
     }
 }));
 
@@ -99,13 +100,13 @@ describe('formatAppChoices', () => {
     it('should log error if required fields are missing', () => {
         const appList: AppIndex = [invalidApp];
         const result = formatAppChoices(appList);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith( t('error.requiredFieldsMissing', { app: JSON.stringify(appList) }) );
+        expect(RepoAppDownloadLogger.logger.warn).toBeCalledWith( t('warn.requiredFieldsMissing', { app: JSON.stringify(appList) }) );
     });
 
     it('should handle a mix of valid and invalid apps by throwing an error', () => {
         const appList: AppIndex = [validApp, invalidApp];
         const result = formatAppChoices(appList);
-        expect(RepoAppDownloadLogger.logger.error).toBeCalledWith( t('error.requiredFieldsMissing', { app: JSON.stringify(appList) }) );
+        expect(RepoAppDownloadLogger.logger.warn).toBeCalledWith( t('warn.requiredFieldsMissing', { app: JSON.stringify(appList) }) );
     });
 
     it('should return an empty array if the app list is empty', () => {
