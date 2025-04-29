@@ -210,7 +210,7 @@ export async function getSystemConnectionQuestions(
             additionalMessages: async (selectedSystem: SystemSelectionAnswerType) => {
                 // Backend systems credentials may need to be updated
                 if (
-                    selectedSystem.type === 'backendSystem' &&
+                    selectedSystem?.type === 'backendSystem' &&
                     connectionValidator.systemAuthType === 'basic' &&
                     (await connectionValidator.isAuthRequired())
                 ) {
