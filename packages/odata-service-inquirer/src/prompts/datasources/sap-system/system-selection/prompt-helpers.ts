@@ -1,4 +1,4 @@
-import type { Destination, ServiceInfo } from '@sap-ux/btp-utils';
+import type { Destination, Destinations, ServiceInfo } from '@sap-ux/btp-utils';
 import {
     getDisplayName,
     isAbapODataDestination,
@@ -219,7 +219,16 @@ export async function createSystemChoices(
 
     // If this is BAS, return destinations, otherwise return stored backend systems
     if (isAppStudio()) {
-        const destinations = await listDestinations({ stripS4HCApiHosts: true });
+        let destinations: Destinations = {};
+        try {
+            destinations = await listDestinations({ stripS4HCApiHosts: true });
+        } catch (e) {
+            LoggerHelper.logger.error(
+                t('errors.destination.listDestinations', {
+                    error: e.message
+                })
+            );
+        }
         systemChoices = Object.values(destinations)
             .filter((destination) => {
                 return matchesFilters(destination, destinationFilters);
