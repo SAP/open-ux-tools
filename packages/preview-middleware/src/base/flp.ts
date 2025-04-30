@@ -473,16 +473,6 @@ export class FlpSandbox {
                 next: NextFunction
             ) => {
                 this.templateConfig.enableCardGenerator = !!this.cardGenerator?.path;
-                const { title, id } = this.manifest['sap.app'];
-
-                this.templateConfig.apps['Cards-generator'] = {
-                    title: title ?? 'Card Generator',
-                    description: '',
-                    additionalInformation: `SAPUI5.Component=${id}`,
-                    applicationType: 'URL',
-                    url: '../'
-                };
-
                 await this.flpGetHandler(req, res, next);
             }
         );
