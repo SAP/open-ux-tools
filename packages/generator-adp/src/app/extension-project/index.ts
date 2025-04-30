@@ -7,6 +7,7 @@ import {
     type SystemLookup
 } from '@sap-ux/adp-tooling';
 
+import { t } from '../../utils/i18n';
 import type { ExtensionProjectData } from '../types';
 
 export const EXTENSIBILITY_GENERATOR_NS = '@bas-dev/generator-extensibility-sub/generators/app';
@@ -26,12 +27,12 @@ export async function getExtensionProjectData(
 ): Promise<ExtensionProjectData> {
     const { application, system, username, password } = configAnswers;
     if (!application) {
-        throw new Error('Application parameters are missing.');
+        throw new Error(t('error.appParameterMissing'));
     }
 
     const destinationInfo = await systemLookup.getSystemByName(system);
     if (!destinationInfo) {
-        throw new Error('Destination info is missing.');
+        throw new Error(t('error.destinationInfoMissing'));
     }
 
     const { projectName, namespace, ui5Version } = attributeAnswers;

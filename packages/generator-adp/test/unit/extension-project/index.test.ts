@@ -1,5 +1,6 @@
 import type { AttributesAnswers, ConfigAnswers } from '@sap-ux/adp-tooling';
 
+import { t } from '../../../src/utils/i18n';
 import { getExtensionProjectData, resolveNodeModuleGenerator } from '../../../src/app/extension-project';
 
 const configAnswers = {
@@ -58,7 +59,7 @@ describe('getExtensionProjectData', () => {
         const badConfig = { ...configAnswers, application: undefined } as any;
 
         await expect(getExtensionProjectData(badConfig, attributeAnswers, mockSystemLookup as any)).rejects.toThrow(
-            'Application parameters are missing.'
+            t('error.appParameterMissing')
         );
     });
 
@@ -66,7 +67,7 @@ describe('getExtensionProjectData', () => {
         mockSystemLookup.getSystemByName.mockResolvedValue(undefined);
 
         await expect(getExtensionProjectData(configAnswers, attributeAnswers, mockSystemLookup as any)).rejects.toThrow(
-            'Destination info is missing.'
+            t('error.destinationInfoMissing')
         );
     });
 });
