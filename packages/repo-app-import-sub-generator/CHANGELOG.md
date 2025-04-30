@@ -1,5 +1,25 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [ab4e908]
+    -   @sap-ux/odata-service-inquirer@2.3.6
+
+## 0.2.12
+
+### Patch Changes
+
+-   a5c77fc: refactor: update logging for missing required fields and enhance prompt options
+
+## 0.2.11
+
+### Patch Changes
+
+-   @sap-ux/fiori-elements-writer@2.3.4
+-   @sap-ux/odata-service-inquirer@2.3.5
+
 ## 0.2.10
 
 ### Patch Changes
