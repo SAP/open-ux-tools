@@ -60,8 +60,8 @@ jobs:
         strategy:
             matrix:
                 ui5-version: [
-                  "1-135-0",
-                  "1-71-75"
+                  "1.135.0",
+                  "1.134.1"
                 ]
         runs-on: ubuntu-latest
         timeout-minutes: 30
@@ -111,8 +111,9 @@ jobs:
               if: ${{ !cancelled() }}
               uses: actions/upload-artifact@v4
               with:
+                
                 name: blob-report-${{ matrix.ui5-version }}
-                path: blob-report
+                path: packages/preview-middleware/blob-report
                 retention-days: 1
             # - name: Upload playwright reports
             #   if: failure()
@@ -156,7 +157,7 @@ jobs:
         - name: Download blob reports from GitHub Actions Artifacts
           uses: actions/download-artifact@v4
           with:
-            path: all-blob-reports
+            path: packages/preview-middleware/all-blob-reports
             pattern: blob-report-*
             merge-multiple: true
     
@@ -167,7 +168,7 @@ jobs:
           uses: actions/upload-artifact@v4
           with:
             name: html-report--attempt-${{ github.run_attempt }}
-            path: playwright-report
+            path: packages/preview-middleware/playwright-report
             retention-days: 15
     version:
         # Run version job only on pushes to the main branch. The job depends on completion of the build job.

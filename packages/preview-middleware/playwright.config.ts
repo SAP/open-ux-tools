@@ -42,7 +42,7 @@ const config: PlaywrightTestConfig<TestOptions> = {
             ...devices['Desktop Chrome'],
             channel: 'chrome',
             viewport: { width: 1720, height: 900 },
-            ui5Version: version.replaceAll('-', '.')
+            ui5Version: version
         }
     })) as Project<{}, TestOptions>[],
     globalSetup: require.resolve('./test/integration/utils/global-setup')

@@ -9,9 +9,7 @@ getUI5Versions({
 })
     .then((versions) => {
         'use strict';
-        const maintenanceVersions = versions
-            .filter((version) => version.maintained)
-            .map((version) => version.version.replaceAll('.', '-'));
+        const maintenanceVersions = versions.filter((version) => version.maintained).map((version) => version.version);
         return writeFile(join(__dirname, 'versions.json'), JSON.stringify(maintenanceVersions, null, 2));
     })
     .catch((error) => {
