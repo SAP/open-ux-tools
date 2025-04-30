@@ -1,5 +1,11 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.2.49
+
+### Patch Changes
+
+-   39cf280: apply validation for package format and starting prefix with flag
+
 ## 1.2.48
 
 ### Patch Changes

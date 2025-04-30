@@ -1,5 +1,13 @@
 # @sap-ux/abap-deploy-config-sub-generator
 
+## 0.0.70
+
+### Patch Changes
+
+-   39cf280: apply validation for package format and starting prefix with flag
+-   Updated dependencies [39cf280]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.49
+
 ## 0.0.69
 
 ### Patch Changes
