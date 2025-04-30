@@ -89,6 +89,121 @@ jobs:
               env:
                   GITHUB_TOKEN: ${{ secrets.ACCESS_PAT }}
                   SONAR_TOKEN: ${{ secrets.SONAR_TOKEN }}
+    playwright-tests:
+        # if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'
+        needs: [build]
+        strategy:
+            matrix:
+                ui5-version: [
+                  "1-135-0",
+                  "1-71-75"
+                ]
+        runs-on: ubuntu-latest
+        timeout-minutes: 30
+        steps:
+            - name: Checkout code repository
+              uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - name: Setup pnpm
+              uses: pnpm/action-setup@v4
+              with:
+                  run_install: true
+            - name: Cache pnpm modules
+              uses: actions/cache@v4
+              env:
+                  cache-name: cache-pnpm-modules
+              with:
+                  path: ~/.pnpm-store
+                  key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+                  restore-keys: |
+                      ubuntu-latest-build-build-${{ env.cache-name }}-20.x-
+            - name: Use Node.js 20.x
+              uses: actions/setup-node@v4
+              with:
+                  node-version: 20.x
+            - name: Install pnpm modules
+              run: pnpm install
+            - name: Run build
+              run: pnpm run build
+              env:
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Cache playwright browsers
+              id: cache-playwright-browsers
+              uses: actions/cache@v4
+              with:
+                path: |
+                    ~/.cache/ms-playwright
+                key: playwright-browsers-os-ubuntu-latest-build-node-version-20.x
+            - name: Install playwright chrome browsers
+              if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
+              run: npx playwright install chrome
+            - name: Get UI5 versions
+              run: cd packages/preview-middleware && pnpm exec playwright test --project=-${{ matrix.ui5-version }} --reporter=blob
+              env:
+                NX_CLOUD_ACCESS_TOKEN: ${{ secrets.NX_CLOUD_ACCESS_TOKEN }}
+            - name: Upload blob report to GitHub Actions Artifacts
+              if: ${{ !cancelled() }}
+              uses: actions/upload-artifact@v4
+              with:
+                name: blob-report-${{ matrix.ui5-version }}
+                path: blob-report
+                retention-days: 1
+            # - name: Upload playwright reports
+            #   if: failure()
+            #   uses: actions/upload-artifact@v4
+            #   with:
+            #     name: playwright-reports-os-ubuntu-latest-node-version-20.x
+            #     path: |
+            #       packages/*/playwright-report
+            #       !packages/*/node_modules
+            #     retention-days: 15
+    merge-reports:
+    # Merge reports after playwright-tests, even if some shards have failed
+      if: ${{ !cancelled() }}
+      needs: [playwright-tests]
+
+      runs-on: ubuntu-latest
+      steps:
+        - name: Checkout code repository
+          uses: actions/checkout@v4
+          with:
+              fetch-depth: 0
+        - name: Setup pnpm
+          uses: pnpm/action-setup@v4
+          with:
+              run_install: true
+        - name: Cache pnpm modules
+          uses: actions/cache@v4
+          env:
+              cache-name: cache-pnpm-modules
+          with:
+              path: ~/.pnpm-store
+              key: ubuntu-latest-build-${{ env.cache-name }}-20.x-${{ hashFiles('**/pnpm-lock.yaml') }}
+              restore-keys: |
+                  ubuntu-latest-build-build-${{ env.cache-name }}-20.x-
+        - name: Use Node.js 20.x
+          uses: actions/setup-node@v4
+          with:
+              node-version: 20.x
+        - name: Install pnpm modules
+          run: pnpm install
+        - name: Download blob reports from GitHub Actions Artifacts
+          uses: actions/download-artifact@v4
+          with:
+            path: all-blob-reports
+            pattern: blob-report-*
+            merge-multiple: true
+    
+        - name: Merge into HTML Report
+          run: npx playwright merge-reports --reporter html ./all-blob-reports
+    
+        - name: Upload HTML report
+          uses: actions/upload-artifact@v4
+          with:
+            name: html-report--attempt-${{ github.run_attempt }}
+            path: playwright-report
+            retention-days: 15
     version:
         # Run version job only on pushes to the main branch. The job depends on completion of the build job.
         if: github.repository == 'SAP/open-ux-tools' && github.event_name == 'push' && github.ref == 'refs/heads/main'

@@ -25,10 +25,11 @@ const createCopy = async (srcDir: string, destDir: string): Promise<void> => {
  * Copy project.
  *
  * @param params copy options
+ * @returns destination project root
  */
-export const copyProject = async (params: CopyOptions): Promise<void> => {
-    const { cb, remove = { content: true, nodeModules: false }, projectRoot, npmI = true } = params;
-    const destinationRoot = getDestinationProjectRoot(projectRoot);
+export const copyProject = async (params: CopyOptions): Promise<string> => {
+    const { cb, remove = { content: true, nodeModules: false }, projectRoot, npmI = true, id } = params;
+    const destinationRoot = getDestinationProjectRoot(projectRoot, id);
     if (remove.content) {
         // remove only content of project
         await removeProjectContent(destinationRoot);
@@ -42,10 +43,11 @@ export const copyProject = async (params: CopyOptions): Promise<void> => {
 
     if (cb) {
         // execute call back
-        await cb();
+        await cb(destinationRoot);
     }
     if (npmI) {
         // install project dependencies
         await install(destinationRoot);
     }
+    return destinationRoot;
 };

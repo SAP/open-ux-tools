@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<app:service xmlns:app="http://www.w3.org/2007/app" xmlns:atom="http://www.w3.org/2005/Atom">
+  <app:workspace>
+    <atom:title>Adaptation Transport Organizer (ATO)</atom:title>
+    <app:collection href="/sap/bc/adt/ato/settings">
+      <atom:title>Settings</atom:title>
+      <atom:category term="settings" scheme="http://www.sap.com/adt/categories/ato" />
+      <adtcomp:templateLinks xmlns:adtcomp="http://www.sap.com/adt/compatibility" />
+    </app:collection>
+    <app:collection href="/sap/bc/adt/ato/notifications">
+      <atom:title>Notifications</atom:title>
+      <app:accept>application/vnd.sap.adt.ato.notification.v1+xml</app:accept>
+      <app:accept>application/vnd.sap.adt.ato.notification.v1+json</app:accept>
+      <atom:category term="notifications" scheme="http://www.sap.com/adt/categories/ato" />
+      <adtcomp:templateLinks xmlns:adtcomp="http://www.sap.com/adt/compatibility" />
+    </app:collection>
+  </app:workspace>
+  </app:service>
