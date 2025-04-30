@@ -48,8 +48,8 @@ import {
 } from './config';
 import { generateCdm } from './cdm';
 import { readFileSync } from 'fs';
-import { traverseI18nProperties, getIntegrationCard } from './utils/cards';
-import os from 'os';
+import { getIntegrationCard } from './utils/cards';
+import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 
 const DEFAULT_LIVERELOAD_PORT = 35729;
 
@@ -1015,26 +1015,7 @@ export class FlpSandbox {
             const i18nPath = this.manifest['sap.app'].i18n as string;
             const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
             const entries = (req.body as Array<I18nEntry>) || [];
-            const { lines, updatedEntries, output } = await traverseI18nProperties(filePath, entries, this.fs);
-
-            // Add a new line if file is not empty and last line is not empty and there are new entries
-            const hasLine = lines.length > 0;
-            const lastLineNotEmpty = lines.at(-1)?.trim() ?? false;
-            if (hasLine && lastLineNotEmpty && entries.length) {
-                output.push('');
-            }
-
-            entries.forEach((entry, index) => {
-                if (!updatedEntries[index]) {
-                    const { comment, key, value } = entry;
-                    if (comment) {
-                        output.push(`#${comment}`); // Add comment only for a new entry
-                    }
-                    output.push(`${key}=${value}${os.EOL}`);
-                }
-            });
-
-            this.fs.write(filePath, output.join(os.EOL));
+            await createPropertiesI18nEntries(filePath, entries);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
         } catch (err) {
             this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');

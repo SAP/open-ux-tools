@@ -15,12 +15,12 @@ import { tmpdir } from 'os';
 import { type AdpPreviewConfig } from '@sap-ux/adp-tooling';
 import * as adpTooling from '@sap-ux/adp-tooling';
 import * as projectAccess from '@sap-ux/project-access';
-import * as cardUtils from '../../../src/base/utils/cards';
 import type { I18nEntry } from '@sap-ux/i18n/src/types';
 import { fetchMock } from '../../__mock__/global';
 import { promises } from 'fs';
 import { getWebappPath } from '@sap-ux/project-access';
 import path from 'path';
+import { createPropertiesI18nEntries } from '@sap-ux/i18n';
 //@ts-expect-error: this import is not relevant for the 'erasableSyntaxOnly' check
 import connect = require('connect');
 
@@ -31,11 +31,13 @@ jest.mock('@sap-ux/adp-tooling', () => {
     };
 });
 
-jest.spyOn(cardUtils, 'traverseI18nProperties').mockResolvedValue({
-    lines: ['appTitle=Sales Order'],
-    updatedEntries: [],
-    output: ['appTitle=Sales Order']
+jest.mock('@sap-ux/i18n', () => {
+    return {
+        ...jest.requireActual('@sap-ux/i18n'),
+        createPropertiesI18nEntries: jest.fn()
+    };
 });
+const createPropertiesI18nEntriesMock = createPropertiesI18nEntries as jest.Mock;
 
 class FlpSandbox extends FlpSandboxUnderTest {
     public declare templateConfig: TemplateConfig;
@@ -853,19 +855,20 @@ describe('FlpSandbox', () => {
         });
 
         test('POST /editor/i18n with payload', async () => {
-            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send([
+            const newI18nEntry = [
                 {
                     'key': 'CardGeneratorGroupPropertyLabel_Groups_0_Items_0',
                     'value': 'new Entry'
                 }
-            ]);
+            ];
+            const response = await server.post(CARD_GENERATOR_DEFAULT.i18nStore).send(newI18nEntry);
             const webappPath = await getWebappPath(path.resolve());
             const filePath = join(webappPath, 'i18n', 'i18n.properties');
 
             expect(response.status).toBe(201);
             expect(response.text).toBe('i18n file updated.');
-            expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(1);
-            expect(mockFsPromisesWriteFile.mock.calls[0][0]).toBe(filePath);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledTimes(1);
+            expect(createPropertiesI18nEntriesMock).toHaveBeenCalledWith(filePath, newI18nEntry);
         });
     });
 
