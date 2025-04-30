@@ -33,8 +33,15 @@ interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
 }
 
+type ControllerList = {
+    /**
+     * File name without extension
+     */
+    controllerName: string;
+}[];
+
 type ControllerModel = JSONModel & {
-    getProperty(sPath: '/controllersList'): { controllerName: /** File name without extension */ string }[];
+    getProperty(sPath: '/controllersList'): ControllerList;
     getProperty(sPath: '/controllerExists'): boolean;
     getProperty(sPath: '/newControllerName'): string;
     getProperty(sPath: '/viewId'): string;
