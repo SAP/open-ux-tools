@@ -11,7 +11,7 @@
     "outDir": "./dist",
     "baseUrl": "./",
     "paths": {
-      "testNameSpace/alpv4cap/*": [
+      "testNameSpace/alpv4captypescript/*": [
         "./webapp/*"
       ]
     },

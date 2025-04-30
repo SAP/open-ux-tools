@@ -1,7 +1,7 @@
 {
   "_version": "1.33.0",
   "sap.app": {
-    "id": "testNameSpace.alpv4cap",
+    "id": "testNameSpace.alpv4captypescript",
     "type": "application",
     "i18n": "i18n/i18n.properties",
     "applicationVersion": {
@@ -12,8 +12,8 @@
     "resources": "resources.json",
     "sourceTemplate": {
       "id": "@sap-ux/fiori-elements-writer:alp",
-      "version": "2.1.35",
-      "toolsId": "1a762307-5668-4946-ba6a-1c4513906146"
+      "version": "2.3.5",
+      "toolsId": "19e60d07-aa93-4073-a91b-75110402aca0"
     },
     "dataSources": {
       "mainService": {
@@ -60,7 +60,7 @@
       "i18n": {
         "type": "sap.ui.model.resource.ResourceModel",
         "settings": {
-          "bundleName": "testNameSpace.alpv4cap.i18n.i18n"
+          "bundleName": "testNameSpace.alpv4captypescript.i18n.i18n"
         }
       },
       "": {

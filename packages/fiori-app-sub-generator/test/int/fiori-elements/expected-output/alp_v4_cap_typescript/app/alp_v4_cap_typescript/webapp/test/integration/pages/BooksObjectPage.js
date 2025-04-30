@@ -8,7 +8,7 @@ sap.ui.define(['sap/fe/test/ObjectPage'], function(ObjectPage) {
 
     return new ObjectPage(
         {
-            appId: 'testNameSpace.alpv4cap',
+            appId: 'testNameSpace.alpv4captypescript',
             componentId: 'BooksObjectPage',
             entitySet: 'Books'
         },

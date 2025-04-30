@@ -320,8 +320,8 @@ describe('Generate v4 apps', () => {
         accessSpy.mockRestore();
     });
 
-    it('ALP v4 CAP', async () => {
-        testProjectName = 'alp_v4_cap';
+    it('ALP v4 CAP with typescript', async () => {
+        testProjectName = 'alp_v4_cap_typescript';
         expectedOutputPath = getExpectedOutputPath(join(testProjectName));
         // Copy fake package.json to mimic real CAP project
         mkdirSync(join(testDir, testProjectName), { recursive: true });

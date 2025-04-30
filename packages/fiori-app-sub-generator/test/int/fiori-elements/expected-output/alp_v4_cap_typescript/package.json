@@ -9,7 +9,7 @@
     "app/1",
     "app/2",
     "app/3",
-    "app/alp_v4_cap"
+    "app/alp_v4_cap_typescript"
   ],
   "workspaces": [
     "app/*"
@@ -18,6 +18,6 @@
     "cds-plugin-ui5": "^0.9.3"
   },
   "scripts": {
-    "watch-alp_v4_cap": "cds watch --open testNameSpace.alpv4cap/index.html?sap-ui-xx-viewCache=false --livereload false"
+    "watch-alp_v4_cap_typescript": "cds watch --open testNameSpace.alpv4captypescript/index.html?sap-ui-xx-viewCache=false --livereload false"
   }
 }

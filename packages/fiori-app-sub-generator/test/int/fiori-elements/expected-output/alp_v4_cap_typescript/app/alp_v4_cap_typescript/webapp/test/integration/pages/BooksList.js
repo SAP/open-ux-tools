@@ -8,7 +8,7 @@ sap.ui.define(['sap/fe/test/ListReport'], function(ListReport) {
 
     return new ListReport(
         {
-            appId: 'testNameSpace.alpv4cap',
+            appId: 'testNameSpace.alpv4captypescript',
             componentId: 'BooksList',
             entitySet: 'Books'
         },
