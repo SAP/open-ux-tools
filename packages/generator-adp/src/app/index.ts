@@ -35,8 +35,8 @@ import { getFlexLayer } from './layer';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
-import { validateAdpJsonInput } from './questions/helper/validators';
-import type { AdpGeneratorOptions, JsonInput, AttributePromptOptions } from './types';
+import { validateJsonInput } from './questions/helper/validators';
+import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -293,7 +293,7 @@ export default class extends Generator {
             namespace = getDefaultNamespace(projectName, this.isCustomerBase)
         } = this.jsonInput;
 
-        await validateAdpJsonInput(this.systemLookup, this.isCustomerBase, {
+        await validateJsonInput(this.systemLookup, this.isCustomerBase, {
             projectName,
             targetFolder,
             namespace,

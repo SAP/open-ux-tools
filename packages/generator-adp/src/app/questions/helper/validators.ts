@@ -3,7 +3,7 @@ import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input
 import { t } from '../../../utils/i18n';
 import { isString } from '../../../utils/type-guards';
 
-interface AdpJsonInputParams {
+interface JsonInputParams {
     projectName: string;
     targetFolder: string;
     namespace: string;
@@ -15,7 +15,7 @@ interface AdpJsonInputParams {
  *
  * @param {SystemLookup} systemLookup - The system lookup utility to resolve system names.
  * @param {boolean} isCustomerBase - Indicates if the project is for the customer base layer.
- * @param {AdpJsonInputParams} params - The input parameters to validate.
+ * @param {JsonInputParams} params - The input parameters to validate.
  * @param {string} params.projectName - The name of the project to validate.
  * @param {string} params.targetFolder - The target folder where the project will be created.
  * @param {string} params.namespace - The namespace of the project to validate.
@@ -26,10 +26,10 @@ interface AdpJsonInputParams {
  * - If the system cannot be resolved.
  * @returns {Promise<void>} Resolves if all validations pass, otherwise throws an error.
  */
-export async function validateAdpJsonInput(
+export async function validateJsonInput(
     systemLookup: SystemLookup,
     isCustomerBase: boolean,
-    { projectName, targetFolder, namespace, system }: AdpJsonInputParams
+    { projectName, targetFolder, namespace, system }: JsonInputParams
 ): Promise<void> {
     let validationResult = validateProjectName(projectName, targetFolder, isCustomerBase);
     if (isString(validationResult)) {

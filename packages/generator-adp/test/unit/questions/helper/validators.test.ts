@@ -1,6 +1,6 @@
 import type { SystemLookup } from '@sap-ux/adp-tooling';
 import { validateNamespaceAdp, validateProjectName } from '@sap-ux/project-input-validator';
-import { validateAdpJsonInput } from '../../../../src/app/questions/helper/validators';
+import { validateJsonInput } from '../../../../src/app/questions/helper/validators';
 import { t } from '../../../../src/utils/i18n';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
@@ -21,7 +21,7 @@ const jsonInput = {
     system: availableSystem
 };
 
-describe('validateAdpJsonInput', () => {
+describe('validateJsonInput', () => {
     let systemLookup: jest.Mocked<SystemLookup>;
 
     beforeEach(() => {
@@ -39,7 +39,7 @@ describe('validateAdpJsonInput', () => {
     it('should resolve the returned promise when all data is valid', async () => {
         validateProjectNameMock.mockReturnValue(true);
         validateNamespaceAdpMock.mockReturnValue(true);
-        await expect(validateAdpJsonInput(systemLookup, true, jsonInput)).resolves.not.toThrow();
+        await expect(validateJsonInput(systemLookup, true, jsonInput)).resolves.not.toThrow();
         expect(systemLookup.getSystemByName).toHaveBeenCalledWith(availableSystem);
     });
 
@@ -47,9 +47,7 @@ describe('validateAdpJsonInput', () => {
         const invalidProjectNameMessage = 'invalid project name';
         validateProjectNameMock.mockReturnValue(invalidProjectNameMessage);
         validateNamespaceAdpMock.mockReturnValue(true);
-        await expect(validateAdpJsonInput(systemLookup, true, jsonInput)).rejects.toThrowError(
-            invalidProjectNameMessage
-        );
+        await expect(validateJsonInput(systemLookup, true, jsonInput)).rejects.toThrowError(invalidProjectNameMessage);
         expect(systemLookup.getSystemByName).not.toHaveBeenCalled();
     });
 
@@ -57,7 +55,7 @@ describe('validateAdpJsonInput', () => {
         const invalidNamespaceMessage = 'invalid namespace';
         validateNamespaceAdpMock.mockReturnValue(invalidNamespaceMessage);
         validateProjectNameMock.mockReturnValue(true);
-        await expect(validateAdpJsonInput(systemLookup, true, jsonInput)).rejects.toThrowError(invalidNamespaceMessage);
+        await expect(validateJsonInput(systemLookup, true, jsonInput)).rejects.toThrowError(invalidNamespaceMessage);
         expect(systemLookup.getSystemByName).not.toHaveBeenCalled();
     });
 
@@ -65,7 +63,7 @@ describe('validateAdpJsonInput', () => {
         validateNamespaceAdpMock.mockReturnValue(true);
         validateProjectNameMock.mockReturnValue(true);
         await expect(
-            validateAdpJsonInput(systemLookup, true, { ...jsonInput, system: nonExistingSystem })
+            validateJsonInput(systemLookup, true, { ...jsonInput, system: nonExistingSystem })
         ).rejects.toThrowError(t('error.systemNotFound', { system: nonExistingSystem }));
         expect(systemLookup.getSystemByName).toHaveBeenCalledWith(nonExistingSystem);
     });
