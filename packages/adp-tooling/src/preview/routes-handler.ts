@@ -41,6 +41,8 @@ export interface AnnotationDataSourceResponse {
     annotationDataSourceMap: AnnotationDataSourceMap;
 }
 
+type ControllerInfo = { controllerName: string };
+
 /**
  * @description Handles API Routes
  */
@@ -135,7 +137,7 @@ export default class RoutesHandler {
             const fileNames = files.map((file) => {
                 const fullName = file.getName();
                 const name = fullName.replace(/\.(js|ts)$/, '');
-                return { controllerName: name };
+                return { controllerName: name } satisfies ControllerInfo;
             });
 
             this.sendFilesResponse(res, {
