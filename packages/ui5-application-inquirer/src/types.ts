@@ -133,6 +133,7 @@ type NamePromptOptions = {
 type booleanPromptKeys =
     | 'addDeployConfig'
     | 'addFlpConfig'
+    | 'enableVirtualEndpoints'
     | 'enableEslint'
     | 'skipAnnotations'
     | 'enableTypeScript'
