@@ -1,5 +1,24 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.7
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+
+## 2.3.6
+
+### Patch Changes
+
+-   ab4e908: handle list destinations error
+
+## 2.3.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+
 ## 2.3.4
 
 ### Patch Changes

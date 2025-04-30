@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.10.0
+
+### Minor Changes
+
+-   c64de75: Remove UI Theme Belize from the generator for UI5 Version over 1.136
+
 ## 0.9.1
 
 ### Patch Changes

@@ -1,5 +1,11 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.11
+
+### Patch Changes
+
+-   42d73c0: code cleanup
+
 ## 0.2.10
 
 ### Patch Changes
