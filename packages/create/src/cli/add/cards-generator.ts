@@ -6,12 +6,12 @@ import { runNpmInstallCommand } from '../../common';
 import { isAbsolute, join } from 'path';
 
 /**
- * Add the cards-generator-config command.
+ * Add the cards-editor command.
  *
  * @param cmd - commander command for adding card generator config command
  */
-export function addCardsGeneratorConfigCommand(cmd: Command): void {
-    cmd.command('cards-generator [path]')
+export function addCardsEditorConfigCommand(cmd: Command): void {
+    cmd.command('cards-editor [path]')
         .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')

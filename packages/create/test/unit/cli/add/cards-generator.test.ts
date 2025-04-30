@@ -1,7 +1,7 @@
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
 import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
-import { addCardsGeneratorConfigCommand } from '../../../../src/cli/add/cards-generator';
+import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-generator';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
@@ -28,7 +28,7 @@ jest.mock('@sap-ux/app-config-writer', () => {
 
 const enableCardGeneratorConfigMock = enableCardGeneratorConfig as jest.Mock;
 const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');
-const testArgv = (args: string[]) => ['', '', 'cards-generator', appRoot, ...args];
+const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 
 describe('add/cards-generator', () => {
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
@@ -41,7 +41,7 @@ describe('add/cards-generator', () => {
     test('add cards-generator', async () => {
         // Test execution
         const command = new Command('add');
-        addCardsGeneratorConfigCommand(command);
+        addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv([]));
 
         // Flow check
@@ -52,7 +52,7 @@ describe('add/cards-generator', () => {
     test('add cards-generator --simulate', async () => {
         // Test execution
         const command = new Command('add');
-        addCardsGeneratorConfigCommand(command);
+        addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv(['--simulate']));
 
         // Flow check
@@ -64,7 +64,7 @@ describe('add/cards-generator', () => {
     test('add cards-generator --skip-install', async () => {
         // Test execution
         const command = new Command('add');
-        addCardsGeneratorConfigCommand(command);
+        addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv(['--skip-install']));
 
         // Flow check
