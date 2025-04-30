@@ -24,7 +24,7 @@ import type { AdpGeneratorOptions } from '../src/app';
 import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
 import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
-import type { AdpJsonInput } from '../src/app/types';
+import type { JsonInput } from '../src/app/types';
 import { EventName } from '../src/telemetryEvents';
 import { initI18n, t } from '../src/utils/i18n';
 
@@ -256,7 +256,7 @@ describe('Adaptation Project Generator Integration Test', () => {
     });
 
     it('should create adaptation project from json correctly', async () => {
-        const jsonInput: AdpJsonInput = {
+        const jsonInput: JsonInput = {
             system: 'urlA',
             username: 'user1',
             password: 'pass1',

@@ -134,7 +134,7 @@ export type AttributePromptOptions = Partial<{
  * An interface representing the json input used to store the complete adaptation project
  * generator configurations. The json is passed as an CLI argument.
  */
-export interface AdpJsonInput {
+export interface JsonInput {
     system: string;
     client: string;
     username: string;

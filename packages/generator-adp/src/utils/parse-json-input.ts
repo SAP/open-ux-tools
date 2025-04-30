@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AdpJsonInput } from '../app/types';
-import { isAdpJsonInput, isString } from './type-guards';
+import type { JsonInput } from '../app/types';
+import { isJsonInput, isString } from './type-guards';
 
 /**
  * Returns the first argument from a list of CLI arguments. If the first argument
@@ -22,18 +22,18 @@ export function getFirstArgAsString(args: string | string[]): string {
 }
 
 /**
- * Parse a json string as an object conforming to the {@link AdpJsonInput} interface.
+ * Parse a json string as an object conforming to the {@link JsonInput} interface.
  *
  * @param {string} jsonString - The json string representation.
  * @param {ToolsLogger} logger - The logger instance.
- * @returns {AdpJsonInput | undefined} The parsed json object, in case of an error or
+ * @returns {JsonInput | undefined} The parsed json object, in case of an error or
  * if the object does not match the above interface - returns undefined.
  */
-export function parseAdpJsonInput(jsonString: string, logger: ToolsLogger): AdpJsonInput | undefined {
+export function parseJsonInput(jsonString: string, logger: ToolsLogger): JsonInput | undefined {
     try {
         const parsed = JSON.parse(jsonString);
 
-        if (!isAdpJsonInput(parsed)) {
+        if (!isJsonInput(parsed)) {
             return undefined;
         }
 

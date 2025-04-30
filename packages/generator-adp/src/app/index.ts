@@ -30,13 +30,13 @@ import { EventName } from '../telemetryEvents';
 import { getPackageInfo, installDependencies } from '../utils/deps';
 import { initI18n, t } from '../utils/i18n';
 import AdpFlpConfigLogger from '../utils/logger';
-import { getFirstArgAsString, parseAdpJsonInput } from '../utils/parse-adp-json-input';
+import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import { getFlexLayer } from './layer';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
 import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 import { validateAdpJsonInput } from './questions/helper/validators';
-import type { AdpGeneratorOptions, AdpJsonInput, AttributePromptOptions } from './types';
+import type { AdpGeneratorOptions, JsonInput, AttributePromptOptions } from './types';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -85,7 +85,7 @@ export default class extends Generator {
      * JSON object representing the complete adaptation project configuration,
      * passed as a CLI argument.
      */
-    private readonly jsonInput?: AdpJsonInput;
+    private readonly jsonInput?: JsonInput;
     /**
      * Instance of AbapServiceProvider.
      */
@@ -115,7 +115,7 @@ export default class extends Generator {
 
         this._setupLogging();
         const jsonInputString = getFirstArgAsString(args);
-        this.jsonInput = parseAdpJsonInput(jsonInputString, this.toolsLogger);
+        this.jsonInput = parseJsonInput(jsonInputString, this.toolsLogger);
         if (!this.jsonInput) {
             this._setupPrompts();
         }

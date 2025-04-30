@@ -1,4 +1,4 @@
-import type { AdpJsonInput } from '../app/types';
+import type { JsonInput } from '../app/types';
 
 /**
  * Type guard for a string values.
@@ -16,7 +16,7 @@ export function isString(value: unknown): value is string {
  * @param {unknown} value - The value being checked.
  * @returns {boolean} True if the value conforms to the AdpJsonInput interface.
  */
-export function isAdpJsonInput(value: unknown): value is AdpJsonInput {
+export function isJsonInput(value: unknown): value is JsonInput {
     if (!isPlainObject(value)) {
         return false;
     }

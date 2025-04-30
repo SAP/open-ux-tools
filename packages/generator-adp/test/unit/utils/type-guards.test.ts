@@ -1,4 +1,4 @@
-import { isAdpJsonInput, isString } from '../../../src/utils/type-guards';
+import { isJsonInput, isString } from '../../../src/utils/type-guards';
 
 describe('isString', () => {
     it('should return true for string literals', () => {
@@ -33,9 +33,9 @@ describe('isAdpJsonInput', () => {
             password: 'password',
             applicationTitle: 'applicationTitle'
         };
-        expect(isAdpJsonInput(inputWithRequiredFields)).toBe(true);
+        expect(isJsonInput(inputWithRequiredFields)).toBe(true);
         expect(
-            isAdpJsonInput({
+            isJsonInput({
                 ...inputWithRequiredFields,
                 targetFolder: 'targetFolder',
                 projectName: 'projectName',
@@ -46,20 +46,20 @@ describe('isAdpJsonInput', () => {
 
     it('should return false if some of required fields is missing', () => {
         expect(
-            isAdpJsonInput({
+            isJsonInput({
                 system: 'system'
             })
         ).toBe(false);
-        expect(isAdpJsonInput({})).toBe(false);
+        expect(isJsonInput({})).toBe(false);
     });
 
     it('should return false for non-object types', () => {
-        expect(isAdpJsonInput(null)).toBe(false);
-        expect(isAdpJsonInput(undefined)).toBe(false);
-        expect(isAdpJsonInput('string')).toBe(false);
-        expect(isAdpJsonInput(123)).toBe(false);
-        expect(isAdpJsonInput(['a', 'b'])).toBe(false);
-        expect(isAdpJsonInput(() => {})).toBe(false);
+        expect(isJsonInput(null)).toBe(false);
+        expect(isJsonInput(undefined)).toBe(false);
+        expect(isJsonInput('string')).toBe(false);
+        expect(isJsonInput(123)).toBe(false);
+        expect(isJsonInput(['a', 'b'])).toBe(false);
+        expect(isJsonInput(() => {})).toBe(false);
     });
 
     it('should return false for input object with non-plain prototype', () => {
@@ -70,7 +70,7 @@ describe('isAdpJsonInput', () => {
         input.username = 'username';
         input.password = 'password';
         input.applicationTitle = 'applicationTitle';
-        expect(isAdpJsonInput(input)).toBe(false);
+        expect(isJsonInput(input)).toBe(false);
     });
 
     it('should return false for input objects created with custom constructors', () => {
@@ -82,6 +82,6 @@ describe('isAdpJsonInput', () => {
             password = 'password';
             applicationTitle = 'applicationTitle';
         }
-        expect(isAdpJsonInput(new JsonInput())).toBe(false);
+        expect(isJsonInput(new JsonInput())).toBe(false);
     });
 });

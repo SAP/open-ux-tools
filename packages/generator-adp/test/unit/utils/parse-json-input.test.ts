@@ -1,6 +1,6 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { AdpJsonInput } from '../../../src/app/types';
-import { getFirstArgAsString, parseAdpJsonInput } from '../../../src/utils/parse-adp-json-input';
+import type { JsonInput } from '../../../src/app/types';
+import { getFirstArgAsString, parseJsonInput } from '../../../src/utils/parse-json-input';
 
 const logger = {
     debug: jest.fn()
@@ -23,13 +23,13 @@ describe('getFirstArgAsString', () => {
     });
 });
 
-describe('parseAdpJsonInput', () => {
+describe('parseJsonInput', () => {
     it('should return undefined if invalid json string is passed', () => {
-        expect(parseAdpJsonInput('invalid json', logger)).toBeUndefined();
+        expect(parseJsonInput('invalid json', logger)).toBeUndefined();
     });
 
     it('should return the adp json input in case the json string matches the expected format', () => {
-        const jsonInput: AdpJsonInput = {
+        const jsonInput: JsonInput = {
             system: 'system',
             application: 'application',
             client: 'client',
@@ -41,7 +41,7 @@ describe('parseAdpJsonInput', () => {
             namespace: 'namespace'
         };
         const jsonString = JSON.stringify(jsonInput);
-        expect(parseAdpJsonInput(jsonString, logger)).toEqual(jsonInput);
+        expect(parseJsonInput(jsonString, logger)).toEqual(jsonInput);
     });
 
     it('should return undefined in case the json does NOT match the expected format', () => {
@@ -49,6 +49,6 @@ describe('parseAdpJsonInput', () => {
             system: 'system'
         };
         const jsonString = JSON.stringify(invalidJsonInput);
-        expect(parseAdpJsonInput(jsonString, logger)).toBeUndefined();
+        expect(parseJsonInput(jsonString, logger)).toBeUndefined();
     });
 });
