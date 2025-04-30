@@ -1,0 +1,22 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`enableCardGenerator Valid LROP 1`] = `
+"{
+  \\"scripts\\": {
+    \\"start-cards-generator\\": \\"ui5 serve --open 'test/flpGeneratorSandbox.html#app-preview'\\"
+  }
+}
+"
+`;
+
+exports[`enableCardGenerator Valid LROP 2`] = `
+"server:
+  customMiddleware:
+    - name: preview-middleware
+      afterMiddleware: compression
+      configuration:
+        editors:
+          cardGenerator:
+            path: test/flpGeneratorSandbox.html
+"
+`;
