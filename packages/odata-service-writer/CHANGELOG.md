@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-writer
 
+## 0.26.17
+
+### Patch Changes
+
+-   8d4bca6: Write service annotations using `name` instead of `technicalName` to avoid sub folders
+
 ## 0.26.16
 
 ### Patch Changes

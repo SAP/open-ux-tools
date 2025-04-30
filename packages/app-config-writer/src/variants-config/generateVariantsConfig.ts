@@ -1,6 +1,6 @@
 import { create } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
-import { updateMiddlewares } from './ui5-yaml';
+import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 import { addVariantsManagementScript } from './package-json';
 import type { Editor } from 'mem-fs-editor';
 import type { ToolsLogger } from '@sap-ux/logger';
@@ -23,7 +23,7 @@ export async function generateVariantsConfig(
     if (!fs) {
         fs = create(createStorage());
     }
-    await updateMiddlewares(fs, basePath, yamlPath, logger);
+    await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await addVariantsManagementScript(fs, basePath, yamlPath, logger);
     return fs;
 }

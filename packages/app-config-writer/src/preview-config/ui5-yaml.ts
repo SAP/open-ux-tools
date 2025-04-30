@@ -1,8 +1,8 @@
 import { basename, join } from 'path';
-import { createPreviewMiddlewareConfig } from '../variants-config/ui5-yaml';
+import { createPreviewMiddlewareConfig } from '../common/ui5-yaml';
 import { ensurePreviewMiddlewareDependency, extractUrlDetails, isValidPreviewScript } from './package-json';
 import { FileName, getAllUi5YamlFileNames, getWebappPath, readUi5Yaml, type Package } from '@sap-ux/project-access';
-import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../variants-config/utils';
+import { getPreviewMiddleware, isFioriToolsDeprecatedPreviewConfig } from '../common/utils';
 import { renameSandbox, deleteFiles } from './preview-files';
 import type { CustomMiddleware, UI5Config } from '@sap-ux/ui5-config';
 import type { Editor } from 'mem-fs-editor';
