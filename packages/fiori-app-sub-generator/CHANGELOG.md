@@ -1,5 +1,16 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.29
+
+### Patch Changes
+
+-   0d8918a: updates for cap and virtual endpoints
+-   Updated dependencies [0d8918a]
+    -   @sap-ux/ui5-application-inquirer@0.12.3
+    -   @sap-ux/fiori-elements-writer@2.3.6
+    -   @sap-ux/fiori-freestyle-writer@2.3.4
+    -   @sap-ux/odata-service-inquirer@2.3.7
+
 ## 0.0.28
 
 ### Patch Changes

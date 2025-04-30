@@ -304,6 +304,9 @@ export async function createUI5ApplicationPromptOptions(
             },
             [ui5AppInquirerPromptNames.enableTypeScript]: {
                 defaultValue: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
+            },
+            [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
+                hide: service.capService?.capType === 'Java'
             }
         } as UI5ApplicationPromptOptions,
         promptSettings as UI5ApplicationPromptOptions
