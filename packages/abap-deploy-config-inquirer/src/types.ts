@@ -120,6 +120,11 @@ export type PackagePromptOptions = {
          * Check if the given package matches ui5AbapRepo starting preffix or namespace
          */
         shouldValidatePackageForStartingPrefix?: boolean;
+
+        /**
+         * Check if the given package matches appropriate format and special characters
+         */
+        shouldValidateFormatAndSpecialCharacters?: boolean;
     };
 };
 
