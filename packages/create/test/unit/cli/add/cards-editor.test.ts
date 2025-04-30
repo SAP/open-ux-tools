@@ -1,6 +1,6 @@
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
-import * as writer from '@sap-ux/cards-editor-config-writer';
+import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
 import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-editor';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
@@ -19,13 +19,21 @@ jest.mock('mem-fs-editor', () => {
     };
 });
 
+jest.mock('@sap-ux/app-config-writer', () => {
+    return {
+        ...jest.requireActual('@sap-ux/app-config-writer'),
+        enableCardGeneratorConfig: jest.fn()
+    };
+});
+
+const enableCardGeneratorConfigMock = enableCardGeneratorConfig as jest.Mock;
+
 const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');
 const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 
 describe('add/cards-editor', () => {
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
     const npmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
-    const generateSpy = jest.spyOn(writer, 'enableCardsEditor');
 
     beforeEach(() => {
         jest.clearAllMocks();
@@ -38,7 +46,7 @@ describe('add/cards-editor', () => {
         await command.parseAsync(testArgv([]));
 
         // Flow check
-        expect(generateSpy).toBeCalled();
+        expect(enableCardGeneratorConfigMock).toBeCalled();
         expect(traceSpy).not.toBeCalled();
         expect(npmInstallSpy).toBeCalled();
     });
@@ -50,7 +58,7 @@ describe('add/cards-editor', () => {
         await command.parseAsync(testArgv(['--simulate']));
 
         // Flow check
-        expect(generateSpy).toBeCalled();
+        expect(enableCardGeneratorConfigMock).toBeCalled();
         expect(traceSpy).toBeCalled();
         expect(npmInstallSpy).not.toBeCalled();
     });
@@ -62,7 +70,7 @@ describe('add/cards-editor', () => {
         await command.parseAsync(testArgv(['--skip-install']));
 
         // Flow check
-        expect(generateSpy).toBeCalled();
+        expect(enableCardGeneratorConfigMock).toBeCalled();
         expect(traceSpy).not.toBeCalled();
         expect(npmInstallSpy).not.toBeCalled();
     });
