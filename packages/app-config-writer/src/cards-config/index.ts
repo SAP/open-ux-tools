@@ -2,11 +2,11 @@ import { join, basename } from 'path';
 import type { Editor } from 'mem-fs-editor';
 import { create as createStorage } from 'mem-fs';
 import { create } from 'mem-fs-editor';
-import { getPreviewMiddleware, getRTAIntent } from '../variants-config/utils';
+import { getPreviewMiddleware, getIntentFromPreviewConfig, getCLIForPreview } from '../common/utils';
 import type { MiddlewareConfig as PreviewConfig } from '@sap-ux/preview-middleware';
 import type { ToolsLogger } from '@sap-ux/logger';
 import { FileName, type Package, readUi5Yaml } from '@sap-ux/project-access';
-import { updateMiddlewares } from '../variants-config/ui5-yaml';
+import { updateMiddlewaresForPreview } from '../common/ui5-yaml';
 
 /**
  * Updates the `ui5.yaml` file to add card generator path to preview middleware configuration.
@@ -59,13 +59,14 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
 
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
     const previewMiddleware = await getPreviewMiddleware(undefined, basePath, yamlPath, fs);
-    const intent = getRTAIntent(previewMiddleware?.configuration) ?? '#app-preview';
+    const intent = getIntentFromPreviewConfig(previewMiddleware?.configuration) ?? '#app-preview';
     const cardGeneratorPath =
         (previewMiddleware?.configuration as PreviewConfig)?.editors?.cardGenerator?.path ??
         'test/flpGeneratorSandbox.html';
+    const cliForPreview = await getCLIForPreview(basePath, yamlPath ?? "", fs);
 
     packageJson.scripts ??= {};
-    packageJson.scripts['start-cards-generator'] = `fiori run --open '${cardGeneratorPath}${intent}'`;
+    packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open '${cardGeneratorPath}${intent}'`;
     fs.writeJSON(packageJsonPath, packageJson);
 }
 
@@ -88,7 +89,7 @@ export async function enableCardGeneratorConfig(
     fs?: Editor
 ): Promise<Editor> {
     fs = fs ?? create(createStorage());
-    await updateMiddlewares(fs, basePath, yamlPath, logger);
+    await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
     await updateMiddlewareConfigWithGeneratorPath(fs, basePath, yamlPath, logger);
     await updatePackageJson(basePath, fs, yamlPath);
     return fs;
