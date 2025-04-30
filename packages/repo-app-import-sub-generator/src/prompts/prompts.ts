@@ -89,7 +89,8 @@ export async function getPrompts(
                 default: () => (quickDeployedAppConfig?.appId ? 0 : undefined),
                 guiOptions: {
                     mandatory: !!appList.length,
-                    breadcrumb: t('prompts.appSelection.breadcrumb')
+                    breadcrumb: t('prompts.appSelection.breadcrumb'),
+                    applyDefaultWhenDirty: true
                 },
                 message: t('prompts.appSelection.message'),
                 choices: (): { name: string; value: AppInfo }[] => (appList.length ? formatAppChoices(appList) : []),
