@@ -20,9 +20,7 @@
         "uri": "/sap/opu/odata/sap/SERVICE/",
         "type": "OData",
         "settings": {
-          "annotations": [
-            "annotation"
-          ],
+          "annotations": [],
           "localUri": "localService/mainService/metadata.xml",
           "odataVersion": "2.0"
         }
