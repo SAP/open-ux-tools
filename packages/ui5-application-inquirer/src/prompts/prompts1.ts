@@ -292,7 +292,10 @@ export function getEnableVirtualEndpoints(
     return {
         when: (answers: UI5ApplicationAnswers): boolean => {
             if (isCapProject) {
-                return capCdsInfo?.isCdsUi5PluginEnabled || !!answers.enableTypeScript;
+                return (
+                    capCdsInfo?.isCdsUi5PluginEnabled ||
+                    !!(capCdsInfo?.hasMinCdsVersion && !capCdsInfo?.hasCdsUi5Plugin && !!answers.enableTypeScript)
+                );
             }
             return true;
         },
