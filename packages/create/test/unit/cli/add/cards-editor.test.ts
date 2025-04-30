@@ -1,7 +1,7 @@
 import * as tracer from '../../../../src/tracing/trace';
 import * as common from '../../../../src/common';
-import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
-import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-generator';
+import * as writer from '@sap-ux/cards-editor-config-writer';
+import { addCardsEditorConfigCommand } from '../../../../src/cli/add/cards-editor';
 import { Command } from 'commander';
 import type { Store } from 'mem-fs';
 import type { Editor, create } from 'mem-fs-editor';
@@ -19,56 +19,50 @@ jest.mock('mem-fs-editor', () => {
     };
 });
 
-jest.mock('@sap-ux/app-config-writer', () => {
-    return {
-        ...jest.requireActual('@sap-ux/app-config-writer'),
-        enableCardGeneratorConfig: jest.fn()
-    };
-});
-
-const enableCardGeneratorConfigMock = enableCardGeneratorConfig as jest.Mock;
 const appRoot = join(__dirname, '../../../fixtures/ui5-deploy-config');
 const testArgv = (args: string[]) => ['', '', 'cards-editor', appRoot, ...args];
 
-describe('add/cards-generator', () => {
+describe('add/cards-editor', () => {
     const traceSpy = jest.spyOn(tracer, 'traceChanges');
     const npmInstallSpy = jest.spyOn(common, 'runNpmInstallCommand').mockImplementation(() => undefined);
+    const generateSpy = jest.spyOn(writer, 'enableCardsEditor');
 
-    afterEach(() => {
+    beforeEach(() => {
         jest.clearAllMocks();
     });
 
-    test('add cards-generator', async () => {
+    test('add cards-editor', async () => {
         // Test execution
         const command = new Command('add');
         addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv([]));
 
         // Flow check
-        expect(enableCardGeneratorConfigMock).toBeCalled();
+        expect(generateSpy).toBeCalled();
         expect(traceSpy).not.toBeCalled();
+        expect(npmInstallSpy).toBeCalled();
     });
 
-    test('add cards-generator --simulate', async () => {
+    test('add cards-editor --simulate', async () => {
         // Test execution
         const command = new Command('add');
         addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv(['--simulate']));
 
         // Flow check
-        expect(enableCardGeneratorConfigMock).toBeCalled();
+        expect(generateSpy).toBeCalled();
         expect(traceSpy).toBeCalled();
         expect(npmInstallSpy).not.toBeCalled();
     });
 
-    test('add cards-generator --skip-install', async () => {
+    test('add cards-editor --skip-install', async () => {
         // Test execution
         const command = new Command('add');
         addCardsEditorConfigCommand(command);
         await command.parseAsync(testArgv(['--skip-install']));
 
         // Flow check
-        expect(enableCardGeneratorConfigMock).toBeCalled();
+        expect(generateSpy).toBeCalled();
         expect(traceSpy).not.toBeCalled();
         expect(npmInstallSpy).not.toBeCalled();
     });

@@ -1,18 +1,16 @@
 import type { Command } from 'commander';
-import { enableCardGeneratorConfig } from '@sap-ux/app-config-writer';
+import { enableCardsEditor } from '@sap-ux/cards-editor-config-writer';
 import { getLogger, traceChanges, setLogLevelVerbose } from '../../tracing';
 import { validateBasePath } from '../../validation';
 import { runNpmInstallCommand } from '../../common';
-import { isAbsolute, join } from 'path';
 
 /**
- * Add the cards-editor command.
+ * Add the cards-editor-config command.
  *
- * @param cmd - commander command for adding card generator config command
+ * @param cmd - commander command for adding navigation inbounds config command
  */
 export function addCardsEditorConfigCommand(cmd: Command): void {
     cmd.command('cards-editor [path]')
-        .option('-c, --config <string>', 'Path to project configuration file in YAML format', 'ui5.yaml')
         .option('-n, --skip-install', 'skip npm install step')
         .option('-s, --simulate', 'simulate only do not write config; sets also --verbose')
         .option('-v, --verbose', 'show verbose information')
@@ -20,36 +18,24 @@ export function addCardsEditorConfigCommand(cmd: Command): void {
             if (options.verbose === true || options.simulate) {
                 setLogLevelVerbose();
             }
-            await addCardsGeneratorConfig(
-                path ?? process.cwd(),
-                !!options.simulate,
-                options.config,
-                !!options.skipInstall
-            );
+            await addCardsEditorConfig(path || process.cwd(), !!options.simulate, !!options.skipInstall);
         });
 }
 
 /**
- * Adds an cards generator config to an app. To prevent overwriting existing inbounds will be checked.
+ * Adds an cards editor config to an app. To prevent overwriting existing inbounds will be checked.
  *
  * @param basePath - path to application root
  * @param simulate - if true, do not write but just show what would be changed; otherwise write
- * @param yamlPath - path to the ui5*.yaml file passed by cli
  * @param skipInstall - if true, do not run npm install
  */
-async function addCardsGeneratorConfig(
-    basePath: string,
-    simulate: boolean,
-    yamlPath: string,
-    skipInstall: boolean
-): Promise<void> {
+async function addCardsEditorConfig(basePath: string, simulate: boolean, skipInstall: boolean): Promise<void> {
     const logger = getLogger();
     try {
-        logger.debug(`Called add cards-generator-config for path '${basePath}', simulate is '${simulate}'`);
-        const ui5ConfigPath = isAbsolute(yamlPath) ? yamlPath : join(basePath, yamlPath);
-        await validateBasePath(basePath, ui5ConfigPath);
+        logger.debug(`Called add cards-editor-config for path '${basePath}', simulate is '${simulate}'`);
+        await validateBasePath(basePath);
 
-        const fs = await enableCardGeneratorConfig(basePath, ui5ConfigPath, logger);
+        const fs = await enableCardsEditor(basePath);
         if (!simulate) {
             await new Promise((resolve) => fs.commit(resolve));
             if (!skipInstall) {
@@ -59,7 +45,7 @@ async function addCardsGeneratorConfig(
             await traceChanges(fs);
         }
     } catch (error) {
-        logger.error(`Error while executing add cards generator configuration '${(error as Error).message}'`);
+        logger.error(`Error while executing add cards editor configuration '${(error as Error).message}'`);
         logger.debug(error as Error);
     }
 }

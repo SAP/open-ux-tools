@@ -3,7 +3,7 @@ import { addAddMockserverConfigCommand } from './mockserver-config';
 import { addAddSmartLinksConfigCommand } from './smartlinks-config';
 import { addAddCdsPluginUi5Command } from './cds-plugin-ui';
 import { addInboundNavigationConfigCommand } from './navigation-config';
-import { addCardsEditorConfigCommand } from './cards-generator';
+import { addCardsEditorConfigCommand } from './cards-editor';
 import { addNewModelCommand } from './new-model';
 import { addAnnotationsToOdataCommand } from './annotations-to-odata';
 import { addAddHtmlFilesCmd } from './html';
