@@ -55,7 +55,7 @@ import { getApplicationChoices } from './helper/choices';
 import { validateExtensibilityGenerator } from './helper/validators';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
 import {
-    showApplicationErrorQuestion,
+    showApplicationError,
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
@@ -451,7 +451,7 @@ export class ConfigPrompter {
             name: configPromptNames.appInfoError,
             message: t('prompts.adpNotSupported'),
             when: (answers: ConfigAnswers) =>
-                showApplicationErrorQuestion(answers, this.flexUISystem, this.isApplicationSupported),
+                showApplicationError(answers, this.flexUISystem, this.isApplicationSupported),
             guiOptions: {
                 type: 'label',
                 link: {

@@ -48,18 +48,7 @@ describe('fillSupportData', () => {
         const content: Content[] = [];
         fillSupportData(content);
 
-        expect(content[0]).toEqual({
-            changeType: 'appdescr_fiori_setRegistrationIds',
-            content: {
-                registrationIds: [undefined]
-            }
-        });
-        expect(content[1]).toEqual({
-            changeType: 'appdescr_app_setAch',
-            content: {
-                ach: undefined
-            }
-        });
+        expect(content.length).toEqual(0);
     });
 });
 

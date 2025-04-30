@@ -39,7 +39,7 @@ export function showApplicationQuestion(
  * @param {boolean} isApplicationSupported - Whether the selected application is supported.
  * @returns {boolean | undefined} True if an application error will be shown, otherwise false or undefined based on the conditions evaluated.
  */
-export function showApplicationErrorQuestion(
+export function showApplicationError(
     answers: ConfigAnswers,
     flexUISystem: FlexUISupportedSystem | undefined,
     isApplicationSupported: boolean

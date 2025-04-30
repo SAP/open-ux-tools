@@ -26,19 +26,23 @@ export function getNewModelEnhanceWithChange(): Content {
  * @param {string} [ach] - The application component hierarchy code, which will be converted to uppercase.
  */
 export function fillSupportData(content: Content[], fioriId?: string, ach?: string): void {
-    content.push({
-        changeType: 'appdescr_fiori_setRegistrationIds',
-        content: {
-            registrationIds: [fioriId]
-        }
-    });
+    if (fioriId) {
+        content.push({
+            changeType: 'appdescr_fiori_setRegistrationIds',
+            content: {
+                registrationIds: [fioriId]
+            }
+        });
+    }
 
-    content.push({
-        changeType: 'appdescr_app_setAch',
-        content: {
-            ach: ach?.toUpperCase()
-        }
-    });
+    if (ach) {
+        content.push({
+            changeType: 'appdescr_app_setAch',
+            content: {
+                ach: ach?.toUpperCase()
+            }
+        });
+    }
 }
 
 /**
