@@ -117,28 +117,46 @@ describe('utils', () => {
     });
 
     describe('checkForExistingChange', () => {
-        const mockRta =  new RuntimeAuthoringMock({} as RTAOptions);
-        mockRta.getCommandStack = jest.fn(() => ({
-            getCommands: jest.fn(() => ([
-                {
-                    getProperty: jest.fn(() => 'addXML'),
-                    getPreparedChange: jest.fn(() => ({
-                        getDefinition: jest.fn(() => ({
-                            content: {
-                                fragmentPath: 'testFragment.fragment.xml'
-                            }
-                        }))
-                    }))
-                }
-            ]))
-        }));
+        beforeEach(() => {
+            mockRta.getCommandStack = jest.fn(() => ({
+                getCommands: jest.fn(() => [mockCommand])
+            }));
+        });
+        const mockRta = new RuntimeAuthoringMock({} as RTAOptions);
+        const mockCommand = {
+            getProperty: jest.fn(() => 'addXML'),
+            getPreparedChange: jest.fn(() => ({
+                getDefinition: jest.fn(() => ({
+                    content: {
+                        fragmentPath: 'testFragment.fragment.xml'
+                    }
+                }))
+            }))
+        };
         it('should return true if a matching change is found', () => {
-            const result = checkForExistingChange(mockRta, 'addXML', 'content.fragmentPath', 'testFragment.fragment.xml');
+            const result = checkForExistingChange(
+                mockRta,
+                'addXML',
+                'content.fragmentPath',
+                'testFragment.fragment.xml'
+            );
             expect(result).toBe(true);
         });
 
         it('should return true if a matching change is found and command does have subCommands', () => {
-            const result = checkForExistingChange(mockRta, 'addXML', 'content.fragmentPath', 'testFragment.fragment.xml');
+            mockRta.getCommandStack = jest.fn(() => ({
+                getCommands: jest.fn(() => [
+                    {
+                        getCommands: jest.fn(() => [mockCommand])
+                    }
+                ])
+            }));
+            const result = checkForExistingChange(
+                mockRta,
+                'addXML',
+                'content.fragmentPath',
+                'testFragment.fragment.xml'
+            );
             expect(result).toBe(true);
         });
 
@@ -146,7 +164,6 @@ describe('utils', () => {
             const result = checkForExistingChange(mockRta, 'codeExt', 'content.codeRef', 'coding/test.js');
             expect(result).toBe(false);
         });
-
 
         it('should return false if a matching change is not found and command does subCommands', () => {
             const result = checkForExistingChange(mockRta, 'codeExt', 'content.codeRef', 'coding/test.js');
