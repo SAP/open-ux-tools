@@ -43,7 +43,7 @@ export function getRTAUrlParameters(packageJson: Package): string {
  */
 function getRTAMountPoint(previewMiddlewareConfig: PreviewConfigOptions | undefined): string | undefined {
     if (!isFioriToolsDeprecatedPreviewConfig(previewMiddlewareConfig) && previewMiddlewareConfig?.rta?.editors) {
-        // check if deprecated RTA config is uesed
+        // check if deprecated RTA config is used
         const editors = previewMiddlewareConfig.rta.editors ?? previewMiddlewareConfig?.editors?.rta?.endpoints; //NOSONAR
         for (const editor of editors) {
             if (!('developerMode' in editor)) {
