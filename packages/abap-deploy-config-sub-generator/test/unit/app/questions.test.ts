@@ -60,9 +60,14 @@ describe('Test getAbapQuestions', () => {
                 transportInputChoice: { hideIfOnPremise: false },
                 packageAutocomplete: {
                     shouldValidatePackageForStartingPrefix: false,
-                    shouldValidatePackageType: false
+                    shouldValidatePackageType: false,
+                    shouldValidateFormatAndSpecialCharacters: false
                 },
-                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false },
+                packageManual: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false,
+                    shouldValidateFormatAndSpecialCharacters: false
+                },
                 targetSystem: { shouldRestrictDifferentSystemType: false }
             }
         });
@@ -87,7 +92,8 @@ describe('Test getAbapQuestions', () => {
                     default: undefined,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 transportManual: { default: undefined },
@@ -96,7 +102,8 @@ describe('Test getAbapQuestions', () => {
                     useAutocomplete: true,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 overwrite: { hide: true },
@@ -132,9 +139,14 @@ describe('Test getAbapQuestions', () => {
                 transportInputChoice: { hideIfOnPremise: false },
                 packageAutocomplete: {
                     shouldValidatePackageForStartingPrefix: false,
-                    shouldValidatePackageType: false
+                    shouldValidatePackageType: false,
+                    shouldValidateFormatAndSpecialCharacters: false
                 },
-                packageManual: { shouldValidatePackageForStartingPrefix: false, shouldValidatePackageType: false },
+                packageManual: {
+                    shouldValidatePackageForStartingPrefix: false,
+                    shouldValidatePackageType: false,
+                    shouldValidateFormatAndSpecialCharacters: false
+                },
                 targetSystem: { shouldRestrictDifferentSystemType: false }
             }
         });
@@ -159,7 +171,8 @@ describe('Test getAbapQuestions', () => {
                     default: undefined,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 transportManual: { default: undefined },
@@ -168,7 +181,8 @@ describe('Test getAbapQuestions', () => {
                     useAutocomplete: true,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 overwrite: { hide: true },

@@ -364,7 +364,8 @@ describe('Test abap deploy configuration generator', () => {
                     default: 'Z123456',
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 transportManual: { default: 'ZTESTK900000' },
@@ -373,7 +374,8 @@ describe('Test abap deploy configuration generator', () => {
                     useAutocomplete: true,
                     additionalValidation: {
                         shouldValidatePackageType: false,
-                        shouldValidatePackageForStartingPrefix: false
+                        shouldValidatePackageForStartingPrefix: false,
+                        shouldValidateFormatAndSpecialCharacters: false
                     }
                 },
                 overwrite: { hide: true },
@@ -470,7 +472,8 @@ describe('Test abap deploy configuration generator', () => {
                     default: 'Z123456',
                     additionalValidation: {
                         shouldValidatePackageType: true,
-                        shouldValidatePackageForStartingPrefix: true
+                        shouldValidatePackageForStartingPrefix: true,
+                        shouldValidateFormatAndSpecialCharacters: true
                     }
                 },
                 transportManual: { default: 'ZTESTK900000' },
@@ -479,7 +482,8 @@ describe('Test abap deploy configuration generator', () => {
                     useAutocomplete: true,
                     additionalValidation: {
                         shouldValidatePackageType: true,
-                        shouldValidatePackageForStartingPrefix: true
+                        shouldValidatePackageForStartingPrefix: true,
+                        shouldValidateFormatAndSpecialCharacters: true
                     }
                 },
                 overwrite: { hide: true },
