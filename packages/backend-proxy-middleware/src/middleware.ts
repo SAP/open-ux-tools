@@ -54,14 +54,6 @@ module.exports = async ({ options }: MiddlewareParameters<BackendMiddlewareConfi
                 proxy: formatProxyForLogging(backend.proxy)
             })}\noptions: ${JSON.stringify(configOptions)}'`
         );
-
-        // return async (req, res, next) => {
-        //     if (req.path.startsWith(backend.path)) {
-        //         await proxyFn(req, res, next);
-        //     } else {
-        //         next();
-        //     }
-        // };
         return router.use(backend.path, proxyFn);
     } catch (e) {
         const message = `Failed to register backend for ${backend.path}. Check configuration in yaml file. \n\t${e}`;
