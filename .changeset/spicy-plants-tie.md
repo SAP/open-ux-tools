@@ -2,4 +2,4 @@
 '@sap-ux/app-config-writer': patch
 ---
 
-Migrate cards-editor-config-writer code to app-config-writer
+Migrate code from cards-editor-config-writer to app-config-writer
