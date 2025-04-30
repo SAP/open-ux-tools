@@ -27,8 +27,9 @@ import { addOptionsForEmbeddedBSP } from '../ext/bsp';
 import { getProxyForUrl } from 'proxy-from-env';
 import type { Socket } from 'net';
 import type { Request } from 'express';
+import type connect from 'connect';
 
-export type EnhancedIncomingMessage = IncomingMessage & Pick<Request, 'originalUrl'>;
+export type EnhancedIncomingMessage = (IncomingMessage & Pick<Request, 'originalUrl'>) | connect.IncomingMessage;
 
 /**
  * Collection of custom event handler for the proxy.
@@ -135,7 +136,7 @@ export const PathRewriters = {
      */
     replacePrefix(match: string, prefix: string): (path: string, req: EnhancedIncomingMessage) => string {
         return (path: string, req: EnhancedIncomingMessage) => {
-            const newPath = req.originalUrl.includes(path) ? req.originalUrl : path;
+            const newPath = req.originalUrl?.includes(path) ? req.originalUrl : path;
             return newPath.replace(match, prefix.replace(/\/$/, ''));
         };
     },
@@ -149,7 +150,7 @@ export const PathRewriters = {
     replaceClient(client: string): (path: string, req: EnhancedIncomingMessage) => string {
         const sapClient = 'sap-client=' + client;
         return (path: string, req: EnhancedIncomingMessage) => {
-            const newPath = req.originalUrl.includes(path) ? req.originalUrl : path;
+            const newPath = req.originalUrl?.includes(path) ? req.originalUrl : path;
             if (newPath.match(/sap-client=\d{3}/)) {
                 return newPath.replace(/sap-client=\d{3}/, sapClient);
             } else {
