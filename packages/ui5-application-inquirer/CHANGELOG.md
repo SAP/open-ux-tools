@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.12.3
+
+### Patch Changes
+
+-   0d8918a: updates for cap and virtual endpoints
+
 ## 0.12.2
 
 ### Patch Changes
