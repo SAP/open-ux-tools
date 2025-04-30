@@ -129,7 +129,7 @@ describe('Ui5AbapRepositoryService', () => {
             });
             expect(response.data).toBeDefined();
             expect(loggerMock.info).toHaveBeenCalledTimes(7); // Ensures the logFullURL method is called to support destinations
-            expect(loggerMock.warn).toHaveBeenCalledTimes(0);
+            expect(loggerMock.warn).toHaveBeenCalledTimes(1);
             expect(loggerMock.error).toHaveBeenCalledTimes(0);
         });
 

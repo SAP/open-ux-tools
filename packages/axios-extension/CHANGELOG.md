@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.20.1
+
+### Patch Changes
+
+-   a3a43b2: Append warning message if the BSP properties do not match the deployed BSP properties
+
 ## 1.20.0
 
 ### Minor Changes

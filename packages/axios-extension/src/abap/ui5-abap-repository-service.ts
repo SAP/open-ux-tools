@@ -241,6 +241,9 @@ export class Ui5AbapRepositoryService extends ODataService {
                     false
                 );
             }
+            if (!!info && info.Package !== bsp.package) {
+                this.log.warn(`Cannot change package assignment from ${info.Package} to ${bsp.package}.`);
+            }
             return response;
         } catch (error) {
             logError({ error, host: frontendUrl, log: this.log, isDest: this.isDest });
