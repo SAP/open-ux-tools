@@ -288,11 +288,7 @@ export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5App
     return {
         when: (answers: UI5ApplicationAnswers): boolean => {
             if (capCdsInfo) {
-                return (
-                    // show the prompt if cds-ui5 plugin is enabled or the criteria is met, typescript is enabled and the CAP project will be updated to use NPM workspaces
-                    capCdsInfo.isCdsUi5PluginEnabled ||
-                    !!(capCdsInfo.hasMinCdsVersion && !capCdsInfo.hasCdsUi5Plugin && !!answers.enableTypeScript)
-                );
+                return capCdsInfo.isCdsUi5PluginEnabled || !!answers.enableTypeScript;
             }
             return true;
         },
