@@ -5,6 +5,8 @@ import FlexUtils from 'mock/sap/ui/fl/Utils';
 import isReuseComponentApi from 'mock/sap/ui/rta/util/isReuseComponent';
 import * as Utils from '../../../src/utils/core';
 import Element from 'sap/ui/core/Element';
+import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
+import { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
 
 import {
     createDeferred,
@@ -14,7 +16,6 @@ import {
     matchesChangeProperty,
     checkForExistingChange
 } from '../../../src/adp/utils';
-import RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
 describe('utils', () => {
     describe('createDeferred', () => {
@@ -116,98 +117,39 @@ describe('utils', () => {
     });
 
     describe('checkForExistingChange', () => {
+        const mockRta =  new RuntimeAuthoringMock({} as RTAOptions);
+        mockRta.getCommandStack = jest.fn(() => ({
+            getCommands: jest.fn(() => ([
+                {
+                    getProperty: jest.fn(() => 'addXML'),
+                    getPreparedChange: jest.fn(() => ({
+                        getDefinition: jest.fn(() => ({
+                            content: {
+                                fragmentPath: 'testFragment.fragment.xml'
+                            }
+                        }))
+                    }))
+                }
+            ]))
+        }));
         it('should return true if a matching change is found', () => {
-            const mockRta = {
-                getCommandStack: () => ({
-                    getCommands: () => ([
-                        {
-                            getProperty: () =>  'addXML',
-                            getPreparedChange: () => ({
-                                getDefinition: () => ({
-                                    content: {
-                                        fragmentPath: 'testFragment.fragment.xml'
-                                    }
-                                })
-                            })
-
-                        }
-                    ])
-                })
-            }
-            const result = checkForExistingChange(mockRta as unknown as RuntimeAuthoring, 'addXML', 'content.fragmentPath', 'testFragment.fragment.xml');
+            const result = checkForExistingChange(mockRta, 'addXML', 'content.fragmentPath', 'testFragment.fragment.xml');
             expect(result).toBe(true);
         });
 
         it('should return true if a matching change is found and command does have subCommands', () => {
-            const mockRta = {
-                getCommandStack: () => ({
-                    getCommands: () => ([
-                        {
-                            getCommands: () => ([
-                                {
-                                    getProperty: () =>  'addXML',
-                                    getPreparedChange: () => ({
-                                        getDefinition: () => ({
-                                            content: {
-                                                fragmentPath: 'testFragment.fragment.xml'
-                                            }
-                                        })
-                                    })
-                                }
-                            ])
-                        }
-                    ])
-                })
-            }
-            const result = checkForExistingChange(mockRta as unknown as RuntimeAuthoring, 'addXML', 'content.fragmentPath', 'testFragment.fragment.xml');
+            const result = checkForExistingChange(mockRta, 'addXML', 'content.fragmentPath', 'testFragment.fragment.xml');
             expect(result).toBe(true);
         });
 
         it('should false true if a matching change is not found', () => {
-            const mockRta = {
-                getCommandStack: () => ({
-                    getCommands: () => ([
-                        {
-                            getProperty: () =>  'addXML',
-                            getPreparedChange: () => ({
-                                getDefinition: () => ({
-                                    content: {
-                                        fragmentPath: 'testFragment.fragment.xml'
-                                    }
-                                })
-                            })
-
-                        }
-                    ])
-                })
-            }
-            const result = checkForExistingChange(mockRta as unknown as RuntimeAuthoring, 'codeExt', 'content.codeRef', 'coding/test.js');
+            const result = checkForExistingChange(mockRta, 'codeExt', 'content.codeRef', 'coding/test.js');
             expect(result).toBe(false);
         });
 
 
         it('should return false if a matching change is not found and command does subCommands', () => {
-            const mockRta = {
-                getCommandStack: () => ({
-                    getCommands: () => ([
-                        {
-                            getCommands: () => ([
-                                {
-                                    getProperty: () =>  'addXML',
-                                    getPreparedChange: () => ({
-                                        getDefinition: () => ({
-                                            content: {
-                                                fragmentPath: 'testFragment.fragment.xml'
-                                            }
-                                        })
-                                    })
-                                }
-                            ])
-                        }
-                    ])
-                })
-            }
-            const result = checkForExistingChange(mockRta as unknown as RuntimeAuthoring, 'codeExt', 'content.codeRef', 'coding/test.js');
+            const result = checkForExistingChange(mockRta, 'codeExt', 'content.codeRef', 'coding/test.js');
             expect(result).toBe(false);
         });
     });

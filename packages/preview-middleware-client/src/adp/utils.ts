@@ -115,7 +115,9 @@ export function matchesChangeProperty(command: FlexCommand, propertyPath: string
         return false;
     }
     const change = command.getPreparedChange()?.getDefinition?.();
-    if (!change) {return false;}
+    if (!change) {
+        return false;
+    }
 
     const nestedProperty = getNestedProperty(change, propertyPath);
     return typeof nestedProperty === 'string' ? nestedProperty.includes(propertyValue) : false;
