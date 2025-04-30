@@ -1,5 +1,21 @@
 # @sap-ux/repo-app-download-sub-generator
 
+## 0.2.14
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+    -   @sap-ux/odata-service-inquirer@2.3.7
+    -   @sap-ux/abap-deploy-config-writer@0.0.107
+
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [ab4e908]
+    -   @sap-ux/odata-service-inquirer@2.3.6
+
 ## 0.2.12
 
 ### Patch Changes
