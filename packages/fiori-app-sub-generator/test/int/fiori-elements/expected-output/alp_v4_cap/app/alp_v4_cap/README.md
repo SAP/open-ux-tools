@@ -1,9 +1,9 @@
 ## Application Details
 |               |
 | ------------- |
-|**Generation Date and Time**<br>Wed Apr 02 2025 20:06:36 GMT+0100 (Irish Standard Time)|
+|**Generation Date and Time**<br>Wed Apr 30 2025 17:02:11 GMT+0100 (Irish Standard Time)|
 |**App Generator**<br>SAP Fiori Application Generator|
-|**App Generator Version**<br>0.0.1|
+|**App Generator Version**<br>0.0.0|
 |**Generation Platform**<br>CLI|
 |**Template Used**<br>Analytical List Page V4|
 |**Service Type**<br>Local Cap|
@@ -14,7 +14,7 @@
 |**UI5 Theme**<br>sap_fiori_3|
 |**UI5 Version**<br>1.90.0|
 |**Enable Code Assist Libraries**<br>False|
-|**Enable TypeScript**<br>False|
+|**Enable TypeScript**<br>True|
 |**Add Eslint configuration**<br>False|
 |**Main Entity**<br>Books|
 
@@ -26,7 +26,7 @@ Test &#39;Project&#39; &#34;Description&#34;
 
 -   This app has been generated using the SAP Fiori tools - App Generator, as part of the SAP Fiori tools suite.  In order to launch the generated app, simply start your CAP project and navigate to the following location in your browser:
 
-http://localhost:4004/alp_v4_cap/webapp/index.html
+http://localhost:4004/testNameSpace.alpv4cap/index.html
 
 #### Pre-requisites:
 

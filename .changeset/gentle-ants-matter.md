@@ -1,6 +1,7 @@
 ---
 '@sap-ux/ui5-application-inquirer': patch
 '@sap-ux/fiori-app-sub-generator': patch
+'@sap-ux/ui5-application-writer': patch
 ---
 
-hide ve prompt for capa java + add telemetry
+updates for cap and virtual endpoints

@@ -335,7 +335,9 @@ describe('Generate v4 apps', () => {
                 ...baseTestProject(testDir),
                 ui5Version: TemplateTypeAttributes.alp.minimumUi5Version['4'],
                 name: testProjectName,
-                targetFolder: join(testDir, testProjectName, capAppFolder)
+                targetFolder: join(testDir, testProjectName, capAppFolder),
+                enableTypeScript: true,
+                enableVirtualEndpoints: true
             } as Project,
             service: {
                 version: OdataVersion.v4,
