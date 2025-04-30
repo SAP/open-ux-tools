@@ -57,7 +57,7 @@ export function createPreviewMiddlewareConfig(fs: Editor, basePath: string): Cus
  * @param yamlPath - path to the ui5*.yaml file passed by cli
  * @param logger - logger
  */
-export async function updateMiddlewares(
+export async function updateMiddlewaresForPreview(
     fs: Editor,
     basePath: string,
     yamlPath?: string,
