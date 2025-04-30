@@ -3,7 +3,7 @@ import { create } from 'mem-fs-editor';
 import type { Editor } from 'mem-fs-editor';
 import { join } from 'path';
 import { ToolsLogger } from '@sap-ux/logger';
-import { updateMiddlewares } from '../../../src/variants-config/ui5-yaml';
+import { updateMiddlewaresForPreview } from '../../../src/common/ui5-yaml';
 import { FileName } from '@sap-ux/project-access';
 
 const middlewareUpdatedMessage = (middleware: 'preview' | 'reload', filename: string) =>
@@ -23,7 +23,7 @@ describe('Test update middleware', () => {
     });
 
     test('add preview middleware config to ui5.yaml file', async () => {
-        await updateMiddlewares(fs, basePath, yamlPath, logger);
+        await updateMiddlewaresForPreview(fs, basePath, yamlPath, logger);
 
         expect(fs.read(join(basePath, 'ui5.yaml'))).toMatchSnapshot();
         expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
@@ -31,7 +31,7 @@ describe('Test update middleware', () => {
 
     test('add preview-middleware to ui5.yaml file w/o middlewares', async () => {
         const missingMiddlewareConfigPath = join(basePath, 'no-middleware-config-os');
-        await updateMiddlewares(fs, missingMiddlewareConfigPath, yamlPath, logger);
+        await updateMiddlewaresForPreview(fs, missingMiddlewareConfigPath, yamlPath, logger);
 
         expect(fs.read(join(missingMiddlewareConfigPath, 'ui5.yaml'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
@@ -42,7 +42,7 @@ describe('Test update middleware', () => {
 
     test('add fiori-tools-preview to ui5.yaml file w/o middlewares', async () => {
         const missingMiddlewareConfigPath = join(basePath, 'no-middleware-config');
-        await updateMiddlewares(fs, missingMiddlewareConfigPath, yamlPath, logger);
+        await updateMiddlewaresForPreview(fs, missingMiddlewareConfigPath, yamlPath, logger);
 
         expect(fs.read(join(missingMiddlewareConfigPath, 'ui5.yaml'))).toMatchSnapshot();
         expect(warnLogMock).toHaveBeenCalledWith(
@@ -53,7 +53,7 @@ describe('Test update middleware', () => {
 
     test('add preview and reload middleware config to ui5.yaml file', async () => {
         const openSourceConfigPath = join(basePath, 'open-source-config');
-        await updateMiddlewares(fs, openSourceConfigPath, yamlPath, logger);
+        await updateMiddlewaresForPreview(fs, openSourceConfigPath, yamlPath, logger);
 
         expect(fs.read(join(openSourceConfigPath, 'ui5.yaml'))).toMatchSnapshot();
         expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
@@ -62,7 +62,7 @@ describe('Test update middleware', () => {
 
     test('add preview and reload middleware to local ui5.yaml files', async () => {
         const fioriToolsConfig = join(basePath, 'fiori-tools-config');
-        await updateMiddlewares(fs, fioriToolsConfig, yamlPath, logger);
+        await updateMiddlewaresForPreview(fs, fioriToolsConfig, yamlPath, logger);
 
         expect(debugLogMock).toHaveBeenCalledTimes(2);
         expect(debugLogMock).toHaveBeenCalledWith(middlewareUpdatedMessage('preview', FileName.Ui5Yaml));
