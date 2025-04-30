@@ -1,7 +1,7 @@
 import { initExtendControllerPlugin } from '../../../src/adp/extend-controller';
 import type UI5Element from 'sap/ui/core/Element';
-import CommandFactory from 'sap/ui/rta/command/CommandFactory';
-import ExtendControllerPlugin from 'sap/ui/rta/plugin/ExtendControllerPlugin';
+import mockCommandFactory from 'mock/sap/ui/rta/command/CommandFactory';
+import ExtendControllerPlugin from 'mock/sap/ui/rta/plugin/ExtendControllerPlugin';
 import { DialogFactory, DialogNames } from '../../../src/adp/dialog-factory';
 import { createDeferred } from '../../../src/adp/utils';
 import type { RTAOptions } from 'sap/ui/rta/RuntimeAuthoring';
@@ -26,14 +26,12 @@ describe('AddFragmentService', () => {
 
     describe('init', () => {
         it('should initialize the ExtendControllerPlugin and set it in RTA plugins', async () => {
-            const mockCommandFactory = jest.fn();
-            (CommandFactory as unknown as jest.Mock).mockImplementation(() => mockCommandFactory);
             mockRta.getPlugins = jest.fn().mockReturnValue({});
 
             initExtendControllerPlugin(mockRta);
 
             expect(ExtendControllerPlugin).toHaveBeenCalledWith({
-                commandFactory: mockCommandFactory,
+                commandFactory: expect.any(mockCommandFactory),
                 handlerFunction: expect.any(Function)
             });
 
