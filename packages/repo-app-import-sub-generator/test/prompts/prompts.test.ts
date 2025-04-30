@@ -100,7 +100,8 @@ describe('getPrompts', () => {
         expect(appSelectionPrompt).toHaveProperty('message', t('prompts.appSelection.message'));
         expect(appSelectionPrompt).toHaveProperty('guiOptions', {
             mandatory: false,
-            breadcrumb: t('prompts.appSelection.breadcrumb')
+            breadcrumb: t('prompts.appSelection.breadcrumb'),
+            applyDefaultWhenDirty: true
         });
         expect(await (appSelectionPrompt as any)?.validate(appValue)).toBe(true);
         expect((appSelectionPrompt as any)?.default()).toBe(undefined);
@@ -165,7 +166,8 @@ describe('getPrompts', () => {
         expect(appSelectionPrompt).toHaveProperty('message', t('prompts.appSelection.message'));
         expect(appSelectionPrompt).toHaveProperty('guiOptions', {
             mandatory: false,
-            breadcrumb: t('prompts.appSelection.breadcrumb')
+            breadcrumb: t('prompts.appSelection.breadcrumb'),
+            applyDefaultWhenDirty: true
         });
         expect(await (appSelectionPrompt as any)?.validate(appValue)).toBe(true);
         expect((appSelectionPrompt as any)?.default()).toBe(0);

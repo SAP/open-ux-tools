@@ -98,7 +98,7 @@ describe('Test headless generator', () => {
 
         await runHeadlessGen(testAppName, OUTPUT_DIR);
         expect(true).toEqual(true);
-        expect(existsSync(`${OUTPUT_DIR}/${testAppName}/xs-security.json`)).toBeFalsy();
+        expect(await readFile(`${OUTPUT_DIR}/${testAppName}/xs-security.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/mta.yaml`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/ui5-deploy.yaml`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/xs-app.json`, 'utf-8')).toMatchSnapshot();
@@ -113,7 +113,7 @@ describe('Test headless generator', () => {
         await rename(join(OUTPUT_DIR, INPUT_APP_NAME_TS), join(OUTPUT_DIR, testAppName));
 
         await runHeadlessGen(testAppName, OUTPUT_DIR);
-        expect(existsSync(`${OUTPUT_DIR}/${testAppName}/xs-security.json`)).toBeFalsy();
+        expect(await readFile(`${OUTPUT_DIR}/${testAppName}/xs-security.json`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/mta.yaml`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/ui5-deploy.yaml`, 'utf-8')).toMatchSnapshot();
         expect(await readFile(`${OUTPUT_DIR}/${testAppName}/xs-app.json`, 'utf-8')).toMatchSnapshot();
