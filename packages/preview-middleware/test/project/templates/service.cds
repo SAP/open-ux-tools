@@ -1,9 +1,9 @@
 service Service {
-        @UI: {
+    @UI: {
         HeaderInfo: {
             TypeName: 'Root Entity',
             TypeNamePlural: 'Root Entities',
-            Title: { Value: Name }
+            Title: { Value: StringProperty }
         },
         Facets: [
             {
@@ -17,7 +17,8 @@ service Service {
                 { $Type: 'UI.DataField', Value: StringProperty },
                 { $Type: 'UI.DataField', Value: IntegerProperty }
             ]
-        }
+        },
+        SelectionFields: [StringProperty]
     }
     @UI.LineItem : [ { Value: StringProperty }]
   entity RootEntity {

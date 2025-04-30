@@ -12,8 +12,6 @@ import type { TestOptions } from './test/integration/fixture';
 
 const versions = JSON.parse(readFileSync(join(__dirname, 'versions.json').toString()) as unknown as string) as string[];
 
-console.log('Versions:', versions);
-
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
@@ -26,7 +24,7 @@ const config: PlaywrightTestConfig<TestOptions> = {
     /* Retry on CI only */
     retries: process.env.CI ? 1 : 0,
     /* Opt out of parallel tests on CI. */
-    workers: 1,
+    workers: 4,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [['html', { open: 'never' }]],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
@@ -45,6 +43,7 @@ const config: PlaywrightTestConfig<TestOptions> = {
             ui5Version: version
         }
     })) as Project<{}, TestOptions>[],
-    globalSetup: require.resolve('./test/integration/utils/global-setup')
+    timeout: 9999 * 1000,
+    globalSetup: require.resolve('./test/integration/global-setup')
 };
 export default defineConfig(config);

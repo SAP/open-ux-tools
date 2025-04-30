@@ -1,16 +1,197 @@
-import { expect } from '@sap-ux-private/playwright';
+import { expect, type FrameLocator, type Page } from '@sap-ux-private/playwright';
 
 import { test } from '../../../adp-fixture';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../../../project';
+import { join } from 'path';
+import { readdir, readFile } from 'fs/promises';
+import { lt } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
-test.describe(`Quick Actions @quick-actions @fe-v2 @list-report`, () => {
-    test.describe(`List Report`, () => {
-        test('Click on Go button and check an element ', async ({ page, previewFrame }) => {
-            await page.getByRole('button', { name: 'Navigation' }).click();
-            await previewFrame.getByRole('button', { name: 'Go' }).click();
-            await expect(previewFrame.getByRole('gridcell', { name: 'Hello' })).toBeVisible();
+class QuickActionPanel {
+    private readonly page: Page;
+    get addControllerToPage() {
+        return this.page.getByRole('button', { name: 'Add Controller to Page' });
+    }
+    get showPageController() {
+        return this.page.getByRole('button', { name: 'Show Page Controller' });
+    }
+    get enableClearButton() {
+        return this.page.getByRole('button', { name: 'Enable "Clear" Button in Filter Bar' });
+    }
+    get disableClearButton() {
+        return this.page.getByRole('button', { name: 'Disable "Clear" Button in Filter Bar' });
+    }
+    constructor(page: Page) {
+        this.page = page;
+    }
+}
+
+class Toolbar {
+    private readonly page: Page;
+    get saveButton() {
+        return this.page.getByRole('button', { name: 'Save' });
+    }
+    constructor(page: Page) {
+        this.page = page;
+    }
+}
+class ChangesPanel {
+    private readonly page: Page;
+    get reloadButton() {
+        return this.page.getByRole('link', { name: 'Reload' });
+    }
+    constructor(page: Page) {
+        this.page = page;
+    }
+}
+
+class AdaptationEditorShell {
+    private readonly page: Page;
+    readonly quickActions: QuickActionPanel;
+    readonly toolbar: Toolbar;
+    readonly changesPanel: ChangesPanel;
+    constructor(page: Page) {
+        this.page = page;
+        this.quickActions = new QuickActionPanel(page);
+        this.toolbar = new Toolbar(page);
+        this.changesPanel = new ChangesPanel(page);
+    }
+}
+
+class ListReport {
+    private readonly frame: FrameLocator;
+    get goButton() {
+        return this.frame.getByRole('button', { name: 'Go' });
+    }
+
+    get clearButton() {
+        return this.frame.getByRole('button', { name: 'Clear' });
+    }
+    constructor(frame: FrameLocator) {
+        this.frame = frame;
+    }
+}
+
+test.describe(`@quick-actions @fe-v2`, () => {
+    test.describe(`@list-report`, () => {
+        // test.afterEach(async ({ project }) => {
+
+        // });
+        test('Enable/Disable clear filter bar button', async ({ page, previewFrame, projectCopy }) => {
+            const lr = new ListReport(previewFrame);
+            const editor = new AdaptationEditorShell(page);
+
+            await expect(lr.clearButton).toBeHidden();
+
+            await editor.quickActions.enableClearButton.click();
+
+            await expect(lr.clearButton).toBeVisible();
+
+            await editor.toolbar.saveButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await expect
+                .poll(
+                    async () => {
+                        const changesDirectory = join(projectCopy, 'webapp', 'changes');
+                        const changes = await readdir(changesDirectory);
+                        if (changes.length) {
+                            const text = await readFile(join(changesDirectory, changes[0]), { encoding: 'utf-8' });
+                            return JSON.parse(text);
+                        }
+                        return {};
+                    },
+                    {
+                        message: 'make sure change file is created'
+                    }
+                )
+                .toEqual(
+                    expect.objectContaining({
+                        fileType: 'change',
+                        changeType: 'propertyChange',
+                        content: expect.objectContaining({ property: 'showClearOnFB', newValue: true })
+                    })
+                );
+
+            await editor.quickActions.disableClearButton.click();
+
+            await expect(lr.clearButton).toBeHidden();
+
+            await editor.toolbar.saveButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await expect
+                .poll(
+                    async () => {
+                        const changesDirectory = join(projectCopy, 'webapp', 'changes');
+                        const changes = await readdir(changesDirectory);
+                        if (changes.length) {
+                            const text = await readFile(join(changesDirectory, changes[0]), { encoding: 'utf-8' });
+                            return JSON.parse(text);
+                        }
+                        return {};
+                    },
+                    {
+                        message: 'make sure change file is updated'
+                    }
+                )
+                .toEqual(
+                    expect.objectContaining({
+                        fileType: 'change',
+                        changeType: 'propertyChange',
+                        content: expect.objectContaining({ property: 'showClearOnFB', newValue: false })
+                    })
+                );
+        });
+
+        test('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
+            const lr = new ListReport(previewFrame);
+            const editor = new AdaptationEditorShell(page);
+
+            await editor.quickActions.addControllerToPage.click();
+
+            await previewFrame.getByRole('textbox', { name: 'Controller Name' }).fill('TestController');
+            await previewFrame.getByLabel('Footer actions').getByRole('button', { name: 'Create' }).click();
+
+            if (lt(ui5Version, '1.135.0')) {
+                await expect(page.getByText('Changes detected!')).toBeVisible();
+            }
+
+            await expect
+                .poll(
+                    async () => {
+                        const changesDirectory = join(projectCopy, 'webapp', 'changes', 'coding');
+
+                        const codingChanges = await readdir(changesDirectory);
+
+                        return codingChanges.length;
+                    },
+                    {
+                        message: 'make sure controller file is created',
+                        timeout: 4_000
+                    }
+                )
+                .toEqual(1);
+
+            // wait for overlay to be closed
+            // await expect(previewFrame.getByText('Controller extension with')).toBeHidden();
+
+            await editor.changesPanel.reloadButton.click();
+
+            await expect(page.getByText('Code Ext Change')).toBeVisible();
+
+            await expect(lr.goButton).toBeVisible();
+
+            await editor.quickActions.showPageController.click();
+
+            await expect(
+                previewFrame.getByText('adp.fiori.elements.v2/changes/coding/TestController.js')
+            ).toBeVisible();
+
+            await expect(previewFrame.getByRole('button', { name: 'Open in VS Code' })).toBeVisible();
         });
     });
 });

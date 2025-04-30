@@ -1,4 +1,4 @@
-import { mkdir, readFile, writeFile } from 'fs/promises';
+import { mkdir, readFile, rm, writeFile } from 'fs/promises';
 import { join } from 'path';
 
 import type { Manifest } from '@sap-ux/project-access';
@@ -23,10 +23,10 @@ function getProjectParametersWithDefaults(parameters: ProjectParameters): Projec
     };
 }
 
-export function createV2Manifest(userParameters: ProjectParameters): Manifest {
+export function createV2Manifest(userParameters: ProjectParameters, workerId: string): Manifest {
     const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
     const result = structuredClone(template) as Manifest;
-    result['sap.app'].id = id;
+    result['sap.app'].id = id + '.' + workerId;
     result['sap.app'].dataSources!.mainService.uri = mainServiceUri;
     result['sap.app'].sourceTemplate!.id = 'preview-middleware-tests';
     result['sap.app'].sourceTemplate!.version = '1.0.0';
@@ -67,26 +67,30 @@ export function createV2Manifest(userParameters: ProjectParameters): Manifest {
     return result;
 }
 
-export async function createYamlFile(userParameters: ProjectParameters, ui5Version: string): Promise<string> {
+export async function createYamlFile(
+    userParameters: ProjectParameters,
+    ui5Version: string,
+    workerId: string
+): Promise<string> {
     const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
     const template = await readFile(join(__dirname, 'templates', 'ui5.yaml'), 'utf-8');
     const document = await YamlDocument.newInstance(template);
 
-    document.setIn({ path: 'metadata.name', value: id });
+    document.setIn({ path: 'metadata.name', value: id + '.' + workerId });
     document.setIn({ path: 'server.customMiddleware.0.configuration.services.urlPath', value: mainServiceUri });
     document.setIn({ path: 'server.customMiddleware.3.configuration.version', value: ui5Version });
 
     return document.toString();
 }
 
-export function createComponent(userParameters: ProjectParameters): string {
+export function createComponent(userParameters: ProjectParameters, workerId: string): string {
     const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(userParameters);
     return `sap.ui.define(
     ["sap/suite/ui/generic/template/lib/AppComponent"],
     function (Component) {
         "use strict";
 
-        return Component.extend("${id}.Component", {
+        return Component.extend("${id}.${workerId}.Component", {
             metadata: {
                 manifest: "json"
             }
@@ -110,13 +114,13 @@ export function createPackageJson(id: string): string {
 
 export async function generateUi5Project(
     projectConfig: typeof FIORI_ELEMENTS_V2,
-    instanceId: string,
+    workerId: string,
     ui5Version: string
 ): Promise<string> {
     const { id, mainServiceUri, entitySet } = getProjectParametersWithDefaults(projectConfig);
-    const root = join(__dirname, '..', 'fixtures-copy', `${projectConfig.id}-${instanceId}`);
-    const yamlContent = await createYamlFile(projectConfig, ui5Version);
-    const manifestContent = JSON.stringify(createV2Manifest(projectConfig), undefined, 2);
+    const root = join(__dirname, '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
+    const yamlContent = await createYamlFile(projectConfig, ui5Version, workerId);
+    const manifestContent = JSON.stringify(createV2Manifest(projectConfig, workerId), undefined, 2);
 
     if (!existsSync(root)) {
         await mkdir(root, { recursive: true });
@@ -132,9 +136,9 @@ export async function generateUi5Project(
 
     await Promise.all([
         writeFile(join(root, 'ui5.yaml'), yamlContent),
-        writeFile(join(root, 'package.json'), createPackageJson(id)),
+        writeFile(join(root, 'package.json'), createPackageJson(id + workerId)),
         writeFile(join(root, 'webapp', 'manifest.json'), manifestContent),
-        writeFile(join(root, 'webapp', 'Component.js'), createComponent(projectConfig)),
+        writeFile(join(root, 'webapp', 'Component.js'), createComponent(projectConfig, workerId)),
         writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
         writeFile(
             join(root, 'data', 'RootEntity.json'),
@@ -174,7 +178,8 @@ async function createAdpYamlFile(
     userParameters: AdpProjectParameters,
     ui5Version: string,
     backendUrl: string,
-    mainServiceUri: string
+    mainServiceUri: string,
+    livereloadPort: number
 ): Promise<string> {
     const { id } = getAdpProjectParametersWithDefaults(userParameters);
     const template = await readFile(join(__dirname, 'templates', 'adp.yaml'), 'utf-8');
@@ -182,6 +187,11 @@ async function createAdpYamlFile(
 
     document.setIn({ path: 'metadata.name', value: id });
     document.setIn({ path: 'server.customMiddleware.0.configuration.services.urlPath', value: mainServiceUri });
+    document.setIn({
+        path: 'server.customMiddleware.1.configuration.port',
+        value: livereloadPort,
+        createIntermediateKeys: true
+    });
     document.setIn({ path: 'server.customMiddleware.2.configuration.adp.target.url', value: backendUrl });
     // document.setIn({ path: 'server.customMiddleware.2.configuration.adp.target.url', value: backendUrl });
     document.setIn({ path: 'server.customMiddleware.3.configuration.version', value: ui5Version });
@@ -207,18 +217,21 @@ export async function generateAdpProject(
     projectConfig: typeof ADP_FIORI_ELEMENTS_V2,
     instanceId: string,
     ui5Version: string,
-    backendUrl: string
+    backendUrl: string,
+    livereloadPort: number,
+    workerId: string
 ): Promise<string> {
     const { id } = getAdpProjectParametersWithDefaults(projectConfig);
-    const root = join(__dirname, '..', 'fixtures-copy', `${projectConfig.id}-${instanceId}`);
+    const root = join(__dirname, '..', 'fixtures-copy', `${projectConfig.id}.${instanceId}`);
     const yamlContent = await createAdpYamlFile(
         projectConfig,
         ui5Version,
         backendUrl,
-        projectConfig.baseApp.mainServiceUri
+        projectConfig.baseApp.mainServiceUri,
+        livereloadPort
     );
     const appDescriptorVariant = JSON.stringify(
-        await createAppDescriptorVariant(projectConfig, projectConfig.baseApp.id),
+        await createAppDescriptorVariant(projectConfig, projectConfig.baseApp.id + '.' + workerId),
         undefined,
         2
     );
@@ -234,10 +247,13 @@ export async function generateAdpProject(
     if (!existsSync(join(root, 'data'))) {
         await mkdir(join(root, 'data'), { recursive: true });
     }
+    if (existsSync(join(root, 'webapp', 'changes'))) {
+        await rm(join(root, 'webapp', 'changes'), { recursive: true });
+    }
 
     await Promise.all([
         writeFile(join(root, 'ui5.yaml'), yamlContent),
-        writeFile(join(root, 'package.json'), createPackageJson(id)),
+        writeFile(join(root, 'package.json'), createPackageJson(id + '.' + instanceId)),
         writeFile(join(root, 'webapp', 'manifest.appdescr_variant'), appDescriptorVariant),
         writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
         writeFile(
