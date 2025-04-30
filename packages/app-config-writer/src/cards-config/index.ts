@@ -63,7 +63,7 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
     const cardGeneratorPath =
         (previewMiddleware?.configuration as PreviewConfig)?.editors?.cardGenerator?.path ??
         'test/flpGeneratorSandbox.html';
-    const cliForPreview = await getCLIForPreview(basePath, yamlPath ?? "", fs);
+    const cliForPreview = await getCLIForPreview(basePath, yamlPath ?? '', fs);
 
     packageJson.scripts ??= {};
     packageJson.scripts['start-cards-generator'] = `${cliForPreview} --open '${cardGeneratorPath}${intent}'`;
