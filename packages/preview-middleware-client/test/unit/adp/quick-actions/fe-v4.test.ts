@@ -748,7 +748,7 @@ describe('FE V4 quick actions', () => {
                             actions: [
                                 {
                                     'kind': 'nested',
-                                    id: 'listReport0-create_table_action',
+                                    id: 'listReport0-create-table-action',
                                     title: 'Add Custom Table Action',
                                     enabled: true,
                                     children: [
@@ -766,7 +766,7 @@ describe('FE V4 quick actions', () => {
                 );
 
                 await subscribeMock.mock.calls[0][0](
-                    executeQuickAction({ id: 'listReport0-create_table_action', kind: 'nested', path: '0' })
+                    executeQuickAction({ id: 'listReport0-create-table-action', kind: 'nested', path: '0' })
                 );
             });
         });
