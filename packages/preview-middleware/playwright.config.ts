@@ -1,15 +1,23 @@
+import { join } from 'path';
+import { readFileSync } from 'fs';
 import { defineConfig, devices } from '@sap-ux-private/playwright';
-import type { PlaywrightTestConfig } from '@sap-ux-private/playwright';
+import type { PlaywrightTestConfig, Project } from '@sap-ux-private/playwright';
 
 /**
  * Read environment variables from `.env` file.
  */
 import 'dotenv/config';
 
+import type { TestOptions } from './test/integration/fixture';
+
+const versions = JSON.parse(readFileSync(join(__dirname, 'versions.json').toString()) as unknown as string) as string[];
+
+console.log('Versions:', versions);
+
 /**
  * See https://playwright.dev/docs/test-configuration.
  */
-const config: PlaywrightTestConfig = {
+const config: PlaywrightTestConfig<TestOptions> = {
     testDir: './test/integration',
     /* Run tests in files in parallel */
     fullyParallel: true,
@@ -28,12 +36,15 @@ const config: PlaywrightTestConfig = {
         screenshot: 'only-on-failure'
     },
     /* Configure projects for major browsers */
-    projects: [
-        {
-            name: 'Google Chrome',
-            use: { ...devices['Desktop Chrome'], channel: 'chrome', viewport: { width: 1720, height: 900 } }
+    projects: versions.map((version: string) => ({
+        name: `${version}`,
+        use: {
+            ...devices['Desktop Chrome'],
+            channel: 'chrome',
+            viewport: { width: 1720, height: 900 },
+            ui5Version: version.replaceAll('-', '.')
         }
-    ],
+    })) as Project<{}, TestOptions>[],
     globalSetup: require.resolve('./test/integration/utils/global-setup')
 };
 export default defineConfig(config);
