@@ -288,7 +288,7 @@ export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5App
     return {
         when: (answers: UI5ApplicationAnswers): boolean => {
             if (capCdsInfo) {
-                return capCdsInfo.isCdsUi5PluginEnabled || !!answers.enableTypeScript;
+                return capCdsInfo.isCdsUi5PluginEnabled || !!answers?.enableTypeScript;
             }
             return true;
         },
