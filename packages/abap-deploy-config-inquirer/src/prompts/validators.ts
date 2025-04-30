@@ -407,29 +407,6 @@ export async function validatePackageChoiceInputForCli(
 }
 
 /**
- * Validates the package name.
- *
- * @param input - package name entered
- * @returns boolean or error message as a string
- */
-export async function validatePackage(input: string): Promise<boolean | string> {
-    PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
-    if (!input?.trim()) {
-        return t('warnings.providePackage');
-    }
-    //valiadtion for special characters
-    if (!/^[A-Za-z0-9$_/]*$/.test(input)) {
-        return t('errors.validators.charactersForbiddenInPackage');
-    }
-    //validate package format
-    if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
-        return t('errors.validators.abapPackageInvalidFormat');
-    }
-
-    return true;
-}
-
-/**
  * Determines the starting prefix of a package name.
  *
  * - If the package name is in the form `/namespace/PackageName`, it extracts the namespace as the prefix.
@@ -677,7 +654,7 @@ async function validatePackageType(input: string, backendTarget?: BackendTarget)
  *                                        a `string` with an error message if validation fails,
  *                                        or the result of additional cloud package validation if applicable.
  */
-export async function validatePackageExtended(
+export async function validatePackage(
     input: string,
     answers: AbapDeployConfigAnswersInternal,
     promptOption?: PackagePromptOptions,
@@ -685,10 +662,11 @@ export async function validatePackageExtended(
     backendTarget?: BackendTarget,
     useStandalone?: boolean
 ): Promise<boolean | string> {
-    const baseValidation = await validatePackage(input);
-    if (typeof baseValidation === 'string') {
-        return baseValidation;
+    PromptState.transportAnswers.transportRequired = true; // reset to true every time package is validated
+    if (!input?.trim()) {
+        return t('warnings.providePackage');
     }
+
     if (input === DEFAULT_PACKAGE_ABAP) {
         PromptState.transportAnswers.transportRequired = false;
         if (
@@ -698,6 +676,11 @@ export async function validatePackageExtended(
         ) {
             return true;
         }
+    }
+
+    const formatAndSpecialCharsValidation = validatePackageFormatAndSpecialCharacters(input, promptOption);
+    if (typeof formatAndSpecialCharsValidation === 'string') {
+        return formatAndSpecialCharsValidation;
     }
 
     if (
@@ -710,6 +693,36 @@ export async function validatePackageExtended(
         await getTransportListFromService(input.toUpperCase(), answers.ui5AbapRepo ?? '', backendTarget);
     }
 
+    const startingPrefixValidation = validatePackageStartingPrefix(input, answers, promptOption, ui5AbapPromptOptions);
+    if (typeof startingPrefixValidation === 'string') {
+        return startingPrefixValidation;
+    }
+
+    if (promptOption?.additionalValidation?.shouldValidatePackageType) {
+        return await validatePackageType(input, backendTarget);
+    }
+
+    return true;
+}
+
+/**
+ * Validates that the provided ABAP package name has a correct starting prefix,
+ * and that the UI5 ABAP repository name aligns with this prefix.
+ *
+ * This validation only runs if certain conditions are met based on the provided answers and prompt options.
+ *
+ * @param {string} input - The ABAP package name to validate.
+ * @param {AbapDeployConfigAnswersInternal} answers - User-provided answers including the UI5 ABAP repository name.
+ * @param {PackagePromptOptions} [promptOption] - Optional prompt configuration for package validation.
+ * @param {UI5AbapRepoPromptOptions} [ui5AbapPromptOptions] - Optional UI5-specific ABAP prompt configuration.
+ * @returns {string | boolean} - Returns `true` if the package is valid, otherwise returns an error message.
+ */
+function validatePackageStartingPrefix(
+    input: string,
+    answers: AbapDeployConfigAnswersInternal,
+    promptOption?: PackagePromptOptions,
+    ui5AbapPromptOptions?: UI5AbapRepoPromptOptions
+): string | boolean {
     if (shouldValidatePackageForStartingPrefix(answers, promptOption, ui5AbapPromptOptions)) {
         const startingPrefix = getPackageStartingPrefix(input);
 
@@ -724,8 +737,32 @@ export async function validatePackageExtended(
         }
     }
 
-    if (promptOption?.additionalValidation?.shouldValidatePackageType) {
-        return await validatePackageType(input, backendTarget);
+    return true;
+}
+
+/**
+ * Validates the ABAP package name format and ensures it doesn't contain forbidden characters.
+ * This includes checking for special characters and adherence to ABAP package naming conventions.
+ *
+ * Validation only occurs if enabled via the prompt option.
+ *
+ * @param {string} input - The ABAP package name to validate.
+ * @param {PackagePromptOptions} [promptOption] - Optional prompt settings that enable format and character validation.
+ * @returns {string | boolean} - Returns `true` if valid, otherwise returns an error message.
+ */
+function validatePackageFormatAndSpecialCharacters(
+    input: string,
+    promptOption?: PackagePromptOptions
+): string | boolean {
+    if (promptOption?.additionalValidation?.shouldValidateFormatAndSpecialCharacters) {
+        //validate for special characters
+        if (!/^[A-Za-z0-9$_/]*$/.test(input)) {
+            return t('errors.validators.charactersForbiddenInPackage');
+        }
+        //validate package format
+        if (!/^(?:\/\w+\/)?[$]?\w*$/.test(input)) {
+            return t('errors.validators.abapPackageInvalidFormat');
+        }
     }
 
     return true;

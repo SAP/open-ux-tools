@@ -134,7 +134,9 @@ export async function getAbapQuestions({
                 additionalValidation: {
                     shouldValidatePackageType: promptOptions?.packageAutocomplete?.shouldValidatePackageType ?? false,
                     shouldValidatePackageForStartingPrefix:
-                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false
+                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false,
+                    shouldValidateFormatAndSpecialCharacters:
+                        promptOptions?.packageAutocomplete?.shouldValidateFormatAndSpecialCharacters ?? false
                 }
             },
             transportManual: { default: deployAppConfig?.transport },
@@ -144,7 +146,9 @@ export async function getAbapQuestions({
                 additionalValidation: {
                     shouldValidatePackageType: promptOptions?.packageAutocomplete?.shouldValidatePackageType ?? false,
                     shouldValidatePackageForStartingPrefix:
-                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false
+                        promptOptions?.packageAutocomplete?.shouldValidatePackageForStartingPrefix ?? false,
+                    shouldValidateFormatAndSpecialCharacters:
+                        promptOptions?.packageAutocomplete?.shouldValidateFormatAndSpecialCharacters ?? false
                 }
             },
             overwrite: { hide: !showOverwriteQuestion },
