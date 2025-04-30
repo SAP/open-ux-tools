@@ -67,6 +67,7 @@ import {
 import { addDeployGen, addFlpGen } from './subgenHelpers';
 import { getTemplateType, transformState } from './transforms';
 import { writeAPIHubKeyFiles, writeReadMe } from './writing';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
@@ -181,10 +182,20 @@ export class FioriAppGenerator extends Generator {
                     this.env.adapter as unknown as Adapter,
                     cachedService?.connectedSystem
                 );
-                /** Back button issue temp fix */
+                /** Back button handling */
                 // Persist derived state to facilitate backwards navigation
                 if (getHostEnvironment() !== hostEnvironment.cli) {
                     if (serviceAnswers.source === DatasourceType.none || serviceAnswers.edmx) {
+                        // When navigating back YUI re-applies the answers from the previous steps up to the current step, however on Windows it removes some required properties
+                        // of the service answers property: `ConnectedSystem`, so we need to re-apply them from our own cache.
+                        if (
+                            cachedService?.connectedSystem &&
+                            (cachedService.connectedSystem?.serviceProvider as AbapServiceProvider).catalog &&
+                            JSON.stringify(serviceAnswers.connectedSystem?.backendSystem) ===
+                                JSON.stringify(cachedService?.connectedSystem?.backendSystem)
+                        ) {
+                            serviceAnswers.connectedSystem = cachedService?.connectedSystem;
+                        }
                         addToCache(this.appWizard, { service: serviceAnswers }, FioriAppGenerator.logger);
                     } else {
                         serviceAnswers =

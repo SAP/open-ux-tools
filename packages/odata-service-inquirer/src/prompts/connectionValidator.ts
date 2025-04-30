@@ -241,14 +241,21 @@ export class ConnectionValidator {
     /**
      * Setting an existing connected system will prevent re-authentication.
      * This should be used where the user has previously authenticated to prevent re-authentication (e.g. via browser) and the previous
-     * connected system is still valid. Only backend systems are currently supported.
+     * connected system is still valid. Only Abap connected backend systems are currently supported for cached connection use.
+     * For non-Abap backend systems, or basic auth connections, the user will be prompted to re-authenticate.
      *
      * @param connectedSystem A connected system object containing the service provider and backend system information. Not relevant for destination connections.
      * @param connectedSystem.serviceProvider
      * @param connectedSystem.backendSystem
      */
     public setConnectedSystem({ serviceProvider, backendSystem }: ConnectedSystem): void {
-        // Set the state using the provided ConnectedSystem to prevent re-authentication
+        // Set the state using the provided ConnectedSystem to prevent re-authentication if this is a valid AbapServiceProvider connection only
+        if (!(serviceProvider as AbapServiceProvider).catalog) {
+            LoggerHelper.logger.warn(
+                'ConnectionValidator.setConnectedSystem(): Use of a cached connected system is only supported for AbapServiceProviders. Re-authorization will be required.'
+            );
+            return;
+        }
         this._serviceProvider = serviceProvider;
         this._catalogV2 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v2);
         this._catalogV4 = (this._serviceProvider as AbapServiceProvider).catalog(ODataVersion.v4);
