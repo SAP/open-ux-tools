@@ -14,6 +14,7 @@ import { initI18nOdataServiceInquirer, t } from '../../../src/i18n';
 import { ConnectionValidator } from '../../../src/prompts/connectionValidator';
 import type { ConnectedSystem } from '../../../src/types';
 import { BackendSystem } from '@sap-ux/store';
+import LoggerHelper from '../../../src/prompts/logger-helper';
 
 const odataServicesMock: ODataServiceInfo[] = [];
 const catalogServiceMock = jest.fn().mockImplementation(() => ({
@@ -799,5 +800,15 @@ describe('ConnectionValidator', () => {
 
         expect(connectValResult).toEqual(true);
         expect(createSystemConnectionSpy).not.toHaveBeenCalled();
+    });
+
+    test('Should only support cached connection re-use for Abap Service Providers', async () => {
+        const debugLogSpy = jest.spyOn(LoggerHelper.logger, 'debug');
+        const serviceProvider = {}; // Not an AbapServiceProvider since no catalog method
+        const connectValidator = new ConnectionValidator();
+        connectValidator.setConnectedSystem({ serviceProvider } as ConnectedSystem);
+        expect(debugLogSpy).toHaveBeenCalledWith(
+            'ConnectionValidator.setConnectedSystem(): Use of a cached connected system is only supported for AbapServiceProviders. Re-authorization will be required.'
+        );
     });
 });

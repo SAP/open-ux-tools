@@ -190,7 +190,6 @@ export class FioriAppGenerator extends Generator {
                         // of the service answers property: `ConnectedSystem`, so we need to re-apply them from our own cache.
                         if (
                             cachedService?.connectedSystem &&
-                            (cachedService.connectedSystem?.serviceProvider as AbapServiceProvider).catalog &&
                             JSON.stringify(serviceAnswers.connectedSystem?.backendSystem) ===
                                 JSON.stringify(cachedService?.connectedSystem?.backendSystem)
                         ) {

@@ -251,7 +251,7 @@ export class ConnectionValidator {
     public setConnectedSystem({ serviceProvider, backendSystem }: ConnectedSystem): void {
         // Set the state using the provided ConnectedSystem to prevent re-authentication if this is a valid AbapServiceProvider connection only
         if (!(serviceProvider as AbapServiceProvider).catalog) {
-            LoggerHelper.logger.warn(
+            LoggerHelper.logger.debug(
                 'ConnectionValidator.setConnectedSystem(): Use of a cached connected system is only supported for AbapServiceProviders. Re-authorization will be required.'
             );
             return;
