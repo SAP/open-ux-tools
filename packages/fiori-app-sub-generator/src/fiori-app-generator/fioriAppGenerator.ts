@@ -67,7 +67,6 @@ import {
 import { addDeployGen, addFlpGen } from './subgenHelpers';
 import { getTemplateType, transformState } from './transforms';
 import { writeAPIHubKeyFiles, writeReadMe } from './writing';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 export const APP_GENERATOR_MODULE = '@sap/generator-fiori';
 
