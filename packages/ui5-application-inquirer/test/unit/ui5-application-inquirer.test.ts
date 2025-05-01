@@ -237,7 +237,7 @@ describe('ui5-application-inquirer API', () => {
 });
 
 describe('Filtering UI5 themes based on UI5 version', () => {
-    const versionsToTest = ['1.146.0', '1.136.0', '1.135.0', '1.133.0'];
+    const versionsToTest = ['1.119.0', '1.118.0', '1.146.0', '1.136.0', '1.135.0', '1.133.0', '1.120.0'];
 
     // Helper function to return the expected choices for each version
     function getExpectedChoices(version: string) {
@@ -250,14 +250,16 @@ describe('Filtering UI5 themes based on UI5 version', () => {
 
         if (gte(version, '1.136.0')) {
             return commonChoices;
-        }
-        if (lt(version, '1.136.0')) {
+        } else if (gte(version, '1.120.0') && lt(version, '1.136.0')) {
             return [{ name: 'Belize (deprecated)', value: 'sap_belize' }, ...commonChoices];
+        } else if (lt(version, '1.120.0')) {
+            return [{ name: 'Belize', value: 'sap_belize' }, ...commonChoices];
         }
         return [];
     }
 
     test.each(versionsToTest)('should call getUi5Themes with correct ui5Version: %s', async (version) => {
+        jest.restoreAllMocks();
         const getUi5ThemesSpy = jest.spyOn(ui5Info, 'getUi5Themes');
         const getUI5VersionsSpy = jest.spyOn(ui5Info, 'getUI5Versions').mockResolvedValue([{ version }]);
         const promptOpts: UI5ApplicationPromptOptions = {
@@ -283,9 +285,15 @@ describe('Filtering UI5 themes based on UI5 version', () => {
         const ui5ThemeQuestion = questions.find((q) => q.name === promptNames.ui5Theme);
         const choices = (ui5ThemeQuestion as any)?.choices({ ui5Version: version });
 
+        const expectedChoices = getExpectedChoices(version);
+
+        // Debugging logs
+        console.log('Version:', version);
+        console.log('Expected Choices:', expectedChoices);
+        console.log('Actual Choices:', choices);
+
         expect(getUi5ThemesSpy).toHaveBeenCalledWith(version);
         expect(choices.length).toBeGreaterThan(0);
-        const expectedChoices = getExpectedChoices(version);
         expect(choices).toEqual(expectedChoices);
     });
 });
