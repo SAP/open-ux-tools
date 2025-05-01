@@ -75,13 +75,14 @@ export function getSystemUrlQuestion<T extends Answers>(
                 isSystem: true,
                 odataVersion: convertODataVersionType(requiredOdataVersion)
             });
-            // If basic auth not required we should have an active connection (could be a re-entrance ticket supported system url)
+            // If basic auth not required we should have an active connection and be authenticated
             if (valResult === true) {
-                if (!connectValidator.validity.authRequired && connectValidator.serviceProvider) {
+                if (connectValidator.validity.authenticated && connectValidator.serviceProvider) {
                     PromptState.odataService.connectedSystem = {
                         serviceProvider: removeCircularFromServiceProvider(connectValidator.serviceProvider)
                     };
                 } else {
+                    // otherwise we need to try basic auth
                     connectValidator.systemAuthType = 'basic';
                 }
             }

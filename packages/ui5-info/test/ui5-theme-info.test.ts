@@ -1,35 +1,10 @@
-import { getUi5Themes } from '../src';
+import { getDefaultUI5Theme, ui5ThemeIds, getUi5Themes, ui5Themes } from '../src/ui5-theme-info';
 import { defaultMinUi5Version } from '../src/constants';
-import { getDefaultUI5Theme, ui5ThemeIds } from '../src/ui5-theme-info';
 import * as themeInfo from '../src/ui5-theme-info';
+import type { UI5Theme } from '../src/types';
 
 describe('getUi5Themes', () => {
-    const allExpectedThemes = [
-        {
-            'id': 'sap_belize',
-            'label': 'Belize (deprecated)',
-            'untilVersion': '1.136.0'
-        },
-        {
-            'id': 'sap_fiori_3',
-            'label': 'Quartz Light'
-        },
-        {
-            'id': 'sap_fiori_3_dark',
-            'label': 'Quartz Dark',
-            'sinceVersion': '1.72.0'
-        },
-        {
-            'id': 'sap_horizon',
-            'label': 'Morning Horizon',
-            'sinceVersion': '1.102.0'
-        },
-        {
-            'id': 'sap_horizon_dark',
-            'label': 'Evening Horizon',
-            'sinceVersion': '1.102.0'
-        }
-    ];
+    const allExpectedThemes: UI5Theme[] = Object.values(ui5Themes);
     test('getUi5Themes', () => {
         expect(getUi5Themes()).toEqual(allExpectedThemes);
         expect(getUi5Themes('not-a-valid-version')).toEqual(allExpectedThemes);
@@ -38,12 +13,46 @@ describe('getUi5Themes', () => {
         expect(getUi5Themes('1.72')).toEqual(allExpectedThemes.slice(0, 3));
         expect(getUi5Themes('1.101')).toEqual(allExpectedThemes.slice(0, 3));
         expect(getUi5Themes('1.102')).toEqual(allExpectedThemes);
-        expect(getUi5Themes('1.135.0')).toEqual(allExpectedThemes);
-        // Filter out sap_belize from allExpectedThemes
-        const allExpectedThemesExcludingBelize = allExpectedThemes.filter((theme) => theme.id !== 'sap_belize');
-        // expect sap_belize theme to be excluded when ui5 version is above 1.136.0
-        expect(getUi5Themes('1.136.0')).toEqual(allExpectedThemesExcludingBelize);
-        expect(getUi5Themes('1.155.0')).toEqual(allExpectedThemesExcludingBelize);
+    });
+
+    describe('Belize Theme Tests', () => {
+        const themesWithDeprecatedBelize = allExpectedThemes.map((theme) => {
+            if (theme.id === ui5ThemeIds.SAP_BELIZE) {
+                return {
+                    ...theme,
+                    label: 'Belize (deprecated)'
+                };
+            }
+            return theme;
+        });
+
+        const themesWithoutBelize = allExpectedThemes.filter((theme) => theme.id !== ui5ThemeIds.SAP_BELIZE);
+
+        beforeEach(() => {
+            // Restore the original ui5Themes before each test
+            Object.defineProperty(themeInfo, 'ui5Themes', {
+                value: allExpectedThemes
+            });
+        });
+
+        afterEach(() => {
+            jest.restoreAllMocks();
+        });
+
+        test('should mark sap_belize as deprecated for versions between 1.120.0 and 1.136.0', () => {
+            expect(getUi5Themes('1.120.0')).toEqual(themesWithDeprecatedBelize);
+            expect(getUi5Themes('1.135.0')).toEqual(themesWithDeprecatedBelize);
+        });
+
+        test('should exclude sap_belize for versions above 1.136.0', () => {
+            expect(getUi5Themes('1.136.0')).toEqual(themesWithoutBelize);
+            expect(getUi5Themes('1.155.0')).toEqual(themesWithoutBelize);
+        });
+
+        test('should include sap_belize for versions below 1.120.0', () => {
+            expect(getUi5Themes('1.119.9')).toEqual(allExpectedThemes);
+            expect(getUi5Themes('1.105.0')).toEqual(allExpectedThemes);
+        });
     });
 
     test.each([
@@ -61,13 +70,13 @@ describe('getUi5Themes', () => {
                     ['ABC']: {
                         id: 'ABC',
                         label: 'Theme ABC',
-                        sinceVersion: '1.90.0',
-                        untilVersion: '1.100.0'
+                        supportSince: '1.90.0',
+                        supportUntil: '1.100.0'
                     }
                 }
             });
-            const themes = themeInfo.getUi5Themes(version);
-            const hasABC = themes.some((t) => t.id === ('ABC' as themeInfo.ui5ThemeIds));
+            const themes = getUi5Themes(version);
+            const hasABC = themes.some((t) => t.id === ('ABC' as ui5ThemeIds));
             expect(hasABC).toBe(expectedIncluded);
             jest.restoreAllMocks();
         }
