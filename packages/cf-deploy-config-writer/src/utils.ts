@@ -126,13 +126,14 @@ export function validateVersion(mtaVersion?: string): boolean {
 }
 
 /**
- *  Append xs-security.json to project folder.
+ * Appends xs-security.json to the project folder.
  *
- * @param root0 MTA base configuration
- * @param root0.mtaPath Path to the MTA project
- * @param root0.mtaId MTA ID
- * @param fs reference to a mem-fs editor
- * @param addTenant If true, append tenant to the xs-security.json file
+ * @param {MTABaseConfig} config - MTA base configuration
+ * @param {string} config.mtaPath - Path to the MTA project
+ * @param {string} config.mtaId - MTA ID
+ * @param {Editor} fs - Reference to a mem-fs editor
+ * @param {boolean} [addTenant] - If true, append tenant to the xs-security.json file
+ * @returns {void}
  */
 export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor, addTenant: boolean = true): void {
     fs.copyTpl(getTemplatePath(`common/${FileName.XSSecurityJson}`), join(mtaPath, FileName.XSSecurityJson), {
@@ -152,16 +153,17 @@ export function addGitIgnore(targetPath: string, fs: Editor): void {
 }
 
 /**
- * Append server package.json to project folder.
+ * Appends server package.json to the project folder.
  *
- * @param root0 MTA base configuration
- * @param root0.mtaPath Path to the MTA project
- * @param root0.mtaId MTA ID
- * @param fs reference to a mem-fs editor
+ * @param {MTABaseConfig} config - MTA base configuration
+ * @param {string} config.mtaPath - Path to the MTA project
+ * @param {string} config.mtaId - MTA ID
+ * @param {Editor} fs - Reference to a mem-fs editor
+ * @returns {void}
  */
 export function addRootPackage({ mtaPath, mtaId }: MTABaseConfig, fs: Editor): void {
     fs.copyTpl(getTemplatePath(FileName.Package), join(mtaPath, FileName.Package), {
-        mtaId: mtaId
+        mtaId
     });
 }
 
