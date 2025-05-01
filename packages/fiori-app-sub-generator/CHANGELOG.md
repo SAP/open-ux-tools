@@ -1,5 +1,13 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.30
+
+### Patch Changes
+
+-   38519fa: Fix for cached connection crash
+-   Updated dependencies [38519fa]
+    -   @sap-ux/odata-service-inquirer@2.3.8
+
 ## 0.0.29
 
 ### Patch Changes
