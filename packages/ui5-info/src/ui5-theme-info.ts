@@ -92,4 +92,3 @@ export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
 
     return Object.values(ui5Themes);
 }
-
