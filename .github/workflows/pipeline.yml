@@ -103,6 +103,7 @@ jobs:
             - name: Install playwright chrome browsers
               if: steps.cache-playwright-browsers.outputs.cache-hit != 'true'
               run: npx playwright install chrome
+            # TODO: cache results using nx
             - name: Run playwright tests
               run: cd packages/preview-middleware && pnpm exec playwright test --project=${{ matrix.ui5-version }} --reporter=blob
               env:
@@ -115,17 +116,9 @@ jobs:
                 name: blob-report-${{ matrix.ui5-version }}
                 path: packages/preview-middleware/blob-report
                 retention-days: 1
-            # - name: Upload playwright reports
-            #   if: failure()
-            #   uses: actions/upload-artifact@v4
-            #   with:
-            #     name: playwright-reports-os-ubuntu-latest-node-version-20.x
-            #     path: |
-            #       packages/*/playwright-report
-            #       !packages/*/node_modules
-            #     retention-days: 15
     merge-reports:
     # Merge reports after playwright-tests, even if some shards have failed
+    # TODO: do not check out and install modules for whole repo, we just need to merge reports perhaps that can be done with a dedicated action
       if: ${{ !cancelled() }}
       needs: [playwright-tests]
 
@@ -167,7 +160,7 @@ jobs:
         - name: Upload HTML report
           uses: actions/upload-artifact@v4
           with:
-            name: html-report--attempt-${{ github.run_attempt }}
+            name: playwright-report-${{ github.run_attempt }}
             path: packages/preview-middleware/playwright-report
             retention-days: 15
     version:

@@ -215,14 +215,13 @@ export async function createAppDescriptorVariant(
 
 export async function generateAdpProject(
     projectConfig: typeof ADP_FIORI_ELEMENTS_V2,
-    instanceId: string,
+    workerId: string,
     ui5Version: string,
     backendUrl: string,
-    livereloadPort: number,
-    workerId: string
+    livereloadPort: number
 ): Promise<string> {
     const { id } = getAdpProjectParametersWithDefaults(projectConfig);
-    const root = join(__dirname, '..', 'fixtures-copy', `${projectConfig.id}.${instanceId}`);
+    const root = join(__dirname, '..', 'fixtures-copy', `${projectConfig.id}.${workerId}`);
     const yamlContent = await createAdpYamlFile(
         projectConfig,
         ui5Version,
@@ -253,7 +252,7 @@ export async function generateAdpProject(
 
     await Promise.all([
         writeFile(join(root, 'ui5.yaml'), yamlContent),
-        writeFile(join(root, 'package.json'), createPackageJson(id + '.' + instanceId)),
+        writeFile(join(root, 'package.json'), createPackageJson(id + '.' + workerId)),
         writeFile(join(root, 'webapp', 'manifest.appdescr_variant'), appDescriptorVariant),
         writeFile(join(root, 'service.cds'), await readFile(join(__dirname, 'templates', 'service.cds'), 'utf-8')),
         writeFile(
