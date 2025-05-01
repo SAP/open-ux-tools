@@ -98,6 +98,9 @@ describe('prompting.ts', () => {
                   "enableTypeScript": {
                     "defaultValue": false,
                   },
+                  "enableVirtualEndpoints": {
+                    "hide": false,
+                  },
                   "name": {
                     "defaultValue": undefined,
                   },
@@ -382,6 +385,7 @@ describe('prompting.ts', () => {
                     enableCodeAssist: { advancedOption: true, default: false },
                     enableEslint: { advancedOption: true, default: false },
                     enableTypeScript: { defaultValue: false },
+                    enableVirtualEndpoints: { hide: false },
                     name: { defaultValue: undefined },
                     skipAnnotations: { advancedOption: true, default: false, hide: true },
                     targetFolder: { defaultValue: undefined, validateFioriAppFolder: true },
