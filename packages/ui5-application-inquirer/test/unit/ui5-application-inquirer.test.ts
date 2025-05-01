@@ -287,11 +287,6 @@ describe('Filtering UI5 themes based on UI5 version', () => {
 
         const expectedChoices = getExpectedChoices(version);
 
-        // Debugging logs
-        console.log('Version:', version);
-        console.log('Expected Choices:', expectedChoices);
-        console.log('Actual Choices:', choices);
-
         expect(getUi5ThemesSpy).toHaveBeenCalledWith(version);
         expect(choices.length).toBeGreaterThan(0);
         expect(choices).toEqual(expectedChoices);
