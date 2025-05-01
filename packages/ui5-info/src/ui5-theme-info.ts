@@ -71,25 +71,26 @@ export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
     const cleanSemVer = coerce(ui5VersionSince);
 
     if (cleanSemVer) {
-        return Object.values(ui5Themes)
-            .map((theme) => {
-                const isDeprecated =
-                    theme.deprecateSince &&
-                    theme.supportUntil &&
-                    gte(cleanSemVer, theme.deprecateSince) &&
-                    lt(cleanSemVer, theme.supportUntil);
+        const filteredThemes: Partial<Record<ui5ThemeIds, UI5Theme>> = {};
 
-                const label = isDeprecated ? `${theme.label} (deprecated)` : theme.label;
+        for (const [id, theme] of Object.entries(ui5Themes) as [ui5ThemeIds, UI5Theme][]) {
+            // Check if the theme is supported within the valid version range
+            const isSupportedSince = theme.supportSince ? gte(cleanSemVer, theme.supportSince) : true;
+            const isSupportedUntil = theme.supportUntil ? lt(cleanSemVer, theme.supportUntil) : true;
 
-                return { ...theme, label };
-            })
-            .filter((theme) => {
-                const isValidSinceVersion = theme.supportSince ? gte(cleanSemVer, theme.supportSince) : true;
-                const isValidUntilVersion = theme.supportUntil ? lt(cleanSemVer, theme.supportUntil) : true;
-                return isValidSinceVersion && isValidUntilVersion;
-            });
+            // If the theme is supported, add it to the filtered themes list
+            if (isSupportedSince && isSupportedUntil) {
+                const isDeprecated = theme.deprecateSince && gte(cleanSemVer, theme.deprecateSince);
+                // If the theme is deprecated, add (deprecated) to the label
+                filteredThemes[id] = {
+                    ...theme,
+                    label: isDeprecated ? `${theme.label} (deprecated)` : theme.label
+                };
+            }
+        }
+
+        return Object.values(filteredThemes);
     }
 
     return Object.values(ui5Themes);
 }
-

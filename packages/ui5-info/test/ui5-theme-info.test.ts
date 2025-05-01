@@ -1,36 +1,10 @@
-import { getUi5Themes } from '../src';
+import { getDefaultUI5Theme, ui5ThemeIds, getUi5Themes, ui5Themes } from '../src/ui5-theme-info';
 import { defaultMinUi5Version } from '../src/constants';
-import { getDefaultUI5Theme, ui5ThemeIds } from '../src/ui5-theme-info';
 import * as themeInfo from '../src/ui5-theme-info';
+import type { UI5Theme } from '../src/types';
 
 describe('getUi5Themes', () => {
-    const allExpectedThemes = [
-        {
-            'id': 'sap_belize',
-            'label': 'Belize',
-            'supportUntil': '1.136.0',
-            'deprecateSince': '1.120.0'
-        },
-        {
-            'id': 'sap_fiori_3',
-            'label': 'Quartz Light'
-        },
-        {
-            'id': 'sap_fiori_3_dark',
-            'label': 'Quartz Dark',
-            'supportSince': '1.72.0'
-        },
-        {
-            'id': 'sap_horizon',
-            'label': 'Morning Horizon',
-            'supportSince': '1.102.0'
-        },
-        {
-            'id': 'sap_horizon_dark',
-            'label': 'Evening Horizon',
-            'supportSince': '1.102.0'
-        }
-    ];
+    const allExpectedThemes: UI5Theme[] = Object.values(ui5Themes);
     test('getUi5Themes', () => {
         expect(getUi5Themes()).toEqual(allExpectedThemes);
         expect(getUi5Themes('not-a-valid-version')).toEqual(allExpectedThemes);
@@ -43,7 +17,7 @@ describe('getUi5Themes', () => {
 
     describe('Belize Theme Tests', () => {
         const themesWithDeprecatedBelize = allExpectedThemes.map((theme) => {
-            if (theme.id === 'sap_belize') {
+            if (theme.id === ui5ThemeIds.SAP_BELIZE) {
                 return {
                     ...theme,
                     label: 'Belize (deprecated)'
@@ -52,7 +26,7 @@ describe('getUi5Themes', () => {
             return theme;
         });
 
-        const themesWithoutBelize = allExpectedThemes.filter((theme) => theme.id !== 'sap_belize');
+        const themesWithoutBelize = allExpectedThemes.filter((theme) => theme.id !== ui5ThemeIds.SAP_BELIZE);
 
         beforeEach(() => {
             // Restore the original ui5Themes before each test
@@ -101,8 +75,8 @@ describe('getUi5Themes', () => {
                     }
                 }
             });
-            const themes = themeInfo.getUi5Themes(version);
-            const hasABC = themes.some((t) => t.id === ('ABC' as themeInfo.ui5ThemeIds));
+            const themes = getUi5Themes(version);
+            const hasABC = themes.some((t) => t.id === ('ABC' as ui5ThemeIds));
             expect(hasABC).toBe(expectedIncluded);
             jest.restoreAllMocks();
         }
