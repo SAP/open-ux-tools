@@ -69,27 +69,26 @@ export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
     const ui5VersionSince = ui5Version.replace('snapshot-', '');
     const cleanSemVer = coerce(ui5VersionSince);
     if (cleanSemVer) {
-        return Object.values(ui5Themes).filter((ui5Theme) => {
-            // Check if the theme is deprecated and the UI5 version is within the deprecated range
-            if (
-                ui5Theme.id === ui5ThemeIds.SAP_BELIZE &&
-                gte(cleanSemVer, MIN_UI5_VER_BELIZE_DEPRECATED) &&
-                lt(cleanSemVer, MAX_UI5_VER_BELIZE_THEME)
-            ) {
-                ui5Theme.label = 'Belize (deprecated)';
-            }
+        return Object.values(ui5Themes)
+            .map((ui5Theme) => {
+                const theme = { ...ui5Theme };
 
-            // Check if the theme is within the valid version range
-            const isValidSinceVersion = ui5Theme.sinceVersion ? gte(cleanSemVer, ui5Theme.sinceVersion) : true;
-            const isValidUntilVersion = ui5Theme.untilVersion ? lt(cleanSemVer, ui5Theme.untilVersion) : true;
+                if (
+                    theme.id === ui5ThemeIds.SAP_BELIZE &&
+                    gte(cleanSemVer, MIN_UI5_VER_BELIZE_DEPRECATED) &&
+                    lt(cleanSemVer, MAX_UI5_VER_BELIZE_THEME)
+                ) {
+                    theme.label = 'Belize (deprecated)';
+                }
 
-            // Include themes that are within their version support range
-            if (isValidSinceVersion && isValidUntilVersion) {
-                return true;
-            }
+                return theme;
+            })
+            .filter((theme) => {
+                const isValidSinceVersion = theme.sinceVersion ? gte(cleanSemVer, theme.sinceVersion) : true;
+                const isValidUntilVersion = theme.untilVersion ? lt(cleanSemVer, theme.untilVersion) : true;
 
-            return false;
-        });
+                return isValidSinceVersion && isValidUntilVersion;
+            });
     }
 
     // If the UI5 version is not valid, return all themes

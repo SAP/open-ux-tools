@@ -237,7 +237,7 @@ describe('ui5-application-inquirer API', () => {
 });
 
 describe('Filtering UI5 themes based on UI5 version', () => {
-    const versionsToTest = ['1.119.0', '1.118.0', '1.146.0', '1.136.0', '1.135.0', '1.133.0', '1.120.0'];
+    const versionsToTest = ['1.146.0', '1.136.0', '1.135.0', '1.133.0', '1.120.0', '1.119.0', '1.118.0'];
 
     // Helper function to return the expected choices for each version
     function getExpectedChoices(version: string) {
