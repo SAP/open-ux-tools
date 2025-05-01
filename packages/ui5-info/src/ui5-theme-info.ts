@@ -19,7 +19,8 @@ export const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
     [ui5ThemeIds.SAP_BELIZE]: {
         id: ui5ThemeIds.SAP_BELIZE,
         label: 'Belize',
-        untilVersion: MAX_UI5_VER_BELIZE_THEME
+        supportUntil: MAX_UI5_VER_BELIZE_THEME,
+        deprecateSince: MIN_UI5_VER_BELIZE_DEPRECATED
     },
     [ui5ThemeIds.SAP_FIORI_3]: {
         id: ui5ThemeIds.SAP_FIORI_3,
@@ -28,17 +29,17 @@ export const ui5Themes: Record<ui5ThemeIds, UI5Theme> = {
     [ui5ThemeIds.SAP_FIORI_3_DARK]: {
         id: ui5ThemeIds.SAP_FIORI_3_DARK,
         label: 'Quartz Dark',
-        sinceVersion: MIN_UI5_VER_DARK_THEME
+        supportSince: MIN_UI5_VER_DARK_THEME
     },
     [ui5ThemeIds.SAP_HORIZON]: {
         id: ui5ThemeIds.SAP_HORIZON,
         label: 'Morning Horizon',
-        sinceVersion: MIN_UI5_VER_HORIZON_THEME
+        supportSince: MIN_UI5_VER_HORIZON_THEME
     },
     [ui5ThemeIds.SAP_HORIZON_DARK]: {
         id: ui5ThemeIds.SAP_HORIZON_DARK,
         label: 'Evening Horizon',
-        sinceVersion: MIN_UI5_VER_HORIZON_THEME
+        supportSince: MIN_UI5_VER_HORIZON_THEME
     }
 };
 
@@ -68,29 +69,27 @@ export function getDefaultUI5Theme(ui5Version?: string): string {
 export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
     const ui5VersionSince = ui5Version.replace('snapshot-', '');
     const cleanSemVer = coerce(ui5VersionSince);
+
     if (cleanSemVer) {
         return Object.values(ui5Themes)
-            .map((ui5Theme) => {
-                const theme = { ...ui5Theme };
+            .map((theme) => {
+                const isDeprecated =
+                    theme.deprecateSince &&
+                    theme.supportUntil &&
+                    gte(cleanSemVer, theme.deprecateSince) &&
+                    lt(cleanSemVer, theme.supportUntil);
 
-                if (
-                    theme.id === ui5ThemeIds.SAP_BELIZE &&
-                    gte(cleanSemVer, MIN_UI5_VER_BELIZE_DEPRECATED) &&
-                    lt(cleanSemVer, MAX_UI5_VER_BELIZE_THEME)
-                ) {
-                    theme.label = 'Belize (deprecated)';
-                }
+                const label = isDeprecated ? `${theme.label} (deprecated)` : theme.label;
 
-                return theme;
+                return { ...theme, label };
             })
             .filter((theme) => {
-                const isValidSinceVersion = theme.sinceVersion ? gte(cleanSemVer, theme.sinceVersion) : true;
-                const isValidUntilVersion = theme.untilVersion ? lt(cleanSemVer, theme.untilVersion) : true;
-
+                const isValidSinceVersion = theme.supportSince ? gte(cleanSemVer, theme.supportSince) : true;
+                const isValidUntilVersion = theme.supportUntil ? lt(cleanSemVer, theme.supportUntil) : true;
                 return isValidSinceVersion && isValidUntilVersion;
             });
     }
 
-    // If the UI5 version is not valid, return all themes
     return Object.values(ui5Themes);
 }
+

@@ -8,7 +8,8 @@ describe('getUi5Themes', () => {
         {
             'id': 'sap_belize',
             'label': 'Belize',
-            'untilVersion': '1.136.0'
+            'supportUntil': '1.136.0',
+            'deprecateSince': '1.120.0'
         },
         {
             'id': 'sap_fiori_3',
@@ -17,17 +18,17 @@ describe('getUi5Themes', () => {
         {
             'id': 'sap_fiori_3_dark',
             'label': 'Quartz Dark',
-            'sinceVersion': '1.72.0'
+            'supportSince': '1.72.0'
         },
         {
             'id': 'sap_horizon',
             'label': 'Morning Horizon',
-            'sinceVersion': '1.102.0'
+            'supportSince': '1.102.0'
         },
         {
             'id': 'sap_horizon_dark',
             'label': 'Evening Horizon',
-            'sinceVersion': '1.102.0'
+            'supportSince': '1.102.0'
         }
     ];
     test('getUi5Themes', () => {
@@ -95,8 +96,8 @@ describe('getUi5Themes', () => {
                     ['ABC']: {
                         id: 'ABC',
                         label: 'Theme ABC',
-                        sinceVersion: '1.90.0',
-                        untilVersion: '1.100.0'
+                        supportSince: '1.90.0',
+                        supportUntil: '1.100.0'
                     }
                 }
             });
