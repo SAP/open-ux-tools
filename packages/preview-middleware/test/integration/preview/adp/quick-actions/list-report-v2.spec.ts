@@ -4,7 +4,7 @@ import { test } from '../../../adp-fixture';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../../../project';
 import { join } from 'path';
 import { readdir, readFile } from 'fs/promises';
-import { lt } from 'semver';
+import { lt, gte } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
@@ -32,6 +32,9 @@ class Toolbar {
     get saveButton() {
         return this.page.getByRole('button', { name: 'Save' });
     }
+    get uiAdaptationButton() {
+        return this.page.getByRole('button', { name: 'UI Adaptation' });
+    }
     constructor(page: Page) {
         this.page = page;
     }
@@ -51,6 +54,10 @@ class AdaptationEditorShell {
     readonly quickActions: QuickActionPanel;
     readonly toolbar: Toolbar;
     readonly changesPanel: ChangesPanel;
+
+    get reloadCompleted(): Promise<void> {
+        return expect(this.toolbar.uiAdaptationButton).toBeEnabled();
+    }
     constructor(page: Page) {
         this.page = page;
         this.quickActions = new QuickActionPanel(page);
@@ -127,10 +134,14 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 .poll(
                     async () => {
                         const changesDirectory = join(projectCopy, 'webapp', 'changes');
-                        const changes = await readdir(changesDirectory);
-                        if (changes.length) {
-                            const text = await readFile(join(changesDirectory, changes[0]), { encoding: 'utf-8' });
-                            return JSON.parse(text);
+                        try {
+                            const changes = await readdir(changesDirectory);
+                            if (changes.length) {
+                                const text = await readFile(join(changesDirectory, changes[0]), { encoding: 'utf-8' });
+                                return JSON.parse(text);
+                            }
+                        } catch (e) {
+                            // ignore error
                         }
                         return {};
                     },
@@ -148,6 +159,11 @@ test.describe(`@quick-actions @fe-v2`, () => {
         });
 
         test('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
+            test.skip(
+                gte(ui5Version, '1.135.0') && lt(ui5Version, '1.136.0'),
+                'UI5 has bug with controller creation in this version'
+            );
+
             const lr = new ListReport(previewFrame);
             const editor = new AdaptationEditorShell(page);
 
@@ -156,7 +172,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
             await previewFrame.getByRole('textbox', { name: 'Controller Name' }).fill('TestController');
             await previewFrame.getByLabel('Footer actions').getByRole('button', { name: 'Create' }).click();
 
-            if (lt(ui5Version, '1.135.0')) {
+            if (lt(ui5Version, '1.136.0')) {
                 await expect(page.getByText('Changes detected!')).toBeVisible();
             }
 
@@ -164,9 +180,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 .poll(
                     async () => {
                         const changesDirectory = join(projectCopy, 'webapp', 'changes', 'coding');
-
                         const codingChanges = await readdir(changesDirectory);
-
                         return codingChanges.length;
                     },
                     {
@@ -176,14 +190,13 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 )
                 .toEqual(1);
 
-            // wait for overlay to be closed
-            // await expect(previewFrame.getByText('Controller extension with')).toBeHidden();
-
             await editor.changesPanel.reloadButton.click();
 
-            await expect(page.getByText('Code Ext Change')).toBeVisible();
+            await expect(editor.changesPanel.reloadButton).toBeHidden();
 
             await expect(lr.goButton).toBeVisible();
+
+            await editor.reloadCompleted;
 
             await editor.quickActions.showPageController.click();
 

@@ -241,8 +241,7 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
                         workerInfo.parallelIndex.toString(),
                         ui5Version,
                         'http://localhost:3050',
-                        35729 + workerInfo.parallelIndex,
-                        workerInfo.parallelIndex.toString()
+                        35729 + workerInfo.parallelIndex
                     );
                     const targetPath = join(root, 'node_modules');
                     console.log(`Linking ${PACKAGE_ROOT} -> ${targetPath}`);
@@ -250,7 +249,9 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
                         await stat(targetPath);
                         await rm(targetPath, { recursive: true });
                     } catch (error) {
-                        console.log(error);
+                        if (error?.code !== 'ENOENT') {
+                            console.log(error);
+                        }
                     } finally {
                         // type required for windows
                         await symlink(join(PACKAGE_ROOT, 'node_modules'), targetPath, 'junction');
