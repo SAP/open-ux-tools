@@ -28,6 +28,9 @@ class QuickActionPanel {
     get addCustomTableAction() {
         return this.page.getByRole('button', { name: 'Add Custom Table Action' });
     }
+    get addCustomTableColumn() {
+        return this.page.getByRole('button', { name: 'Add Custom Table Column' });
+    }
     constructor(page: Page) {
         this.page = page;
     }
@@ -41,8 +44,11 @@ class Toolbar {
     get saveAndReloadButton() {
         return this.page.getByRole('button', { name: 'Save and Reload' });
     }
-    get uiAdaptationButton() {
+    get uiAdaptationModeButton() {
         return this.page.getByRole('button', { name: 'UI Adaptation' });
+    }
+    get navigationModeButton() {
+        return this.page.getByRole('button', { name: 'Navigation' });
     }
     constructor(page: Page) {
         this.page = page;
@@ -65,7 +71,7 @@ class AdaptationEditorShell {
     readonly changesPanel: ChangesPanel;
 
     get reloadCompleted(): Promise<void> {
-        return expect(this.toolbar.uiAdaptationButton).toBeEnabled();
+        return expect(this.toolbar.uiAdaptationModeButton).toBeEnabled();
     }
     constructor(page: Page) {
         this.page = page;
@@ -290,11 +296,9 @@ test.describe(`@quick-actions @fe-v2`, () => {
         test('Add Custom Table Action', async ({ page, previewFrame, projectCopy, ui5Version }) => {
             test.skip(
                 lt(ui5Version, '1.96.0', { loose: true }),
-                'Change table columns is not supported in this version'
+                'Add Custom Table Action is not supported in this version'
             );
 
-            const lr = new ListReport(previewFrame);
-            const tableSettings = new TableSettings(previewFrame);
             const editor = new AdaptationEditorShell(page);
 
             await editor.quickActions.addCustomTableAction.click();
@@ -334,6 +338,93 @@ test.describe(`@quick-actions @fe-v2`, () => {
                         ])
                     })
                 );
+        });
+        test('Add Custom Table Column', async ({ page, previewFrame, projectCopy, ui5Version }) => {
+            test.skip(
+                lt(ui5Version, '1.96.0', { loose: true }),
+                'Add Custom Table Column is not supported in this version'
+            );
+
+            const lr = new ListReport(previewFrame);
+            const editor = new AdaptationEditorShell(page);
+
+            if (await editor.quickActions.addCustomTableColumn.isDisabled()) {
+                await editor.toolbar.navigationModeButton.click();
+                await lr.goButton.click();
+                await editor.toolbar.uiAdaptationModeButton.click();
+            }
+
+            await editor.quickActions.addCustomTableColumn.click();
+
+            await previewFrame.getByRole('textbox', { name: 'Column Fragment Name' }).fill('table-column');
+            await previewFrame.getByRole('textbox', { name: 'Cell Fragment Name' }).fill('table-cell');
+            await previewFrame.getByLabel('Footer actions').getByRole('button', { name: 'Create' }).click();
+
+            await editor.toolbar.saveAndReloadButton.click();
+
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await expect
+                .poll(async () => readChanges(projectCopy), {
+                    message: 'make sure change file is created'
+                })
+                .toEqual(
+                    expect.objectContaining({
+                        fragments: expect.objectContaining({
+                            'table-cell.fragment.xml': expect.stringMatching(
+                                new RegExp(`<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!--  add your xml here -->
+    <Text id="cell-text-[a-z0-9]+" text="Sample data" />
+</core:FragmentDefinition>`)
+                            ),
+                            'table-column.fragment.xml': expect.stringMatching(
+                                new RegExp(`<!-- Use stable and unique IDs!-->
+<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+    <!--  add your xml here -->
+     <Column id="column-[a-z0-9]+"
+        width="12em"
+        hAlign="Left"
+        vAlign="Middle">
+        <Text id="column-title-[a-z0-9]+" text="New column" />
+
+        <customData>
+            <core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"
+                value='\\\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "2"}' />
+        </customData>
+    </Column>
+</core:FragmentDefinition>`)
+                            )
+                        }),
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'addXML',
+                                content: expect.objectContaining({
+                                    targetAggregation: 'columns',
+                                    fragmentPath: 'fragments/table-column.fragment.xml'
+                                })
+                            }),
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'addXML',
+                                content: expect.objectContaining({
+                                    boundAggregation: 'items',
+                                    targetAggregation: 'cells',
+                                    fragmentPath: 'fragments/table-cell.fragment.xml'
+                                })
+                            })
+                        ])
+                    })
+                );
+
+            await expect(lr.goButton).toBeVisible();
+
+            await editor.reloadCompleted;
+
+            await editor.toolbar.navigationModeButton.click();
+            await lr.goButton.click();
+            await expect(previewFrame.getByRole('columnheader', { name: 'New column' }).locator('div')).toBeVisible();
+            await expect(previewFrame.getByRole('gridcell', { name: 'Sample data' })).toBeVisible();
         });
     });
 });
