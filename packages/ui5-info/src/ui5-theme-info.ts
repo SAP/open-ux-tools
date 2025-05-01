@@ -1,5 +1,6 @@
 import { defaultVersion } from './constants';
 import type { UI5Theme } from './types';
+import type { SemVer } from 'semver';
 import { coerce, gte, lt } from 'semver';
 
 const MIN_UI5_VER_DARK_THEME = '1.72.0';
@@ -60,6 +61,23 @@ export function getDefaultUI5Theme(ui5Version?: string): string {
 }
 
 /**
+ * Determines whether a given UI5 theme is supported for a specific UI5 version.
+ *
+ * A theme is considered supported if:
+ * - It does not have a `supportSince` version, or the given version is greater than or equal to `supportSince`.
+ * - It does not have a `supportUntil` version, or the given version is less than `supportUntil`.
+ *
+ * @param theme - The UI5 theme.
+ * @param cleanSemVer - The semantic version of the ui5Version.
+ * @returns true if the theme is supported in the given version, otherwise false.
+ */
+function isSupported(theme: UI5Theme, cleanSemVer: SemVer): boolean {
+    const isSupportedSince = theme.supportSince ? gte(cleanSemVer, theme.supportSince) : true;
+    const isSupportedUntil = theme.supportUntil ? lt(cleanSemVer, theme.supportUntil) : true;
+    return isSupportedSince && isSupportedUntil;
+}
+
+/**
  * Return supported UI5 themes.
  *
  * @param [ui5Version] - optional, restrict the returned themes to only those supported by specified UI5 version
@@ -70,27 +88,23 @@ export function getUi5Themes(ui5Version: string = defaultVersion): UI5Theme[] {
     const ui5VersionSince = ui5Version.replace('snapshot-', '');
     const cleanSemVer = coerce(ui5VersionSince);
 
-    if (cleanSemVer) {
-        const filteredThemes: Partial<Record<ui5ThemeIds, UI5Theme>> = {};
-
-        for (const [id, theme] of Object.entries(ui5Themes) as [ui5ThemeIds, UI5Theme][]) {
-            // Check if the theme is supported within the valid version range
-            const isSupportedSince = theme.supportSince ? gte(cleanSemVer, theme.supportSince) : true;
-            const isSupportedUntil = theme.supportUntil ? lt(cleanSemVer, theme.supportUntil) : true;
-
-            // If the theme is supported, add it to the filtered themes list
-            if (isSupportedSince && isSupportedUntil) {
-                const isDeprecated = theme.deprecateSince && gte(cleanSemVer, theme.deprecateSince);
-                // If the theme is deprecated, add (deprecated) to the label
-                filteredThemes[id] = {
-                    ...theme,
-                    label: isDeprecated ? `${theme.label} (deprecated)` : theme.label
-                };
-            }
-        }
-
-        return Object.values(filteredThemes);
+    if (!cleanSemVer) {
+        return Object.values(ui5Themes);
     }
 
-    return Object.values(ui5Themes);
+    const filteredThemes: Partial<Record<ui5ThemeIds, UI5Theme>> = {};
+
+    for (const [id, theme] of Object.entries(ui5Themes) as [ui5ThemeIds, UI5Theme][]) {
+        // If the theme is supported, add it to the filtered themes list
+        if (isSupported(theme, cleanSemVer)) {
+            const isDeprecated = theme.deprecateSince && gte(cleanSemVer, theme.deprecateSince);
+            // If the theme is deprecated, add (deprecated) to the label
+            filteredThemes[id] = {
+                ...theme,
+                label: isDeprecated ? `${theme.label} (deprecated)` : theme.label
+            };
+        }
+    }
+
+    return Object.values(filteredThemes);
 }
