@@ -132,7 +132,7 @@ export function validateVersion(mtaVersion?: string): boolean {
  * @param {string} config.mtaPath - Path to the MTA project
  * @param {string} config.mtaId - MTA ID
  * @param {Editor} fs - Reference to a mem-fs editor
- * @param {boolean} [addTenant=true] - If true, append tenant to the xs-security.json file
+ * @param {boolean} [addTenant] - If true, append tenant to the xs-security.json file
  * @returns {void}
  */
 export function addXSSecurityConfig({ mtaPath, mtaId }: MTABaseConfig, fs: Editor, addTenant: boolean = true): void {
