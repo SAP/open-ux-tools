@@ -4,7 +4,7 @@ import { test } from '../../../adp-fixture';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../../../project';
 import { join } from 'path';
 import { readdir, readFile } from 'fs/promises';
-import { lt, gte } from 'semver';
+import { gte, lt, satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
 
@@ -21,6 +21,9 @@ class QuickActionPanel {
     }
     get disableClearButton() {
         return this.page.getByRole('button', { name: 'Disable "Clear" Button in Filter Bar' });
+    }
+    get changeTableColumns() {
+        return this.page.getByRole('button', { name: 'Change Table Columns' });
     }
     constructor(page: Page) {
         this.page = page;
@@ -80,10 +83,23 @@ class ListReport {
     }
 }
 
+class TableSettings {
+    private readonly frame: FrameLocator;
+    get dialog() {
+        return this.frame.getByLabel('View Settings');
+    }
+    get tableSettingsDialog() {
+        return this.dialog;
+    }
+    constructor(frame: FrameLocator) {
+        this.frame = frame;
+    }
+}
+
 test.describe(`@quick-actions @fe-v2`, () => {
     test.describe(`@list-report`, () => {
         // test.afterEach(async ({ project }) => {
-
+        // TODO: it looks like changes are not removed after each test
         // });
         test('Enable/Disable clear filter bar button', async ({ page, previewFrame, projectCopy }) => {
             const lr = new ListReport(previewFrame);
@@ -159,10 +175,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
         });
 
         test('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
-            test.skip(
-                gte(ui5Version, '1.135.0') && lt(ui5Version, '1.136.0'),
-                'UI5 has bug with controller creation in this version'
-            );
+            test.skip(satisfies(ui5Version, '^1.135.0'), 'UI5 has bug with controller creation in this version');
 
             const lr = new ListReport(previewFrame);
             const editor = new AdaptationEditorShell(page);
@@ -205,6 +218,23 @@ test.describe(`@quick-actions @fe-v2`, () => {
             ).toBeVisible();
 
             await expect(previewFrame.getByRole('button', { name: 'Open in VS Code' })).toBeVisible();
+        });
+
+        test.only('Change table columns', async ({ page, previewFrame, projectCopy, ui5Version }) => {
+            test.skip(
+                gte(ui5Version, '1.96.0', { loose: true }) && !satisfies(ui5Version, '^1.108.0'),
+                'Change table columns is not supported in this version'
+            );
+
+            const lr = new ListReport(previewFrame);
+            const tableSettings = new TableSettings(previewFrame);
+            const editor = new AdaptationEditorShell(page);
+
+            await editor.quickActions.changeTableColumns.click();
+
+            await expect(tableSettings.tableSettingsDialog.getByText('String Property')).toBeVisible();
+            await expect(tableSettings.tableSettingsDialog.getByText('Boolean Property')).toBeVisible();
+            await expect(tableSettings.tableSettingsDialog.getByText('Currency')).toBeVisible();
         });
     });
 });
