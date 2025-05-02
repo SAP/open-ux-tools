@@ -1,5 +1,26 @@
 # @sap-ux/preview-middleware
 
+## 0.19.38
+
+### Patch Changes
+
+-   c89bdc2: fix: new column is not visible after using `Add Custom Table Column` Quick Action
+
+## 0.19.37
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.41
+-   @sap-ux/system-access@0.5.38
+
+## 0.19.36
+
+### Patch Changes
+
+-   9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
+-   Updated dependencies [9e7fa23]
+    -   @sap-ux/adp-tooling@0.13.40
+
 ## 0.19.35
 
 ### Patch Changes
