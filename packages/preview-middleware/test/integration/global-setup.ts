@@ -30,7 +30,7 @@ async function globalSetup(): Promise<void> {
 
     app.use('/sap/bc/ui5_ui5/ui5/', express.static(staticPath));
     app.get('/sap/bc/lrep/actions/getcsrftoken', (req, res) => {
-        res.send(200);
+        res.sendStatus(200);
     });
     app.get('/sap/bc/adt/discovery', (req, res) => {
         const filePath = path.join(__dirname, 'responses', 'discovery.xml');

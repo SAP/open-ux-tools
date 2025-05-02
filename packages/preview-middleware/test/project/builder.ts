@@ -266,7 +266,8 @@ export async function generateAdpProject(
                         'IntegerProperty': 89,
                         'BooleanProperty': true,
                         'Currency': 'JPY',
-                        'TextProperty': 'Description'
+                        'TextProperty': 'Description',
+                        'DateProperty': '/Date(1746057600000)/'
                     }
                 ],
                 undefined,
