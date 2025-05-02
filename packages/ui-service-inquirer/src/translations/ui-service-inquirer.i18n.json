@@ -9,7 +9,7 @@
         "businessObjectInterfaceLabel": "Business Object Interface",
         "abapCdsServiceLabel": "ABAP Core Data Service",
         "options": {
-            "transportDescription": "Created by the UI service generator"
+            "transportDescription": "Created by the UI Service Generator"
         }
     },
     "error": {
