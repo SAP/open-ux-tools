@@ -526,16 +526,20 @@ describe('Test validators', () => {
         });
 
         it('should return error for invalid package / ui5 abap repo name', async () => {
-            let result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.ListExistingChoice,
+            let result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
                 previousAnswers
-            );
+            });
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
 
-            result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
-                ...previousAnswers,
-                packageManual: 'ZPACKAGE'
+            result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE'
+                }
             });
             expect(result).toBe(t('errors.validators.transportListPreReqs'));
         });
@@ -544,41 +548,54 @@ describe('Test validators', () => {
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
-            const result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
-                ...previousAnswers,
-                packageManual: 'ZPACKAGE',
-                ui5AbapRepo: 'ZUI5REPO'
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                }
             });
+
             expect(result).toBe(true);
         });
 
         it('should return errors messages for listing transport when transport request empty or undefined', async () => {
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce([]);
 
-            let result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
-                ...previousAnswers,
-                packageManual: 'ZPACKAGE',
-                ui5AbapRepo: 'ZUI5REPO'
+            let result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                }
             });
             expect(result).toBe(t('warnings.noTransportReqs'));
 
             jest.spyOn(validatorUtils, 'getTransportList').mockResolvedValueOnce(undefined);
-            result = await validateTransportChoiceInput(false, TransportChoices.ListExistingChoice, {
-                ...previousAnswers,
-                packageManual: 'ZPACKAGE',
-                ui5AbapRepo: 'ZUI5REPO'
+            result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.ListExistingChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                }
             });
             expect(result).toBe(t('warnings.noExistingTransportReqList'));
         });
 
         it('should return true if transport request is same as previous', async () => {
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.CreateNewChoice,
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.CreateNewChoice,
                 previousAnswers,
-                true,
-                TransportChoices.CreateNewChoice
-            );
+                validateInputChanged: true,
+                prevTransportInputChoice: TransportChoices.CreateNewChoice
+            });
             expect(result).toBe(true);
         });
 
@@ -587,53 +604,61 @@ describe('Test validators', () => {
                 { transportReqNumber: 'K123456', transportReqDescription: 'Mock transport request' }
             ]);
 
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.CreateNewChoice,
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.CreateNewChoice,
                 previousAnswers,
-                true,
-                undefined
-            );
+                validateInputChanged: true
+            });
             expect(PromptState.transportAnswers.newTransportNumber).toBe('K123456');
             expect(result).toBe(true);
         });
 
         it('should return true if creating a new transport request is successful', async () => {
-            jest.spyOn(validatorUtils, 'createTransportNumber').mockResolvedValueOnce('TR1234');
+            const createTransportNumberSpy = jest
+                .spyOn(validatorUtils, 'createTransportNumber')
+                .mockResolvedValueOnce('TR1234');
 
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.CreateNewChoice,
-                previousAnswers,
-                false,
-                undefined
-            );
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.CreateNewChoice,
+                previousAnswers: {
+                    ...previousAnswers,
+                    packageManual: 'ZPACKAGE',
+                    ui5AbapRepo: 'ZUI5REPO'
+                },
+                validateInputChanged: false,
+                transportDescription: 'Mock description for new TR'
+            });
             expect(PromptState.transportAnswers.newTransportNumber).toBe('TR1234');
+            expect(createTransportNumberSpy.mock.calls[0][0]).toStrictEqual({
+                packageName: 'ZPACKAGE',
+                ui5AppName: 'ZUI5REPO',
+                description: 'Mock description for new TR'
+            });
             expect(result).toBe(true);
         });
 
         it('should return error if creating a new transport request returns undefined', async () => {
             jest.spyOn(validatorUtils, 'createTransportNumber').mockResolvedValueOnce(undefined);
 
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.CreateNewChoice,
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.CreateNewChoice,
                 previousAnswers,
-                false,
-                undefined
-            );
+                validateInputChanged: false
+            });
             expect(PromptState.transportAnswers.newTransportNumber).toBe(undefined);
             expect(result).toBe(t('errors.createTransportReqFailed'));
         });
 
         it('should return error if creating a new transport request returns undefined', async () => {
-            const result = await validateTransportChoiceInput(
-                false,
-                TransportChoices.EnterManualChoice,
+            const result = await validateTransportChoiceInput({
+                useStandalone: false,
+                input: TransportChoices.EnterManualChoice,
                 previousAnswers,
-                false,
-                undefined
-            );
+                validateInputChanged: false
+            });
             expect(result).toBe(true);
         });
     });
