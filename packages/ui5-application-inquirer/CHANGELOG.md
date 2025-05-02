@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.12.5
+
+### Patch Changes
+
+-   5ce363e: fix when condition for typescript prompt
+
 ## 0.12.4
 
 ### Patch Changes
