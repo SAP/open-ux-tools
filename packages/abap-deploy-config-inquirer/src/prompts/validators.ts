@@ -436,6 +436,7 @@ function getPackageStartingPrefix(packageName: string): string {
  * @param params.prevTransportInputChoice - previous transport input choice
  * @param params.backendTarget - backend target
  * @param params.ui5AbapRepoName - ui5 app repository name derived from AbapDeployConfigPromptOptions[ui5AbapRepo]
+ * @param params.transportDescription - custom description for the transport request
  * @returns - boolean or error message as a string
  */
 async function handleCreateNewTransportChoice({
@@ -446,7 +447,8 @@ async function handleCreateNewTransportChoice({
     validateInputChanged,
     prevTransportInputChoice,
     backendTarget,
-    ui5AbapRepoName
+    ui5AbapRepoName,
+    transportDescription
 }: {
     packageAnswer: string;
     systemConfig: SystemConfig;
@@ -456,6 +458,7 @@ async function handleCreateNewTransportChoice({
     prevTransportInputChoice?: TransportChoices;
     backendTarget?: BackendTarget;
     ui5AbapRepoName?: string;
+    transportDescription?: string;
 }): Promise<boolean | string> {
     // Question is re-evaluated triggered by other user changes,
     // no need to create a new transport number
@@ -477,7 +480,10 @@ async function handleCreateNewTransportChoice({
             }
         }
     }
-    const description = `For ABAP repository ${previousAnswers?.ui5AbapRepo?.toUpperCase()}, created by SAP Fiori Tools`;
+    const description =
+        transportDescription ??
+        `For ABAP repository ${previousAnswers?.ui5AbapRepo?.toUpperCase()}, created by SAP Fiori Tools`;
+
     PromptState.transportAnswers.newTransportNumber = await createTransportNumber(
         {
             packageName: getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package),
@@ -536,24 +542,36 @@ async function handleListExistingTransportChoice(
 /**
  * Validates the transport choice input.
  *
- * @param useStandalone - if the transport prompts are used standalone
- * @param input - transport choice input
- * @param previousAnswers - previous answers
- * @param validateInputChanged - if the input has changed
- * @param prevTransportInputChoice - previous transport input choice
- * @param backendTarget - backend target
- * @param ui5AbapRepoName - ui5 app repository name derived from AbapDeployConfigPromptOptions[ui5AbapRepo]
+ * @param params - params for transport choice input
+ * @param params.useStandalone - if the transport prompts are used standalone
+ * @param params.input - transport choice input
+ * @param params.previousAnswers - previous answers
+ * @param params.validateInputChanged - if the input has changed
+ * @param params.prevTransportInputChoice - previous transport input choice
+ * @param params.backendTarget - backend target
+ * @param params.ui5AbapRepoName - ui5 app repository name derived from AbapDeployConfigPromptOptions[ui5AbapRepo]
+ * @param params.transportDescription - custom description for the transport request
  * @returns boolean or error message as a string
  */
-export async function validateTransportChoiceInput(
-    useStandalone: boolean,
-    input?: TransportChoices,
-    previousAnswers?: AbapDeployConfigAnswersInternal,
-    validateInputChanged?: boolean,
-    prevTransportInputChoice?: TransportChoices,
-    backendTarget?: BackendTarget,
-    ui5AbapRepoName?: string
-): Promise<boolean | string> {
+export async function validateTransportChoiceInput({
+    useStandalone,
+    input,
+    previousAnswers,
+    validateInputChanged,
+    prevTransportInputChoice,
+    backendTarget,
+    ui5AbapRepoName,
+    transportDescription
+}: {
+    useStandalone: boolean;
+    input?: TransportChoices;
+    previousAnswers?: AbapDeployConfigAnswersInternal;
+    validateInputChanged?: boolean;
+    prevTransportInputChoice?: TransportChoices;
+    backendTarget?: BackendTarget;
+    ui5AbapRepoName?: string;
+    transportDescription?: string;
+}): Promise<boolean | string> {
     const packageAnswer = getPackageAnswer(previousAnswers, PromptState.abapDeployConfig.package);
     const systemConfig = getSystemConfig(useStandalone, PromptState.abapDeployConfig, backendTarget);
 
@@ -576,7 +594,8 @@ export async function validateTransportChoiceInput(
                 validateInputChanged,
                 prevTransportInputChoice,
                 backendTarget,
-                ui5AbapRepoName
+                ui5AbapRepoName,
+                transportDescription
             });
         }
         case TransportChoices.EnterManualChoice:

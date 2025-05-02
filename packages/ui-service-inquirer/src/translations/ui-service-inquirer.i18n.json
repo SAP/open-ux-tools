@@ -7,7 +7,10 @@
         "serviceName": "Service Name (not editable)",
         "objectTypeLabel": "Object Type",
         "businessObjectInterfaceLabel": "Business Object Interface",
-        "abapCdsServiceLabel": "ABAP Core Data Service"
+        "abapCdsServiceLabel": "ABAP Core Data Service",
+        "options": {
+            "transportDescription": "Created by the UI service generator"
+        }
     },
     "error": {
         "validatingContent": "There was a back-end validation error for the service content and package provided. Service generation cannot continue. Please try again or contact an admin for the back-end system.",
