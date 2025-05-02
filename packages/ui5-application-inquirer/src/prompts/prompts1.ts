@@ -188,13 +188,13 @@ export function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5App
     return {
         when: (): boolean => {
             if (capCdsInfo) {
-                return capCdsInfo.isCdsUi5PluginEnabled || (capCdsInfo.hasMinCdsVersion && !capCdsInfo.hasCdsUi5Plugin);
+                return capCdsInfo.hasMinCdsVersion;
             }
             return true;
         },
         additionalMessages: (val: boolean) => {
             let message;
-            if (val && capCdsInfo?.hasMinCdsVersion && !capCdsInfo?.hasCdsUi5Plugin) {
+            if (val && !capCdsInfo?.isWorkspaceEnabled) {
                 message = { message: t('prompts.enableTypeScript.warningMsg'), severity: Severity.warning };
             }
             return message;
