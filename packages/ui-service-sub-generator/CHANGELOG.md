@@ -1,5 +1,14 @@
 # @sap-ux/ui-service-sub-generator
 
+## 0.0.35
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/system-access@0.5.38
+    -   @sap-ux/ui-service-inquirer@0.0.35
+
 ## 0.0.34
 
 ### Patch Changes
