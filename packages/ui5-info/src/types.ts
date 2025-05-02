@@ -71,11 +71,18 @@ export interface UI5Theme {
      */
     label: string;
     /**
-     * The UI5 minimum UI5 version that supports this theme
+     * The minimum UI5 version that starts supporting this theme.
+     * The theme will only be included for UI5 versions greater than or equal to this.
      */
-    sinceVersion?: string;
+    supportSince?: string;
     /**
-     * The maximum UI5 version up to which the theme is supported
+     * The maximum UI5 version for which this theme is supported.
+     * The theme will not be included for UI5 versions greater than or equal to this.
      */
-    untilVersion?: string;
+    supportUntil?: string;
+    /**
+     * The UI5 version from which the theme is considered deprecated.
+     * If the current version is between `deprecateSince` and `supportUntil`, the theme label is updated to include (deprecated).
+     */
+    deprecateSince?: string;
 }

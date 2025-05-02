@@ -1,5 +1,30 @@
 # @sap-ux/preview-middleware
 
+## 0.19.35
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.39
+
+## 0.19.34
+
+### Patch Changes
+
+-   e00e43f: adjust readme
+
+## 0.19.33
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.38
+
+## 0.19.32
+
+### Patch Changes
+
+-   @sap-ux/adp-tooling@0.13.37
+-   @sap-ux/system-access@0.5.37
+
 ## 0.19.31
 
 ### Patch Changes

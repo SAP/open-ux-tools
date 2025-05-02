@@ -58,14 +58,19 @@ async function generate(basePath: string, ui5AppConfig: Ui5App, fs?: Editor): Pr
         }
     });
     ui5Config.addFioriToolsAppReloadMiddleware();
-    if (isEdmxProjectType) {
-        const previewMiddleWareOpts = getPreviewMiddlewareOpts(
-            ui5App.app,
-            ui5App.ui5?.ui5Theme,
-            ui5AppConfig.appOptions?.useVirtualPreviewEndpoints
-        );
-        // add preview middleware to ui5Config
+
+    const previewMiddleWareOpts = getPreviewMiddlewareOpts(
+        ui5App.app,
+        ui5App.ui5?.ui5Theme,
+        ui5AppConfig.appOptions?.useVirtualPreviewEndpoints
+    );
+
+    // add preview middleware to ui5Config for edmx projects and cap apps using virtual endpoints
+    if (isEdmxProjectType || ui5AppConfig.appOptions?.useVirtualPreviewEndpoints) {
         ui5Config.addFioriToolsPreviewMiddleware(previewMiddleWareOpts);
+    }
+
+    if (isEdmxProjectType) {
         const ui5LocalConfigPath = join(basePath, 'ui5-local.yaml');
         // write ui5-local.yaml only for non-CAP applications
         const ui5LocalConfig = await UI5Config.newInstance(fs.read(ui5LocalConfigPath));

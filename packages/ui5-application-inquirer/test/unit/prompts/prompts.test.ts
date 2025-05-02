@@ -440,6 +440,13 @@ describe('getQuestions', () => {
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
         expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
+
+        // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false, hasMinCdsVersion: false });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(false);
     });
 
     test('getQuestions, prompt: `ui5Theme`', async () => {

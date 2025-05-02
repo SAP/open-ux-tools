@@ -181,10 +181,19 @@ export class FioriAppGenerator extends Generator {
                     this.env.adapter as unknown as Adapter,
                     cachedService?.connectedSystem
                 );
-                /** Back button issue temp fix */
+                /** Back button handling */
                 // Persist derived state to facilitate backwards navigation
                 if (getHostEnvironment() !== hostEnvironment.cli) {
                     if (serviceAnswers.source === DatasourceType.none || serviceAnswers.edmx) {
+                        // When navigating back YUI re-applies the answers from the previous steps up to the current step, however on Windows it removes some required properties
+                        // of the service answers property: `ConnectedSystem`, so we need to re-apply them from our own cache.
+                        if (
+                            cachedService?.connectedSystem &&
+                            JSON.stringify(serviceAnswers.connectedSystem?.backendSystem) ===
+                                JSON.stringify(cachedService?.connectedSystem?.backendSystem)
+                        ) {
+                            serviceAnswers.connectedSystem = cachedService?.connectedSystem;
+                        }
                         addToCache(this.appWizard, { service: serviceAnswers }, FioriAppGenerator.logger);
                     } else {
                         serviceAnswers =
@@ -384,6 +393,7 @@ export class FioriAppGenerator extends Generator {
                 EnableEslint: project.enableEslint,
                 EnableTypeScript: project.enableTypeScript,
                 EnableCodeAssist: project.enableCodeAssist,
+                EnableVirtualEndpoints: project.enableVirtualEndpoints,
                 ToolsId: appConfig.app.sourceTemplate?.toolsId
             });
 

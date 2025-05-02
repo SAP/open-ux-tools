@@ -8,11 +8,7 @@ import { t } from '../../../i18n';
 import { getSystemConfig } from '../../../utils';
 import { getPackageChoices, getPackageInputChoices } from '../../helpers';
 import { defaultPackage, defaultPackageChoice } from '../../defaults';
-import {
-    validatePackageChoiceInput,
-    validatePackageChoiceInputForCli,
-    validatePackageExtended
-} from '../../validators';
+import { validatePackageChoiceInput, validatePackageChoiceInputForCli, validatePackage } from '../../validators';
 import {
     promptNames,
     type PackageInputChoices,
@@ -93,13 +89,7 @@ export function getPackagePrompts(
             default: (previousAnswers: AbapDeployConfigAnswersInternal): string =>
                 defaultPackage(previousAnswers.packageManual || options.packageManual?.default, options?.packageManual),
             validate: async (input: string, answers: AbapDeployConfigAnswersInternal): Promise<boolean | string> =>
-                await validatePackageExtended(
-                    input,
-                    answers,
-                    options.packageManual,
-                    options.ui5AbapRepo,
-                    options.backendTarget
-                )
+                await validatePackage(input, answers, options.packageManual, options.ui5AbapRepo, options.backendTarget)
         } as InputQuestion<AbapDeployConfigAnswersInternal>,
         {
             when: (previousAnswers: AbapDeployConfigAnswersInternal): boolean =>
@@ -141,7 +131,7 @@ export function getPackagePrompts(
                 const pkgValue: string = (input as ListChoiceOptions)?.value
                     ? (input as ListChoiceOptions).value
                     : input;
-                return await validatePackageExtended(
+                return await validatePackage(
                     pkgValue,
                     answers,
                     options.packageAutocomplete,
