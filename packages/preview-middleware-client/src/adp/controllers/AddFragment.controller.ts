@@ -243,8 +243,8 @@ export default class AddFragment extends BaseDialog<AddFragmentModel> {
             this.runtimeControl,
             'addXML',
             modifiedValue,
-            designMetadata,
-            flexSettings
+            flexSettings,
+            designMetadata
         );
 
         await this.commandExecutor.pushAndExecuteCommand(command);

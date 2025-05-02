@@ -12,6 +12,7 @@ import ExtensionPoint from './controllers/ExtensionPoint.controller';
 
 import type { ExtensionPointData } from './extension-point';
 import { AddFragmentData } from './add-fragment';
+import { ExtendControllerData } from './extend-controller';
 import FileExistsDialog, { FileExistsDialogOptions } from './controllers/FileExistsDialog.controller';
 import AddSubpage, { AddSubpageOptions } from './controllers/AddSubpage.controller';
 import { QuickActionTelemetryData } from '../cpe/quick-actions/quick-action-definition';
@@ -33,7 +34,7 @@ type Controller =
     | FileExistsDialog
     | AddSubpage;
 
-type DialogData = ExtensionPointData | AddFragmentData;
+type DialogData = ExtensionPointData | AddFragmentData | ExtendControllerData;
 
 export const OPEN_DIALOG_STATUS_CHANGED = 'OPEN_DIALOG_STATUS_CHANGED';
 
@@ -106,6 +107,7 @@ export class DialogFactory {
                     `open.ux.preview.client.adp.controllers.${dialogName}`,
                     overlay,
                     rta,
+                    (data as ExtendControllerData),
                     telemetryData
                 );
                 break;

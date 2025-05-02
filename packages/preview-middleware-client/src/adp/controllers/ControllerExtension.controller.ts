@@ -17,17 +17,19 @@ import JSONModel from 'sap/ui/model/json/JSONModel';
 /** sap.ui.rta */
 import type RuntimeAuthoring from 'sap/ui/rta/RuntimeAuthoring';
 
-/** sap.ui.layout */
-import type SimpleForm from 'sap/ui/layout/form/SimpleForm';
-
 /** sap.ui.dt */
 import type ElementOverlay from 'sap/ui/dt/ElementOverlay';
 
 import type { CodeExtResponse, ControllersResponse } from '../api-handler';
 import { getExistingController, readControllers, writeChange, writeController } from '../api-handler';
 import BaseDialog from './BaseDialog.controller';
-import { getControllerInfo } from '../utils';
+import type { ExtendControllerData, DeferredExtendControllerData } from '../extend-controller';
 import { QuickActionTelemetryData } from '../../cpe/quick-actions/quick-action-definition';
+import { getResourceModel, getTextBundle, TextBundle } from '../../i18n';
+import { notifyUser, checkForExistingChange, getControllerInfo } from '../utils';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
+import CommandExecutor from '../command-executor';
+import { getControlById } from '../../utils/core';
 
 interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
@@ -53,11 +55,21 @@ type ControllerModel = JSONModel & {
  * @namespace open.ux.preview.client.adp.controllers
  */
 export default class ControllerExtension extends BaseDialog<ControllerModel> {
-    constructor(name: string, overlays: UI5Element, rta: RuntimeAuthoring, telemetryData?: QuickActionTelemetryData) {
+    public readonly data?: ExtendControllerData;
+    private bundle: TextBundle;
+
+    constructor(
+        name: string,
+        overlays: UI5Element,
+        rta: RuntimeAuthoring,
+        data?: ExtendControllerData,
+        telemetryData?: QuickActionTelemetryData
+    ) {
         super(name, telemetryData);
         this.rta = rta;
         this.overlays = overlays;
         this.model = new JSONModel();
+        this.data = data;
     }
 
     /**
@@ -70,8 +82,12 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         this.setEscapeHandler();
 
+        const resourceModel = await getResourceModel('open.ux.preview.client');
+        this.bundle = await getTextBundle();
+
         await this.buildDialogData();
 
+        this.dialog.setModel(resourceModel, 'i18n');
         this.dialog.setModel(this.model);
 
         this.dialog.open();
@@ -102,10 +118,25 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
 
         const fileExists = controllerList.some((f) => f.controllerName === controllerName);
 
+        const pendingChangeExists = checkForExistingChange(
+            this.rta,
+            'codeExt',
+            'content.codeRef',
+            `${controllerName}.js`
+        );
+
         if (fileExists) {
             updateDialogState(
                 ValueState.Error,
                 'Enter a different name. The controller name that you entered already exists in your project.'
+            );
+            return;
+        }
+
+        if (pendingChangeExists) {
+            updateDialogState(
+                ValueState.Error,
+                'Enter a different name. The controller name that you entered already exists as a pending change.'
             );
             return;
         }
@@ -147,7 +178,16 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             const controllerName = this.model.getProperty('/newControllerName');
             const viewId = this.model.getProperty('/viewId');
 
-            await this.createNewController(controllerName, viewId);
+            const controllerRef = {
+                codeRef: `coding/${controllerName}.js`,
+                viewId
+            };
+
+            if (this.data) {
+                this.data.deferred.resolve(controllerRef);
+            } else {
+                await this.createNewController(controllerName, controllerRef);
+            }
         } else {
             const controllerPath = this.model.getProperty('/controllerPath');
             window.open(`vscode://file${controllerPath}`);
@@ -166,8 +206,17 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         const { controllerName, viewId } = getControllerInfo(overlayControl);
         const data = await this.getExistingController(controllerName);
 
+        const hasPendingChangeForView = checkForExistingChange(
+            this.rta,
+            'codeExt',
+            'selector.controllerName',
+            controllerName
+        );
+
         if (data) {
-            if (data?.controllerExists) {
+            if (hasPendingChangeForView) {
+                this.updateModelForExistingPendingChange();
+            } else if (data?.controllerExists) {
                 this.updateModelForExistingController(data);
             } else {
                 this.updateModelForNewController(viewId, data.isTsSupported);
@@ -187,20 +236,27 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
         this.model.setProperty('/controllerExists', controllerExists);
         this.model.setProperty('/controllerPath', controllerPath);
         this.model.setProperty('/controllerPathFromRoot', controllerPathFromRoot);
-
-        const content = this.dialog.getContent();
-
-        const form = content[0] as SimpleForm;
-        form.setVisible(false);
-
-        const messageForm = content[1] as SimpleForm;
-        messageForm.setVisible(true);
+        this.model.setProperty('/inputFormVisibility', false);
+        this.model.setProperty('/pendingChangeFormVisibility', false);
+        this.model.setProperty('/existingControllerFormVisibility', true);
 
         if (isRunningInBAS) {
             this.dialog.getBeginButton().setVisible(false);
         } else {
             this.dialog.getBeginButton().setText('Open in VS Code').setEnabled(true);
         }
+        this.dialog.getEndButton().setText('Close');
+    }
+
+    /**
+     * Updates the model properties for an existing controller in a pending change.
+     */
+    private updateModelForExistingPendingChange(): void {
+        this.model.setProperty('/inputFormVisibility', false);
+        this.model.setProperty('/existingControllerFormVisibility', false);
+        this.model.setProperty('/pendingChangeFormVisibility', true);
+
+        this.dialog.getBeginButton().setVisible(false);
         this.dialog.getEndButton().setText('Close');
     }
 
@@ -213,6 +269,9 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
     private updateModelForNewController(viewId: string, isTsSupported: boolean): void {
         this.model.setProperty('/viewId', viewId);
         this.model.setProperty('/controllerExtension', isTsSupported ? '.ts' : '.js');
+        this.model.setProperty('/existingControllerFormVisibility', false);
+        this.model.setProperty('/pendingChangeFormVisibility', false);
+        this.model.setProperty('/inputFormVisibility', true);
     }
 
     /**
@@ -248,16 +307,19 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
      * Creates a new fragment for the specified control
      *
      * @param controllerName Controller Name
-     * @param viewId View Id
+     * @param controllerRef Controller reference
      */
-    private async createNewController(controllerName: string, viewId: string): Promise<void> {
+    private async createNewController(
+        controllerName: string,
+        controllerRef: DeferredExtendControllerData
+    ): Promise<void> {
+        const ui5Version = await getUi5Version();
+        if (!isLowerThanMinimalUi5Version(ui5Version, { major: 1, minor: 135 })) {
+            await this.createControllerCommand(controllerName, controllerRef);
+            return;
+        }
         try {
             await writeController({ controllerName });
-
-            const controllerRef = {
-                codeRef: `coding/${controllerName}.js`,
-                viewId
-            };
 
             const service = await this.rta.getService<ControllerExtensionService>('controllerExtension');
 
@@ -272,5 +334,31 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             await this.getControllers();
             this.handleError(e);
         }
+    }
+
+    /**
+     * Creates a controller command and executes it.
+     *
+     * @param controllerName Controller name
+     * @param controllerRef Controller reference
+     */
+    private async createControllerCommand(
+        controllerName: string,
+        controllerRef: DeferredExtendControllerData
+    ): Promise<void> {
+        const flexSettings = this.rta.getFlexSettings();
+        const commandExecutor = new CommandExecutor(this.rta);
+        const view = getControlById(controllerRef.viewId) as UI5Element;
+        const command = await commandExecutor.getCommand<DeferredExtendControllerData>(
+            view,
+            'codeExt',
+            controllerRef,
+            flexSettings
+        );
+
+        await commandExecutor.pushAndExecuteCommand(command);
+
+        const bundle = await getTextBundle();
+        notifyUser(bundle.getText('ADP_CREATE_CONTROLLER_EXTENSION', [controllerName]), 8000);
     }
 }
