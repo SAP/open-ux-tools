@@ -188,7 +188,7 @@ export function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5App
     return {
         when: (): boolean => {
             if (capCdsInfo) {
-                return capCdsInfo.isCdsUi5PluginEnabled || capCdsInfo.hasMinCdsVersion;
+                return capCdsInfo.hasMinCdsVersion;
             }
             return true;
         },
