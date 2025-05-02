@@ -592,6 +592,7 @@ describe('getQuestions', () => {
             isWorkspaceEnabled: false,
             hasMinCdsVersion: true
         }).find((question) => question.name === promptNames.enableTypeScript);
+        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
         expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual({
             message:
                 'The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)',
