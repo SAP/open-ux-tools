@@ -1,5 +1,13 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.36
+
+### Patch Changes
+
+-   cb8ff79: Adds new option to provide custom descriptions for new transport requests
+-   Updated dependencies [cb8ff79]
+    -   @sap-ux/abap-deploy-config-inquirer@1.3.0
+
 ## 0.0.35
 
 ### Patch Changes
