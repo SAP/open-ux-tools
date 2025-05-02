@@ -22,6 +22,12 @@ class QuickActionPanel {
     get disableClearButton() {
         return this.page.getByRole('button', { name: 'Disable "Clear" Button in Filter Bar' });
     }
+    get enableSemanticDateRange() {
+        return this.page.getByRole('button', { name: 'Enable Semantic Date Range in Filter Bar' });
+    }
+    get disableSemanticDateRange() {
+        return this.page.getByRole('button', { name: 'Disable Semantic Date Range in Filter Bar' });
+    }
     get changeTableColumns() {
         return this.page.getByRole('button', { name: 'Change Table Columns' });
     }
@@ -339,6 +345,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                     })
                 );
         });
+
         test('Add Custom Table Column', async ({ page, previewFrame, projectCopy, ui5Version }) => {
             test.skip(
                 lt(ui5Version, '1.96.0', { loose: true }),
@@ -425,6 +432,80 @@ test.describe(`@quick-actions @fe-v2`, () => {
             await lr.goButton.click();
             await expect(previewFrame.getByRole('columnheader', { name: 'New column' }).locator('div')).toBeVisible();
             await expect(previewFrame.getByRole('gridcell', { name: 'Sample data' })).toBeVisible();
+        });
+
+        test('Enable/Disable Semantic Date Range in Filter Bar', async ({ page, previewFrame, projectCopy }) => {
+            const lr = new ListReport(previewFrame);
+            const editor = new AdaptationEditorShell(page);
+
+            await editor.toolbar.navigationModeButton.click();
+            await previewFrame.getByTitle('Open Picker').click();
+            await expect(previewFrame.getByText('Yesterday')).toBeVisible();
+            await editor.toolbar.uiAdaptationModeButton.click();
+
+            await editor.quickActions.disableSemanticDateRange.click();
+
+            await editor.toolbar.saveAndReloadButton.click();
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await expect
+                .poll(async () => readChanges(projectCopy), {
+                    message: 'make sure change file is created'
+                })
+                .toEqual(
+                    expect.objectContaining({
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'appdescr_ui_generic_app_changePageConfiguration',
+                                content: expect.objectContaining({
+                                    entityPropertyChange: expect.objectContaining({
+                                        propertyPath: 'component/settings/filterSettings/dateSettings',
+                                        propertyValue: expect.objectContaining({
+                                            useDateRange: false
+                                        })
+                                    })
+                                })
+                            })
+                        ])
+                    })
+                );
+
+            await expect(lr.goButton).toBeVisible();
+            await editor.reloadCompleted;
+
+            await editor.toolbar.navigationModeButton.click();
+            await previewFrame.getByTitle('Open Picker').click();
+            await expect(previewFrame.getByRole('button', { name: new Date().getFullYear().toString() })).toBeVisible();
+            await editor.toolbar.uiAdaptationModeButton.click();
+
+            await editor.quickActions.enableSemanticDateRange.click();
+
+            await editor.toolbar.saveAndReloadButton.click();
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await expect
+                .poll(async () => readChanges(projectCopy), {
+                    message: 'make sure change file is created'
+                })
+                .toEqual(
+                    expect.objectContaining({
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'appdescr_ui_generic_app_changePageConfiguration',
+                                content: expect.objectContaining({
+                                    entityPropertyChange: expect.objectContaining({
+                                        propertyPath: 'component/settings/filterSettings/dateSettings',
+                                        propertyValue: expect.objectContaining({
+                                            useDateRange: true
+                                        })
+                                    })
+                                })
+                            })
+                        ])
+                    })
+                );
         });
     });
 });
