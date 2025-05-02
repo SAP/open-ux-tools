@@ -1,5 +1,13 @@
 # @sap-ux/preview-middleware
 
+## 0.19.36
+
+### Patch Changes
+
+-   9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
+-   Updated dependencies [9e7fa23]
+    -   @sap-ux/adp-tooling@0.13.40
+
 ## 0.19.35
 
 ### Patch Changes
