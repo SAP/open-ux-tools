@@ -47,3 +47,10 @@ export function setAdditionalChangeInfoForChangeFile(
 export function getAdditionalChangeInfo(change: Change): AdditionalChangeInfo {
     return additionalChangeInfoMap.get(change.fileName);
 }
+
+/**
+ * Should only be used in tests.
+ */
+export function clearAdditionalChangeInfo(): void {
+    additionalChangeInfoMap.clear();
+}
