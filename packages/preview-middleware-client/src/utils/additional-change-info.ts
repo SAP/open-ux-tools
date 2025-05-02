@@ -6,28 +6,35 @@ import {
 } from '../cpe/additional-change-info/add-xml-additional-info';
 import { FlexChange as Change } from '../flp/common';
 
-const additionalChangeInfoMap = new Map<string, AddXMLAdditionalInfo>();
+export type AdditionalChangeInfo = AddXMLAdditionalInfo | undefined;
 
-export type AdditionalChangeInfo = AddXMLAdditionalInfo | undefined
+const additionalChangeInfoMap = new Map<string, AdditionalChangeInfo>();
 
 /**
-* This function is used to set additional change information for a given change.
-* 
-* @param change - The change object for which additional information is to be set.
-*/
+ * This function is used to set additional change information for a given change.
+ *
+ * @param change - The change object for which additional information is to be set.
+ */
 export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> | undefined): void {
     if (!change) {
         return;
     }
 
     let additionalChangeInfo;
-    if(change?.getChangeType?.() === 'addXML') {
+    if (change?.getChangeType?.() === 'addXML') {
         additionalChangeInfo = getAddXMLAdditionalInfo(change);
     }
 
     if (additionalChangeInfo) {
         additionalChangeInfoMap.set(change.getDefinition().fileName, additionalChangeInfo);
     }
+}
+
+export function setAdditionalChangeInfoForChangeFile(
+    fileName: string,
+    additionalChangeInfo: AdditionalChangeInfo
+): void {
+    additionalChangeInfoMap.set(fileName, additionalChangeInfo);
 }
 
 /**
@@ -38,5 +45,5 @@ export function setAdditionalChangeInfo(change: FlexChange<AddXMLChangeContent> 
  *          or `undefined` if no additional information is available.
  */
 export function getAdditionalChangeInfo(change: Change): AdditionalChangeInfo {
-    return additionalChangeInfoMap.get(change.fileName);              
+    return additionalChangeInfoMap.get(change.fileName);
 }
