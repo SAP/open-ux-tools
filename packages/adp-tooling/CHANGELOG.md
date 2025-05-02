@@ -1,5 +1,11 @@
 # @sap-ux/adp-tooling
 
+## 0.13.40
+
+### Patch Changes
+
+-   9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
+
 ## 0.13.39
 
 ### Patch Changes
