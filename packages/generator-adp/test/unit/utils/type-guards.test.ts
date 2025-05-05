@@ -23,15 +23,11 @@ describe('isString', () => {
     });
 });
 
-describe('isAdpJsonInput', () => {
+describe('isJsonInput', () => {
     it('should return true when all required fields are passed', () => {
         const inputWithRequiredFields = {
             system: 'system',
-            application: 'application',
-            client: 'client',
-            username: 'username',
-            password: 'password',
-            applicationTitle: 'applicationTitle'
+            application: 'application'
         };
         expect(isJsonInput(inputWithRequiredFields)).toBe(true);
         expect(
@@ -44,7 +40,7 @@ describe('isAdpJsonInput', () => {
         ).toBe(true);
     });
 
-    it('should return false if some of required fields is missing', () => {
+    it('should return false if some of the required fields are missing', () => {
         expect(
             isJsonInput({
                 system: 'system'

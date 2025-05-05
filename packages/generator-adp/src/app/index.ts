@@ -284,8 +284,8 @@ export default class extends Generator {
         const {
             system,
             client,
-            username,
-            password,
+            username = '',
+            password = '',
             application: baseApplicationName,
             applicationTitle,
             targetFolder = '/home/user/projects',

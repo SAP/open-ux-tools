@@ -136,11 +136,11 @@ export type AttributePromptOptions = Partial<{
  */
 export interface JsonInput {
     system: string;
-    client: string;
-    username: string;
-    password: string;
+    client?: string;
+    username?: string;
+    password?: string;
     application: string;
-    applicationTitle: string;
+    applicationTitle?: string;
     targetFolder?: string;
     projectName?: string;
     namespace?: string;

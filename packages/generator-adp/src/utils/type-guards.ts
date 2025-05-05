@@ -24,10 +24,10 @@ export function isJsonInput(value: unknown): value is JsonInput {
     return (
         isString(value.system) &&
         isString(value.application) &&
-        isString(value.applicationTitle) &&
-        isString(value.client) &&
-        isString(value.username) &&
-        isString(value.password) &&
+        isOptionalString(value.applicationTitle) &&
+        isOptionalString(value.client) &&
+        isOptionalString(value.username) &&
+        isOptionalString(value.password) &&
         isOptionalString(value.targetFolder) &&
         isOptionalString(value.projectName) &&
         isOptionalString(value.namespace)
