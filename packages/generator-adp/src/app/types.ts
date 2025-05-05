@@ -40,7 +40,6 @@ export enum configPromptNames {
     appValidationCli = 'appValidationCli',
     fioriId = 'fioriId',
     ach = 'ach',
-    appInfoError = 'appInfoError',
     shouldCreateExtProject = 'shouldCreateExtProject'
 }
 
@@ -82,10 +81,6 @@ export interface AchPromptOptions {
     hide?: boolean;
 }
 
-export interface ApplicationInfoErrorPromptOptions {
-    hide?: boolean;
-}
-
 export interface ShouldCreateExtProjectPromptOptions {
     hide?: boolean;
 }
@@ -102,7 +97,6 @@ export type ConfigPromptOptions = Partial<{
     [configPromptNames.appValidationCli]: CliValidationPromptOptions;
     [configPromptNames.fioriId]: FioriIdPromptOptions;
     [configPromptNames.ach]: AchPromptOptions;
-    [configPromptNames.appInfoError]: ApplicationInfoErrorPromptOptions;
     [configPromptNames.shouldCreateExtProject]: ShouldCreateExtProjectPromptOptions;
 }>;
 

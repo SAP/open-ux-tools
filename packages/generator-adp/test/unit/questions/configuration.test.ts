@@ -115,7 +115,7 @@ describe('ConfigPrompter Integration Tests', () => {
         it('should return four prompts with correct names', () => {
             const prompts = configPrompter.getPrompts();
 
-            expect(prompts).toHaveLength(10);
+            expect(prompts).toHaveLength(9);
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {
@@ -151,7 +151,7 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.ui5).toEqual({
                 publicVersions: expect.any(Object),
                 systemVersion: '1.135.0',
-                ui5Versions: ['1.135.0 (system version)']
+                ui5Versions: ['1.134.1 (latest)']
             });
         });
 

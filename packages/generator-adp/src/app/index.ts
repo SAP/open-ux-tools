@@ -116,8 +116,7 @@ export default class extends Generator {
 
         const configQuestions = this.prompter.getPrompts({
             appValidationCli: { hide: !isCLI },
-            systemValidationCli: { hide: !isCLI },
-            appInfoError: { hide: isCLI }
+            systemValidationCli: { hide: !isCLI }
         });
 
         this.configAnswers = await this.prompt<ConfigAnswers>(configQuestions);

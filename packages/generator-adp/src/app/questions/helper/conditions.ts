@@ -32,28 +32,6 @@ export function showApplicationQuestion(
 }
 
 /**
- * Determines if an application error question will be shown based on the answers and specific conditions.
- *
- * @param {ConfigurationInfoAnswers} answers - The user-provided answers containing application details.
- * @param {FlexUISupportedSystem} flexUISystem - The system type info (e.g., onPremise/UIFlex).
- * @param {boolean} isApplicationSupported - Whether the selected application is supported.
- * @returns {boolean | undefined} True if an application error will be shown, otherwise false or undefined based on the conditions evaluated.
- */
-export function showApplicationError(
-    answers: ConfigAnswers,
-    flexUISystem: FlexUISupportedSystem | undefined,
-    isApplicationSupported: boolean
-): boolean {
-    return (
-        answers.application &&
-        isAppStudio() &&
-        !isApplicationSupported &&
-        !!flexUISystem?.isOnPremise &&
-        flexUISystem?.isUIFlex
-    );
-}
-
-/**
  * Determines if an extension project is allowed based on the system and application conditions.
  *
  * @param {ConfigAnswers} answers - The user-provided answers containing application details.

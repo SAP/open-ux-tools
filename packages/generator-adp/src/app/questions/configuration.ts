@@ -38,7 +38,6 @@ import { isAppStudio } from '@sap-ux/btp-utils';
 
 import type {
     AchPromptOptions,
-    ApplicationInfoErrorPromptOptions,
     ApplicationPromptOptions,
     ConfigPromptOptions,
     ConfigQuestion,
@@ -55,7 +54,6 @@ import { getApplicationChoices } from './helper/choices';
 import { validateExtensibilityGenerator } from './helper/validators';
 import { getAppAdditionalMessages, getSystemAdditionalMessages } from './helper/additional-messages';
 import {
-    showApplicationError,
     showApplicationQuestion,
     showCredentialQuestion,
     showExtensionProjectQuestion,
@@ -220,9 +218,6 @@ export class ConfigPrompter {
             [configPromptNames.appValidationCli]: this.getApplicationValidationPromptForCli(),
             [configPromptNames.fioriId]: this.getFioriIdPrompt(),
             [configPromptNames.ach]: this.getAchPrompt(),
-            [configPromptNames.appInfoError]: this.getAppInfoErrorPrompt(
-                promptOptions?.[configPromptNames.appInfoError]
-            ),
             [configPromptNames.shouldCreateExtProject]: this.getShouldCreateExtProjectPrompt(
                 promptOptions?.[configPromptNames.shouldCreateExtProject]
             )
@@ -440,29 +435,6 @@ export class ConfigPrompter {
     }
 
     /**
-     * Generates an input label type prompt that serves as an informational message indicating that the adaptation project is not supported.
-     *
-     * @param {ApplicationInfoErrorPromptOptions} _ - Optional configuration for the application info error prompt.
-     * @returns {InputQuestion<ConfigAnswers>} An input label type prompt configured as a label with a link to more information.
-     */
-    private getAppInfoErrorPrompt(_?: ApplicationInfoErrorPromptOptions): InputQuestion<ConfigAnswers> {
-        return {
-            type: 'input',
-            name: configPromptNames.appInfoError,
-            message: t('prompts.adpNotSupported'),
-            when: (answers: ConfigAnswers) =>
-                showApplicationError(answers, this.flexUISystem, this.isApplicationSupported),
-            guiOptions: {
-                type: 'label',
-                link: {
-                    text: '(more)',
-                    url: t('info.applicationErrorMoreInfo')
-                }
-            }
-        };
-    }
-
-    /**
      * Generates a confirmation prompt to decide whether to create an extension project based on the application's
      * sync capabilities and support status.
      *
@@ -514,6 +486,7 @@ export class ConfigPrompter {
             validationResult === t('error.appDoesNotSupportManifest') ||
             validationResult === t('error.appDoesNotSupportAdaptation')
         ) {
+            this.logger.error(validationResult);
             this.isApplicationSupported = false;
             return true;
         }
