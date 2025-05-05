@@ -1,5 +1,37 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.36
+
+### Patch Changes
+
+-   cb8ff79: Adds new option to provide custom descriptions for new transport requests
+-   Updated dependencies [cb8ff79]
+    -   @sap-ux/abap-deploy-config-inquirer@1.3.0
+
+## 0.0.35
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.51
+    -   @sap-ux/odata-service-inquirer@2.3.10
+
+## 0.0.34
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+-   @sap-ux/abap-deploy-config-inquirer@1.2.50
+-   @sap-ux/odata-service-inquirer@2.3.9
+
+## 0.0.33
+
+### Patch Changes
+
+-   Updated dependencies [38519fa]
+    -   @sap-ux/odata-service-inquirer@2.3.8
+
 ## 0.0.32
 
 ### Patch Changes

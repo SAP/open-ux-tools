@@ -1,5 +1,11 @@
 # @sap-ux/axios-extension
 
+## 1.20.2
+
+### Patch Changes
+
+-   1a01c5e: Update README.adoc showing how to use proxy credentials
+
 ## 1.20.1
 
 ### Patch Changes
