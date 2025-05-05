@@ -325,7 +325,7 @@ export default class extends Generator {
 
         this.attributeAnswers = {
             projectName,
-            title: applicationTitle || `${application.title} (variant)`,
+            title: applicationTitle ?? `${application.title} (variant)`,
             namespace,
             targetFolder,
             // If not provided, latest ui5 version will be used. See getConfig() for a reference.
