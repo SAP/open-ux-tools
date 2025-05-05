@@ -1,5 +1,11 @@
 # @sap-ux/project-access
 
+## 1.29.22
+
+### Patch Changes
+
+-   ea0e2c0: Use memFs if passed while application access creation
+
 ## 1.29.21
 
 ### Patch Changes
