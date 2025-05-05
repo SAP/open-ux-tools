@@ -18,8 +18,6 @@
         "fioriIdHint": "This is an one-time, semantic identifier for the app variant. The Fiori ID will be shown in the 'About' section of the app for ease of identification and will also be available in the Fiori Apps Reference Library.",
         "achLabel": "Application Component Hierarchy",
         "achHint": "The purpose of ACH components is to enable the support organization to indicate which BCP/ticket component might be responsible for a particular issue.",
-        "adpNotSupported": "Note: The selected application is not supported by SAPUI5 Adaptation Project.",
-        "applicationErrorMoreInfo": "https://help.sap.com/docs/bas/developing-sap-fiori-app-in-sap-business-application-studio/adaptation-project-for-on-premise-system",
         "createExtProjectLabel": "The selected application is not supported by the SAPUI5 Adaptation Project. For more information, see SAPUI5 Adaptation Project documentation. Do you want to create an extension project instead?",
         "createExtProjectWithSyncViewsLabel": "Do you want to create an extension project instead? An extension project gives you the ability to create controller extensions for synchronous and asynchronous views.",
         "createExtProjectContinueLabel": "Please select whether you want to continue.",
