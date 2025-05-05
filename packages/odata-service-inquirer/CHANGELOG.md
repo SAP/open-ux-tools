@@ -1,5 +1,24 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.10
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+
+## 2.3.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+
+## 2.3.8
+
+### Patch Changes
+
+-   38519fa: Fix for cached connection crash
+
 ## 2.3.7
 
 ### Patch Changes

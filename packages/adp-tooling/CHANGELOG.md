@@ -1,5 +1,32 @@
 # @sap-ux/adp-tooling
 
+## 0.13.41
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/system-access@0.5.38
+
+## 0.13.40
+
+### Patch Changes
+
+-   9e7fa23: fix: Issues for Adaptation Projects using TypeScipt
+
+## 0.13.39
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+
+## 0.13.38
+
+### Patch Changes
+
+-   Updated dependencies [8d4bca6]
+    -   @sap-ux/odata-service-writer@0.26.17
+
 ## 0.13.37
 
 ### Patch Changes

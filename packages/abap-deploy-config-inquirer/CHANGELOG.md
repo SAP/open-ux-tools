@@ -1,5 +1,31 @@
 # @sap-ux/abap-deploy-config-inquirer
 
+## 1.3.0
+
+### Minor Changes
+
+-   cb8ff79: Adds new option to provide custom descriptions for new transport requests
+
+## 1.2.51
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/system-access@0.5.38
+
+## 1.2.50
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+
+## 1.2.49
+
+### Patch Changes
+
+-   39cf280: apply validation for package format and starting prefix with flag
+
 ## 1.2.48
 
 ### Patch Changes
