@@ -10,7 +10,13 @@ import type connect from 'connect';
 import path, { dirname, join, posix } from 'path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import { getWebappPath, type Manifest, FileName, type ManifestNamespace, createApplicationAccess } from '@sap-ux/project-access';
+import {
+    getWebappPath,
+    type Manifest,
+    FileName,
+    type ManifestNamespace,
+    createApplicationAccess
+} from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
