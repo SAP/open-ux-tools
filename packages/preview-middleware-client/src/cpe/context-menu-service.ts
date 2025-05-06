@@ -40,7 +40,6 @@ export class ContextMenuService {
             if (executeContextMenuAction.match(action)) {
                 const { actionName, controlId } = action.payload;
                 await this.actionService.execute(controlId, actionName);
-                const appType = getApplicationType(this.rta.getRootControlInstance().getManifest());
                 try {
                     const controlName = getControlById(controlId)?.getMetadata().getName();
                     const versionInfo = await getUi5Version();
@@ -49,7 +48,7 @@ export class ContextMenuService {
                         actionName,
                         controlName,
                         ui5Version: `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`,
-                        appType
+                        appType : getApplicationType(this.rta.getRootControlInstance().getManifest())
                     });
                 } catch (err) {
                     Log.error('Error in reporting Telemetry:', err);

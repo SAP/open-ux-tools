@@ -153,14 +153,13 @@ export class QuickActionService implements Service {
     }
 
     private async executeAction(actionInstance: QuickActionDefinition, payload: QuickActionExecutionPayload) {
-        const appType = getApplicationType(this.rta.getRootControlInstance().getManifest());
         try {
             await reportTelemetry({
                 category: 'QuickAction',
                 actionName: actionInstance.type,
                 telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true),
                 quickActionSteps: actionInstance.quickActionSteps,
-                appType
+                appType: getApplicationType(this.rta.getRootControlInstance().getManifest())
             });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);
