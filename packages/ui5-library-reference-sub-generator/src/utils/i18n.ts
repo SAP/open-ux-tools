@@ -8,9 +8,11 @@ const ui5LibI18nNamespace = 'ui5-library-reference-sub-generator';
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', ui5LibI18nNamespace, translations)
-    );
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en'
+    });
+    i18next.addResourceBundle('en', ui5LibI18nNamespace, translations);
 }
 
 /**

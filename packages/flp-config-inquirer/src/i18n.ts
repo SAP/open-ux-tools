@@ -18,7 +18,10 @@ export function addi18nResourceBundle(): void {
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' });
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en'
+    });
     addi18nResourceBundle();
     // add the project-input-validator i18n resource bundle to ensure all translations are available
     addProjectInputI18nResourceBundle();

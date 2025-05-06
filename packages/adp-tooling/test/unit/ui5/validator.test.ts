@@ -4,6 +4,7 @@ import { getOfficialBaseUI5VersionUrl, getFormattedVersion } from '../../../src/
 import { validateUI5VersionExists } from '../../../src';
 import { fetchMock } from '../../__mock__/global';
 import { t } from '../../../src/i18n';
+import { initI18n } from '../../../src/i18n';
 
 jest.mock('@sap-ux/project-input-validator', () => ({
     validateEmptyString: jest.fn()
@@ -17,6 +18,10 @@ jest.mock('../../../src/ui5/format', () => ({
 const validateEmptyStringMock = validateEmptyString as jest.Mock;
 const getOfficialBaseUI5VersionUrlMock = getOfficialBaseUI5VersionUrl as jest.Mock;
 const getFormattedVersionMock = getFormattedVersion as jest.Mock;
+
+beforeAll(async () => {
+    await initI18n();
+});
 
 describe('validateUI5VersionExists', () => {
     beforeEach(() => {

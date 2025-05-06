@@ -4,9 +4,9 @@ import FilesystemBackend from 'i18next-fs-backend';
 import path from 'path';
 
 const i18nInstance: i18n = i18next.createInstance();
+
 export async function initI18n(): Promise<void> {
     await i18nInstance.use(FilesystemBackend).init({
-        initImmediate: false,
         fallbackLng: 'en',
         fallbackNS: 'default',
         interpolation: { escapeValue: false },
@@ -20,5 +20,5 @@ export async function initI18n(): Promise<void> {
 
 type StringMap = { [key: string]: unknown };
 export function text(key: string, options?: string | TOptions<StringMap & TOptionsBase>): string {
-    return i18nInstance.t(key, options);
+    return i18nInstance.t(key, typeof options === 'string' ? { defaultValue: options } : options);
 }

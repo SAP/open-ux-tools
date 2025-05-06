@@ -9,9 +9,12 @@ const deployConfigSubGen = 'deploy-config-sub-generator';
  * Initialize i18next with the translations for this module.
  */
 export async function initI18n(): Promise<void> {
-    await i18next.init({ lng: 'en', fallbackLng: 'en' }, () =>
-        i18next.addResourceBundle('en', deployConfigSubGen, translations)
-    );
+    await i18next.init({
+        lng: 'en',
+        fallbackLng: 'en'
+    });
+    i18next.addResourceBundle('en', deployConfigSubGen, translations);
+
     addInquirerCommonTexts();
 }
 
