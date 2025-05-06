@@ -941,46 +941,41 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the operation is complete.
      */
     private async storeCardManifestHandler(req: Request, res: Response): Promise<void> {
-        try {
-            const {
-                floorplan,
-                localPath,
-                fileName = FileName.Manifest,
-                manifests
-            } = req.body as {
-                floorplan: string;
-                localPath: string;
-                fileName?: string;
-                manifests: MultiCardsPayload[];
-            };
-            this.fs = this.fs ?? create(createStorage());
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
-            const fullPath = join(webappPath, localPath);
-            const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
-            const integrationCard = getIntegrationCard(manifests);
-            this.fs.write(filePath, JSON.stringify(integrationCard.manifest, null, 2));
+        const {
+            floorplan,
+            localPath,
+            fileName = FileName.Manifest,
+            manifests
+        } = req.body as {
+            floorplan: string;
+            localPath: string;
+            fileName?: string;
+            manifests: MultiCardsPayload[];
+        };
+        this.fs = this.fs ?? create(createStorage());
+        const webappPath = await getWebappPath(path.resolve(), this.fs);
+        const fullPath = join(webappPath, localPath);
+        const filePath = fileName.endsWith('.json') ? join(fullPath, fileName) : `${join(fullPath, fileName)}.json`;
+        const integrationCard = getIntegrationCard(manifests);
+        this.fs.write(filePath, JSON.stringify(integrationCard.manifest, null, 2));
 
-            const entitySet = integrationCard.entitySet;
-            const sapCardsAp = (this.manifest['sap.cards.ap'] ??= {});
-            sapCardsAp.embeds ??= {};
-            sapCardsAp.embeds[floorplan] = {
-                default: entitySet,
-                manifests: {
-                    [entitySet]: [
-                        {
-                            localUri: localPath
-                        }
-                    ]
-                }
-            } satisfies ManifestNamespace.EmbedsSettings;
+        const entitySet = integrationCard.entitySet;
+        const sapCardsAp = (this.manifest['sap.cards.ap'] ??= {});
+        sapCardsAp.embeds ??= {};
+        sapCardsAp.embeds[floorplan] = {
+            default: entitySet,
+            manifests: {
+                [entitySet]: [
+                    {
+                        localUri: localPath
+                    }
+                ]
+            }
+        } satisfies ManifestNamespace.EmbedsSettings;
 
-            const appAccess = await createApplicationAccess(path.resolve(), this.fs);
-            await appAccess.updateManifestJSON(this.manifest, this.fs);
-            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
-        } catch (err) {
-            this.logger.error('Files could not be created/updated.');
-            this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
-        }
+        const appAccess = await createApplicationAccess(path.resolve(), this.fs);
+        await appAccess.updateManifestJSON(this.manifest, this.fs);
+        this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
     }
 
     /**
@@ -1006,23 +1001,18 @@ export class FlpSandbox {
      * @returns {Promise<void>} A promise that resolves when the operation is complete.
      */
     private async storeI18nKeysHandler(req: Request, res: Response): Promise<void> {
-        try {
-            this.fs = this.fs ?? create(createStorage());
-            const webappPath = await getWebappPath(path.resolve(), this.fs);
-            const i18nPath = this.manifest['sap.app'].i18n as string;
-            const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
-            const entries = (req.body as Array<I18nEntry>) || [];
-            entries.forEach((entry) => {
-                if (entry.comment) {
-                    entry.annotation = entry.comment;
-                }
-            });
-            await createPropertiesI18nEntries(filePath, entries);
-            this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
-        } catch (err) {
-            this.logger.error('File could not be updated.');
-            this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');
-        }
+        this.fs = this.fs ?? create(createStorage());
+        const webappPath = await getWebappPath(path.resolve(), this.fs);
+        const i18nPath = this.manifest['sap.app'].i18n as string;
+        const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
+        const entries = (req.body as Array<I18nEntry>) || [];
+        entries.forEach((entry) => {
+            if (entry.comment) {
+                entry.annotation = entry.comment;
+            }
+        });
+        await createPropertiesI18nEntries(filePath, entries);
+        this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
     }
 
     /**

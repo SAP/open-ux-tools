@@ -794,12 +794,6 @@ describe('FlpSandbox', () => {
             expect(response.type).toBe('text/html');
         });
 
-        test('POST /cards/store without payload', async () => {
-            const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send();
-            expect(response.status).toBe(500);
-            expect(response.text).toBe('Files could not be created/updated.');
-        });
-
         test('POST /cards/store with payload', async () => {
             const projectAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess').mockImplementation(() => {
                 return Promise.resolve({
