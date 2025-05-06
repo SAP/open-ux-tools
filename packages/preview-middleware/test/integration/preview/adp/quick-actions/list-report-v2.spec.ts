@@ -3,7 +3,7 @@ import { expect, type FrameLocator, type Page } from '@sap-ux-private/playwright
 import { test } from '../../../adp-fixture';
 import { ADP_FIORI_ELEMENTS_V2 } from '../../../../project';
 import { join } from 'path';
-import { readdir, readFile } from 'fs/promises';
+import { readdir, readFile, rm } from 'fs/promises';
 import { gte, lt, satisfies } from 'semver';
 
 test.use({ projectConfig: ADP_FIORI_ELEMENTS_V2 });
@@ -36,6 +36,9 @@ class QuickActionPanel {
     }
     get addCustomTableColumn() {
         return this.page.getByRole('button', { name: 'Add Custom Table Column' });
+    }
+    get enableVariantManagementInTablesAndCharts() {
+        return this.page.getByRole('button', { name: 'Enable Variant Management in Tables and Charts' });
     }
     constructor(page: Page) {
         this.page = page;
@@ -101,6 +104,23 @@ class ListReport {
     }
 }
 
+class AdpDialog {
+    private readonly frame: FrameLocator;
+    private readonly ui5Version: string;
+    get createButton() {
+        if (gte(this.ui5Version, '1.108.0')) {
+            return this.frame.getByLabel('Footer actions').getByRole('button', { name: 'Create' });
+        } else {
+            return this.frame.locator('#createDialogBtn');
+        }
+    }
+
+    constructor(frame: FrameLocator, ui5Version: string) {
+        this.frame = frame;
+        this.ui5Version = ui5Version;
+    }
+}
+
 class TableSettings {
     private readonly frame: FrameLocator;
     get dialog() {
@@ -161,13 +181,20 @@ async function readChanges(root: string): Promise<Changes> {
 
 test.describe(`@quick-actions @fe-v2`, () => {
     test.describe(`@list-report`, () => {
-        // test.afterEach(async ({ project }) => {
-        // TODO: it looks like changes are not removed after each test
-        // });
+        test.afterEach(async ({ projectCopy }) => {
+            try {
+                const changesDirectory = join(projectCopy, 'webapp', 'changes');
+                await rm(changesDirectory, { recursive: true });
+            } catch (e) {
+                // ignore error
+            }
+            // TODO: it looks like changes are not removed after each test
+        });
         test('Enable/Disable clear filter bar button', async ({ page, previewFrame, projectCopy }) => {
             const lr = new ListReport(previewFrame);
             const editor = new AdaptationEditorShell(page);
 
+            await editor.reloadCompleted;
             await expect(lr.clearButton).toBeHidden();
 
             await editor.quickActions.enableClearButton.click();
@@ -241,12 +268,13 @@ test.describe(`@quick-actions @fe-v2`, () => {
             test.skip(satisfies(ui5Version, '^1.135.0'), 'UI5 has bug with controller creation in this version');
 
             const lr = new ListReport(previewFrame);
+            const dialog = new AdpDialog(previewFrame, ui5Version);
             const editor = new AdaptationEditorShell(page);
 
             await editor.quickActions.addControllerToPage.click();
 
             await previewFrame.getByRole('textbox', { name: 'Controller Name' }).fill('TestController');
-            await previewFrame.getByLabel('Footer actions').getByRole('button', { name: 'Create' }).click();
+            await dialog.createButton.click();
 
             if (lt(ui5Version, '1.136.0')) {
                 await expect(page.getByText('Changes detected!')).toBeVisible();
@@ -305,12 +333,13 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 'Add Custom Table Action is not supported in this version'
             );
 
+            const dialog = new AdpDialog(previewFrame, ui5Version);
             const editor = new AdaptationEditorShell(page);
 
             await editor.quickActions.addCustomTableAction.click();
 
             await previewFrame.getByRole('textbox', { name: 'Fragment Name' }).fill('table-action');
-            await previewFrame.getByLabel('Footer actions').getByRole('button', { name: 'Create' }).click();
+            await dialog.createButton.click();
 
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -352,6 +381,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 'Add Custom Table Column is not supported in this version'
             );
 
+            const dialog = new AdpDialog(previewFrame, ui5Version);
             const lr = new ListReport(previewFrame);
             const editor = new AdaptationEditorShell(page);
 
@@ -365,7 +395,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
 
             await previewFrame.getByRole('textbox', { name: 'Column Fragment Name' }).fill('table-column');
             await previewFrame.getByRole('textbox', { name: 'Cell Fragment Name' }).fill('table-cell');
-            await previewFrame.getByLabel('Footer actions').getByRole('button', { name: 'Create' }).click();
+            await dialog.createButton.click();
 
             await editor.toolbar.saveAndReloadButton.click();
 
@@ -396,7 +426,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
 
         <customData>
             <core:CustomData key="p13nData" id="custom-data-[a-z0-9]+"
-                value='\\\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "2"}' />
+                value='\\\\{"columnKey": "column-[a-z0-9]+", "columnIndex": "3"}' />
         </customData>
     </Column>
 </core:FragmentDefinition>`)
@@ -506,6 +536,53 @@ test.describe(`@quick-actions @fe-v2`, () => {
                         ])
                     })
                 );
+        });
+
+        test('Enable Variant Management in Tables and Charts', async ({
+            page,
+            previewFrame,
+            projectCopy,
+            ui5Version
+        }) => {
+            test.skip(
+                lt(ui5Version, '1.130.0', { loose: true }),
+                'Enable Variant Management in Tables and Charts is not supported in this version'
+            );
+            const lr = new ListReport(previewFrame);
+            const editor = new AdaptationEditorShell(page);
+
+            await editor.quickActions.enableVariantManagementInTablesAndCharts.click();
+
+            await editor.toolbar.saveAndReloadButton.click();
+            await expect(editor.toolbar.saveButton).toBeDisabled();
+
+            await expect
+                .poll(async () => readChanges(projectCopy), {
+                    message: 'make sure change file is created'
+                })
+                .toEqual(
+                    expect.objectContaining({
+                        changes: expect.arrayContaining([
+                            expect.objectContaining({
+                                fileType: 'change',
+                                changeType: 'appdescr_ui_generic_app_changePageConfiguration',
+                                content: expect.objectContaining({
+                                    parentPage: expect.objectContaining({
+                                        component: 'sap.suite.ui.generic.template.ListReport'
+                                    }),
+                                    entityPropertyChange: expect.objectContaining({
+                                        propertyPath: 'component/settings',
+                                        propertyValue: expect.objectContaining({
+                                            smartVariantManagement: false
+                                        })
+                                    })
+                                })
+                            })
+                        ])
+                    })
+                );
+
+            // await expect(editor.quickActions.enableVariantManagementInTablesAndCharts).
         });
     });
 });
