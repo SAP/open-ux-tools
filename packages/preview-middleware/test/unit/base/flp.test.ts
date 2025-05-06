@@ -4,7 +4,7 @@ import { FlpSandbox as FlpSandboxUnderTest, initAdp } from '../../../src';
 import type { FlpConfig, MiddlewareConfig } from '../../../src';
 import type { MiddlewareUtils } from '@ui5/server';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
-import type { ProjectAccess, I18nBundles, Manifest } from '@sap-ux/project-access';
+import type { ProjectAccess, I18nBundles, Manifest, ApplicationAccess } from '@sap-ux/project-access';
 import { readFileSync } from 'fs';
 import { join, posix } from 'path';
 import type { SuperTest, Test } from 'supertest';
@@ -801,6 +801,13 @@ describe('FlpSandbox', () => {
         });
 
         test('POST /cards/store with payload', async () => {
+            const projectAccessMock = jest.spyOn(projectAccess, 'createApplicationAccess').mockImplementation(() => {
+                return Promise.resolve({
+                    updateManifestJSON: () => {
+                        return Promise.resolve({});
+                    }
+                }) as unknown as Promise<ApplicationAccess>;
+            });
             const payload = {
                 floorplan: 'ObjectPage',
                 localPath: 'cards/op/op1',
@@ -847,11 +854,10 @@ describe('FlpSandbox', () => {
                     }
                 ]
             };
-
             const response = await server.post(CARD_GENERATOR_DEFAULT.cardsStore).send(payload);
+            expect(projectAccessMock).toBeCalled();
             expect(response.status).toBe(201);
             expect(response.text).toBe('Files were updated/created');
-            expect(mockFsPromisesWriteFile).toHaveBeenCalledTimes(2);
         });
 
         test('POST /editor/i18n with payload', async () => {

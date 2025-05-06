@@ -10,7 +10,7 @@ import type connect from 'connect';
 import path, { dirname, join, posix } from 'path';
 import type { Logger, ToolsLogger } from '@sap-ux/logger';
 import type { MiddlewareUtils } from '@ui5/server';
-import { getWebappPath, type Manifest, FileName, type ManifestNamespace } from '@sap-ux/project-access';
+import { getWebappPath, type Manifest, FileName, type ManifestNamespace, createApplicationAccess } from '@sap-ux/project-access';
 import {
     AdpPreview,
     type AdpPreviewConfig,
@@ -968,10 +968,11 @@ export class FlpSandbox {
                 }
             } satisfies ManifestNamespace.EmbedsSettings;
 
-            const manifestPath = join(webappPath, FileName.Manifest);
-            this.fs.write(manifestPath, JSON.stringify(this.manifest, null, 2));
+            const appAccess = await createApplicationAccess(path.resolve(), this.fs);
+            await appAccess.updateManifestJSON(this.manifest, this.fs);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `Files were updated/created`));
         } catch (err) {
+            this.logger.error('Files could not be created/updated.');
             this.sendResponse(res, 'text/plain', 500, 'Files could not be created/updated.');
         }
     }
@@ -1005,9 +1006,15 @@ export class FlpSandbox {
             const i18nPath = this.manifest['sap.app'].i18n as string;
             const filePath = i18nPath ? join(webappPath, i18nPath) : join(webappPath, 'i18n', 'i18n.properties');
             const entries = (req.body as Array<I18nEntry>) || [];
+            entries.forEach((entry) => {
+                if (entry.comment) {
+                    entry.annotation = entry.comment;
+                }
+            });
             await createPropertiesI18nEntries(filePath, entries);
             this.fs.commit(() => this.sendResponse(res, 'text/plain', 201, `i18n file updated.`));
         } catch (err) {
+            this.logger.error('File could not be updated.');
             this.sendResponse(res, 'text/plain', 500, 'File could not be updated.');
         }
     }

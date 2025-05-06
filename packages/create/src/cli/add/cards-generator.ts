@@ -8,7 +8,7 @@ import { isAbsolute, join } from 'path';
 /**
  * Add the cards-editor command.
  *
- * @param cmd - commander command for adding card generator config command
+ * @param cmd - commander command for adding card editor config command
  */
 export function addCardsEditorConfigCommand(cmd: Command): void {
     cmd.command('cards-editor [path]')

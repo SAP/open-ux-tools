@@ -25,7 +25,7 @@ async function updateMiddlewareConfigWithGeneratorPath(
 ): Promise<void> {
     const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
     const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
-    const previewMiddleware = await getPreviewMiddleware(ui5YamlConfig);
+    const previewMiddleware = await getPreviewMiddleware(ui5YamlConfig, basePath, yamlPath, fs);
 
     if (previewMiddleware) {
         previewMiddleware.configuration ??= {};
@@ -58,7 +58,9 @@ async function updatePackageJson(basePath: string, fs: Editor, yamlPath?: string
     }
 
     const packageJson = (fs.readJSON(packageJsonPath) ?? {}) as Package;
-    const previewMiddleware = await getPreviewMiddleware(undefined, basePath, yamlPath, fs);
+    const ui5YamlFile = yamlPath ? basename(yamlPath) : FileName.Ui5Yaml;
+    const ui5YamlConfig = await readUi5Yaml(basePath, ui5YamlFile, fs);
+    const previewMiddleware = await getPreviewMiddleware(ui5YamlConfig, basePath, yamlPath, fs);
     const intent = getIntentFromPreviewConfig(previewMiddleware?.configuration) ?? '#app-preview';
     const cardGeneratorPath =
         (previewMiddleware?.configuration as PreviewConfig)?.editors?.cardGenerator?.path ??

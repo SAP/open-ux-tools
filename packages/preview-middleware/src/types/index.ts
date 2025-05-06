@@ -265,6 +265,7 @@ export interface I18nEntry {
     key: string;
     value: string;
     comment?: string;
+    annotation?: string;
 }
 
 export interface CardManifest {
