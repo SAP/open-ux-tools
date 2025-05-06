@@ -375,6 +375,43 @@ export class UI5Config {
     }
 
     /**
+     * Updates backend configuration to an existing fiori-tools-proxy middleware that matches path. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
+     *
+     * @param backend config of backend that is to be proxied
+     * @returns {UI5Config} the UI5Config instance
+     * @memberof UI5Config
+     */
+    public updateBackendToFioriToolsProxydMiddleware(backend: FioriToolsProxyConfigBackend): this {
+        const middlewareList = this.document.getSequence({ path: 'server.customMiddleware' });
+        const proxyMiddleware = this.document.findItem(middlewareList, (item: any) => item.name === fioriToolsProxy);
+        if (!proxyMiddleware) {
+            throw new Error('Could not find fiori-tools-proxy');
+        }
+        const comments = getBackendComments(backend);
+        const proxyMiddlewareYamlContent = this.findCustomMiddleware<FioriToolsProxyConfig>(fioriToolsProxy);
+        const proxyMiddlewareConfig = proxyMiddlewareYamlContent?.configuration;
+        const configuration = this.document.getMap({
+            start: proxyMiddleware as YAMLMap,
+            path: 'configuration'
+        });
+        const backendNode = this.document.createNode({
+            value: backend,
+            comments
+        });
+        // Update existing backend entry with matching path
+        if (proxyMiddlewareConfig?.backend) {
+            const matchingBackendIndex = proxyMiddlewareConfig?.backend.findIndex(
+                (existingBackend) => existingBackend.path === backend.path
+            );
+            if (matchingBackendIndex !== -1) {
+                const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
+                backendConfigs.set(matchingBackendIndex, backendNode);
+            }
+        }
+        return this;
+    }
+
+    /**
      * Removes a backend configuration from an existing fiori-tools-proxy middleware backend configurations. If the config does not contain a fiori-tools-proxy middleware, an error is thrown.
      *
      * @param path Path of the backend to delete.

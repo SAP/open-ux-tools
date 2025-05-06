@@ -131,7 +131,6 @@ export async function addServicesData(
 /**
  * Updates services data in ui5-*.yaml files.
  * Mockserver configuration for services and annotations are updated using dataSources from manifest.json.
- * At the end, older XML files for service annotations are removed and new annotations are generated.
  *
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {ProjectPaths} paths - paths to the project files (package.json, ui5.yaml, ui5-local.yaml and ui5-mock.yaml)
