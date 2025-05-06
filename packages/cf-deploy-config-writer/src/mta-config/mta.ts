@@ -914,8 +914,9 @@ export class MtaConfig {
      * Add a destination to the approuter.
      *
      * @param cfDestination The name of the destination to be appended
+     * @returns {void}
      */
-    public async addDestinationToAppRouter(cfDestination: string | undefined) {
+    public async addDestinationToAppRouter(cfDestination: string | undefined): Promise<void> {
         if (this.hasAppFrontendRouter()) {
             // Append destination directly to app frontend
             await this.appendAppfrontCAPDestination(cfDestination);

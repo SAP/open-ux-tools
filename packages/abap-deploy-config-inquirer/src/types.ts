@@ -142,6 +142,13 @@ export type TransportManualPromptOptions = {
     default?: string;
 };
 
+export type TransportCreatedPromptOptions = {
+    /**
+     * Custom description for the new transport request.
+     */
+    description?: string;
+};
+
 export type OverwritePromptOptions = {
     /**
      * This option allows the prompt to be hidden and should be used when the overwrite prompt should not be shown.
@@ -186,6 +193,7 @@ type abapDeployConfigPromptOptions = Record<promptNames.ui5AbapRepo, UI5AbapRepo
     Record<promptNames.description, DescriptionPromptOptions> &
     Record<promptNames.packageManual, PackageManualPromptOptions> &
     Record<promptNames.transportManual, TransportManualPromptOptions> &
+    Record<promptNames.transportCreated, TransportCreatedPromptOptions> &
     Record<promptNames.overwrite, OverwritePromptOptions> &
     Record<promptNames.index, IndexPromptOptions> &
     Record<promptNames.packageAutocomplete, PackageAutocompletePromptOptions> &
