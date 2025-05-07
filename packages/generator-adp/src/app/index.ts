@@ -1,28 +1,42 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 
+import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
+import {
+    FlexLayer,
+    SystemLookup,
+    fetchPublicVersions,
+    generate,
+    getConfig,
+    getConfiguredProvider,
+    loadApps,
+    type AttributesAnswers,
+    type ConfigAnswers,
+    type UI5Version
+} from '@sap-ux/adp-tooling';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import {
     TelemetryHelper,
-    sendTelemetry,
-    type ILogWrapper,
+    getDefaultTargetFolder,
     getHostEnvironment,
     hostEnvironment,
-    getDefaultTargetFolder
+    sendTelemetry,
+    type ILogWrapper
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
-import { SystemLookup, generate, getConfig } from '@sap-ux/adp-tooling';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
-import type { AttributesAnswers, ConfigAnswers, FlexLayer } from '@sap-ux/adp-tooling';
 
-import { getFlexLayer } from './layer';
-import { t, initI18n } from '../utils/i18n';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 import { EventName } from '../telemetryEvents';
+import { getPackageInfo, installDependencies } from '../utils/deps';
+import { initI18n, t } from '../utils/i18n';
 import AdpFlpConfigLogger from '../utils/logger';
+import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
+import { getFlexLayer } from './layer';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
-import { getPackageInfo, installDependencies } from '../utils/deps';
-import type { AdpGeneratorOptions, AttributePromptOptions } from './types';
+import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
+import { validateJsonInput } from './questions/helper/validators';
+import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -67,6 +81,23 @@ export default class extends Generator {
      * Instance of the configuration prompter class.
      */
     private prompter: ConfigPrompter;
+    /**
+     * JSON object representing the complete adaptation project configuration,
+     * passed as a CLI argument.
+     */
+    private readonly jsonInput?: JsonInput;
+    /**
+     * Instance of AbapServiceProvider.
+     */
+    private abapProvider: AbapServiceProvider;
+    /**
+     * Publicly available UI5 versions.
+     */
+    private publicVersions: UI5Version;
+    /**
+     * Indicates if the current layer is based on a customer base.
+     */
+    private isCustomerBase: boolean;
 
     /**
      * Creates an instance of the generator.
@@ -82,23 +113,31 @@ export default class extends Generator {
         this.vscode = opts.vscode;
         this.options = opts;
 
-        this._setupPrompts();
         this._setupLogging();
+        const jsonInputString = getFirstArgAsString(args);
+        this.jsonInput = parseJsonInput(jsonInputString, this.toolsLogger);
+        if (!this.jsonInput) {
+            this._setupPrompts();
+        }
     }
 
     async initializing(): Promise<void> {
         await initI18n();
 
-        const pages = [
-            { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') },
-            { name: t('yuiNavSteps.projectAttributesName'), description: t('yuiNavSteps.projectAttributesDescr') }
-        ];
-        this.prompts.splice(0, 0, pages);
-
         this.layer = await getFlexLayer();
+        this.isCustomerBase = this.layer === FlexLayer.CUSTOMER_BASE;
 
         this.systemLookup = new SystemLookup(this.toolsLogger);
-        this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+
+        if (!this.jsonInput) {
+            const pages = [
+                { name: t('yuiNavSteps.configurationName'), description: t('yuiNavSteps.configurationDescr') },
+                { name: t('yuiNavSteps.projectAttributesName'), description: t('yuiNavSteps.projectAttributesDescr') }
+            ];
+            this.prompts.splice(0, 0, pages);
+
+            this.prompter = new ConfigPrompter(this.systemLookup, this.layer, this.toolsLogger);
+        }
 
         await TelemetryHelper.initTelemetrySettings({
             consumerModule: {
@@ -111,6 +150,10 @@ export default class extends Generator {
     }
 
     async prompting(): Promise<void> {
+        if (this.jsonInput) {
+            return;
+        }
+
         const isCLI = getHostEnvironment() === hostEnvironment.cli;
 
         const configQuestions = this.prompter.getPrompts({
@@ -143,13 +186,20 @@ export default class extends Generator {
     }
 
     async writing(): Promise<void> {
+        if (this.jsonInput) {
+            await this._initFromJson();
+        }
+
         try {
+            const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
+            const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
+
             const packageJson = getPackageInfo();
             const config = await getConfig({
-                provider: this.prompter.provider,
+                provider,
                 configAnswers: this.configAnswers,
                 attributeAnswers: this.attributeAnswers,
-                publicVersions: this.prompter?.ui5?.publicVersions,
+                publicVersions,
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger
@@ -221,6 +271,67 @@ export default class extends Generator {
             this.options.logWrapper
         );
         this.logger = AdpFlpConfigLogger.logger;
+    }
+
+    /**
+     * Initialize the project generator from a json.
+     */
+    private async _initFromJson(): Promise<void> {
+        if (!this.jsonInput) {
+            return;
+        }
+
+        const {
+            system,
+            client,
+            username = '',
+            password = '',
+            application: baseApplicationName,
+            applicationTitle,
+            targetFolder = '/home/user/projects',
+            projectName = getDefaultProjectName(targetFolder, `${baseApplicationName}.variant`),
+            namespace = getDefaultNamespace(projectName, this.isCustomerBase)
+        } = this.jsonInput;
+
+        await validateJsonInput(this.systemLookup, this.isCustomerBase, {
+            projectName,
+            targetFolder,
+            namespace,
+            system
+        });
+
+        this.publicVersions = await fetchPublicVersions();
+
+        const providerOptions = {
+            system,
+            client,
+            username,
+            password
+        };
+        this.abapProvider = await getConfiguredProvider(providerOptions, this.toolsLogger);
+
+        const applications = await loadApps(this.abapProvider, this.isCustomerBase);
+        const application = applications.find((application) => application.id === baseApplicationName);
+        if (!application) {
+            throw new Error(t('error.applicationNotFound', { appName: baseApplicationName }));
+        }
+
+        this.configAnswers = {
+            system,
+            username,
+            password,
+            application
+        };
+
+        this.attributeAnswers = {
+            projectName,
+            title: applicationTitle ?? `${application.title} (variant)`,
+            namespace,
+            targetFolder,
+            // If not provided, latest ui5 version will be used. See getConfig() for a reference.
+            ui5Version: '',
+            enableTypeScript: false
+        };
     }
 }
 
