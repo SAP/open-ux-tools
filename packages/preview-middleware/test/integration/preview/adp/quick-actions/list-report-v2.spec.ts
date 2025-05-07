@@ -81,7 +81,7 @@ class AdaptationEditorShell {
     readonly changesPanel: ChangesPanel;
 
     async reloadCompleted(): Promise<void> {
-        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled();
+        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled({ timeout: 10_000 });
         if (lt(this.ui5Version, '1.130.0')) {
             // Sync clones are created which trigger sync views warning
             await expect(this.page.getByText('Synchronous views are')).toBeVisible();
@@ -272,7 +272,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 );
         });
 
-        test.only('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
+        test('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
             test.skip(satisfies(ui5Version, '^1.134.0'), 'UI5 has bug with controller creation in this version');
 
             const lr = new ListReport(previewFrame);

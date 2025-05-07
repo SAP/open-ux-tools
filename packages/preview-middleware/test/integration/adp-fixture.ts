@@ -122,9 +122,9 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
     // Override default "page" fixture.
     page: async ({ page, projectServer, ui5Version }, use) => {
         await page.goto(
-            `http://localhost:${projectServer}${ADAPTATION_EDITOR_PATH}?fiori-tools-rta-mode=true#app-preview`,
-            { waitUntil: 'networkidle' }
+            `http://localhost:${projectServer}${ADAPTATION_EDITOR_PATH}?fiori-tools-rta-mode=true#app-preview`
         );
+        await expect(page.getByRole('button', { name: 'UI Adaptation' })).toBeEnabled({ timeout: 10_000 });
         if (lt(ui5Version, '1.130.0')) {
             // Sync clones are created which trigger sync views warning
             await expect(page.getByText('Synchronous views are')).toBeVisible();
