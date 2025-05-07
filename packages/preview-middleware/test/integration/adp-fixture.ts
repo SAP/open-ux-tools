@@ -125,7 +125,7 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
             `http://localhost:${projectServer}${ADAPTATION_EDITOR_PATH}?fiori-tools-rta-mode=true#app-preview`,
             { waitUntil: 'networkidle' }
         );
-        if (lt(ui5Version, '1.108.0')) {
+        if (lt(ui5Version, '1.130.0')) {
             // Sync clones are created which trigger sync views warning
             await expect(page.getByText('Synchronous views are')).toBeVisible();
             await page.getByRole('button', { name: 'OK' }).click();
