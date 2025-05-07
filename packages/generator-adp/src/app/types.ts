@@ -163,3 +163,19 @@ export interface ExtensionProjectData {
     BSPUrl: string;
     namespace: string;
 }
+
+/**
+ * An interface representing the json input used to store the complete adaptation project
+ * generator configurations. The json is passed as an CLI argument.
+ */
+export interface JsonInput {
+    system: string;
+    client?: string;
+    username?: string;
+    password?: string;
+    application: string;
+    applicationTitle?: string;
+    targetFolder?: string;
+    projectName?: string;
+    namespace?: string;
+}
