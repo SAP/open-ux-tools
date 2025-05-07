@@ -265,7 +265,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
         });
 
         test('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
-            test.skip(satisfies(ui5Version, '^1.135.0'), 'UI5 has bug with controller creation in this version');
+            test.skip(satisfies(ui5Version, '^1.134.0'), 'UI5 has bug with controller creation in this version');
 
             const lr = new ListReport(previewFrame);
             const dialog = new AdpDialog(previewFrame, ui5Version);
@@ -469,7 +469,9 @@ test.describe(`@quick-actions @fe-v2`, () => {
             const editor = new AdaptationEditorShell(page);
 
             await editor.toolbar.navigationModeButton.click();
-            await previewFrame.getByTitle('Open Picker').click();
+            // click on second filter value help
+            await previewFrame.getByLabel('Show Value Help').nth(1).click();
+            // await previewFrame.getByTitle('Open Picker').click();
             await expect(previewFrame.getByText('Yesterday')).toBeVisible();
             await editor.toolbar.uiAdaptationModeButton.click();
 
@@ -505,7 +507,9 @@ test.describe(`@quick-actions @fe-v2`, () => {
             await editor.reloadCompleted;
 
             await editor.toolbar.navigationModeButton.click();
-            await previewFrame.getByTitle('Open Picker').click();
+            // await previewFrame.getByLabel('Show Value Help').nth(1).click();
+            await previewFrame.getByLabel('Open Picker').click();
+            // await previewFrame.getByTitle('Open Picker').click();
             await expect(previewFrame.getByRole('button', { name: new Date().getFullYear().toString() })).toBeVisible();
             await editor.toolbar.uiAdaptationModeButton.click();
 
