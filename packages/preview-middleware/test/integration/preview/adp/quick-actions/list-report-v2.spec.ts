@@ -81,13 +81,13 @@ class AdaptationEditorShell {
     readonly changesPanel: ChangesPanel;
 
     async reloadCompleted(): Promise<void> {
-        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled({ timeout: 10_000 });
         if (lt(this.ui5Version, '1.130.0')) {
             // Sync clones are created which trigger sync views warning
-            await expect(this.page.getByText('Synchronous views are')).toBeVisible();
+            await expect(this.page.getByText('Synchronous views are')).toBeVisible({ timeout: 10_000 });
             await this.page.getByRole('button', { name: 'OK' }).click();
             await expect(this.page.locator('.ms-Overlay')).toBeHidden();
         }
+        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled({ timeout: 10_000 });
     }
     constructor(page: Page, ui5Version: string) {
         this.ui5Version = ui5Version;
