@@ -198,9 +198,9 @@ test.describe(`@quick-actions @fe-v2`, () => {
             }
             // TODO: it looks like changes are not removed after each test
         });
-        test('Enable/Disable clear filter bar button', async ({ page, previewFrame, projectCopy }) => {
+        test('Enable/Disable clear filter bar button', async ({ page, previewFrame, ui5Version, projectCopy }) => {
             const lr = new ListReport(previewFrame);
-            const editor = new AdaptationEditorShell(page);
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.reloadCompleted;
             await expect(lr.clearButton).toBeHidden();
@@ -277,7 +277,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
 
             const lr = new ListReport(previewFrame);
             const dialog = new AdpDialog(previewFrame, ui5Version);
-            const editor = new AdaptationEditorShell(page);
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.quickActions.addControllerToPage.click();
 
@@ -326,7 +326,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
             );
 
             const tableSettings = new TableSettings(previewFrame);
-            const editor = new AdaptationEditorShell(page);
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.quickActions.changeTableColumns.click();
 
@@ -342,7 +342,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
             );
 
             const dialog = new AdpDialog(previewFrame, ui5Version);
-            const editor = new AdaptationEditorShell(page);
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.quickActions.addCustomTableAction.click();
 
@@ -391,7 +391,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
 
             const dialog = new AdpDialog(previewFrame, ui5Version);
             const lr = new ListReport(previewFrame);
-            const editor = new AdaptationEditorShell(page);
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
             if (await editor.quickActions.addCustomTableColumn.isDisabled()) {
                 await editor.toolbar.navigationModeButton.click();
@@ -472,9 +472,14 @@ test.describe(`@quick-actions @fe-v2`, () => {
             await expect(previewFrame.getByRole('gridcell', { name: 'Sample data' })).toBeVisible();
         });
 
-        test('Enable/Disable Semantic Date Range in Filter Bar', async ({ page, previewFrame, projectCopy }) => {
+        test('Enable/Disable Semantic Date Range in Filter Bar', async ({
+            page,
+            previewFrame,
+            projectCopy,
+            ui5Version
+        }) => {
             const lr = new ListReport(previewFrame);
-            const editor = new AdaptationEditorShell(page);
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.toolbar.navigationModeButton.click();
             // click on second filter value help
@@ -561,7 +566,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 'Enable Variant Management in Tables and Charts is not supported in this version'
             );
             const lr = new ListReport(previewFrame);
-            const editor = new AdaptationEditorShell(page);
+            const editor = new AdaptationEditorShell(page, ui5Version);
 
             await editor.quickActions.enableVariantManagementInTablesAndCharts.click();
 
