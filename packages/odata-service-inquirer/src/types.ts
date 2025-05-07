@@ -7,7 +7,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
-import { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types';
+import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
