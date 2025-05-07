@@ -48,8 +48,9 @@ export function shouldSetMinUI5Version(systemVersion?: string): boolean {
         return false;
     }
 
-    const versionParts = systemVersion?.split('.') ?? [];
-    return parseInt(versionParts[1], 10) >= 90;
+    const versionParts = systemVersion.split('.');
+    const minorVersion = versionParts.length > 1 ? parseInt(versionParts[1], 10) : NaN;
+    return !isNaN(minorVersion) && minorVersion >= 90;
 }
 
 /**
