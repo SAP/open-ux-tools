@@ -202,7 +202,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
             const lr = new ListReport(previewFrame);
             const editor = new AdaptationEditorShell(page, ui5Version);
 
-            await editor.reloadCompleted;
+            await editor.reloadCompleted();
             await expect(lr.clearButton).toBeHidden();
 
             await editor.quickActions.enableClearButton.click();
@@ -308,7 +308,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
 
             await expect(lr.goButton).toBeVisible();
 
-            await editor.reloadCompleted;
+            await editor.reloadCompleted();
 
             await editor.quickActions.showPageController.click();
 
@@ -464,7 +464,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
 
             await expect(lr.goButton).toBeVisible();
 
-            await editor.reloadCompleted;
+            await editor.reloadCompleted();
 
             await editor.toolbar.navigationModeButton.click();
             await lr.goButton.click();
@@ -517,7 +517,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 );
 
             await expect(lr.goButton).toBeVisible();
-            await editor.reloadCompleted;
+            await editor.reloadCompleted();
 
             await editor.toolbar.navigationModeButton.click();
             // await previewFrame.getByLabel('Show Value Help').nth(1).click();

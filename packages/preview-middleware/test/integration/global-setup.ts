@@ -72,36 +72,36 @@ async function globalSetup(): Promise<void> {
                         manifest,
                         asyncHints: {
                             libs: [
-                                // {
-                                //     name: 'sap.ui.core'
-                                // },
-                                // {
-                                //     name: 'sap.m'
-                                // },
-                                // {
-                                //     name: 'sap.suite.ui.generic.template'
-                                // },
-                                // {
-                                //     name: 'sap.uxap',
-                                //     lazy: true
-                                // },
-                                // {
-                                //     name: 'sap.ui.table',
-                                //     lazy: true
-                                // },
-                                // {
-                                //     name: 'sap.ui.commons',
-                                //     lazy: true
-                                // },
-                                // {
-                                //     name: 'sap.ui.comp'
-                                // },
-                                // {
-                                //     name: 'sap.ui.rta'
-                                // },
-                                // {
-                                //     name: 'sap.ui.generic.app'
-                                // }
+                                {
+                                    name: 'sap.ui.core'
+                                },
+                                {
+                                    name: 'sap.m'
+                                },
+                                {
+                                    name: 'sap.suite.ui.generic.template'
+                                },
+                                {
+                                    name: 'sap.uxap',
+                                    lazy: true
+                                },
+                                {
+                                    name: 'sap.ui.table',
+                                    lazy: true
+                                },
+                                {
+                                    name: 'sap.ui.commons',
+                                    lazy: true
+                                },
+                                {
+                                    name: 'sap.ui.comp'
+                                },
+                                {
+                                    name: 'sap.ui.rta'
+                                },
+                                {
+                                    name: 'sap.ui.generic.app'
+                                }
                             ]
                         },
                         url: `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/webapp`,
