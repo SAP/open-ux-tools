@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.12
+
+### Patch Changes
+
+-   f1608ab: Fixes for `ignoreCertErrors` not set
+
 ## 2.3.11
 
 ### Patch Changes
