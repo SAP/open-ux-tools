@@ -2,12 +2,14 @@ import { validateQfaJsonFile, validateAppSelection,isValidPromptState } from '..
 import type { QfaJsonConfig, QuickDeployedAppConfig, AppInfo } from '../../src/app/types';
 import { t } from '../../src/utils/i18n';
 import RepoAppDownloadLogger from '../../src/utils/logger';
-import { downloadApp } from '../../src/utils/download-utils';
+import { downloadApp, hasQfaJson } from '../../src/utils/download-utils';
 import type { AppIndex } from '@sap-ux/axios-extension'
 import { ErrorHandler, ERROR_TYPE } from '@sap-ux/inquirer-common';
 import { HELP_NODES } from '@sap-ux/guided-answers-helper';
 import { PromptState } from '../../src/prompts/prompt-state';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { qfaJsonFileName } from '../../src/utils/constants';
+import { AppWizard, MessageType } from '@sap-devx/yeoman-ui-types';
 
 jest.mock('../../src/utils/logger', () => ({
     logger: {
@@ -16,7 +18,8 @@ jest.mock('../../src/utils/logger', () => ({
 }));
 
 jest.mock('../../src/utils/download-utils', () => ({
-    downloadApp: jest.fn()
+    downloadApp: jest.fn(),
+    hasQfaJson: jest.fn(() => true)
 }));
 
 jest.mock('@sap-ux/inquirer-common', () => ({
@@ -167,11 +170,25 @@ describe('validateAppSelection', () => {
         expect(result).toBe(mockHelpLink);
     });
 
+    it('should notify the user that the app contains no qfa.json file in it', async () => {
+        const mockAppWizard = {
+            setHeaderTitle: jest.fn(),
+            showWarning: jest.fn(),
+            showError: jest.fn(),
+            showInformation: jest.fn()
+        } as unknown as AppWizard;
+        const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
+        const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
+        (hasQfaJson as jest.Mock).mockReturnValue(false);
+        await validateAppSelection(answers, appList, undefined, mockAppWizard);
+        expect(mockAppWizard.showError).toHaveBeenCalledWith(t('error.qfaJsonNotFound', { jsonFileName: qfaJsonFileName }), MessageType.notification);
+    });
+
     it('should return true if a valid app is selected and download is successful', async () => {
         const appList: AppIndex = [{ appId: '12345', repoName: 'testRepo' }];
         const answers = { appId: '12345', repoName: 'testRepo' } as AppInfo;
         mockDownloadApp.mockResolvedValue(undefined);
-
+        (hasQfaJson as jest.Mock).mockReturnValue(true);
         const result = await validateAppSelection(answers, appList);
 
         expect(mockDownloadApp).toHaveBeenCalledWith('testRepo');

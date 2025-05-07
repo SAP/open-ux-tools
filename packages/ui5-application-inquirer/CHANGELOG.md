@@ -1,5 +1,48 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.12.6
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/project-input-validator@0.5.5
+    -   @sap-ux/inquirer-common@0.6.42
+
+## 0.12.5
+
+### Patch Changes
+
+-   5ce363e: fix when condition for typescript prompt
+
+## 0.12.4
+
+### Patch Changes
+
+-   Updated dependencies [2050952]
+    -   @sap-ux/ui5-info@0.10.1
+    -   @sap-ux/inquirer-common@0.6.41
+
+## 0.12.3
+
+### Patch Changes
+
+-   0d8918a: updates for cap and virtual endpoints
+
+## 0.12.2
+
+### Patch Changes
+
+-   Updated dependencies [c64de75]
+    -   @sap-ux/ui5-info@0.10.0
+    -   @sap-ux/inquirer-common@0.6.40
+
+## 0.12.1
+
+### Patch Changes
+
+-   7a87b92: cap checks for virtual endpoints prompt
+
 ## 0.12.0
 
 ### Minor Changes

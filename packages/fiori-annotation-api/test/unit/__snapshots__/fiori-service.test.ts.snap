@@ -2641,6 +2641,31 @@ Actions: []
 ActionImports: []"
 `;
 
+exports[`fiori annotation service read xml missing metadata alias 1`] = `
+"webapp/annotations/annotation.xml:
+    IncidentService.Incidents [(10,16)..(12,29),(13,16)..(15,29)]:
+        com.sap.vocabularies.UI.v1.LineItem#a (10,16)..(12,29): (Collection) []
+        com.sap.vocabularies.UI.v1.LineItem#b (13,16)..(15,29): (Collection) []
+"
+`;
+
+exports[`fiori annotation service read xml missing metadata reference  1`] = `
+"webapp/annotations/annotation.xml:
+    IncidentService.Incidents [(8,16)..(10,29),(11,16)..(13,29)]:
+        com.sap.vocabularies.UI.v1.LineItem#a (8,16)..(10,29): (Collection) []
+        com.sap.vocabularies.UI.v1.LineItem#b (11,16)..(13,29): (Collection) []
+"
+`;
+
+exports[`fiori annotation service read xml missing metadata reference (no alias in metadata) 1`] = `
+"webapp/annotations/annotation.xml:
+    IncidentService.Incidents [(8,16)..(10,29)]:
+        com.sap.vocabularies.UI.v1.LineItem#a (8,16)..(10,29): (Collection) []
+    Service.Incidents [(13,16)..(15,29)]:
+        com.sap.vocabularies.UI.v1.LineItem#b (13,16)..(15,29): (Collection) []
+"
+`;
+
 exports[`fiori annotation service read xml v2-app 1`] = `
 "webapp/localService/metadata.xml:
 webapp/annotations/annotation.xml:
@@ -3294,6 +3319,14 @@ exports[`fiori annotation service update PropertyValue - PropertyPath replace te
         </Schema>
     </edmx:DataServices>
 </edmx:Edmx>
+"
+`;
+
+exports[`fiori annotation service update annotation value in complex type 1`] = `
+"using IncidentService as service from '../../srv/incidentservice';
+
+annotate service.Incidents : rating.name with @Common.Text : title;
+
 "
 `;
 

@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-writer
 
+## 1.4.3
+
+### Patch Changes
+
+-   0d8918a: updates for cap and virtual endpoints
+
 ## 1.4.2
 
 ### Patch Changes

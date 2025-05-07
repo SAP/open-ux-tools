@@ -406,17 +406,47 @@ describe('getQuestions', () => {
     });
 
     test('getQuestions, prompt: `enableVirtualEndpoints`', async () => {
-        const questions = getQuestions([]);
-        const enableVirtualEndpointsQuestion = questions.find(
+        // Edmx project
+        let questions = getQuestions([]);
+        let enableVirtualEndpointsQuestion = questions.find(
             (question) => question.name === promptNames.enableVirtualEndpoints
         );
 
         expect(questions).toEqual(
             expect.arrayContaining([expect.objectContaining({ name: promptNames.enableVirtualEndpoints })])
         );
+        expect((enableVirtualEndpointsQuestion?.when as Function)({})).toBe(true);
         expect((enableVirtualEndpointsQuestion?.message as Function)()).toMatchInlineSnapshot(
             `"Use virtual endpoints for local preview"`
         );
+
+        // CAP project with cds-ui5 plugin enabled
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: true });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(true);
+
+        // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is no
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: false })).toBe(false);
+
+        // CAP project with cds-ui5 plugin disabled and enableTypeScript answer is yes
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)({ enableTypeScript: true })).toBe(true);
+
+        // CAP project with cds-ui5 plugin disabled and hasMinCdsVersion is false
+        questions = getQuestions([], {}, { ...mockCdsInfo, isCdsUi5PluginEnabled: false, hasMinCdsVersion: false });
+        enableVirtualEndpointsQuestion = questions.find(
+            (question) => question.name === promptNames.enableVirtualEndpoints
+        );
+        expect((enableVirtualEndpointsQuestion?.when as Function)()).toBe(false);
     });
 
     test('getQuestions, prompt: `ui5Theme`', async () => {
@@ -562,6 +592,7 @@ describe('getQuestions', () => {
             isWorkspaceEnabled: false,
             hasMinCdsVersion: true
         }).find((question) => question.name === promptNames.enableTypeScript);
+        expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
         expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual({
             message:
                 'The CAP project will be updated to use NPM workspaces (this is a requirement for generating with TypeScript)',

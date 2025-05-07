@@ -1,5 +1,17 @@
 # @sap-ux/deploy-config-generator-shared
 
+## 0.0.47
+
+### Patch Changes
+
+-   @sap-ux/fiori-generator-shared@0.11.3
+
+## 0.0.46
+
+### Patch Changes
+
+-   65e178f: align npm modules
+
 ## 0.0.45
 
 ### Patch Changes

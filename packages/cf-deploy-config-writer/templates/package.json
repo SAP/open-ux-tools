@@ -1,5 +1,5 @@
 {
-  "name": "mta-project",
+  "name": "<%- mtaId %>",
   "version": "0.0.1",
   "description": "Build and deployment scripts",
   "scripts": {

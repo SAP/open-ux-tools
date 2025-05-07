@@ -1,5 +1,92 @@
 # @sap-ux/ui-service-inquirer
 
+## 0.0.37
+
+### Patch Changes
+
+-   @sap-ux/axios-extension@1.20.2
+-   @sap-ux/odata-service-inquirer@2.3.11
+-   @sap-ux/telemetry@0.5.78
+-   @sap-ux/abap-deploy-config-inquirer@1.3.1
+-   @sap-ux/inquirer-common@0.6.42
+
+## 0.0.36
+
+### Patch Changes
+
+-   cb8ff79: Adds new option to provide custom descriptions for new transport requests
+-   Updated dependencies [cb8ff79]
+    -   @sap-ux/abap-deploy-config-inquirer@1.3.0
+
+## 0.0.35
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.51
+    -   @sap-ux/odata-service-inquirer@2.3.10
+
+## 0.0.34
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+-   @sap-ux/abap-deploy-config-inquirer@1.2.50
+-   @sap-ux/odata-service-inquirer@2.3.9
+
+## 0.0.33
+
+### Patch Changes
+
+-   Updated dependencies [38519fa]
+    -   @sap-ux/odata-service-inquirer@2.3.8
+
+## 0.0.32
+
+### Patch Changes
+
+-   Updated dependencies [39cf280]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.49
+
+## 0.0.31
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.48
+    -   @sap-ux/odata-service-inquirer@2.3.7
+
+## 0.0.30
+
+### Patch Changes
+
+-   Updated dependencies [ab4e908]
+    -   @sap-ux/odata-service-inquirer@2.3.6
+
+## 0.0.29
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+-   @sap-ux/abap-deploy-config-inquirer@1.2.47
+-   @sap-ux/odata-service-inquirer@2.3.5
+
+## 0.0.28
+
+### Patch Changes
+
+-   Updated dependencies [55e7ebd]
+    -   @sap-ux/abap-deploy-config-inquirer@1.2.46
+
+## 0.0.27
+
+### Patch Changes
+
+-   Updated dependencies [26f9280]
+    -   @sap-ux/odata-service-inquirer@2.3.4
+
 ## 0.0.26
 
 ### Patch Changes

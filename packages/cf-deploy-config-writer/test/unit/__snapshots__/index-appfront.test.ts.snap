@@ -209,7 +209,7 @@ exports[`CF Writer App - Application Frontend Generate deployment configs - Appe
 
 exports[`CF Writer App - Application Frontend Generate deployment configs - Append HTML5 to an existing app frontend router 3`] = `
 "{
-  \\"name\\": \\"mta-project\\",
+  \\"name\\": \\"rootmta\\",
   \\"version\\": \\"0.0.1\\",
   \\"description\\": \\"Build and deployment scripts\\",
   \\"scripts\\": {

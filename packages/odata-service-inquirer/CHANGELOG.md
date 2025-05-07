@@ -1,5 +1,61 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.11
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/axios-extension@1.20.2
+    -   @sap-ux/fiori-generator-shared@0.11.3
+    -   @sap-ux/project-input-validator@0.5.5
+    -   @sap-ux/telemetry@0.5.78
+    -   @sap-ux/inquirer-common@0.6.42
+
+## 2.3.10
+
+### Patch Changes
+
+-   Updated dependencies [1a01c5e]
+    -   @sap-ux/axios-extension@1.20.2
+
+## 2.3.9
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.41
+
+## 2.3.8
+
+### Patch Changes
+
+-   38519fa: Fix for cached connection crash
+
+## 2.3.7
+
+### Patch Changes
+
+-   Updated dependencies [a3a43b2]
+    -   @sap-ux/axios-extension@1.20.1
+
+## 2.3.6
+
+### Patch Changes
+
+-   ab4e908: handle list destinations error
+
+## 2.3.5
+
+### Patch Changes
+
+-   @sap-ux/inquirer-common@0.6.40
+
+## 2.3.4
+
+### Patch Changes
+
+-   26f9280: Adds connection caching to prevent re-auth via browser
+
 ## 2.3.3
 
 ### Patch Changes

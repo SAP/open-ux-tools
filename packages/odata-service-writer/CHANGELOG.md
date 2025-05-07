@@ -1,5 +1,19 @@
 # @sap-ux/odata-service-writer
 
+## 0.26.18
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+    -   @sap-ux/mockserver-config-writer@0.8.15
+
+## 0.26.17
+
+### Patch Changes
+
+-   8d4bca6: Write service annotations using `name` instead of `technicalName` to avoid sub folders
+
 ## 0.26.16
 
 ### Patch Changes

@@ -188,13 +188,13 @@ export function getEnableTypeScriptPrompt(capCdsInfo?: CdsUi5PluginInfo): UI5App
     return {
         when: (): boolean => {
             if (capCdsInfo) {
-                return capCdsInfo.isCdsUi5PluginEnabled || (capCdsInfo.hasMinCdsVersion && !capCdsInfo.hasCdsUi5Plugin);
+                return capCdsInfo.hasMinCdsVersion;
             }
             return true;
         },
         additionalMessages: (val: boolean) => {
             let message;
-            if (val && capCdsInfo?.hasMinCdsVersion && !capCdsInfo?.hasCdsUi5Plugin) {
+            if (val && !capCdsInfo?.isWorkspaceEnabled) {
                 message = { message: t('prompts.enableTypeScript.warningMsg'), severity: Severity.warning };
             }
             return message;
@@ -281,10 +281,17 @@ export function getAddFlpConfigPrompt(
 /**
  * Get the `enableVirtualEndpoints` prompt.
  *
+ * @param capCdsInfo CDS UI5 plugin information
  * @returns the `enableVirtualEndpoints` prompt
  */
-export function getEnableVirtualEndpoints(): UI5ApplicationQuestion {
+export function getEnableVirtualEndpoints(capCdsInfo?: CdsUi5PluginInfo): UI5ApplicationQuestion {
     return {
+        when: (answers: UI5ApplicationAnswers): boolean => {
+            if (capCdsInfo) {
+                return capCdsInfo.isCdsUi5PluginEnabled || !!answers?.enableTypeScript;
+            }
+            return true;
+        },
         type: 'confirm',
         name: promptNames.enableVirtualEndpoints,
         guiOptions: {
