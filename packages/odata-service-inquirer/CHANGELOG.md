@@ -1,5 +1,11 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.13
+
+### Patch Changes
+
+-   f2aca4a: Fix, adds `ignoreCertError` to prompt state
+
 ## 2.3.12
 
 ### Patch Changes
