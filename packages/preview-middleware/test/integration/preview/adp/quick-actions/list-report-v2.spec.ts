@@ -75,14 +75,22 @@ class ChangesPanel {
 
 class AdaptationEditorShell {
     private readonly page: Page;
+    private readonly ui5Version: string;
     readonly quickActions: QuickActionPanel;
     readonly toolbar: Toolbar;
     readonly changesPanel: ChangesPanel;
 
-    get reloadCompleted(): Promise<void> {
-        return expect(this.toolbar.uiAdaptationModeButton).toBeEnabled();
+    async reloadCompleted(): Promise<void> {
+        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled();
+        if (lt(this.ui5Version, '1.130.0')) {
+            // Sync clones are created which trigger sync views warning
+            await expect(this.page.getByText('Synchronous views are')).toBeVisible();
+            await this.page.getByRole('button', { name: 'OK' }).click();
+            await expect(this.page.locator('.ms-Overlay')).toBeHidden();
+        }
     }
-    constructor(page: Page) {
+    constructor(page: Page, ui5Version: string) {
+        this.ui5Version = ui5Version;
         this.page = page;
         this.quickActions = new QuickActionPanel(page);
         this.toolbar = new Toolbar(page);
@@ -264,7 +272,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 );
         });
 
-        test('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
+        test.only('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
             test.skip(satisfies(ui5Version, '^1.134.0'), 'UI5 has bug with controller creation in this version');
 
             const lr = new ListReport(previewFrame);
