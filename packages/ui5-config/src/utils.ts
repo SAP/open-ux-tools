@@ -30,6 +30,10 @@ export function mergeObjects<B, E>(base: B, extension: E): B & E {
  * @returns semantic version representing the types version.
  */
 export function getEsmTypesVersion(minUI5Version?: string) {
+    if (minUI5Version?.toLowerCase().includes('snapshot')) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
+    }
+
     const version = semVer.coerce(minUI5Version);
     if (!version) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
@@ -47,6 +51,10 @@ export function getEsmTypesVersion(minUI5Version?: string) {
  * @returns semantic version representing the types version.
  */
 export function getTypesVersion(minUI5Version?: string) {
+    if (minUI5Version?.toLowerCase().includes('snapshot')) {
+        return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
+    }
+
     const version = semVer.coerce(minUI5Version);
     if (!version) {
         return `~${UI5_DEFAULT.TYPES_VERSION_BEST}`;
@@ -66,6 +74,10 @@ export function getTypesVersion(minUI5Version?: string) {
  * @returns string representing the types package name.
  */
 export function getTypesPackage(ui5Version?: string) {
+    if (ui5Version?.toLowerCase().includes('snapshot')) {
+        return UI5_DEFAULT.TYPES_PACKAGE_NAME;
+    }
+
     const version = semVer.coerce(ui5Version) ?? semVer.coerce(UI5_DEFAULT.TYPES_VERSION_BEST);
     if (version && semVer.lt(version, UI5_DEFAULT.NEW_TYPES_PACKAGE_SINCE)) {
         return UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME;
