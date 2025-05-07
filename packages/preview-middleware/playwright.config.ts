@@ -24,7 +24,7 @@ const config: PlaywrightTestConfig<TestOptions> = {
     /* Retry on CI only */
     retries: process.env.CI ? 1 : 0,
     /* Opt out of parallel tests on CI. */
-    workers: 4,
+    workers: 1,
     /* Reporter to use. See https://playwright.dev/docs/test-reporters */
     reporter: [['html', { open: 'never' }]],
     /* Shared settings for all the projects below. See https://playwright.dev/docs/api/class-testoptions. */
