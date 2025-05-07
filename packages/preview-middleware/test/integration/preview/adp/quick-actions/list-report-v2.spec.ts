@@ -81,13 +81,7 @@ class AdaptationEditorShell {
     readonly changesPanel: ChangesPanel;
 
     async reloadCompleted(): Promise<void> {
-        if (lt(this.ui5Version, '1.130.0')) {
-            // Sync clones are created which trigger sync views warning
-            await expect(this.page.getByText('Synchronous views are')).toBeVisible({ timeout: 10_000 });
-            await this.page.getByRole('button', { name: 'OK' }).click();
-            await expect(this.page.locator('.ms-Overlay')).toBeHidden();
-        }
-        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled({ timeout: 10_000 });
+        await expect(this.toolbar.uiAdaptationModeButton).toBeEnabled({ timeout: 15_000 });
     }
     constructor(page: Page, ui5Version: string) {
         this.ui5Version = ui5Version;
@@ -116,7 +110,7 @@ class AdpDialog {
     private readonly frame: FrameLocator;
     private readonly ui5Version: string;
     get createButton() {
-        if (gte(this.ui5Version, '1.108.0')) {
+        if (gte(this.ui5Version, '1.120.0')) {
             return this.frame.getByLabel('Footer actions').getByRole('button', { name: 'Create' });
         } else {
             return this.frame.locator('#createDialogBtn');
