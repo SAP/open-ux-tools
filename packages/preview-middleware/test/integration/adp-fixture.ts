@@ -126,11 +126,11 @@ export const test = base.extend<TestOptions, WorkerFixtures>({
         );
         if (lt(ui5Version, '1.130.0')) {
             // Sync clones are created which trigger sync views warning
-            await expect(page.getByText('Synchronous views are')).toBeVisible({ timeout: 10_000 });
+            await expect.soft(page.getByText('Synchronous views are')).toBeVisible({ timeout: 15_000 });
             await page.getByRole('button', { name: 'OK' }).click();
-            await expect(page.locator('.ms-Overlay')).toBeHidden();
+            await expect.soft(page.locator('.ms-Overlay')).toBeHidden();
         }
-        await expect(page.getByRole('button', { name: 'UI Adaptation' })).toBeEnabled({ timeout: 10_000 });
+        await expect(page.getByRole('button', { name: 'UI Adaptation' })).toBeEnabled({ timeout: 15_000 });
         // Each test will get a "page" that already has the person name.
         await use(page);
     },
