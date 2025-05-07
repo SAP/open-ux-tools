@@ -61,10 +61,7 @@ describe('Generate v2 apps', () => {
                 name: testProjectName
             }) as Project,
             floorplan: FloorplanFE.FE_LROP,
-            service: {
-                ...v2Service,
-                ignoreCertError: true
-            },
+            service: v2Service,
             entityRelatedConfig: v2EntityConfig
         });
         await runWritingPhaseGen(testState);
@@ -314,7 +311,10 @@ describe('Generate v2 apps', () => {
                 name: testProjectName
             }) as Project,
             floorplan: FloorplanFE.FE_WORKLIST,
-            service: v2Service,
+            service: {
+                ...v2Service,
+                ignoreCertError: true
+            },
             entityRelatedConfig: v2EntityConfig
         });
 
