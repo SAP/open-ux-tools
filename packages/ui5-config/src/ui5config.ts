@@ -401,7 +401,7 @@ export class UI5Config {
         // Update existing backend entry with matching path
         if (proxyMiddlewareConfig?.backend) {
             const matchingBackendIndex = proxyMiddlewareConfig?.backend.findIndex(
-                (existingBackend) => existingBackend.path === backend.path
+                (existingBackend) => existingBackend.path && existingBackend.path === backend.path
             );
             if (matchingBackendIndex !== -1) {
                 const backendConfigs = this.document.getSequence({ start: configuration, path: 'backend' });
