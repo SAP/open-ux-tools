@@ -44,13 +44,13 @@ const config: PlaywrightTestConfig<TestOptions> = {
         }
     })) as Project<{}, TestOptions>[],
     // timeout: 9999 * 1000,
-    // globalSetup: require.resolve('./test/integration/global-setup')
-    webServer: {
-        command: 'node server',
-        url: 'http://localhost:3050/status',
-        reuseExistingServer: !process.env.CI,
-        stderr: 'pipe',
-        stdout: 'ignore'
-    }
+    globalSetup: require.resolve('./test/integration/global-setup')
+    // webServer: {
+    //     command: 'node server',
+    //     url: 'http://localhost:3050/status',
+    //     reuseExistingServer: !process.env.CI,
+    //     stderr: 'pipe',
+    //     stdout: 'ignore'
+    // }
 };
 export default defineConfig(config);
