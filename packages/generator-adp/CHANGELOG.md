@@ -1,5 +1,11 @@
 # @sap-ux/generator-adp
 
+## 0.2.0
+
+### Minor Changes
+
+-   fc8d7da: feat(generator-adp): Make possible to configure the Adaptation project generator from a json
+
 ## 0.1.21
 
 ### Patch Changes
