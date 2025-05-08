@@ -22,8 +22,17 @@ async function globalSetup(): Promise<void> {
     // Define the path to the static content
     const staticPath = path.join(__dirname, '..', 'fixtures-copy');
 
+    const mergedManifestCache = new Map<string, object>();
+
     // Serve static files
 
+    app.use('/sap/bc/ui5_ui5/ui5/', (req, res, next) => {
+        const manifest = mergedManifestCache.get(req.path);
+        if (manifest) {
+            return res.json(manifest);
+        }
+        next();
+    });
     app.use('/sap/bc/ui5_ui5/ui5/', express.static(staticPath));
     app.get('/sap/bc/lrep/actions/getcsrftoken', (req, res) => {
         res.sendStatus(200);
@@ -54,7 +63,40 @@ async function globalSetup(): Promise<void> {
             try {
                 const directory = new ZipFile(buffer);
 
-                const variant = JSON.parse(directory.readFile('manifest.appdescr_variant')!.toString('utf-8'));
+                const variant = JSON.parse(
+                    directory.readFile('manifest.appdescr_variant')!.toString('utf-8')
+                ) as unknown as {
+                    id: string;
+                    reference: string;
+                    appId: string;
+                    appType: string;
+                };
+
+                const changes = directory
+                    .getEntries()
+                    .filter(
+                        (entry) =>
+                            // match changes from https://github.com/SAP/open-ux-tools/blob/674da278697811d72d09f64938bfd2292bfee9cf/packages/reload-middleware/src/base/livereload.ts#L77-L82
+                            entry.name.endsWith('appdescr_fe_changePageConfiguration.change') ||
+                            entry.name.endsWith('appdescr_ui_generic_app_changePageConfiguration.change') ||
+                            entry.name.endsWith('appdescr_ui_gen_app_changePageConfig.change') ||
+                            entry.name.endsWith('appdescr_app_addAnnotationsToOData.change') ||
+                            entry.name.endsWith('appdescr_ui_generic_app_addNewObjectPage.change') ||
+                            entry.name.endsWith('appdescr_fe_addNewPage.change')
+                    )
+                    .map((entry) => {
+                        const change = JSON.parse(directory.readAsText(entry)) as unknown as {
+                            changeType: string;
+                            content: unknown;
+                            layer: string;
+                        };
+                        return {
+                            changeType: change.changeType,
+                            content: change.content,
+                            layer: change.layer
+                        };
+                    });
+
                 const baseAppDirectory = `${variant.reference}`;
                 const manifestText = await readFile(
                     join(__dirname, '..', 'fixtures-copy', `${variant.reference}`, 'webapp', 'manifest.json'),
@@ -63,6 +105,14 @@ async function globalSetup(): Promise<void> {
 
                 const manifest = JSON.parse(manifestText);
                 manifest['sap.app'].id = variant.id;
+                if (changes.length > 0) {
+                    manifest['$sap.ui.fl.changes'] = {
+                        descriptor: changes
+                    };
+                }
+                // This does not seem to be needed, but keep ABAP backend also includes fl changes in the manifest requests
+                const manifestPath = `/sap/bc/ui5_ui5/ui5/${baseAppDirectory}/manifest.json`;
+                mergedManifestCache.set(manifestPath, manifest);
                 mapping[variant.reference] ??= new Set();
                 mapping[variant.reference].add(variant.id);
 

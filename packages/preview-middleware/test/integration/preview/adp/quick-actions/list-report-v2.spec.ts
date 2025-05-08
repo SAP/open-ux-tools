@@ -266,158 +266,176 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 );
         });
 
-        test('Add controller to page ', async ({ page, previewFrame, projectCopy, ui5Version }) => {
-            test.skip(satisfies(ui5Version, '^1.134.0'), 'UI5 has bug with controller creation in this version');
+        test.only(
+            'Add controller to page',
+            {
+                annotation: {
+                    type: 'skipUI5Version',
+                    description: '>=1.134.0 && <1.136.0'
+                }
+            },
+            async ({ page, previewFrame, projectCopy, ui5Version }) => {
+                const lr = new ListReport(previewFrame);
+                const dialog = new AdpDialog(previewFrame, ui5Version);
+                const editor = new AdaptationEditorShell(page, ui5Version);
 
-            const lr = new ListReport(previewFrame);
-            const dialog = new AdpDialog(previewFrame, ui5Version);
-            const editor = new AdaptationEditorShell(page, ui5Version);
+                await editor.quickActions.addControllerToPage.click();
 
-            await editor.quickActions.addControllerToPage.click();
+                await previewFrame.getByRole('textbox', { name: 'Controller Name' }).fill('TestController');
+                await dialog.createButton.click();
 
-            await previewFrame.getByRole('textbox', { name: 'Controller Name' }).fill('TestController');
-            await dialog.createButton.click();
+                if (lt(ui5Version, '1.136.0')) {
+                    await expect(page.getByText('Changes detected!')).toBeVisible();
+                }
 
-            if (lt(ui5Version, '1.136.0')) {
-                await expect(page.getByText('Changes detected!')).toBeVisible();
+                await expect
+                    .poll(
+                        async () => {
+                            const changesDirectory = join(projectCopy, 'webapp', 'changes', 'coding');
+                            const codingChanges = await readdir(changesDirectory);
+                            return codingChanges.length;
+                        },
+                        {
+                            message: 'make sure controller file is created',
+                            timeout: 4_000
+                        }
+                    )
+                    .toEqual(1);
+
+                await editor.changesPanel.reloadButton.click();
+
+                await expect(editor.changesPanel.reloadButton).toBeHidden();
+
+                await expect(lr.goButton).toBeVisible();
+
+                await editor.reloadCompleted();
+
+                await editor.quickActions.showPageController.click();
+
+                await expect(
+                    previewFrame.getByText('adp.fiori.elements.v2/changes/coding/TestController.js')
+                ).toBeVisible();
+
+                await expect(previewFrame.getByRole('button', { name: 'Open in VS Code' })).toBeVisible();
             }
+        );
 
-            await expect
-                .poll(
-                    async () => {
-                        const changesDirectory = join(projectCopy, 'webapp', 'changes', 'coding');
-                        const codingChanges = await readdir(changesDirectory);
-                        return codingChanges.length;
-                    },
-                    {
-                        message: 'make sure controller file is created',
-                        timeout: 4_000
-                    }
-                )
-                .toEqual(1);
+        test(
+            'Change table columns',
+            {
+                annotation: {
+                    type: 'skipUI5Version',
+                    description: '<1.96.0'
+                }
+            },
+            async ({ page, previewFrame, projectCopy, ui5Version }) => {
+                const tableSettings = new TableSettings(previewFrame);
+                const editor = new AdaptationEditorShell(page, ui5Version);
 
-            await editor.changesPanel.reloadButton.click();
+                await editor.quickActions.changeTableColumns.click();
 
-            await expect(editor.changesPanel.reloadButton).toBeHidden();
+                await expect(tableSettings.tableSettingsDialog.getByText('String Property')).toBeVisible();
+                await expect(tableSettings.tableSettingsDialog.getByText('Boolean Property')).toBeVisible();
+                await expect(tableSettings.tableSettingsDialog.getByText('Currency')).toBeVisible();
+            }
+        );
 
-            await expect(lr.goButton).toBeVisible();
+        test(
+            'Add Custom Table Action',
+            {
+                annotation: {
+                    type: 'skipUI5Version',
+                    description: '<1.96.0'
+                }
+            },
+            async ({ page, previewFrame, projectCopy, ui5Version }) => {
+                const dialog = new AdpDialog(previewFrame, ui5Version);
+                const editor = new AdaptationEditorShell(page, ui5Version);
 
-            await editor.reloadCompleted();
+                await editor.quickActions.addCustomTableAction.click();
 
-            await editor.quickActions.showPageController.click();
+                await previewFrame.getByRole('textbox', { name: 'Fragment Name' }).fill('table-action');
+                await dialog.createButton.click();
 
-            await expect(
-                previewFrame.getByText('adp.fiori.elements.v2/changes/coding/TestController.js')
-            ).toBeVisible();
+                await editor.toolbar.saveAndReloadButton.click();
 
-            await expect(previewFrame.getByRole('button', { name: 'Open in VS Code' })).toBeVisible();
-        });
+                await expect(editor.toolbar.saveButton).toBeDisabled();
 
-        test('Change table columns', async ({ page, previewFrame, projectCopy, ui5Version }) => {
-            test.skip(
-                gte(ui5Version, '1.96.0', { loose: true }) && !satisfies(ui5Version, '^1.108.0'),
-                'Change table columns is not supported in this version'
-            );
-
-            const tableSettings = new TableSettings(previewFrame);
-            const editor = new AdaptationEditorShell(page, ui5Version);
-
-            await editor.quickActions.changeTableColumns.click();
-
-            await expect(tableSettings.tableSettingsDialog.getByText('String Property')).toBeVisible();
-            await expect(tableSettings.tableSettingsDialog.getByText('Boolean Property')).toBeVisible();
-            await expect(tableSettings.tableSettingsDialog.getByText('Currency')).toBeVisible();
-        });
-
-        test('Add Custom Table Action', async ({ page, previewFrame, projectCopy, ui5Version }) => {
-            test.skip(
-                lt(ui5Version, '1.96.0', { loose: true }),
-                'Add Custom Table Action is not supported in this version'
-            );
-
-            const dialog = new AdpDialog(previewFrame, ui5Version);
-            const editor = new AdaptationEditorShell(page, ui5Version);
-
-            await editor.quickActions.addCustomTableAction.click();
-
-            await previewFrame.getByRole('textbox', { name: 'Fragment Name' }).fill('table-action');
-            await dialog.createButton.click();
-
-            await editor.toolbar.saveAndReloadButton.click();
-
-            await expect(editor.toolbar.saveButton).toBeDisabled();
-
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        fragments: expect.objectContaining({
-                            'table-action.fragment.xml': expect.stringMatching(
-                                new RegExp(`<!-- Use stable and unique IDs!-->
+                await expect
+                    .poll(async () => readChanges(projectCopy), {
+                        message: 'make sure change file is created'
+                    })
+                    .toEqual(
+                        expect.objectContaining({
+                            fragments: expect.objectContaining({
+                                'table-action.fragment.xml': expect.stringMatching(
+                                    new RegExp(`<!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
     <Button text="New Button"  id="btn-[a-z0-9]+"></Button>
 </core:FragmentDefinition>
 `)
-                            )
-                        }),
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'addXML',
-                                content: expect.objectContaining({
-                                    targetAggregation: 'content',
-                                    fragmentPath: 'fragments/table-action.fragment.xml'
+                                )
+                            }),
+                            changes: expect.arrayContaining([
+                                expect.objectContaining({
+                                    fileType: 'change',
+                                    changeType: 'addXML',
+                                    content: expect.objectContaining({
+                                        targetAggregation: 'content',
+                                        fragmentPath: 'fragments/table-action.fragment.xml'
+                                    })
                                 })
-                            })
-                        ])
-                    })
-                );
-        });
-
-        test('Add Custom Table Column', async ({ page, previewFrame, projectCopy, ui5Version }) => {
-            test.skip(
-                lt(ui5Version, '1.96.0', { loose: true }),
-                'Add Custom Table Column is not supported in this version'
-            );
-
-            const dialog = new AdpDialog(previewFrame, ui5Version);
-            const lr = new ListReport(previewFrame);
-            const editor = new AdaptationEditorShell(page, ui5Version);
-
-            if (await editor.quickActions.addCustomTableColumn.isDisabled()) {
-                await editor.toolbar.navigationModeButton.click();
-                await lr.goButton.click();
-                await editor.toolbar.uiAdaptationModeButton.click();
+                            ])
+                        })
+                    );
             }
+        );
 
-            await editor.quickActions.addCustomTableColumn.click();
+        test(
+            'Add Custom Table Column',
+            {
+                annotation: {
+                    type: 'skipUI5Version',
+                    description: '<1.96.0'
+                }
+            },
+            async ({ page, previewFrame, projectCopy, ui5Version }) => {
+                const dialog = new AdpDialog(previewFrame, ui5Version);
+                const lr = new ListReport(previewFrame);
+                const editor = new AdaptationEditorShell(page, ui5Version);
 
-            await previewFrame.getByRole('textbox', { name: 'Column Fragment Name' }).fill('table-column');
-            await previewFrame.getByRole('textbox', { name: 'Cell Fragment Name' }).fill('table-cell');
-            await dialog.createButton.click();
+                if (await editor.quickActions.addCustomTableColumn.isDisabled()) {
+                    await editor.toolbar.navigationModeButton.click();
+                    await lr.goButton.click();
+                    await editor.toolbar.uiAdaptationModeButton.click();
+                }
 
-            await editor.toolbar.saveAndReloadButton.click();
+                await editor.quickActions.addCustomTableColumn.click();
 
-            await expect(editor.toolbar.saveButton).toBeDisabled();
+                await previewFrame.getByRole('textbox', { name: 'Column Fragment Name' }).fill('table-column');
+                await previewFrame.getByRole('textbox', { name: 'Cell Fragment Name' }).fill('table-cell');
+                await dialog.createButton.click();
 
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        fragments: expect.objectContaining({
-                            'table-cell.fragment.xml': expect.stringMatching(
-                                new RegExp(`<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
+                await editor.toolbar.saveAndReloadButton.click();
+
+                await expect(editor.toolbar.saveButton).toBeDisabled();
+
+                await expect
+                    .poll(async () => readChanges(projectCopy), {
+                        message: 'make sure change file is created'
+                    })
+                    .toEqual(
+                        expect.objectContaining({
+                            fragments: expect.objectContaining({
+                                'table-cell.fragment.xml': expect.stringMatching(
+                                    new RegExp(`<core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
     <Text id="cell-text-[a-z0-9]+" text="Sample data" />
 </core:FragmentDefinition>`)
-                            ),
-                            'table-column.fragment.xml': expect.stringMatching(
-                                new RegExp(`<!-- Use stable and unique IDs!-->
+                                ),
+                                'table-column.fragment.xml': expect.stringMatching(
+                                    new RegExp(`<!-- Use stable and unique IDs!-->
 <core:FragmentDefinition xmlns:core='sap.ui.core' xmlns='sap.m'>
     <!--  add your xml here -->
      <Column id="column-[a-z0-9]+"
@@ -432,168 +450,189 @@ test.describe(`@quick-actions @fe-v2`, () => {
         </customData>
     </Column>
 </core:FragmentDefinition>`)
-                            )
-                        }),
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'addXML',
-                                content: expect.objectContaining({
-                                    targetAggregation: 'columns',
-                                    fragmentPath: 'fragments/table-column.fragment.xml'
-                                })
+                                )
                             }),
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'addXML',
-                                content: expect.objectContaining({
-                                    boundAggregation: 'items',
-                                    targetAggregation: 'cells',
-                                    fragmentPath: 'fragments/table-cell.fragment.xml'
+                            changes: expect.arrayContaining([
+                                expect.objectContaining({
+                                    fileType: 'change',
+                                    changeType: 'addXML',
+                                    content: expect.objectContaining({
+                                        targetAggregation: 'columns',
+                                        fragmentPath: 'fragments/table-column.fragment.xml'
+                                    })
+                                }),
+                                expect.objectContaining({
+                                    fileType: 'change',
+                                    changeType: 'addXML',
+                                    content: expect.objectContaining({
+                                        boundAggregation: 'items',
+                                        targetAggregation: 'cells',
+                                        fragmentPath: 'fragments/table-cell.fragment.xml'
+                                    })
                                 })
-                            })
-                        ])
+                            ])
+                        })
+                    );
+
+                await expect(lr.goButton).toBeVisible();
+
+                await editor.reloadCompleted();
+
+                await editor.toolbar.navigationModeButton.click();
+                await lr.goButton.click();
+                await expect(
+                    previewFrame.getByRole('columnheader', { name: 'New column' }).locator('div')
+                ).toBeVisible();
+                if (satisfies(ui5Version, '<1.120.0')) {
+                    await expect(previewFrame.getByRole('cell', { name: 'Sample data' })).toBeVisible();
+                } else {
+                    await expect(previewFrame.getByRole('gridcell', { name: 'Sample data' })).toBeVisible();
+                }
+            }
+        );
+
+        test(
+            'Enable/Disable Semantic Date Range in Filter Bar',
+            {
+                annotation: {
+                    type: 'skipUI5Version',
+                    // TODO: it is supposed to work in 1.96 as well, but by default semantic date is disabled unlike other versions
+                    // and quick action does not work correctly
+                    description: '<1.108.0'
+                }
+            },
+            async ({ page, previewFrame, projectCopy, ui5Version }) => {
+                const lr = new ListReport(previewFrame);
+                const editor = new AdaptationEditorShell(page, ui5Version);
+
+                await editor.toolbar.navigationModeButton.click();
+                if (satisfies(ui5Version, '^1.96.0')) {
+                    await previewFrame.getByTitle('Open Picker').click();
+                } else {
+                    // click on second filter value help
+                    await previewFrame
+                        .locator(
+                            '[id="fiori\\.elements\\.v2\\.0\\:\\:sap\\.suite\\.ui\\.generic\\.template\\.ListReport\\.view\\.ListReport\\:\\:RootEntity--listReportFilter-filterItemControl_BASIC-DateProperty-input-vhi"]'
+                        )
+                        .click();
+                }
+                await expect(previewFrame.getByText('Yesterday')).toBeVisible();
+                await editor.toolbar.uiAdaptationModeButton.click();
+
+                await editor.quickActions.disableSemanticDateRange.click();
+
+                await editor.toolbar.saveAndReloadButton.click();
+                await expect(editor.toolbar.saveButton).toBeDisabled();
+
+                await expect
+                    .poll(async () => readChanges(projectCopy), {
+                        message: 'make sure change file is created'
                     })
-                );
-
-            await expect(lr.goButton).toBeVisible();
-
-            await editor.reloadCompleted();
-
-            await editor.toolbar.navigationModeButton.click();
-            await lr.goButton.click();
-            await expect(previewFrame.getByRole('columnheader', { name: 'New column' }).locator('div')).toBeVisible();
-            await expect(previewFrame.getByRole('gridcell', { name: 'Sample data' })).toBeVisible();
-        });
-
-        test('Enable/Disable Semantic Date Range in Filter Bar', async ({
-            page,
-            previewFrame,
-            projectCopy,
-            ui5Version
-        }) => {
-            const lr = new ListReport(previewFrame);
-            const editor = new AdaptationEditorShell(page, ui5Version);
-
-            await editor.toolbar.navigationModeButton.click();
-            // click on second filter value help
-            await previewFrame.getByLabel('Show Value Help').nth(1).click();
-            // await previewFrame.getByTitle('Open Picker').click();
-            await expect(previewFrame.getByText('Yesterday')).toBeVisible();
-            await editor.toolbar.uiAdaptationModeButton.click();
-
-            await editor.quickActions.disableSemanticDateRange.click();
-
-            await editor.toolbar.saveAndReloadButton.click();
-            await expect(editor.toolbar.saveButton).toBeDisabled();
-
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'appdescr_ui_generic_app_changePageConfiguration',
-                                content: expect.objectContaining({
-                                    entityPropertyChange: expect.objectContaining({
-                                        propertyPath: 'component/settings/filterSettings/dateSettings',
-                                        propertyValue: expect.objectContaining({
-                                            useDateRange: false
+                    .toEqual(
+                        expect.objectContaining({
+                            changes: expect.arrayContaining([
+                                expect.objectContaining({
+                                    fileType: 'change',
+                                    changeType: 'appdescr_ui_generic_app_changePageConfiguration',
+                                    content: expect.objectContaining({
+                                        entityPropertyChange: expect.objectContaining({
+                                            propertyPath: 'component/settings/filterSettings/dateSettings',
+                                            propertyValue: expect.objectContaining({
+                                                useDateRange: false
+                                            })
                                         })
                                     })
                                 })
-                            })
-                        ])
+                            ])
+                        })
+                    );
+
+                await expect(lr.goButton).toBeVisible();
+                await editor.reloadCompleted();
+
+                await editor.toolbar.navigationModeButton.click();
+
+                await previewFrame.getByLabel('Open Picker').click();
+                await expect(
+                    previewFrame.getByRole('button', { name: new Date().getFullYear().toString() })
+                ).toBeVisible();
+                await editor.toolbar.uiAdaptationModeButton.click();
+
+                await editor.quickActions.enableSemanticDateRange.click();
+
+                await editor.toolbar.saveAndReloadButton.click();
+                await expect(editor.toolbar.saveButton).toBeDisabled();
+
+                await expect
+                    .poll(async () => readChanges(projectCopy), {
+                        message: 'make sure change file is created'
                     })
-                );
-
-            await expect(lr.goButton).toBeVisible();
-            await editor.reloadCompleted();
-
-            await editor.toolbar.navigationModeButton.click();
-            // await previewFrame.getByLabel('Show Value Help').nth(1).click();
-            await previewFrame.getByLabel('Open Picker').click();
-            // await previewFrame.getByTitle('Open Picker').click();
-            await expect(previewFrame.getByRole('button', { name: new Date().getFullYear().toString() })).toBeVisible();
-            await editor.toolbar.uiAdaptationModeButton.click();
-
-            await editor.quickActions.enableSemanticDateRange.click();
-
-            await editor.toolbar.saveAndReloadButton.click();
-            await expect(editor.toolbar.saveButton).toBeDisabled();
-
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'appdescr_ui_generic_app_changePageConfiguration',
-                                content: expect.objectContaining({
-                                    entityPropertyChange: expect.objectContaining({
-                                        propertyPath: 'component/settings/filterSettings/dateSettings',
-                                        propertyValue: expect.objectContaining({
-                                            useDateRange: true
+                    .toEqual(
+                        expect.objectContaining({
+                            changes: expect.arrayContaining([
+                                expect.objectContaining({
+                                    fileType: 'change',
+                                    changeType: 'appdescr_ui_generic_app_changePageConfiguration',
+                                    content: expect.objectContaining({
+                                        entityPropertyChange: expect.objectContaining({
+                                            propertyPath: 'component/settings/filterSettings/dateSettings',
+                                            propertyValue: expect.objectContaining({
+                                                useDateRange: true
+                                            })
                                         })
                                     })
                                 })
-                            })
-                        ])
+                            ])
+                        })
+                    );
+            }
+        );
+
+        test(
+            'Enable Variant Management in Tables and Charts',
+            {
+                annotation: {
+                    type: 'skipUI5Version',
+                    description: '<1.130.0'
+                }
+            },
+            async ({ page, previewFrame, projectCopy, ui5Version }) => {
+                const lr = new ListReport(previewFrame);
+                const editor = new AdaptationEditorShell(page, ui5Version);
+
+                await editor.quickActions.enableVariantManagementInTablesAndCharts.click();
+
+                await editor.toolbar.saveAndReloadButton.click();
+                await expect(editor.toolbar.saveButton).toBeDisabled();
+
+                await expect
+                    .poll(async () => readChanges(projectCopy), {
+                        message: 'make sure change file is created'
                     })
-                );
-        });
-
-        test('Enable Variant Management in Tables and Charts', async ({
-            page,
-            previewFrame,
-            projectCopy,
-            ui5Version
-        }) => {
-            test.skip(
-                lt(ui5Version, '1.130.0', { loose: true }),
-                'Enable Variant Management in Tables and Charts is not supported in this version'
-            );
-            const lr = new ListReport(previewFrame);
-            const editor = new AdaptationEditorShell(page, ui5Version);
-
-            await editor.quickActions.enableVariantManagementInTablesAndCharts.click();
-
-            await editor.toolbar.saveAndReloadButton.click();
-            await expect(editor.toolbar.saveButton).toBeDisabled();
-
-            await expect
-                .poll(async () => readChanges(projectCopy), {
-                    message: 'make sure change file is created'
-                })
-                .toEqual(
-                    expect.objectContaining({
-                        changes: expect.arrayContaining([
-                            expect.objectContaining({
-                                fileType: 'change',
-                                changeType: 'appdescr_ui_generic_app_changePageConfiguration',
-                                content: expect.objectContaining({
-                                    parentPage: expect.objectContaining({
-                                        component: 'sap.suite.ui.generic.template.ListReport'
-                                    }),
-                                    entityPropertyChange: expect.objectContaining({
-                                        propertyPath: 'component/settings',
-                                        propertyValue: expect.objectContaining({
-                                            smartVariantManagement: false
+                    .toEqual(
+                        expect.objectContaining({
+                            changes: expect.arrayContaining([
+                                expect.objectContaining({
+                                    fileType: 'change',
+                                    changeType: 'appdescr_ui_generic_app_changePageConfiguration',
+                                    content: expect.objectContaining({
+                                        parentPage: expect.objectContaining({
+                                            component: 'sap.suite.ui.generic.template.ListReport'
+                                        }),
+                                        entityPropertyChange: expect.objectContaining({
+                                            propertyPath: 'component/settings',
+                                            propertyValue: expect.objectContaining({
+                                                smartVariantManagement: false
+                                            })
                                         })
                                     })
                                 })
-                            })
-                        ])
-                    })
-                );
+                            ])
+                        })
+                    );
 
-            // await expect(editor.quickActions.enableVariantManagementInTablesAndCharts).
-        });
+                // await expect(editor.quickActions.enableVariantManagementInTablesAndCharts).
+            }
+        );
     });
 });
