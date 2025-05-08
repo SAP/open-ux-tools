@@ -1,5 +1,27 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.37
+
+### Patch Changes
+
+-   Updated dependencies [b94e186]
+    -   @sap-ux/ui5-application-inquirer@0.12.7
+
+## 0.0.36
+
+### Patch Changes
+
+-   Updated dependencies [f2aca4a]
+    -   @sap-ux/odata-service-inquirer@2.3.13
+
+## 0.0.35
+
+### Patch Changes
+
+-   f1608ab: Fixes for `ignoreCertErrors` not set
+-   Updated dependencies [f1608ab]
+    -   @sap-ux/odata-service-inquirer@2.3.12
+
 ## 0.0.34
 
 ### Patch Changes
