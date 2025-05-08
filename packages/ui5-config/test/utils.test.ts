@@ -105,7 +105,9 @@ describe('getEsmTypesVersion, getTypesVersion, getTypesPackage', () => {
         ['1.109-snapshot', UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME],
         // Following versions should use the new package
         ['1.113.0', UI5_DEFAULT.TYPES_PACKAGE_NAME],
-        ['1.114.0', UI5_DEFAULT.TYPES_PACKAGE_NAME]
+        ['1.114.0', UI5_DEFAULT.TYPES_PACKAGE_NAME],
+        ['snapshot', UI5_DEFAULT.TYPES_PACKAGE_NAME],
+        ['snapshot-untested', UI5_DEFAULT.TYPES_PACKAGE_NAME]
     ];
 
     // Tests validation of versions against known versions https://www.npmjs.com/package/@sapui5/ts-types-esm
