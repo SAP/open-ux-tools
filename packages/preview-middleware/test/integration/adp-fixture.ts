@@ -15,10 +15,11 @@ import {
     SIMPLE_APP,
     type ProjectConfig
 } from '../project';
-import { lt } from 'semver';
+import { lt, satisfies } from 'semver';
 
 export type TestOptions = {
     previewFrame: FrameLocator;
+    testSkipper: boolean;
 };
 
 const PACKAGE_ROOT = join(__dirname, '..', 'fixtures', 'mock');
@@ -27,6 +28,7 @@ export type WorkerFixtures = {
     projectServer: number;
     ui5Version: string;
     projectConfig: ProjectConfig;
+
     log: (message: string) => void;
 };
 
@@ -46,6 +48,25 @@ function createLogger(index: number) {
 
 export const test = base.extend<TestOptions, WorkerFixtures>({
     ui5Version: ['1.71.75', { option: true, scope: 'worker' }],
+    testSkipper: [
+        async ({ ui5Version, log }, use, testInfo) => {
+            // test setup takes time, so we should check and skip the test before that
+            const annotation = testInfo.annotations.find((annotation) => annotation.type === 'skipUI5Version');
+            if (annotation?.description) {
+                const skip = satisfies(ui5Version, annotation.description, { loose: true });
+                if (skip) {
+                    log(`skipping ${testInfo.title}`);
+                }
+                testInfo.skip(skip, `Test is not supported in this UI5 version`);
+            }
+
+            await use(true);
+        },
+        {
+            scope: 'test',
+            auto: true
+        }
+    ],
     projectConfig: [SIMPLE_APP, { option: true, scope: 'worker' }],
     log: [
         async ({}, use, testInfo) => {
