@@ -1,5 +1,12 @@
 # @sap-ux/deploy-tooling
 
+## 0.15.61
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/project-input-validator@0.5.6
+
 ## 0.15.60
 
 ### Patch Changes
