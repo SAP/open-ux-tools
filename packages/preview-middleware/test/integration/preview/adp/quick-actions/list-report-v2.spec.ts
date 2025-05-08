@@ -506,7 +506,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 const editor = new AdaptationEditorShell(page, ui5Version);
 
                 await editor.toolbar.navigationModeButton.click();
-                if (satisfies(ui5Version, '^1.96.0')) {
+                if (satisfies(ui5Version, '~1.96.0')) {
                     await previewFrame.getByTitle('Open Picker').click();
                 } else {
                     // click on second filter value help
