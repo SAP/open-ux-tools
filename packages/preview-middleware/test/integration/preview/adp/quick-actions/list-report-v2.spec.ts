@@ -266,7 +266,7 @@ test.describe(`@quick-actions @fe-v2`, () => {
                 );
         });
 
-        test.only(
+        test(
             'Add controller to page',
             {
                 annotation: {
