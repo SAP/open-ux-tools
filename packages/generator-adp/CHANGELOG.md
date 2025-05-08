@@ -1,5 +1,14 @@
 # @sap-ux/generator-adp
 
+## 0.2.1
+
+### Patch Changes
+
+-   6cb23c8: feat: Add the Extension Project functionality and internal support information
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/adp-tooling@0.13.43
+    -   @sap-ux/project-input-validator@0.5.6
+
 ## 0.2.0
 
 ### Minor Changes

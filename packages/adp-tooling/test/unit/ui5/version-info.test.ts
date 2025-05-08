@@ -11,7 +11,9 @@ import {
     checkSystemVersionPattern,
     getInternalVersions,
     getHigherVersions,
-    getRelevantVersions
+    getRelevantVersions,
+    shouldSetMinUI5Version,
+    getMinUI5VersionForManifest
 } from '../../../src/ui5/version-info';
 import type { UI5Version } from '../../../src';
 import { fetchInternalVersions } from '../../../src/ui5/fetch';
@@ -60,6 +62,56 @@ describe('Version Info', () => {
         it('should return the latest version from public versions', () => {
             const result = getLatestVersion(mockPublicVersions);
             expect(result).toBe('1.120.0');
+        });
+    });
+
+    describe('getMinUI5VersionForManifest', () => {
+        const publicVersions: UI5Version = {
+            latest: { version: '1.135.0' }
+        } as UI5Version;
+
+        it('returns the systemVersion when it is defined and contains no snapshot', () => {
+            expect(getMinUI5VersionForManifest(publicVersions, '1.120.0')).toBe('1.120.0');
+            expect(getMinUI5VersionForManifest(publicVersions, '2.5.3')).toBe('2.5.3');
+        });
+
+        it('falls back to latest when systemVersion is undefined', () => {
+            expect(getMinUI5VersionForManifest(publicVersions)).toBe('1.135.0');
+            expect(getMinUI5VersionForManifest(publicVersions, undefined)).toBe('1.135.0');
+        });
+
+        it('falls back to latest when systemVersion is an empty string', () => {
+            expect(getMinUI5VersionForManifest(publicVersions, '')).toBe('1.135.0');
+        });
+
+        it('falls back to latest when systemVersion includes "snapshot"', () => {
+            expect(getMinUI5VersionForManifest(publicVersions, '1.120.0-snapshot')).toBe('1.135.0');
+            expect(getMinUI5VersionForManifest(publicVersions, 'snapshot')).toBe('1.135.0');
+        });
+    });
+
+    describe('shouldSetMinUI5Version', () => {
+        it('returns false if systemVersion is undefined', () => {
+            expect(shouldSetMinUI5Version(undefined)).toBe(false);
+        });
+
+        it('returns false if minor version < 90', () => {
+            expect(shouldSetMinUI5Version('1.89.5')).toBe(false);
+            expect(shouldSetMinUI5Version('1.0.0')).toBe(false);
+        });
+
+        it('returns true if minor version = 90', () => {
+            expect(shouldSetMinUI5Version('1.90.0')).toBe(true);
+        });
+
+        it('returns true if minor version > 90', () => {
+            expect(shouldSetMinUI5Version('1.100.2')).toBe(true);
+            expect(shouldSetMinUI5Version('2.135.0')).toBe(true);
+        });
+
+        it('returns false if version string is malformed', () => {
+            expect(shouldSetMinUI5Version('1')).toBe(false);
+            expect(shouldSetMinUI5Version('1.x.2')).toBe(false);
         });
     });
 

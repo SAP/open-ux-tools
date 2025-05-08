@@ -1,7 +1,7 @@
 import { join } from 'path';
 import Generator from 'yeoman-generator';
+import { AppWizard, MessageType, Prompts } from '@sap-devx/yeoman-ui-types';
 
-import { AppWizard, Prompts } from '@sap-devx/yeoman-ui-types';
 import {
     FlexLayer,
     SystemLookup,
@@ -24,19 +24,20 @@ import {
     type ILogWrapper
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
-
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { EventName } from '../telemetryEvents';
-import { getPackageInfo, installDependencies } from '../utils/deps';
-import { initI18n, t } from '../utils/i18n';
-import AdpFlpConfigLogger from '../utils/logger';
-import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
+
 import { getFlexLayer } from './layer';
+import { initI18n, t } from '../utils/i18n';
+import { EventName } from '../telemetryEvents';
+import AdpFlpConfigLogger from '../utils/logger';
 import { getPrompts } from './questions/attributes';
 import { ConfigPrompter } from './questions/configuration';
-import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 import { validateJsonInput } from './questions/helper/validators';
+import { getPackageInfo, installDependencies } from '../utils/deps';
+import { getFirstArgAsString, parseJsonInput } from '../utils/parse-json-input';
 import type { AdpGeneratorOptions, AttributePromptOptions, JsonInput } from './types';
+import { getExtensionProjectData, resolveNodeModuleGenerator } from './extension-project';
+import { getDefaultNamespace, getDefaultProjectName } from './questions/helper/default-values';
 
 /**
  * Generator for creating an Adaptation Project.
@@ -176,7 +177,8 @@ export default class extends Generator {
         const defaultFolder = getDefaultTargetFolder(this.options.vscode) ?? process.cwd();
         const options: AttributePromptOptions = {
             targetFolder: { default: defaultFolder },
-            ui5ValidationCli: { hide: !isCLI }
+            ui5ValidationCli: { hide: !isCLI },
+            enableTypeScript: { hide: !!this.configAnswers.shouldCreateExtProject }
         };
         const attributesQuestions = getPrompts(this.destinationPath(), promptConfig, options);
 
@@ -191,6 +193,11 @@ export default class extends Generator {
         }
 
         try {
+            if (this.configAnswers.shouldCreateExtProject) {
+                await this._generateExtensionProject();
+                return;
+            }
+
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
 
@@ -199,6 +206,7 @@ export default class extends Generator {
                 provider,
                 configAnswers: this.configAnswers,
                 attributeAnswers: this.attributeAnswers,
+                systemVersion: this.prompter?.ui5?.systemVersion,
                 publicVersions,
                 layer: this.layer,
                 packageJson,
@@ -234,6 +242,32 @@ export default class extends Generator {
                     this.logger.error(t('error.telemetry', { error }));
                 }
             );
+        }
+
+        try {
+            this.vscode?.commands?.executeCommand?.('sap.ux.application.info', { fsPath: this._getProjectPath() });
+        } catch (e) {
+            this.appWizard.showError(e.message, MessageType.notification);
+        }
+    }
+
+    /**
+     * Generates an extension project if the application is not supported by Adaptation Project.
+     */
+    private async _generateExtensionProject(): Promise<void> {
+        try {
+            const data = await getExtensionProjectData(this.configAnswers, this.attributeAnswers, this.systemLookup);
+
+            const generator = resolveNodeModuleGenerator();
+            this.composeWith(generator!, {
+                arguments: [JSON.stringify(data)],
+                appWizard: this.appWizard
+            });
+            this.logger.info(`'@bas-dev/generator-extensibility-sub' was called.`);
+        } catch (e) {
+            this.logger.info(t('error.creatingExtensionProjectError'));
+            this.logger.error(e.message);
+            this.appWizard.showError(e.message, MessageType.notification);
         }
     }
 
