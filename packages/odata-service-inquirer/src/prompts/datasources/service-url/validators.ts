@@ -49,6 +49,7 @@ export async function validateService(
         // Remove all occurrences of the origin from the metadata to make backend uris relative
         PromptState.odataService.metadata = originToRelative(metadata);
         PromptState.odataService.odataVersion = serviceOdataVersion;
+        PromptState.odataService.ignoreCertError = ignoreCertError;
 
         // Extract sap-client and keep the rest of the query params as part of the url
         const fullUrl = new URL(url);

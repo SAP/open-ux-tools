@@ -1,5 +1,11 @@
 # @sap-ux/ui5-application-inquirer
 
+## 0.12.7
+
+### Patch Changes
+
+-   b94e186: fix typescript workspace warning for non cap projects
+
 ## 0.12.6
 
 ### Patch Changes

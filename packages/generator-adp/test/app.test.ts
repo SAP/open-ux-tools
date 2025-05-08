@@ -1,30 +1,32 @@
+import { exec } from 'child_process';
 import fs from 'fs';
 import { join } from 'path';
 import { rimraf } from 'rimraf';
 import yeomanTest from 'yeoman-test';
-import { exec } from 'child_process';
 
-import * as Logger from '@sap-ux/logger';
-import { isAppStudio } from '@sap-ux/btp-utils';
-import type { ToolsLogger } from '@sap-ux/logger';
 import type { SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
-import { getCredentialsFromStore } from '@sap-ux/system-access';
-import type { AbapServiceProvider } from '@sap-ux/axios-extension';
-import { sendTelemetry, getHostEnvironment, hostEnvironment } from '@sap-ux/fiori-generator-shared';
 import {
     SystemLookup,
-    getProviderConfig,
+    fetchPublicVersions,
     getConfiguredProvider,
+    getProviderConfig,
     loadApps,
     validateUI5VersionExists
 } from '@sap-ux/adp-tooling';
+import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isAppStudio } from '@sap-ux/btp-utils';
+import { getHostEnvironment, hostEnvironment, sendTelemetry } from '@sap-ux/fiori-generator-shared';
+import type { ToolsLogger } from '@sap-ux/logger';
+import * as Logger from '@sap-ux/logger';
+import { getCredentialsFromStore } from '@sap-ux/system-access';
 
-import adpGenerator from '../src/app';
-import { initI18n, t } from '../src/utils/i18n';
-import { EventName } from '../src/telemetryEvents';
 import type { AdpGeneratorOptions } from '../src/app';
-import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import adpGenerator from '../src/app';
 import { ConfigPrompter } from '../src/app/questions/configuration';
+import { getDefaultProjectName } from '../src/app/questions/helper/default-values';
+import type { JsonInput } from '../src/app/types';
+import { EventName } from '../src/telemetryEvents';
+import { initI18n, t } from '../src/utils/i18n';
 
 jest.mock('@sap-devx/feature-toggle-node', () => ({
     // Is BAS this will mean that the layer is CUSTOMER_BASE
@@ -56,7 +58,8 @@ jest.mock('@sap-ux/adp-tooling', () => ({
     getConfiguredProvider: jest.fn(),
     loadApps: jest.fn(),
     getProviderConfig: jest.fn(),
-    validateUI5VersionExists: jest.fn()
+    validateUI5VersionExists: jest.fn(),
+    fetchPublicVersions: jest.fn()
 }));
 
 jest.mock('../src/utils/deps.ts', () => ({
@@ -119,6 +122,11 @@ const answers = {
     enableTypeScript: false
 };
 
+const publicVersions = {
+    latest: { version: '1.134.1' } as VersionDetail,
+    '1.134.0': { version: '1.134.0' } as VersionDetail
+};
+
 const isAbapCloudMock = jest.fn();
 const getAtoInfoMock = jest.fn();
 const getSystemInfoMock = jest.fn();
@@ -143,6 +151,7 @@ const loadAppsMock = loadApps as jest.Mock;
 const execMock = exec as unknown as jest.Mock;
 const mockIsAppStudio = isAppStudio as jest.Mock;
 const getProviderConfigMock = getProviderConfig as jest.Mock;
+const fetchPublicVersionsMock = fetchPublicVersions as jest.Mock;
 const sendTelemetryMock = sendTelemetry as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
 const getDefaultProjectNameMock = getDefaultProjectName as jest.Mock;
@@ -159,10 +168,7 @@ describe('Adaptation Project Generator Integration Test', () => {
         loadAppsMock.mockResolvedValue(apps);
         jest.spyOn(ConfigPrompter.prototype, 'provider', 'get').mockReturnValue(dummyProvider);
         jest.spyOn(ConfigPrompter.prototype, 'ui5', 'get').mockReturnValue({
-            publicVersions: {
-                latest: { version: '1.134.1' } as VersionDetail,
-                '1.134.0': { version: '1.134.0' } as VersionDetail
-            },
+            publicVersions,
             ui5Versions: ['1.134.1 (latest)', '1.134.0'],
             systemVersion: '1.136.0.204546979753'
         });
@@ -180,6 +186,8 @@ describe('Adaptation Project Generator Integration Test', () => {
 
         getDefaultProjectNameMock.mockReturnValue('app.variant1');
         getCredentialsFromStoreMock.mockResolvedValue(undefined);
+
+        fetchPublicVersionsMock.mockResolvedValue(publicVersions);
     });
 
     beforeAll(async () => {
@@ -219,8 +227,8 @@ describe('Adaptation Project Generator Integration Test', () => {
         await expect(runContext.run()).resolves.not.toThrow();
 
         const generatedDirs = fs.readdirSync(testOutputDir);
-        expect(generatedDirs.length).toBeGreaterThan(0);
-        const projectFolder = join(testOutputDir, generatedDirs[0]);
+        expect(generatedDirs).toContain(answers.projectName);
+        const projectFolder = join(testOutputDir, answers.projectName);
 
         const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
         const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
@@ -245,5 +253,45 @@ describe('Adaptation Project Generator Integration Test', () => {
             }),
             projectFolder
         );
+    });
+
+    it('should create adaptation project from json correctly', async () => {
+        const jsonInput: JsonInput = {
+            system: 'urlA',
+            username: 'user1',
+            password: 'pass1',
+            client: '010',
+            application: 'sap.ui.demoapps.f1',
+            projectName: 'my.app',
+            namespace: 'customer.my.app',
+            applicationTitle: 'My app title',
+            targetFolder: testOutputDir
+        };
+        const jsonInputString = JSON.stringify(jsonInput);
+
+        const runContext = yeomanTest
+            .create(adpGenerator, { resolved: generatorPath }, { cwd: testOutputDir })
+            .withArguments([jsonInputString]);
+
+        await expect(runContext.run()).resolves.not.toThrow();
+
+        const generatedDirs = fs.readdirSync(testOutputDir);
+        expect(generatedDirs).toContain(jsonInput.projectName);
+        const projectFolder = join(testOutputDir, jsonInput.projectName!);
+
+        const manifestPath = join(projectFolder, 'webapp', 'manifest.appdescr_variant');
+        const i18nPath = join(projectFolder, 'webapp', 'i18n', 'i18n.properties');
+        const ui5Yaml = join(projectFolder, 'ui5.yaml');
+
+        expect(fs.existsSync(manifestPath)).toBe(true);
+        expect(fs.existsSync(i18nPath)).toBe(true);
+        expect(fs.existsSync(ui5Yaml)).toBe(true);
+
+        const manifestContent = fs.readFileSync(manifestPath, 'utf8');
+        const i18nContent = fs.readFileSync(i18nPath, 'utf8');
+        const ui5Content = fs.readFileSync(ui5Yaml, 'utf8');
+        expect(manifestContent).toMatchSnapshot();
+        expect(i18nContent).toMatchSnapshot();
+        expect(ui5Content).toMatchSnapshot();
     });
 });
