@@ -2,7 +2,7 @@ import type { Destination } from '@sap-ux/btp-utils';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import { OdataVersion } from '@sap-ux/fiori-elements-writer';
 import { getCapFolderPathsSync } from '@sap-ux/fiori-generator-shared';
-import { DatasourceType, type EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
+import { DatasourceType, type EntityRelatedAnswers, type ConnectedSystem } from '@sap-ux/odata-service-inquirer';
 import { promptNames } from '@sap-ux/ui5-application-inquirer';
 import { getDefaultUI5Theme, supportedUi5VersionFallbacks } from '@sap-ux/ui5-info';
 import type { AppConfig, FEAppConfig, FFAppConfig, Project, Service, State } from '../types';
@@ -156,7 +156,7 @@ function _setServiceDefaults(floorplan: AppConfig['floorplan'], service?: AppCon
             destination: {
                 Name: service?.destination
             } as Destination
-        } as Service['connectedSystem'];
+        } as ConnectedSystem;
         serviceDefaults.source = DatasourceType.sapSystem;
         return serviceDefaults;
     }

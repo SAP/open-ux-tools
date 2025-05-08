@@ -1,5 +1,12 @@
 # @sap-ux/cards-editor-middleware
 
+## 0.4.67
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+
 ## 0.4.66
 
 ### Patch Changes

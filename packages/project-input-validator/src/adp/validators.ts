@@ -163,3 +163,25 @@ export function validateNamespaceAdp(
 
     return true;
 }
+
+/**
+ * Validates that application ACH is not empty and it is in correct format.
+ *
+ * @param {string} value - The application component hierarchy.
+ * @param {boolean} isCustomerBase - Whether the layer is customer base.
+ * @returns {string | boolean} If application ACH is valid returns true otherwise error message.
+ */
+export function validateAch(value: string, isCustomerBase: boolean): string | boolean {
+    const validationResult = validateEmptyString(value);
+    if (typeof validationResult === 'string') {
+        return validationResult;
+    }
+
+    const isValid = /^([A-Z0-9]{2,3})(-[A-Z0-9]{1,6})*$/.exec(value.toUpperCase());
+
+    if (!isCustomerBase && !isValid) {
+        return t('adp.achMandatoryError');
+    }
+
+    return true;
+}

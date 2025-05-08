@@ -171,7 +171,9 @@ export async function getDataSourceAnnotationFileMap(): Promise<AnnotationDataSo
  * @returns {CodeExtResponse} Returns path to existing controller if found
  */
 export async function getExistingController(controllerName: string): Promise<CodeExtResponse> {
-    return request<CodeExtResponse>(`${ApiEndpoints.CODE_EXT}/${controllerName}` as ApiEndpoints, RequestMethod.GET);
+    const params = new URLSearchParams({ name: controllerName });
+    const url = `${ApiEndpoints.CODE_EXT}?${params.toString()}` as ApiEndpoints;
+    return request<CodeExtResponse>(url, RequestMethod.GET);
 }
 
 /**
