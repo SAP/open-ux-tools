@@ -66,6 +66,10 @@ export function getTypesVersion(minUI5Version?: string) {
  * @returns string representing the types package name.
  */
 export function getTypesPackage(ui5Version?: string) {
+    if (ui5Version?.toLowerCase() === 'snapshot' || ui5Version?.toLowerCase() === 'snapshot-untested') {
+        return UI5_DEFAULT.TYPES_PACKAGE_NAME;
+    }
+
     const version = semVer.coerce(ui5Version) ?? semVer.coerce(UI5_DEFAULT.TYPES_VERSION_BEST);
     if (version && semVer.lt(version, UI5_DEFAULT.NEW_TYPES_PACKAGE_SINCE)) {
         return UI5_DEFAULT.TS_TYPES_ESM_PACKAGE_NAME;
