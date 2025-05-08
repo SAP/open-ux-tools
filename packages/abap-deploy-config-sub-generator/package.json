@@ -41,7 +41,7 @@
         "@sap-ux/project-access": "workspace:*",
         "@sap-ux/telemetry": "workspace:*",
         "@sap-ux/ui5-config": "workspace:*",
-        "i18next": "23.5.1",
+        "i18next": "24.2.3",
         "@sap-devx/yeoman-ui-types": "1.14.4"
     },
     "devDependencies": {
