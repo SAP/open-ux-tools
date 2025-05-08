@@ -4,10 +4,11 @@ import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer } from '../types';
 import { getProviderConfig } from '../abap';
+import { getI18nDescription } from './i18n';
 import { getCustomConfig } from './project-utils';
-import type { AdpWriterConfig, AttributesAnswers, ConfigAnswers, UI5Version } from '../types';
-import { getNewModelEnhanceWithChange } from './descriptor-content';
+import { getManifestContent } from './descriptor-content';
 import { getFormattedVersion, getLatestVersion, getOfficialBaseUI5VersionUrl, getVersionToBeUsed } from '../ui5';
+import type { AdpWriterConfig, AttributesAnswers, CloudApp, ConfigAnswers, OnpremApp, UI5Version } from '../types';
 
 interface ConfigOptions {
     /**
@@ -35,6 +36,10 @@ interface ConfigOptions {
      */
     publicVersions: UI5Version;
     /**
+     * System UI5 Version.
+     */
+    systemVersion: string | undefined;
+    /**
      * Logger instance for debugging and error reporting.
      */
     logger: ToolsLogger;
@@ -54,7 +59,8 @@ interface ConfigOptions {
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
 export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig> {
-    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider, publicVersions } = options;
+    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider, publicVersions, systemVersion } =
+        options;
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
@@ -70,20 +76,34 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
 
     const { namespace, title, enableTypeScript } = attributeAnswers;
     const {
-        application: { id, bspName }
+        application: { id, bspName },
+        fioriId,
+        ach
     } = configAnswers;
 
-    return {
-        app: {
-            id: namespace,
-            reference: id,
-            layer,
-            title,
+    const app: OnpremApp | CloudApp = {
+        id: namespace,
+        reference: id,
+        layer,
+        title,
+        content: getManifestContent(layer, systemVersion, publicVersions, fioriId, ach),
+        i18nDescription: getI18nDescription(layer, title)
+    };
+
+    if (isCloudProject) {
+        const lrep = provider.getLayeredRepository();
+        const { activeLanguages: languages } = await lrep.getSystemInfo();
+
+        Object.assign(app, {
             bspName,
-            content: [getNewModelEnhanceWithChange()]
-        },
+            languages
+        });
+    }
+
+    return {
+        app,
         ui5: {
-            minVersion: ui5Version?.split(' ')[0],
+            minVersion: ui5Version?.split(' ')?.[0],
             version: getFormattedVersion(ui5Version),
             frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version)
         },
