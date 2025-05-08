@@ -43,7 +43,7 @@ export function getFormattedDateAndTime(timestamp: number): string {
  * @param value string | number | boolean
  * @returns string | undefined
  */
-export function getValueIcon(value: string | number | boolean): string | undefined {
+export function getValueIcon(value: string | number | boolean | object): string | undefined {
     if (typeof value === 'string') {
         if (value.trim().startsWith('{') && value.trim().endsWith('}')) {
             return IconName.expression;

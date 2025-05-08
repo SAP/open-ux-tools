@@ -30,12 +30,6 @@ export interface PropertyChanged<T extends PropertyValue = PropertyValue> {
     propertyName: string;
     newValue: T;
 }
-export interface ConfigurationChange<T extends ConfigurationValue = ConfigurationValue> {
-    propertyPath: string;
-    propertyName: string;
-    value: T;
-    kind: typeof CONFIGURATION_CHANGE_KIND;
-}
 
 export interface PropertyChangeFailed {
     controlId: string;
@@ -131,32 +125,9 @@ export interface IconDetails {
 
 export const PENDING_CHANGE_TYPE = 'pending';
 export const SAVED_CHANGE_TYPE = 'saved';
-export const PROPERTY_CHANGE_KIND = 'property';
-export const CONFIGURATION_CHANGE_KIND = 'configuration';
 export const UNKNOWN_CHANGE_KIND = 'unknown';
 export const GENERIC_CHANGE_KIND = 'generic';
 export const CONTROL_CHANGE_KIND = 'control';
-export interface PendingPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
-    type: typeof PENDING_CHANGE_TYPE;
-    kind: typeof PROPERTY_CHANGE_KIND;
-    /**
-     * Indicates if change is before or after current position in undo redo stack
-     */
-    isActive: boolean;
-    fileName: string;
-}
-
-export interface PendingConfigurationChange<T extends ConfigurationValue = ConfigurationValue>
-    extends ConfigurationChange<T> {
-    type: typeof PENDING_CHANGE_TYPE;
-    controlIds: string[];
-    /**
-     * Indicates if change is before or after current position in undo redo stack
-     */
-    isActive: boolean;
-    fileName: string;
-}
-
 export interface PendingOtherChange {
     type: typeof PENDING_CHANGE_TYPE;
     kind: typeof UNKNOWN_CHANGE_KIND;
@@ -176,32 +147,8 @@ export interface PendingControlChange {
     title?: string;
 }
 
-export type PendingChange =
-    | PendingPropertyChange
-    | PendingOtherChange
-    | PendingControlChange
-    | PendingConfigurationChange
-    | PendingGenericChange;
-export type SavedChange =
-    | SavedPropertyChange
-    | SavedControlChange
-    | UnknownSavedChange
-    | SavedConfigurationChange
-    | SavedGenericChange;
-
-export interface SavedPropertyChange<T extends PropertyValue = PropertyValue> extends PropertyChange<T> {
-    type: typeof SAVED_CHANGE_TYPE;
-    kind: typeof PROPERTY_CHANGE_KIND;
-    fileName: string;
-    timestamp: number;
-}
-
-export interface SavedConfigurationChange<T extends PropertyValue = PropertyValue> extends ConfigurationChange<T> {
-    type: typeof SAVED_CHANGE_TYPE;
-    fileName: string;
-    controlIds: string[]; // configuration could be shared by multiple controls.
-    timestamp: number;
-}
+export type PendingChange = PendingOtherChange | PendingControlChange | PendingGenericChange;
+export type SavedChange = SavedControlChange | UnknownSavedChange | SavedGenericChange;
 
 export interface UnknownSavedChange {
     type: typeof SAVED_CHANGE_TYPE;
@@ -210,7 +157,7 @@ export interface UnknownSavedChange {
     changeType: string;
     title?: string;
     controlId?: string;
-    timestamp?: number;
+    timestamp: number;
 }
 
 export interface PendingGenericChange {
@@ -220,10 +167,13 @@ export interface PendingGenericChange {
     isActive: boolean;
     fileName: string;
     changeType: string;
-    controlId?: string;
-    genericProps: {
+    controlId?: string | string[];
+    configPath?: string;
+    controlName?: string;
+    properties: {
         label: string;
-        value: string;
+        value: PropertyValue | Record<string, unknown>;
+        displayValueWithIcon?: boolean;
     }[];
 }
 
@@ -233,11 +183,14 @@ export interface SavedGenericChange {
     timestamp: number;
     fileName: string;
     title: string;
-    controlId?: string;
+    controlId?: string | string[];
+    configPath?: string;
+    controlName?: string;
     changeType: string;
-    genericProps: {
+    properties: {
         label: string;
-        value: string;
+        value: PropertyValue | Record<string, unknown>;
+        displayValueWithIcon?: boolean;
     }[];
 }
 
@@ -248,13 +201,10 @@ export interface SavedControlChange {
     fileName: string;
     changeType: string;
     title?: string;
-    timestamp?: number;
+    timestamp: number;
 }
 
 export type Change = PendingChange | SavedChange;
-export type NonConfigChange =
-    | Exclude<PendingChange, PendingConfigurationChange>
-    | Exclude<SavedChange, SavedConfigurationChange>;
 
 export interface ChangeStackModified {
     pending: PendingChange[];

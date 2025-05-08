@@ -1,19 +1,85 @@
 import type { ChangeDefinition } from 'sap/ui/fl/Change';
+import { TextBundle } from '../../i18n';
+import { getUi5Version, isLowerThanMinimalUi5Version } from '../../utils/version';
+import FlexChange from 'sap/ui/fl/Change';
+import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
+import Log from 'sap/base/Log';
+import { getError } from '../../utils/error';
+import { AppComponent } from 'sap/ui/rta/RuntimeAuthoring';
+import { getConfigMapControlIdMap } from '../../utils/fe-v4';
+import { PropertyValue } from '@sap-ux-private/control-property-editor-common';
 
 export const ADD_NEW_ANNOTATION_FILE_CHANGE = 'appdescr_app_addAnnotationsToOData';
 export const RENAME_CHANGE = 'rename';
 export const MOVE_CHANGE = 'moveControls';
-export type GenericChange = NewAnnotationFileChange | RenameChange | MoveControlsChange;
+export const ADD_XML_CHANGE = 'addXML';
+export const PROPERTY_CHANGE = 'propertyChange';
+export const PROPERTY_BINDING_CHANGE = 'propertyBindingChange';
+export const MANIFEST_V4_CHANGE = 'appdescr_fe_changePageConfiguration';
+export const MANIFEST_V2_CHANGE = 'appdescr_ui_generic_app_changePageConfiguration';
+
+export type GenericChange =
+    | NewAnnotationFileChange
+    | RenameChange
+    | MoveControlsChange
+    | AddXml
+    | PropertyChange
+    | ConfigChange
+    | V2ConfigChange;
+
 interface BaseChange extends ChangeDefinition {
     creation: string;
 }
-export interface RenameChange  extends BaseChange {
+
+interface ChangeContent {
+    property: string;
+    newValue: string;
+    newBinding: string;
+}
+
+export interface AddXml extends BaseChange {
+    changeType: typeof ADD_XML_CHANGE;
+    content: {
+        targetAggregation: string;
+        fragmentPath: string;
+    };
+}
+export interface RenameChange extends BaseChange {
     changeType: typeof RENAME_CHANGE;
     texts: {
         newText: {
             value: string;
             type: string;
         };
+    };
+}
+export interface ConfigChange extends BaseChange {
+    changeType: typeof MANIFEST_V4_CHANGE;
+    propertyName: string;
+    content: ConfigurationChangeContent;
+}
+
+export interface V2ConfigChange extends BaseChange {
+    changeType: typeof MANIFEST_V4_CHANGE;
+    propertyName: string;
+    content: {
+        entityPropertyChange: {
+            propertyPath: string;
+            propertyValue: Record<string, string>;
+        };
+        parentPage: {
+            component: string;
+            entitySet: string;
+        };
+    };
+}
+
+interface ConfigurationChangeContent {
+    page: string;
+    entityPropertyChange: {
+        propertyPath: string;
+        operation: 'UPSERT' | 'DELETE' | 'INSERT' | 'UPDATE';
+        propertyValue: string | Record<string, string>;
     };
 }
 
@@ -47,78 +113,358 @@ export interface MoveControlsChange extends BaseChange {
     };
 }
 
+export interface PropertyChange extends BaseChange {
+    changeType: typeof PROPERTY_CHANGE | typeof PROPERTY_BINDING_CHANGE;
+    controlId: string;
+    controlName: string;
+    propertyName: string;
+    content: ChangeContent;
+}
+
+interface ChangeHandlerOptions {
+    appComponent: AppComponent;
+    textBundle: TextBundle;
+    configPropertyControlIdMap?: Map<string, string[]>;
+}
+
+interface GenericChangeHandlerReturnType {
+    changeTitle: string;
+    controlId?: string | string[];
+    changeType?: string;
+    configPath?: string;
+    subtitle?: string;
+    properties: { label: string; value: PropertyValue | Record<string, unknown>; displayValueWithIcon?: boolean }[];
+}
+
+interface GenericChangeHandler {
+    [key: string]: (
+        change: GenericChange,
+        options: ChangeHandlerOptions
+    ) => Promise<GenericChangeHandlerReturnType> | GenericChangeHandlerReturnType;
+}
+
 //: GenericChangeMap
-export const GENERIC_CHANGE_HANDLER: {
-    [key: string]: (change: GenericChange) => {
-        changeTitle: string;
-        controlId?: string;
-        genericProps: Record<string, { i18nDisplayKey: string; value: string }>;
-    };
-} = {
-    [ADD_NEW_ANNOTATION_FILE_CHANGE]: (change) => {
+export const GENERIC_CHANGE_HANDLER: GenericChangeHandler = {
+    [ADD_NEW_ANNOTATION_FILE_CHANGE]: (change, { textBundle }) => {
         const annotationFileChange = change as NewAnnotationFileChange;
         const dataSourceId = annotationFileChange.content.dataSourceId;
         const sourceKey = Object.keys(annotationFileChange.content.dataSource)[0];
         return {
-            changeTitle: 'ADD_NEW_ANNOTATION_FILE',
-            genericProps: {
-                dataSourceId: {
-                    i18nDisplayKey: 'SERVICE_NAME',
+            changeTitle: textBundle?.getText('ADD_NEW_ANNOTATION_FILE'),
+            changeType: 'configuration',
+            properties: [
+                {
+                    label: textBundle?.getText('SERVICE_NAME'),
                     value: dataSourceId
                 },
-                dataSourceUri: {
-                    i18nDisplayKey: 'ANNOTATION_FILE_URI',
+                {
+                    label: textBundle?.getText('ANNOTATION_FILE_URI'),
                     value: annotationFileChange.content.dataSource[sourceKey].uri
                 }
-            }
+            ]
         };
     },
-    [RENAME_CHANGE]: (change) => {
+    [RENAME_CHANGE]: (change, { textBundle }) => {
         const renameChange = change as RenameChange;
         const selectorId = renameChange.selector.id;
         return {
-            changeTitle: 'RENAME_CHANGE',
+            changeTitle: textBundle?.getText('RENAME_CHANGE'),
             controlId: selectorId,
-            genericProps: {
-                selectorId: {
-                    i18nDisplayKey: 'SELECTOR_ID',
+            properties: [
+                {
+                    label: textBundle?.getText('SELECTOR_ID'),
                     value: selectorId
                 },
-                newText: {
-                    i18nDisplayKey: 'NEW_VALUE',
+                {
+                    label: textBundle?.getText('NEW_VALUE'),
                     value: renameChange.texts.newText.value
                 },
-                textClassificationType: {
-                    i18nDisplayKey: 'TEXT_TYPE',
+                {
+                    label: textBundle?.getText('TEXT_TYPE'),
                     value: renameChange.texts.newText.type
                 }
-            }
+            ]
         };
     },
-    [MOVE_CHANGE]: (change) => {
+    [MOVE_CHANGE]: (change, { textBundle }) => {
         const moveChange = change as MoveControlsChange;
         const movedControlId = moveChange.content.movedElements[0].selector.id;
         return {
-            changeTitle: 'MOVE_CONTROLS_CHANGE',
+            changeTitle: textBundle?.getText('MOVE_CONTROLS_CHANGE'),
             controlId: movedControlId,
-            genericProps: {
-                selectorId: {
-                    i18nDisplayKey: 'TARGET_CONTROL_ID',
+            properties: [
+                {
+                    label: textBundle?.getText('TARGET_CONTROL_ID'),
                     value: moveChange.content.target.selector.id
                 },
-                moveFromIdx: {
-                    i18nDisplayKey: 'MOVE_FROM_INDEX',
+                {
+                    label: textBundle?.getText('MOVE_FROM_INDEX'),
                     value: String(moveChange.content.movedElements[0].sourceIndex)
                 },
-                moveToIdx: {
-                    i18nDisplayKey: 'MOVE_TO_INDEX',
+                {
+                    label: textBundle?.getText('MOVE_TO_INDEX'),
                     value: String(moveChange.content.movedElements[0].targetIndex)
                 },
-                targetControlId: {
-                    i18nDisplayKey: 'MOVED_CONTROL_ID',
+                {
+                    label: textBundle?.getText('MOVED_CONTROL_ID'),
                     value: movedControlId
                 }
-            }
+            ]
         };
+    },
+    [ADD_XML_CHANGE]: (change, { textBundle }) => {
+        const addXmlChange = change as AddXml;
+        return {
+            changeTitle: textBundle?.getText('ADD_XML_CHANGE'),
+            controlId: addXmlChange.selector.id,
+            properties: [
+                {
+                    label: textBundle?.getText('AGGREGATION'),
+                    value: addXmlChange.content.targetAggregation
+                },
+                {
+                    label: textBundle?.getText('FRAGMENT_PATH'),
+                    value: addXmlChange.content.fragmentPath
+                }
+            ]
+        };
+    },
+    [PROPERTY_CHANGE]: async (change, handlerOptions) => {
+        return getPropertyChange(change as PropertyChange, handlerOptions);
+    },
+    [PROPERTY_BINDING_CHANGE]: async (change, handlerOptions) => {
+        return getPropertyChange(change as PropertyChange, handlerOptions);
+    },
+    [MANIFEST_V4_CHANGE]: async (change, handlerOptions) => {
+        return getV4ConfigurationChange(change as ConfigChange, handlerOptions);
+    },
+    [MANIFEST_V2_CHANGE]: async (change, handlerOptions) => {
+        return getV2ConfigurationChange(change as V2ConfigChange, handlerOptions);
     }
 };
+
+function getV2ConfigurationChange(
+    change: V2ConfigChange,
+    { textBundle }: ChangeHandlerOptions
+): GenericChangeHandlerReturnType {
+    const { entityPropertyChange, parentPage } = change.content;
+    const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
+    const propertyName =
+        Object.keys(entityPropertyChange.propertyValue)?.[0] ?? propertyPathSegments[propertyPathSegments.length - 1];
+    const propertyValue = entityPropertyChange.propertyValue?.[propertyName] ?? entityPropertyChange.propertyValue;
+
+    return {
+        changeTitle: textBundle?.getText('CONFIGURATION_CHANGE'),
+        controlId: [],
+        changeType: 'configuration',
+        subtitle: getCompactV4ConfigPath(propertyPathSegments) || parentPage.component,
+        properties: [
+            {
+                label: propertyName ?? '',
+                value: propertyValue,
+                displayValueWithIcon: true
+            }
+        ]
+    };
+}
+
+function getV4ConfigurationChange(
+    change: ConfigChange,
+    { configPropertyControlIdMap, textBundle }: ChangeHandlerOptions
+): GenericChangeHandlerReturnType {
+    assertManifestChange(change);
+    if ([change.content.entityPropertyChange.propertyValue].every((item) => item === undefined || item === null)) {
+        throw new Error('Invalid change, missing property value on change file');
+    }
+    const propertyPathSegments = change.content.entityPropertyChange.propertyPath.split('/');
+    const propertyName = propertyPathSegments.pop();
+    if (!propertyName) {
+        throw new Error('No property name found');
+    }
+    const configMapKey = getConfigMapControlIdMap(change.content.page, propertyPathSegments);
+    const controlIds = configPropertyControlIdMap?.get(configMapKey) || [];
+    let value = change.content.entityPropertyChange.propertyValue;
+    const properties =
+        typeof value === 'object'
+            ? [
+                  {
+                      label: propertyName,
+                      value: {},
+                      displayValueWithIcon: true
+                  },
+                  ...Object.keys(value)
+                      .map((key: string) => {
+                          if (typeof value[key] === 'object') {
+                              return undefined;
+                          }
+                          return {
+                              label: key,
+                              value: value[key],
+                              displayValueWithIcon: true
+                          };
+                      })
+                      .filter((item) => !!item)
+              ]
+            : [
+                  {
+                      label: propertyName,
+                      value,
+                      displayValueWithIcon: true
+                  }
+              ];
+    return {
+        changeTitle: textBundle?.getText('CONFIGURATION_CHANGE'),
+        controlId: controlIds,
+        changeType: 'configuration',
+        configPath: change.content.entityPropertyChange.propertyPath,
+        properties: properties
+    };
+}
+
+/**
+ * Returns a shortened version of the given configuration path segments by removing excess segments,
+ * leaving only the most relevant parts for display. For example, the configuration path
+ * `controlConfiguration/com.sap.UI.v1.LineItem/tableSettings` will be shortened to
+ * `LineItem/tableSettings`.
+ *
+ * @param propertyPathSeg string[]
+ * @returns string
+ */
+function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
+    return propertyPathSeg.join('/').replace(/^controlConfiguration\/(?:([^/]+\/))?@[^/]+\.v1\./, '$1');
+}
+
+function assertManifestChange(change: ConfigChange): void {
+    assertProperties(['fileName', 'content'], change); // , 'creation'
+    assertProperties(['page', 'entityPropertyChange'], change.content);
+    assertProperties(['propertyPath', 'operation', 'propertyValue'], change.content.entityPropertyChange);
+}
+
+async function getPropertyChange(
+    change: PropertyChange,
+    { appComponent }: ChangeHandlerOptions
+): Promise<GenericChangeHandlerReturnType> {
+    const propertyChange = change;
+    const flexObject = await getFlexObject(change);
+    const selectorId = await getControlIdByChange(flexObject, appComponent);
+    const changeTitle = change.selector.type ? (change.selector.type.split('.').pop() as string) : '';
+    assertChange(propertyChange);
+    if (
+        [propertyChange.content.newValue, propertyChange.content.newBinding].every(
+            (item) => item === undefined || item === null
+        )
+    ) {
+        throw new Error('Invalid change, missing new value in the change file');
+    }
+    if (change.changeType !== PROPERTY_CHANGE && change.changeType !== PROPERTY_BINDING_CHANGE) {
+        throw new Error('Unknown Change Type');
+    }
+    return {
+        changeTitle: changeTitle,
+        controlId: selectorId,
+        changeType: 'property',
+        properties: [
+            {
+                label: propertyChange.content.property,
+                value: propertyChange.content.newValue ?? propertyChange.content.newBinding,
+                displayValueWithIcon: true
+            }
+        ]
+    };
+}
+
+/**
+ * Get FlexObject from change object based on UI5 version.
+ *
+ * @param change change object
+ * @returns FlexChange
+ */
+export async function getFlexObject(change: object): Promise<FlexChange<ChangeContent>> {
+    if (isLowerThanMinimalUi5Version(await getUi5Version(), { major: 1, minor: 109 })) {
+        const Change = (await import('sap/ui/fl/Change')).default;
+        return new Change(change);
+    }
+
+    const FlexObjectFactory = (await import('sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory')).default;
+    return FlexObjectFactory.createFromFileContent(change) as FlexChange<ChangeContent>;
+}
+
+/**
+ * Get element id by change.
+ *
+ * @param change to be executed for creating change
+ * @param appComponent app component
+ * @returns element id or empty string
+ */
+export async function getControlIdByChange(
+    change: FlexChange<ChangeContent>,
+    appComponent: AppComponent
+): Promise<string | undefined> {
+    const selector = typeof change.getSelector === 'function' ? change.getSelector() : undefined;
+    const changeType = change.getChangeType();
+    const layer = change.getLayer();
+
+    if (!selector?.id) {
+        return;
+    }
+
+    try {
+        let control = JsControlTreeModifier.bySelector(selector, appComponent);
+        if (!control) {
+            return selector.id;
+        }
+
+        const changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
+
+        if (typeof changeHandlerAPI?.getChangeHandler !== 'function') {
+            return selector.id;
+        }
+
+        const changeHandler = await changeHandlerAPI.getChangeHandler({
+            changeType,
+            element: control,
+            modifier: JsControlTreeModifier,
+            layer
+        });
+
+        if (changeHandler && typeof changeHandler.getChangeVisualizationInfo === 'function') {
+            const result: { affectedControls?: [string] } = await changeHandler.getChangeVisualizationInfo(
+                change,
+                appComponent
+            );
+            return JsControlTreeModifier.getControlIdBySelector(
+                result?.affectedControls?.[0] ?? selector,
+                appComponent
+            );
+        }
+
+        return JsControlTreeModifier.getControlIdBySelector(selector, appComponent);
+    } catch (error) {
+        Log.error('Getting element ID from change has failed:', getError(error));
+        return selector.id;
+    }
+}
+type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
+
+/**
+ * Assert change for its validity. Throws error if no value found in saved changes.
+ *
+ * @param change Change object
+ */
+export function assertChange(change: PropertyChange): void {
+    assertProperties(
+        ['fileName', 'selector', 'content' /* , 'creation' TODO: not to be checked for pending */],
+        change
+    );
+    assertProperties(['id'], change.selector);
+    assertProperties(['property'], change.content);
+}
+
+export function assertProperties<T extends object>(properties: Properties<T>[], target: T): void {
+    for (const property of properties) {
+        const value = target[property];
+        if (value === null || value === undefined) {
+            throw new Error(`Invalid change, missing ${property} in the change file`);
+        }
+    }
+}

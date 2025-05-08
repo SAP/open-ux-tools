@@ -16,7 +16,8 @@ import {
     SAVED_CHANGE_TYPE
 } from '@sap-ux-private/control-property-editor-common';
 import { getFormattedDateAndTime } from './utils';
-import LongText from './LongText';
+import GenericProperty from './GenericProperty';
+import { DisplayAsIcon } from './DisplayAsIcon';
 
 export interface GenericChangeProps {
     /**
@@ -34,7 +35,7 @@ export interface GenericChangeProps {
  */
 export function GenericChange(genericChangeProps: Readonly<GenericChangeProps>): ReactElement {
     const { change } = genericChangeProps;
-    const { fileName, genericProps } = change;
+    const { fileName, properties } = change;
     const { t } = useTranslation();
     const dispatch = useDispatch();
     const [dialogState, setDialogState] = useState<PropertyChangeDeletionDetails | undefined>(undefined);
@@ -53,14 +54,31 @@ export function GenericChange(genericChangeProps: Readonly<GenericChangeProps>):
         change.type === SAVED_CHANGE_TYPE || (change.type === PENDING_CHANGE_TYPE && change.isActive) ? 1 : 0.4;
     return (
         <>
-            <Stack key={`${fileName}`} className={styles.item}>
+            <Stack key={`${fileName}`} style={{ opacity }} className={styles.item}>
                 <Stack.Item className={styles.property}>
-                    <Stack horizontal style={{ opacity }}>
-                        {/* <Stack.Item className={styles.fileLabel} title={name}>
-                            {t('FILE')}
+                    <Stack horizontal>
+                        <Stack.Item>
+                            {properties.map((item, index) => {
+                                const { label, value, displayValueWithIcon } = item;
+                                return (
+                                    <div
+                                        key={index}
+                                        style={{
+                                            display: 'flex',
+                                            flexWrap: 'wrap',
+                                            width: '240px',
+                                            margin: '3px',
+                                            alignItems: 'center'
+                                        }}>
+                                        {displayValueWithIcon ? (
+                                            <DisplayAsIcon label={label} value={value} />
+                                        ) : (
+                                            <GenericProperty label={label} value={value} />
+                                        )}
+                                    </div>
+                                );
+                            })}
                         </Stack.Item>
-                        <Stack.Item className={styles.fileValue}>{fileName}</Stack.Item> */}
-                        <LongText longText={fileName} label={t('GENERIC_FILE')} />
                         {change.type === SAVED_CHANGE_TYPE && (
                             <Stack.Item className={styles.actions}>
                                 <UIIconButton
@@ -77,15 +95,6 @@ export function GenericChange(genericChangeProps: Readonly<GenericChangeProps>):
                         )}
                     </Stack>
                 </Stack.Item>
-                {genericProps.map((item, index) => {
-                    const { label, value } = item;
-                    const key = `${fileName ? label + value + fileName + index : label + value + index}`;
-                    return (
-                        <>
-                            <LongText key={key} longText={value} label={label} />
-                        </>
-                    );
-                })}
                 {change.type === SAVED_CHANGE_TYPE && change.timestamp && (
                     <Stack.Item>
                         <Stack horizontal horizontalAlign="space-between">

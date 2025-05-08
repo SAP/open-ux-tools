@@ -1,25 +1,4 @@
-.fileLabel {
-    margin-top: 5px;
-    min-width: 30px;
-    line-height: 23px;
-    display: inline-block;
-    overflow: hidden;
-}
-.fileValue {
-    margin-top: 5px;
-    line-height: 23px;
-    display: inline-block;
-    text-overflow: ellipsis;
-    overflow: hidden;
-    white-space: nowrap;
-    color: var(--vscode-editor-foreground);
-    width: 200px;
-    direction: rtl;
-    text-align: left;
-}
-
 .timestamp {
-    margin-top: 5px;
     color: var(--vscode-editor-foreground);
     font-size: 11px;
     line-height: 15px;
@@ -45,20 +24,21 @@
 
 .actions {
     padding-left: 10px;
-    margin-top: 5px;
+    // margin-top: 5px;
     visibility: hidden;
-}
-.genericValue {
-    display: block;
-    width: 100%;
-    max-width: 100%;
-    overflow-wrap: break-word;
-    line-height: 23px;
-    max-height: 46px; 
 }
 
 .line {
     width: 100%;
     white-space: nowrap;
     overflow: hidden;
+}
+.label {
+    font-weight: bold;
+}
+
+.label,
+.text,
+.timestamp {
+    color: var(--vscode-editor-foreground);
 }

@@ -1,13 +1,12 @@
 import type {
     ExternalAction,
     PendingChange,
-    SavedPropertyChange,
     UnknownSavedChange,
     SavedControlChange,
-    PendingConfigurationChange,
-    SavedConfigurationChange,
     ConfigurationValue,
-    SavedGenericChange
+    SavedGenericChange,
+    SavedChange,
+    PendingGenericChange
 } from '@sap-ux-private/control-property-editor-common';
 import {
     changeProperty,
@@ -18,10 +17,7 @@ import {
     reloadApplication,
     setApplicationRequiresReload,
     save,
-    CONFIGURATION_CHANGE_KIND,
-    PropertyType,
     PENDING_CHANGE_TYPE,
-    PROPERTY_CHANGE_KIND,
     UNKNOWN_CHANGE_KIND,
     GENERIC_CHANGE_KIND
 } from '@sap-ux-private/control-property-editor-common';
@@ -31,109 +27,31 @@ import type Event from 'sap/ui/base/Event';
 import type FlexCommand from 'sap/ui/rta/command/FlexCommand';
 import Log from 'sap/base/Log';
 import { modeAndStackChangeHandler } from '../rta-service';
-import JsControlTreeModifier from 'sap/ui/core/util/reflection/JsControlTreeModifier';
-import FlexChange, { ChangeDefinition } from 'sap/ui/fl/Change';
+import { ChangeDefinition } from 'sap/ui/fl/Change';
 import { getError } from '../../utils/error';
-import { isLowerThanMinimalUi5Version, getUi5Version } from '../../utils/version';
 import MessageToast from 'sap/m/MessageToast';
 import { getTextBundle } from '../../i18n';
 import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
-import { getConfigMapControlIdMap } from '../../utils/fe-v4';
 import { setAdditionalChangeInfo } from '../../utils/additional-change-info';
-import { GENERIC_CHANGE_HANDLER, type GenericChange } from './generic-change';
+import {
+    ConfigChange,
+    GENERIC_CHANGE_HANDLER,
+    getControlIdByChange,
+    getFlexObject,
+    type GenericChange
+} from './generic-change';
 
 const TITLE_MAP: { [key: string]: string } = {
     appdescr_app_addAnnotationsToOData: 'Add New Annotation File'
 };
 
-interface ChangeContent {
-    property: string;
-    newValue: string;
-    newBinding: string;
-}
 export const STACK_CHANGE_EVENT = 'STACK_CHANGED';
 export interface StackChangedEventDetail {
     controls: UI5Element[];
 }
 
-interface ConfigurationChangeContent {
-    page: string;
-    entityPropertyChange: {
-        propertyPath: string;
-        operation: 'UPSERT' | 'DELETE' | 'INSERT' | 'UPDATE';
-        propertyValue: string;
-    };
-}
-
-interface ChangeSelector {
-    id: string;
-    type: string;
-}
-
-interface BaseChange {
-    fileName: string;
-    timestamp: string;
-    creation: string;
-    value: string;
-    selector: ChangeSelector;
-}
-
-const PROPERTY_CHANGE = 'propertyChange';
-const PROPERTY_BINDING_CHANGE = 'propertyBindingChange';
-const MANIFEST_V4_CHANGE = 'appdescr_fe_changePageConfiguration';
-
-interface PropertyChange extends BaseChange {
-    changeType: typeof PROPERTY_CHANGE | typeof PROPERTY_BINDING_CHANGE;
-    controlId: string;
-    propertyName: string;
-    content: ChangeContent;
-}
-interface ConfigChange extends BaseChange {
-    changeType: typeof MANIFEST_V4_CHANGE;
-    propertyName: string;
-    content: ConfigurationChangeContent;
-}
-
-type SavedChangesResponse = Record<string, PropertyChange | ConfigChange | GenericChange>;
-
-type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : never }[keyof T];
-/**
- * Assert change for its validity. Throws error if no value found in saved changes.
- *
- * @param properties array of property name
- * @param target object which will be checked
- */
-function assertProperties<T extends object>(properties: Properties<T>[], target: T): void {
-    for (const property of properties) {
-        const value = target[property];
-        if (value === null || value === undefined) {
-            throw new Error(`Invalid change, missing ${property} in the change file`);
-        }
-    }
-}
-
-/**
- * Assert change for its validity. Throws error if no value found in saved changes.
- *
- * @param change Change object
- */
-function assertChange(change: PropertyChange): void {
-    assertProperties(['fileName', 'selector', 'content', 'creation'], change);
-    assertProperties(['id'], change.selector);
-    assertProperties(['property'], change.content);
-}
-
-/**
- * Assert v4 manifest change for its validity. Throws error if no value found in saved changes.
- *
- * @param change Change object
- */
-function assertManifestChange(change: ConfigChange): void {
-    assertProperties(['fileName', 'content', 'creation'], change);
-    assertProperties(['page', 'entityPropertyChange'], change.content);
-    assertProperties(['propertyPath', 'operation', 'propertyValue'], change.content.entityPropertyChange);
-}
+type SavedChangesResponse = Record<string, ConfigChange | GenericChange>;
 
 /**
  * Modify rta message.
@@ -148,34 +66,16 @@ function modifyRTAErrorMessage(errorMessage: string, id: string, type: string): 
 }
 
 /**
- * Returns a shortened version of the given configuration path segments by removing excess segments,
- * leaving only the most relevant parts for display. For example, the configuration path
- * `controlConfiguration/com.sap.UI.v1.LineItem/tableSettings` will be shortened to
- * `LineItem/tableSettings`.
- *
- * @param propertyPathSeg string[]
- * @returns string
- */
-function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
-    return propertyPathSeg.join('/').replace(/^controlConfiguration\/(?:([^/]+\/))?@[^/]+\.v1\./, '$1');
-}
-
-/**
  * A Class of ChangeService
  */
 export class ChangeService extends EventTarget {
-    private savedChanges:
-        | SavedGenericChange[]
-        | SavedPropertyChange[]
-        | UnknownSavedChange[]
-        | SavedControlChange[]
-        | SavedConfigurationChange[] = [];
+    private savedChanges: SavedChange[] = [];
     private changesRequiringReload = 0;
     private sendAction: (action: ExternalAction) => void;
     private pendingChanges: PendingChange[] = [];
     private changedFiles: Record<string, object> = {};
     private readonly eventStack: object[] = [];
-    private pendingConfigChangeMap: Map<string, PendingConfigurationChange[]> = new Map();
+    private pendingConfigChangeMap: Map<string, PendingGenericChange[]> = new Map();
     private configPropertyControlIdMap: Map<string, string[]> = new Map();
     /**
      *
@@ -246,32 +146,16 @@ export class ChangeService extends EventTarget {
         );
     }
 
-    private getSavedConfigurationChange(change: ConfigChange): SavedConfigurationChange {
-        assertManifestChange(change);
-        if ([change.content.entityPropertyChange.propertyValue].every((item) => item === undefined || item === null)) {
-            throw new Error('Invalid change, missing property value on change file');
-        }
-        const propertyPathSegments = change.content.entityPropertyChange.propertyPath.split('/');
-        const propertyName = propertyPathSegments.pop();
-        const configMapKey = getConfigMapControlIdMap(change.content.page, propertyPathSegments);
-        const controlIds = this.configPropertyControlIdMap?.get(configMapKey) || [];
-        return {
-            type: 'saved',
-            kind: 'configuration',
-            fileName: change.fileName,
-            controlIds,
-            propertyPath: getCompactV4ConfigPath(propertyPathSegments) || change.content.page,
-            propertyName: propertyName ?? '',
-            value: change.content.entityPropertyChange.propertyValue,
-            timestamp: new Date(change.creation).getTime()
-        };
-    }
-
-    private isGenericChange(change: PropertyChange | ConfigChange | GenericChange): change is GenericChange {
+    private isGenericChange(change: GenericChange): change is GenericChange {
         return (
             change.changeType === 'appdescr_app_addAnnotationsToOData' ||
             change.changeType === 'rename' ||
-            change.changeType === 'moveControls'
+            change.changeType === 'moveControls' ||
+            change.changeType === 'addXML' ||
+            change.changeType === 'propertyChange' ||
+            change.changeType === 'propertyBindingChange' ||
+            change.changeType === 'appdescr_fe_changePageConfiguration' ||
+            change.changeType === 'appdescr_ui_generic_app_changePageConfiguration'
         );
     }
 
@@ -284,110 +168,73 @@ export class ChangeService extends EventTarget {
         const savedChanges = (await savedChangesResponse.json()) as SavedChangesResponse;
         const textBundle = await getTextBundle();
         const changes = (
-            (
-                await Promise.all(
-                    Object.keys(savedChanges ?? {}).map(
-                        async (
-                            key
-                        ): Promise<
-                            | SavedPropertyChange
-                            | UnknownSavedChange
-                            | SavedControlChange
-                            | SavedConfigurationChange
-                            | SavedGenericChange
-                            | undefined
-                        > => {
-                            const change: PropertyChange | ConfigChange | GenericChange = savedChanges[key];
-                            let selectorId;
-                            try {
-                                if (this.isGenericChange(change)) {
-                                    const { genericProps, changeTitle, controlId } =
-                                        GENERIC_CHANGE_HANDLER[change.changeType](change);
-                                    return {
-                                        kind: GENERIC_CHANGE_KIND,
-                                        type: 'saved',
-                                        fileName: change.fileName,
-                                        changeType: change.changeType,
-                                        timestamp: new Date(change.creation).getTime(),
-                                        ...(controlId && { controlId }),
-                                        genericProps: Object.keys(genericProps).map((currentKey) => {
-                                            const { i18nDisplayKey, value } = genericProps[currentKey];
-                                            return {
-                                                label: textBundle.getText(i18nDisplayKey),
-                                                value
-                                            };
-                                        }),
-                                        title: textBundle.getText(changeTitle)
-                                    };
-                                }
-                                if (change.changeType === MANIFEST_V4_CHANGE) {
-                                    return this.getSavedConfigurationChange(change);
-                                } else {
-                                    const flexObject = await this.getFlexObject(change);
-                                    selectorId = await this.getControlIdByChange(flexObject);
-                                    assertChange(change);
-                                    if (
-                                        [change.content.newValue, change.content.newBinding].every(
-                                            (item) => item === undefined || item === null
-                                        )
-                                    ) {
-                                        throw new Error('Invalid change, missing new value in the change file');
-                                    }
-                                    if (
-                                        change.changeType !== 'propertyChange' &&
-                                        change.changeType !== 'propertyBindingChange'
-                                    ) {
-                                        throw new Error('Unknown Change Type');
-                                    }
-                                    this.changedFiles[change.fileName] = change;
-                                    return {
-                                        type: 'saved',
-                                        kind: 'property',
-                                        fileName: change.fileName,
-                                        controlId: selectorId,
-                                        propertyName: change.content.property,
-                                        value: change.content.newValue ?? change.content.newBinding,
-                                        timestamp: new Date(change.creation).getTime(),
-                                        controlName: change.selector.type
-                                            ? (change.selector.type.split('.').pop() as string)
-                                            : '',
-                                        changeType: change.changeType
-                                    } as SavedPropertyChange;
-                                }
-                            } catch (error) {
-                                // Gracefully handle change files with invalid content
-                                const title = TITLE_MAP[change.changeType] ?? '';
-                                if (change.fileName) {
-                                    this.changedFiles[change.fileName] = change;
-                                    const unknownChange: UnknownSavedChange = {
-                                        type: 'saved',
-                                        kind: 'unknown',
-                                        changeType: change.changeType,
-                                        fileName: change.fileName,
-                                        timestamp: new Date(change.creation).getTime(),
-                                        ...(title && { title })
-                                    };
-                                    if (change.creation) {
-                                        unknownChange.timestamp = new Date(change.creation).getTime();
-                                    }
-                                    if (selectorId) {
-                                        const controlChange: SavedControlChange = {
-                                            ...unknownChange,
-                                            kind: 'control',
-                                            controlId: selectorId
-                                        };
-
-                                        return controlChange;
-                                    }
-                                    return unknownChange;
-                                }
-                                return undefined;
+            await Promise.all(
+                Object.keys(savedChanges ?? {}).map(
+                    async (key): Promise<UnknownSavedChange | SavedControlChange | SavedGenericChange | undefined> => {
+                        const change: GenericChange = savedChanges[key];
+                        try {
+                            if (this.isGenericChange(change)) {
+                                const {
+                                    properties,
+                                    changeTitle,
+                                    controlId,
+                                    changeType: type
+                                } = await GENERIC_CHANGE_HANDLER[change.changeType](change, {
+                                    textBundle,
+                                    appComponent: this.options.rta.getRootControlInstance(),
+                                    configPropertyControlIdMap: this.configPropertyControlIdMap
+                                });
+                                this.changedFiles[change.fileName] = change;
+                                return {
+                                    kind: GENERIC_CHANGE_KIND,
+                                    type: 'saved',
+                                    fileName: change.fileName,
+                                    changeType: type ?? change.changeType,
+                                    timestamp: new Date(change.creation).getTime(),
+                                    ...(controlId && { controlId }),
+                                    properties,
+                                    title: textBundle.getText(changeTitle)
+                                };
                             }
+                            throw new Error('Unknown change type');
+                        } catch (error) {
+                            // Gracefully handle change files with invalid content
+                            const flexObject = await getFlexObject(change);
+                            const selectorId = await getControlIdByChange(
+                                flexObject,
+                                this.options.rta.getRootControlInstance()
+                            );
+                            if (change.fileName) {
+                                this.changedFiles[change.fileName] = change;
+                                const unknownChange: UnknownSavedChange = {
+                                    type: 'saved',
+                                    kind: 'unknown',
+                                    changeType: change.changeType,
+                                    fileName: change.fileName,
+                                    timestamp: new Date(change.creation).getTime()
+                                };
+                                if (change.creation) {
+                                    unknownChange.timestamp = new Date(change.creation).getTime();
+                                }
+                                if (selectorId) {
+                                    const controlChange: SavedControlChange = {
+                                        ...unknownChange,
+                                        kind: 'control',
+                                        controlId: selectorId
+                                    };
+
+                                    return controlChange;
+                                }
+                                return unknownChange;
+                            }
+                            return undefined;
                         }
-                    )
+                    }
                 )
-            ).filter((change) => !!change) as SavedPropertyChange[]
-        ).sort((a, b) => b.timestamp - a.timestamp);
+            )
+        )
+            .filter((change) => !!change)
+            .sort((a, b) => b.timestamp - a.timestamp);
         this.savedChanges = changes;
     }
 
@@ -402,10 +249,6 @@ export class ChangeService extends EventTarget {
             .filter((change) => {
                 if (fileName) {
                     return fileName === change.fileName;
-                }
-
-                if (change.kind === 'property') {
-                    return change.controlId === controlId && change.propertyName === propertyName;
                 }
 
                 if (change.kind === 'control') {
@@ -427,6 +270,10 @@ export class ChangeService extends EventTarget {
 
         await this.fetchSavedChanges();
         this.updateStack();
+    }
+
+    private isGenericConfigChange(change: PendingChange): change is PendingGenericChange {
+        return change.kind === GENERIC_CHANGE_KIND && change.changeType === 'configuration';
     }
 
     /**
@@ -470,12 +317,7 @@ export class ChangeService extends EventTarget {
             if (this.eventStack.length - 1 === eventIndex) {
                 this.pendingChanges = pendingChanges.filter((change): boolean => !!change);
                 const changesRequiringReload = this.pendingChanges.reduce(
-                    (sum, change) =>
-                        change.kind === CONFIGURATION_CHANGE_KIND ||
-                        change.changeType === 'appdescr_ui_generic_app_changePageConfiguration' ||
-                        change.changeType === 'appdescr_app_addAnnotationsToOData'
-                            ? sum + 1
-                            : sum,
+                    (sum, change) => (this.isGenericConfigChange(change) ? sum + 1 : sum),
                     0
                 );
                 if (changesRequiringReload > this.changesRequiringReload) {
@@ -494,12 +336,14 @@ export class ChangeService extends EventTarget {
             }
 
             // Notify to update the ui for configuration changes.
-            const configurationChanges = this.pendingChanges?.filter((item) => item.kind === 'configuration');
+            const configurationChanges: PendingGenericChange[] = this.pendingChanges?.filter(
+                this.isGenericConfigChange
+            );
             if (configurationChanges.length) {
                 const stackChangeEvent = new CustomEvent(STACK_CHANGE_EVENT, {
                     detail: {
                         controls: configurationChanges.reduce((acc: UI5Element[], item) => {
-                            const controls = (item.controlIds || [])
+                            const controls = ([...(item.controlId ?? [])] as string[])
                                 .map((id: string) => {
                                     return getControlById(id);
                                 })
@@ -524,7 +368,8 @@ export class ChangeService extends EventTarget {
      */
     public getConfigurationPropertyValue(controlId: string, propertyName: string): ConfigurationValue | undefined {
         const pendingChanges = this.pendingConfigChangeMap?.get(controlId);
-        return (pendingChanges || []).find((item) => item.isActive && item.propertyName === propertyName)?.value;
+        return (pendingChanges || []).find((item) => item.isActive && item.properties[0].label === propertyName)
+            ?.properties[0].value;
     }
 
     /**
@@ -560,91 +405,14 @@ export class ChangeService extends EventTarget {
         }
     }
 
-    private prepareV4ConfigurationChange(
-        command: FlexCommand,
-        value: ConfigurationValue,
-        fileName: string,
-        index: number,
-        inactiveCommandCount: number
-    ): PendingConfigurationChange {
-        const { entityPropertyChange, page } = command.getProperty('parameters') as {
-            entityPropertyChange: {
-                propertyPath: string;
-            };
-            page: string;
-        };
-        const controlId = this.getCommandSelectorId(command) ?? '';
-        const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
-        const propName = propertyPathSegments.pop() as string;
-        const key = getConfigMapControlIdMap(page, propertyPathSegments);
-
-        const isActive = index >= inactiveCommandCount;
-        const controlIds = this.configPropertyControlIdMap?.get(key) || [controlId];
-        const result: PendingConfigurationChange = {
-            type: PENDING_CHANGE_TYPE,
-            kind: CONFIGURATION_CHANGE_KIND,
-            controlIds,
-            propertyPath: getCompactV4ConfigPath(propertyPathSegments) || page,
-            propertyName: propName,
-            isActive,
-            value,
-            fileName
-        };
-        for (const id of result.controlIds) {
+    private trackPendingConfigChanges(result: PendingGenericChange): void {
+        for (const id of result?.controlId ?? []) {
             if (!this.pendingConfigChangeMap.get(id)) {
                 this.pendingConfigChangeMap.set(id, []);
             }
             const pendingChanges = this.pendingConfigChangeMap.get(id);
             pendingChanges?.push(result);
         }
-
-        return result;
-    }
-
-    private prepareV2ConfigurationChange(
-        command: FlexCommand,
-        fileName: string,
-        index: number,
-        inactiveCommandCount: number
-    ): PendingConfigurationChange {
-        const { entityPropertyChange, page } = command.getProperty('parameters') as {
-            entityPropertyChange: {
-                propertyPath: string;
-                propertyValue: Record<string, string>;
-            };
-            page: string;
-        };
-        const propertyPathSegments = entityPropertyChange.propertyPath.split('/');
-        const propertyName =
-            Object.keys(entityPropertyChange.propertyValue)?.[0] ??
-            propertyPathSegments[propertyPathSegments.length - 1];
-        const propertyValue = entityPropertyChange.propertyValue?.[propertyName] ?? entityPropertyChange.propertyValue;
-        const controlId = this.getCommandSelectorId(command) ?? '';
-
-        const key = getConfigMapControlIdMap(page, propertyPathSegments);
-
-        const isActive = index >= inactiveCommandCount;
-        const controlIds = this.configPropertyControlIdMap?.get(key) || [controlId];
-
-        const result: PendingConfigurationChange = {
-            type: PENDING_CHANGE_TYPE,
-            kind: CONFIGURATION_CHANGE_KIND,
-            controlIds,
-            propertyPath: getCompactV4ConfigPath(propertyPathSegments) || page,
-            propertyName,
-            isActive,
-            value: propertyValue,
-            fileName
-        };
-        for (const id of result.controlIds) {
-            if (!this.pendingConfigChangeMap.get(id)) {
-                this.pendingConfigChangeMap.set(id, []);
-            }
-            const pendingChanges = this.pendingConfigChangeMap.get(id);
-            pendingChanges?.push(result);
-        }
-
-        return result;
     }
 
     /**
@@ -664,7 +432,7 @@ export class ChangeService extends EventTarget {
         const textBundle = await getTextBundle();
         const selectorId =
             typeof change?.getSelector === 'function'
-                ? await this.getControlIdByChange(change)
+                ? await getControlIdByChange(change, this.options.rta.getRootControlInstance())
                 : this.getCommandSelectorId(command);
 
         const changeType = this.getCommandChangeType(command);
@@ -676,56 +444,30 @@ export class ChangeService extends EventTarget {
         const changeDefinition = change.getDefinition ? change.getDefinition() : (change.getJson() as ChangeDefinition);
         const { fileName } = changeDefinition;
         if (GENERIC_CHANGE_HANDLER?.[changeType]) {
-            const { genericProps, changeTitle, controlId } = GENERIC_CHANGE_HANDLER[changeType](
-                changeDefinition as unknown as GenericChange
-            );
-            return {
+            const {
+                properties,
+                changeTitle,
+                controlId,
+                changeType: type
+            } = await GENERIC_CHANGE_HANDLER[changeType](changeDefinition as unknown as GenericChange, {
+                textBundle,
+                appComponent: this.options.rta.getRootControlInstance(),
+                configPropertyControlIdMap: this.configPropertyControlIdMap
+            });
+            const genericChange: PendingGenericChange = {
                 kind: GENERIC_CHANGE_KIND,
                 type: 'pending',
-                changeType,
+                changeType: type ?? changeType,
                 isActive: index >= inactiveCommandCount,
                 title: textBundle.getText(changeTitle),
                 fileName,
                 ...(controlId && { controlId }),
-                genericProps: Object.keys(genericProps).map((currentKey) => {
-                    const { i18nDisplayKey, value } = genericProps[currentKey];
-                    return {
-                        label: textBundle.getText(i18nDisplayKey),
-                        value
-                    };
-                })
+                properties
             };
-        }
-        if ((changeType === 'propertyChange' || changeType === 'propertyBindingChange') && selectorId) {
-            let value = '';
-            switch (changeType) {
-                case 'propertyChange':
-                    value = command.getProperty('newValue') as string;
-                    break;
-                case 'propertyBindingChange':
-                    value = command.getProperty('newBinding') as string;
-                    break;
+            if (changeType === 'appdescr_fe_changePageConfiguration') {
+                this.trackPendingConfigChanges(genericChange);
             }
-
-            return {
-                type: PENDING_CHANGE_TYPE,
-                kind: PROPERTY_CHANGE_KIND,
-                changeType,
-                controlId: selectorId,
-                propertyType: PropertyType.ControlProperty,
-                propertyName: command.getProperty('propertyName') as string,
-                isActive: index >= inactiveCommandCount,
-                value,
-                controlName: command.getElement().getMetadata().getName().split('.').pop() ?? '',
-                fileName
-            };
-        } else if (changeType === 'appdescr_fe_changePageConfiguration') {
-            const value = (
-                command.getProperty('parameters') as { entityPropertyChange: { propertyValue: ConfigurationValue } }
-            ).entityPropertyChange.propertyValue;
-            return this.prepareV4ConfigurationChange(command, value, fileName, index, inactiveCommandCount);
-        } else if (changeType === 'appdescr_ui_generic_app_changePageConfiguration') {
-            return this.prepareV2ConfigurationChange(command, fileName, index, inactiveCommandCount);
+            return genericChange;
         } else {
             const title = TITLE_MAP[changeType] ?? '';
             let result: PendingChange = {
@@ -799,91 +541,7 @@ export class ChangeService extends EventTarget {
         ]) as string | undefined;
     }
 
-    /**
-     * Get element id by change.
-     *
-     * @param change to be executed for creating change
-     * @returns element id or empty string
-     */
-    private async getControlIdByChange(change: FlexChange<ChangeContent>): Promise<string | undefined> {
-        const appComponent = this.options.rta.getRootControlInstance();
-        const selector = typeof change.getSelector === 'function' ? change.getSelector() : undefined;
-        const changeType = change.getChangeType();
-        const layer = change.getLayer();
-
-        if (!selector?.id) {
-            return;
-        }
-
-        try {
-            let control = JsControlTreeModifier.bySelector(selector, appComponent);
-            if (!control) {
-                return selector.id;
-            }
-
-            const changeHandlerAPI = (await import('sap/ui/fl/write/api/ChangesWriteAPI')).default;
-
-            if (typeof changeHandlerAPI?.getChangeHandler !== 'function') {
-                return selector.id;
-            }
-
-            const changeHandler = await changeHandlerAPI.getChangeHandler({
-                changeType,
-                element: control,
-                modifier: JsControlTreeModifier,
-                layer
-            });
-
-            if (changeHandler && typeof changeHandler.getChangeVisualizationInfo === 'function') {
-                const result: { affectedControls?: [string] } = await changeHandler.getChangeVisualizationInfo(
-                    change,
-                    appComponent
-                );
-                return JsControlTreeModifier.getControlIdBySelector(
-                    result?.affectedControls?.[0] ?? selector,
-                    appComponent
-                );
-            }
-
-            return JsControlTreeModifier.getControlIdBySelector(selector, appComponent);
-        } catch (error) {
-            Log.error('Getting element ID from change has failed:', getError(error));
-            return selector.id;
-        }
-    }
-
-    /**
-     * Sync outline changes to place modification markers when outline is changed.
-     *
-     * @returns void
-     */
-    public async syncOutlineChanges(): Promise<void> {
-        for (const change of this.savedChanges) {
-            if (change.kind !== 'unknown' && change.kind !== 'configuration' && change.kind !== 'generic') {
-                const flexObject = await this.getFlexObject(this.changedFiles[change.fileName]);
-                change.controlId = (await this.getControlIdByChange(flexObject)) ?? '';
-            }
-        }
-        this.updateStack();
-    }
-
     public onStackChange(handler: (event: CustomEvent<StackChangedEventDetail>) => void | Promise<void>): void {
         this.addEventListener(STACK_CHANGE_EVENT, handler as EventListener);
-    }
-
-    /**
-     * Get FlexObject from change object based on UI5 version.
-     *
-     * @param change change object
-     * @returns FlexChange
-     */
-    private async getFlexObject(change: object): Promise<FlexChange<ChangeContent>> {
-        if (isLowerThanMinimalUi5Version(await getUi5Version(), { major: 1, minor: 109 })) {
-            const Change = (await import('sap/ui/fl/Change')).default;
-            return new Change(change);
-        }
-
-        const FlexObjectFactory = (await import('sap/ui/fl/apply/_internal/flexObjects/FlexObjectFactory')).default;
-        return FlexObjectFactory.createFromFileContent(change) as FlexChange<ChangeContent>;
     }
 }

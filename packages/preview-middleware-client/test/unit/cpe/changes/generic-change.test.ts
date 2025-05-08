@@ -1,3 +1,4 @@
+import { getTextBundle } from '../../../../src/i18n';
 import {
     ADD_NEW_ANNOTATION_FILE_CHANGE,
     RENAME_CHANGE,
@@ -8,6 +9,10 @@ import {
 } from '../../../../src/cpe/changes/generic-change';
 
 describe('GENERIC_CHANGE_HANDLER', () => {
+    let bundle: any;
+    beforeAll(async () => {
+        bundle = await getTextBundle();
+    });
     it('should handle ADD_NEW_ANNOTATION_FILE_CHANGE', () => {
         const change: NewAnnotationFileChange = {
             changeType: ADD_NEW_ANNOTATION_FILE_CHANGE,
@@ -33,20 +38,21 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             service: 'service1'
         };
 
-        const result = GENERIC_CHANGE_HANDLER[ADD_NEW_ANNOTATION_FILE_CHANGE](change);
+        const result = GENERIC_CHANGE_HANDLER[ADD_NEW_ANNOTATION_FILE_CHANGE](change, { textBundle: bundle } as any);
 
         expect(result).toEqual({
-            changeTitle: 'ADD_NEW_ANNOTATION_FILE',
-            genericProps: {
-                dataSourceId: {
-                    i18nDisplayKey: 'SERVICE_NAME',
+            changeTitle: 'Add New Annotation File',
+            changeType: 'configuration',
+            properties: [
+                {
+                    label: 'Service Name',
                     value: 'dataSource1'
                 },
-                dataSourceUri: {
-                    i18nDisplayKey: 'ANNOTATION_FILE_URI',
+                {
+                    label: 'Annotation File',
                     value: 'annotations/annotation1.xml'
                 }
-            }
+            ]
         });
     });
 
@@ -66,25 +72,25 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             }
         };
 
-        const result = GENERIC_CHANGE_HANDLER[RENAME_CHANGE](change as GenericChange);
+        const result = GENERIC_CHANGE_HANDLER[RENAME_CHANGE](change as GenericChange, { textBundle: bundle } as any);
 
         expect(result).toEqual({
-            changeTitle: 'RENAME_CHANGE',
+            changeTitle: 'Rename Control',
             controlId: 'control1',
-            genericProps: {
-                selectorId: {
-                    i18nDisplayKey: 'SELECTOR_ID',
+            properties: [
+                {
+                    label: 'Selector Id',
                     value: 'control1'
                 },
-                newText: {
-                    i18nDisplayKey: 'NEW_VALUE',
+                {
+                    label: 'New value',
                     value: 'New Text'
                 },
-                textClassificationType: {
-                    i18nDisplayKey: 'TEXT_TYPE',
+                {
+                    label: 'Text Type',
                     value: 'Type1'
                 }
-            }
+            ]
         });
     });
 
@@ -111,29 +117,29 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             }
         };
 
-        const result = GENERIC_CHANGE_HANDLER[MOVE_CHANGE](change as GenericChange);
+        const result = GENERIC_CHANGE_HANDLER[MOVE_CHANGE](change as GenericChange, { textBundle: bundle } as any);
 
         expect(result).toEqual({
-            changeTitle: 'MOVE_CONTROLS_CHANGE',
+            changeTitle: 'Move Controls',
             controlId: 'control2',
-            genericProps: {
-                selectorId: {
-                    i18nDisplayKey: 'TARGET_CONTROL_ID',
+            properties: [
+                {
+                    label: 'Target Id',
                     value: 'targetControl1'
                 },
-                moveFromIdx: {
-                    i18nDisplayKey: 'MOVE_FROM_INDEX',
+                {
+                    label: 'Move from',
                     value: '1'
                 },
-                moveToIdx: {
-                    i18nDisplayKey: 'MOVE_TO_INDEX',
+                {
+                    label: 'Move to',
                     value: '2'
                 },
-                targetControlId: {
-                    i18nDisplayKey: 'MOVED_CONTROL_ID',
+                {
+                    label: 'Control Id',
                     value: 'control2'
                 }
-            }
+            ]
         });
     });
 });

@@ -19,6 +19,7 @@ export interface GenericGroupProps {
     timestamp?: number;
     controlId?: string;
     index: number;
+    configPath?: string;
     changes: (SavedGenericChange | PendingGenericChange)[];
 }
 /**
@@ -28,13 +29,13 @@ export interface GenericGroupProps {
  * @returns ReactElement
  */
 export function GenericGroup(genericGroupProps: Readonly<GenericGroupProps>): ReactElement {
-    const { text, changes, controlId } = genericGroupProps;
+    const { text, changes, controlId, configPath } = genericGroupProps;
     const dispatch = useDispatch();
     const stackName = changes[0].type === SAVED_CHANGE_TYPE ? `saved-changes-stack` : `unsaved-changes-stack`;
     return (
         <Stack>
             <Stack.Item className={styles.header}>
-                {controlId ? (
+                {typeof controlId === 'string' ? (
                     <Link
                         className={styles.textHeader}
                         onClick={(): void => {
@@ -67,6 +68,20 @@ export function GenericGroup(genericGroupProps: Readonly<GenericGroupProps>): Re
                     </Text>
                 )}
             </Stack.Item>
+            {configPath && (
+                <Stack.Item className={styles.subHeader}>
+                    <Text
+                        style={{
+                            color: 'var(--vscode-foreground)',
+                            fontSize: '11px',
+                            fontWeight: 'bolder',
+                            lineHeight: '22px'
+                        }}
+                        title={configPath}>
+                        {configPath}
+                    </Text>
+                </Stack.Item>
+            )}
             {changes.map((change, i) => {
                 const key = `${text}-${i}`;
                 return (

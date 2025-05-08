@@ -6,13 +6,7 @@ import { Text, Stack } from '@fluentui/react';
 
 import { UIIcon, UIIconButton, UiIcons } from '@sap-ux/ui-components';
 
-import type {
-    Control,
-    SavedPropertyChange,
-    PendingPropertyChange,
-    SavedConfigurationChange,
-    PendingConfigurationChange
-} from '@sap-ux-private/control-property-editor-common';
+import type { Control, SavedGenericChange, PendingGenericChange } from '@sap-ux-private/control-property-editor-common';
 import { Separator } from '../../components';
 import type { RootState } from '../../store';
 
@@ -50,8 +44,8 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
         | {
               pending: number;
               saved: number;
-              lastSavedChange?: SavedPropertyChange | SavedConfigurationChange;
-              lastChange?: PendingPropertyChange | PendingConfigurationChange;
+              lastSavedChange?: SavedGenericChange;
+              lastChange?: PendingGenericChange;
           }
         | undefined
     >((state) => state.changes.controls[control?.id ?? '']?.properties[propertyName]);
@@ -87,37 +81,41 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
                                 title={t('DEFAULT_VALUE_TOOLTIP')}
                             />
                         </>
-                        {propertyChanges?.lastChange && (
-                            <>
-                                <Text className={styles.propertyName}>{t('CURRENT_VALUE')}</Text>
-                                <Text
-                                    title={propertyChanges.lastChange.value.toString()}
-                                    className={[styles.bold, styles.propertyWithNoActions].join(' ')}>
-                                    {propertyChanges.lastChange.value.toString()}
-                                </Text>
-                            </>
-                        )}
-                        {propertyChanges?.lastSavedChange && (
-                            <>
-                                <Text className={styles.propertyName}>{t('SAVED_VALUE')}</Text>
-                                <Text title={propertyChanges.lastSavedChange.value.toString()} className={styles.bold}>
-                                    {propertyChanges.lastSavedChange.value.toString()}
-                                </Text>
-                                <UIIconButton
-                                    iconProps={{ iconName: UiIcons.TrashCan }}
-                                    title={t('DELETE_ALL_PROPERTY_CHANGES_TOOLTIP')}
-                                    onClick={(): void => {
-                                        if (control?.id && onDelete) {
-                                            onDelete(
-                                                control.id,
-                                                propertyName,
-                                                propertyChanges.lastSavedChange?.fileName
-                                            );
-                                        }
-                                    }}
-                                />
-                            </>
-                        )}
+                        {propertyChanges?.lastChange?.kind === 'generic' &&
+                            ['property', 'configuration'].includes(propertyChanges?.lastChange.changeType) && (
+                                <>
+                                    <Text className={styles.propertyName}>{t('CURRENT_VALUE')}</Text>
+                                    <Text
+                                        title={propertyChanges.lastChange.properties[0].value.toString()}
+                                        className={[styles.bold, styles.propertyWithNoActions].join(' ')}>
+                                        {propertyChanges.lastChange.properties[0].value.toString()}
+                                    </Text>
+                                </>
+                            )}
+                        {propertyChanges?.lastSavedChange?.kind === 'generic' &&
+                            ['property', 'configuration'].includes(propertyChanges?.lastSavedChange.changeType) && (
+                                <>
+                                    <Text className={styles.propertyName}>{t('SAVED_VALUE')}</Text>
+                                    <Text
+                                        title={propertyChanges.lastSavedChange.properties[0].value.toString()}
+                                        className={styles.bold}>
+                                        {propertyChanges.lastSavedChange.properties[0].value.toString()}
+                                    </Text>
+                                    <UIIconButton
+                                        iconProps={{ iconName: UiIcons.TrashCan }}
+                                        title={t('DELETE_ALL_PROPERTY_CHANGES_TOOLTIP')}
+                                        onClick={(): void => {
+                                            if (control?.id && onDelete) {
+                                                onDelete(
+                                                    control.id,
+                                                    propertyName,
+                                                    propertyChanges.lastSavedChange?.fileName
+                                                );
+                                            }
+                                        }}
+                                    />
+                                </>
+                            )}
                     </section>
                 </Stack.Item>
                 <Stack.Item>
