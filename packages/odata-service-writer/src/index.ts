@@ -117,7 +117,7 @@ async function update(basePath: string, service: OdataService, fs?: Editor): Pro
     const paths = await findProjectFiles(basePath, fs);
     const webappPath = await getWebappPath(basePath, fs);
     ensureExists(webappPath, ['manifest.json'], fs);
-    await enhanceData(basePath, service, fs);
+    await enhanceData(basePath, service, fs, true);
     // Set isServiceTypeEdmx true if service is EDMX
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     await updateManifest(basePath, service, fs, true);
