@@ -5,7 +5,6 @@ import type { AdpWriterConfig, PromptDefaults } from '@sap-ux/adp-tooling';
 import { promptGeneratorInput, generate, FlexLayer } from '@sap-ux/adp-tooling';
 import { runNpmInstallCommand } from '../../common';
 import { join } from 'path';
-import { Manifest } from '@sap-ux/project-access';
 
 /**
  * Add a new sub-command to generate SAP UI5 adaptation projects the given command.
