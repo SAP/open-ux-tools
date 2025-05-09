@@ -178,7 +178,8 @@ export class ChangeService extends EventTarget {
                                     properties,
                                     changeTitle,
                                     controlId,
-                                    changeType: type
+                                    changeType: type,
+                                    configPath
                                 } = await GENERIC_CHANGE_HANDLER[change.changeType](change, {
                                     textBundle,
                                     appComponent: this.options.rta.getRootControlInstance(),
@@ -189,6 +190,7 @@ export class ChangeService extends EventTarget {
                                     kind: GENERIC_CHANGE_KIND,
                                     type: 'saved',
                                     fileName: change.fileName,
+                                    ...(configPath && { configPath }),
                                     changeType: type ?? change.changeType,
                                     timestamp: new Date(change.creation).getTime(),
                                     ...(controlId && { controlId }),
@@ -272,10 +274,6 @@ export class ChangeService extends EventTarget {
         this.updateStack();
     }
 
-    private isGenericConfigChange(change: PendingChange): change is PendingGenericChange {
-        return change.kind === GENERIC_CHANGE_KIND && change.changeType === 'configuration';
-    }
-
     /**
      * Handler for undo/redo stack change.
      *
@@ -317,7 +315,7 @@ export class ChangeService extends EventTarget {
             if (this.eventStack.length - 1 === eventIndex) {
                 this.pendingChanges = pendingChanges.filter((change): boolean => !!change);
                 const changesRequiringReload = this.pendingChanges.reduce(
-                    (sum, change) => (this.isGenericConfigChange(change) ? sum + 1 : sum),
+                    (sum, change) => (isGenericConfigChange(change) ? sum + 1 : sum),
                     0
                 );
                 if (changesRequiringReload > this.changesRequiringReload) {
@@ -336,9 +334,7 @@ export class ChangeService extends EventTarget {
             }
 
             // Notify to update the ui for configuration changes.
-            const configurationChanges: PendingGenericChange[] = this.pendingChanges?.filter(
-                this.isGenericConfigChange
-            );
+            const configurationChanges: PendingGenericChange[] = this.pendingChanges?.filter(isGenericConfigChange);
             if (configurationChanges.length) {
                 const stackChangeEvent = new CustomEvent(STACK_CHANGE_EVENT, {
                     detail: {
@@ -448,7 +444,8 @@ export class ChangeService extends EventTarget {
                 properties,
                 changeTitle,
                 controlId,
-                changeType: type
+                changeType: type,
+                configPath
             } = await GENERIC_CHANGE_HANDLER[changeType](changeDefinition as unknown as GenericChange, {
                 textBundle,
                 appComponent: this.options.rta.getRootControlInstance(),
@@ -458,6 +455,7 @@ export class ChangeService extends EventTarget {
                 kind: GENERIC_CHANGE_KIND,
                 type: 'pending',
                 changeType: type ?? changeType,
+                ...(configPath && { configPath }),
                 isActive: index >= inactiveCommandCount,
                 title: textBundle.getText(changeTitle),
                 fileName,
@@ -541,7 +539,27 @@ export class ChangeService extends EventTarget {
         ]) as string | undefined;
     }
 
+    /**
+     * Sync outline changes to place modification markers when outline is changed.
+     *
+     * @returns void
+     */
+    public async syncOutlineChanges(): Promise<void> {
+        for (const change of this.savedChanges) {
+            if (change.kind !== 'unknown' && change.changeType !== 'configuration') {
+                const flexObject = await getFlexObject(this.changedFiles[change.fileName]);
+                change.controlId =
+                    (await getControlIdByChange(flexObject, this.options.rta.getRootControlInstance())) ?? '';
+            }
+        }
+        this.updateStack();
+    }
+
     public onStackChange(handler: (event: CustomEvent<StackChangedEventDetail>) => void | Promise<void>): void {
         this.addEventListener(STACK_CHANGE_EVENT, handler as EventListener);
     }
+}
+
+function isGenericConfigChange(change: PendingChange): change is PendingGenericChange {
+    return change.kind === GENERIC_CHANGE_KIND && change.changeType === 'configuration';
 }

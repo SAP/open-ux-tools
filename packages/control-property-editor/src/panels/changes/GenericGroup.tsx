@@ -43,43 +43,25 @@ export function GenericGroup(genericGroupProps: Readonly<GenericGroupProps>): Re
                             dispatch(action);
                         }}
                         style={{
-                            color: 'var(--vscode-textLink-foreground)',
-                            fontSize: '13px',
-                            fontWeight: 'bold',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            overflowX: 'hidden',
-                            lineHeight: '18px'
+                            color: 'var(--vscode-textLink-foreground)'
                         }}>
                         {text}
                     </Link>
                 ) : (
-                    <Text
+                    <span
+                        className={styles.textHeader}
                         style={{
-                            color: 'var(--vscode-foreground)',
-                            fontSize: '13px',
-                            fontWeight: 'bold',
-                            textOverflow: 'ellipsis',
-                            whiteSpace: 'nowrap',
-                            overflowX: 'hidden',
-                            lineHeight: '18px'
+                            color: 'var(--vscode-foreground)'
                         }}>
                         {text}
-                    </Text>
+                    </span>
                 )}
             </Stack.Item>
             {configPath && (
                 <Stack.Item className={styles.subHeader}>
-                    <Text
-                        style={{
-                            color: 'var(--vscode-foreground)',
-                            fontSize: '11px',
-                            fontWeight: 'bolder',
-                            lineHeight: '22px'
-                        }}
-                        title={configPath}>
+                    <span className={styles.subText} title={configPath}>
                         {configPath}
-                    </Text>
+                    </span>
                 </Stack.Item>
             )}
             {changes.map((change, i) => {

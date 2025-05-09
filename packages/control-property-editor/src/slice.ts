@@ -205,11 +205,7 @@ const processPropertyChange = (
     control: ControlChangeStats,
     change: PendingGenericChange | SavedGenericChange
 ): void => {
-    let propertyName = '';
-    if (change.kind === GENERIC_CHANGE_KIND && ['property', 'configuration'].includes(change.changeType)) {
-        propertyName = change.properties[0].label;
-    }
-
+    const propertyName = change.properties[0].label;
     const property = control.properties[propertyName]
         ? {
               pending: control.properties[propertyName].pending,
@@ -358,11 +354,7 @@ const slice = createSlice<SliceState, SliceCaseReducers<SliceState>, string>({
                             const control = getControlChangeStats(state.changes.controls, key, change, type);
                             state.changes.controls[key] = control;
                         }
-                    } else if (
-                        change.kind === GENERIC_CHANGE_KIND &&
-                        change.changeType === 'property' &&
-                        change.controlId
-                    ) {
+                    } else if (change.kind === GENERIC_CHANGE_KIND && change.controlId) {
                         const { controlId, type } = change;
                         const key = `${controlId}`;
                         const control = getControlChangeStats(state.changes.controls, key, change, type);

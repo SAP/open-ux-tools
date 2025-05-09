@@ -1,5 +1,6 @@
 import { convertCamelCaseToPascalCase } from '@sap-ux-private/control-property-editor-common';
 import React from 'react';
+import styles from './DisplayAsIcon.module.scss';
 
 interface GenericPropertyProps {
     value: string | number | boolean | object;
@@ -9,21 +10,8 @@ interface GenericPropertyProps {
 const GenericProperty: React.FC<GenericPropertyProps> = ({ value, label }) => {
     return (
         <>
-            <span style={{ lineHeight: '18px', whiteSpace: 'nowrap', marginRight: '5px', fontWeight: 'bold' }}>
-                {convertCamelCaseToPascalCase(label)}:
-            </span>
-            <span
-                style={{
-                    flex: '1 1 auto',
-                    minWidth: '0px',
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                    direction: 'rtl',
-                    textAlign: 'left'
-                }}>
-                {typeof value === 'object' ? '[Object]' : value}
-            </span>
+            <span className={styles.genericPropLabel}>{convertCamelCaseToPascalCase(label)}:</span>
+            <span className={styles.genericPropValue}>{typeof value === 'object' ? '[Object]' : value}</span>
         </>
     );
 };

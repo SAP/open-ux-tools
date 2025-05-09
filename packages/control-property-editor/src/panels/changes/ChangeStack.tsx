@@ -153,7 +153,8 @@ function convertChanges(changes: Change[]): Item[] {
                     (isGenericChange(nextChange) &&
                         (nextChange?.title !== change?.title ||
                             nextChange?.configPath !== change?.configPath ||
-                            (nextChange?.title === change?.title && nextChange?.controlId !== change?.controlId)))
+                            (nextChange?.title === change?.title &&
+                                !controlIdSame(change.controlId, nextChange.controlId))))
                 ) {
                     break;
                 }
@@ -163,6 +164,28 @@ function convertChanges(changes: Change[]): Item[] {
         }
     }
     return items;
+}
+
+function controlIdSame(arr1?: string | string[], arr2?: string | string[]) {
+    if (!arr1 || !arr2) {
+        return true;
+    }
+    if (typeof arr1 === 'string' && typeof arr2 === 'string') {
+        return arr1 === arr2;
+    } else if ((Array.isArray(arr1) && typeof arr2 === 'string') || (typeof arr1 === 'string' && Array.isArray(arr2))) {
+        return false;
+    }
+    if (arr1.length !== arr2.length) {
+        return false;
+    }
+
+    for (let i = 0; i < arr1.length; i++) {
+        if (arr1[i] !== arr2[i]) {
+            return false;
+        }
+    }
+
+    return true;
 }
 
 /**
@@ -209,9 +232,11 @@ function handleControlChange(change: SavedControlChange | PendingControlChange):
  * @returns {ControlGroupProps} A control group object containing grouped changes.
  */
 function handleGenericGroupeChange(change: SavedGenericChange | PendingGenericChange, i: number): GenericGroupProps {
+    const { configPath } = change;
     return {
         text: convertCamelCaseToPascalCase(String(change.title)),
         controlId: typeof change.controlId === 'string' ? change.controlId : undefined,
+        ...(configPath && { configPath }),
         kind: 'generic',
         index: i,
         changes: [change],

@@ -147,7 +147,8 @@ describe('ChangeService', () => {
                         properties: [
                             { 'label': 'enableAddCardToInsights', 'value': true, 'displayValueWithIcon': true }
                         ],
-                        title: 'Configuration'
+                        title: 'Configuration',
+                        configPath: 'LineItem/tableSettings'
                     },
                     {
                         type: 'saved',
@@ -328,71 +329,6 @@ describe('ChangeService', () => {
     });
 
     test('no command stack', async () => {
-        fetchMock.mockResolvedValue({
-            json: () =>
-                Promise.resolve({
-                    change1: {
-                        changeType: 'propertyChange',
-                        fileName: 'id_1640106755570_203_propertyChange',
-                        content: {
-                            property: 'enabled',
-                            newValue: true
-                        },
-                        selector: {
-                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                            type: 'sap.m.Button'
-                        },
-                        creation: '2021-12-21T17:12:37.301Z'
-                    },
-                    change2: {
-                        changeType: 'codeExt',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        creation: '2021-12-21T17:13:37.301Z'
-                    },
-                    change3: {
-                        changeType: 'propertyChange',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        content: {
-                            property: 'enabled',
-                            newBinding: '{i18n>CREATE_OBJECT2}'
-                        },
-                        selector: {
-                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                            type: 'sap.m.Button'
-                        },
-                        creation: '2021-12-21T17:13:37.301Z'
-                    },
-                    change4: {
-                        changeType: 'rename',
-                        fileName: 'id_1640106755570_205_propertyChange',
-                        texts: {
-                            newText: {
-                                value: 'Test123',
-                                type: 'XFLD'
-                            }
-                        },
-                        selector: {
-                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                            type: 'sap.m.Button'
-                        },
-                        creation: '2021-12-21T17:13:37.301Z'
-                    },
-                    change6: {
-                        changeType: 'appdescr_fe_changePageConfiguration',
-                        fileName: 'id_1640106755570_204_appdescr_fe_changePageConfiguration',
-                        content: {
-                            page: 'ProductsList',
-                            entityPropertyChange: {
-                                propertyPath:
-                                    'controlConfiguration/@com.sap.vocabularies.UI.v1.LineItem/tableSettings/enableAddCardToInsights',
-                                operation: 'UPSERT',
-                                propertyValue: true
-                            }
-                        },
-                        creation: '2021-12-22T17:23:37.301Z'
-                    }
-                })
-        });
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue([]),
             getAllExecutedCommands: jest.fn().mockReturnValue([])
@@ -405,70 +341,7 @@ describe('ChangeService', () => {
             type: '[ext] change-stack-modified',
             payload: {
                 pending: [],
-                saved: [
-                    {
-                        kind: 'generic',
-                        type: 'saved',
-                        fileName: 'id_1640106755570_204_appdescr_fe_changePageConfiguration',
-                        changeType: 'configuration',
-                        timestamp: 1640193817301,
-                        controlId: [],
-                        properties: [
-                            { 'label': 'enableAddCardToInsights', 'value': true, 'displayValueWithIcon': true }
-                        ],
-                        title: 'Configuration'
-                    },
-                    {
-                        type: 'saved',
-                        kind: 'unknown',
-                        changeType: 'codeExt',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301
-                    },
-                    {
-                        kind: 'generic',
-                        type: 'saved',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        changeType: 'property',
-                        timestamp: 1640106817301,
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        properties: [
-                            { 'label': 'enabled', 'value': '{i18n>CREATE_OBJECT2}', 'displayValueWithIcon': true }
-                        ],
-                        title: 'Button'
-                    },
-                    {
-                        kind: 'generic',
-                        type: 'saved',
-                        fileName: 'id_1640106755570_205_propertyChange',
-                        changeType: 'rename',
-                        timestamp: 1640106817301,
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        properties: [
-                            {
-                                'label': 'Selector Id',
-                                'value':
-                                    'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry'
-                            },
-                            { 'label': 'New value', 'value': 'Test123' },
-                            { 'label': 'Text Type', 'value': 'XFLD' }
-                        ],
-                        title: 'Rename Control'
-                    },
-                    {
-                        kind: 'generic',
-                        type: 'saved',
-                        fileName: 'id_1640106755570_203_propertyChange',
-                        changeType: 'property',
-                        timestamp: 1640106757301,
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        properties: [{ 'label': 'enabled', 'value': true, 'displayValueWithIcon': true }],
-                        title: 'Button'
-                    }
-                ]
+                saved: []
             }
         });
     });
@@ -1698,7 +1571,8 @@ describe('ChangeService', () => {
                             }
                         ],
                         changeType: 'configuration',
-                        title: 'Configuration'
+                        title: 'Configuration',
+                        configPath: 'controlConfig/settings'
                     },
                     {
                         controlId: [],
@@ -1713,7 +1587,8 @@ describe('ChangeService', () => {
                             }
                         ],
                         changeType: 'configuration',
-                        title: 'Configuration'
+                        title: 'Configuration',
+                        configPath: 'controlConfig/settings/useDateRange'
                     }
                 ]
             }
@@ -1807,7 +1682,8 @@ describe('ChangeService', () => {
                             }
                         ],
                         title: 'Configuration',
-                        changeType: 'configuration'
+                        changeType: 'configuration',
+                        configPath: 'controlConfig'
                     }
                 ]
             }

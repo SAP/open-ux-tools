@@ -49,6 +49,8 @@ export function GenericChange(genericChangeProps: Readonly<GenericChangeProps>):
     function onCancelDelete(): void {
         setDialogState(undefined);
     }
+    const key =
+        change.type === SAVED_CHANGE_TYPE ? `${SAVED_CHANGE_TYPE}${fileName}` : `${PENDING_CHANGE_TYPE}${fileName}`;
     const name = `${t('FILE')}${fileName}`;
     const opacity =
         change.type === SAVED_CHANGE_TYPE || (change.type === PENDING_CHANGE_TYPE && change.isActive) ? 1 : 0.4;
@@ -62,13 +64,17 @@ export function GenericChange(genericChangeProps: Readonly<GenericChangeProps>):
                                 const { label, value, displayValueWithIcon } = item;
                                 return (
                                     <div
-                                        key={index}
+                                        key={`${key}${index}`}
                                         style={{
                                             display: 'flex',
-                                            flexWrap: 'wrap',
                                             width: '240px',
                                             margin: '3px',
-                                            alignItems: 'center'
+                                            alignItems: 'center',
+                                            ...(!displayValueWithIcon && {
+                                                alignItems: 'flex-start',
+                                                flexDirection: 'column'
+                                            }),
+                                            flexWrap: 'wrap'
                                         }}>
                                         {displayValueWithIcon ? (
                                             <DisplayAsIcon label={label} value={value} />

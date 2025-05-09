@@ -1,0 +1,38 @@
+.text {
+    flex: '1 1 auto';
+    min-width: 0px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+    text-align: left;
+    font-weight: 400;
+}
+
+.genericPropLabel {
+    white-space: nowrap;
+    margin-right: 5px;
+    font-weight: 700;
+    font-size: 11px;
+}
+.genericPropValue {
+    min-width: 0px;
+    width: 240px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    direction: rtl;
+    text-align: left;
+    font-size: 13px !important;
+}
+.label {
+    font-size: 13px !important;
+    font-weight: 400;
+}
+.genericPropLabel
+.genericPropValue
+.label
+.text {
+    line-height: 18px;
+    letter-spacing: 0%;
+}

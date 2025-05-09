@@ -132,7 +132,6 @@ interface GenericChangeHandlerReturnType {
     controlId?: string | string[];
     changeType?: string;
     configPath?: string;
-    subtitle?: string;
     properties: { label: string; value: PropertyValue | Record<string, unknown>; displayValueWithIcon?: boolean }[];
 }
 
@@ -235,10 +234,10 @@ export const GENERIC_CHANGE_HANDLER: GenericChangeHandler = {
     [PROPERTY_BINDING_CHANGE]: async (change, handlerOptions) => {
         return getPropertyChange(change as PropertyChange, handlerOptions);
     },
-    [MANIFEST_V4_CHANGE]: async (change, handlerOptions) => {
+    [MANIFEST_V4_CHANGE]: (change, handlerOptions) => {
         return getV4ConfigurationChange(change as ConfigChange, handlerOptions);
     },
-    [MANIFEST_V2_CHANGE]: async (change, handlerOptions) => {
+    [MANIFEST_V2_CHANGE]: (change, handlerOptions) => {
         return getV2ConfigurationChange(change as V2ConfigChange, handlerOptions);
     }
 };
@@ -257,7 +256,7 @@ function getV2ConfigurationChange(
         changeTitle: textBundle?.getText('CONFIGURATION_CHANGE'),
         controlId: [],
         changeType: 'configuration',
-        subtitle: getCompactV4ConfigPath(propertyPathSegments) || parentPage.component,
+        configPath: entityPropertyChange.propertyPath ?? parentPage.component,
         properties: [
             {
                 label: propertyName ?? '',
@@ -316,7 +315,7 @@ function getV4ConfigurationChange(
         changeTitle: textBundle?.getText('CONFIGURATION_CHANGE'),
         controlId: controlIds,
         changeType: 'configuration',
-        configPath: change.content.entityPropertyChange.propertyPath,
+        configPath: getCompactV4ConfigPath(propertyPathSegments),
         properties: properties
     };
 }
