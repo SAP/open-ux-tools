@@ -434,7 +434,6 @@ describe('Test FioriAppGenerator', () => {
                     source: DatasourceType.odataServiceUrl
                 },
                 floorplan: FloorplanFF.FF_SIMPLE,
-                hideUI5VersionPrompt: undefined,
                 promptSettings: undefined,
                 promptExtension: undefined
             },
@@ -472,12 +471,14 @@ describe('Test FioriAppGenerator', () => {
             },
             floorplan: FloorplanFE.FE_WORKLIST
         };
-        options.hideUI5VersionPrompt = true;
         options.promptSettings = {
             name: {
                 hide: true
             },
             targetFolder: {
+                hide: true
+            },
+            ui5Version: {
                 hide: true
             }
         };
@@ -503,7 +504,6 @@ describe('Test FioriAppGenerator', () => {
                     source: DatasourceType.sapSystem
                 },
                 floorplan: FloorplanFF.FF_SIMPLE,
-                hideUI5VersionPrompt: true,
                 promptSettings: options.promptSettings,
                 promptExtension: options.extensions
             },

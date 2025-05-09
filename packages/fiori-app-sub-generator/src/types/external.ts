@@ -6,7 +6,10 @@ import type { PromptSeverityMessage } from '@sap-ux/inquirer-common';
 import type { DeployConfig, FLPConfig } from '@sap-ux/fiori-generator-shared';
 import type { CapRuntime, EntityRelatedAnswers } from '@sap-ux/odata-service-inquirer';
 import { OdataVersion } from '@sap-ux/odata-service-inquirer';
-import { promptNames as ui5AppInquirerPromptNames } from '@sap-ux/ui5-application-inquirer';
+import {
+    promptNames as ui5AppInquirerPromptNames,
+    type UI5ApplicationPromptOptions
+} from '@sap-ux/ui5-application-inquirer';
 import type { Answers, Question } from 'inquirer';
 import { LEGACY_CAP_TYPE_JAVA, LEGACY_CAP_TYPE_NODE } from './constants';
 import { type ALPOptions, type Project, type Service, type Floorplan, FloorplanFE, FloorplanFF } from './state';
@@ -178,12 +181,6 @@ export function capTypeConversion(capType?: string): CapRuntime {
  */
 export interface FioriGeneratorSettings {
     /**
-     * Toggles ui5 version prompting
-     *
-     * @deprecated Use extensions + prompt options (UI5ApplcationInquirer `ui5Version` options 'hide') to control this
-     */
-    hideUI5VersionPrompt?: boolean;
-    /**
      * Toggles the generation of index.html and excludes the start-noflp script from package.json
      */
     generateIndexHtml?: boolean;
@@ -203,8 +200,6 @@ export interface FioriGeneratorSettings {
 
 /**
  * Defines the currently allowed extension points for a Fiori Generator prompt
- * todo: Include open source inquirer prompt options (UI5ApplicationInquirer prompt options) also so extensions can directly use them
- *
  */
 export type PromptExtension = {
     [key in ui5AppInquirerPromptNames]?: {
@@ -212,7 +207,7 @@ export type PromptExtension = {
         default?: Question['default'];
         additionalMessages?: PromptSeverityMessage;
     };
-};
+} & UI5ApplicationPromptOptions;
 
 export interface FioriGeneratorPromptExtension {
     [generatorName: string]: PromptExtension;
