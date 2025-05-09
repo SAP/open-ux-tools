@@ -6,6 +6,7 @@ import { create as createEditor } from 'mem-fs-editor';
 import { join } from 'path';
 import fs from 'fs';
 import type { Destination } from '@sap-ux/btp-utils';
+import { get } from 'http';
 
 const mockIsAppStudio = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => ({
@@ -17,7 +18,9 @@ jest.mock('@sap-ux/btp-utils', () => ({
 jest.mock('@sap-ux/system-access', () => {
     return {
         ...(jest.requireActual('@sap-ux/system-access') as any),
-        createAbapServiceProvider: jest.fn()
+        createAbapServiceProvider: jest.fn().mockResolvedValue({
+            get: {}
+        })
     };
 });
 
@@ -205,6 +208,9 @@ describe('test helper functions', () => {
                 connectedSystem: {
                     destination: {
                         Name: 'testSystem'
+                    },
+                    serviceProvider: {
+                        get: {}
                     }
                 }
             });
@@ -263,6 +269,10 @@ describe('test helper functions', () => {
         const serviceMetadata = memFs.readJSON(join(testOutputDir, '.service.metadata'));
         expect(serviceMetadata).toMatchSnapshot();
 
+        expect(utils.getRelativeUrlFromContent(state.content)).toEqual(
+            '/sap/opu/odata4/sap/ZUI_BANKTP132_O4/srvd/sap/ZUI_BANKTP134_O4/0001/'
+        );
+
         const providerMockError = {
             get: jest.fn().mockRejectedValue('error'),
             getAdtService: jest.fn()
@@ -271,6 +281,27 @@ describe('test helper functions', () => {
         expect(appWizardMock.showInformation).toHaveBeenLastCalledWith(
             'UI Service ZUI_BANKTP132_O4 has been created successfully, but could not be added to your project',
             1
+        );
+    });
+
+    test('getRelativeUrlFromContent - content with custom namespace', async () => {
+        const state = {
+            content: `{"general":{"namespace":"/ITAPC1/"},"businessService": {
+                "serviceDefinition": {
+                    "serviceDefinitionName": "ZUI_BANKTP134_O4",
+                    "serviceDefinitionNameOrgn": "ZUI_BANKTP134_O4"
+                },
+                "serviceBinding": {
+                    "serviceBindingName": "ZUI_BANKTP132_O4",
+                    "serviceBindingNameOrgn": "ZUI_BANKTP132_O4",
+                    "bindingType": "v4Ui"
+                }
+            }
+        }`
+        };
+
+        expect(utils.getRelativeUrlFromContent(state.content)).toEqual(
+            '/sap/opu/odata4/ITAPC1/ZUI_BANKTP132_O4/srvd/ITAPC1/ZUI_BANKTP134_O4/0001/'
         );
     });
 
