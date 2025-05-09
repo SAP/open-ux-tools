@@ -4,7 +4,6 @@ import { CustomConfig, AdpWriterConfig, FlexLayer } from '../types';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Logger } from '@sap-ux/logger';
-import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import type { AppIndex } from '@sap-ux/axios-extension';
 import { validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
 import { getPackageJSONInfo } from '../writer/project-utils';
@@ -107,9 +106,7 @@ export async function promptGeneratorInput(
     return {
         app: {
             ...app,
-            layer,
-            // TODO: Retrieve and pass manifest
-            manifest: {} as Manifest
+            layer
         },
         target,
         options,

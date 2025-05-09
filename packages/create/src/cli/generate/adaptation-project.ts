@@ -102,8 +102,7 @@ function createConfigFromDefaults(defaults: PromptDefaults): AdpWriterConfig {
             app: {
                 id: defaults.id,
                 reference: defaults.reference,
-                layer: FlexLayer.CUSTOMER_BASE,
-                manifest: {} as Manifest
+                layer: FlexLayer.CUSTOMER_BASE
             },
             target: {
                 url: defaults.url,
