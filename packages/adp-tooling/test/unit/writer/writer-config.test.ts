@@ -1,9 +1,23 @@
+import { join } from 'path';
+import { readFileSync } from 'fs';
+
 import type { ToolsLogger } from '@sap-ux/logger';
 import type { Package } from '@sap-ux/project-access';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
 
 import { FlexLayer, getProviderConfig, getConfig } from '../../../src';
-import type { AttributesAnswers, ConfigAnswers, Language, SourceApplication, VersionDetail } from '../../../src';
+import type {
+    AttributesAnswers,
+    ConfigAnswers,
+    ConfigOptions,
+    Language,
+    SourceApplication,
+    VersionDetail
+} from '../../../src';
+import { t } from '../../../src/i18n';
+
+const basePath = join(__dirname, '../../fixtures/base-app/manifest.json');
+const manifest = JSON.parse(readFileSync(basePath, 'utf-8'));
 
 jest.mock('../../../src/abap/config.ts', () => ({
     getProviderConfig: jest.fn()
@@ -46,23 +60,32 @@ const attributeAnswers: AttributesAnswers = {
     ui5Version: '1.134.1'
 };
 
+const baseConfig: ConfigOptions = {
+    provider: mockAbapProvider,
+    configAnswers,
+    attributeAnswers,
+    layer: FlexLayer.CUSTOMER_BASE,
+    publicVersions: { latest: { version: '1.135.0' } as VersionDetail },
+    systemVersion: '1.137.0',
+    packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
+    logger: {} as ToolsLogger,
+    manifest
+};
+
 describe('getConfig', () => {
     beforeEach(() => {
         getProviderConfigMock.mockResolvedValue(systemDetails);
     });
 
+    it('throws error if manifest was not provided', async () => {
+        await expect(getConfig({ ...baseConfig, manifest: undefined })).rejects.toThrow(
+            t('validators.manifestWasNotProvided')
+        );
+    });
+
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
         isAbapCloudMock.mockResolvedValue(true);
-        const config = await getConfig({
-            provider: mockAbapProvider,
-            configAnswers,
-            attributeAnswers,
-            layer: FlexLayer.CUSTOMER_BASE,
-            publicVersions: { latest: { version: '1.135.0' } as VersionDetail },
-            systemVersion: undefined,
-            packageJson: { name: '@sap-ux/generator-adp', version: '0.0.1' } as Package,
-            logger: {} as ToolsLogger
-        });
+        const config = await getConfig(baseConfig);
 
         expect(config).toEqual({
             app: {
@@ -72,18 +95,7 @@ describe('getConfig', () => {
                 title: '',
                 bspName: 'bsp.name',
                 languages: activeLanguages,
-                i18nDescription: expect.stringContaining('SAP Fiori application keys'),
-                content: [
-                    {
-                        changeType: 'appdescr_ui5_addNewModelEnhanceWith',
-                        content: {
-                            bundleUrl: 'i18n/i18n.properties',
-                            fallbackLocale: '',
-                            modelId: 'i18n',
-                            supportedLocales: ['']
-                        }
-                    }
-                ]
+                manifest
             },
             customConfig: {
                 adp: {
@@ -101,7 +113,8 @@ describe('getConfig', () => {
             },
             ui5: {
                 frameworkUrl: 'https://ui5.sap.com',
-                minVersion: '1.135.0',
+                minVersion: '1.137.0',
+                shouldSetMinVersion: true,
                 version: '1.135.0'
             },
             options: { fioriTools: true, enableTypeScript: false }

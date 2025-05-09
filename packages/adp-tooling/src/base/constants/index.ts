@@ -10,6 +10,8 @@ export const SNAPSHOT_UNTESTED_VERSION = 'snapshot-untested';
 
 export const RESOURCE_BUNDLE_TEXT = '\n\n# This is the resource bundle for ';
 export const TRANSLATION_UUID_TEXT = '\n#__ldi.translation.uuid=';
+export const PROPERTIES_TEXT = '.properties';
+export const MAIN_I18N_PATH = 'i18n/i18n.properties';
 export const BASE_I18N_DESCRIPTION =
     '#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.';
 

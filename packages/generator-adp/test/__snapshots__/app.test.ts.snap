@@ -11,17 +11,6 @@ exports[`Adaptation Project Generator Integration Test should create adaptation 
   "version": "0.1.0",
   "content": [
     {
-    "changeType": "appdescr_ui5_addNewModelEnhanceWith",
-    "content": {
-        "modelId": "i18n",
-        "bundleUrl": "i18n/i18n.properties",
-        "supportedLocales": [
-            ""
-        ],
-        "fallbackLocale": ""
-    }
-},
-    {
       "changeType": "appdescr_app_setTitle",
       "content": {},
       "texts": {
@@ -101,22 +90,11 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
   "version": "0.1.0",
   "content": [
     {
-    "changeType": "appdescr_ui5_setMinUI5Version",
-    "content": {
+      "changeType": "appdescr_ui5_setMinUI5Version",
+      "content": {
         "minUI5Version": "1.136.0"
-    }
-},
-    {
-    "changeType": "appdescr_ui5_addNewModelEnhanceWith",
-    "content": {
-        "modelId": "i18n",
-        "bundleUrl": "i18n/i18n.properties",
-        "supportedLocales": [
-            ""
-        ],
-        "fallbackLocale": ""
-    }
-},
+      }
+    },
     {
       "changeType": "appdescr_app_setTitle",
       "content": {},

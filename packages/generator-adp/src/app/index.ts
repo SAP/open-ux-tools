@@ -12,9 +12,9 @@ import {
     loadApps,
     type AttributesAnswers,
     type ConfigAnswers,
-    type UI5Version
+    type UI5Version,
+    SourceManifest
 } from '@sap-ux/adp-tooling';
-import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 import {
     TelemetryHelper,
     getDefaultTargetFolder,
@@ -24,7 +24,9 @@ import {
     type ILogWrapper
 } from '@sap-ux/fiori-generator-shared';
 import { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
+import { isInternalFeaturesSettingEnabled } from '@sap-ux/feature-toggle';
 
 import { getFlexLayer } from './layer';
 import { initI18n, t } from '../utils/i18n';
@@ -91,6 +93,10 @@ export default class extends Generator {
      * Instance of AbapServiceProvider.
      */
     private abapProvider: AbapServiceProvider;
+    /**
+     * Application manifest.
+     */
+    private manifest: Manifest;
     /**
      * Publicly available UI5 versions.
      */
@@ -200,6 +206,7 @@ export default class extends Generator {
 
             const provider = this.jsonInput ? this.abapProvider : this.prompter.provider;
             const publicVersions = this.jsonInput ? this.publicVersions : this.prompter.ui5.publicVersions;
+            const manifest = this.jsonInput ? this.manifest : this.prompter.manifest;
 
             const packageJson = getPackageInfo();
             const config = await getConfig({
@@ -208,6 +215,7 @@ export default class extends Generator {
                 attributeAnswers: this.attributeAnswers,
                 systemVersion: this.prompter?.ui5?.systemVersion,
                 publicVersions,
+                manifest,
                 layer: this.layer,
                 packageJson,
                 logger: this.toolsLogger
@@ -349,6 +357,9 @@ export default class extends Generator {
         if (!application) {
             throw new Error(t('error.applicationNotFound', { appName: baseApplicationName }));
         }
+
+        const sourceManifest = new SourceManifest(this.abapProvider, application.id);
+        this.manifest = await sourceManifest.getManifest();
 
         this.configAnswers = {
             system,

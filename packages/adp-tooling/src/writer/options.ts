@@ -157,7 +157,7 @@ function addFioriToolsMiddlewares(ui5Config: UI5Config, config: AdpWriterConfig)
         {
             ui5: {
                 url: config?.ui5?.frameworkUrl,
-                version: config?.ui5?.minVersion ?? '' //default to latest if version is not set
+                version: config?.ui5?.version ?? config?.ui5?.minVersion //default to latest if version is not set
             },
             backend: [backendConfig as FioriToolsProxyConfigBackend]
         },
