@@ -395,7 +395,16 @@ describe('InputTypeWrapper', () => {
                                             type: 'saved',
                                             fileName: 'file',
                                             timestamp: 123,
-                                            controlId: 'control1'
+                                            controlId: 'control1',
+                                            changeType: 'property',
+                                            kind: 'generic',
+                                            properties: [
+                                                {
+                                                    label: propertyName,
+                                                    value: 'old value'
+                                                }
+                                            ],
+                                            title: 'Random Title'
                                         }
                                     }
                                 }
