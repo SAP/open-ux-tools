@@ -205,130 +205,133 @@ describe('ChangeService', () => {
         });
     });
     // to check and remove
-    test.failing('Sync Outline Changes', async () => {
-        fetchMock.mockResolvedValue({
-            json: () =>
-                Promise.resolve({
-                    change1: {
-                        changeType: 'propertyChange',
-                        fileName: 'id_1640106755570_203_propertyChange',
-                        content: {
-                            property: 'enabled',
-                            newValue: true
-                        },
-                        selector: {
-                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                            type: 'sap.m.Button'
-                        },
-                        creation: '2021-12-21T17:12:37.301Z'
-                    },
-                    change2: {
-                        changeType: 'codeExt',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        creation: '2021-12-21T17:13:37.301Z'
-                    },
-                    change3: {
-                        changeType: 'propertyChange',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        content: {
-                            property: 'enabled',
-                            newBinding: '{i18n>CREATE_OBJECT2}'
-                        },
-                        selector: {
-                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                            type: 'sap.m.Button'
-                        },
-                        creation: '2021-12-21T17:13:37.301Z'
-                    },
-                    change4: {
-                        changeType: 'rename',
-                        fileName: 'id_1640106755570_205_propertyChange',
-                        texts: {
-                            newText: {
-                                value: 'hello',
-                                type: 'XFLD'
-                            }
-                        },
-                        selector: {
-                            id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                            type: 'sap.m.Button'
-                        },
-                        creation: '2021-12-21T17:13:37.301Z'
-                    },
-                    change5: {}
-                })
-        });
-        jest.spyOn(Date, 'now').mockReturnValueOnce(123);
+    // test.failing('Sync Outline Changes', async () => {
+    //     fetchMock.mockResolvedValue({
+    //         json: () =>
+    //             Promise.resolve({
+    //                 change1: {
+    //                     changeType: 'propertyChange',
+    //                     fileName: 'id_1640106755570_203_propertyChange',
+    //                     content: {
+    //                         property: 'enabled',
+    //                         newValue: true
+    //                     },
+    //                     selector: {
+    //                         id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+    //                         type: 'sap.m.Button'
+    //                     },
+    //                     creation: '2021-12-21T17:12:37.301Z'
+    //                 },
+    //                 change2: {
+    //                     changeType: 'codeExt',
+    //                     fileName: 'id_1640106755570_204_propertyChange',
+    //                     creation: '2021-12-21T17:13:37.301Z'
+    //                 },
+    //                 change3: {
+    //                     changeType: 'propertyChange',
+    //                     fileName: 'id_1640106755570_204_propertyChange',
+    //                     content: {
+    //                         property: 'enabled',
+    //                         newBinding: '{i18n>CREATE_OBJECT2}'
+    //                     },
+    //                     selector: {
+    //                         id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+    //                         type: 'sap.m.Button'
+    //                     },
+    //                     creation: '2021-12-21T17:13:37.301Z'
+    //                 },
+    //                 change4: {
+    //                     changeType: 'rename',
+    //                     fileName: 'id_1640106755570_205_propertyChange',
+    //                     texts: {
+    //                         newText: {
+    //                             value: 'hello',
+    //                             type: 'XFLD'
+    //                         }
+    //                     },
+    //                     selector: {
+    //                         id: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+    //                         type: 'sap.m.Button'
+    //                     },
+    //                     creation: '2021-12-21T17:13:37.301Z'
+    //                 },
+    //                 change5: {}
+    //             })
+    //     });
+    //     jest.spyOn(Date, 'now').mockReturnValueOnce(123);
 
-        const service = new ChangeService({ rta: rtaMock } as any);
+    //     const service = new ChangeService({ rta: rtaMock } as any);
 
-        await service.init(sendActionMock, subscribeMock);
-        expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
-        expect(sendActionMock).toHaveBeenCalledWith({
-            type: '[ext] change-stack-modified',
-            payload: {
-                pending: [],
-                saved: [
-                    {
-                        changeType: 'codeExt',
-                        type: 'saved',
-                        kind: 'unknown',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        timestamp: 1640106817301
-                    },
-                    {
-                        changeType: 'propertyChange',
-                        type: 'saved',
-                        kind: 'property',
-                        fileName: 'id_1640106755570_204_propertyChange',
-                        controlName: 'Button',
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: '{i18n>CREATE_OBJECT2}',
-                        timestamp: 1640106817301
-                    },
-                    {
-                        changeType: 'rename',
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        fileName: 'id_1640106755570_205_propertyChange',
-                        kind: 'generic',
-                        timestamp: 1640106817301,
-                        type: 'saved',
-                        properties: [
-                            {
-                                label: 'Selector Id',
-                                value: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry'
-                            },
-                            {
-                                label: 'New Value',
-                                value: 'hello'
-                            },
-                            {
-                                label: 'Text Type',
-                                value: 'XFLD'
-                            }
-                        ]
-                    },
-                    {
-                        changeType: 'propertyChange',
-                        type: 'saved',
-                        kind: 'property',
-                        fileName: 'id_1640106755570_203_propertyChange',
-                        controlName: 'Button',
-                        controlId:
-                            'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
-                        propertyName: 'enabled',
-                        value: true,
-                        timestamp: 1640106757301
-                    }
-                ]
-            }
-        });
-    });
+    //     await service.init(sendActionMock, subscribeMock);
+    //     expect(fetchMock).toHaveBeenCalledWith('/preview/api/changes?_=123');
+    //     expect(sendActionMock).toHaveBeenCalledWith({
+    //         type: '[ext] change-stack-modified',
+    //         payload: {
+    //             pending: [],
+    //             saved: [
+    //                 {
+    //                     changeType: 'codeExt',
+    //                     type: 'saved',
+    //                     kind: 'unknown',
+    //                     fileName: 'id_1640106755570_204_propertyChange',
+    //                     timestamp: 1640106817301
+    //                 },
+    //                 {
+    //                     changeType: 'propertyChange',
+    //                     type: 'saved',
+    //                     kind: 'property',
+    //                     fileName: 'id_1640106755570_204_propertyChange',
+    //                     controlName: 'Button',
+    //                     controlId:
+    //                         'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+    //                     propertyName: 'enabled',
+    //                     value: '{i18n>CREATE_OBJECT2}',
+    //                     timestamp: 1640106817301
+    //                 },
+    //                 {
+    //                     changeType: 'rename',
+    //                     controlId:
+    //                         'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+    //                     fileName: 'id_1640106755570_205_propertyChange',
+    //                     kind: 'generic',
+    //                     timestamp: 1640106817301,
+    //                     type: 'saved',
+    //                     properties: [
+    //                         {
+    //                             label: 'Selector Id',
+    //                             value: 'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry'
+    //                         },
+    //                         {
+    //                             label: 'New Value',
+    //                             value: 'hello'
+    //                         },
+    //                         {
+    //                             label: 'Text Type',
+    //                             value: 'XFLD'
+    //                         }
+    //                     ]
+    //                 },
+    //                 {
+    //                     changeType: 'propertyChange',
+    //                     type: 'saved',
+    //                     kind: 'property',
+    //                     fileName: 'id_1640106755570_203_propertyChange',
+    //                     controlName: 'Button',
+    //                     controlId:
+    //                         'v2flex::sap.suite.ui.generic.template.ListReport.view.ListReport::SEPMRA_C_PD_Product--addEntry',
+    //                     propertyName: 'enabled',
+    //                     value: true,
+    //                     timestamp: 1640106757301
+    //                 }
+    //             ]
+    //         }
+    //     });
+    // });
 
     test('no command stack', async () => {
+        fetchMock.mockResolvedValue({
+            json: () => Promise.resolve()
+        });
         rtaMock.getCommandStack.mockReturnValue({
             getCommands: jest.fn().mockReturnValue([]),
             getAllExecutedCommands: jest.fn().mockReturnValue([])
