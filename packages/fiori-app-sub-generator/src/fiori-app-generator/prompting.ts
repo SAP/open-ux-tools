@@ -214,7 +214,7 @@ export async function promptOdataServiceAnswers(
         source: answers.datasourceType,
         localEdmxFilePath: answers.metadataFilePath,
         connectedSystem: answers.connectedSystem,
-        ignoreCertError: (answers as any).ignoreCertError // TBI: ignoreCertError is not a property OdataServiceAnswers
+        ignoreCertError: answers.ignoreCertError
     };
     return service;
 }
@@ -304,6 +304,9 @@ export async function createUI5ApplicationPromptOptions(
             },
             [ui5AppInquirerPromptNames.enableTypeScript]: {
                 defaultValue: defaultPromptValues[ui5AppInquirerPromptNames.enableTypeScript]
+            },
+            [ui5AppInquirerPromptNames.enableVirtualEndpoints]: {
+                hide: service.capService?.capType === 'Java'
             }
         } as UI5ApplicationPromptOptions,
         promptSettings as UI5ApplicationPromptOptions

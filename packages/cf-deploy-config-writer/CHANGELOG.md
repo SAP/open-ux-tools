@@ -1,5 +1,18 @@
 # @sap-ux/cf-deploy-config-inquirer
 
+## 0.2.13
+
+### Patch Changes
+
+-   Updated dependencies [ea0e2c0]
+    -   @sap-ux/project-access@1.29.22
+
+## 0.2.12
+
+### Patch Changes
+
+-   b339248: Ensure missing package.json id matches the mta ID
+
 ## 0.2.11
 
 ### Patch Changes

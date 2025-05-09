@@ -87,7 +87,7 @@ export function removeTimestampFromVersion(version: string): string {
  */
 export function addSnapshot(version: string, latestVersion: string): string {
     const versionParts = version.split('.');
-    return versionParts[3] && removeTimestampFromVersion(version) != latestVersion ? '-snapshot' : '';
+    return versionParts[2] && removeTimestampFromVersion(version) != latestVersion ? '-snapshot' : '';
 }
 
 /**
