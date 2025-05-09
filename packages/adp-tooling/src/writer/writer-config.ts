@@ -2,11 +2,6 @@ import type { ToolsLogger } from '@sap-ux/logger';
 import type { Manifest, Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
-import { FlexLayer } from '../types';
-import { getProviderConfig } from '../abap';
-import { getI18nDescription } from './i18n';
-import { getCustomConfig } from './project-utils';
-import { getManifestContent } from './descriptor-content';
 import {
     getFormattedVersion,
     getLatestVersion,
@@ -15,6 +10,10 @@ import {
     getVersionToBeUsed,
     shouldSetMinUI5Version
 } from '../ui5';
+import { t } from '../i18n';
+import { FlexLayer } from '../types';
+import { getProviderConfig } from '../abap';
+import { getCustomConfig } from './project-utils';
 import type { AdpWriterConfig, AttributesAnswers, CloudApp, ConfigAnswers, OnpremApp, UI5Version } from '../types';
 
 interface ConfigOptions {
@@ -83,7 +82,7 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     } = options;
 
     if (!manifest) {
-        throw new Error('Manifest was not provided. Cannot generate an adaptation project. Please view the logs.');
+        throw new Error(t('validators.manifestWasNotProvided'));
     }
 
     const ato = await provider.getAtoInfo();
@@ -126,19 +125,37 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         });
     }
 
+    const ui5 = getUi5Config(ui5Version, publicVersions, systemVersion);
+
     return {
         app,
-        ui5: {
-            minVersion: getMinUI5VersionForManifest(publicVersions, systemVersion),
-            version: getFormattedVersion(ui5Version),
-            frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version),
-            shouldSetMinVersion: shouldSetMinUI5Version(systemVersion)
-        },
+        ui5,
         customConfig,
         target,
         options: {
             fioriTools: true,
             enableTypeScript
         }
+    };
+}
+
+/**
+ * Generates the configuration details required for a SAPUI5 application based on system and selected UI5 versions.
+ *
+ * @param {string} ui5Version - The selected UI5 version.
+ * @param {UI5Version} publicVersions - The publicly available UI5 versions.
+ * @param {string | undefined} systemVersion - The SAPUI5 version detected on the target system.
+ * @returns {AdpWriterConfig['ui5']} An object containing the required UI5 configuration for the writer config.
+ */
+export function getUi5Config(
+    ui5Version: string,
+    publicVersions: UI5Version,
+    systemVersion: string | undefined
+): AdpWriterConfig['ui5'] {
+    return {
+        minVersion: getMinUI5VersionForManifest(publicVersions, systemVersion),
+        version: getFormattedVersion(ui5Version),
+        frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version),
+        shouldSetMinVersion: shouldSetMinUI5Version(systemVersion)
     };
 }

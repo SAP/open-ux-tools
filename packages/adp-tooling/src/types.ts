@@ -4,7 +4,6 @@ import type { Adp, BspApp } from '@sap-ux/ui5-config';
 import type { OperationsType } from '@sap-ux/axios-extension';
 import type { Editor } from 'mem-fs-editor';
 import type { Destination } from '@sap-ux/btp-utils';
-import { ResourceModel } from './writer/i18n';
 
 export interface DescriptorVariant {
     layer: UI5FlexLayer;
@@ -53,10 +52,12 @@ export interface OnpremApp {
     content?: Content[];
     /** Optional: Description about i18n.properties. */
     i18nDescription?: string;
+    /** Optional: I18n resource models derived from the manifest. */
     i18nModels?: ResourceModel[];
-    /** The manifest of the application */
-    manifest: Manifest;
+    /** Optional: Application type derived from the manifest. */
     appType?: ApplicationType;
+    /** The manifest of the application */
+    manifest?: Manifest;
 }
 
 export interface CloudApp extends OnpremApp {
@@ -147,6 +148,12 @@ export interface VersionDetail {
     version: string;
     support: string;
     lts: boolean;
+}
+
+export interface ResourceModel {
+    key: string;
+    path: string;
+    content?: string;
 }
 
 export interface SapModel {

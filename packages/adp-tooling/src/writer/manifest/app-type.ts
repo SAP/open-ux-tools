@@ -1,6 +1,6 @@
 import type { Manifest } from '@sap-ux/project-access';
 
-import { ApplicationType } from '..';
+import { ApplicationType } from '../..';
 
 /**
  * Determines the type of UI5 application based on the content of its manifest file.
@@ -16,13 +16,13 @@ import { ApplicationType } from '..';
  * - If none of these conditions are met, the function defaults to categorizing the application as Free Style.
  * - If the manifest is empty, it returns None.
  */
-export function getApplicationType(manifest: Manifest): ApplicationType {
-    if (Object.keys(manifest).length > 0) {
-        const appInfo = manifest['sap.app'];
-        const isSmartTemplate = !!manifest['sap.ui.generic.app'];
+export function getApplicationType(manifest?: Manifest): ApplicationType {
+    if (Object.keys(manifest ?? {}).length > 0) {
+        const appInfo = manifest?.['sap.app'];
+        const isSmartTemplate = !!manifest?.['sap.ui.generic.app'];
         const hasSmartTemplateId = appInfo?.sourceTemplate?.id?.toLowerCase() === 'ui5template.smarttemplate';
 
-        if (manifest['sap.ovp']) {
+        if (manifest?.['sap.ovp']) {
             return ApplicationType.FIORI_ELEMENTS_OVP;
         } else if (hasSmartTemplateId || isSmartTemplate) {
             return ApplicationType.FIORI_ELEMENTS;

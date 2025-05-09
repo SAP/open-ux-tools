@@ -3,7 +3,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import { Manifest } from '@sap-ux/project-access';
 
-import { FlexLayer, SapModel } from '../../types';
 import {
     RESOURCE_BUNDLE_TEXT,
     TRANSLATION_UUID_TEXT,
@@ -11,12 +10,7 @@ import {
     MAIN_I18N_PATH,
     PROPERTIES_TEXT
 } from '../..';
-
-export interface ResourceModel {
-    key: string;
-    path: string;
-    content?: string;
-}
+import { FlexLayer, type ResourceModel, type SapModel } from '../../types';
 
 /**
  * Generates an internationalization description string for a specific layer within an application.
@@ -85,20 +79,20 @@ export function extractResourceModelPath(ui5Model: SapModel, modelObjectKey: str
  * Extracts and constructs resource models from the application manifest based on the specified layer and application information.
  * This function filters out resource models and attaches a generated i18n description, along with the path derived from the model.
  *
- * @param {Manifest} manifest - The application manifest containing model configurations.
+ * @param {Manifest| undefined} manifest - The application manifest containing model configurations.
  * @param {FlexLayer} layer - The UI5 Flex layer.
  * @param {string} id - The application identifier.
  * @param {string} [title] - The application title.
  * @returns {ResourceModel[] | undefined} An array of resource models or undefined if no models meet the criteria.
  */
 export function getI18nModels(
-    manifest: Manifest,
+    manifest: Manifest | undefined,
     layer: FlexLayer,
     id: string,
     title?: string
 ): ResourceModel[] | undefined {
     try {
-        const models = manifest['sap.ui5']?.models ?? {};
+        const models = manifest?.['sap.ui5']?.models ?? {};
 
         return Object.entries(models).reduce((acc, [key, ui5Model]) => {
             if (ui5Model?.type === 'sap.ui.model.resource.ResourceModel') {

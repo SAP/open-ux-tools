@@ -1,23 +1,6 @@
-import { FlexLayer, type Content, type UI5Version, AdpWriterConfig, ApplicationType } from '../types';
-import { getMinUI5VersionForManifest, isFeatureSupportedVersion, shouldSetMinUI5Version } from '../ui5';
-import { ResourceModel } from './i18n';
-
-/**
- * Returns a model enhancement change configuration.
- *
- * @returns {Content} The model change configuration.
- */
-export function getNewModelEnhanceWithChange(): Content {
-    return {
-        changeType: 'appdescr_ui5_addNewModelEnhanceWith',
-        content: {
-            modelId: 'i18n',
-            bundleUrl: 'i18n/i18n.properties',
-            supportedLocales: [''],
-            fallbackLocale: ''
-        }
-    };
-}
+import { isFeatureSupportedVersion } from '../../ui5';
+import { FlexLayer, ApplicationType } from '../../types';
+import type { Content, AdpWriterConfig, ResourceModel } from '../../types';
 
 /**
  * Creates a descriptor change object for a resource model.
@@ -146,8 +129,6 @@ export function getManifestContent(config: AdpWriterConfig): Content[] {
             }
         });
     }
-
-    content.push(getNewModelEnhanceWithChange());
 
     content.push({
         changeType: 'appdescr_app_setTitle',
