@@ -38,6 +38,9 @@ export function getConfigQuestions(logger: Logger, options?: ServiceConfigOption
             abapTarget: abapTarget,
             serviceProvider: PromptState.systemSelection.connectedSystem?.serviceProvider
         },
+        transportCreated: {
+            description: t('prompts.options.transportDescription')
+        },
         transportInputChoice: {
             showCreateDuringDeploy: false
         },
