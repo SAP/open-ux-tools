@@ -88,7 +88,6 @@ type PromptUI5AppAnswersOptions = {
     targetFolder?: Project['targetFolder'];
     service: Partial<Service>;
     promptSettings?: FioriAppGeneratorPromptSettings;
-    hideUI5VersionPrompt?: boolean;
     floorplan: Floorplan;
     promptExtension?: PromptExtension;
 };
@@ -98,7 +97,6 @@ type PromptUI5AppAnswersOptions = {
  * The answers to the questions are returned.
  *
  * @param param0
- * @param param0.hideUI5VersionPrompt this will override the `hide` property of the ui5Version prompt setting if provided
  * @param param0.service
  * @param param0.projectName
  * @param param0.targetFolder
@@ -115,7 +113,7 @@ export async function promptUI5ApplicationAnswers(
         projectName,
         targetFolder,
         promptSettings,
-        hideUI5VersionPrompt,
+
         floorplan,
         promptExtension
     }: PromptUI5AppAnswersOptions,
@@ -132,21 +130,13 @@ export async function promptUI5ApplicationAnswers(
         inquirerAdapter = adapter;
     }
 
-    // Convert prompt related options to prompt settings
-    const pmptSettings = {
-        ...promptSettings,
-        [ui5AppInquirerPromptNames.ui5Version]: {
-            hide: hideUI5VersionPrompt ?? false
-        }
-    };
-
     const promptOptions = await createUI5ApplicationPromptOptions(
         service,
         yeomanUiStepConfig,
         floorplan,
         projectName,
         targetFolder,
-        pmptSettings,
+        promptSettings,
         promptExtension
     );
     const ui5AppAnswers: UI5ApplicationAnswers = await promptUI5App(
