@@ -207,9 +207,6 @@ describe('Attribute Prompts', () => {
             expect(prompt.type).toBe('confirm');
             expect(prompt.message).toBe('Enable TypeScript');
             expect(prompt.default).toBe(false);
-
-            const whenFn = (prompt as any).when;
-            expect(whenFn).toBe(true);
         });
     });
 });

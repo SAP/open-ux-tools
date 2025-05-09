@@ -20,6 +20,40 @@ export function getLatestVersion(publicVersions: UI5Version): string {
 }
 
 /**
+ * Retrieves the minimum SAP UI5 version to be specified in the application manifest.
+ * If the system version does not contain 'snapshot', the system version itself is used;
+ * otherwise, the latest stable version is used as the minimum version.
+ *
+ * @param {UI5Version} publicVersions - The public UI5 version data.
+ * @param {string} [systemVersion] - The version on the system.
+ * @returns {string} The SAP UI5 version string to be set in the manifest, which can be either
+ *         the current system version or the latest stable version, depending on the presence of 'snapshot'.
+ */
+export function getMinUI5VersionForManifest(publicVersions: UI5Version, systemVersion?: string): string {
+    if (!systemVersion || systemVersion?.includes('snapshot')) {
+        return getLatestVersion(publicVersions);
+    }
+    return systemVersion;
+}
+
+/**
+ * Determines whether the minimum SAP UI5 version should be set for the application manifest.
+ *
+ * @param {string} [systemVersion] - The version on the system.
+ * @returns {boolean} True if the minimum UI5 version should be set (i.e., the detected version is
+ *         available and the minor version is 90 or higher); otherwise, false.
+ */
+export function shouldSetMinUI5Version(systemVersion?: string): boolean {
+    if (!systemVersion) {
+        return false;
+    }
+
+    const versionParts = systemVersion.split('.');
+    const minorVersion = versionParts.length > 1 ? parseInt(versionParts[1], 10) : NaN;
+    return !isNaN(minorVersion) && minorVersion >= 90;
+}
+
+/**
  * Determines the appropriate UI5 version to use based on the given version string and the customer base flag.
  *
  * @param {string} version - The current version string, which may include qualifiers like 'snapshot'.
@@ -65,7 +99,7 @@ export function getVersionLabels(version: string | undefined, publicVersions: UI
  */
 export function checkSystemVersionPattern(version: string | undefined): string | undefined {
     const pattern = /^[1-9]\.\d{1,3}\.\d{1,2}\.*/;
-    return version && pattern.test(version) ? version : undefined;
+    return version && pattern.test(version) ? removeTimestampFromVersion(version) : undefined;
 }
 
 /**

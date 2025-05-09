@@ -4,6 +4,7 @@ import {
     hasContentDuplication,
     hasCustomerPrefix,
     isDataSourceURI,
+    validateAch,
     validateDuplicateProjectName,
     validateNamespaceAdp,
     validateProjectName,
@@ -201,6 +202,39 @@ describe('project input validators', () => {
 
         it('returns true for valid VENDOR namespace that matches project name', () => {
             expect(validateNamespaceAdp('myvendorapp', 'myvendorapp', false)).toBe(true);
+        });
+    });
+
+    describe('validateAch', () => {
+        it('should return error if value is an empty string', () => {
+            const result = validateAch('', false);
+            expect(typeof result).toBe('string');
+            expect(result).toBe(t('general.inputCannotBeEmpty'));
+        });
+
+        it('should return true for valid ACH (non-customer base)', () => {
+            const result = validateAch('XY-123', false);
+            expect(result).toBe(true);
+        });
+
+        it('should return true for valid ACH (customer base)', () => {
+            const result = validateAch('Z9', true);
+            expect(result).toBe(true);
+        });
+
+        it('should return error message for invalid ACH format (non-customer base)', () => {
+            const result = validateAch('bad-input!', false);
+            expect(result).toBe(t('adp.achMandatoryError'));
+        });
+
+        it('should return true for invalid ACH format if customer base', () => {
+            const result = validateAch('bad-input!', true);
+            expect(result).toBe(true);
+        });
+
+        it('should normalize lowercase ACH input and validate correctly', () => {
+            const result = validateAch('xy-789', false);
+            expect(result).toBe(true);
         });
     });
 });

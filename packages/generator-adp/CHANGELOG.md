@@ -1,5 +1,20 @@
 # @sap-ux/generator-adp
 
+## 0.2.1
+
+### Patch Changes
+
+-   6cb23c8: feat: Add the Extension Project functionality and internal support information
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/adp-tooling@0.13.43
+    -   @sap-ux/project-input-validator@0.5.6
+
+## 0.2.0
+
+### Minor Changes
+
+-   fc8d7da: feat(generator-adp): Make possible to configure the Adaptation project generator from a json
+
 ## 0.1.21
 
 ### Patch Changes
