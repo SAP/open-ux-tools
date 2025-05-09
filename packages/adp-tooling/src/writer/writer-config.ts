@@ -16,7 +16,7 @@ import { getProviderConfig } from '../abap';
 import { getCustomConfig } from './project-utils';
 import type { AdpWriterConfig, AttributesAnswers, CloudApp, ConfigAnswers, OnpremApp, UI5Version } from '../types';
 
-interface ConfigOptions {
+export interface ConfigOptions {
     /**
      * The ABAP service provider instance used to retrieve system-specific information.
      */

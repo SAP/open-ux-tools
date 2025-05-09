@@ -1,12 +1,14 @@
 import { v4 as uuidv4 } from 'uuid';
 import prompts, { type Answers } from 'prompts';
-import { CustomConfig, AdpWriterConfig, FlexLayer } from '../types';
-import type { AbapTarget } from '@sap-ux/system-access';
-import { createAbapServiceProvider } from '@sap-ux/system-access';
+
 import type { Logger } from '@sap-ux/logger';
+import type { AbapTarget } from '@sap-ux/system-access';
 import type { AppIndex } from '@sap-ux/axios-extension';
+import { createAbapServiceProvider } from '@sap-ux/system-access';
 import { validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
+
 import { getPackageJSONInfo } from '../writer/project-utils';
+import { type CustomConfig, type AdpWriterConfig, FlexLayer } from '../types';
 
 export type PromptDefaults = {
     id?: string;

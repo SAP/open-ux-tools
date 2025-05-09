@@ -6,6 +6,7 @@ import { exec } from 'child_process';
 import Generator from 'yeoman-generator';
 
 import {
+    SourceManifest,
     SystemLookup,
     fetchPublicVersions,
     getConfiguredProvider,
@@ -16,6 +17,7 @@ import {
 import * as Logger from '@sap-ux/logger';
 import { isAppStudio } from '@sap-ux/btp-utils';
 import type { ToolsLogger } from '@sap-ux/logger';
+import type { Manifest } from '@sap-ux/project-access';
 import { getCredentialsFromStore } from '@sap-ux/system-access';
 import type { Language, SourceApplication, VersionDetail } from '@sap-ux/adp-tooling';
 import { type AbapServiceProvider, AdaptationProjectType } from '@sap-ux/axios-extension';
@@ -137,6 +139,7 @@ const answers = {
 
 const activeLanguages: Language[] = [{ sap: 'value', i18n: 'DE' }];
 const adaptationProjectTypes: AdaptationProjectType[] = [AdaptationProjectType.CLOUD_READY];
+const mockManifest = { 'sap.ui5': { flexEnabled: true } } as Manifest;
 const publicVersions = {
     latest: { version: '1.134.1' } as VersionDetail,
     '1.134.0': { version: '1.134.0' } as VersionDetail
@@ -194,6 +197,8 @@ describe('Adaptation Project Generator Integration Test', () => {
             ui5Versions: ['1.134.1 (latest)', '1.134.0'],
             systemVersion: '1.136.0'
         });
+        jest.spyOn(ConfigPrompter.prototype, 'manifest', 'get').mockReturnValue(mockManifest);
+        jest.spyOn(SourceManifest.prototype, 'getManifest').mockResolvedValue(mockManifest);
         validateUI5VersionExistsMock.mockReturnValue(true);
         jest.spyOn(SystemLookup.prototype, 'getSystems').mockResolvedValue(endpoints);
         jest.spyOn(SystemLookup.prototype, 'getSystemRequiresAuth').mockResolvedValue(false);

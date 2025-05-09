@@ -2,12 +2,12 @@ import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
 
-import { getManifestContent } from './manifest/descriptor-content';
+import { getManifestContent } from './manifest';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
-import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
-import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
 import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
-import { getApplicationType } from './manifest/app-type';
+import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
+import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
+import { getApplicationType } from '../source';
 
 const baseTmplPath = join(__dirname, '../../templates');
 

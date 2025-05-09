@@ -6,7 +6,5 @@
   "id": "<%- app.id %>",
   "namespace": "apps/<%- app.reference %>/appVariants/<%- app.id %>/",
   "version": "0.1.0",
-  "content": [
-    <% if (app.content && app.content.length > 0){ %><%- app.content.map((change, index) => '    ' + JSON.stringify(change, null, 2).replace(/\n/g, '\n    ') + (index < app.content.length - 1 ? ',' : '')).join('\n') %><% } %>
-  ]
+  "content": <%- JSON.stringify(app.content || [], null, 2).split('\n').map((line, index) => index === 0 ? line : '  ' + line).join('\n') %>
 }
