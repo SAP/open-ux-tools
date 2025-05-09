@@ -1,9 +1,13 @@
 import { join } from 'path';
 import { create as createStorage } from 'mem-fs';
 import { create, type Editor } from 'mem-fs-editor';
-import type { AdpWriterConfig, InternalInboundNavigation } from '../types';
+
+import { getManifestContent } from './descriptor-content';
 import { enhanceManifestChangeContentWithFlpConfig } from './options';
+import { FlexLayer, type AdpWriterConfig, type InternalInboundNavigation } from '../types';
 import { writeTemplateToFolder, writeUI5Yaml, writeUI5DeployYaml } from './project-utils';
+import { getI18nDescription, getI18nModels, writeI18nModels } from './i18n';
+import { getApplicationType } from './app-type';
 
 const baseTmplPath = join(__dirname, '../../templates');
 
@@ -24,11 +28,23 @@ function setDefaults(config: AdpWriterConfig): AdpWriterConfig {
         customConfig: config.customConfig ? { ...config.customConfig } : undefined
     };
     configWithDefaults.app.title ??= `Adaptation of ${config.app.reference}`;
-    configWithDefaults.app.layer ??= 'CUSTOMER_BASE';
+    configWithDefaults.app.layer ??= FlexLayer.CUSTOMER_BASE;
 
     configWithDefaults.package ??= config.package ? { ...config.package } : {};
     configWithDefaults.package.name ??= config.app.id.toLowerCase().replace(/\./g, '-');
     configWithDefaults.package.description ??= configWithDefaults.app.title;
+    configWithDefaults.app.i18nModels ??= getI18nModels(
+        configWithDefaults.app.manifest,
+        configWithDefaults.app.layer,
+        configWithDefaults.app.reference,
+        configWithDefaults.app.title
+    );
+    configWithDefaults.app.i18nDescription ??= getI18nDescription(
+        configWithDefaults.app.layer,
+        configWithDefaults.app.title
+    );
+    configWithDefaults.app.appType ??= getApplicationType(configWithDefaults.app.manifest);
+    configWithDefaults.app.content ??= getManifestContent(configWithDefaults);
 
     if (configWithDefaults.flp && !configWithDefaults.flp.inboundId) {
         configWithDefaults.flp.addInboundId = true;
@@ -60,6 +76,8 @@ export async function generate(basePath: string, config: AdpWriterConfig, fs?: E
             fullConfig.app.content
         );
     }
+
+    writeI18nModels(basePath, fullConfig.app.i18nModels, fs);
     writeTemplateToFolder(baseTmplPath, join(basePath), fullConfig, fs);
     await writeUI5DeployYaml(basePath, fullConfig, fs);
     await writeUI5Yaml(basePath, fullConfig, fs);

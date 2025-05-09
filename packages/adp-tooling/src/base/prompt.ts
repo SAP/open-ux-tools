@@ -1,10 +1,10 @@
 import { v4 as uuidv4 } from 'uuid';
 import prompts, { type Answers } from 'prompts';
-import type { CustomConfig, AdpWriterConfig } from '../types';
+import { CustomConfig, AdpWriterConfig, FlexLayer } from '../types';
 import type { AbapTarget } from '@sap-ux/system-access';
 import { createAbapServiceProvider } from '@sap-ux/system-access';
 import type { Logger } from '@sap-ux/logger';
-import type { UI5FlexLayer } from '@sap-ux/project-access';
+import type { Manifest, UI5FlexLayer } from '@sap-ux/project-access';
 import type { AppIndex } from '@sap-ux/axios-extension';
 import { validateClient, validateEmptyString } from '@sap-ux/project-input-validator';
 import { getPackageJSONInfo } from '../writer/project-utils';
@@ -107,7 +107,9 @@ export async function promptGeneratorInput(
     return {
         app: {
             ...app,
-            layer
+            layer,
+            // TODO: Retrieve and pass manifest
+            manifest: {} as Manifest
         },
         target,
         options,
@@ -126,7 +128,7 @@ export async function promptGeneratorInput(
 export async function promptTarget(
     defaults: PromptDefaults,
     logger: Logger
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer; target: AbapTarget; customConfig: CustomConfig }> {
+): Promise<{ apps: AppIndex; layer: FlexLayer; target: AbapTarget; customConfig: CustomConfig }> {
     let count = 0;
     let target: Answers<'url' | 'client'> = { url: defaults.url, client: defaults.client };
     while (count < 3) {
@@ -182,7 +184,7 @@ async function fetchSystemInformation(
     target: prompts.Answers<'url' | 'client'>,
     ignoreCertErrors: boolean | undefined,
     logger: Logger
-): Promise<{ apps: AppIndex; layer: UI5FlexLayer; customConfig: CustomConfig }> {
+): Promise<{ apps: AppIndex; layer: FlexLayer; customConfig: CustomConfig }> {
     const provider = await createAbapServiceProvider(
         target,
         {
@@ -193,7 +195,7 @@ async function fetchSystemInformation(
     );
     logger.info('Fetching system information...');
     const ato = await provider.getAtoInfo();
-    const layer = ato.tenantType === 'SAP' ? 'VENDOR' : 'CUSTOMER_BASE';
+    const layer = ato.tenantType === 'SAP' ? FlexLayer.VENDOR : FlexLayer.CUSTOMER_BASE;
     const packageJson = getPackageJSONInfo();
     const customConfig: CustomConfig = {
         adp: {

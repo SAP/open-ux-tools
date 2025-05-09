@@ -1,5 +1,5 @@
 import type { ToolsLogger } from '@sap-ux/logger';
-import type { Package } from '@sap-ux/project-access';
+import type { Manifest, Package } from '@sap-ux/project-access';
 import type { AbapServiceProvider } from '@sap-ux/axios-extension';
 
 import { FlexLayer } from '../types';
@@ -7,7 +7,14 @@ import { getProviderConfig } from '../abap';
 import { getI18nDescription } from './i18n';
 import { getCustomConfig } from './project-utils';
 import { getManifestContent } from './descriptor-content';
-import { getFormattedVersion, getLatestVersion, getOfficialBaseUI5VersionUrl, getVersionToBeUsed } from '../ui5';
+import {
+    getFormattedVersion,
+    getLatestVersion,
+    getMinUI5VersionForManifest,
+    getOfficialBaseUI5VersionUrl,
+    getVersionToBeUsed,
+    shouldSetMinUI5Version
+} from '../ui5';
 import type { AdpWriterConfig, AttributesAnswers, CloudApp, ConfigAnswers, OnpremApp, UI5Version } from '../types';
 
 interface ConfigOptions {
@@ -40,6 +47,10 @@ interface ConfigOptions {
      */
     systemVersion: string | undefined;
     /**
+     * The application manifest.
+     */
+    manifest: Manifest | undefined;
+    /**
      * Logger instance for debugging and error reporting.
      */
     logger: ToolsLogger;
@@ -59,8 +70,22 @@ interface ConfigOptions {
  * @returns {Promise<AdpWriterConfig>} A promise that resolves to the generated ADP writer configuration.
  */
 export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig> {
-    const { configAnswers, attributeAnswers, layer, logger, packageJson, provider, publicVersions, systemVersion } =
-        options;
+    const {
+        configAnswers,
+        attributeAnswers,
+        layer,
+        logger,
+        packageJson,
+        provider,
+        publicVersions,
+        systemVersion,
+        manifest
+    } = options;
+
+    if (!manifest) {
+        throw new Error('Manifest was not provided. Cannot generate an adaptation project. Please view the logs.');
+    }
+
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 
@@ -86,8 +111,9 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         reference: id,
         layer,
         title,
-        content: getManifestContent(layer, systemVersion, publicVersions, fioriId, ach),
-        i18nDescription: getI18nDescription(layer, title)
+        manifest,
+        ach,
+        fioriId
     };
 
     if (isCloudProject) {
@@ -103,9 +129,10 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
     return {
         app,
         ui5: {
-            minVersion: ui5Version?.split(' ')?.[0],
+            minVersion: getMinUI5VersionForManifest(publicVersions, systemVersion),
             version: getFormattedVersion(ui5Version),
-            frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version)
+            frameworkUrl: getOfficialBaseUI5VersionUrl(ui5Version),
+            shouldSetMinVersion: shouldSetMinUI5Version(systemVersion)
         },
         customConfig,
         target,
