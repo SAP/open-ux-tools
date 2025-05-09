@@ -7,6 +7,7 @@ import type { ListChoiceOptions } from 'inquirer';
 import type { CapService } from '@sap-ux/cap-config-writer';
 import type { EntityAnswer, NavigationEntityAnswer } from './prompts/edmx/entity-helper';
 import type { TableSelectionMode, TableType } from '@sap-ux/fiori-elements-writer';
+import type { serviceUrlInternalPromptNames } from './prompts/datasources/service-url/types';
 
 /**
  * This file contains types that are exported by the module and are needed for consumers using the APIs `prompt` and `getPrompts`.
@@ -91,6 +92,11 @@ export interface OdataServiceAnswers {
      *
      */
     connectedSystem?: ConnectedSystem;
+
+    /**
+     * If the user chose to ignore the certificate error when connecting to the service the value will be true.
+     */
+    [serviceUrlInternalPromptNames.ignoreCertError]?: boolean;
 }
 
 export interface ConnectedSystem {

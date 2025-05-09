@@ -1,5 +1,11 @@
 # @sap-ux/project-input-validator
 
+## 0.5.6
+
+### Patch Changes
+
+-   6cb23c8: feat: Add the Extension Project functionality and internal support information
+
 ## 0.5.5
 
 ### Patch Changes

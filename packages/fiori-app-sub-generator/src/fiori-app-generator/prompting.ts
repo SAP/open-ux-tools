@@ -214,7 +214,7 @@ export async function promptOdataServiceAnswers(
         source: answers.datasourceType,
         localEdmxFilePath: answers.metadataFilePath,
         connectedSystem: answers.connectedSystem,
-        ignoreCertError: (answers as any).ignoreCertError // TBI: ignoreCertError is not a property OdataServiceAnswers
+        ignoreCertError: answers.ignoreCertError
     };
     return service;
 }

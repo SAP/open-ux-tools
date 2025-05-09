@@ -560,6 +560,7 @@ describe('getQuestions', () => {
         });
         enableTypeScriptQuestion = questions.find((question) => question.name === promptNames.enableTypeScript);
         expect(enableTypeScriptQuestion?.default()).toEqual(true);
+        expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual(undefined);
 
         // when
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
@@ -574,10 +575,6 @@ describe('getQuestions', () => {
         );
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(false);
 
-        enableTypeScriptQuestion = getQuestions([], undefined, mockCdsInfoFalse).find(
-            (question) => question.name === promptNames.enableTypeScript
-        );
-
         enableTypeScriptQuestion = getQuestions([], undefined, {
             hasCdsUi5Plugin: true,
             isCdsUi5PluginEnabled: true,
@@ -585,6 +582,7 @@ describe('getQuestions', () => {
             hasMinCdsVersion: true
         }).find((question) => question.name === promptNames.enableTypeScript);
         expect((enableTypeScriptQuestion?.when as Function)()).toEqual(true);
+        expect(enableTypeScriptQuestion?.additionalMessages!(true)).toEqual(undefined);
 
         enableTypeScriptQuestion = getQuestions([], undefined, {
             hasCdsUi5Plugin: false,

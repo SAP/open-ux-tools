@@ -1,5 +1,24 @@
 # @sap-ux/odata-service-inquirer
 
+## 2.3.14
+
+### Patch Changes
+
+-   Updated dependencies [6cb23c8]
+    -   @sap-ux/project-input-validator@0.5.6
+
+## 2.3.13
+
+### Patch Changes
+
+-   f2aca4a: Fix, adds `ignoreCertError` to prompt state
+
+## 2.3.12
+
+### Patch Changes
+
+-   f1608ab: Fixes for `ignoreCertErrors` not set
+
 ## 2.3.11
 
 ### Patch Changes

@@ -34,9 +34,7 @@ exports[`Adaptation Project Generator Integration Test should create adaptation 
 `;
 
 exports[`Adaptation Project Generator Integration Test should create adaptation project from json correctly 2`] = `
-"# This is the resource bundle for customer.my.app
-
-#Texts for manifest.json
+"#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 customer.my.app_sap.app.title=My app title
@@ -103,6 +101,12 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
   "version": "0.1.0",
   "content": [
     {
+    "changeType": "appdescr_ui5_setMinUI5Version",
+    "content": {
+        "minUI5Version": "1.136.0"
+    }
+},
+    {
     "changeType": "appdescr_ui5_addNewModelEnhanceWith",
     "content": {
         "modelId": "i18n",
@@ -126,9 +130,7 @@ exports[`Adaptation Project Generator Integration Test should generate an onPrem
 `;
 
 exports[`Adaptation Project Generator Integration Test should generate an onPremise adaptation project successfully 2`] = `
-"# This is the resource bundle for customer.app.variant
-
-#Texts for manifest.json
+"#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.
 
 #XTIT: Application name
 customer.app.variant_sap.app.title=App Title
