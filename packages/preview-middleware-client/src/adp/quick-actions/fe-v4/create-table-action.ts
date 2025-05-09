@@ -12,7 +12,7 @@ import { TableQuickActionDefinitionBase } from '../table-quick-action-base';
 import { MDC_TABLE_TYPE } from '../control-types';
 import { preprocessActionExecution } from '../fe-v2/create-table-custom-column';
 
-export const CREATE_TABLE_ACTION = 'create_table_action';
+export const CREATE_TABLE_ACTION = 'create-table-action';
 
 /**
  * Quick Action for creating table action.

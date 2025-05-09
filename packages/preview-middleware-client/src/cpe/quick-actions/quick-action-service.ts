@@ -23,6 +23,8 @@ import { OutlineService } from '../outline/service';
 import { getTextBundle, TextBundle } from '../../i18n';
 import { ChangeService } from '../changes';
 import { DialogFactory } from '../../adp/dialog-factory';
+import { getApplicationType } from '../../utils/application';
+
 
 /**
  * Service providing Quick Actions.
@@ -156,7 +158,8 @@ export class QuickActionService implements Service {
                 category: 'QuickAction',
                 actionName: actionInstance.type,
                 telemetryEventIdentifier: actionInstance.getTelemetryIdentifier(true),
-                quickActionSteps: actionInstance.quickActionSteps
+                quickActionSteps: actionInstance.quickActionSteps,
+                appType: getApplicationType(this.rta.getRootControlInstance().getManifest())
             });
         } catch (error) {
             Log.error('Error in reporting Telemetry:', error);
