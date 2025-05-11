@@ -48,7 +48,7 @@ export class ContextMenuService {
                         actionName,
                         controlName,
                         ui5Version: `${versionInfo.major}.${versionInfo.minor}.${versionInfo.patch}`,
-                        appType : getApplicationType(this.rta.getRootControlInstance().getManifest())
+                        appType: getApplicationType(this.rta.getRootControlInstance().getManifest())
                     });
                 } catch (err) {
                     Log.error('Error in reporting Telemetry:', err);

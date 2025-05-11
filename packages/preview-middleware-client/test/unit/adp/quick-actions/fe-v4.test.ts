@@ -4,7 +4,7 @@ import RuntimeAuthoringMock from 'mock/sap/ui/rta/RuntimeAuthoring';
 import { attachBeforeClose } from 'mock/sap/ui/core/Fragment';
 import ODataModelV4 from 'sap/ui/model/odata/v4/ODataModel';
 import type AppComponentV4 from 'sap/fe/core/AppComponent';
-
+import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
 import type { ChangeService } from '../../../../src/cpe/changes/service';
 const mockChangeService = {
     syncOutlineChanges: jest.fn()
@@ -51,6 +51,7 @@ import ManagedObject from 'sap/ui/base/ManagedObject';
 import * as versionUtils from 'open/ux/preview/client/utils/version';
 import * as utils from 'open/ux/preview/client/utils/fe-v4';
 import OverlayUtil from 'mock/sap/ui/dt/OverlayUtil';
+import * as appUtils from '../../../../src/utils/application';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -395,6 +396,18 @@ describe('FE V4 quick actions', () => {
         });
 
         describe('add controller to the page', () => {
+            let reportTelemetrySpy: jest.SpyInstance;
+            beforeEach(() => {
+                jest.clearAllMocks();
+
+                reportTelemetrySpy = jest.spyOn(cpeCommon, 'reportTelemetry');
+                jest.spyOn(appUtils, 'getApplicationType').mockReturnValue('fe-v4');
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
+                    major: 1,
+                    minor: 127,
+                    patch: 0
+                });
+            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 mockTelemetryEventIdentifier();
@@ -518,6 +531,16 @@ describe('FE V4 quick actions', () => {
                     {},
                     { actionName: 'add-controller-to-page', telemetryEventIdentifier }
                 );
+
+                expect(reportTelemetrySpy).toHaveBeenCalledWith(
+                   {
+                        category: 'QuickAction',
+                        quickActionSteps: 2,
+                        actionName: 'add-controller-to-page',
+                        telemetryEventIdentifier,
+                        ui5Version: '1.127.0',
+                        appType: 'fe-v4'
+                    })
             });
         });
 

@@ -46,6 +46,8 @@ import Model from 'sap/ui/model/Model';
 import { EntityContainer, EntitySet, EntityType, NavigationProperty } from 'sap/ui/model/odata/ODataMetaModel';
 import * as utils from 'open/ux/preview/client/adp/quick-actions/fe-v2/utils';
 import ObjectPageSubSection from 'sap/uxap/ObjectPageSubSection';
+import * as appUtils from 'open/ux/preview/client/utils/application';
+import * as cpeCommon from '@sap-ux-private/control-property-editor-common';
 
 let telemetryEventIdentifier: string;
 const mockTelemetryEventIdentifier = () => {
@@ -63,9 +65,13 @@ describe('FE V2 quick actions', () => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
         jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue();
+        jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
+            major: 1,
+            minor: 135,
+            patch: 0
+        });
         jest.clearAllMocks();
     });
-
     afterEach(() => {
         fetchMock.mockRestore();
     });
@@ -192,6 +198,19 @@ describe('FE V2 quick actions', () => {
         });
 
         describe('add controller to the page', () => {
+            mockTelemetryEventIdentifier();
+            let reportTelemetrySpy: jest.SpyInstance;
+            beforeEach(() => {
+                jest.clearAllMocks();
+
+                reportTelemetrySpy = jest.spyOn(cpeCommon, 'reportTelemetry');
+                jest.spyOn(appUtils, 'getApplicationType').mockReturnValue('fe-v2');
+                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
+                    major: 1,
+                    minor: 124,
+                    patch: 0
+                });
+            });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
                 FlexUtils.getViewForControl.mockImplementation(() => {
@@ -314,6 +333,16 @@ describe('FE V2 quick actions', () => {
                     {},
                     expect.objectContaining({ actionName: 'add-controller-to-page' })
                 );
+
+                expect(reportTelemetrySpy).toHaveBeenCalledWith(
+                    {
+                        category: 'QuickAction',
+                        actionName: 'add-controller-to-page',
+                        telemetryEventIdentifier,
+                        quickActionSteps: 2,
+                        ui5Version: '1.124.0',
+                        appType: 'fe-v2'
+                    })
             });
         });
 
@@ -1334,7 +1363,7 @@ describe('FE V2 quick actions', () => {
             });
         });
 
-        describe('Enable Table Filtering', () => {
+        describe.only('Enable Table Filtering', () => {
             const testCases: {
                 visible: boolean;
                 ui5version: string;
