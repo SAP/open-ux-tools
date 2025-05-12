@@ -4,7 +4,7 @@ import type {
     FioriGeneratorSettings,
     FioriStep,
     Floorplan,
-    PromptExtension,
+    FioriGeneratorPromptExtension,
     FioriAppGeneratorPromptSettings,
     State,
     YeomanUiStepConfig
@@ -35,7 +35,7 @@ export interface FioriAppGeneratorOptions extends Generator.GeneratorOptions, Fi
     /**
      * Customer provided extensions used to customize existing questions
      */
-    extensions?: PromptExtension;
+    extensions?: FioriGeneratorPromptExtension;
     /**
      * The floorplan (app type) that will be created
      */

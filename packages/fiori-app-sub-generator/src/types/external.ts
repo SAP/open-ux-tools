@@ -198,19 +198,8 @@ export interface FioriGeneratorSettings {
     showLayoutPrompts?: boolean;
 }
 
-/**
- * Defines the currently allowed extension points for a Fiori Generator prompt
- */
-export type PromptExtension = {
-    [key in ui5AppInquirerPromptNames]?: {
-        validate?: Question['validate'];
-        default?: Question['default'];
-        additionalMessages?: PromptSeverityMessage;
-    };
-} & UI5ApplicationPromptOptions;
-
 export interface FioriGeneratorPromptExtension {
-    [generatorName: string]: PromptExtension;
+    [generatorName: string]: UI5ApplicationPromptOptions;
 }
 
 export interface ConditionalStep extends Step {

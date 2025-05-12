@@ -28,7 +28,7 @@ import type {
     FioriAppGeneratorPromptSettings,
     Floorplan,
     Project,
-    PromptExtension,
+    FioriGeneratorPromptExtension,
     Service,
     YeomanUiStepConfig
 } from '../types';
@@ -89,7 +89,7 @@ type PromptUI5AppAnswersOptions = {
     service: Partial<Service>;
     promptSettings?: FioriAppGeneratorPromptSettings;
     floorplan: Floorplan;
-    promptExtension?: PromptExtension;
+    promptExtension?: FioriGeneratorPromptExtension;
 };
 
 /**
@@ -230,7 +230,7 @@ export async function createUI5ApplicationPromptOptions(
     projectName?: Project['name'],
     targetFolder?: Project['targetFolder'],
     promptSettings?: FioriAppGeneratorPromptSettings,
-    extensions?: PromptExtension
+    extensions?: FioriGeneratorPromptExtension
 ): Promise<UI5ApplicationPromptOptions> {
     // prompt settings may be additionally provided e.g. set by adaptors
     const ui5VersionPromptOptions: UI5ApplicationPromptOptions['ui5Version'] = {

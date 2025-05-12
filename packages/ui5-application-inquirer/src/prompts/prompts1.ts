@@ -8,7 +8,7 @@ import { validateAppName } from './validators';
 import { Severity } from '@sap-devx/yeoman-ui-types';
 import type { UI5Version } from '@sap-ux/ui5-info';
 import type { ListChoiceOptions } from 'inquirer';
-import type { UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
+import type { HideFn, UI5ApplicationAnswers, UI5ApplicationPromptOptions, UI5ApplicationQuestion } from '../types';
 import type { CdsUi5PluginInfo } from '@sap-ux/project-access';
 import type { ConfirmQuestion, FileBrowserQuestion, InputQuestion, ListQuestion } from '@sap-ux/inquirer-common';
 
@@ -232,7 +232,11 @@ export function getAddDeployConfigPrompt(
         // If the target directory is a CAP project then only offer `addDeployConfig (addToMta)` if an mta file is found
         when: async (answers: UI5ApplicationAnswers): Promise<boolean> => {
             mtaPath = (await getMtaPath(answers?.targetFolder || targetDir))?.mtaPath;
-            return !!(mtaPath && isCapProject) || !isCapProject;
+            const result = !!(mtaPath && isCapProject) || !isCapProject;
+            if (result && typeof addDeployConfigOptions?.hide === 'function') {
+                return (addDeployConfigOptions.hide as HideFn)(answers, isCapProject);
+            }
+            return result;
         },
         message: (): string => {
             return mtaPath

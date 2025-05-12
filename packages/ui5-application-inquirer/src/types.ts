@@ -127,6 +127,11 @@ type NamePromptOptions = {
     defaultValue?: string;
 };
 
+export type HideFn = (answers: UI5ApplicationAnswers, isCapProject: boolean) => boolean;
+
+type AddDeployPromptOptions = Omit<UI5ApplicationCommonPromptOptions, 'hide'> & {
+    hide?: boolean | HideFn;
+};
 /**
  * These are boolean value prompt option keys
  */
@@ -155,7 +160,11 @@ type DefaultValueInputPrompts =
     | promptNames.namespace
     | promptNames.ui5Version
     | promptNames.targetFolder;
-type DefaultValueConfirmPrompts = promptNames.enableCodeAssist | promptNames.enableEslint | promptNames.skipAnnotations;
+type DefaultValueConfirmPrompts =
+    | promptNames.enableCodeAssist
+    | promptNames.enableEslint
+    | promptNames.skipAnnotations
+    | promptNames.addDeployConfig;
 
 /**
  * Defines prompt/question default values and/or whether or not they should be shown.
@@ -193,7 +202,8 @@ type booleanValuePromptOtions = Record<
     } & UI5ApplicationCommonPromptOptions
 > &
     Record<DefaultValueConfirmPrompts, PromptDefaultValue<boolean>> &
-    Record<promptNames.enableTypeScript, EnableTypeScriptPromptOptions>;
+    Record<promptNames.enableTypeScript, EnableTypeScriptPromptOptions> &
+    Record<promptNames.addDeployConfig, AddDeployPromptOptions>;
 
 export type UI5ApplicationQuestion = YUIQuestion<UI5ApplicationAnswers> &
     Partial<Pick<AutocompleteQuestionOptions, 'source'>>;

@@ -23,7 +23,7 @@ import {
     promptOdataServiceAnswers,
     promptUI5ApplicationAnswers
 } from '../../../src/fiori-app-generator/prompting';
-import { type PromptExtension, type Service, FloorplanFE } from '../../../src/types';
+import { type FioriGeneratorPromptExtension, type Service, FloorplanFE } from '../../../src/types';
 import { initI18nFioriAppSubGenerator, t } from '../../../src/utils/i18n';
 import * as stepsHelper from '../../../src/utils/stepsHelper';
 
@@ -326,7 +326,7 @@ describe('prompting.ts', () => {
                 message: 'msg',
                 severity: Severity.information
             });
-            const promptExtensions: PromptExtension = {
+            const promptExtensions: FioriGeneratorPromptExtension = {
                 addDeployConfig: {
                     default: true,
                     validate: validateExtFunc,
