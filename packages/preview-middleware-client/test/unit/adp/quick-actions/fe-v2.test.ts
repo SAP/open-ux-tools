@@ -65,11 +65,6 @@ describe('FE V2 quick actions', () => {
         sendActionMock = jest.fn();
         subscribeMock = jest.fn();
         jest.spyOn(DialogFactory, 'createDialog').mockResolvedValue();
-        jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
-            major: 1,
-            minor: 135,
-            patch: 0
-        });
         jest.clearAllMocks();
     });
     afterEach(() => {
@@ -205,11 +200,6 @@ describe('FE V2 quick actions', () => {
 
                 reportTelemetrySpy = jest.spyOn(cpeCommon, 'reportTelemetry');
                 jest.spyOn(appUtils, 'getApplicationType').mockReturnValue('fe-v2');
-                jest.spyOn(versionUtils, 'getUi5Version').mockResolvedValue({
-                    major: 1,
-                    minor: 124,
-                    patch: 0
-                });
             });
             test('initialize and execute action', async () => {
                 const pageView = new XMLView();
@@ -334,15 +324,14 @@ describe('FE V2 quick actions', () => {
                     expect.objectContaining({ actionName: 'add-controller-to-page' })
                 );
 
-                expect(reportTelemetrySpy).toHaveBeenCalledWith(
-                    {
-                        category: 'QuickAction',
-                        actionName: 'add-controller-to-page',
-                        telemetryEventIdentifier,
-                        quickActionSteps: 2,
-                        ui5Version: '1.124.0',
-                        appType: 'fe-v2'
-                    })
+                expect(reportTelemetrySpy).toHaveBeenCalledWith({
+                    category: 'QuickAction',
+                    actionName: 'add-controller-to-page',
+                    telemetryEventIdentifier,
+                    quickActionSteps: 2,
+                    ui5Version: '1.130.0',
+                    appType: 'fe-v2'
+                });
             });
         });
 
@@ -1363,7 +1352,7 @@ describe('FE V2 quick actions', () => {
             });
         });
 
-        describe.only('Enable Table Filtering', () => {
+        describe('Enable Table Filtering', () => {
             const testCases: {
                 visible: boolean;
                 ui5version: string;
