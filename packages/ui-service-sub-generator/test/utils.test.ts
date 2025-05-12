@@ -6,7 +6,6 @@ import { create as createEditor } from 'mem-fs-editor';
 import { join } from 'path';
 import fs from 'fs';
 import type { Destination } from '@sap-ux/btp-utils';
-import { get } from 'http';
 
 const mockIsAppStudio = jest.fn();
 jest.mock('@sap-ux/btp-utils', () => ({
