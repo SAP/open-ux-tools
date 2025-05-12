@@ -138,7 +138,6 @@ interface GenericChangeHandlerReturnType {
 export type ChangeHandler<Change> = (
     change: Change,
     options: ChangeHandlerOptions
-
 ) => Promise<GenericChangeHandlerReturnType> | GenericChangeHandlerReturnType;
 type GenericChangeHandler = {
     [Change in GenericChange as Change['changeType']]: ChangeHandler<Change>;
@@ -334,7 +333,7 @@ function getCompactV4ConfigPath(propertyPathSeg: string[]): string {
 }
 
 function assertManifestChange(change: ConfigChange): void {
-    assertProperties(['fileName', 'content'], change); // , 'creation'
+    assertProperties(['fileName', 'content'], change);
     assertProperties(['page', 'entityPropertyChange'], change.content);
     assertProperties(['propertyPath', 'operation', 'propertyValue'], change.content.entityPropertyChange);
 }
@@ -451,10 +450,7 @@ type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : n
  * @param change Change object
  */
 export function assertChange(change: PropertyChange): void {
-    assertProperties(
-        ['fileName', 'selector', 'content'],
-        change
-    );
+    assertProperties(['fileName', 'selector', 'content'], change);
     assertProperties(['id'], change.selector);
     assertProperties(['property'], change.content);
 }
