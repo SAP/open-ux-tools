@@ -81,10 +81,6 @@ export async function getConfig(options: ConfigOptions): Promise<AdpWriterConfig
         manifest
     } = options;
 
-    if (!manifest) {
-        throw new Error(t('validators.manifestWasNotProvided'));
-    }
-
     const ato = await provider.getAtoInfo();
     const operationsType = ato.operationsType ?? 'P';
 

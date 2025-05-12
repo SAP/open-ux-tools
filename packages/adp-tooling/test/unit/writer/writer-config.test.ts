@@ -77,12 +77,6 @@ describe('getConfig', () => {
         getProviderConfigMock.mockResolvedValue(systemDetails);
     });
 
-    it('throws error if manifest was not provided', async () => {
-        await expect(getConfig({ ...baseConfig, manifest: undefined })).rejects.toThrow(
-            t('validators.manifestWasNotProvided')
-        );
-    });
-
     it('returns the correct config with provided parameters when system is cloud ready', async () => {
         isAbapCloudMock.mockResolvedValue(true);
         const config = await getConfig(baseConfig);
