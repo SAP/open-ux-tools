@@ -35,6 +35,8 @@ import { getControlById, isA } from '../../utils/core';
 import UI5Element from 'sap/ui/core/Element';
 import { setAdditionalChangeInfo } from '../../utils/additional-change-info';
 import {
+    ChangeHandler,
+    changeType,
     ConfigChange,
     GENERIC_CHANGE_HANDLER,
     getControlIdByChange,
@@ -171,16 +173,19 @@ export class ChangeService extends EventTarget {
             await Promise.all(
                 Object.keys(savedChanges ?? {}).map(
                     async (key): Promise<UnknownSavedChange | SavedControlChange | SavedGenericChange | undefined> => {
-                        const change: GenericChange = savedChanges[key];
+                        const change = savedChanges[key];
                         try {
+                            const handler = GENERIC_CHANGE_HANDLER[
+                                change.changeType
+                            ] as unknown as ChangeHandler<GenericChange>;
                             if (this.isGenericChange(change)) {
                                 const {
                                     properties,
                                     changeTitle,
                                     controlId,
                                     changeType: type,
-                                    configPath
-                                } = await GENERIC_CHANGE_HANDLER[change.changeType](change, {
+                                    subtitle
+                                } = await handler(change as unknown as GenericChange, {
                                     textBundle,
                                     appComponent: this.options.rta.getRootControlInstance(),
                                     configPropertyControlIdMap: this.configPropertyControlIdMap
@@ -190,7 +195,7 @@ export class ChangeService extends EventTarget {
                                     kind: GENERIC_CHANGE_KIND,
                                     type: 'saved',
                                     fileName: change.fileName,
-                                    ...(configPath && { configPath }),
+                                    ...(subtitle && { subtitle }),
                                     changeType: type ?? change.changeType,
                                     timestamp: new Date(change.creation).getTime(),
                                     ...(controlId && { controlId }),
@@ -439,14 +444,15 @@ export class ChangeService extends EventTarget {
 
         const changeDefinition = change.getDefinition ? change.getDefinition() : (change.getJson() as ChangeDefinition);
         const { fileName } = changeDefinition;
-        if (GENERIC_CHANGE_HANDLER?.[changeType]) {
+        const handler = GENERIC_CHANGE_HANDLER[changeType as changeType] as unknown as ChangeHandler<GenericChange>;
+        if (handler) {
             const {
                 properties,
                 changeTitle,
                 controlId,
                 changeType: type,
-                configPath
-            } = await GENERIC_CHANGE_HANDLER[changeType](changeDefinition as unknown as GenericChange, {
+                subtitle
+            } = await handler(changeDefinition as unknown as GenericChange, {
                 textBundle,
                 appComponent: this.options.rta.getRootControlInstance(),
                 configPropertyControlIdMap: this.configPropertyControlIdMap
@@ -455,7 +461,7 @@ export class ChangeService extends EventTarget {
                 kind: GENERIC_CHANGE_KIND,
                 type: 'pending',
                 changeType: type ?? changeType,
-                ...(configPath && { configPath }),
+                ...(subtitle && { subtitle }),
                 isActive: index >= inactiveCommandCount,
                 title: textBundle.getText(changeTitle),
                 fileName,

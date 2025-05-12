@@ -4,8 +4,9 @@ import {
     RENAME_CHANGE,
     MOVE_CHANGE,
     GENERIC_CHANGE_HANDLER,
-    GenericChange,
-    NewAnnotationFileChange
+    NewAnnotationFileChange,
+    MoveControlsChange,
+    RenameChange
 } from '../../../../src/cpe/changes/generic-change';
 
 describe('GENERIC_CHANGE_HANDLER', () => {
@@ -72,7 +73,7 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             }
         };
 
-        const result = GENERIC_CHANGE_HANDLER[RENAME_CHANGE](change as GenericChange, { textBundle: bundle } as any);
+        const result = GENERIC_CHANGE_HANDLER[RENAME_CHANGE](change as RenameChange, { textBundle: bundle } as any);
 
         expect(result).toEqual({
             changeTitle: 'Rename Control',
@@ -117,7 +118,7 @@ describe('GENERIC_CHANGE_HANDLER', () => {
             }
         };
 
-        const result = GENERIC_CHANGE_HANDLER[MOVE_CHANGE](change as GenericChange, { textBundle: bundle } as any);
+        const result = GENERIC_CHANGE_HANDLER[MOVE_CHANGE](change as MoveControlsChange, { textBundle: bundle } as any);
 
         expect(result).toEqual({
             changeTitle: 'Move Controls',

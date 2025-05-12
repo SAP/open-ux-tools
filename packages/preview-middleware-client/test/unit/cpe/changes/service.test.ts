@@ -148,7 +148,7 @@ describe('ChangeService', () => {
                             { 'label': 'enableAddCardToInsights', 'value': true, 'displayValueWithIcon': true }
                         ],
                         title: 'Configuration',
-                        configPath: 'LineItem/tableSettings'
+                        subtitle: 'LineItem/tableSettings'
                     },
                     {
                         type: 'saved',
@@ -1575,7 +1575,7 @@ describe('ChangeService', () => {
                         ],
                         changeType: 'configuration',
                         title: 'Configuration',
-                        configPath: 'controlConfig/settings'
+                        subtitle: 'controlConfig/settings'
                     },
                     {
                         controlId: [],
@@ -1591,7 +1591,7 @@ describe('ChangeService', () => {
                         ],
                         changeType: 'configuration',
                         title: 'Configuration',
-                        configPath: 'controlConfig/settings/useDateRange'
+                        subtitle: 'controlConfig/settings/useDateRange'
                     }
                 ]
             }
@@ -1686,7 +1686,7 @@ describe('ChangeService', () => {
                         ],
                         title: 'Configuration',
                         changeType: 'configuration',
-                        configPath: 'controlConfig'
+                        subtitle: 'controlConfig'
                     }
                 ]
             }

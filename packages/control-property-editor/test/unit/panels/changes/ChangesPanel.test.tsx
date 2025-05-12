@@ -102,7 +102,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'pending',
                   isActive: true,
                   fileName: 'testFile5',
-                  configPath: '/test/components/settings',
+                  subtitle: '/test/components/count',
                   properties: [
                       {
                           label: 'Frozen Column Count',
@@ -118,7 +118,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'pending',
                   isActive: true,
                   fileName: 'testFile6',
-                  configPath: '/test/components/settings',
+                  subtitle: '/test/components/settings',
                   changeType: 'configuration',
                   properties: [
                       {
@@ -135,7 +135,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'pending',
                   isActive: true,
                   fileName: 'testFile7',
-                  configPath: '/test/components/settings',
+                  subtitle: '/test/components/settings',
                   changeType: 'configuration',
                   properties: [
                       {
@@ -152,7 +152,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   type: 'pending',
                   isActive: true,
                   fileName: 'testFile8',
-                  configPath: '/test/components',
+                  subtitle: '/test/components',
                   changeType: 'configuration',
                   properties: [
                       {
@@ -170,12 +170,11 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   isActive: true,
                   fileName: 'testFile9',
                   changeType: 'configuration',
-                  configPath: '/test/components',
+                  subtitle: '/test/components/hello',
                   title: 'Config Change',
                   properties: [
                       {
                           label: 'Personalization',
-                          value: {},
                           displayValueWithIcon: true
                       },
                       {
@@ -281,7 +280,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   controlId: [],
                   kind: 'generic',
                   timestamp: new Date('2022-02-09T12:06:53.939Z').getTime(),
-                  configPath: 'settings/test/demo',
+                  subtitle: 'settings/test/demo',
                   changeType: 'configuration',
                   title: 'Config Change',
                   properties: [
@@ -298,7 +297,7 @@ const getChanges = (generateSavedChanges = false, filterByKind = ''): ChangesSli
                   controlId: [],
                   timestamp: new Date('2022-01-09T12:06:53.939Z').getTime(),
                   changeType: 'configuration',
-                  configPath: 'settings/test',
+                  subtitle: 'settings/test',
                   title: 'Config Change',
                   properties: [
                       {
@@ -619,7 +618,7 @@ describe('ChangePanel', () => {
         expect(savedChangesTitle).toBeInTheDocument();
 
         const configChange = screen.getAllByText(/Config Change/i);
-        expect(configChange.length).toBe(5);
+        expect(configChange.length).toBe(4);
 
         const propertyName1 = screen.getByText(/Frozen Column Count/i);
         expect(propertyName1).toBeInTheDocument();
@@ -928,16 +927,11 @@ describe('ChangePanel', () => {
         });
 
         // check unsaved changes
-
         const opacity = { opacity: 0.4 };
-        // expect(
-        //     screen.getByText(/Test Property Name1/i).parentElement?.parentElement?.parentElement?.parentElement
-        //         ?.parentElement?.parentElement
-        // ).toHaveStyle(opacity);
-        // expect(
-        //     screen.getByText(/test Property Name Bool False/i).parentElement?.parentElement?.parentElement
-        //         ?.parentElement
-        // ).toHaveStyle({ opacity: 1 });
+        const genericChangeElement = screen.getAllByTestId('generic-change');
+
+        expect(genericChangeElement[0]).toHaveStyle(opacity);
+        expect(genericChangeElement[1]).toHaveStyle({ opacity: 1 });
         expect(screen.getByText(/ListReport::TableToolbar/i).parentElement).toHaveStyle(opacity);
         expect(screen.getByText(/id_1691659414768_128_something/i).parentElement).toHaveStyle(opacity);
         expect(screen.getByText(/id_1691659414768_128_addFields/i).parentElement).toHaveStyle(opacity);

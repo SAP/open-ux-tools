@@ -82,6 +82,7 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
                             />
                         </>
                         {propertyChanges?.lastChange?.kind === 'generic' &&
+                            propertyChanges.lastChange.properties[0].value &&
                             ['property', 'configuration'].includes(propertyChanges?.lastChange.changeType) && (
                                 <>
                                     <Text className={styles.propertyName}>{t('CURRENT_VALUE')}</Text>
@@ -93,6 +94,7 @@ export function PropertyDocumentation(propDocProps: PropertyDocumentationProps):
                                 </>
                             )}
                         {propertyChanges?.lastSavedChange?.kind === 'generic' &&
+                            propertyChanges.lastSavedChange.properties[0].value &&
                             ['property', 'configuration'].includes(propertyChanges?.lastSavedChange.changeType) && (
                                 <>
                                     <Text className={styles.propertyName}>{t('SAVED_VALUE')}</Text>

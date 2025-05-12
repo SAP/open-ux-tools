@@ -11,7 +11,17 @@ import { convertCamelCaseToPascalCase } from '@sap-ux-private/control-property-e
 
 export interface DisplayAsIconProps {
     label: string;
-    value: string | number | boolean | object;
+    value?: string | number | boolean;
+}
+
+/**
+ * Check if given value is defined.
+ *
+ * @param value string | number | boolean | undefined
+ *  @returns ReactElement
+ */
+function hasValue(value: string | number | boolean | undefined): boolean {
+    return value != undefined && value !== null;
 }
 
 /**
@@ -26,13 +36,15 @@ export function DisplayAsIcon(props: Readonly<DisplayAsIconProps>): ReactElement
     return (
         <>
             <span className={styles.label}>{convertCamelCaseToPascalCase(label)}</span>
-            <UIIcon
-                style={{ paddingRight: '2px', paddingLeft: '2px', width: '16px', height: '16px' }}
-                iconName={IconName.arrow}
-                className={styles.text}
-            />
+            {hasValue(value) && (
+                <UIIcon
+                    style={{ paddingRight: '2px', paddingLeft: '2px', width: '16px', height: '16px' }}
+                    iconName={IconName.arrow}
+                    className={styles.text}
+                />
+            )}
             {valueIcon && <UIIcon className={'ui-cpe-icon-light-theme'} iconName={valueIcon} />}
-            <span className={styles.text}>{typeof value === 'object' ? '[Object]' : value}</span>
+            {hasValue(value) && <span className={styles.text}>{value}</span>}
         </>
     );
 }

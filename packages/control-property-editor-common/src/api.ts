@@ -168,11 +168,11 @@ export interface PendingGenericChange {
     fileName: string;
     changeType: string;
     controlId?: string | string[];
-    configPath?: string;
+    subtitle?: string;
     controlName?: string;
     properties: {
         label: string;
-        value: PropertyValue | Record<string, unknown>;
+        value?: PropertyValue | undefined;
         displayValueWithIcon?: boolean;
     }[];
 }
@@ -184,12 +184,12 @@ export interface SavedGenericChange {
     fileName: string;
     title: string;
     controlId?: string | string[];
-    configPath?: string;
+    subtitle?: string;
     controlName?: string;
     changeType: string;
     properties: {
         label: string;
-        value: PropertyValue | Record<string, unknown>;
+        value?: PropertyValue;
         displayValueWithIcon?: boolean;
     }[];
 }

@@ -27,6 +27,7 @@ export type GenericChange =
     | ConfigChange
     | V2ConfigChange;
 
+export type changeType = GenericChange['changeType'];
 interface BaseChange extends ChangeDefinition {
     creation: string;
 }
@@ -60,7 +61,7 @@ export interface ConfigChange extends BaseChange {
 }
 
 export interface V2ConfigChange extends BaseChange {
-    changeType: typeof MANIFEST_V4_CHANGE;
+    changeType: typeof MANIFEST_V2_CHANGE;
     propertyName: string;
     content: {
         entityPropertyChange: {
@@ -131,21 +132,21 @@ interface GenericChangeHandlerReturnType {
     changeTitle: string;
     controlId?: string | string[];
     changeType?: string;
-    configPath?: string;
-    properties: { label: string; value: PropertyValue | Record<string, unknown>; displayValueWithIcon?: boolean }[];
+    subtitle?: string;
+    properties: { label: string; value?: PropertyValue | undefined; displayValueWithIcon?: boolean }[];
 }
+export type ChangeHandler<Change> = (
+    change: Change,
+    options: ChangeHandlerOptions
 
-interface GenericChangeHandler {
-    [key: string]: (
-        change: GenericChange,
-        options: ChangeHandlerOptions
-    ) => Promise<GenericChangeHandlerReturnType> | GenericChangeHandlerReturnType;
-}
+) => Promise<GenericChangeHandlerReturnType> | GenericChangeHandlerReturnType;
+type GenericChangeHandler = {
+    [Change in GenericChange as Change['changeType']]: ChangeHandler<Change>;
+};
 
-//: GenericChangeMap
 export const GENERIC_CHANGE_HANDLER: GenericChangeHandler = {
     [ADD_NEW_ANNOTATION_FILE_CHANGE]: (change, { textBundle }) => {
-        const annotationFileChange = change as NewAnnotationFileChange;
+        const annotationFileChange = change;
         const dataSourceId = annotationFileChange.content.dataSourceId;
         const sourceKey = Object.keys(annotationFileChange.content.dataSource)[0];
         return {
@@ -164,7 +165,7 @@ export const GENERIC_CHANGE_HANDLER: GenericChangeHandler = {
         };
     },
     [RENAME_CHANGE]: (change, { textBundle }) => {
-        const renameChange = change as RenameChange;
+        const renameChange = change;
         const selectorId = renameChange.selector.id;
         return {
             changeTitle: textBundle?.getText('RENAME_CHANGE'),
@@ -186,7 +187,7 @@ export const GENERIC_CHANGE_HANDLER: GenericChangeHandler = {
         };
     },
     [MOVE_CHANGE]: (change, { textBundle }) => {
-        const moveChange = change as MoveControlsChange;
+        const moveChange = change;
         const movedControlId = moveChange.content.movedElements[0].selector.id;
         return {
             changeTitle: textBundle?.getText('MOVE_CONTROLS_CHANGE'),
@@ -212,7 +213,7 @@ export const GENERIC_CHANGE_HANDLER: GenericChangeHandler = {
         };
     },
     [ADD_XML_CHANGE]: (change, { textBundle }) => {
-        const addXmlChange = change as AddXml;
+        const addXmlChange = change;
         return {
             changeTitle: textBundle?.getText('ADD_XML_CHANGE'),
             controlId: addXmlChange.selector.id,
@@ -229,16 +230,16 @@ export const GENERIC_CHANGE_HANDLER: GenericChangeHandler = {
         };
     },
     [PROPERTY_CHANGE]: async (change, handlerOptions) => {
-        return getPropertyChange(change as PropertyChange, handlerOptions);
+        return getPropertyChange(change, handlerOptions);
     },
     [PROPERTY_BINDING_CHANGE]: async (change, handlerOptions) => {
-        return getPropertyChange(change as PropertyChange, handlerOptions);
+        return getPropertyChange(change, handlerOptions);
     },
     [MANIFEST_V4_CHANGE]: (change, handlerOptions) => {
-        return getV4ConfigurationChange(change as ConfigChange, handlerOptions);
+        return getV4ConfigurationChange(change, handlerOptions);
     },
     [MANIFEST_V2_CHANGE]: (change, handlerOptions) => {
-        return getV2ConfigurationChange(change as V2ConfigChange, handlerOptions);
+        return getV2ConfigurationChange(change, handlerOptions);
     }
 };
 
@@ -256,7 +257,7 @@ function getV2ConfigurationChange(
         changeTitle: textBundle?.getText('CONFIGURATION_CHANGE'),
         controlId: [],
         changeType: 'configuration',
-        configPath: entityPropertyChange.propertyPath ?? parentPage.component,
+        subtitle: entityPropertyChange.propertyPath ?? parentPage.component,
         properties: [
             {
                 label: propertyName ?? '',
@@ -288,7 +289,6 @@ function getV4ConfigurationChange(
             ? [
                   {
                       label: propertyName,
-                      value: {},
                       displayValueWithIcon: true
                   },
                   ...Object.keys(value)
@@ -315,8 +315,8 @@ function getV4ConfigurationChange(
         changeTitle: textBundle?.getText('CONFIGURATION_CHANGE'),
         controlId: controlIds,
         changeType: 'configuration',
-        configPath: getCompactV4ConfigPath(propertyPathSegments),
-        properties: properties
+        subtitle: getCompactV4ConfigPath(propertyPathSegments),
+        properties
     };
 }
 
@@ -452,7 +452,7 @@ type Properties<T extends object> = { [K in keyof T]-?: K extends string ? K : n
  */
 export function assertChange(change: PropertyChange): void {
     assertProperties(
-        ['fileName', 'selector', 'content' /* , 'creation' TODO: not to be checked for pending */],
+        ['fileName', 'selector', 'content'],
         change
     );
     assertProperties(['id'], change.selector);

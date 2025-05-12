@@ -1,6 +1,6 @@
 import type { ReactElement } from 'react';
 import React from 'react';
-import { Link, Stack, Text } from '@fluentui/react';
+import { Link, Stack } from '@fluentui/react';
 
 import type {
     GENERIC_CHANGE_KIND,
@@ -19,7 +19,7 @@ export interface GenericGroupProps {
     timestamp?: number;
     controlId?: string;
     index: number;
-    configPath?: string;
+    subtitle?: string;
     changes: (SavedGenericChange | PendingGenericChange)[];
 }
 /**
@@ -29,7 +29,7 @@ export interface GenericGroupProps {
  * @returns ReactElement
  */
 export function GenericGroup(genericGroupProps: Readonly<GenericGroupProps>): ReactElement {
-    const { text, changes, controlId, configPath } = genericGroupProps;
+    const { text, changes, controlId, subtitle } = genericGroupProps;
     const dispatch = useDispatch();
     const stackName = changes[0].type === SAVED_CHANGE_TYPE ? `saved-changes-stack` : `unsaved-changes-stack`;
     return (
@@ -57,10 +57,10 @@ export function GenericGroup(genericGroupProps: Readonly<GenericGroupProps>): Re
                     </span>
                 )}
             </Stack.Item>
-            {configPath && (
+            {subtitle && (
                 <Stack.Item className={styles.subHeader}>
-                    <span className={styles.subText} title={configPath}>
-                        {configPath}
+                    <span className={styles.subText} title={subtitle}>
+                        {subtitle}
                     </span>
                 </Stack.Item>
             )}

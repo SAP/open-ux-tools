@@ -327,7 +327,7 @@ describe('main redux slice', () => {
                                 kind: 'generic',
                                 fileName: 'file',
                                 timestamp: 123,
-                                configPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                subtitle: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
                                 changeType: 'configuration',
                                 properties: [
                                     {
@@ -381,7 +381,7 @@ describe('main redux slice', () => {
                                         changeType: 'configuration',
                                         fileName: 'file',
                                         kind: 'generic',
-                                        configPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        subtitle: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
                                         timestamp: 123,
                                         type: 'saved',
                                         title: 'Config Change',
@@ -410,7 +410,7 @@ describe('main redux slice', () => {
                                         title: 'Config Change',
                                         fileName: 'file',
                                         changeType: 'configuration',
-                                        configPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                                        subtitle: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
                                         timestamp: 123,
                                         type: 'saved',
                                         properties: [
@@ -479,7 +479,7 @@ describe('main redux slice', () => {
                             fileName: 'file',
                             title: 'Config Change',
                             kind: 'generic',
-                            configPath: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
+                            subtitle: 'controlConfig/@sap.com.ui.v1.LineItem/tableSettiings',
                             timestamp: 123,
                             type: 'saved',
                             changeType: 'configuration',

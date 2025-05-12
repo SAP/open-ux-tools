@@ -152,7 +152,7 @@ function convertChanges(changes: Change[]): Item[] {
                     !isGenericChange(nextChange) ||
                     (isGenericChange(nextChange) &&
                         (nextChange?.title !== change?.title ||
-                            nextChange?.configPath !== change?.configPath ||
+                            nextChange?.subtitle !== change?.subtitle ||
                             (nextChange?.title === change?.title &&
                                 !controlIdSame(change.controlId, nextChange.controlId))))
                 ) {
@@ -166,7 +166,14 @@ function convertChanges(changes: Change[]): Item[] {
     return items;
 }
 
-function controlIdSame(arr1?: string | string[], arr2?: string | string[]) {
+/**
+ * Checks changes have same control ids.
+ *
+ * @param arr1 string | string[]
+ * @param arr2 string | string[])
+ * @returns boolean
+ */
+function controlIdSame(arr1?: string | string[], arr2?: string | string[]): boolean {
     if (!arr1 || !arr2) {
         return true;
     }
@@ -232,11 +239,11 @@ function handleControlChange(change: SavedControlChange | PendingControlChange):
  * @returns {ControlGroupProps} A control group object containing grouped changes.
  */
 function handleGenericGroupeChange(change: SavedGenericChange | PendingGenericChange, i: number): GenericGroupProps {
-    const { configPath } = change;
+    const { subtitle } = change;
     return {
         text: convertCamelCaseToPascalCase(String(change.title)),
         controlId: typeof change.controlId === 'string' ? change.controlId : undefined,
-        ...(configPath && { configPath }),
+        ...(subtitle && { subtitle }),
         kind: 'generic',
         index: i,
         changes: [change],
@@ -264,7 +271,7 @@ const filterGenericChange = (changes: Change[], query: string): Change[] => {
                         String(val.label).toLowerCase().includes(query.toLowerCase()) ||
                         String(val.value).toLowerCase().includes(query.toLowerCase())
                 ) ||
-                (item?.configPath ?? '').toLowerCase().includes(query.toLowerCase()) ||
+                (item?.subtitle ?? '').toLowerCase().includes(query.toLowerCase()) ||
                 (item?.title ?? '').toLowerCase().includes(query.toLowerCase()) ||
                 item.fileName.toLowerCase().includes(query.toLowerCase()) ||
                 (item.type === SAVED_CHANGE_TYPE &&

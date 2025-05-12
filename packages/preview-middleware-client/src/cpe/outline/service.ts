@@ -48,7 +48,6 @@ export class OutlineService extends EventTarget {
                     this.changeService,
                     configPropertyIdMap
                 );
-               // await this.changeService.syncOutlineChanges();
                 const event = new CustomEvent(OUTLINE_CHANGE_EVENT, {
                     detail: {
                         controlIndex

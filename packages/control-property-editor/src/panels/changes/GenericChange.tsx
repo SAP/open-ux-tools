@@ -56,7 +56,7 @@ export function GenericChange(genericChangeProps: Readonly<GenericChangeProps>):
         change.type === SAVED_CHANGE_TYPE || (change.type === PENDING_CHANGE_TYPE && change.isActive) ? 1 : 0.4;
     return (
         <>
-            <Stack key={`${fileName}`} style={{ opacity }} className={styles.item}>
+            <Stack data-testid={'generic-change'} key={`${fileName}`} style={{ opacity }} className={styles.item}>
                 <Stack.Item className={styles.property}>
                     <Stack horizontal>
                         <Stack.Item>
