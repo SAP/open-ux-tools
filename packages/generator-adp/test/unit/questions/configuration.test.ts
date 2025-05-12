@@ -10,10 +10,20 @@ import { FlexLayer, SourceManifest, getConfiguredProvider, isAppSupported, loadA
 import { initI18n, t } from '../../../src/utils/i18n';
 import { configPromptNames } from '../../../src/app/types';
 import { ConfigPrompter } from '../../../src/app/questions/configuration';
+import { isAppStudio } from '@sap-ux/btp-utils';
 
 jest.mock('../../../src/app/questions/helper/conditions', () => ({
     showApplicationQuestion: jest.fn().mockResolvedValue(true),
     showCredentialQuestion: jest.fn().mockResolvedValue(true)
+}));
+
+jest.mock('../../../src/app/questions/helper/additional-messages.ts', () => ({
+    getAppAdditionalMessages: jest.fn().mockResolvedValue(undefined)
+}));
+
+jest.mock('../../../src/app/questions/helper/validators.ts', () => ({
+    ...jest.requireActual('../../../src/app/questions/helper/validators.ts'),
+    validateExtensibilityGenerator: jest.fn().mockReturnValue(true)
 }));
 
 jest.mock('@sap-ux/fiori-generator-shared', () => ({
@@ -31,6 +41,11 @@ jest.mock('@sap-ux/adp-tooling', () => ({
         '1.133.0': { version: '1.133.0', support: 'Maintained', lts: false }
     } as UI5Version),
     isAppSupported: jest.fn()
+}));
+
+jest.mock('@sap-ux/btp-utils', () => ({
+    ...jest.requireActual('@sap-ux/btp-utils'),
+    isAppStudio: jest.fn()
 }));
 
 jest.mock('@sap-ux/axios-extension', () => ({
@@ -71,6 +86,7 @@ const dummyAnswers: ConfigAnswers = {
 };
 
 const loadAppsMock = loadApps as jest.Mock;
+const mockIsAppStudio = isAppStudio as jest.Mock;
 const isAppSupportedMock = isAppSupported as jest.Mock;
 const isAxiosErrorMock = isAxiosError as unknown as jest.Mock;
 const getHostEnvironmentMock = getHostEnvironment as jest.Mock;
@@ -99,7 +115,7 @@ describe('ConfigPrompter Integration Tests', () => {
         it('should return four prompts with correct names', () => {
             const prompts = configPrompter.getPrompts();
 
-            expect(prompts).toHaveLength(6);
+            expect(prompts).toHaveLength(9);
             const names = prompts.map((p) => p.name);
 
             names.map((name) => {
@@ -135,7 +151,7 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.ui5).toEqual({
                 publicVersions: expect.any(Object),
                 systemVersion: '1.135.0',
-                ui5Versions: ['1.135.0 (system version)']
+                ui5Versions: ['1.134.1 (latest)']
             });
         });
 
@@ -318,6 +334,7 @@ describe('ConfigPrompter Integration Tests', () => {
         const mockManifest = { 'sap.ui5': { flexEnabled: true } } as Manifest;
 
         beforeEach(() => {
+            mockIsAppStudio.mockReturnValue(false);
             isAppSupportedMock.mockResolvedValue(true);
             getManifestSpy = jest.spyOn(SourceManifest.prototype, 'getManifest').mockResolvedValue(mockManifest);
         });
@@ -334,9 +351,38 @@ describe('ConfigPrompter Integration Tests', () => {
             expect(configPrompter.hasSyncViews).toEqual(false);
         });
 
-        it('application prompt validate should return string when manifest fetching fails', async () => {
+        it('application prompt validate should return string when manifest fetching fails in VS Code', async () => {
+            const error = new Error(t('error.appDoesNotSupportManifest'));
+            getManifestSpy.mockRejectedValue(error);
+
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            expect(result).toEqual(error.message);
+        });
+
+        it('application prompt validate should return true when manifest fetching fails in BAS', async () => {
+            const error = new Error(t('error.appDoesNotSupportManifest'));
+            getManifestSpy.mockRejectedValue(error);
+            mockIsAppStudio.mockReturnValue(true);
+
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.validate?.(dummyApps[0], dummyAnswers);
+
+            expect(result).toEqual(true);
+            expect(configPrompter.isAppSupported).toEqual(false);
+        });
+
+        it('application prompt validate should return string when manifest fetching fails in BAS', async () => {
             const error = new Error('Test error');
             getManifestSpy.mockRejectedValue(error);
+            mockIsAppStudio.mockReturnValue(true);
 
             const prompts = configPrompter.getPrompts();
             const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
@@ -376,6 +422,16 @@ describe('ConfigPrompter Integration Tests', () => {
 
             const result = await appPrompt?.validate?.(undefined, dummyAnswers);
             expect(result).toEqual(t('error.selectCannotBeEmptyError', { value: 'Application' }));
+        });
+
+        it('application prompt additionalMessages should return undefined if value is passed', async () => {
+            const prompts = configPrompter.getPrompts();
+            const appPrompt = prompts.find((p) => p.name === configPromptNames.application);
+            expect(appPrompt).toBeDefined();
+
+            const result = await appPrompt?.additionalMessages?.(dummyApps[0]);
+
+            expect(result).toEqual(undefined);
         });
     });
 
@@ -428,6 +484,18 @@ describe('ConfigPrompter Integration Tests', () => {
             await expect((whenFn as (answers: ConfigAnswers) => Promise<boolean>)(dummyAnswers)).rejects.toThrow(
                 error.message
             );
+        });
+    });
+
+    describe('Confirm Extension Project Prompt', () => {
+        it('confirm extension prompt validate should return true', () => {
+            const prompts = configPrompter.getPrompts();
+            const confirmPrompt = prompts.find((p) => p.name === configPromptNames.shouldCreateExtProject);
+            expect(confirmPrompt).toBeDefined();
+
+            const result = confirmPrompt?.validate?.(true);
+
+            expect(result).toEqual(true);
         });
     });
 });

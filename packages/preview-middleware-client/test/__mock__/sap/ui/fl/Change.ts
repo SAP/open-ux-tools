@@ -1,7 +1,10 @@
 import type Selector from 'sap/ui/fl/Selector';
 import type { Layer } from 'sap/ui/fl';
 export default class Change<ContentType> {
-    constructor(private change: { selector: Selector; changeType: string; layer: Layer }) {}
+    public get fileName(): string | undefined {
+        return this.change.fileName;
+    }
+    constructor(private change: { selector: Selector; changeType: string; layer: Layer; fileName?: string }) {}
     public getSelector = jest.fn().mockImplementation(() => {
         return this.change.selector;
     });
@@ -11,7 +14,9 @@ export default class Change<ContentType> {
     public getLayer = jest.fn().mockImplementation(() => {
         return this.change.layer;
     });
-    public getDefinition = jest.fn();
+    public getDefinition = jest.fn().mockImplementation(() => {
+        return { fileName: this.change.fileName };
+    });
     public getContent = jest.fn().mockImplementation(() => {
         return {
             selector: this.change.selector,

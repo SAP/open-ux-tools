@@ -8,6 +8,11 @@ export const LATEST_VERSION = '(latest)';
 export const SNAPSHOT_VERSION = 'snapshot';
 export const SNAPSHOT_UNTESTED_VERSION = 'snapshot-untested';
 
+export const RESOURCE_BUNDLE_TEXT = '\n\n# This is the resource bundle for ';
+export const TRANSLATION_UUID_TEXT = '\n#__ldi.translation.uuid=';
+export const BASE_I18N_DESCRIPTION =
+    '#Make sure you provide a unique prefix to the newly added keys in this file, to avoid overriding of SAP Fiori application keys.';
+
 export const S4HANA_APPS_PARAMS = {
     'sap.app/type': 'application',
     'sap.fiori/cloudDevAdaptationStatus': 'released',

@@ -36,7 +36,7 @@ declare global {
 export const enum ApiRoutes {
     FRAGMENT = '/adp/api/fragment',
     CONTROLLER = '/adp/api/controller',
-    CODE_EXT = '/adp/api/code_ext/:controllerName',
+    CODE_EXT = '/adp/api/code_ext',
     ANNOTATION = '/adp/api/annotation'
 }
 

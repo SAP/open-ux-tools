@@ -189,10 +189,10 @@ interface ControllerInfo {
  * @param control UI5 control.
  * @returns The controller name and view ID.
  */
-
 export function getControllerInfoForControl(control: ManagedObject): ControllerInfo {
     const view = FlexUtils.getViewForControl(control);
-    const controllerName = view.getController().getMetadata().getName();
+    const moduleName = view?.getControllerModuleName?.();
+    const controllerName = moduleName ? `module:${moduleName}` : view.getController()?.getMetadata().getName();
     const viewId = view.getId();
     return { controllerName, viewId };
 }

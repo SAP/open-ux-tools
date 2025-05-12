@@ -1,5 +1,11 @@
 # @sap-ux/ui5-info
 
+## 0.10.1
+
+### Patch Changes
+
+-   2050952: update Belize theme label and add version checks for deprecation
+
 ## 0.10.0
 
 ### Minor Changes

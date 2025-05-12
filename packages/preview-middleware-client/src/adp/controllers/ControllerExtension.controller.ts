@@ -35,8 +35,15 @@ interface ControllerExtensionService {
     add: (codeRef: string, viewId: string) => Promise<{ creation: string }>;
 }
 
+type ControllerList = {
+    /**
+     * File name without extension
+     */
+    controllerName: string;
+}[];
+
 type ControllerModel = JSONModel & {
-    getProperty(sPath: '/controllersList'): { controllerName: string }[];
+    getProperty(sPath: '/controllersList'): ControllerList;
     getProperty(sPath: '/controllerExists'): boolean;
     getProperty(sPath: '/newControllerName'): string;
     getProperty(sPath: '/viewId'): string;
@@ -109,7 +116,7 @@ export default class ControllerExtension extends BaseDialog<ControllerModel> {
             return;
         }
 
-        const fileExists = controllerList.some((f) => f.controllerName === `${controllerName}.js`);
+        const fileExists = controllerList.some((f) => f.controllerName === controllerName);
 
         const pendingChangeExists = checkForExistingChange(
             this.rta,

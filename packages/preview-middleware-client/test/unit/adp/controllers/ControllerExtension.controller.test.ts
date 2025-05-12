@@ -301,7 +301,7 @@ describe('ControllerExtension', () => {
     describe('onControllerNameInputChange', () => {
         const testModel = {
             setProperty: jest.fn(),
-            getProperty: jest.fn().mockReturnValue([{ controllerName: 'Delete.js' }])
+            getProperty: jest.fn().mockReturnValue([{ controllerName: 'Delete' }])
         } as unknown as JSONModel;
 
         afterEach(() => {

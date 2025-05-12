@@ -15,6 +15,26 @@ export function isV4Application(manifest?: Manifest): boolean {
 }
 
 /**
+ * Retrieves the default Fiori ID from the application's manifest.
+ *
+ * @param {Manifest | undefined} manifest - The manager responsible for fetching and handling the application manifest.
+ * @returns {Promise<string>} The Fiori registration IDs as a string if available, otherwise an empty string.
+ */
+export function getFioriId(manifest: Manifest | undefined): string {
+    return manifest?.['sap.fiori']?.registrationIds?.toString() ?? '';
+}
+
+/**
+ * Retrieves the default Application Component Hierarchy (ACH) from the application's manifest.
+ *
+ * @param {Manifest | undefined} manifest - The manager responsible for fetching and handling the application manifest.
+ * @returns {Promise<string>} The ACH code as a string if available, otherwise an empty string.
+ */
+export function getAch(manifest: Manifest | undefined): string {
+    return manifest?.['sap.app']?.ach?.toString() ?? '';
+}
+
+/**
  * Checks if views are loaded synchronously or asynchronously in the UI5 settings of the manifest.
  * Sets the isAppSync property based on the loading method.
  *
