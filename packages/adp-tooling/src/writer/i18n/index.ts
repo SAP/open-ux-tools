@@ -91,18 +91,18 @@ export function getI18nModels(
     id: string,
     title?: string
 ): ResourceModel[] | undefined {
-    try {
-        const models = manifest?.['sap.ui5']?.models ?? {};
-
-        return Object.entries(models).reduce((acc, [key, ui5Model]) => {
-            if (ui5Model?.type === 'sap.ui.model.resource.ResourceModel') {
-                const content = getI18nDescription(layer, title);
-                const path = extractResourceModelPath(ui5Model, key, id);
-                acc.push({ key, path, content });
-            }
-            return acc;
-        }, [] as ResourceModel[]);
-    } catch (e) {
-        throw new Error('Manifest parsing error: Check manifest/i18n for missing properties');
+    if (!manifest) {
+        return undefined;
     }
+
+    const models = manifest['sap.ui5']?.models ?? {};
+
+    return Object.entries(models).reduce((acc, [key, ui5Model]) => {
+        if (ui5Model?.type === 'sap.ui.model.resource.ResourceModel') {
+            const content = getI18nDescription(layer, title);
+            const path = extractResourceModelPath(ui5Model, key, id);
+            acc.push({ key, path, content });
+        }
+        return acc;
+    }, [] as ResourceModel[]);
 }
