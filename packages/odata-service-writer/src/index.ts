@@ -107,10 +107,11 @@ async function generate(basePath: string, service: OdataService, fs?: Editor): P
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} [fs] - the memfs editor instance
+ * @param {boolean} updateMiddlewares - whether the YAML files for the service (mock-server and fiori-tools-proxy middlewares) should be updated
  * @throws {Error} - if required UI5 project files are not found
  * @returns {Promise<Editor>} the updated memfs editor instance
  */
-async function update(basePath: string, service: OdataService, fs?: Editor): Promise<Editor> {
+async function update(basePath: string, service: OdataService, fs?: Editor, updateMiddlewares = true): Promise<Editor> {
     if (!fs) {
         fs = create(createStorage());
     }
@@ -122,7 +123,7 @@ async function update(basePath: string, service: OdataService, fs?: Editor): Pro
     const isServiceTypeEdmx = service.type === ServiceType.EDMX;
     await updateManifest(basePath, service, fs, true);
     // Dont extend/update backend and mockserver middlewares if service type is CDS
-    if (isServiceTypeEdmx) {
+    if (isServiceTypeEdmx && updateMiddlewares) {
         await updateServicesData(basePath, paths, service as EdmxOdataService, fs);
     }
     return fs;
