@@ -68,7 +68,9 @@ export function GenericGroup(genericGroupProps: Readonly<GenericGroupProps>): Re
                 const key = `${text}-${i}`;
                 return (
                     <Stack.Item
-                        data-testid={`${stackName}-${text}-${change.fileName}`}
+                        data-testid={`${stackName}-${controlId}-${
+                            change.changeType === 'property' ? change.properties[0].label : change.changeType
+                        }-${change.fileName}`}
                         key={String(change.fileName ?? '') + i}
                         className={styles.item}>
                         <GenericChange key={key} change={change} actionClassName={styles.actions} />

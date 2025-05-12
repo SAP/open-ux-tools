@@ -67,7 +67,9 @@ export function ChangeStack(changeStackProps: ChangeStackProps): ReactElement {
 function renderChangeItem(item: Item, stackName: string): ReactElement {
     if (isGenericChangeGroup(item)) {
         return (
-            <Stack.Item key={`${stackName}-${item.text}-${item.index}`}>
+            <Stack.Item
+                key={`${stackName}-${item.controlId}-${item.index}`}
+                data-testid={`${stackName}-${item.controlId}-${item.index}`}>
                 <GenericGroup {...item} />
             </Stack.Item>
         );
