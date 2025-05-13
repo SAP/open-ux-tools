@@ -1,5 +1,15 @@
 # @sap-ux/fiori-app-sub-generator
 
+## 0.0.39
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/axios-extension@1.20.3
+    -   @sap-ux/odata-service-inquirer@2.3.15
+    -   @sap-ux/ui5-application-inquirer@0.12.9
+
 ## 0.0.38
 
 ### Patch Changes

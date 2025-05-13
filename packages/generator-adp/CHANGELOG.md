@@ -1,5 +1,16 @@
 # @sap-ux/generator-adp
 
+## 0.2.2
+
+### Patch Changes
+
+-   Updated dependencies [5585f0d]
+    -   @sap-ux/feature-toggle@0.2.4
+    -   @sap-ux/axios-extension@1.20.3
+    -   @sap-ux/inquirer-common@0.6.43
+    -   @sap-ux/adp-tooling@0.13.44
+    -   @sap-ux/system-access@0.5.39
+
 ## 0.2.1
 
 ### Patch Changes
