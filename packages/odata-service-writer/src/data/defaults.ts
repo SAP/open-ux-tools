@@ -46,13 +46,13 @@ function generateUniqueServiceName(dataSources: DataSources, serviceName: string
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose name needs to be set or modified.
  * @param {Editor} fs - the memfs editor instance
- * @param {boolean} forceServiceUpdate - if true, skips unique service name generation
+ * @param {boolean} update - whether the service update is running
  */
 async function setDefaultServiceName(
     basePath: string,
     service: OdataService,
     fs: Editor,
-    forceServiceUpdate: boolean
+    update: boolean
 ): Promise<void> {
     const manifestPath = join(await getWebappPath(basePath, fs), FileName.Manifest);
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
@@ -63,7 +63,7 @@ async function setDefaultServiceName(
         const oDataSources = Object.values(dataSources).filter((dataSource) => dataSource.type === 'OData');
         if (oDataSources.length === 0) {
             service.name = DEFAULT_DATASOURCE_NAME;
-        } else if (service.name && !forceServiceUpdate) {
+        } else if (service.name && !update) {
             service.name = generateUniqueServiceName(dataSources, service.name);
         }
     } else {
@@ -80,13 +80,13 @@ async function setDefaultServiceName(
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - The service object whose model needs to be set or modified
  * @param {Editor} fs - the memfs editor instance
- * @param {boolean} forceServiceUpdate - if true, makes sure that '' model is updated for the mainService
+ * @param {boolean} update - whether the service update is running (if true, makes sure that '' model is updated for the mainService)
  */
 async function setDefaultServiceModel(
     basePath: string,
     service: OdataService,
     fs: Editor,
-    forceServiceUpdate: boolean
+    update: boolean
 ): Promise<void> {
     const manifestPath = join(await getWebappPath(basePath, fs), 'manifest.json');
     const manifest = fs.readJSON(manifestPath) as unknown as Manifest;
@@ -98,7 +98,7 @@ async function setDefaultServiceModel(
             const servicesModels = Object.values(models).filter((model) => model.dataSource);
             if (
                 servicesModels.length === 0 ||
-                (forceServiceUpdate &&
+                (update &&
                     servicesModels.find((serviceModel) => serviceModel.dataSource === DEFAULT_DATASOURCE_NAME) &&
                     service.name === DEFAULT_DATASOURCE_NAME)
             ) {
@@ -190,17 +190,12 @@ async function setDefaultPreviewSettings(basePath: string, service: OdataService
  * @param {string} basePath - the root path of an existing UI5 application
  * @param {OdataService} service - the OData service instance
  * @param {Editor} fs - the memfs editor instance
- * @param {boolean} forceServiceUpdate - if true, skips unique service name generation and makes sure that '' model is updated for the mainService
+ * @param {boolean} update - whether the service update is running (if true, skips unique service name generation and makes sure that '' model is updated for the mainService)
  */
-export async function enhanceData(
-    basePath: string,
-    service: OdataService,
-    fs: Editor,
-    forceServiceUpdate = false
-): Promise<void> {
+export async function enhanceData(basePath: string, service: OdataService, fs: Editor, update = false): Promise<void> {
     setDefaultServicePath(service);
-    await setDefaultServiceName(basePath, service, fs, forceServiceUpdate);
-    await setDefaultServiceModel(basePath, service, fs, forceServiceUpdate);
+    await setDefaultServiceName(basePath, service, fs, update);
+    await setDefaultServiceModel(basePath, service, fs, update);
     // set service type to EDMX if not defined
     service.type = service.type ?? ServiceType.EDMX;
     /**
